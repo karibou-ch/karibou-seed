@@ -1,0 +1,22 @@
+<article>
+  <fieldset>
+  </fieldset>
+  <fieldset *ngIf="!user.isAuthenticated()">
+    <h4>Utiliser votre compte de karibou.ch</h4>
+    <div class="row">
+      <label for="username" name="username">email</label>
+      <input id="username" name="username" type="email"  placeholder="james@gmail.com" required="">
+    </div>
+    <div class="row">
+      <label for="password" name="password">passord</label>
+      <input id="password" name="password" type="password"  placeholder="" required="">
+    </div>
+    <div class="row">
+    </div>
+
+  </fieldset>
+  <button type="button" (click)="doLogin(username,password)" [hidden]="user.isAuthenticated()">
+    Ouvrir une session
+  </button>
+  
+</article>

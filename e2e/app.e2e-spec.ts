@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('visashift-app App', () => {
+describe('karibou-seed-app App', () => {
   let page: AppPage;
 
   beforeEach(() => {
