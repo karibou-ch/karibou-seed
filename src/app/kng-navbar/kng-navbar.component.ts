@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-
 import { LoaderService, User, UserService } from 'kng2-core';
 
 @Component({
-  selector: 'karibou-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.scss']
+  selector: 'kng-navbar',
+  templateUrl: './kng-navbar.component.html',
+  styleUrls: ['./kng-navbar.component.scss']
 })
-export class WelcomeComponent implements OnInit {
+export class KngNavbarComponent implements OnInit {
+
+
+  //
+  // howto
+  // 1. https://stackoverflow.com/questions/38209713/how-to-make-a-responsive-nav-bar-using-angular-material-2
 
   user:User;
   isReady:boolean;
@@ -31,7 +34,8 @@ export class WelcomeComponent implements OnInit {
     });
   } 
 
-  doLogin(username:string,password:string){
-    console.log('---------------',username,password)
+  handleToolbarChange(event:any){
+    
   }
+
 }

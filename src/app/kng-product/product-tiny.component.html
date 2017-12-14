@@ -3,9 +3,9 @@
     [class.noinstock]="!product.pricing.stock">
 
     <img [hidden]="!product.vendor.photo?.fg" align="left"
-          [src]="product.photo.url+'/-/resize/100x/'"
+          [src]="product.photo?.url+'/-/resize/100x/'"
           alt="160x160" class="thumbnail-owner photo-owner" >
-    <a [routerLink]="['/product',product.sku]"><strong>{{product.title}}</strong></a>
+    <a [routerLink]="['/products',product.sku]"><strong>{{product.title}}</strong></a>
     <div class="vendor">
       <span markdown-render="">{{product?.vendor?.name}}</span>
     </div>

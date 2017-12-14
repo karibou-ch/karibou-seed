@@ -1,0 +1,30 @@
+.example-icon {
+  padding: 0 14px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+button.last{
+  margin-right: 15px;
+}
+
+.kng-toolbar{
+  position: fixed;
+  top: 0;
+  z-index:1;
+
+  md-input-container .md-errors-spacer{
+    min-height: 0px !important;
+  }  
+
+  .mdc-toolbar-demo {
+    margin: 0px;
+  }
+  .mdc-toolbar__row:first-child::after {
+    background-image: url("https://ucarecdn.com/3f2e9978-f638-453b-bf5e-4499edbac20f/");
+    background-size: cover;
+    background-position: center;
+  }  
+}

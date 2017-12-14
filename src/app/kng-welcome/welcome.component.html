@@ -1,0 +1,17 @@
+<div class="welcome-container mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
+      <mdc-card [ngStyle]="{'background-image': 'url(' + category.cover + '/-/resize/300x/)'}" 
+                 mdc-ripple
+                [routerLink]="['/products/category',category.slug]" 
+                *ngFor="let category of getCategories()"
+                class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+        <mdc-card-horizontal>
+          <mdc-card-primary>
+            <mdc-card-title>{{category.name}}</mdc-card-title>
+            <h2 mdc-card-subtitle>{{category.group}}</h2>
+          </mdc-card-primary>
+          <img mdc-card-media-item [size]="1" src="category.image"  />
+        </mdc-card-horizontal>
+      </mdc-card>      
+  </div>
+</div>

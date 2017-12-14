@@ -23,6 +23,7 @@ export class ProductComponent implements OnInit {
     isReady: boolean;
     config: any;
     product: Product = new Product();
+    thumbnail:boolean=false;
 
     WaitText:boolean=false;
     rootProductPath:string;
@@ -52,6 +53,11 @@ export class ProductComponent implements OnInit {
                 this.product = prod
             })
         });
+    }
+
+
+    save(){
+        
     }
 }
 

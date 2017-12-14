@@ -1,0 +1,93 @@
+[hidden] {
+  display: none!important;
+}
+
+body{
+  font-family: Roboto, sans-serif !important; 
+}
+
+
+.icon-alcool, .fa-alcool,
+.icon-bread, .fa-bread,
+.icon-caterer, .fa-caterer,
+.icon-cheese, .fa-cheese,
+.icon-drink, .fa-drink,
+.icon-flour, .fa-flour,
+.icon-finefood, .fa-finefood,
+.icon-meat, .fa-meat,
+.icon-sugar, .fa-sugar,
+.icon-shop, .fa-shop,
+.icon-pasta, .fa-pasta,
+.icon-vegetable, .fa-vegetable,
+.icon-wine, .fa-wine,
+.icon-wine, .fa-wine-white
+{
+  width:16px;
+  height: 16px;
+  margin-right: 3px;
+  background-size:contain;
+  background-position: 50%;
+  background-repeat: no-repeat;  
+  transform:translateY(3px);
+}
+.icon-alcool, .fa-alcool{
+  background-image: url(/assets/img/icon-alcool.png);
+}
+
+.icon-bread, .fa-bread{
+  background-image: url(/assets/img/icon-bread.png)
+}
+
+.icon-caterer, .fa-caterer{
+  background-image: url(/assets/img/icon-caterer.png);
+}
+
+.icon-cheese, .fa-cheese{
+  background-image: url(/assets/img/icon-cheese.png)
+}
+
+.icon-drink, .fa-drink{
+  background-image: url(/assets/img/icon-drink.png)
+}
+
+.icon-flour, .fa-flour{
+  background-image: url(/assets/img/icon-flour.png)
+}
+
+.icon-finefood, .fa-finefood{
+  background-image: url(/assets/img/icon-finefood.png)
+}
+
+.icon-meat, .fa-meat{
+  background-image: url(/assets/img/icon-meat.png)
+}
+
+.icon-shop, .fa-shop{
+  background-image: url(/assets/img/icon-shop.png)
+}
+
+.icon-pasta, .fa-pasta{
+  background-image: url(/assets/img/icon-pasta.png)
+}
+
+.icon-vegetable, .fa-vegetable{
+  background-image: url(/assets/img/icon-vegetable.png)
+}
+
+.icon-wine, .fa-wine{
+  background-image: url(/assets/img/icon-wine.png)
+}
+
+.icon-wine, .fa-wine-white{
+  background-image: url(/assets/img/icon-wine.png)
+}
+
+.icon-sugar, .fa-sugar{
+  background-image: url(/assets/img/icon-sugar.png)
+}
+
+
+body{
+    background-color: #f6f9fc;  
+    margin: 0;
+}

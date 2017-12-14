@@ -1,8 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-body{
-    overflow-x: hidden;
-    background-color: #f6f9fc;  
-    font-family: Roboto, Open Sans, Segoe UI, sans-serif;
-    font-size: 15px;
-    font-weight: 500;    
-}
+
+$mdc-theme-primary: #b0d6c3; // change primary color example
+$mdc-theme-secondary: #388e3c; // change secondary color example
+@import "~@angular-mdc/theme";
+@import 'kng-theme.scss';
+

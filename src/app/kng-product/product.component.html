@@ -1,4 +1,4 @@
-<div [class.thumbnails]="thumbnails">
+<div [class.thumbnail]="thumbnail" class="product-container">
    <div class="popupcontent" >
       <div class="header clearfix">
         <aside [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
@@ -68,11 +68,11 @@
         <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
         <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
           <button class="btn btn-default" role="button" 
-                      (click)="product.pricing.stock=0;save(product);" [disabled]="WaitText">0</button>
+                      (click)="product.pricing.stock=0;save();" [disabled]="WaitText">0</button>
           <button class="btn btn-default" role="button" 
-                      (click)="product.pricing.stock=10;save(product);" [disabled]="WaitText">10</button>
+                      (click)="product.pricing.stock=10;save();" [disabled]="WaitText">10</button>
           <button class="btn btn-default" role="button" 
-                      (click)="product.pricing.stock=40;save(product);" [disabled]="WaitText">40</button>
+                      (click)="product.pricing.stock=40;save();" [disabled]="WaitText">40</button>
         </div>      
       </div>
 
@@ -86,7 +86,7 @@
       <!-- DESCRIPTION -->
       <div class="description">
         <div  markdown-render="product.details.description"></div>
-        <span [hidden]="!product.details.origin" class="small">{{product.details.origin}}</span>
+        <span [hidden]="!product.details?.origin" class="small">{{product.details.origin}}</span>
       </div>
 
       <!-- CERTIFIED -->

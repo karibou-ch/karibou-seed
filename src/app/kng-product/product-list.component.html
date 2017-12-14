@@ -1,0 +1,8 @@
+<div class="product-container mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
+      <kng-product-tiny 
+          [sku]="product.sku"
+          *ngFor="let product of products;let i=index"
+          class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></kng-product-tiny>
+  </div>
+</div>

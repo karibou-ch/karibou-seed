@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VisashiftTickerComponent } from './visashift-ticker.component';
+import { ProduitListComponent } from './produit-list.component';
 
-describe('VisashiftTickerComponent', () => {
-  let component: VisashiftTickerComponent;
-  let fixture: ComponentFixture<VisashiftTickerComponent>;
+describe('ProduitListComponent', () => {
+  let component: ProduitListComponent;
+  let fixture: ComponentFixture<ProduitListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VisashiftTickerComponent ]
+      declarations: [ ProduitListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VisashiftTickerComponent);
+    fixture = TestBed.createComponent(ProduitListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
