@@ -26,6 +26,13 @@ export class ProductListComponent implements OnInit {
     categories: Category[];
     category: Category;
     categorySlug:string;
+    image:string;
+    title:string;
+
+    options={
+        available:true,
+        status:true
+    };
 
     constructor(
         private loader: LoaderService,
@@ -43,22 +50,20 @@ export class ProductListComponent implements OnInit {
             this.categories= loader[2];
             this.categorySlug=this.route.snapshot.params['category'];
             this.category=this.categories.find(cat=>cat.slug===this.categorySlug);
+            this.title=this.category.name;
+            this.image=this.category.cover;
             this.filterProduct();
         });
     }
 
     loadProducts() {
-        let options={
-            available:true,
-            status:true
-        };
-        this.$product.select(options).subscribe((products: Product[]) => {
+        this.$product.select(this.options).subscribe((products: Product[]) => {
             this.products = products.sort();
         });
     }
 
     filterProduct() {
-        this.$product.findByCategory(this.categorySlug).subscribe((products: Product[]) => {
+        this.$product.findByCategory(this.categorySlug,this.options).subscribe((products: Product[]) => {
             this.products = products.sort();
         });
     }

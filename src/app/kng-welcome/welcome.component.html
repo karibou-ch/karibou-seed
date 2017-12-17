@@ -1,6 +1,7 @@
+<kng-navbar [title]="'Bienvenue chez Karbiou.ch'"></kng-navbar>
 <div class="welcome-container mdc-layout-grid">
   <div class="mdc-layout-grid__inner">
-      <mdc-card [ngStyle]="{'background-image': 'url(' + category.cover + '/-/resize/300x/)'}" 
+      <mdc-card [ngStyle]="{'background-image': 'url(' + category.cover + ')'}" 
                  mdc-ripple
                 [routerLink]="['/products/category',category.slug]" 
                 *ngFor="let category of getCategories()"

@@ -6,7 +6,6 @@ body{
   font-family: Roboto, sans-serif !important; 
 }
 
-
 .icon-alcool, .fa-alcool,
 .icon-bread, .fa-bread,
 .icon-caterer, .fa-caterer,
@@ -86,8 +85,8 @@ body{
   background-image: url(/assets/img/icon-sugar.png)
 }
 
-
-body{
-    background-color: #f6f9fc;  
-    margin: 0;
+@media only screen and (max-width: 782px) {
+  .hide-md{
+    display: none;
+  }
 }

@@ -16,12 +16,15 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MdcButtonModule,
   MdcCardModule,
+  MdcDrawerModule,
   MdcFabModule,
   MdcIconModule,
   MdcIconToggleModule,  
+  MdcListModule,
   MdcMaterialIconModule,
   MdcMenuModule,
   MdcRippleModule,
+  MdcTabModule,
   MdcThemeModule,
   MdcTextFieldModule,
   MdcToolbarModule
@@ -46,6 +49,7 @@ import { ProductComponent,
          ProductThumbnailComponent, 
          ProductTinyComponent, 
          ProductListComponent } from './kng-product';
+import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +57,7 @@ import { ProductComponent,
     WelcomeComponent,
     ProductComponent, ProductThumbnailComponent, ProductTinyComponent, ProductListComponent,
     KngNavbarComponent,
-    UserSignComponent, UserRegisterComponent
+    UserSignComponent, UserRegisterComponent, MdcSearchBarComponent
   ],
   imports: [
     BrowserModule,
@@ -61,13 +65,16 @@ import { ProductComponent,
     //MatButtonModule, MatCardModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatIconModule, MatMenuModule, MatToolbarModule,
     MdcButtonModule,
     MdcCardModule,
+    MdcDrawerModule,
     MdcFabModule,
     MdcIconModule,
     MdcMaterialIconModule,
     MdcIconToggleModule,
+    MdcListModule,
     MdcMenuModule,
     MdcRippleModule,
     MdcTextFieldModule,
+    MdcTabModule,
     MdcThemeModule,
     MdcToolbarModule,
     Kng2CoreModule.forRoot({API_SERVER:'http://api.karibou.ch',

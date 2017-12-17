@@ -2,19 +2,39 @@
   [flexible]="true"
   [fixed]="true"
   [waterfall]="true"
-  [fixedLastrow]="true"
+  [fixedLastrow]="false"
   (change)="handleToolbarChange($event)">
-  <mdc-toolbar-row>
-    <mdc-toolbar-section [alignStart]="true">
+  <mdc-toolbar-row [ngStyle]="{'background-image': 'url(' + image + ')'}">
+    <mdc-toolbar-section [alignStart]="true" >
       <a href="#" mdc-toolbar-menu-icon material-icon>menu</a>
-      <mdc-toolbar-title>Karibou.ch</mdc-toolbar-title>
+      <mdc-toolbar-title>{{title}}</mdc-toolbar-title>      
     </mdc-toolbar-section>
+    <mdc-toolbar-section mdc-search-bar mdc-ripple>
+    </mdc-toolbar-section>    
+    <mdc-toolbar-section [alignEnd]="true" >
+      <a href="#" mdc-toolbar-icon><i material-icon class="primary">update</i><span class="hide-md">Prochaine livraison</span></a>      
+      <a href="#" mdc-toolbar-icon class="mat-search--mobile mat-toolbar--open-search"><i material-icon class="primary">search</i></a>      
+    </mdc-toolbar-section>
+    
   </mdc-toolbar-row>
   <mdc-toolbar-row>
-    <mdc-toolbar-section [alignEnd]="true">
-      <a href="#/toolbar-demo" mdc-toolbar-icon material-icon>file_download</a>
-      <a href="#/toolbar-demo" mdc-toolbar-icon material-icon>print</a>
-      <a href="#/toolbar-demo" mdc-toolbar-icon material-icon>bookmark</a>
+    <mdc-toolbar-section [alignStart]="true" >
+    </mdc-toolbar-section>
+    <mdc-toolbar-section>
+      <mdc-tab-bar [secondary]="true" >
+        <mdc-tab>
+          Favoris
+        </mdc-tab>
+        <mdc-tab [routerLink]="['/']" [active]="true">
+          Départements
+        </mdc-tab>
+        <mdc-tab>
+          Boutiques
+        </mdc-tab>
+      </mdc-tab-bar>          
+    </mdc-toolbar-section>
+    <mdc-toolbar-section [alignEnd]="true" >
+      <a href="#/toolbar-demo" mdc-toolbar-icon class="primary"><i  material-icon>shopping_cart</i><span class="hide-md">Panier</span></a>
     </mdc-toolbar-section>
   </mdc-toolbar-row>
 </mdc-toolbar>
