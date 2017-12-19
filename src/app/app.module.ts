@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule , CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 
 import { AppComponent } from './app.component';
@@ -17,6 +18,7 @@ import {
   MdcButtonModule,
   MdcCardModule,
   MdcDrawerModule,
+  MdcElevationModule,
   MdcFabModule,
   MdcIconModule,
   MdcIconToggleModule,  
@@ -62,10 +64,12 @@ import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component
   imports: [
     BrowserModule,
     NoopAnimationsModule,
+    FlexLayoutModule,
     //MatButtonModule, MatCardModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatIconModule, MatMenuModule, MatToolbarModule,
     MdcButtonModule,
     MdcCardModule,
     MdcDrawerModule,
+    MdcElevationModule,
     MdcFabModule,
     MdcIconModule,
     MdcMaterialIconModule,

@@ -4,14 +4,16 @@ import {
   HostBinding,
   HostListener,
   OnInit,
-  ViewChild 
+  ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 
 
 @Component({
   selector: 'mdc-toolbar-section[mdc-search-bar],mdc-search-bar',
   templateUrl: './mdc-search-bar.component.html',
-  styleUrls: ['./mdc-search-bar.component.scss']
+  styleUrls: ['./mdc-search-bar.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MdcSearchBarComponent implements OnInit {
 

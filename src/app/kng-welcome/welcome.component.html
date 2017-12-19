@@ -1,18 +1,35 @@
-<kng-navbar [title]="'Bienvenue chez Karbiou.ch'"></kng-navbar>
-<div class="welcome-container mdc-layout-grid">
-  <div class="mdc-layout-grid__inner">
-      <mdc-card [ngStyle]="{'background-image': 'url(' + category.cover + ')'}" 
-                 mdc-ripple
+<div class="welcome-container mdc-content mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">    
+      <mdc-card  mdc-ripple
+                [mdc-elevation]="0"                
                 [routerLink]="['/products/category',category.slug]" 
                 *ngFor="let category of getCategories()"
                 class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
-        <mdc-card-horizontal>
+          <mdc-card-media [ngStyle]="{'background-image': 'url(' + category.cover + ')','height': '12.313rem'}" >
+
+          </mdc-card-media>
           <mdc-card-primary>
-            <mdc-card-title>{{category.name}}</mdc-card-title>
-            <h2 mdc-card-subtitle>{{category.group}}</h2>
+            <mdc-card-title [large]="false">{{category.name}}</mdc-card-title>
+            <h2 mdc-card-subtitle>{{category.group||'Autres'}}</h2>
           </mdc-card-primary>
-          <img mdc-card-media-item [size]="1" src="category.image"  />
-        </mdc-card-horizontal>
+          <!--<img mdc-card-media-item [size]="1" src="category.image"  />-->
       </mdc-card>      
+  </div>
+
+  <div class="mdc-grid-list " style="display:none;">
+    <ul class="mdc-grid-list__tiles">
+        <li class="mdc-grid-tile" 
+            *ngFor="let category of getCategories()"
+            [routerLink]="['/products/category',category.slug]" >
+          <div class="mdc-grid-tile__primary">
+            <img class="mdc-grid-tile__primary-content" [src]="category.cover">
+          </div>
+          <span class="mdc-grid-tile__secondary">
+            <i class="mdc-grid-tile__icon material-icons">star_border</i>
+            <span class="mdc-grid-tile__title">{{category.name}}</span>
+            <span class="mdc-grid-tile__support-text">{{category.group}}</span>
+          </span>
+        </li>
+    </ul>
   </div>
 </div>

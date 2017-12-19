@@ -1,28 +1,35 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Config, LoaderService, User, UserService } from 'kng2-core';
+import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({
   selector: 'kng-navbar',
   templateUrl: './kng-navbar.component.html',
-  styleUrls: ['./kng-navbar.component.scss']
+  styleUrls: ['./kng-navbar.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class KngNavbarComponent implements OnInit {
 
 
   //
-  // howto
+  // howto resp navbar
   // 1. https://stackoverflow.com/questions/38209713/how-to-make-a-responsive-nav-bar-using-angular-material-2
+  // 2. https://github.com/trimox/angular-mdc-web/tree/master/src/demo-app/navigation
 
   config:Config;
   user:User;
   isReady:boolean;
+  isFixed: boolean = true;  
+  @ViewChild('drawer') drawer: any;
 
   @Input() image:string;
   @Input() title:string;
   @Input() subtitle:string;
 
+
   constructor(
     private $loader:LoaderService,
+    private $media:ObservableMedia,
     private $user:UserService
   ) {
     this.isReady=false;
@@ -49,6 +56,11 @@ export class KngNavbarComponent implements OnInit {
       }
     });
   } 
+
+  toggleDrawer() {
+    this.drawer.open();
+  }
+
 
   handleToolbarChange($event:any){
     // if($event===0){

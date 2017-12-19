@@ -6,7 +6,7 @@
   (change)="handleToolbarChange($event)">
   <mdc-toolbar-row [ngStyle]="{'background-image': 'url(' + image + ')'}">
     <mdc-toolbar-section [alignStart]="true" >
-      <a href="#" mdc-toolbar-menu-icon material-icon>menu</a>
+      <a href="#" mdc-toolbar-menu-icon material-icon fxShow fxHide.gt-sm="true" (click)="toggleDrawer();">menu</a>
       <mdc-toolbar-title>{{title}}</mdc-toolbar-title>      
     </mdc-toolbar-section>
     <mdc-toolbar-section mdc-search-bar mdc-ripple>
@@ -39,127 +39,44 @@
   </mdc-toolbar-row>
 </mdc-toolbar>
 
-<!--<mat-toolbar color="primary" class="kng-toolbar">
-  <mat-toolbar-row>
-    <a  routerLink="/" mat-button  >
-      <mat-icon >favorite</mat-icon> Karibou.ch
-    </a>        
-    
-    <div class="md-toolbar-search">
-      <mat-form-field >
-        <label>Search for food</label> 
-        <input  name="search-food">
-      </mat-form-field>
-    </div>    
-    <span class="example-spacer"></span>
-    
-    <a  routerLink="/me" mat-button  [hidden]="!user.isAuthenticated()">
-      <mat-icon >favorite</mat-icon> {{user.display()}}
-    </a>        
-    <a  routerLink="/login" mat-button  [hidden]="!!user.isAuthenticated()">
-      <mat-icon >favorite</mat-icon> login
-    </a>        
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="last">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>dialpad</mat-icon>
-        <span>Redial</span>
-      </button>
-      <button mat-menu-item disabled>
-        <mat-icon>voicemail</mat-icon>
-        <span>Check voicemail</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>notifications_off</mat-icon>
-        <span>Disable alerts</span>
-      </button>
-    </mat-menu>
-    
-  </mat-toolbar-row>
 
-</mat-toolbar>-->
+<div fxLayout="row">
+  <mdc-permanent-drawer #drawer *ngIf="$media.isActive('gt-sm')" fxHide fxShow.gt-sm="true">
+    <mdc-permanent-drawer-spacer></mdc-permanent-drawer-spacer>
+    <mdc-permanent-drawer-content>
+        <mdc-list-group>
+          <mdc-list>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>home</mdc-icon>Home
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>star</mdc-icon>Star
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>send</mdc-icon>Sent Mail
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>drafts</mdc-icon>Drafts
+            </mdc-list-item>
+          </mdc-list>
+          <mdc-list-divider></mdc-list-divider>
+          <mdc-list>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>email</mdc-icon>All Mail
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>delete</mdc-icon>Trash
+            </mdc-list-item>
+            <mdc-list-item>
+              <mdc-icon mdc-list-item-graphic>report</mdc-icon>Spam
+            </mdc-list-item>
+          </mdc-list>
+        </mdc-list-group>
+    </mdc-permanent-drawer-content>
+  </mdc-permanent-drawer>
+  
 
-<!--
-<nav>
-  <md-toolbar class="toolbar-top">
-    <img src="../../assets/img/logo.gif" alt="logo" width="60px">
-    <div class="container-small">
-      <button md-icon-button color="accent" class="container-small" (click)="sidenav.open()">
-        <md-icon>view_headline</md-icon>
-        <span>Menu</span>
-      </button>
-    </div>
-    <span flex></span>
-    <ul class="container-big">
-      <li class="nav1">
-        <button md-button routerLink="">
-          Maraîcher
-        </button>
-        <button md-button routerLink="">
-          Boucherie
-        </button>
-        <button md-button routerLink="">
-          Laiterie
-        </button>
-        <button md-button routerLink="">
-          Boulangerie
-        </button>
-        <button md-button routerLink="">
-          Epicerie
-        </button>
-        <button md-button routerLink="">
-          Soins & Maison
-        </button>
-      </li>
-      <li class="nav2">
-        <button md-button routerLink="">
-          Qui sommes-nous ?
-        </button>
-        <button md-button routerLink="">
-          Comment ça marche ?
-        </button>
-        <button md-button routerLink="">
-          Producteurs
-        </button>
-        <button md-button routerLink="">
-          Participer
-        </button>
-        <button md-button routerLink="">
-          Contact
-        </button>
-      </li>
-    </ul>
-    <span flex></span>
-    <div>
-      <button md-icon-button color="accent">
-      <md-icon>search</md-icon>
-    </button>
-      <button md-icon-button color="accent" [mdMenuTriggerFor]="menu">
-      <md-icon>face</md-icon>
-    </button>
-      <md-menu #menu="mdMenu">
-        <div *ngIf="user.isAuthenticated()">
-          <button md-menu-item color="accent" routerLink="/profile">
-          <md-icon>perm_identity</md-icon>
-          <span>Bonjour, {{ user?.displayName }}</span>
-          </button>
-          <button md-menu-item color="accent" (click)="logout()">
-          <md-icon>exit_to_app</md-icon>
-          <span>Se déconnecter</span>
-        </button>
-        </div>
-        <div *ngIf="!user.isAuthenticated()">
-          <button md-menu-item color="accent" routerLink="/login">
-            <md-icon>perm_identity</md-icon>
-            <span>Se connecter</span>
-          </button>
-        </div>
-      </md-menu>
-      <button color="accent" md-icon-button>
-      <md-icon>shopping_basket</md-icon>
-    </button>
-    </div>
-  </md-toolbar>
-</nav>-->
+<div class="mdc-content">
+  <router-outlet></router-outlet>
+</div>
+</div>

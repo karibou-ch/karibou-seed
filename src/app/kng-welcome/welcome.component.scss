@@ -1,14 +1,11 @@
 
 div.welcome-container{
-  max-width: 600px;
   width:100%;
   margin: auto;
   margin-top: 70px;
 
   mdc-card{
     box-sizing: border-box;
-    height: 200px;
-    color: white!important;
     background-repeat: no-repeat;
     background-size: cover;      
 
@@ -18,16 +15,19 @@ div.welcome-container{
       background-size: cover;      
     }
 
+    .mdc-card__primary{
+      background-color: rgba(255, 255, 255, 0.54);
+    }
+
+
     div.avatar{
       background-size: cover;
       background-color: rgba(255, 255, 255, 0.41);
     }
     .mdc-card__title{
-      color: white;      
     }
 
     .mdc-card-subtitle{
-      color: white;
     }
 
     h1{
