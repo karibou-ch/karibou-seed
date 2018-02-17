@@ -34,8 +34,8 @@ $bretzel-background-color: #8b6f4e;
         li{
           display: inline-block;
           position: relative;
-          width: 213px;
-          height: 213px;
+          width: 273px;
+          height: 203px;
           vertical-align: top;
           background: $bretzel-background-color;
           text-align: left;
@@ -44,7 +44,7 @@ $bretzel-background-color: #8b6f4e;
           margin: 0px;
           cursor: pointer;
           white-space: initial;
-          border: 1px solid #aaa;        
+          border: 10px solid #fefefe;
           background-size: cover;
           background-position: center;          
         }
@@ -142,14 +142,16 @@ $bretzel-background-color: #8b6f4e;
             
         }
         form{
+          background: white;
           display: flex;
           flex-flow:row wrap;
           margin: 20px auto;
           padding: 8px 70px;  
           min-height:150px;
-          
+          width: auto;
+
           button{
-            flex:1 0 100%;
+            flex:1;
             height: 50px;
           }
         }      
