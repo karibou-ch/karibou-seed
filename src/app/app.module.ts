@@ -13,7 +13,11 @@ import localeFr from '@angular/common/locales/fr';
 // the second parameter 'fr' is optional
 registerLocaleData(localeFr, 'fr');
 
+//
+// app modules
 import { Kng2CoreModule  } from 'kng2-core';
+import { MdcModule } from './app.mdc.module';
+//import { Material2Module } from './app.material2.module';
 
 //
 // App components
@@ -26,34 +30,7 @@ import { KngNavbarComponent, KngNavigationService } from './kng-navbar';
 // App directives
 import { InfiniteScrollerDirective } from './infinite-scroller.directive';
 
-//
-// importing material components
-import {
-  MdcButtonModule,
-  MdcCardModule,
-  MdcDrawerModule,
-  MdcDialogModule,
-  MdcElevationModule,
-  MdcFabModule,
-  MdcIconModule,
-  MdcIconToggleModule,  
-  MdcListModule,
-  MdcMenuModule,
-  MdcRippleModule,
-  MdcTabModule,
-  MdcThemeModule,
-  MdcTextFieldModule,
-  MdcToolbarModule
-} from '@angular-mdc/web';
 
-// import { MatButtonModule,
-//          MatCardModule,
-//          MatGridListModule,
-//          MatFormFieldModule,  
-//          MatInputModule,
-//          MatIconModule, 
-//          MatMenuModule,
-//          MatToolbarModule } from '@angular/material';
 
 
 //
@@ -84,26 +61,11 @@ import { KngCartComponent } from './kng-cart/kng-cart.component';
     BrowserModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
-    //MatButtonModule, MatCardModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatIconModule, MatMenuModule, MatToolbarModule,
-    MdcButtonModule,
-    MdcCardModule,
-    MdcDrawerModule,
-    MdcDialogModule,
-    MdcElevationModule,
-    MdcFabModule,
-    MdcIconModule,
-    MdcIconToggleModule,
-    MdcListModule,
-    MdcMenuModule,
-    MdcRippleModule,
-    MdcTextFieldModule,
-    MdcTabModule,
-    MdcThemeModule,
-    MdcToolbarModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
     HttpClientModule,
+    MdcModule,
     Kng2CoreModule.forRoot({
       API_SERVER:'http://api.beta.boulangerie-bretzel.ch',
       loader:[
