@@ -4,14 +4,16 @@ import {
   HostBinding,
   HostListener,
   OnInit,
-  ViewChild 
+  ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 
 
 @Component({
   selector: 'mdc-toolbar-section[mdc-search-bar],mdc-search-bar',
   templateUrl: './mdc-search-bar.component.html',
-  styleUrls: ['./mdc-search-bar.component.scss']
+  styleUrls: ['./mdc-search-bar.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MdcSearchBarComponent implements OnInit {
 
@@ -22,38 +24,71 @@ export class MdcSearchBarComponent implements OnInit {
   // https://stackoverflow.com/a/34327754/680373
   @ViewChild('form') form: ElementRef;
 
-  @HostBinding('class.mat-search--desktop') isHostClass=true;
-  @HostListener('submit', ['$event']) onclick($event: Event) {
+  @ViewChild('search') search: ElementRef;
+  @ViewChild('searchContainer') searchContainer: ElementRef;
+  @ViewChild('searchText') searchText: ElementRef;
+  @ViewChild('searchTabbar') searchTabbar: ElementRef;
+  
+  //
+  // Element doesnt access offsetLeft
+  searchIcon: any;
+
+
+  @HostBinding('class') isHostClass='mat-search--desktop mat-search--mobile primary';
+
+  //
+  // bind submit search form
+  @HostListener('submit', ['$event']) onClick($event: Event) {
     console.log('----------- onsubmit',$event)
   }
 
+  
   ngOnInit() {
+    // bind open search
+    document.querySelector(".mat-toolbar--open-search").addEventListener('click',this.onSearch.bind(this))
+
+    // bind exit search
+    document.querySelector(".mat-toolbar--exit-search").addEventListener('click',this.onExitSearch.bind(this))
+
+    this.searchIcon=document.querySelector('.mat-toolbar--open-search');
   }
 
   ngAfterViewInit(): void {
   }
 
   //
-  // .mat-toolbar--open-search
-  onOpenSearch(){
-		// document.querySelector('.mat-toolbar--search').style = "visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - searchIcon.offsetLeft - 20) + "px;";
-		// document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
-		// document.querySelector('.mat-toolbar--search-text').focus();
-		// if(document.querySelector('.mat-toolbar__row--tab-bar')){
-		// 	document.querySelector('.mat-toolbar__row--tab-bar').classList.add('mat-margin-animation');
-		// 	if(document.querySelector('.mat-toolbar-adjust')){document.querySelector('.mat-toolbar-adjust').classList.add('mat-margin-animation')};
-		// 	setTimeout(function() {
-		// 		document.querySelector('.mat-toolbar__row--tab-bar').style.cssText += "display: none";
-		// 	}, 300);
-		// }    
+  // on search
+  onSearch(){
+
+    //
+    // document.querySelector('.mat-toolbar--search').style = "visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - 300 - 20) + "px;";
+    this.search.nativeElement.style="visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + "px;"
+    // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
+    this.searchContainer.nativeElement.style="animation: mat-toolbar--open-search 220.7s forwards; -webkit-transform: translateZ(0);";
+    // document.querySelector('.mat-toolbar--search-text').focus();
+    this.searchText.nativeElement.focus();
+
+    // if(document.querySelector('.mat-toolbar__row--tab-bar')){
+    //   document.querySelector('.mat-toolbar__row--tab-bar').classList.add('mat-margin-animation');
+    //   if(document.querySelector('.mat-toolbar-adjust')){document.querySelector('.mat-toolbar-adjust').classList.add('mat-margin-animation')};
+    //   setTimeout(function() {
+    //     document.querySelector('.mat-toolbar__row--tab-bar').style.cssText += "display: none";
+    //   }, 300);
+    // }    
   }
 
   //
   // .mat-toolbar--exit-search
   onExitSearch(){
-		// document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
-		// setTimeout(function() {document.querySelector('.mat-toolbar--search').style = "visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - searchIcon.offsetLeft - 20) + "px;";}, 500);
-		// document.querySelector('.mat-toolbar--search-text').value = '';
+    // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
+    this.searchContainer.nativeElement.style="animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
+    // document.querySelector('.mat-toolbar--search-text').value = '';
+    this.searchText.nativeElement.value="";
+    setTimeout(()=>{
+      // setTimeout(function() {document.querySelector('.mat-toolbar--search').style = "visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - searchIcon.offsetLeft - 20) + "px;";}, 500);
+      this.search.nativeElement.style="visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + "px;"
+
+    },700);
 		// if(document.querySelector('.mat-toolbar__row--tab-bar')){
 		// 	document.querySelector('.mat-toolbar__row--tab-bar').style = "display: block;";
 		// 	setTimeout(function() {
@@ -67,8 +102,8 @@ export class MdcSearchBarComponent implements OnInit {
   //
   // .clear-search-query
   onClearSearchQuery(){
-		// document.querySelector('.mat-toolbar--search-text').value = '';
-		// document.querySelector('.mat-toolbar--search-text').focus();    
+    this.searchText.nativeElement.value="";
+    this.searchText.nativeElement.focus();    
   }
 
 

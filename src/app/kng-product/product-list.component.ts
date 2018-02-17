@@ -6,7 +6,6 @@ import {
     Product,
     LoaderService,
     User,
-    UserService,
     Category,
     CategoryService,
     config
@@ -23,11 +22,12 @@ export class ProductListComponent implements OnInit {
     config: any;
     products: Product[] = [];
     password: string;
-    categories: Category[];
-    category: Category;
-    categorySlug:string;
-    image:string;
-    title:string;
+    category:{
+        slug:string;
+        categories: Category[];
+        current:Category;
+        similar:Category[];        
+    };
 
     options={
         available:true,
@@ -35,23 +35,36 @@ export class ProductListComponent implements OnInit {
     };
 
     constructor(
-        private loader: LoaderService,
+        private $loader: LoaderService,
         private $product: ProductService,
         private $category: CategoryService,
         private route: ActivatedRoute
     ) {
-
+        this.category={
+            slug:null,
+            categories:[],
+            current:null,
+            similar:[]
+        }
     }
 
     ngOnInit() {
-        this.loader.ready().subscribe((loader) => {
+        this.$loader.ready().subscribe((loader) => {
             this.isReady = true;
             this.config = loader[0];
-            this.categories= loader[2];
-            this.categorySlug=this.route.snapshot.params['category'];
-            this.category=this.categories.find(cat=>cat.slug===this.categorySlug);
-            this.title=this.category.name;
-            this.image=this.category.cover;
+            this.category.categories= loader[2];
+            this.category.slug=this.route.snapshot.params['category'];
+            
+            //
+            // this should not happends
+            if(!this.category.slug){
+                return;
+            }
+            this.category.current=this.category.categories.find(cat=>cat.slug===this.category.slug);
+            this.category.similar=this.category.categories
+                    .filter(cat=>cat.group===this.category.current.group&&cat.slug!==this.category.slug)
+                    .sort(cat => cat.weight);
+            
             this.filterProduct();
         });
     }
@@ -63,7 +76,7 @@ export class ProductListComponent implements OnInit {
     }
 
     filterProduct() {
-        this.$product.findByCategory(this.categorySlug,this.options).subscribe((products: Product[]) => {
+        this.$product.findByCategory(this.category.slug,this.options).subscribe((products: Product[]) => {
             this.products = products.sort();
         });
     }

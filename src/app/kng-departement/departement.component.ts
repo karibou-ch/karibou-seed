@@ -1,23 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { MdcTemporaryDrawer, MdcPersistentDrawer } from '@angular-mdc/web';
+import { MdcDrawerPersistent, MdcDrawerTemporary } from '@angular-mdc/web';
 
 import { LoaderService, User, UserService, Category, CategoryService } from 'kng2-core';
 
 @Component({
-  selector: 'kng-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.scss']
+  selector: 'kng-departement',
+  templateUrl: './departement.component.html',
+  styleUrls: ['./departement.component.scss']
 })
-export class WelcomeComponent implements OnInit {
+export class KngDepartementComponent implements OnInit {
 
   categories:Category[];
   user:User;
   isReady:boolean;
   image:string;
 
-  @ViewChild('temporary') temporaryDrawer: MdcTemporaryDrawer;
-  @ViewChild('persistent') persistentDrawer: MdcPersistentDrawer;
+  @ViewChild('temporary') temporaryDrawer: MdcDrawerTemporary;
+  @ViewChild('persistent') persistentDrawer: MdcDrawerPersistent;
 
   constructor(
     private $loader:LoaderService,
@@ -28,7 +28,7 @@ export class WelcomeComponent implements OnInit {
     this.categories=[];
     //
     // 
-    this.image='https://d2d8wwwkmhfcva.cloudfront.net/1920x/filters:quality(50)/d2lnr5mha7bycj.cloudfront.net/warehouse/background_image/1/27ad618f-fa8c-46bf-be99-2d08f76197cc.jpg';
+    console.log('-------------KngDepartement')
   }
 
 
@@ -49,12 +49,23 @@ export class WelcomeComponent implements OnInit {
     });
   } 
 
-  doLogin(username:string,password:string){
-    console.log('---------------',username,password)
+  getGroup(name:string){
+    this.categories.filter(c=>{
+      return c.group===name;
+    });
   }
 
-  getCategories(){
-    return this.categories.filter(c=> c.active&&c.type==='Category').sort(this.sortByWeight);
+
+  doLogin(username:string,password:string){
+  }
+
+  getCategories(group?:string){
+    return this.categories.filter(c=> {
+      if(!group){
+        return c.active&&c.type==='Category' && c.group==='';  
+      }
+      return c.active&&c.type==='Category' && c.group===group;
+    }).sort(this.sortByWeight);
   }
 
   sortByWeight(cat:Category){

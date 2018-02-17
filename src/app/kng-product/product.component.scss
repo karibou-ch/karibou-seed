@@ -1,156 +1,166 @@
 
-.product-container{
+.product-wide{
+  position: fixed;
+  z-index: 1000000;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.43);
+  div{
+    width: 800px;
+    margin: auto;
+    background: white;
 
-  img.photo-owner{
-    width:120px;
-    padding:1px;
-    border: 2px solid #ddd;
-    margin-right: 10px;
-  }
-
-
-  .header{
-      background:url("/img/pattern-dark1.jpg") repeat scroll 0 0 #F7F5F5;
+    
+    img.photo-owner{
+      width:120px;
+      padding:1px;
+      border: 2px solid #ddd;
+      margin-right: 10px;
+    }
+  
+  
+    .header{
+        background:url("/img/pattern-dark1.jpg") repeat scroll 0 0 #F7F5F5;
+        width: 100%;
+        height: 100%;
+        min-height: 310px;
+        overflow: visible;
+        margin-right: 0px;
+        margin-left: 0px;    
+        text-shadow:0 0px 1px #666;
+        position: relative;
+    }.header aside{
+        width: 66%;
+        float: left;
+        padding: 0px;
+        position: relative;
+        height: 100%;
+    }
+    .header aside img{
       width: 100%;
-      height: 100%;
-      min-height: 310px;
-      overflow: visible;
-      margin-right: 0px;
-      margin-left: 0px;    
-      text-shadow:0 0px 1px #666;
-      position: relative;
-  }.header aside{
-      width: 66%;
-      float: left;
-      padding: 0px;
-      position: relative;
-      height: 100%;
-  }
-  .header aside img{
-    width: 100%;
-    height: 700px;
-    vertical-align: middle;
-    display: block;
-    background-size: cover;
-    background-position: 50% 50%;  
-  }
-  .header aside .product-qty{
-    padding: 10px;
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    right: 0;
-    text-align: center;
-    background-color: black;
-    background-color: rgba(0, 0, 0, 0.40);
-    -border-radius: 4px;  
-  }
-  .header section{
-      width: 33%;
-      height: 100%;
-      float: left;
-      position: relative;
-      min-height: 310px;
-  }
-
-  .price{
-      color:white;
-      font-size:200%;
-      font-weight:bold;
-      padding-bottom:10px;
-      position:absolute;
-      bottom:0;
+      height: 700px;
+      vertical-align: middle;
+      display: block;
+      background-size: cover;
+      background-position: 50% 50%;  
+    }
+    .header aside .product-qty{
+      padding: 10px;
+      position: absolute;
+      top: 0%;
+      left: 0%;
       right: 0;
-      padding: 5px;
-  }
-  .price .part{
-    font-size: 35%;
-    line-height: 12px;
-    color: #666;
-    border: 1px solid black;
-    padding: 2px;
-    margin-right: 6px;
-    background-color: rgba(255, 255, 255, 0.73);
-    text-shadow: none;
-  }
-  .price .btn{
-    width: 98%
-  }
-  .btn-transparent{
-    border-width: 0px
-  }
-  div.certified{
-    border-top: dotted 2px #ddd;
-    padding: 10px 20px;
-    margin: 0 0 10px;
-    font-size: 17.5px;
-  }
-  div.certified ul{
-    margin-bottom: 10px;
-  }
-  div.certified ul.info li{
-    font-size: 80%;
-  }
-  div.certified .label-product{
-    background-color: rgba(92, 184, 92, 0.06);
-    border-radius: 15px;
-    padding: 4px 10px;
-    border: 1px solid rgba(70, 140, 70, 0.99);  
-    color: rgba(70, 140, 70, 0.99);
-  }div.description{
-    border-top: dotted 2px #ddd;
-    padding: 10px 20px;
-    margin: 0 0 10px;
-    font-size: 17.5px;
-  }
-  div.description img{
-    width: 100%;
-  }
-  div.description p{
-    margin: 0 0 10px;
-  }
-  div.description h1, div.description h2, div.description h3{
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #efefef;
-  }
-  div.description small,div.description .small {
-    display: block;
-    font-size: 80%;
-    line-height: 1.42857143;
-    color: #999;
-  }
-  .product-availability {
-    padding: 0px 20px 10px;
-  }
-  .product-availability ul{
-    font-size: 70%; 
-  }.product-availability ul li{
-    text-align: center;
-  }
-  .product-availability ul li div.indicator{
-    color: #a7cf7b;
-  }
-
-  ul.dropdown-menu > li:first-child{
-    margin-top: 0px;
-    margin-bottom: 10px;
-    width: 100%;
-    border-bottom: 1px solid white;
-    padding-bottom: 1px;
-    text-align: center;
-  }
-  ul.dropdown-menu > li:first-child > span{
-    font-weight: normal;
-    color: black;
-  }
-
-  div.quick-stock{
-    padding:10px 20px;
-  }
-  div.product-document{
-    padding:10px 20px;
-    border-bottom: 2px dotted #DDD;
+      text-align: center;
+      background-color: black;
+      background-color: rgba(0, 0, 0, 0.40);
+      -border-radius: 4px;  
+    }
+    .header section{
+        width: 33%;
+        height: 100%;
+        float: left;
+        position: relative;
+        min-height: 310px;
+    }
+  
+    .price{
+        color:white;
+        font-size:200%;
+        font-weight:bold;
+        padding-bottom:10px;
+        position:absolute;
+        bottom:0;
+        right: 0;
+        padding: 5px;
+    }
+    .price .part{
+      font-size: 35%;
+      line-height: 12px;
+      color: #666;
+      border: 1px solid black;
+      padding: 2px;
+      margin-right: 6px;
+      background-color: rgba(255, 255, 255, 0.73);
+      text-shadow: none;
+    }
+    .price .btn{
+      width: 98%
+    }
+    .btn-transparent{
+      border-width: 0px
+    }
+    div.certified{
+      border-top: dotted 2px #ddd;
+      padding: 10px 20px;
+      margin: 0 0 10px;
+      font-size: 17.5px;
+    }
+    div.certified ul{
+      margin-bottom: 10px;
+    }
+    div.certified ul.info li{
+      font-size: 80%;
+    }
+    div.certified .label-product{
+      background-color: rgba(92, 184, 92, 0.06);
+      border-radius: 15px;
+      padding: 4px 10px;
+      border: 1px solid rgba(70, 140, 70, 0.99);  
+      color: rgba(70, 140, 70, 0.99);
+    }div.description{
+      border-top: dotted 2px #ddd;
+      padding: 10px 20px;
+      margin: 0 0 10px;
+      font-size: 17.5px;
+    }
+    div.description img{
+      width: 100%;
+    }
+    div.description p{
+      margin: 0 0 10px;
+    }
+    div.description h1, div.description h2, div.description h3{
+      margin-top: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #efefef;
+    }
+    div.description small,div.description .small {
+      display: block;
+      font-size: 80%;
+      line-height: 1.42857143;
+      color: #999;
+    }
+    .product-availability {
+      padding: 0px 20px 10px;
+    }
+    .product-availability ul{
+      font-size: 70%; 
+    }.product-availability ul li{
+      text-align: center;
+    }
+    .product-availability ul li div.indicator{
+      color: #a7cf7b;
+    }
+  
+    ul.dropdown-menu > li:first-child{
+      margin-top: 0px;
+      margin-bottom: 10px;
+      width: 100%;
+      border-bottom: 1px solid white;
+      padding-bottom: 1px;
+      text-align: center;
+    }
+    ul.dropdown-menu > li:first-child > span{
+      font-weight: normal;
+      color: black;
+    }
+  
+    div.quick-stock{
+      padding:10px 20px;
+    }
+    div.product-document{
+      padding:10px 20px;
+      border-bottom: 2px dotted #DDD;
+    }    
   }
 }
 

@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MdcDialogComponent } from '@angular-mdc/web';
 
 import {
     ProductService,
@@ -19,19 +20,23 @@ import {
 export class ProductComponent implements OnInit {
 
     @Input() sku: number;
+
     user: User=new User();
     isReady: boolean;
+    isDialog: boolean = false;
     config: any;
     product: Product = new Product();
     thumbnail:boolean=false;
 
     WaitText:boolean=false;
     rootProductPath:string;
+    @ViewChild('productDialog') dialog: MdcDialogComponent;
 
     constructor(
         private $loader: LoaderService,
         private $product: ProductService,
-        private route: ActivatedRoute
+        private $router: Router,
+        private $route: ActivatedRoute
     ) {
     }
 
@@ -41,22 +46,32 @@ export class ProductComponent implements OnInit {
             this.isReady = true;
             this.config = loader[0];
             Object.assign(this.user,loader[1]);
-
-            this.rootProductPath=(this.route.snapshot.params['shop'])?
-                '/shop/'+this.route.snapshot.params['shop']:'';
+            this.rootProductPath=(this.$route.snapshot.params['shop'])?
+                '/shop/'+this.$route.snapshot.params['shop']:'';
 
             if (!this.sku) {
-                this.sku = this.route.snapshot.params['sku'];
+                this.sku = this.$route.snapshot.params['sku'];
+                this.isDialog=true;
             }
             
             this.$product.findBySku(this.sku).subscribe(prod => {
                 this.product = prod
+                if(this.isDialog){
+                    console.log('-----------------open')
+                    this.dialog.show();    
+                }
             })
         });
     }
 
+    onClose($event){
+        this.$router.navigate([{outlets:{modal: null}}]);
+    }
 
     save(){
+
+    }
+    love(){
         
     }
 }

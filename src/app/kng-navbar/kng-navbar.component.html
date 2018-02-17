@@ -1,165 +1,101 @@
-<mdc-toolbar
-  [flexible]="true"
-  [fixed]="true"
-  [waterfall]="true"
-  [fixedLastrow]="false"
-  (change)="handleToolbarChange($event)">
-  <mdc-toolbar-row [ngStyle]="{'background-image': 'url(' + image + ')'}">
-    <mdc-toolbar-section [alignStart]="true" >
-      <a href="#" mdc-toolbar-menu-icon material-icon>menu</a>
-      <mdc-toolbar-title>{{title}}</mdc-toolbar-title>      
-    </mdc-toolbar-section>
-    <mdc-toolbar-section mdc-search-bar mdc-ripple>
-    </mdc-toolbar-section>    
-    <mdc-toolbar-section [alignEnd]="true" >
-      <a href="#" mdc-toolbar-icon><i material-icon class="primary">update</i><span class="hide-md">Prochaine livraison</span></a>      
-      <a href="#" mdc-toolbar-icon class="mat-search--mobile mat-toolbar--open-search"><i material-icon class="primary">search</i></a>      
-    </mdc-toolbar-section>
-    
-  </mdc-toolbar-row>
-  <mdc-toolbar-row>
-    <mdc-toolbar-section [alignStart]="true" >
-    </mdc-toolbar-section>
-    <mdc-toolbar-section>
-      <mdc-tab-bar [secondary]="true" >
-        <mdc-tab>
-          Favoris
-        </mdc-tab>
-        <mdc-tab [routerLink]="['/']" [active]="true">
-          Départements
-        </mdc-tab>
-        <mdc-tab>
-          Boutiques
-        </mdc-tab>
-      </mdc-tab-bar>          
-    </mdc-toolbar-section>
-    <mdc-toolbar-section [alignEnd]="true" >
-      <a href="#/toolbar-demo" mdc-toolbar-icon class="primary"><i  material-icon>shopping_cart</i><span class="hide-md">Panier</span></a>
-    </mdc-toolbar-section>
-  </mdc-toolbar-row>
-</mdc-toolbar>
+<!-- MODAL CONTENT -->
+<router-outlet name="modal"></router-outlet>
 
-<!--<mat-toolbar color="primary" class="kng-toolbar">
-  <mat-toolbar-row>
-    <a  routerLink="/" mat-button  >
-      <mat-icon >favorite</mat-icon> Karibou.ch
-    </a>        
-    
-    <div class="md-toolbar-search">
-      <mat-form-field >
-        <label>Search for food</label> 
-        <input  name="search-food">
-      </mat-form-field>
-    </div>    
-    <span class="example-spacer"></span>
-    
-    <a  routerLink="/me" mat-button  [hidden]="!user.isAuthenticated()">
-      <mat-icon >favorite</mat-icon> {{user.display()}}
-    </a>        
-    <a  routerLink="/login" mat-button  [hidden]="!!user.isAuthenticated()">
-      <mat-icon >favorite</mat-icon> login
-    </a>        
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="last">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>dialpad</mat-icon>
-        <span>Redial</span>
-      </button>
-      <button mat-menu-item disabled>
-        <mat-icon>voicemail</mat-icon>
-        <span>Check voicemail</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>notifications_off</mat-icon>
-        <span>Disable alerts</span>
-      </button>
-    </mat-menu>
-    
-  </mat-toolbar-row>
+<!-- NAVIGATION  -->
+<mdc-drawer-temporary #menu [absolute]="true" >
+  <mdc-drawer-header>
+      Header goes here
+  </mdc-drawer-header>
+  <mdc-drawer-content >
+    <mdc-list-group>
+      <mdc-list *ngFor="let menu of getMenus()">
+        <a mdc-list-item *ngFor="let item of getMenuItems(menu)" [routerLink]="['.'+item.url]">
+          <mdc-icon mdc-list-item-graphic>home</mdc-icon>
+          <span [innerHTML]="item.name.fr" ></span>
+        </a>
+        <mdc-list-divider></mdc-list-divider>
+      </mdc-list>
+    </mdc-list-group>
+  </mdc-drawer-content>
+</mdc-drawer-temporary>
 
-</mat-toolbar>-->
+<!-- CART SIDEBAR -->
+<mdc-drawer-temporary #cart [absolute]="true" dir="rtl" class="right">
+  <mdc-drawer-content dir="ltr">
+    <kng-cart></kng-cart>
+  </mdc-drawer-content>
+</mdc-drawer-temporary>
 
-<!--
-<nav>
-  <md-toolbar class="toolbar-top">
-    <img src="../../assets/img/logo.gif" alt="logo" width="60px">
-    <div class="container-small">
-      <button md-icon-button color="accent" class="container-small" (click)="sidenav.open()">
-        <md-icon>view_headline</md-icon>
-        <span>Menu</span>
-      </button>
-    </div>
-    <span flex></span>
-    <ul class="container-big">
-      <li class="nav1">
-        <button md-button routerLink="">
-          Maraîcher
-        </button>
-        <button md-button routerLink="">
-          Boucherie
-        </button>
-        <button md-button routerLink="">
-          Laiterie
-        </button>
-        <button md-button routerLink="">
-          Boulangerie
-        </button>
-        <button md-button routerLink="">
-          Epicerie
-        </button>
-        <button md-button routerLink="">
-          Soins & Maison
-        </button>
-      </li>
-      <li class="nav2">
-        <button md-button routerLink="">
-          Qui sommes-nous ?
-        </button>
-        <button md-button routerLink="">
-          Comment ça marche ?
-        </button>
-        <button md-button routerLink="">
-          Producteurs
-        </button>
-        <button md-button routerLink="">
-          Participer
-        </button>
-        <button md-button routerLink="">
-          Contact
-        </button>
-      </li>
-    </ul>
-    <span flex></span>
-    <div>
-      <button md-icon-button color="accent">
-      <md-icon>search</md-icon>
-    </button>
-      <button md-icon-button color="accent" [mdMenuTriggerFor]="menu">
-      <md-icon>face</md-icon>
-    </button>
-      <md-menu #menu="mdMenu">
-        <div *ngIf="user.isAuthenticated()">
-          <button md-menu-item color="accent" routerLink="/profile">
-          <md-icon>perm_identity</md-icon>
-          <span>Bonjour, {{ user?.displayName }}</span>
+<!-- MAIN LAYOUT -->
+<div fxLayout="row" [hidden]="!isAppReady()">
+  <mdc-toolbar
+    #toolbar
+    [flexible]="!isMobile()"
+    [fixed]="true"
+    [waterfall]="false"
+    [fixedLastrow]="true" 
+    (change)="handleToolbarChange($event)">
+    <!-- howto set image  -->
+    <!-- [ngStyle]="{'background-image': 'url(' + image + ')'}" -->
+    <mdc-toolbar-row class="mdc-toolbar__row--with-image" #section>
+      <mdc-toolbar-section [alignStart]="true" >
+        <button mdc-toolbar-menu-icon material-icon (click)="toggleMenu();" >menu</button>
+        <mdc-toolbar-title>{{title}}</mdc-toolbar-title>      
+      </mdc-toolbar-section>
+      <!-- SEARCH SECTION -->
+      <mdc-toolbar-section mdc-search-bar mdc-ripple>
+      </mdc-toolbar-section>    
+      <!-- RIGHT MENU SECTION -->
+      <mdc-toolbar-section [alignEnd]="true" >
+        <div mdc-menu-anchor>
+          <button mdc-toolbar-menu-icon (click)="menu.open()" class="btn-shipping">
+              <i material-icon class="primary">update</i><span class="hide-md" [class.primary]="isMobile()">Prochaines livraisons</span>
           </button>
-          <button md-menu-item color="accent" (click)="logout()">
-          <md-icon>exit_to_app</md-icon>
-          <span>Se déconnecter</span>
-        </button>
-        </div>
-        <div *ngIf="!user.isAuthenticated()">
-          <button md-menu-item color="accent" routerLink="/login">
-            <md-icon>perm_identity</md-icon>
-            <span>Se connecter</span>
-          </button>
-        </div>
-      </md-menu>
-      <button color="accent" md-icon-button>
-      <md-icon>shopping_basket</md-icon>
-    </button>
-    </div>
-  </md-toolbar>
-</nav>-->
+          <mdc-menu #menu (select)="handleMenuSelect($event)" [anchorCorner]="'bottom-start'">
+            <mdc-menu-item id="0" *ngFor="let day of getShippingDays()">
+                {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
+                <mdc-icon mdc-list-item-meta>info</mdc-icon>                
+            </mdc-menu-item>
+            <mdc-menu-divider></mdc-menu-divider>
+            <mdc-menu-item>
+                <!-- <h5 i18n>Ouverture</h5> -->
+                <div class="align-days">
+                  <div class="label-shipping" *ngFor="let day of getShippingWeek()">
+                  {{day.label}} <span class="bullet {{day.state}}"></span>
+                </div>
+              </div>
+            </mdc-menu-item>
+          </mdc-menu>
+        </div>       
+        <button mdc-toolbar-menu-icon material-icon class="mat-toolbar--open-search ">search</button>
+         
+      </mdc-toolbar-section>
+      
+    </mdc-toolbar-row>
+
+    <mdc-toolbar-row class="mdc-toolbar__row--with-tabs" >
+      <mdc-toolbar-section [alignStart]="true" >
+      </mdc-toolbar-section>
+      <mdc-toolbar-section class="tabs" [shrinkToFit]="true">
+        <mdc-tab-bar [secondary]="true" >
+          <mdc-tab [routerLink]="['/store/'+store]" routerLinkActive #rla [active]="rla.isActive">
+            Favoris
+          </mdc-tab>
+          <mdc-tab [routerLink]="['/store/'+store+'/departement']" routerLinkActive #rla [active]="rla.isActive">
+            Départements
+          </mdc-tab>
+          <mdc-tab [routerLink]="['/store/'+store+'/shops']" routerLinkActive #rla [active]="rla.isActive">
+            Boutiques
+          </mdc-tab>
+        </mdc-tab-bar>          
+      </mdc-toolbar-section>
+      <mdc-toolbar-section [alignEnd]="true" >
+        <button mdc-toolbar-icon class="primary" (click)="toggleCart();"><i  material-icon>shopping_cart</i><span class="hide-md">Panier</span></button>
+      </mdc-toolbar-section>
+    </mdc-toolbar-row>
+  </mdc-toolbar>
+
+  <div class="mdc-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

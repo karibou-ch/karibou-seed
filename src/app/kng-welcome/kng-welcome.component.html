@@ -1,0 +1,137 @@
+<div *ngIf="!isAppReady()"  >
+
+
+
+  <div class="container top">
+    <div class="welcome">
+      <div class="logo"></div>
+      <!-- WELCOME -->
+      <div class="inner" [hidden]="askAction">
+        <h1>Vous habitez dans le nouveau cartier d'Artamis ?</h1>
+        <p>La boulangerie Bretzel ouvre ces portes et propose aussi à ces futurs clients la livraison à domicile</p>
+        <form>
+            <mdc-text-field-box label="Laissez nous votre adresse email" style="width:100%" type="email">
+              <mdc-icon trailing>person</mdc-icon>
+            </mdc-text-field-box>
+            <button mdc-button [unelevated]="true" [secondary]="true">
+              <mdc-icon>favorite</mdc-icon>              
+              Je m'intéresse au projet
+            </button>            
+        </form>
+        <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">J'ai déjà un compte</a></div>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="inner" *ngIf="askAction=='login'">
+          <h1>Bienvenue!</h1>
+          <p>Log in with your email and password.</p>
+          <form>
+              <mdc-text-field-box label="Votre email" style="width:100%" type="email">
+                <mdc-icon trailing>person</mdc-icon>
+              </mdc-text-field-box>
+              <mdc-text-field-box label="Votre secret" style="width:100%" type="password">
+                  <mdc-icon trailing>vpn_key</mdc-icon>
+                </mdc-text-field-box>
+                
+              <button mdc-button [unelevated]="true" [secondary]="true">
+                <mdc-icon>account_circle</mdc-icon>              
+                Login
+              </button>            
+          </form>
+          <div class="signup-vs-login" i18n><a class="link" (click)="askAction='recover'">J'ai oublié mon mot de passe</a></div>
+        </div>
+        
+      <!-- RECOVER -->
+      <div class="inner" *ngIf="askAction=='recover'">
+          <h1>Bienvenue!</h1>
+          <p>Log in with your email and password.</p>
+          <form>
+              <mdc-text-field-box label="Votre email" style="width:100%">
+                <mdc-icon trailing>email</mdc-icon>
+              </mdc-text-field-box>
+              <button mdc-button [unelevated]="true" [secondary]="true">
+                <mdc-icon>account_circle</mdc-icon>              
+                Envoyer
+              </button>            
+          </form>
+        </div>
+      
+    </div>
+  </div>
+
+  <div class="container middle">
+    <div class="how-it-works">
+      <div class="why">
+        <div class="image"><img src="https://d2guulkeunn7d8.cloudfront.net/assets/homepage/img-touch-app-90cd5d014f647c6c753c5bfe0d4b015c5c8c0de4ef67c457c6fadf095b5d9e33.jpg"/></div>
+        <h3>Le pain que vous aimez</h3>
+        <p>Les meilleures recettes artisanales avec une cuisson au feu de bois!</p>
+      </div>
+      <div class="why">
+        <div class="image"><img src="https://d2guulkeunn7d8.cloudfront.net/assets/homepage/img-shop-car-308c452c053637bb2066c18cc100ba634de63bc1a63aacdad4d39639ea6f5398.jpg"/></div>
+        <h3>Votre pain à votre porte</h3>
+        <p>Nous livrons le pain ou votre petit déjeuné dès 6h00 du matin.</p>
+      </div>
+      <div class="why">
+        <div class="image"><img src="https://d2guulkeunn7d8.cloudfront.net/assets/homepage/img-touch-app-90cd5d014f647c6c753c5bfe0d4b015c5c8c0de4ef67c457c6fadf095b5d9e33.jpg"/></div>
+        <h3>Le client est important</h3>
+        <p>L'artisant se réinvente, vous gagnez du temps et manger bien.</p>
+      </div>
+    </div>
+    <div class="favorite-products">
+      <div class="elem">LEFT</div>
+      <div class="elem">RIGHT</div>
+    </div>
+  </div>
+  <div class="container separator"></div>
+
+  <div class="footer">
+    <div class="line marked">
+      <div class="elem">H1</div>
+      <div class="elem">H2</div>
+    </div>
+    <div class="line ">
+      <div class="elem">menu</div>
+      <div class="elem">MAIN</div>
+      <div class="elem">side</div>
+    </div>
+  </div>
+  
+  <div class="background-grid">
+    <div class="items-list-wrap">
+      <ul class="items-list" >
+        <li class="has-details item" *ngFor="let photo of photos"  
+           [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
+      </ul>        
+    </div>
+  </div>
+      
+
+
+  <!-- SECOND ROW -->
+  <!-- <div  style="display: none;" >
+    <div fxFlex="30" *ngFor="let item of stores" [routerLink]="['/store/',item.name]">
+      <div class="mdc-grid-tile__primary">
+        <img class="mdc-grid-tile__primary-content" src="{{item.image}}" />
+      </div>
+      <span class="mdc-grid-tile__secondary">
+        <span class="mdc-grid-tile__title">{{item.title}}</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="mdc-grid-list " style="display:none;" >
+    <ul class="mdc-grid-list__tiles">
+      <li class="mdc-grid-tile" *ngFor="let item of stores" [routerLink]="['/store/',item.name]">
+        <div class="mdc-grid-tile__primary">
+            <img class="mdc-grid-tile__primary-content" src="{{item.image}}" />
+          </div>
+        <span class="mdc-grid-tile__secondary">
+          <span class="mdc-grid-tile__title">{{item.title}}</span>
+        </span>
+      </li>
+        
+    </ul>
+  </div>   -->
+</div>
+
+<kng-navbar [hidden]="!isAppReady()"></kng-navbar>

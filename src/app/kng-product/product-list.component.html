@@ -1,9 +1,18 @@
-<kng-navbar [title]="title" [image]="image"></kng-navbar>
 <div class="product-container mdc-layout-grid">
+  <!-- Layout documentation
+       https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
+  <section>
+    <h4>
+      <span *ngFor="let similar of category.similar;let i=index">{{similar.name}} <span class="black">/</span> </span>
+    </h4>
+    <h2>{{category.current?.name}}</h2>
+  </section>
+             
   <div class="mdc-layout-grid__inner">
-      <kng-product-tiny 
+      <kng-product-thumbnail 
           [sku]="product.sku"
           *ngFor="let product of products;let i=index"
-          class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></kng-product-tiny>
+          class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-2">
+      </kng-product-thumbnail>
   </div>
 </div>

@@ -2,12 +2,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "mapRoot": "./",
-    "baseUrl": "",
-    "paths": {
-      "@angular/*": [
-        "../node_modules/@angular/*"
-      ]
-    },      
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,

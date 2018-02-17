@@ -17,15 +17,11 @@ Progress bars
 Selection controls, buttons, and sliders
 Links
 Headlines **/
-$mdc-theme-secondary: #E8104A;
-$mdc-theme-secondary-light: #fdff58;
-$mdc-theme-secondary-dark: #90cc00;
-$mdc-theme-secondary-text: #E8104A;
 
-
+/**
 //
 // https://material.io/color/#!/?view.left=0&view.right=1&primary.color=ffffff&secondary.color=43b02a&primary.text.color=43b02a&secondary.text.color=ffffff
-$mdc-theme-primary: #ffffff;
+$mdc-theme-primary: rgba(255,255,255,.05);
 $mdc-theme-primary-light: #ffffff;
 $mdc-theme-primary-dark: #cccccc;
 $mdc-theme-secondary: #43b02a;
@@ -34,11 +30,20 @@ $mdc-theme-secondary-dark: #007f00;
 
 $mdc-theme-primary-text: #43b02a;
 $mdc-theme-secondary-text: #ffffff;
+*/
+
+$mdc-theme-background:#f7f7f7;
 
 
-
-@import "~@angular-mdc/theme";
 @import 'kng-search.scss';
 @import 'kng-theme.scss';
 
+@import "~@angular-mdc/theme/material-components-web.scss";
 
+
+body{
+  background: var(--mdc-theme-background);
+}
+// :root {
+//   --mdc-theme-background: #0e4ead;
+// }

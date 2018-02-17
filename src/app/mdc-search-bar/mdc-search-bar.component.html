@@ -1,8 +1,16 @@
-<form role="search" method="get" 
-      id="searchform" 
-      class="searchform" 
-      style="display:flex;width:100%"
-      action="https://mdcwp.ml/" >
+<header class="mat-toolbar--search" #search>
+  <div class="mat-toolbar--search-container" mdc-ripple #searchContainer>
+      <a class="material-icons mat-toolbar--exit-search" mdc-toolbar-menu-icon material-icon>arrow_back</a>
+      <div class="mdc-textfield mdc-textfield--fullwidth">
+        <form role="search" method="get" id="searchform" class="searchform" >          
+          <input mdc-typography class="mdc-textfield__input  mat-toolbar--search-text" #searchText placeholder="Search"  type="text">
+        </form>
+      </div>
+  </div>
+</header>
+
+<form role="search" method="get" id="searchform" class="searchform desktop " >
   <label class="mat-search--desktop__icon mat-search--desktop__content material-icons  " for="mat-search--desktop__input">search</label>
-  <input mdc-typography class="mat-search--desktop__input mat-search--desktop__content " id="mat-search--desktop__input" value="" name="s" placeholder="Search">
+  <input mdc-typography class="mat-search--desktop__input mat-search--desktop__content " id="mat-search--desktop__input" value=""
+    name="s" placeholder="Search">
 </form>

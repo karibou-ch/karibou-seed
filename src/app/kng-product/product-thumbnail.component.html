@@ -1,3 +1,60 @@
+<!-- 
+	mdc-card documentation
+	https://github.com/material-components/material-components-web/tree/master/packages/mdc-card
+	https://stackoverflow.com/questions/44741936/angular-4-multiple-named-router-outlets-in-a-child-route-supported/44742481
+-->
+
+<mdc-card class="product-card"
+	[mdc-elevation]="0"
+	[routerLink]="['/products',{ outlets: { modal: [product.sku] } }]"
+	[class.noavailable]="!product.isAvailableForOrder()" 
+	[class.noinstock]="!product.pricing.stock">
+
+	<mdc-card-media 
+		mdc-ripple
+		[ngStyle]="{'background-image': 'url(' + product.photo.url + '/-/resize/200x/)'}"
+		class="media">
+
+		<!-- <button mdc-card-button class="action-add">-</button>		
+		<div class="info-quantity">2</div>		
+		<button mdc-card-button class="action-add right">+</button>		 -->
+
+	</mdc-card-media>
+	<mdc-card-primary class="primary">
+		<mdc-card-title [large]="false">{{product.title}}</mdc-card-title>
+
+		<div class="price ">
+			<span [hidden]="product.attributes.discount" class=" ">
+				Fr {{product.pricing.price| number:'1.2-2'}}
+			</span>
+			<span [hidden]="!product.attributes.discount" >
+				<span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+			</span>      
+		</div>				
+		
+	</mdc-card-primary>
+	<!-- <mdc-card-actions>
+		<mdc-icon-toggle
+			[(ngModel)]="love"
+			iconOn="favorite" iconOff="favorite_border"
+			labelOn="Add to Favorites" labelOff="Remove from Favorites">
+		</mdc-icon-toggle>		
+
+		<button mdc-card-button><i class="primary material-icons" material-icon>update</i></button>
+		<div class="price ">
+				<span [hidden]="product.attributes.discount" class=" ">
+					Fr {{product.pricing.price| number:'1.2-2'}}
+				</span>
+				<span [hidden]="!product.attributes.discount" >
+					<span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+				</span>      
+			</div>				
+
+	</mdc-card-actions> -->
+</mdc-card>
+
+<!--
+
 <div class="thumbnails" 
     [class.noavailable]="!product.isAvailableForOrder()" 
     [class.noinstock]="!product.pricing.stock">
@@ -7,14 +64,12 @@
           alt="160x160" class="thumbnail-owner photo-owner" >
     <a [routerLink]="['/product',product.sku]"><strong>{{product.title}}</strong></a>
     <div>
-      <span markdown-render="">{{product.details.description}}</span>
+      <span markdown-render="product.details.description"></span>
     </div>
     <div class="price">
-      <!-- REGULAR -->
       <span [hidden]="product.attributes.discount" class="small green bold ">
         Fr {{product.pricing.price| number:'1.2-2'}}
       </span>
-      <!-- DISCOUNT -->
       <span [hidden]="!product.attributes.discount" >
         <span class="red bold strike"> {{product.pricing.price| number:'1.2-2'}}</span>
         <span class="green bold small">Fr {{product.pricing.discount| number:'1.2-2'}}</span>

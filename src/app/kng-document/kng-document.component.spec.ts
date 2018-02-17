@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WelcomeComponent } from './welcome.component';
+import { KngDocumentComponent } from './kng-document.component';
 
-describe('WelcomeComponent', () => {
-  let component: WelcomeComponent;
-  let fixture: ComponentFixture<WelcomeComponent>;
+describe('KngDocumentComponent', () => {
+  let component: KngDocumentComponent;
+  let fixture: ComponentFixture<KngDocumentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WelcomeComponent ]
+      declarations: [ KngDocumentComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WelcomeComponent);
+    fixture = TestBed.createComponent(KngDocumentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

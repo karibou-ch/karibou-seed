@@ -1,0 +1,60 @@
+<div class="welcome-container mdc-layout-grid">
+
+    <section>
+        <h3>Marché</h3>
+    </section>
+    <div class="mdc-layout-grid__inner">      
+      <mdc-card 
+                mdc-ripple
+                [mdc-elevation]="1"
+                [routerLink]="['/products/category',category.slug]" 
+                *ngFor="let category of getCategories()"
+                class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-2">
+          <mdc-card-primary>
+            <mdc-card-title [large]="false">{{category.name}}</mdc-card-title>
+            <h2 mdc-card-subtitle ><span class="icon" [ngClass]="category.image">&nbsp;&nbsp;&nbsp;</span></h2>            
+          </mdc-card-primary>
+          <div class="category-cover" [ngStyle]="{'background-image': 'url(' + category.cover + ')'}" >
+          </div>
+      </mdc-card>      
+  </div>
+
+  <section>
+    <h3>Boissons</h3>
+  </section>
+  <div class="mdc-layout-grid__inner">      
+      <mdc-card 
+                mdc-ripple
+                [mdc-elevation]="1"
+                [routerLink]="['/products/category',category.slug]" 
+                *ngFor="let category of getCategories('Boissons')"
+                class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-2">
+          <mdc-card-primary>
+            <mdc-card-title [large]="false">{{category.name}}</mdc-card-title>
+            <h2 mdc-card-subtitle ><span class="icon" [ngClass]="category.image">&nbsp;&nbsp;&nbsp;</span></h2>            
+          </mdc-card-primary>
+          <div class="category-cover" [ngStyle]="{'background-image': 'url(' + category.cover + ')'}" >
+          </div>
+      </mdc-card>      
+  </div>
+
+  <section>
+      <h3>Epicerie</h3>
+    </section>
+    <div class="mdc-layout-grid__inner">      
+        <mdc-card 
+                  mdc-ripple
+                  [mdc-elevation]="1"
+                  [routerLink]="['/products/category',category.slug]" 
+                  *ngFor="let category of getCategories('finefood')"
+                  class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-2">
+            <mdc-card-primary>
+              <mdc-card-title [large]="false">{{category.name}}</mdc-card-title>
+              <h2 mdc-card-subtitle ><span class="icon" [ngClass]="category.image">&nbsp;&nbsp;&nbsp;</span></h2>            
+            </mdc-card-primary>
+            <div class="category-cover" [ngStyle]="{'background-image': 'url(' + category.cover + ')'}" >
+            </div>
+        </mdc-card>      
+    </div>
+    
+</div>

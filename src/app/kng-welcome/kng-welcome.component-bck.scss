@@ -1,0 +1,159 @@
+.container{
+  background: #f7f7f7;
+}
+
+.mdc-grid-tile {
+  --mdc-grid-list-tile-width: 400px;
+}
+
+.mdc-grid-list{
+  width: 200px;
+  margin: auto;
+  margin-top: 100px;
+  .mdc-grid-tile__secondary{
+    background: rgba(0, 0, 0, 0.281);
+    color: white;
+  }
+}
+
+/**
+ * SVG animation
+
+ */
+.canvas{
+  position: fixed;
+  width: 100%;  
+
+  html|* > svg {
+    transform-origin: 50% 50% 0px;
+  }
+  
+  * {
+    transform-origin: 0px 0px 0px;
+  }
+  
+  #bitcoin-color-stop-1 {
+      -webkit-animation: change-color-1 12s ease-in-out infinite alternate;
+      animation: change-color-1 12s ease-in-out infinite alternate
+  }
+  
+  #bitcoin-color-stop-2 {
+      -webkit-animation: change-color-2 12s ease-in-out infinite alternate;
+      animation: change-color-2 12s ease-in-out infinite alternate
+  }
+  
+  #bitcoin-color-stop-3 {
+      -webkit-animation: change-color-3 12s ease-in-out infinite alternate;
+      animation: change-color-3 12s ease-in-out infinite alternate
+  }
+  
+  @-webkit-keyframes change-color-1 {
+      0% {
+          stop-color: #22C8F6
+      }
+  
+      25% {
+          stop-color: #ff0
+      }
+  
+      50% {
+          stop-color: #00ffcb
+      }
+  
+      75% {
+          stop-color: #70ff00
+      }
+  }
+  
+  @keyframes change-color-1 {
+      0% {
+          stop-color: #22C8F6
+      }
+  
+      25% {
+          stop-color: #ff0
+      }
+  
+      50% {
+          stop-color: #00ffcb
+      }
+  
+      75% {
+          stop-color: #70ff00
+      }
+  }
+  
+  @-webkit-keyframes change-color-2 {
+      0% {
+          stop-color: #20C498
+      }
+  
+      25% {
+          stop-color: #ff00ad
+      }
+  
+      350% {
+          stop-color: #d480ff
+      }
+  
+      75% {
+          stop-color: #ff9200
+      }
+  }
+  
+  @keyframes change-color-2 {
+      0% {
+          stop-color: #20C498
+      }
+  
+      25% {
+          stop-color: #ff00ad
+      }
+  
+      350% {
+          stop-color: #d480ff
+      }
+  
+      75% {
+          stop-color: #ff9200
+      }
+  }
+  
+  @-webkit-keyframes change-color-3 {
+      0% {
+          stop-color: #189932
+      }
+  
+      25% {
+          stop-color: #c300cb
+      }
+  
+      50% {
+          stop-color: #5600d4
+      }
+  
+      75% {
+          stop-color: #ff46dc
+      }
+  }
+  
+  @keyframes change-color-3 {
+      0% {
+          stop-color: #189932
+      }
+  
+      25% {
+          stop-color: #c300cb
+      }
+  
+      50% {
+          stop-color: #5600d4
+      }
+  
+      75% {
+          stop-color: #ff46dc
+      }
+  }
+    
+}
+

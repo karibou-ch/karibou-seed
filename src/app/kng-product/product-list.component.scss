@@ -1,4 +1,18 @@
 div.product-container{
-  max-width: 800px;
-  margin-top: 70px;
+  max-width: 1024px;
+  margin-top: 0px;
+
+  section h2,
+  section h3{
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-transform: uppercase;    
+  }
+  section h5,
+  section h4{
+    color:var(--mdc-theme-secondary);
+    font-weight: 500;
+    margin-bottom: 0px;    
+  }
 }
+

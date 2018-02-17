@@ -1,0 +1,29 @@
+<!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
+<div class="document-container markdown-page markdown-{{document?.type}}">
+  <div class="home-header text-center" 
+    *ngIf="document&&document.photo.header" 
+    [ngStyle]="{'background-image': 'url(' + document.photo.header + ')'}" >
+  </div>
+
+  <div class="container ">
+      <h3 class="byline">
+        Published <time>{{document?.created| date: 'mediumDate'}}</time> by <span class="author">{{document?.signature}} </span>
+      </h3>
+
+      <h1>{{document?.title.fr}}</h1> 
+      <h2 class="header" ><span kng-markdown removeRoot="true" data="{{document?.header.fr}}"></span></h2>
+  
+      <div class="sidebar-block" >
+        <h4 translate="furthermore"></h4>
+        <ol  class="list-unstyled">
+          <li *ngFor="let doc of furthermore"><a href="/content/{{doc.slug[0]}}" >{{doc.title.fr}}</a></li>
+          <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
+        </ol>   
+      </div> 
+
+      <div kng-markdown data="{{document?.content.fr}}"></div>
+      
+  </div>
+</div>
+
+
