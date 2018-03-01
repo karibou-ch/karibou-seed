@@ -7,12 +7,11 @@
       <div class="logo"></div>
       <!-- WELCOME -->
       <div class="inner" [hidden]="askAction">
-        <h1 i18n>La boulangerie Bretzel ouvre ces portes à Artamis</h1>
-        <p i18n>Nous proposont à tous nos futurs clients la livraison à domicile</p>
+        <h1 i18n>Nous livrons tous les jours les produits de notre boulangerie</h1>
         <form>
-            <button mdc-button [unelevated]="true" [secondary]="true" [routerLink]="'/store/bretzel'">
-              <mdc-icon>favorite</mdc-icon>              
-              <span i18n>Je suis un habitant du quartier</span>
+            <button mdc-button [icon]="true" [unelevated]="true" [secondary]="true" [routerLink]="'/store/bretzel'">
+              <mdc-icon>person_pin</mdc-icon>              
+              <span i18n>J'habite le nouveau quartier Artamis</span>
             </button>            
         </form>
         <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">J'ai déjà un compte</a></div>
@@ -52,8 +51,12 @@
               </button>            
           </form>
         </div>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=boulangerie-bretzel.ch">
+        <div class="spread"></div>  
+      </a>
       
     </div>
+
   </div>
 
   <div class="container middle">

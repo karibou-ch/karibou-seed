@@ -105,7 +105,8 @@ $bretzel-background-color: #8b6f4e;
       z-index: 2;  
       text-align:center;
       
-      .logo{
+      .logo,
+      .spread{
         background-image: url(/assets/img/bretzel-logo-lg.jpg);
         background-repeat: no-repeat;
         background-position: center;
@@ -118,6 +119,16 @@ $bretzel-background-color: #8b6f4e;
           margin: 0 30px;
         }
       }
+      .spread{
+        background-image: url(/assets/img/bretzel-spread-lg.jpg);
+        height: 50px;
+        margin-bottom: 10px;
+        @media (max-width: 765px) {
+          min-height: 50px;
+        }
+            
+      }
+
       
       .inner{
         box-sizing: border-box;
@@ -130,7 +141,7 @@ $bretzel-background-color: #8b6f4e;
         }
         
         h1{
-          margin: 0 40px;
+          margin: 0 30px;
           font-weight: 400;
           font-size: 30px;  
         }
@@ -152,6 +163,7 @@ $bretzel-background-color: #8b6f4e;
           button{
             flex:1;
             height: 50px;
+            color: white;
           }
 
           @media (max-width: 426px) {
