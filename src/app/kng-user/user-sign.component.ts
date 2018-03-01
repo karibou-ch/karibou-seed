@@ -108,7 +108,6 @@ export class UserSignComponent {
 
 
   onSign() {    
-    console.log('-----------out',this.$nav.store)
     this.$user.login({
       email: this.sign.value.email,
       password: this.sign.value.password,
@@ -120,7 +119,6 @@ export class UserSignComponent {
           timeout:5000
         });        
       }
-      console.log('-----------in',this.$nav.store)
       this.$router.navigate(['store',this.$nav.store]);
       this.$snack.show(this.i18n.login_ok,"OK");
     },(err)=>this.$snack.show(err._body,"OK"));    
