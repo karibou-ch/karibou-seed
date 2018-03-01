@@ -115,7 +115,7 @@ $bretzel-background-color: #8b6f4e;
         margin: 10px 70px;  
         margin-bottom: 20px;
         @media (max-width: 426px) {
-          margin: 10px 40px;
+          margin: 0 30px;
         }
       }
       
@@ -149,11 +149,15 @@ $bretzel-background-color: #8b6f4e;
           padding: 8px 70px;  
           min-height:150px;
           width: auto;
-
           button{
             flex:1;
             height: 50px;
           }
+
+          @media (max-width: 426px) {
+            padding: 8px 30px;  
+          }
+          
         }      
         .singup-vs-login{
           margin: 0;

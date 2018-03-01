@@ -1,0 +1,65 @@
+<div class="container">
+  <h1>My Orders</h1>
+
+  <table class="table">
+    <tr *ngFor="let order of orders ; let i=index" >
+      <td>
+        <table class="table">
+          <tr>
+            <td class="bg-success text-white rank">
+              {{order?.rank}}
+            </td>
+            <td style="background-color: #efefef">
+              created at {{order?.created}}
+            </td>
+            <td *ngIf="order?.closed!==undefined" style="background-color: #efefef">
+              closed at {{order?.closed}}
+            </td>
+          </tr>
+        </table>
+        <h2>Items</h2>
+        <table class="table">
+          <tr>
+            <td>Title:</td>
+            <td>Quantity:</td>
+            <td>Price:</td>
+            <td>Total Price:</td>
+          </tr>
+          <tr *ngFor=" let it of order.items">
+            <td> {{it?.title}}</td>
+            <td> {{it?.quantity}}</td>
+            <td> {{it?.price}}</td>
+            <td> {{it?.finalprice}}</td>
+          </tr>
+          <tr>
+            <td>
+              Sub total
+            </td>
+            <td></td><td></td>
+            <td>
+              {{order?.getSubTotal(order)}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Shipping
+            </td>
+            <td></td><td></td>
+            <td>
+                {{order?.getShippingPrice()}}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Total
+            </td>
+            <td></td><td></td>
+            <td>
+                {{order?.getTotalPrice()}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>

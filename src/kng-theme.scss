@@ -9,10 +9,15 @@ body{
   margin-bottom: 0px!important;
 }
 
+.secondary      {color:           var(--mdc-theme-secondary);}
+.primary        {color:           var(--mdc-theme-primary);}
 .red            {color:         red!important;}
 .black          {color:         black!important;}
+.pink           {color:         #da1c5c!important;}
+
 .text-capitalize{text-transform:  capitalize;}
 .text-strike    {text-decoration: line-through!important;}
+.bold           {font-weight:     bold; }
 
 .icon-alcool, .fa-alcool,
 .icon-bread, .fa-bread,
@@ -101,7 +106,19 @@ body{
 
 .link{
   border-bottom: 1px dotted var(--mdc-theme-secondary);
+  cursor: pointer;
+  text-decoration:none;
 }
+
+.align-start{
+  align-self: flex-start;
+  margin-right: auto;    
+}
+
+.align-end{
+  align-self: flex-end;
+  margin-left: auto;
+}       
 
 @media only screen and (max-width: 782px) {
   .hide-md{

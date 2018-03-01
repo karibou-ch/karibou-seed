@@ -1,0 +1,10 @@
+<p><b>Nom: </b> {{address.name}}
+  <b>Note: </b> {{address.note}}
+  <b>Floor: </b> {{address.floor}}
+  <b>StreetAdress: </b> {{address.streetAdress}}
+  <b>Region: </b> {{address.region}}
+  <b>PostalCode: </b> {{address.postalCode}}
+  <b>Primary: </b> {{address.primary}}
+  <b>StreetAdress: </b> {{address.streetAdress}}
+  <img *ngIf="address?.geo!==undefined" src="//maps.googleapis.com/maps/api/staticmap?center={{address?.geo?.lat}},{{address?.geo?.lng}}&zoom=12&size=400x400&markers=color:green%7Xlabel:%7C{{address?.geo?.lat}},{{address?.geo?.lng}}&key=AIzaSyD5w46BmWX6hX-uJ2yMycS_cRb2HRvDXQU"/>
+</p>

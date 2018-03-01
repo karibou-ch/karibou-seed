@@ -7,15 +7,12 @@
       <div class="logo"></div>
       <!-- WELCOME -->
       <div class="inner" [hidden]="askAction">
-        <h1>Vous habitez dans le nouveau quartier d'Artamis ?</h1>
-        <p>La boulangerie Bretzel ouvre ces portes et propose aussi à ces futurs clients la livraison à domicile</p>
+        <h1 i18n>La boulangerie Bretzel ouvre ces portes à Artamis</h1>
+        <p i18n>Nous proposont à tous nos futurs clients la livraison à domicile</p>
         <form>
-            <mdc-text-field-box label="Laissez nous votre adresse email" style="width:100%" type="email">
-              <mdc-icon trailing>person</mdc-icon>
-            </mdc-text-field-box>
-            <button mdc-button [unelevated]="true" [secondary]="true">
+            <button mdc-button [unelevated]="true" [secondary]="true" [routerLink]="'/store/bretzel'">
               <mdc-icon>favorite</mdc-icon>              
-              Je m'intéresse au projet
+              <span i18n>Je suis un habitant du quartier</span>
             </button>            
         </form>
         <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">J'ai déjà un compte</a></div>
@@ -23,10 +20,10 @@
 
       <!-- LOGIN -->
       <div class="inner" *ngIf="askAction=='login'">
-          <h1>Bienvenue!</h1>
-          <p>Log in with your email and password.</p>
+          <h1 i18n>Bienvenue!</h1>
+          <p i18n>Log in with your email and password.</p>
           <form>
-              <mdc-text-field-box label="Votre email" style="width:100%" type="email">
+              <mdc-text-field-box i18n-label label="Votre email" style="width:100%" type="email">
                 <mdc-icon trailing>person</mdc-icon>
               </mdc-text-field-box>
               <mdc-text-field-box label="Votre secret" style="width:100%" type="password">
@@ -35,23 +32,23 @@
                 
               <button mdc-button [unelevated]="true" [secondary]="true">
                 <mdc-icon>account_circle</mdc-icon>              
-                Login
+                <span i18n>Login</span>
               </button>            
           </form>
-          <div class="signup-vs-login" i18n><a class="link" (click)="askAction='recover'">J'ai oublié mon mot de passe</a></div>
+          <div class="signup-vs-login" ><a class="link" (click)="askAction='recover'" i18n>J'ai oublié mon mot de passe</a></div>
         </div>
         
       <!-- RECOVER -->
       <div class="inner" *ngIf="askAction=='recover'">
-          <h1>Bienvenue!</h1>
-          <p>Log in with your email and password.</p>
+          <h1 i18n>Bienvenue!</h1>
+          <p i18n>Log in with your email and password.</p>
           <form>
-              <mdc-text-field-box label="Votre email" style="width:100%">
+              <mdc-text-field-box i18n-label label="Votre email" style="width:100%">
                 <mdc-icon trailing>email</mdc-icon>
               </mdc-text-field-box>
               <button mdc-button [unelevated]="true" [secondary]="true">
                 <mdc-icon>account_circle</mdc-icon>              
-                Envoyer
+                <span i18n>Envoyer</span>
               </button>            
           </form>
         </div>
@@ -134,4 +131,9 @@
   </div>   -->
 </div>
 
-<kng-navbar [hidden]="!isAppReady()"></kng-navbar>
+<kng-navbar [hidden]="!isAppReady()">
+  <router-outlet ></router-outlet>
+</kng-navbar>
+
+
+    

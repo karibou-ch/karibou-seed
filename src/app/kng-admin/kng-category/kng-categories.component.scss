@@ -1,0 +1,59 @@
+.container{
+  background: white;
+  min-width: 600px;
+  @media (max-width: 426px) {
+    -min-width: 300px;
+  }
+
+  mdc-list{
+    mdc-list-item{
+      &.disabled{
+        opacity: 0.4;
+      }
+      mdc-form-field{
+        align-self: start;
+        margin-top: auto;
+        margin-bottom: 12px;    
+      }
+    
+      mdc-list-item-graphic{
+        img{
+          width: 38px!important;
+          height: 38px;
+          border-radius:8px;
+        }
+      }  
+  
+    }
+  }
+
+
+}
+
+mdc-dialog{
+  .double{
+    flex:2;
+  }
+
+  mdc-dialog-body{
+    form{
+      display: flex;
+      flex-flow: column wrap;
+      justify-content:flex-start; /*halign*/
+      background: transparent;
+      width: 100%;
+
+      >div{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content:flex-start;
+        &.between{
+          justify-content:space-between;
+        }
+
+      }
+
+    }
+  }
+
+}

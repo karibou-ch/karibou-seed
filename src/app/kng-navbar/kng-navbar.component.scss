@@ -23,6 +23,13 @@
 
   .mdc-toolbar__row{
     background-color: var(--mdc-theme-primary-light);
+    background-color:rgba(255, 255, 255, 0.2);
+    z-index: 2;
+    
+    button{
+      outline: 0;
+    }
+
     .btn-shipping{
       color: white;
       vertical-align: middle;
@@ -34,11 +41,17 @@
     align-items:normal;
     min-height: 48px;
     height: 48px;
+    z-index: 1;
     .mdc-toolbar__section.tabs{
       min-width: 100%;
       max-width: 1024px;
       background-color: var(--mdc-theme-primary-light);
     }
+  }
+
+  .admin-item{
+    color: #777;
+    font-size: 80%;
   }
 
   .align-days{
@@ -93,14 +106,14 @@
     color: var(--mdc-theme-primary-dark);
   }
 
-  
+  //'https://d2d8wwwkmhfcva.cloudfront.net/1920x/filters:quality(50)/d2lnr5mha7bycj.cloudfront.net/warehouse/background_image/1/27ad618f-fa8c-46bf-be99-2d08f76197cc.jpg'
   .mdc-toolbar__row--with-image{
     &:first-child::after{
       background-image: 
       linear-gradient(
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.05)
-      ),url('https://d2d8wwwkmhfcva.cloudfront.net/1920x/filters:quality(50)/d2lnr5mha7bycj.cloudfront.net/warehouse/background_image/1/27ad618f-fa8c-46bf-be99-2d08f76197cc.jpg');
+      ),url('/assets/img/bretzel-header-md.jpg');
       background-size: cover!important;
       background-position: center!important;
   

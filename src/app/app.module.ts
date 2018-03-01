@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 import { registerLocaleData } from '@angular/common';
@@ -16,19 +15,19 @@ registerLocaleData(localeFr, 'fr');
 //
 // app modules
 import { Kng2CoreModule  } from 'kng2-core';
+import { SharedModule } from './shared/shared.module';
+
 import { MdcModule } from './app.mdc.module';
 //import { Material2Module } from './app.material2.module';
 
 //
 // App components
 import { AppComponent } from './app.component';
-import { CoinmarketcapService } from './coinmarketcap.service';
 import { KngDepartementComponent } from './kng-departement/departement.component';
-import { KngNavbarComponent, KngNavigationService } from './kng-navbar';
+import { KngNavbarComponent } from './kng-navbar';
 
 //
 // App directives
-import { InfiniteScrollerDirective } from './infinite-scroller.directive';
 
 
 
@@ -41,7 +40,6 @@ import { ProductComponent,
          ProductThumbnailComponent, 
          ProductTinyComponent, 
          ProductListComponent } from './kng-product';
-import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
 import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { KngCartComponent } from './kng-cart/kng-cart.component';
@@ -52,20 +50,19 @@ import { KngCartComponent } from './kng-cart/kng-cart.component';
     KngDepartementComponent,
     ProductComponent, ProductThumbnailComponent, ProductTinyComponent, ProductListComponent,
     KngNavbarComponent,
-    MdcSearchBarComponent, KngHomeComponent,
-    InfiniteScrollerDirective,
+    KngHomeComponent,
     KngWelcomeComponent,
-    KngCartComponent
+    KngCartComponent    
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
     HttpClientModule,
     MdcModule,
+    SharedModule.forRoot(),
     Kng2CoreModule.forRoot({
       API_SERVER:'http://api.beta.boulangerie-bretzel.ch',
       loader:[
@@ -75,9 +72,7 @@ import { KngCartComponent } from './kng-cart/kng-cart.component';
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'fr' },
-    CoinmarketcapService,
-    KngNavigationService
+    { provide: LOCALE_ID, useValue: 'fr' }
   ],
   bootstrap: [AppComponent]
 })

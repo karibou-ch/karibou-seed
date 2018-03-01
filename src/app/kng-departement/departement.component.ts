@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { MdcDrawerPersistent, MdcDrawerTemporary } from '@angular-mdc/web';
+import { MdcDrawer } from '@angular-mdc/web';
 
 import { LoaderService, User, UserService, Category, CategoryService } from 'kng2-core';
 
@@ -16,8 +16,8 @@ export class KngDepartementComponent implements OnInit {
   isReady:boolean;
   image:string;
 
-  @ViewChild('temporary') temporaryDrawer: MdcDrawerTemporary;
-  @ViewChild('persistent') persistentDrawer: MdcDrawerPersistent;
+  @ViewChild('temporary') temporaryDrawer: MdcDrawer;
+  @ViewChild('persistent') persistentDrawer: MdcDrawer;
 
   constructor(
     private $loader:LoaderService,

@@ -34,7 +34,8 @@ export class MdcSearchBarComponent implements OnInit {
   searchIcon: any;
 
 
-  @HostBinding('class') isHostClass='mat-search--desktop mat-search--mobile primary';
+  @HostBinding('class') isHostClass='mat-search--desktop  mat-toolbar--open-search primary';
+  @HostBinding('style.z-index') isOpen='auto';
 
   //
   // bind submit search form
@@ -59,12 +60,12 @@ export class MdcSearchBarComponent implements OnInit {
   //
   // on search
   onSearch(){
-
+    this.isOpen='1';
     //
     // document.querySelector('.mat-toolbar--search').style = "visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - 300 - 20) + "px;";
     this.search.nativeElement.style="visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + "px;"
     // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
-    this.searchContainer.nativeElement.style="animation: mat-toolbar--open-search 220.7s forwards; -webkit-transform: translateZ(0);";
+    this.searchContainer.nativeElement.style="animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
     // document.querySelector('.mat-toolbar--search-text').focus();
     this.searchText.nativeElement.focus();
 
@@ -80,6 +81,8 @@ export class MdcSearchBarComponent implements OnInit {
   //
   // .mat-toolbar--exit-search
   onExitSearch(){
+    this.isOpen='auto';
+    
     // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
     this.searchContainer.nativeElement.style="animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
     // document.querySelector('.mat-toolbar--search-text').value = '';

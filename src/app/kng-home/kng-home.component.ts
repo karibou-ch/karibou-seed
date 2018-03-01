@@ -20,6 +20,7 @@ export class KngHomeComponent implements OnInit {
   isReady: boolean = false;
   config: Config;
   categories:Category[];
+  cached:any={};
   products: Product[] = [];
   group:any={};
   user:User=new User();
@@ -27,7 +28,7 @@ export class KngHomeComponent implements OnInit {
   //
   // infinite scroll callback
   scrollCallback;
-  currentPage:number=2;
+  currentPage:number=3;
 
 
   //
@@ -37,10 +38,10 @@ export class KngHomeComponent implements OnInit {
     discount:true,
     home:true,
     maxcat:8,
-    popular:true,
-    when:true,
-    available:true,
-    status:true
+    // popular:true,
+    // available:true,
+    // status:true
+    when:true
   };
 
 
@@ -50,7 +51,6 @@ export class KngHomeComponent implements OnInit {
   ) { 
     // bind infinite scroll callback function
     this.scrollCallback=this.getNextPage.bind(this);
-    console.log('-------------- KngHome');
   }
 
 
@@ -60,7 +60,6 @@ export class KngHomeComponent implements OnInit {
         this.config = loader[0];
         Object.assign(this.user,loader[1]);
         this.categories=loader[2]||[];
-        console.log('-------------- load home');
         
         this.loadGroupByCategory();
     });
@@ -80,16 +79,21 @@ export class KngHomeComponent implements OnInit {
   getNextPage(){
     //
     // next page can be async loaded 
-    return Observable.timer(100).map(ctx=>this.currentPage++)
+    return Observable.timer(10).map(ctx=>this.currentPage++)
   }
 
   getCategories(){
+    if(this.cached.categories && this.currentPage===this.cached.currentPage){
+      return this.cached.categories;
+    }
     if(!this.isReady){
       return [];
     }
-    return this.categories.sort(this.sortByWeight).filter((c,i)=> {
+    this.cached.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
       return c.active&&(c.type==='Category');
     }).slice(0,this.currentPage);
+    this.cached.currentPage=this.currentPage;
+    return this.cached.categories;
   }  
 
   sortByWeight(a:Category,b:Category){

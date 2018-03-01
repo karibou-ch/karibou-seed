@@ -1,0 +1,79 @@
+<!--
+<div *ngIf="errors" class="alert alert-danger"> 
+    {{ errors }} 
+</div>
+<div class="container">
+  <form>
+    <div>
+      <div>
+        <i class="fa-6 fa fa-finefood"></i>&nbsp;&nbsp;
+      </div>
+      <h1>
+        fa fa-finefood
+        <small>color:gray, sort weight:40</small>
+        <span class="pull-right">
+          <label>Active
+          <input type="checkbox" [(ngModel)]="category.active" class="form-control" name="active"></label>
+        </span>
+        <span class="pull-right">
+          <label>Home
+          <input type="checkbox" [(ngModel)]="category.home" class="form-control" name="home"></label>
+        </span>
+      </h1>
+    </div>
+
+    <hr>
+
+
+    <div class="form-group ">
+      <label class="control-label" for="i0">Specify the name</label>
+      <input type="text" [(ngModel)]="category.name" name="name" class="form-control" placeholder="Label" autofocus="autofocus"
+        required="" id="i0">
+    </div>
+
+    <div class="radio form-group">
+      <label>
+        <input type="radio" name="cattype" value="Category" [(ngModel)]="category.type"  name="type_product">Épicerie fine is used to organise items
+      </label>
+    </div>
+    <div class="radio form-group">
+      <label>
+        <input type="radio" name="cattype" value="Catalog" [(ngModel)]="category.type"  name="type_shop">Épicerie fine is used to organise shops
+      </label>
+    </div>
+
+
+
+    <div class="form-group">
+      <label class="control-label" for="i2">Specify a sort weight</label>
+      <input type="text" class="form-control" id="i2" [(ngModel)]="category.weight" placeholder="0..N" name="weight">
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="i3">Specify a group</label>
+      <input type="text" class="form-control" id="i3" [(ngModel)]="category.group" name="group">
+    </div>
+
+    <div class="form-group ">
+      <label class="control-label" for="i3">Define an icon</label>
+      <input type="text" class="form-control" id="i3" [(ngModel)]="category.image" placeholder="one of the awesome icon" name="image">
+      <p class="help-block">Complete list of icons here <a href="http://fortawesome.github.io/Font-Awesome/3.2.1/icons/" target="_new">fontawesome.io 3.2.1</a></p>
+    </div>
+
+    <div class="form-group ">
+      <label class="control-label">Define a cover</label>
+      <div [hidden]="!category.cover">
+        <img title="" class="img-thumbnail" [src]="category.cover" *ngIf="category.cover">
+      </div>
+      <button [hidden]="!category.cover" (click)="category.cover=null" class="btn btn-block">clear this cover image</button>
+    </div>
+
+    <div class="form-group ">
+      <label class="control-label" for="i4">Define a color</label>
+      <input type="text" class="form-control" id="i4" [(ngModel)]="category.color" name="color" placeholder="color: #ddd, blue">
+    </div>
+    <div>
+      <button name="save" (click)="onSave();" >{{newInstance?'Créer':'Save'}}</button>
+    </div>
+  </form>
+</div>
+-->

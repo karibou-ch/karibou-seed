@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, Vie
 import { ActivatedRoute } from '@angular/router';
 import { Config, LoaderService, User, UserService,Category } from 'kng2-core';
 
-import { KngNavigationService } from './kng-navbar.service';
+import { NavigationService } from '../shared/navigation.service';
 import { MdcToolbar } from '@angular-mdc/web';
 
 @Component({
@@ -32,7 +32,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   content:any;
   categories:Category[];
   isFixed: boolean = true;
-  @ViewChild('menu') menu: any;
+  @ViewChild('navigation') navigation: any;
   @ViewChild('cart') cart: any;
   @ViewChild('section') section:ElementRef;
   @ViewChild('toolbar') toolbar:MdcToolbar;
@@ -41,7 +41,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $loader:LoaderService,
     private $route: ActivatedRoute,
     private $user:UserService,
-    private $navigation:KngNavigationService
+    public  $navigation:NavigationService
   ) {
     this.user=new User();
     this.config=new Config();
@@ -54,6 +54,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.$loader.ready().subscribe(loader=>{
       Object.assign(this.config, loader[0]);
       Object.assign(this.user, loader[1]);
+      console.log('---- user init',this.user.display())
+      this.$navigation.updateUser(this.user);
       this.categories=loader[2];
       //
       // home.about|footer|shop|siteName|tagLine
@@ -64,15 +66,18 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.$navigation.init(this.config,this.categories);
       this.store=this.$navigation.store;
       this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
-      
 
     });
 
-    this.route$ = this.$route.params.subscribe(params => {
-      //
-      // dispatch action to load the details here.
-      // this.content=this.$navigation.dispatch(this.$route.snapshot.url,params);
-    });      
+    //
+    // update user 
+    this.$user.subscribe(
+      (user:User)=>{
+        console.log('---- user stream',user.display())
+        Object.assign(this.user, user);        
+        this.$navigation.updateUser(this.user);
+      }
+    );
   } 
 
   getShippingWeek(){
@@ -88,41 +93,20 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.config.shared.shippingweek||[];
   }
 
-  isMobile(){
-    return this.$navigation.isMobileOrTablet();
-  }
 
   isAppReady(){
     return this.$navigation.store !== undefined;    
   }
 
-  getMenus(){
-    return this.$navigation.getMenus();
+  getRouterLink(url){
+    return ['/store',this.store].concat(url.split('/').filter(item=>item!==''));
   }
 
-  getMenuItems(group:string){
-    return this.$navigation.getMenuItems(group);
-  }
 
   ngOnDestroy() {
-    this.route$.unsubscribe();
+    //this.route$.unsubscribe();
   }
 
-  toggleMenu() {
-    if(!this.menu.isOpen()){
-      this.menu.open();
-    }else{
-      this.menu.close()
-    }
-  }
-
-  toggleCart() {
-    if(!this.cart.isOpen()){
-      this.cart.open();
-    }else{
-      this.cart.close()
-    }
-  }
 
   handleMenuSelect($event:any){
     

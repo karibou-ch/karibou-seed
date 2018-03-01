@@ -30,12 +30,15 @@ export const appRoutes: Routes = [
     { path:'', component:KngWelcomeComponent },{ 
       path:':store',
       component:KngWelcomeComponent,
-      children:[{path:'',component:KngHomeComponent},
+      children:[
+        { path:'',component:KngHomeComponent,children:[
+          { path: 'products/:sku', component: ProductComponent},
+        ]},
         { path: 'me', loadChildren: './kng-user/user.module#UserModule' },
         { path: 'shops', loadChildren: './kng-shops/kng-shops.module#ShopsModule' },
         { path: 'content', loadChildren: './kng-document/kng-document.module#KngDocumentModule' },      
+        { path: 'admin', loadChildren: './kng-admin/admin.module#AdminModule'  },
         { path: 'departement',component:KngDepartementComponent },
-        { path: 'products/:sku', component: ProductComponent, outlet:'modal'},
         { path: 'products/category/:category', component: ProductListComponent },
       ]
     }]

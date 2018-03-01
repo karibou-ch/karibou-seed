@@ -7,10 +7,10 @@
     "baseUrl": "",
     "paths": {
       "@angular/*": [
-        "node_modules/@angular/*"
+        "../node_modules/@angular/*"
       ],
       "rxjs/*":[
-        "node_modules/rxjs/*"        
+        "../node_modules/rxjs/*"        
       ]
     }
   },

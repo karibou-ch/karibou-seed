@@ -1,0 +1,26 @@
+
+mdc-snackbar{
+  z-index: 5;
+}
+
+// can be removed (28.02.2018)
+// .mdc-dialog__surface{
+//   transform: translateY(200px) scale(1)!important;
+//   @media (max-width: 1025px) {
+//     transform: translateY(100px) scale(1)!important;
+//   }
+
+//   @media (max-width: 769px) {
+//     width: 100%!important;
+//     transform: translateY(160px) scale(1)!important;
+//   }
+
+//   @media (max-width: 426px) {
+//     width: 100%!important;
+//     transform: translateY(200px) scale(1)!important;
+//   }
+// }
+
+// .mdc-dialog--open .mdc-dialog__backdrop{
+//   opacity: .7!important;
+// }

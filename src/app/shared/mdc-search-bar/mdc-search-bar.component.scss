@@ -28,7 +28,6 @@
 	}
   
 	.mat-search--desktop {
-		height: 35px;
 		border-radius: 2px;
 		background: rgba(255, 255, 255, .45)!important;
 		flex: 2;
@@ -46,8 +45,7 @@
 			left: 0;
 			right: 0;
 			top: 0;			
-			z-index: 1;
-			height: 400%;
+			height: 60%;
 			flex-direction:row;
 			flex:3;
 			background:transparent!important;

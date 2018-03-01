@@ -1,5 +1,125 @@
-div.sign-container{
-    width: 412px;
-    margin: auto;
-    margin-top: 100px;
-}
+
+  .container.top{
+    color: #424242;
+    background-color:rgba(255,255,255,0.9);
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content:center; /*halign*/
+    align-items:center; /*valign*/
+    padding-top: 8vh!important;
+    padding-bottom: 10vh!important;
+    min-height: 80%;
+    box-sizing: border-box;    
+    position: fixed;top: 0;z-index: 4;margin: auto;left: 0;right: 0;bottom:0;
+
+    .close{
+      background: transparent;
+      border: 0;
+      color: #777;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 4;
+      @media (max-width: 426px) {
+        top: 5px;
+        right: 5px;
+      }
+    }
+    
+    kng-control-messages{
+      color:#999;
+      font-size: 80%;
+      width: 100%;
+      text-align: left;      
+    }
+
+    @media (max-width: 426px) {
+      padding-top: 0!important;
+      padding-bottom: 0!important;
+    }    
+
+    .sign{
+      display: block;
+      max-width: none;
+      -box-shadow: 2px 1px 20px #888;
+      background: rgba(255,255,255,0.95);
+      margin: 0 auto 20px auto;
+      position: relative;
+      z-index: 2;  
+      text-align:center;
+      transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
+      max-height:700px; // still have to hard-code a value!
+      top:0;
+
+      @media (max-width: 426px) {
+        box-shadow: none;
+        position: absolute;        
+      }
+      
+      .logo{
+        background-image: url(/assets/img/bretzel-logo-lg.jpg);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        display: block;
+        height: 150px;
+        margin: 10px 70px;  
+        margin-bottom: 20px;
+        cursor:pointer;
+        @media (max-width: 426px) {
+          margin: 30px 30px;
+        }
+      }
+      
+      .inner{
+        box-sizing: border-box;
+        padding: 0 0 20px 0;
+        position: relative;
+        z-index: 2;
+        width: 540px;  
+        @media (max-width: 426px) {
+          width: 100%;
+        }
+        
+        h1{
+          margin: 0 40px;
+          font-weight: 400;
+          font-size: 30px;  
+        }
+        p{
+          padding: 10px 70px;  
+          @media (max-width: 426px) {
+            padding: 10px 40px;
+          }
+            
+        }
+        form{
+          background: white;
+          display: flex;
+          flex-flow:row wrap;
+          margin: 20px auto;
+          padding: 8px 70px;  
+          min-height:150px;
+          width: auto;
+
+          button{
+            flex:1;
+            height: 50px;
+          }
+
+          @media (max-width: 426px) {
+            padding: 8px 30px;  
+          }
+          
+        }      
+        .singup-vs-login{
+          margin: 0;
+          font-size: inherit;  
+        }
+        
+      } 
+    }  
+  }
+  

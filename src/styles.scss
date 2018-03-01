@@ -30,13 +30,14 @@ $mdc-theme-secondary-dark: #007f00;
 
 $mdc-theme-primary-text: #43b02a;
 $mdc-theme-secondary-text: #ffffff;
-*/
 
+*/
 $mdc-theme-background:#f7f7f7;
 
 
 @import 'kng-search.scss';
 @import 'kng-theme.scss';
+@import 'kng-mdc.scss';
 
 @import "~@angular-mdc/theme/material-components-web.scss";
 

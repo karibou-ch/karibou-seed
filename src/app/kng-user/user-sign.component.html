@@ -1,23 +1,91 @@
-<div class="sign-container">
-  <!-- <mdc-text-field
-    [(ngModel)]="username"
-    label="Username"
-    [required]="true"
-    [disabled]="false"
-    [dense]="false">
-  </mdc-text-field>
-  <p mdc-text-field-helper-text
-    [validation]="true"
-    [persistent]="false">Username is required</p>
+<div class="blured" [hidden]="isReady"></div>
+<div class="container top">
+  <button (click)="onWindowClick()" class="close">
+      <mdc-icon [fontSize]="30">close</mdc-icon>
+  </button>
+  <div class="sign" >
+    <div class="logo" [routerLink]="'/'"></div>
 
-  <mdc-text-field [type]="hide ? 'password' : 'text'"
-    label="Password"
-    [required]="true"></mdc-text-field>
+    <!-- LOGIN -->
+    <div class="inner" *ngIf="!askAction">
+      <h3 i18n>Identifiez-vous avec votre email</h3>
+      <form [formGroup]="sign" (submit)="onSign()">
+          <mdc-text-field label="Votre email" style="width:100%" type="email" formControlName="email">
+            <mdc-icon trailing>person</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
+          
+          <mdc-text-field i18n-label label="Votre secret" style="width:100%" type="password" formControlName="password">
+            <mdc-icon trailing>vpn_key</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
+            
+          <button mdc-button [unelevated]="true"  [disabled]="!sign.valid">
+            <mdc-icon>account_circle</mdc-icon>              
+            <span i18n>Login {{sign.valid}}</span>
+          </button>            
+      </form>
+      <div class="signup-vs-login" i18n><a class="link" (click)="askAction='recover'">J'ai oublié mon mot de passe</a></div>
+      <div class="signup-vs-login" i18n><a class="link" (click)="askAction='signup'">Je n'ai pas de compte</a></div>
+    </div>
+      
+    <!-- RECOVER -->
+    <div class="inner" *ngIf="askAction=='recover'">
+      <h3 i18n>Réinitialisez votre mot de passe</h3>
+      <form [formGroup]="recover" (submit)="onRecover()">
+          <mdc-text-field i18n-label label="Votre email" style="width:100%" formControlName="email">
+            <mdc-icon trailing>email</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="recover.controls.email"><span i18n>L'envoi peut prendre quelques minutes          </span></kng-control-messages>
+          <button mdc-button [unelevated]="true"  [disabled]="!recover.valid">
+            <mdc-icon>account_circle</mdc-icon>              
+            <span i18n>Envoyer</span>
+          </button>            
+      </form>
+      <div class="signup-vs-login" i18n><a class="link" (click)="askAction=null">J'ai déjà un compte</a></div>
+    </div>
 
-  <mdc-icon-toggle
-    [(ngModel)]="mymodel"
-    iconOn="favorite" iconOff="favorite_border"
-    labelOn="Add to Favorites" labelOff="Remove from Favorites">
-  </mdc-icon-toggle> -->
+    <!-- SIGNUP -->
+    <div class="inner" *ngIf="askAction=='signup'">
+      <form [formGroup]="signup" (submit)="onSignup()">
+          <mdc-text-field i18n-label label="Votre nom" style="width:100%" type="text" formControlName="name">
+            <mdc-icon trailing>name</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="signup.controls.name"></kng-control-messages>
+          <mdc-text-field i18n-label label="Votre prénom" style="width:100%" type="text" formControlName="forname">
+            <mdc-icon trailing>name</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
+          <mdc-text-field i18n-label label="Votre email" style="width:100%" formControlName="email">
+            <mdc-icon trailing>email</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
+
+          <mdc-text-field i18n-label label="Votre secret" style="width:100%" type="password" formControlName="password">
+            <mdc-icon trailing>vpn_key</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
+
+          <mdc-text-field i18n-label label="Votre secret" style="width:100%" type="password" formControlName="confirm">
+            <mdc-icon trailing>vpn_key</mdc-icon>
+          </mdc-text-field>
+          <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
+
+          <button mdc-button [unelevated]="true"  [disabled]="!signup.valid">
+            <mdc-icon>account_circle</mdc-icon>              
+            <span i18n>Créer votre compte</span>
+          </button>            
+      </form>
+      <div class="signup-vs-login" i18n><a class="link" (click)="askAction=null">J'ai déjà un compte</a></div>
+      
+    </div>
+
+    <!-- LOGOUT -->
+    <div class="inner" *ngIf="askAction=='logout'">
+        <h3 i18n>Merci vous êtes maintenant déconnecté</h3>
+        <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">Je nesouhaite ouvrir une session</a></div>
+      </div>
+      
+  </div>
 </div>

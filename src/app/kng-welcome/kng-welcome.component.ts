@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { KngNavigationService } from '../kng-navbar';
+import { NavigationService } from '../shared/navigation.service';
 @Component({
   selector: 'kng-welcome',
   templateUrl: './kng-welcome.component.html',
@@ -56,19 +56,18 @@ export class KngWelcomeComponent implements OnInit {
   ]
 
   constructor( 
-    private $navigation:KngNavigationService,
+    private $navigation:NavigationService,
     private $route: ActivatedRoute,
     private $router: Router,    
   ) { 
-    console.log('---------------KngWelcome')
-
+    
   }
 
   ngOnInit() {
     //
     // 
     this.$route.params.subscribe(params=>{
-      console.log('---------------1',params)
+      console.log('---------------welcome',params)
       this.$navigation.store=this.store=params['store'];
       
     })

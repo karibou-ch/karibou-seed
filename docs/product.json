@@ -1,0 +1,48 @@
+	"title": "Pain sans gluten avec quinoa",
+	"categories": ObjectId("520ddfbd5ddf27485d000007"),
+	"sku": 1000962,
+	"vendor": ObjectId("5a882535a5e3fa676f7f1637"),
+	"slug": "pain-sans-gluten-avec-quinoa",
+	"updated": "2017-12-10T14:33:40.269Z",
+	"created": "2016-11-28T14:14:58.125Z",
+	"faq": [],
+	"photo": {
+		"url": "//ucarecdn.com/58a621c7-8af8-445d-a8b7-4828151928e2/"
+	},
+	"pricing": {
+		"price": 10,
+		"stock": 14,
+		"part": "400gr"
+	},
+	"variants": [],
+	"shelflife": {
+		"display": false
+	},
+	"quantity": {
+		"display": false
+	},
+	"attributes": {
+		"discount": false,
+		"weigth": 0,
+		"comment": false,
+		"available": true,
+		"home": false
+	},
+	"details": {
+		"description": "Un mélange audacieux pour un résultat très réussi et qui convient aux personnes allergiques au gluten. Ce pain est réalisé par l'artisan Jimmy Meuwly dans un laboratoire de la boulangerie Bretzel entièrement dédié à la confection de produits sans gluten.",
+		"origin": "Farine de riz demi-complet*, farine de manioc*, fécule de pomme de terre, farine de quinoa*, farine de souchet*, arrow root*, levure sèche sans gluten*, xanthane*, huile d'olive*, sel\n* Produits issus de l'agriculture biologique",
+		"keywords": "Boulangerie et biscottes  bio organique organic biodinamie naturel biodynamics gluten glutenfree sans-gluten",
+		"internal": " bio organique organic biodinamie naturel biodynamics gluten glutenfree sans-gluten",
+		"biodegradable": false,
+		"vegetarian": false,
+		"bioconvertion": false,
+		"biodynamics": false,
+		"grta": false,
+		"bio": true,
+		"local": true,
+		"natural": true,
+		"homemade": true,
+		"cold": false,
+		"gluten": true,
+		"lactose": false
+	}
