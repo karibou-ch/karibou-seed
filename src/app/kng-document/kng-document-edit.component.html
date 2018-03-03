@@ -1,0 +1,43 @@
+<!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
+<div class="edit-container markdown-page markdown-{{document?.type}}">
+  <button [routerLink]="['../']" class="close">
+      <mdc-icon [fontSize]="30">close</mdc-icon>
+  </button>
+    
+  <div>
+  </div>
+
+  <div class="container ">
+
+
+      <h3 class="byline">
+        Published <time>{{document?.created| date: 'mediumDate'}}</time> by <span class="author">{{document?.signature}} </span>
+      </h3>
+
+      <form [formGroup]="edit.form" (submit)="onSave()">
+        <!-- TITLE -->
+        <h1>
+          <mdc-text-field i18n-label label="Titre" type="text" [ngModel]="edit.content.title" formControlName="title">
+          </mdc-text-field>                
+        </h1>
+        <h2>
+          <mdc-textarea i18n-label label="En tête" rows="12" formControlName="header"
+          [ngModel]="edit.content.header">
+          </mdc-textarea>                  
+        </h2>
+      </form>
+          
+      
+
+      <div class="sidebar-block" >
+        <h4 translate="furthermore"></h4>
+        <ol  class="list-unstyled">
+          <li *ngFor="let doc of furthermore"><a href="/content/{{doc.slug[0]}}" >{{doc.title.fr}}</a></li>
+          <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
+        </ol>   
+      </div> 
+
+      <div kng-markdown data="{{document?.content.fr}}"></div>
+      
+  </div>
+</div>

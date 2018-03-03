@@ -10,20 +10,20 @@
         Published <time>{{document?.created| date: 'mediumDate'}}</time> by <span class="author">{{document?.signature}} </span>
       </h3>
 
-      <h1>{{document?.title.fr}}</h1> 
-      <h2 class="header" ><span kng-markdown removeRoot="true" data="{{document?.header.fr}}"></span></h2>
+      <h1>{{document?.title[$i18n.locale]}}</h1> 
+      <h2 class="header" ><span kng-markdown removeRoot="true" data="{{document?.header[$i18n.locale]}}"></span></h2>
   
       <div class="sidebar-block" >
         <h4 translate="furthermore"></h4>
         <ol  class="list-unstyled">
-          <li *ngFor="let doc of furthermore"><a href="/content/{{doc.slug[0]}}" >{{doc.title.fr}}</a></li>
+          <li *ngFor="let doc of furthermore"><a href="/content/{{doc.slug[0]}}" >{{doc.title[$i18n.locale]}}</a></li>
           <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
         </ol>   
       </div> 
 
-      <div kng-markdown data="{{document?.content.fr}}"></div>
+      <div kng-markdown data="{{document?.content[$i18n.locale]}}"></div>
       
   </div>
 </div>
-
-
+<!-- EDIT DOCUMENT CONTENT -->
+<router-outlet></router-outlet>

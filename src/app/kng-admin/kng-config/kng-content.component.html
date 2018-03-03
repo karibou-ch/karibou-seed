@@ -1,6 +1,7 @@
+<div class="blured" ></div>
 <div class="container">
   <mdc-list [lines]="2" [avatar]="true" [border]="true" >
-    <mdc-list-item (click)="onContentCreate($event)">
+    <mdc-list-item [routerLink]="['./create']">
         <mdc-list-item-graphic>
           <mdc-icon [fontSize]="30">folder</mdc-icon>
         </mdc-list-item-graphic>
@@ -11,12 +12,13 @@
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let content of contents" 
+                    [routerLink]="['./',content.slug[0]]"
                     [class.disabled]="!content.available">
         <mdc-list-item-graphic>
           <mdc-icon [fontSize]="30">folder</mdc-icon>
         </mdc-list-item-graphic>
         <mdc-list-item-text>
-          <span>{{content.type}}</span><b>/</b><span [innerHtml]="content.title.fr"></span>
+          <span>{{content.type}}</span><b>/</b><span [innerHtml]="content.title[$i18n.locale]"></span>
           <mdc-list-item-secondary>
               {{content.slug}}
           </mdc-list-item-secondary>              
@@ -37,5 +39,6 @@
     </mdc-list-item>
   </mdc-list>
 </div>
-<!-- EDIT -->
+<!-- EDIT DOCUMENT CONTENT -->
+<router-outlet></router-outlet>
 

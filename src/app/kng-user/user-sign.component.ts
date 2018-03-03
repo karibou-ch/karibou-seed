@@ -2,11 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { InputValidator } from '../shared/input-validator';
+import { InputValidator, NavigationService, i18n } from '../shared';
 
 import { MdcSnackbar } from '@angular-mdc/web'; 
 import { Config, LoaderService, User, UserService } from 'kng2-core';
-import { NavigationService } from '../shared/navigation.service';
 
 @Component({
   selector: 'kng-user-sign',
@@ -38,6 +37,7 @@ export class UserSignComponent {
 
 
   constructor(
+    private $i18n: i18n,
     private $loader: LoaderService,
     private $user: UserService,
     private $route:ActivatedRoute,
@@ -99,7 +99,7 @@ export class UserSignComponent {
   onRecover(){
     this.$user.recover(this.recover.value.email).subscribe(
       ok=>{
-        this.$snack.show(this.i18n.recover_ok);
+        this.$snack.show(this.$i18n.lang().recover_ok);
       },err=>{
         this.$snack.show(err._body,'OK');
       }
@@ -115,12 +115,12 @@ export class UserSignComponent {
     }).subscribe(
     (user:User) => {
       if(!user.isAuthenticated()){
-        return this.$snack.show(this.i18n.login_ko,"OK",{
+        return this.$snack.show(this.$i18n.lang().login_ko,"OK",{
           timeout:5000
         });        
       }
       this.$router.navigate(['store',this.$nav.store]);
-      this.$snack.show(this.i18n.login_ok,"OK");
+      this.$snack.show(this.$i18n.lang().login_ok,"OK");
     },(err)=>this.$snack.show(err._body,"OK"));    
   }
 
@@ -133,7 +133,7 @@ export class UserSignComponent {
       confirm:this.signup.value.confirm
     };    
     this.$user.register(user).subscribe(
-      ()=>this.$snack.show(this.i18n.register_ok,"OK"),
+      ()=>this.$snack.show(this.$i18n.lang().register_ok,"OK"),
       (err)=>this.$snack.show(err._body,"OK")
     )
   }

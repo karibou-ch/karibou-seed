@@ -15,6 +15,52 @@
   margin-top: 50px;
   font-size: large;
   background: #fbfbfb;
+  &.edit-container{
+    color: #424242;
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    padding-top: 8vh !important;
+    padding-bottom: 10vh !important;
+    min-height: 80%;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    z-index: 4;
+    margin: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .close{
+      background: transparent;
+      border: 0;
+      color: #777;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 4;    
+    }  
+    form{
+      background: white;
+      display: flex;
+      flex-flow: column;
+      mdc-textarea{
+        border: 1px solid #efefef;
+        width: 100%;
+        mdc-text-field-label, textarea{
+          padding-left: 0;
+        }
+      }
+      input.mdc-text-field__input{
+        border: 0;
+      }
+    }
+  }
+
   a{
     color: #365899;
   }

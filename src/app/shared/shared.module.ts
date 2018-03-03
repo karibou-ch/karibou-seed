@@ -9,6 +9,7 @@ import { CoinmarketcapService } from './coinmarketcap.service';
 import { NavigationService } from './navigation.service';
 import { InfiniteScrollerDirective } from './infinite-scroller.directive';
 import { IsAuthenticatedGard } from './is-authenticated-gard.service';
+import { i18n } from './i18n.service';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         CoinmarketcapService,
+        i18n,
         IsAuthenticatedGard,
         NavigationService
       ]

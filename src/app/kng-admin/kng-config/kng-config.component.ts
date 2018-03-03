@@ -1,6 +1,7 @@
 import { Component, OnInit,OnDestroy, ViewChild } from '@angular/core';
 
-import { NavigationService } from '../../shared/navigation.service';
+import { NavigationService, i18n } from '../../shared';
+
 import { MdcSnackbar, MdcDialogComponent, MdcListItemChange } from '@angular-mdc/web';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -25,15 +26,11 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   menus:any[];
   groups:string[];
 
-  i18n:any={
-    delete_ok:'Suppression effectuée',
-    save_ok:'Sauvegarde effectuée'
-  };
-
   
 
   constructor(
     public $fb: FormBuilder,
+    public $i18n: i18n,
     public $config: ConfigService,
     public $loader: LoaderService,
     public $snack:MdcSnackbar,
@@ -84,7 +81,7 @@ export class KngConfigComponent implements OnInit,OnDestroy {
 
   onConfigSave(){
     this.$config.save(this.config).subscribe(()=>{
-      this.$snack.show(this.i18n.save_ok,"OK");
+      this.$snack.show(this.$i18n.lang().save_ok,"OK");
     },
     (err)=>this.$snack.show(err._body,"OK"));      
   }
@@ -207,7 +204,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.config.shared.menu.splice(toRemove, 1);
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
-      this.$snack.show(this.i18n.save_ok,"OK");
+      this.$snack.show(this.$i18n.lang().save_ok,"OK");
       this.dlgEdit.close();        
       this.buildMenu();
     },
@@ -244,7 +241,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
-      this.$snack.show(this.i18n.save_ok,"OK");
+      this.$snack.show(this.$i18n.lang().save_ok,"OK");
       this.dlgEdit.close();      
       this.buildMenu();
     },

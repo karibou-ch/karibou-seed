@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, Vie
 import { ActivatedRoute } from '@angular/router';
 import { Config, ConfigService, LoaderService, User, UserService,Category } from 'kng2-core';
 
-import { NavigationService } from '../shared/navigation.service';
+import { NavigationService } from '../shared';
 import { MdcToolbar } from '@angular-mdc/web';
 
 @Component({

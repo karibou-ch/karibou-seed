@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { KngDocumentModule,  } from '../kng-document/kng-document.module';
+import { KngEditDocumentComponent } from '../kng-document/kng-document.component';
 
 //
 // exported components and directives
@@ -18,7 +20,9 @@ const routes: Routes = [
   { path: 'config', component: KngConfigComponent },
   { path: 'navigation', component: KngNavigationComponent , data:{menu:true}},
   { path: 'site', component: KngSiteComponent },
-  { path: 'site/content', component: KngSiteContentComponent },
+  { path: 'site/content', component: KngSiteContentComponent,children:[{
+    path:'', loadChildren: '../kng-document/kng-document.module#KngDocumentModule'
+  }] }
 ];
 
 //
