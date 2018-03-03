@@ -49,8 +49,9 @@
       </mdc-toolbar-section>    
       <!-- RIGHT MENU SECTION -->
       <mdc-toolbar-section [alignEnd]="true" [shrinkToFit]="true"  class="mdc-menu-anchor">
-        <button (click)="profile.open()" class="" mdc-toolbar-icon material-icon [hidden]="!user.isAuthenticated()">account_box</button>        
-        <button [routerLink]="['/store',store,'me','login']" mdc-toolbar-icon material-icon [hidden]="user.isAuthenticated()">account_circle</button>        
+          <button (click)="admin.open()" class="" mdc-toolbar-icon material-icon [hidden]="!user.isAdmin()">vpn_key</button>        
+          <button (click)="profile.open(3)" class="" mdc-toolbar-icon material-icon [hidden]="!user.isAuthenticated()">account_box</button>        
+          <button [routerLink]="['/store',store,'me','login']" mdc-toolbar-icon material-icon [hidden]="user.isAuthenticated()">account_circle</button>        
         <button (click)="shipping.open()" mdc-toolbar-icon >
             <i material-icon class="primary">update</i>
             <span class="hide-md" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
@@ -73,10 +74,17 @@
             </div>
           </mdc-menu-item>
         </mdc-menu>
+        <mdc-menu #admin>
+          <!-- FOR ADMIN -->
+          <mdc-menu-item [id]="20+i" class="admin-item" 
+                         [hidden]="!$navigation.isAdmin"
+                         *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
+                         [routerLink]="getRouterLink(menu.url)"><mdc-icon>radio_button_checked</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
+        </mdc-menu>
         <mdc-menu #profile >
-          <mdc-menu-item id="0" [routerLink]="['/store',store,'me']"><mdc-icon>favorite</mdc-icon><span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
-          <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon><span i18n>Logout</span></mdc-menu-item>
-          <mdc-menu-item id="2" [routerLink]="['/store',store,'me','orders']"><mdc-icon>shopping_cart</mdc-icon><span i18n>Voir mes commandes</span></mdc-menu-item>          
+          <mdc-menu-item id="0" [routerLink]="['/store',store,'me']"><mdc-icon>favorite</mdc-icon>&nbsp;<span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
+          <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon>&nbsp;<span i18n>Logout</span></mdc-menu-item>
+          <mdc-menu-item id="2" [routerLink]="['/store',store,'me','orders']"><mdc-icon>shopping_cart</mdc-icon>&nbsp;<span i18n>Voir mes commandes</span></mdc-menu-item>          
           <mdc-menu-divider></mdc-menu-divider>
           <mdc-menu-item id="3" *ngIf="user.shops.length" [routerLink]="['/store',store,'shop',user.shops[0].urlpath,'edit']"><mdc-icon>mode_edit</mdc-icon><span i18n>Editer</span> {{user.shops[0].name}}</mdc-menu-item>
 
@@ -93,14 +101,6 @@
                          [hidden]="!$navigation.isLogistic"
                          *ngFor="let menu of $navigation.getMenuItems('shipping');let i=index;" 
                          [routerLink]="getRouterLink(menu.url)"><mdc-icon>pin_drop</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
-          <mdc-menu-divider [hidden]="!$navigation.isLogistic"></mdc-menu-divider>
-          <!-- FOR ADMIN -->
-          <mdc-menu-item [id]="20+i" class="admin-item" 
-                         [hidden]="!$navigation.isAdmin"
-                         *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
-                         [routerLink]="getRouterLink(menu.url)"><mdc-icon>radio_button_checked</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
-          
-
         </mdc-menu>
               
         
