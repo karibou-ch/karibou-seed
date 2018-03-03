@@ -1,64 +1,293 @@
-<!-- 
 <div class="container">
-  <h1>Config introspection</h1>
-  <div >
-      <table>
-          <tr>
-              <th>Menu</th>
-          </tr>
-          <tr *ngFor="let sub of config.shared?.menu">
-              <td>{{sub.name.fr}} </td>
-          </tr>
-      </table> <br>
-      <table>
-          <tr>
-              <th>Market places</th>
-              <th>lat/lng</th>
-          </tr>
-          
-          <tr *ngFor="let sub of config.shared?.marketplace.list">
-              <td>{{sub.name}} </td>
-              <td>{{sub.lat}}/{{sub.lng}}</td>
-          </tr>
-      </table><br>
-      <table>
-          <tr>
-              <th>Shipping Week</th>
-          </tr>
-          <tr *ngFor="let sub of config.shared?.shippingweek">
-              <td>{{sub | date:'medium'}} </td>
-          </tr>
-      </table>
-  </div>
-</div>
-<div>
+        <mdc-list [lines]="2" [avatar]="true" [border]="true" >
+            <mdc-list-item  (click)="onConfigSave()">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">save</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text>
+                    <mdc-list-item-text i18n>
+                        Sauver vos modifications
+                        <mdc-list-item-secondary >Cliquer ici </mdc-list-item-secondary>
+                    </mdc-list-item-text>
+                </mdc-list-item-text>    
+                <mdc-list-item-meta>
+                    <mdc-icon class="pink">favorite</mdc-icon>
+                </mdc-list-item-meta>                                    
+            </mdc-list-item>
+            <mdc-list-divider></mdc-list-divider>
+            <!-- SITE Name -->
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Nom du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.siteName[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Titre tagline du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.tagLine.h[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config large">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-textarea i18n-label label="Paragraphe tagline du site" rows="12" 
+                            [(ngModel)]="config?.shared.home.tagLine.p[locale()]"></mdc-textarea>                  
+                        
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-divider></mdc-list-divider>
+
+            <!-- SITE Vendor -->
+            <!-- <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Titre shop du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.shop.t[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item> -->
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Header shop du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.shop.h[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config large">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-textarea i18n-label label="Paragraphe shop du site" rows="12" 
+                            [(ngModel)]="config?.shared.home.shop.p[locale()]"></mdc-textarea>                  
+                        
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-divider></mdc-list-divider>
+                        
+            <!-- SITE About -->
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Titre about du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.about.t[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Header about du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.about.h[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config large">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-textarea i18n-label label="Paragraphe about du site" rows="12" 
+                            [(ngModel)]="config?.shared.home.about.p[locale()]"></mdc-textarea>                  
+                        
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-divider></mdc-list-divider>
+
+            <!-- SITE Howto -->
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Titre howto du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.howto.t[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="HJ howto du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.howto.h[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-item class="config large">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-textarea i18n-label label="Paragraphe howto du site" rows="12" 
+                            [(ngModel)]="config?.shared.home.howto.p[locale()]"></mdc-textarea>                  
+                        
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>
+            <mdc-list-divider></mdc-list-divider>
+    
+            <!-- SITE Footer -->
+            <!-- <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Titre footer du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.footer.t[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item> -->
+            <mdc-list-item class="config">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-text-field i18n-label label="Header footer du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.footer.h[locale()]">
+                        </mdc-text-field> 
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item>                        
+            <!-- <mdc-list-item class="config large">
+                <mdc-list-item-graphic>
+                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                    
+                    <mdc-list-item-secondary >
+                        <mdc-textarea i18n-label label="Paragraphe footer du site" rows="12" 
+                            [(ngModel)]="config?.shared.home.footer.p[locale()]"></mdc-textarea>                  
+                        
+                    </mdc-list-item-secondary>               
+                </mdc-list-item-text>        
+            </mdc-list-item> -->
+        </mdc-list>
+        <h3 i18n>Configuration des clés publiques (API tiers)</h3>
+        <mdc-list [lines]="2" [avatar]="true" [border]="true" >
+                        
+          <!-- PUBKEYS -->  
+          <mdc-list-item class="config">
+              <mdc-list-item-graphic>
+                <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+              </mdc-list-item-graphic>
+              <mdc-list-item-text >                    
+                <mdc-list-item-secondary >
+                    <mdc-text-field i18n-label label="Gateway public key (stripe)" type="text" 
+                                    [(ngModel)]="config?.shared.keys.pubStripe">
+                    </mdc-text-field> 
+                </mdc-list-item-secondary>               
+              </mdc-list-item-text>        
+        </mdc-list-item>
+        <mdc-list-item class="config">
+            <mdc-list-item-graphic>
+                <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+            </mdc-list-item-graphic>
+            <mdc-list-item-text>
+                <mdc-list-item-secondary >
+                    <mdc-text-field i18n-label label="Uploadcare public key" type="text" 
+                                    [(ngModel)]="config?.shared.keys.pubUpcare">
+                    </mdc-text-field> 
+                </mdc-list-item-secondary>                                   
+            </mdc-list-item-text>        
+        </mdc-list-item>
   
-      <div class="clearfix well" >
-        <h3 class="page-header">Gateway public key (stripe)</h3>
-        <div class="form-group ">                        
-            <input type="text" class="form-control input-lg" [(ngModel)]="config.shared.keys.pubStripe" />
-        </div>
-
-        <h3 class="page-header">Uploadcare public key </h3>
-        <div class="form-group ">                        
-            <input type="text" class="form-control input-lg" [(ngModel)]="config.shared.keys.pubUpcare" />
-        </div>
-
-        <h3 class="page-header">Github public key</h3>
-        <div class="form-group ">                        
-            <input type="text" class="form-control input-lg" [(ngModel)]="config.shared.keys.pubGithub" />
-        </div>
-
-        <h3 class="page-header">Map public key</h3>
-        <div class="form-group ">                        
-            <input type="text" class="form-control input-lg" [(ngModel)]="config.shared.keys.pubMap" />
-        </div>
-
-        <h3 class="page-header">Disqus public key</h3>
-        <div class="form-group ">                        
-            <input type="text" class="form-control input-lg" [(ngModel)]="config.shared.keys.pubDisqus" />
-        </div>
-      </div>
-  
+        <mdc-list-item class="config">
+            <mdc-list-item-graphic>
+                <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+            </mdc-list-item-graphic>
+            <mdc-list-item-text>
+                <mdc-list-item-secondary >
+                    <mdc-text-field i18n-label label="Github public key" type="text" 
+                                    [(ngModel)]="config?.shared.keys.pubGithub">
+                    </mdc-text-field> 
+                </mdc-list-item-secondary>                                   
+            </mdc-list-item-text>                        
+        </mdc-list-item>
+        <mdc-list-item class="config">
+            <mdc-list-item-graphic>
+                <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+            </mdc-list-item-graphic>
+            <mdc-list-item-text>
+                <mdc-list-item-secondary >
+                    <mdc-text-field i18n-label label="Map public key" type="text" 
+                                    [(ngModel)]="config?.shared.keys.pubMap">
+                    </mdc-text-field> 
+                </mdc-list-item-secondary>                                   
+            </mdc-list-item-text>                        
+        </mdc-list-item>
+        <mdc-list-item class="config">
+            <mdc-list-item-graphic>
+                <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+            </mdc-list-item-graphic>
+            <mdc-list-item-text>
+                <mdc-list-item-secondary >
+                    <mdc-text-field i18n-label label="Disqus public key" type="text" 
+                                    [(ngModel)]="config?.shared.keys.pubDisqus">
+                    </mdc-text-field> 
+                </mdc-list-item-secondary>                                   
+            </mdc-list-item-text>                                        
+        </mdc-list-item>
+        <mdc-list-item class="config">
+            <mdc-list-item-graphic>
+                <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+            </mdc-list-item-graphic>
+            <mdc-list-item-text>
+                <mdc-list-item-secondary >
+                    <mdc-text-field i18n-label label="Google Auth public key" type="text" 
+                                    [(ngModel)]="config?.shared.keys.pubGoogleAuth">
+                    </mdc-text-field> 
+                </mdc-list-item-secondary>                                   
+            </mdc-list-item-text>                                        
+        </mdc-list-item>
+        
+    
+        
+    </mdc-list>
 </div>
--->

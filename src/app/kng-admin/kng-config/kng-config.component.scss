@@ -1,0 +1,75 @@
+.container{
+  min-width: 600px;
+  z-index: 1;
+  @media (max-width: 426px) {
+    -min-width: 300px;
+  }
+
+  h1,h2,h3{
+    padding-left: 20px;
+  }
+
+  mdc-list{
+    mdc-list-item.config{
+      &.large{
+        min-height: 300px;
+      }
+      mdc-list-item-text{
+        width: 100%;
+        mdc-textarea, mdc-text-field{
+          font-size: 90%;
+          width: 98%;
+          border: 0;
+        }
+      }
+    }
+    mdc-list-item{
+      background: white;
+      &.disabled{
+        opacity: 0.4;
+      }
+      mdc-form-field{
+        align-self: start;
+        margin-top: auto;
+        margin-bottom: 12px;    
+      }
+    
+      mdc-list-item-graphic{
+        img{
+          width: 38px!important;
+          height: 38px;
+          border-radius:8px;
+        }
+      }  
+  
+    }
+  }
+}
+
+mdc-dialog{
+  .double{
+    flex:2;
+  }
+
+  mdc-dialog-body{
+    form{
+      display: flex;
+      flex-flow: column wrap;
+      justify-content:flex-start; /*halign*/
+      background: transparent;
+      width: 100%;
+
+      >div{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content:flex-start;
+        &.between{
+          justify-content:space-between;
+        }
+
+      }
+
+    }
+  }
+
+}

@@ -19,6 +19,9 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   isReady:boolean = false;
   config:any;
   categories:Category[]=[];
+
+  //
+  // edit content
   edit:{
     category:Category;
     form: any;
@@ -56,9 +59,9 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     //
     // init formBuilder
     this.edit.form=this.$fb.group({
-      'weight':['', [Validators.required,]],
-      'active':['', [Validators.required,]],
-      'home': ['', [Validators.required]],
+      'weight':['', [Validators.required]],
+      'active':['', []],
+      'home': ['', []],
       'color':['', [Validators.required]],
       'cover': ['', [Validators.required]],
       'image': ['', [Validators.required]],

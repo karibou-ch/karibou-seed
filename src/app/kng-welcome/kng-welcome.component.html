@@ -7,14 +7,14 @@
       <div class="logo"></div>
       <!-- WELCOME -->
       <div class="inner" [hidden]="askAction">
-        <h1 i18n>Nous livrons tous les jours les produits de notre boulangerie</h1>
+        <h1 i18n>{{config?.shared.home.tagLine.h.fr}}</h1>
         <form>
             <button mdc-button [icon]="true" [unelevated]="true" [secondary]="true" [routerLink]="'/store/bretzel'">
               <mdc-icon>person_pin</mdc-icon>              
-              <span i18n>J'habite le nouveau quartier Artamis</span>
+              <span i18n>J'habite le nouveau quartier Jonction</span>
             </button>            
         </form>
-        <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">J'ai déjà un compte</a></div>
+        <div class="signup-vs-login hide" i18n><a class="link" (click)="askAction='login'">J'ai déjà un compte</a></div>
       </div>
 
       <!-- LOGIN -->
@@ -60,22 +60,8 @@
   </div>
 
   <div class="container middle">
-    <div class="how-it-works">
-      <div class="why">
-        <div class="image"><img src="https://d2guulkeunn7d8.cloudfront.net/assets/homepage/img-touch-app-90cd5d014f647c6c753c5bfe0d4b015c5c8c0de4ef67c457c6fadf095b5d9e33.jpg"/></div>
-        <h3>Le pain que vous aimez</h3>
-        <p>Les meilleures recettes artisanales avec une cuisson au feu de bois!</p>
-      </div>
-      <div class="why">
-        <div class="image"><img src="https://d2guulkeunn7d8.cloudfront.net/assets/homepage/img-shop-car-308c452c053637bb2066c18cc100ba634de63bc1a63aacdad4d39639ea6f5398.jpg"/></div>
-        <h3>Votre pain à votre porte</h3>
-        <p>Nous livrons le pain ou votre petit déjeuné dès 6h00 du matin.</p>
-      </div>
-      <div class="why">
-        <div class="image"><img src="https://d2guulkeunn7d8.cloudfront.net/assets/homepage/img-touch-app-90cd5d014f647c6c753c5bfe0d4b015c5c8c0de4ef67c457c6fadf095b5d9e33.jpg"/></div>
-        <h3>Le client est important</h3>
-        <p>L'artisant se réinvente, vous gagnez du temps et manger bien.</p>
-      </div>
+    <div class="how-it-works" [innerHTML]="config?.shared.home.howto.p.fr">
+                
     </div>
     <div class="favorite-products">
       <div class="elem">LEFT</div>

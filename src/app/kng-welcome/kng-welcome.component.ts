@@ -1,11 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
+
+import {
+  LoaderService,
+  User,
+  Config
+}  from 'kng2-core';
 
 import { NavigationService } from '../shared/navigation.service';
 @Component({
   selector: 'kng-welcome',
   templateUrl: './kng-welcome.component.html',
-  styleUrls: ['./kng-welcome.component.scss']
+  styleUrls: ['./kng-welcome.component.scss'],
+  encapsulation: ViewEncapsulation.None  
 })
 export class KngWelcomeComponent implements OnInit {
 
@@ -55,7 +63,10 @@ export class KngWelcomeComponent implements OnInit {
     {title:"Meyrin",name:"meyrin",image:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Eglise_Saint-Julien_%28Meyrin%29_01.jpg/1200px-Eglise_Saint-Julien_%28Meyrin%29_01.jpg"},
   ]
 
+  config:any;
+
   constructor( 
+    private $loader: LoaderService,
     private $navigation:NavigationService,
     private $route: ActivatedRoute,
     private $router: Router,    
@@ -63,20 +74,22 @@ export class KngWelcomeComponent implements OnInit {
     
   }
 
+
   ngOnInit() {
     //
     // 
     this.$route.params.subscribe(params=>{
-      console.log('---------------welcome',params)
       this.$navigation.store=this.store=params['store'];
       
-    })
-    // if(this.$route.firstChild){
-    //   this.$route.firstChild.params.subscribe(params=>{
-    //     this.$navigation.store=this.store=params['store'];
-    //     console.log('---------------2',params)
-    //   })
-    //   }
+    });
+
+    //
+    //
+    this.$loader.ready().subscribe(result=>{
+      this.config = result[0];
+      console.log('-----------------',this.config)
+    });
+    
   }
 
   isAppReady(){

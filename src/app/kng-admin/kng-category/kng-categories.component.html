@@ -6,7 +6,7 @@
         </mdc-list-item-graphic>
         <mdc-list-item-text i18n>
           Ajouter une nouvelle catégorie
-          <mdc-list-item-secondary i18n>Cliquer pour ajouter</mdc-list-item-secondary>
+          <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
         </mdc-list-item-text>        
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
@@ -52,7 +52,7 @@
   [clickOutsideToClose]="true">
   <mdc-dialog-header>
     <mdc-dialog-header-title>
-      <span i18n>{{edit.category?.type}} {{edit.category?.name}}</span>
+      <span i18n>{{edit.category?.type}}<b>/</b> {{edit.category?.name}}</span>
     </mdc-dialog-header-title>
   </mdc-dialog-header>
   <mdc-dialog-body *ngIf="edit.category">
@@ -107,6 +107,6 @@
   <mdc-dialog-footer>
     <button mdc-dialog-button [disabled]="edit.category?.usedBy.length" (click)="onDelete()" class="align-start">Delete</button>
     <button mdc-dialog-button [cancel]="true">Decline</button>
-    <button mdc-dialog-button [accept]="true">Accept</button>
+    <button mdc-dialog-button [accept]="true" [disabled]="!edit.form.valid">Accept</button>
   </mdc-dialog-footer>
 </mdc-dialog>

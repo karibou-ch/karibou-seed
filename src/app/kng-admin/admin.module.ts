@@ -6,21 +6,19 @@ import { SharedModule } from '../shared/shared.module';
 
 //
 // exported components and directives
-import { KngCategoriesComponent, 
-         KngCategoryEditComponent } from './kng-category/';
+import { KngCategoriesComponent } from './kng-category/';
 
-import { KngConfigComponent } from './kng-config/kng-config.component';
-import { KngMenuComponent } from './kng-menu/kng-menu.component';
+import { KngConfigComponent, KngNavigationComponent, KngSiteComponent,KngSiteContentComponent } from './kng-config/kng-config.component';
 import { AdminMdcModule } from './admin-mdc.module';
 
 //
 // define routes module
 const routes: Routes = [
   { path: 'category', component: KngCategoriesComponent },
-  { path: 'category/create', component: KngCategoryEditComponent, data:{create:true} },
-  { path: 'category/:slug', component: KngCategoryEditComponent },
   { path: 'config', component: KngConfigComponent },
-  { path: 'menu', component: KngConfigComponent },
+  { path: 'navigation', component: KngNavigationComponent , data:{menu:true}},
+  { path: 'site', component: KngSiteComponent },
+  { path: 'site/content', component: KngSiteContentComponent },
 ];
 
 //
@@ -39,8 +37,9 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
   ],
   declarations: [
     KngCategoriesComponent,
-    KngCategoryEditComponent, 
     KngConfigComponent, 
-    KngMenuComponent]
+    KngSiteContentComponent,
+    KngSiteComponent, 
+    KngNavigationComponent]
 })
 export class AdminModule { }

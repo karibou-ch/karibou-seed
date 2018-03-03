@@ -1,0 +1,41 @@
+<div class="container">
+  <mdc-list [lines]="2" [avatar]="true" [border]="true" >
+    <mdc-list-item (click)="onContentCreate($event)">
+        <mdc-list-item-graphic>
+          <mdc-icon [fontSize]="30">folder</mdc-icon>
+        </mdc-list-item-graphic>
+        <mdc-list-item-text i18n>
+          Ajouter un nouveau contenu
+          <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
+        </mdc-list-item-text>        
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+    <mdc-list-item *ngFor="let content of contents" 
+                    [class.disabled]="!content.available">
+        <mdc-list-item-graphic>
+          <mdc-icon [fontSize]="30">folder</mdc-icon>
+        </mdc-list-item-graphic>
+        <mdc-list-item-text>
+          <span>{{content.type}}</span><b>/</b><span [innerHtml]="content.title.fr"></span>
+          <mdc-list-item-secondary>
+              {{content.slug}}
+          </mdc-list-item-secondary>              
+        </mdc-list-item-text>
+        <mdc-list-item-meta>
+            <mdc-form-field>
+                <mdc-checkbox [checked]="content.available" [disabled]="true" ></mdc-checkbox>
+                <span class="hide-md">Active</span>
+            </mdc-form-field>
+              
+            <mdc-chip>
+              <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+              <mdc-chip-text>{{content.weight}}</mdc-chip-text>
+            </mdc-chip>
+            
+        </mdc-list-item-meta>
+        <mdc-list-divider></mdc-list-divider>
+    </mdc-list-item>
+  </mdc-list>
+</div>
+<!-- EDIT -->
+

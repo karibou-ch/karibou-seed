@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Config, LoaderService, User, UserService,Category } from 'kng2-core';
+import { Config, ConfigService, LoaderService, User, UserService,Category } from 'kng2-core';
 
 import { NavigationService } from '../shared/navigation.service';
 import { MdcToolbar } from '@angular-mdc/web';
@@ -38,6 +38,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   @ViewChild('toolbar') toolbar:MdcToolbar;
 
   constructor(
+    private $config:ConfigService,
     private $loader:LoaderService,
     private $route: ActivatedRoute,
     private $user:UserService,
@@ -76,6 +77,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         console.log('---- user stream',user.display())
         Object.assign(this.user, user);        
         this.$navigation.updateUser(this.user);
+      }
+    );
+    //
+    // update config
+    this.$config.subscribe(
+      (config:Config)=>{
+        Object.assign(this.config, config);
+        this.$navigation.init(this.config,this.categories);
       }
     );
   } 

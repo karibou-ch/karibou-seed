@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MdcDialogComponent } from '@angular-mdc/web';
@@ -11,7 +11,6 @@ import {
     UserService,
     config
 }  from 'kng2-core';
-import { window } from 'rxjs/operator/window';
 
 
 @Component({
@@ -33,6 +32,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     WaitText:boolean=false;
     rootProductPath:string;
 
+    @ViewChild('dialog') dialog: ElementRef;
+    
     constructor(
         private $route: ActivatedRoute,
         private $loader: LoaderService,
@@ -70,6 +71,10 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.$product.findBySku(this.sku).subscribe(prod => {
                 this.product = prod
             })
+            if(this.dialog){
+                this.dialog.nativeElement.classList.remove('fadeout')
+            }
+            
         });
     }
 
@@ -84,12 +89,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
 
     onClose(closedialog){
+        this.dialog.nativeElement.classList.add('fadeout')
         // if(closedialog){
         //     this.dialog.close();
         // }
         setTimeout(()=>{
             this.$location.back()        
-        },500)
+        },200)
     }
 
     getAvailability(product:Product,pos:number){

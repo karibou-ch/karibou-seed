@@ -98,7 +98,7 @@
           <mdc-menu-item [id]="20+i" class="admin-item" 
                          [hidden]="!$navigation.isAdmin"
                          *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
-                         [routerLink]="getRouterLink(menu.url)"><mdc-icon [fontSize]="14">radio_button_checked</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
+                         [routerLink]="getRouterLink(menu.url)"><mdc-icon>radio_button_checked</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
           
 
         </mdc-menu>

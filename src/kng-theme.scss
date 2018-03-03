@@ -9,8 +9,9 @@ body{
   margin-bottom: 0px!important;
 }
 
-.secondary      {color:           var(--mdc-theme-secondary);}
-.primary        {color:           var(--mdc-theme-primary);}
+.secondary      {color:           var(--mdc-theme-secondary)!important;}
+.primary        {color:           var(--mdc-theme-primary)!important;}
+.green          {color:         #43b02a!important;}
 .red            {color:         red!important;}
 .black          {color:         black!important;}
 .pink           {color:         #da1c5c!important;}

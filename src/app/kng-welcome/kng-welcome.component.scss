@@ -76,7 +76,8 @@ $bretzel-background-color: #8b6f4e;
     }
   }
   
-  .container.top{
+.container{
+  &.top{
     color: #424242;
     background-color:rgba(0,0,0,0.1);
     margin:0;
@@ -153,17 +154,18 @@ $bretzel-background-color: #8b6f4e;
             
         }
         form{
-          background: white;
+          background: transparent;
           display: flex;
           flex-flow:row wrap;
           margin: 20px auto;
           padding: 8px 70px;  
-          min-height:150px;
+          min-height:80px;
           width: auto;
           button{
             flex:1;
             height: 50px;
             color: white;
+            align-self: center;
           }
 
           @media (max-width: 426px) {
@@ -179,8 +181,7 @@ $bretzel-background-color: #8b6f4e;
       } 
     }  
   }
-  
-  .container.middle{
+  &.middle{
     color: #424242;
     background-color:#EEEEEE!important;
     width:100%;
@@ -194,7 +195,8 @@ $bretzel-background-color: #8b6f4e;
       flex-flow: row wrap;
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
-      div.why{
+      
+      .why{
         flex: 1 0 29%;
         padding:25px;
         @media (max-width: 700px) {
@@ -242,11 +244,15 @@ $bretzel-background-color: #8b6f4e;
     }
   }
 
-  .container.separator{
+  &.separator{
     background-color:#EEEEEE!important;
     width:100%;
     height: 80px;
   }
+      
+}
+  
+
   
   
   .footer{

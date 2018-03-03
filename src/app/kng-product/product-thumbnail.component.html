@@ -6,11 +6,12 @@
 
 
 <mdc-card class="product-card"
-	[stroked]="false"
-	[routerLink]="['products',product.sku]"
+	[stroked]="false"	
 	[class.noavailable]="!product.isAvailableForOrder()" 
 	[class.noinstock]="!product.pricing.stock">
-	<mdc-card-primary-action mdc-ripple>
+
+	<button  class="action-add right primary" ><mdc-icon [fontSize]="30">add</mdc-icon></button>	
+	<mdc-card-primary-action mdc-ripple [routerLink]="['products',product.sku]">
 		<mdc-card-media
 			[square]="true"
 			[ngStyle]="{'background-image': 'url(' + product.photo.url + '/-/resize/200x/)'}"
@@ -24,7 +25,7 @@
 			-->	
 		</mdc-card-media>
 		<div class="product-card__primary">
-			<span class="product-card__subtitle" mdc-typography-body1>{{product.title}}</span>
+			<span class="product-card__subtitle" >{{product.title}}</span>
 		</div>
 		<div class="product-card__secondary" mdc-typography-body1>
 			<div class="price ">
