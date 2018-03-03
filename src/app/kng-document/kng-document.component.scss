@@ -35,6 +35,8 @@
     left: 0;
     right: 0;
     bottom: 0;
+    overflow-y: auto;
+
     .close{
       background: transparent;
       border: 0;
@@ -109,6 +111,7 @@
   .container {
     max-width: 700px;
     margin: 10px auto;  
+    height: 100%;
 
     .byline{
       color: #aaa;

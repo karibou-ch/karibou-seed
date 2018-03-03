@@ -70,10 +70,6 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     //return this.menus.find(menu=>menu.id===item.id).index;
   }
 
-  locale(){
-    return 'fr';
-  }
-
   ngOnDestroy(){
     this.$navigation.isAdminLayout=false;
   }
@@ -109,6 +105,7 @@ export class KngSiteContentComponent  {
 
   constructor(
     public $fb: FormBuilder,
+    public $i18n:i18n,
     public $document: DocumentService,
     public $loader: LoaderService,
     public $snack:MdcSnackbar,
@@ -169,8 +166,9 @@ export class KngNavigationComponent extends KngConfigComponent {
   @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
   
   assign(value){
+    let lang=this.$i18n.locale;
     this.edit.menu.weight=value.weight;
-    this.edit.menu.name.fr=value.name;
+    this.edit.menu.name[lang]=value.name;
     this.edit.menu.url=value.url;
     this.edit.menu.group=value.group;
     this.edit.menu.active=value.active;    

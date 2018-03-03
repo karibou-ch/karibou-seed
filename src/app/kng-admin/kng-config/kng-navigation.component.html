@@ -1,6 +1,6 @@
 <div class="container">
   <mdc-list [lines]="2" [avatar]="true" [border]="true" >
-    <mdc-list-item (click)="onMenuCreate($event)">
+    <mdc-list-item (click)="onMenuCreate()">
         <mdc-list-item-graphic>
           <mdc-icon [fontSize]="30">folder</mdc-icon>
         </mdc-list-item-graphic>
@@ -17,7 +17,7 @@
           <mdc-icon [fontSize]="30">folder</mdc-icon>
         </mdc-list-item-graphic>
         <mdc-list-item-text>
-          <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name.fr"></span>
+          <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name[$i18n.locale]"></span>
           <mdc-list-item-secondary>
               {{menu.url}}
           </mdc-list-item-secondary>              
@@ -40,13 +40,13 @@
 </div>
 <!-- EDIT -->
 <mdc-dialog #dlgEdit 
-  (accept)="onSave()"
+  (accept)="onSave($event)"
   (decline)="onDecline()"
   [escapeToClose]="true"
   [clickOutsideToClose]="true">
   <mdc-dialog-header>
     <mdc-dialog-header-title>
-      <span i18n>{{edit.menu?.group||'Create'}}<b>/</b> {{edit.menu?.name.fr||'Navigation'}}</span>
+      <span i18n>{{edit.menu?.group||'Create'}}<b>/</b> {{edit.menu?.name[$i18n.locale]||'Navigation'}}</span>
     </mdc-dialog-header-title>
   </mdc-dialog-header>
   <mdc-dialog-body *ngIf="edit.menu">
@@ -64,7 +64,7 @@
         </div>
 
         <div>                      
-          <mdc-text-field style="flex:1" i18n-label label="Nom" type="text" [ngModel]="edit.menu.name.fr" formControlName="name" >
+          <mdc-text-field style="flex:1" i18n-label label="Nom" type="text" [ngModel]="edit.menu.name[$i18n.locale]" formControlName="name" >
           </mdc-text-field>
           <mdc-text-field style="flex:1" i18n-label label="lien" type="text" [ngModel]="edit.menu.url" formControlName="url" >
           </mdc-text-field>
@@ -73,8 +73,8 @@
       
   </mdc-dialog-body>
   <mdc-dialog-footer>
-    <button mdc-dialog-button (click)="onDelete()" [disabled]="edit.menu?.active" class="align-start">Delete</button>
+    <button mdc-dialog-button (click)="onDelete($event)" [disabled]="edit.menu?.active" class="align-start">Delete</button>
     <button mdc-dialog-button [cancel]="true">Decline</button>
-    <button mdc-dialog-button (click)="onSave()" [disabled]="!edit.form.valid">Accept</button>
+    <button mdc-dialog-button (click)="onSave($event)" [disabled]="!edit.form.valid">Accept</button>
   </mdc-dialog-footer>
 </mdc-dialog>

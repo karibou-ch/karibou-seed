@@ -20,7 +20,9 @@ export class i18n  {
   public _= this.lang.bind(this);
 
   public config:Config;
-  currentLocale:string;
+  //
+  // default locale
+  currentLocale:string='fr';
 
   constructor(
     private $config:ConfigService

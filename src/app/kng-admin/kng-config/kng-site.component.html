@@ -23,12 +23,12 @@
         <mdc-list-item-text>                    
           <mdc-list-item-secondary >
               <mdc-textarea i18n-label label="Message de maintenance" rows="12" 
-                            [ngModel]="config?.shared.maintenance.reason[locale()]"></mdc-textarea>                  
+                            [ngModel]="config?.shared.maintenance.reason[$i18n.locale]"></mdc-textarea>                  
           </mdc-list-item-secondary>               
         </mdc-list-item-text>        
         <mdc-list-item-meta>
             <mdc-form-field>
-                <mdc-checkbox [checked]="config?.shared.maintenance.active" ([ngModel])="config.shop.maintenance.active"></mdc-checkbox>
+                <mdc-checkbox [checked]="config?.shared.maintenance.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
             </mdc-form-field>
         </mdc-list-item-meta>                                    
       </mdc-list-item>
@@ -42,12 +42,12 @@
         <mdc-list-item-text>                    
           <mdc-list-item-secondary >
               <mdc-textarea i18n-label label="Message de Welcome" rows="12" 
-                            [ngModel]="config?.shared.welcome.message[locale()]"></mdc-textarea>                  
+                            [ngModel]="config?.shared.welcome.message[$i18n.locale]"></mdc-textarea>                  
           </mdc-list-item-secondary>               
         </mdc-list-item-text>        
         <mdc-list-item-meta>
             <mdc-form-field>
-                <mdc-checkbox [checked]="config?.shared.welcome.active" ([ngModel])="config.shop.maintenance.active"></mdc-checkbox>
+                <mdc-checkbox [checked]="config?.shared.welcome.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
             </mdc-form-field>
         </mdc-list-item-meta>                                    
       </mdc-list-item>
@@ -62,12 +62,12 @@
         <mdc-list-item-text>                    
           <mdc-list-item-secondary >
               <mdc-textarea i18n-label label="Message d'entête" rows="12" 
-                            [ngModel]="config?.shared.header.message[locale()]"></mdc-textarea>                  
+                            [ngModel]="config?.shared.header.message[$i18n.locale]"></mdc-textarea>                  
           </mdc-list-item-secondary>               
         </mdc-list-item-text>        
         <mdc-list-item-meta>
             <mdc-form-field>
-                <mdc-checkbox [checked]="config?.shared.header.active" ([ngModel])="config.shop.maintenance.active"></mdc-checkbox>
+                <mdc-checkbox [checked]="config?.shared.header.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
             </mdc-form-field>
         </mdc-list-item-meta>                                    
       </mdc-list-item>
@@ -81,12 +81,12 @@
         <mdc-list-item-text>                    
           <mdc-list-item-secondary >
               <mdc-textarea i18n-label label="Message lors du checkout" rows="12" 
-                            [ngModel]="config?.shared.checkout.message[locale()]"></mdc-textarea>                  
+                            [ngModel]="config?.shared.checkout.message[$i18n.locale]"></mdc-textarea>                  
           </mdc-list-item-secondary>               
         </mdc-list-item-text>        
         <mdc-list-item-meta>
             <mdc-form-field>
-                <mdc-checkbox [checked]="config?.shared.checkout.active" ([ngModel])="config.shop.maintenance.active"></mdc-checkbox>
+                <mdc-checkbox [checked]="config?.shared.checkout.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
             </mdc-form-field>
         </mdc-list-item-meta>                                    
       </mdc-list-item>
@@ -97,22 +97,22 @@
 <!-- FERMETURE -->
 <!-- 
         <h3 class="page-header">Interrompre les dates de livraisons suivantes</h3>
-        <div class="clearfix" ng-repeat="noshipping in config.shop.noshipping" style="border-bottom:1px dotted #ddd;margin-bottom:5px">
+        <div class="clearfix" ng-repeat="noshipping in config.shared.noshipping" style="border-bottom:1px dotted #ddd;margin-bottom:5px">
           <div class="col-xs-7 nopadding">
-            <input type="text" value="{{noshipping.reason}}" ng-model="config.shop.noshipping[$index].reason[locale()]" placeholder="pour quelle raison?" class="form-control input-lg col-md-10">
+            <input type="text" value="{{noshipping.reason}}" ng-model="config.shared.noshipping[$index].reason[$i18n.locale]" placeholder="pour quelle raison?" class="form-control input-lg col-md-10">
           </div>
           <div class="col-xs-2">
-            <input type="text" class="form-control input-lg" ng-model="config.shop.noshipping[$index].from" placeholder="jj/mm/aaaa" format-date="DD/MM/YYYY" required />
+            <input type="text" class="form-control input-lg" ng-model="config.shared.noshipping[$index].from" placeholder="jj/mm/aaaa" format-date="DD/MM/YYYY" required />
           </div>           
           <div class="col-xs-2">
-            <input type="text" format-date="DD/MM/YYYY" class="form-control input-lg" ng-model="config.shop.noshipping[$index].to" placeholder="jj/mm/aaaa"  required />
+            <input type="text" format-date="DD/MM/YYYY" class="form-control input-lg" ng-model="config.shared.noshipping[$index].to" placeholder="jj/mm/aaaa"  required />
           </div>           
           <div class="col-xs-1 nopadding">
-            <a class="pull-right btn btn-default btn-lg" href ng-click="config.shop.noshipping.splice($index, 1)"><i class="fa fa-remove"></i></a>
+            <a class="pull-right btn btn-default btn-lg" href ng-click="config.shared.noshipping.splice($index, 1)"><i class="fa fa-remove"></i></a>
           </div>           
         </div>
         <div class="clearfix">
-          <button href ng-click="config.shop.noshipping.push({})" class="btn btn-transparent btn-lg btn-block ">Ajouter une date <i class="fa fa-plus"></i></button>
+          <button href ng-click="config.shared.noshipping.push({})" class="btn btn-transparent btn-lg btn-block ">Ajouter une date <i class="fa fa-plus"></i></button>
           <p class="help-block">Spécifier les dates de fermetures et de réouverture</p>
         </div>
 -->

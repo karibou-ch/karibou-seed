@@ -23,7 +23,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Nom du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.siteName[locale()]">
+                                        [(ngModel)]="config?.shared.home.siteName[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -35,7 +35,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Titre tagline du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.tagLine.h[locale()]">
+                                        [(ngModel)]="config?.shared.home.tagLine.h[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -47,7 +47,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-textarea i18n-label label="Paragraphe tagline du site" rows="12" 
-                            [(ngModel)]="config?.shared.home.tagLine.p[locale()]"></mdc-textarea>                  
+                            [(ngModel)]="config?.shared.home.tagLine.p[$i18n.locale]"></mdc-textarea>                  
                         
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -62,7 +62,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Titre shop du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.shop.t[locale()]">
+                                        [(ngModel)]="config?.shared.home.shop.t[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -74,7 +74,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Header shop du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.shop.h[locale()]">
+                                        [(ngModel)]="config?.shared.home.shop.h[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -86,7 +86,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-textarea i18n-label label="Paragraphe shop du site" rows="12" 
-                            [(ngModel)]="config?.shared.home.shop.p[locale()]"></mdc-textarea>                  
+                            [(ngModel)]="config?.shared.home.shop.p[$i18n.locale]"></mdc-textarea>                  
                         
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -101,7 +101,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Titre about du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.about.t[locale()]">
+                                        [(ngModel)]="config?.shared.home.about.t[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -113,7 +113,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Header about du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.about.h[locale()]">
+                                        [(ngModel)]="config?.shared.home.about.h[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -125,7 +125,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-textarea i18n-label label="Paragraphe about du site" rows="12" 
-                            [(ngModel)]="config?.shared.home.about.p[locale()]"></mdc-textarea>                  
+                            [(ngModel)]="config?.shared.home.about.p[$i18n.locale]"></mdc-textarea>                  
                         
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -140,7 +140,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Titre howto du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.howto.t[locale()]">
+                                        [(ngModel)]="config?.shared.home.howto.t[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -151,8 +151,8 @@
                 </mdc-list-item-graphic>
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
-                        <mdc-text-field i18n-label label="HJ howto du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.howto.h[locale()]">
+                        <mdc-text-field i18n-label label="Header howto du site" type="text" 
+                                        [(ngModel)]="config?.shared.home.howto.h[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -164,7 +164,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-textarea i18n-label label="Paragraphe howto du site" rows="12" 
-                            [(ngModel)]="config?.shared.home.howto.p[locale()]"></mdc-textarea>                  
+                            [(ngModel)]="config?.shared.home.howto.p[$i18n.locale]"></mdc-textarea>                  
                         
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -179,7 +179,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Titre footer du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.footer.t[locale()]">
+                                        [(ngModel)]="config?.shared.home.footer.t[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -191,7 +191,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-text-field i18n-label label="Header footer du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.footer.h[locale()]">
+                                        [(ngModel)]="config?.shared.home.footer.h[$i18n.locale]">
                         </mdc-text-field> 
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        
@@ -203,7 +203,7 @@
                 <mdc-list-item-text >                    
                     <mdc-list-item-secondary >
                         <mdc-textarea i18n-label label="Paragraphe footer du site" rows="12" 
-                            [(ngModel)]="config?.shared.home.footer.p[locale()]"></mdc-textarea>                  
+                            [(ngModel)]="config?.shared.home.footer.p[$i18n.locale]"></mdc-textarea>                  
                         
                     </mdc-list-item-secondary>               
                 </mdc-list-item-text>        

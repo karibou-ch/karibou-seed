@@ -93,12 +93,14 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     this.edit.form=this.$fb.group({
       'title':['', [Validators.required]],
       'header':['', [Validators.required]],
+      'body':['', [Validators.required]],
       'available':['', []],
       'type': ['', [Validators.required]]
     });        
   }
 
   onSave(){
+    console.log(this.edit.form.value);
 
   }
 }
