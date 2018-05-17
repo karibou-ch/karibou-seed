@@ -1,10 +1,13 @@
 import { RouterModule,  RouterOutlet, Routes } from '@angular/router';
-import { IsAuthenticated, Kng2CoreModule } from 'kng2-core';
+import { IsAuthenticated, Kng2CoreModule, LoaderResolve } from 'kng2-core';
 
 import { KngDepartementComponent } from './kng-departement/departement.component';
 import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { ProductListComponent, ProductComponent } from './kng-product';
+import { KngCartComponent } from './kng-cart/kng-cart.component';
+import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
+import { IsWelcomeGard } from './shared';
 
 //
 // /store/geneva/
@@ -24,22 +27,26 @@ import { ProductListComponent, ProductComponent } from './kng-product';
 
 
 export const appRoutes: Routes = [
+  { path: 'validate/:uid/:mail',component:KngValidateMailComponent, resolve:{ loader:LoaderResolve } },
   {
     path:'store',
     children:[
     { path:'', component:KngWelcomeComponent },{ 
       path:':store',
       component:KngWelcomeComponent,
+      resolve:{ loader:LoaderResolve },
       children:[
-        { path:'',component:KngHomeComponent,children:[
-          { path: 'products/:sku', component: ProductComponent},
-        ]},
+        { path: 'validate/:uid/:mail',component:KngValidateMailComponent, resolve:{ loader:LoaderResolve } },
         { path: 'me', loadChildren: './kng-user/user.module#UserModule' },
         { path: 'shops', loadChildren: './kng-shops/kng-shops.module#ShopsModule' },
         { path: 'content', loadChildren: './kng-document/kng-document.module#KngDocumentModule' },      
         { path: 'admin', loadChildren: './kng-admin/admin.module#AdminModule'  },
+        { path: 'cart',loadChildren: './kng-cart/kng-cart.module#KngCartModule'   },
         { path: 'departement',component:KngDepartementComponent },
         { path: 'products/category/:category', component: ProductListComponent },
+        { path:'',component:KngHomeComponent,children:[
+          { path: 'products/:sku', component: ProductComponent},
+        ]},
       ]
     }]
   },
@@ -54,7 +61,9 @@ export const appRoutes: Routes = [
 //  { path: 'dashboard', component: DashboardComponent },
   {
     path: '',
-    pathMatch: 'full',
+    pathMatch: 'full',    
+    resolve:{ loader:LoaderResolve },
+    canActivate:[IsWelcomeGard],
     component: KngWelcomeComponent
   },
   // { path: '**', component: PageNotFoundComponent }
