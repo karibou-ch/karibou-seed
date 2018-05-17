@@ -7,7 +7,7 @@
             <button (click)="onClose(true)"  class="close">
                 <mdc-icon [fontSize]="40">close</mdc-icon>
             </button>        
-            <div class="header " [bgSrc]="product.photo.url">
+            <div class="header " [bgGradient]="true" [bgSrc]="product.photo.url">
               <aside [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
                 <!-- DISPLAY PHOTO -->
                 <!-- <img [bgSrc]="product.photo.url" class="item-image" [class.hide]="!product.photo.url">

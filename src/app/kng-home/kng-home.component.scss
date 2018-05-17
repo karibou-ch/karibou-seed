@@ -9,7 +9,7 @@ div.product-container{
       font-size: 1.875rem;
       -font-size: 0.875rem;
       -text-transform: uppercase;    
-      margin-top: 40px;
+      margin-top: 20px;
       text-align:center;
     }
     h3{
@@ -28,11 +28,24 @@ div.product-container{
   
   }
 
-  .mdc-layout-grid__inner{
+  .mdc-layout-grid__inner,
+  .kng-layout-card{
     background-color: #fff;
     padding: 10px 10px 40px 10px;    
     @media (max-width: 426px) {
       padding: 0 0 40px 0;    
+    }
+  }
+
+  .kng-layout-card{
+    display: flex!important;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;    
+    kng-product-thumbnail{
+      flex: 0 0 137px;
+      width: 137px;
+      margin: 8px;
     }
   }
 }

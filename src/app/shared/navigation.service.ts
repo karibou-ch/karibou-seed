@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import { Config, Category } from 'kng2-core';
-import { concat } from 'rxjs/observable/concat';
+//import { i18n } from './i18n.service';
 
 /**
  * 
  */
 @Injectable()
-export class NavigationService  {
+export class KngNavigationStateService  {
 
   private content:{
     title:string;
@@ -27,17 +27,26 @@ export class NavigationService  {
   isAuthenticated:boolean=false;
   isAdminLayout:boolean=false;
 
-  constructor() { 
+  constructor(
+  ) { 
     this.menu={};
     //
     // init common parameters
     this.agent=navigator.userAgent||navigator.vendor||window['opera'];
   }
 
+  updateLocale(locale:string){
+    // this.$i18n.locale=locale;
+  }
 
-  init(config:Config, categories:Category[]){
-    this.config=config;
+  updateCategory(categories:Category[]){
     this.categories=categories;
+  }
+
+  updateConfig(config:Config){
+    this.config=config;
+    this.menu={};
+    this.cached={};
 
     //
     // group menu
@@ -46,8 +55,7 @@ export class NavigationService  {
         this.menu[menu.group]=[];
       }
       this.menu[menu.group].push(menu);
-    })
-    
+    }); 
   }
 
   updateUser(user){

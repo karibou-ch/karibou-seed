@@ -1,6 +1,4 @@
-$bretzel-background-color: #43B02A;
-$bretzel-background-color: #8b6f4e;
-
+  
   .background-grid{
     position: fixed;
     overflow: hidden;
@@ -37,7 +35,7 @@ $bretzel-background-color: #8b6f4e;
           width: 273px;
           height: 203px;
           vertical-align: top;
-          background: $bretzel-background-color;
+          background: #8b6f4e;
           text-align: left;
           color: #5a5a5a;
           font-weight: 400;
@@ -204,8 +202,13 @@ $bretzel-background-color: #8b6f4e;
           padding:10px;
         }
         text-align:center;
-        image{
-          height:200px;
+        .image{
+          max-height:200px;
+          .image-radius{
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            padding: 2px;
+          }
         }
         h3{
           font-weight: 400;
@@ -248,33 +251,6 @@ $bretzel-background-color: #8b6f4e;
     background-color:#EEEEEE!important;
     width:100%;
     height: 80px;
-  }
-      
+  }     
 }
-  
-
-  
-  
-  .footer{
-    background-color: $bretzel-background-color;
-    color: rgba(255,255,255,0.8);  
-    width: 100%;
-    margin: auto;
-    box-sizing: border-box;  
-    padding:20px;
-    .line{
-      padding:20px;
-      display:flex;
-      flex-flow: row nowrap;
-      justify-content:flex-start; /*halign*/
-      align-items:flex-start; /*valign*/
-      &.marked{
-        border-bottom:2px solid #3fa428;      
-        border-bottom:2px solid #5c4a34;      
-      }
-      .elem{
-        flex:1 0 33%;
-      }
-    }
-  }
   

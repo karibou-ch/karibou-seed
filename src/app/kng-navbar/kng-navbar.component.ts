@@ -1,9 +1,22 @@
 import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Config, ConfigService, LoaderService, User, UserService,Category } from 'kng2-core';
+import { CartService, 
+         CartAction,
+         CartState, 
+         CartItem, 
+         Config, 
+         ConfigMenu,
+         ConfigService, 
+         LoaderService, 
+         User, 
+         UserService,
+         Category, 
+         Shop} from 'kng2-core';
 
-import { NavigationService } from '../shared';
-import { MdcToolbar } from '@angular-mdc/web';
+import { KngNavigationStateService, i18n } from '../shared';
+import { MdcToolbar, MdcSnackbar, MdcMenu } from '@angular-mdc/web';
+
+
 
 @Component({
   selector: 'kng-navbar',
@@ -21,62 +34,99 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   config:Config;
   user:User;
+  categories:Category[];
+  shops:Shop[];
   private route$:any;
 
   //
   // content
   store:string;
+  primary:ConfigMenu[];
   image:string;
   title:string;
   subtitle:string;
   content:any;
-  categories:Category[];
+  cardItemsSz:number=0;
+  cartItemCountElem:any;
+  currentShippingDay:Date;
   isFixed: boolean = true;
   @ViewChild('navigation') navigation: any;
-  @ViewChild('cart') cart: any;
+  //@ViewChild('cart') cart: any;
   @ViewChild('section') section:ElementRef;
   @ViewChild('toolbar') toolbar:MdcToolbar;
+  @ViewChild('shipping') shipping:MdcMenu;
 
   constructor(
+    public  $cart:CartService,
     private $config:ConfigService,
+    public  $i18n:i18n,
     private $loader:LoaderService,
     private $route: ActivatedRoute,
     private $user:UserService,
-    public  $navigation:NavigationService
+    public  $navigation:KngNavigationStateService,
+    private $snack:MdcSnackbar
   ) {
-    this.user=new User();
-    this.config=new Config();
+
+    let loader=this.$route.snapshot.data.loader;
+    this.config=<Config>loader[0];
+    this.user=<User>loader[1];
+
+    //
+    // not mandatory
+    this.categories=<Category[]>loader[2]||[];
+    this.shops=<Shop[]>loader[3]||[];
+
+    console.log('init navbar')
+   
   }
  
+  ngOnDestroy() {
+    //this.route$.unsubscribe();
+    // this.$cart.unsubscribe();
+    // this.$user.unsubscribe();
+    // this.$config.unsubscribe();
+  }
+
   
   ngOnInit() {
     //
     // karibou.ch context is ready
-    this.$loader.ready().subscribe(loader=>{
-      Object.assign(this.config, loader[0]);
-      Object.assign(this.user, loader[1]);
-      console.log('---- user init',this.user.display())
-      this.$navigation.updateUser(this.user);
-      this.categories=loader[2];
-      //
-      // home.about|footer|shop|siteName|tagLine
-      //  - p,h,image
-      //    - fr,en
-      this.image=this.config.shared.home.tagLine.image;
-      this.subtitle=this.config.shared.home.about.h.fr;
-      this.$navigation.init(this.config,this.categories);
-      this.store=this.$navigation.store;
-      this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
+    // this.$i18n.init(this.config.shared.i18n);
+    this.$navigation.updateUser(this.user);
+    this.$navigation.updateConfig(this.config);
+    this.$navigation.updateCategory(this.categories);
 
-    });
+    //
+    // home.about|footer|shop|siteName|tagLine
+    //  - p,h,image
+    //    - fr,en
+    this.image=this.config.shared.home.tagLine.image;
+    this.subtitle=this.config.shared.home.about.h.fr;
+    this.primary=this.config.shared.menu.filter(menu=>menu.group==='primary');
+    this.store=this.$navigation.store;
+    this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
+
+    //
+    // init cart here because navbar is loaded on all pages
+    this.$cart.setContext(this.config,this.user,this.shops);
+    this.currentShippingDay=this.$cart.getCurrentShippingDay();
+
+    this.config.getShippingDays().forEach((day,idx)=>{
+      if(+day==+this.currentShippingDay){
+        // FIXME, init DOM without using timeout hack!
+        setTimeout(()=>{
+          this.shipping.setSelectedIndex(idx);
+        },200)
+      }
+    })
 
     //
     // update user 
     this.$user.subscribe(
       (user:User)=>{
-        console.log('---- user stream',user.display())
         Object.assign(this.user, user);        
         this.$navigation.updateUser(this.user);
+        this.$cart.setContext(this.config,this.user);
       }
     );
     //
@@ -84,61 +134,84 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.$config.subscribe(
       (config:Config)=>{
         Object.assign(this.config, config);
-        this.$navigation.init(this.config,this.categories);
+        this.$navigation.updateConfig(this.config);            
       }
     );
+
+    this.$cart.subscribe(
+      (state:CartState)=>{
+        this.cardItemsSz=this.$cart.getItems().length||0;
+        //
+        // FIXME hugly DOM manipulation
+        setTimeout(()=>{
+          this.cartItemCountElem=this.cartItemCountElem||this.section.nativeElement.querySelector('.cart-items-count');
+          if(this.cartItemCountElem){
+            this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
+            this.cartItemCountElem.innerHTML=this.cardItemsSz;
+          }
+  
+        },100);
+
+        if(state.action===CartAction.CART_LOADED){
+          return;
+        }
+        this.$snack.show(CartAction[state.action])
+        console.log('----cart',state)
+        // update cart item count
+        // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>        
+
+      },
+      error=>{
+        console.log('CART',error);
+      }
+    )
+    
   } 
 
-  getShippingWeek(){
-    if(!this.config.shared.order){
-      return [];
-    }
-    return ['Di','Lu','Ma','Me','Je','Ve','Sa'].map((day,i)=>{
-      return (this.config.shared.order.weekdays.indexOf(i)>-1)?
-        {label:day,state:''}:{label:day,state:'disabled'};
-    });
+  doSetCurrentShippingDay($event:any,current:Date,idx:number){
+    this.$cart.setShippingDay(current);
+    this.shipping.setSelectedIndex(idx);    
   }
-  getShippingDays(){
-    return this.config.shared.shippingweek||[];
-  }
-
-
-  isAppReady(){
-    return this.$navigation.store !== undefined;    
-  }
-
+  
   getRouterLink(url){
     return ['/store',this.store].concat(url.split('/').filter(item=>item!==''));
   }
 
-
-  ngOnDestroy() {
-    //this.route$.unsubscribe();
+  get locale(){
+    return this.$i18n.locale;
   }
 
+  getShippingWeek(){
+    return this.config.getShippingWeek();
+  }
 
-  handleMenuSelect($event:any){
-    
+  getShippingDays(){
+    return this.config.getShippingDays();
+  }
+  
+  isAppReady(){
+    return this.$navigation.store !== undefined;    
   }
 
   handleToolbarChange(position:number){
+    
     //
     // desktop
-    if(this.toolbar.flexible){
-      if(position===0&&this.section){
-        this.section.nativeElement.style.height='48px';
-        this.section.nativeElement.style.minHeight='48px';
-      }  
-    }
+    // if(this.toolbar.flexible){
+    //   if(position===0&&this.section){
+    //     this.section.nativeElement.style.height='56px';
+    //     this.section.nativeElement.style.minHeight='56px';
+    //   }  
+    // }
 
     //
     // mobile
-    if(!this.toolbar.flexible){
-      if(position===1&&this.section){
-        this.section.nativeElement.style.height='48px';
-        this.section.nativeElement.style.minHeight='48px';
-      }  
-    }    
+    // if(!this.toolbar.flexible){
+    //   if(position===1&&this.section){
+    //     this.section.nativeElement.style.height='56px';
+    //     this.section.nativeElement.style.minHeight='56px';
+    //   }  
+    // }    
     
   }
 

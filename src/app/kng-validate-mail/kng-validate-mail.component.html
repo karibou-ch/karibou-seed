@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="alert alert-success" role="alert" *ngIf="validate" >
+      <strong i18n>Merci d'avoir validé votre adresse email!</strong> <br/>
+      <span i18n>Vous pouvez fermer cette fenêtre et poursuivre vos achats.</span>
+      <div>
+          <i class="material-icons primary">check_circle_outline</i>        
+      </div>
+  </div>
+
+
+  <div class="alert alert-error" role="alert" *ngIf="error">
+      <strong i18n>Oh oh! La validation de votre mail n'a pas réussi</strong> <br/>
+      <div class="primary">{{error}}</div>
+      <div i18n>Contactez nous <a href="mailto:{{config.shared.home.email}}">par email ici</a> et nous activerons votre compte manuellement!</div>
+      <div>
+        <i class="material-icons">error_outline</i>
+      </div>
+  </div>
+
+</div>

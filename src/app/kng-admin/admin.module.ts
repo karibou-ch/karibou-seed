@@ -10,7 +10,13 @@ import { KngEditDocumentComponent } from '../kng-document/kng-document.component
 // exported components and directives
 import { KngCategoriesComponent } from './kng-category/';
 
-import { KngConfigComponent, KngNavigationComponent, KngSiteComponent,KngSiteContentComponent } from './kng-config/kng-config.component';
+import { KngConfigComponent, 
+         KngNavigationComponent, 
+         KngWelcomeCfgComponent,
+         KngHomeComponent,
+         KngShopComponent,
+         KngPageContentComponent, 
+         KngDepositComponent } from './kng-config/kng-config.component';
 import { AdminMdcModule } from './admin-mdc.module';
 
 //
@@ -18,9 +24,12 @@ import { AdminMdcModule } from './admin-mdc.module';
 const routes: Routes = [
   { path: 'category', component: KngCategoriesComponent },
   { path: 'config', component: KngConfigComponent },
+  { path: 'welcome', component: KngWelcomeCfgComponent },
+  { path: 'home', component: KngHomeComponent },
+  { path: 'shop', component: KngShopComponent },
   { path: 'navigation', component: KngNavigationComponent , data:{menu:true}},
-  { path: 'site', component: KngSiteComponent },
-  { path: 'site/content', component: KngSiteContentComponent,children:[{
+  { path: 'deposit', component: KngDepositComponent , data:{deposit:true}},
+  { path: 'page', component: KngPageContentComponent,children:[{
     path:'', loadChildren: '../kng-document/kng-document.module#KngDocumentModule'
   }] }
 ];
@@ -42,8 +51,11 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
   declarations: [
     KngCategoriesComponent,
     KngConfigComponent, 
-    KngSiteContentComponent,
-    KngSiteComponent, 
+    KngDepositComponent,
+    KngPageContentComponent,
+    KngHomeComponent, 
+    KngShopComponent, 
+    KngWelcomeCfgComponent, 
     KngNavigationComponent]
 })
 export class AdminModule { }

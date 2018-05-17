@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { timer } from  'rxjs/observable/timer';
+import { map } from 'rxjs/operators';
 
 import {
+  CartService,
+  Category,
+  Config,
   ProductService,
   Product,
   LoaderService,
-  User,
-  Category,
-  Config
+  User
 }  from 'kng2-core';
 
 
@@ -46,6 +49,7 @@ export class KngHomeComponent implements OnInit {
 
 
   constructor(
+    private $cart:CartService,
     private $loader: LoaderService,
     private $product: ProductService
   ) { 
@@ -61,11 +65,12 @@ export class KngHomeComponent implements OnInit {
         Object.assign(this.user,loader[1]);
         this.categories=loader[2]||[];
         
-        this.loadGroupByCategory();
+        this.productsGroupByCategory();
     });
   }
 
-  loadGroupByCategory() {
+  productsGroupByCategory() {
+    //this.options.when
     this.$product.select(this.options).subscribe((products: Product[]) => {
       products.forEach(product=>{
         if(!this.group[product.categories.name]){
@@ -76,10 +81,14 @@ export class KngHomeComponent implements OnInit {
     });
   }
 
+  add(product:Product){
+    this.$cart.add(product);
+  }
+
   getNextPage(){
     //
-    // next page can be async loaded 
-    return Observable.timer(10).map(ctx=>this.currentPage++)
+    // next page must be async loaded 
+    return timer(10).pipe(map(ctx=>this.currentPage++));
   }
 
   getCategories(){

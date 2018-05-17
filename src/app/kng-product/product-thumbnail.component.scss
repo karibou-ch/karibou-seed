@@ -1,3 +1,14 @@
+.product-card.incart .action-remove,
+.product-card.incart .action-add
+{
+  visibility: visible;
+  opacity: 0.8;
+}
+
+.product-card.incart .info-quantity{
+  visibility: visible;
+}
+
 .product-card{
   height: 14rem;
   background: white;
@@ -20,53 +31,62 @@
   }
 
   
-  .action-add{
+  .action-add,.action-remove{
     background-color: rgba(0, 0, 0, 0.15);
     background-color: rgba(255, 255, 255, 0.6);
+    background-color: var(--mdc-theme-secondary) !important;
+    color: white!important;
+    opacity: 0.5;
     border: 0;
     font-weight: bold;
-    border-radius: 50%;
-    width: 31px;
-    height: 30px;
+    border-radius: 25px;
+    width: 48px;
+    height: 26px;
     position: absolute;
-    top: 7px;
+    top: 10px;
     padding: 0px;
-    z-index: 1;
     outline: 0;
+    z-index: 1;
     cursor: pointer;
     &.right{
-      right:7px;
+      right:10px;
     }
   }
-  .action-add:hover{
-    background-color: #e4e4e4;        
+
+
+  .action-remove{
+    visibility: hidden;
+    left:10px;
   }
   
   .info-quantity{
-    font-size: larger;
+    font-size: 30px;
+    line-height: 32px;
+    text-shadow: 0 0 6px rgba(0,0,0,0.9);
     text-align: center;
-    padding: 6px;
     width: 35px;
     position: absolute;
-    top: 10px;
+    top: 20%;
     margin: 0 auto;
     right: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.05);
+    z-index: 1;
     color: white;
-    border-radius:50px;
+    visibility: hidden;
   }
 
   .media{
     height: 9rem;
     @media (max-width: 426px) {
-      height: 11rem;
+      height: 9rem;
     }
 
     background-repeat: no-repeat;
     background-size: cover;  
     background-position-y: 50%;
     border-radius: 5px;  
+    transition: background-color .2s ease-in-out;
+
   }  
 
   .product-card__subtitle{
@@ -90,5 +110,12 @@
     font-weight: 500;
   }
 
+  .part{
+    position: absolute;
+    left: 5px;
+    bottom: 10px;
+    font-size: small;
+    font-weight: 500;    
+  }
 }
 

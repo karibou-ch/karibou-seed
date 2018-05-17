@@ -2,13 +2,9 @@ import { Directive, AfterViewInit, ElementRef, Input, OnDestroy, Renderer } from
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/pairwise';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/exhaustMap';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/startWith';
-
+import { fromEvent } from  'rxjs/observable/fromEvent';
+import { exhaustMap, filter, map, pairwise, startWith } from 'rxjs/operators';
+ 
 interface ScrollPosition {
   sH: number;
   sT: number;
@@ -82,18 +78,19 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
       // this.renderer.listenGlobal("document.body", "scroll", (e) => console.log("body event",e));
       elem=elem||window;
     }
-    this.scrollEvent$ = Observable.fromEvent(elem, 'scroll');
+    this.scrollEvent$ = fromEvent(elem, 'scroll');
   }
 
   private streamScrollEvents() {
-    this.userScrolledDown$ = this.scrollEvent$
-      .map((e: any): ScrollPosition => ({
+    this.userScrolledDown$ = this.scrollEvent$.pipe(
+      map((e: any): ScrollPosition => ({
         sH: e.target.scrollingElement.scrollHeight,
         sT: e.target.scrollingElement.scrollTop,
         cH: e.target.scrollingElement.clientHeight
-      }))
-      .pairwise()
-      .filter(positions => this.isUserScrollingDown(positions) && this.isScrollExpectedPercent(positions[1]))
+      })),
+      pairwise(),
+      filter(positions => this.isUserScrollingDown(positions) && this.isScrollExpectedPercent(positions[1]))
+    );
   }
 
   private requestCallbackOnScroll() {
@@ -101,13 +98,14 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
     this.requestOnScroll$ = this.userScrolledDown$;
 
     if (this.immediateCallback) {
-      this.requestOnScroll$ = this.requestOnScroll$
-        .startWith([DEFAULT_SCROLL_POSITION, DEFAULT_SCROLL_POSITION]);
+      this.requestOnScroll$ = this.requestOnScroll$.pipe(
+        startWith([DEFAULT_SCROLL_POSITION, DEFAULT_SCROLL_POSITION])
+      );        
     }
 
-    this.requestOnScroll$
-      .exhaustMap(() => { return this.scrollCallback(); })
-      .subscribe(() => { });
+    this.requestOnScroll$.pipe(
+      exhaustMap(() => { return this.scrollCallback(); })
+    ).subscribe(() => { });
 
   }
 

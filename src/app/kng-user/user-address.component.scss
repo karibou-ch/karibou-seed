@@ -1,0 +1,75 @@
+div{
+  padding: 0 10px;
+  text-align: left;
+
+  h1,h2,h3,h4{
+    font-weight: 300!important;
+  }
+
+  .block-info{
+    color: #aaa;
+    text-shadow: 1px 1px 0 white;
+    margin-top: -15px;    
+  }
+  
+  div{
+
+  }
+  mdc-list-item{
+    padding: 0;
+    mdc-list-item-graphic{
+      width: 52px;
+      margin-right:12px;
+      >div{
+        margin-top: 2px;
+        width: 52px;
+        height: 52px;
+        background-size: contain;          
+        background-repeat:no-repeat;
+      }
+    }
+    mdc-list-item-text{
+      text-align: left;
+      .error{
+        color: red;
+      }
+      button{
+        position: absolute;
+        top: 15px;
+        right: 5px;
+        bottom: 5px;
+        background: var(--mdc-theme-secondary);
+        background: #d3ecce;
+        -color: var(--mdc-theme-primary-light);
+  
+      }
+    }
+    mdc-list-item-meta{
+      &.invalid{
+        color: red;
+      }
+    }
+  
+  }
+
+  form{
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content:space-between;
+    
+    mdc-text-field,
+    mdc-select,
+    kng-control-messages {
+      flex: 0 1 calc(100% - 0px);
+    }
+  
+    mdc-select{
+      align-self: flex-end;
+      margin-bottom: 8px;        
+    }
+
+    
+  }  
+  
+}

@@ -6,7 +6,7 @@ import {
   config
 }  from 'kng2-core';
 
-import { NavigationService, i18n } from '../../shared';
+import { KngNavigationStateService, i18n } from '../../shared';
 import { MdcSnackbar, MdcDialogComponent, MdcListItemChange } from '@angular-mdc/web';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -38,7 +38,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     private $loader: LoaderService,
     private $category: CategoryService,
     private $snack:MdcSnackbar,
-    private $navigation:NavigationService
+    private $navigation:KngNavigationStateService
   ){
     
     //
@@ -91,9 +91,9 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     this.$category.save(this.edit.category.slug,this.edit.category).subscribe(
       ()=>{
         this.edit.category=null;
-        this.$snack.show(this.$i18n.lang().save_ok,"OK")
+        this.$snack.show(this.$i18n.label().save_ok,"OK")
       },
-      (err)=>this.$snack.show(err._body,"OK")
+      (err)=>this.$snack.show(err.error,"OK")
     );
   }
 
@@ -103,11 +103,11 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   onDelete(){
     let position=-1;
-    let pwd=window.prompt(this.$i18n.lang().password,"");
+    let pwd=window.prompt(this.$i18n.label().password,"");
 
     this.$category.remove(this.edit.category.slug,pwd).subscribe(
       ()=>{
-        this.$snack.show(this.$i18n.lang().delete_ok,"OK");
+        this.$snack.show(this.$i18n.label().delete_ok,"OK");
         position=this.categories.findIndex(elem=>elem.slug===this.edit.category.slug);
         if(position>-1){
           this.categories.splice(position, 1);
@@ -116,7 +116,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         this.dlgEdit.close();
         this.edit.category=null;
       },
-      (err)=>this.$snack.show(err._body,"OK")
+      (err)=>this.$snack.show(err.error,"OK")
     );
   }
 

@@ -2,10 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { InputValidator, NavigationService, i18n } from '../shared';
+import { KngInputValidator, KngNavigationStateService, i18n } from '../shared';
 
 import { MdcSnackbar } from '@angular-mdc/web'; 
-import { Config, LoaderService, User, UserService } from 'kng2-core';
+import { Config, LoaderService, User, UserService, UserCard, UserAddress } from 'kng2-core';
+import { BoundCallbackObservable } from 'rxjs/observable/BoundCallbackObservable';
+import { StripeService, Elements, ElementsOptions } from 'ngx-stripe';
 
 @Component({
   selector: 'kng-user-sign',
@@ -13,6 +15,43 @@ import { Config, LoaderService, User, UserService } from 'kng2-core';
   styleUrls: ['./user-sign.component.scss']
 })
 export class UserSignComponent {
+
+
+  issuer={
+    wallet:{
+      img:'/assets/img/payment/wallet.jpg',
+      label:'Votre compte privé'
+    },
+    invoice:{
+      img:'/assets/img/payment/invoice.jpg',
+      label:'Facture en ligne'
+    },
+    mastercard:{
+      img:'/assets/img/payment/mc.jpg',
+      label:'Mastercard'
+    },
+    visa:{
+      img:'/assets/img/payment/visa.jpg',
+      label:'VISA'
+    },
+    'american express':{
+      img:'/assets/img/payment/ae.jpg',
+      label:'American Express'
+    },
+    btc:{
+      img:'/assets/img/payment/btc.jpg',
+      label:'Bitcoin'
+    },
+    bch:{
+      img:'/assets/img/payment/bch.jpg',
+      label:'Bitcoin Cash'
+    },
+    lumen:{
+      img:'/assets/img/payment/xlm.jpg',
+      label:'Lumen'
+    }
+  }
+
 
   i18n:any={
     login_ok:"Merci, vous êtes dès maintenant connecté",
@@ -31,7 +70,17 @@ export class UserSignComponent {
   sign: any;
   recover: any;
   signup: any;
+  store:string;
+
+  
   askAction:string;
+  mandatory:{
+    address:boolean;
+    payment:boolean;
+    validation:boolean;
+    referrer:string;
+  };
+
   insideClick:boolean=false;
   signoutOk:boolean=false;
 
@@ -44,64 +93,142 @@ export class UserSignComponent {
     private $router: Router,
     private $fb: FormBuilder,
     private $location:Location,
-    private $nav:NavigationService,
+    private $nav:KngNavigationStateService,
     private $snack:MdcSnackbar
   ) {
     //
     // initialize HTML content (check on route definition)
     this.askAction=this.$route.snapshot.data.action;
 
+    //
+    // initialize loader
+    let loader=this.$route.snapshot.data.loader;
+    //
+    // system ready
+    this.isReady= true;
+    this.config = loader[0];
+    this.user   = loader[1];
+    this.store  = this.$nav.store;
+
+    this.mandatory={
+      address:this.$route.snapshot.data.address,
+      payment:this.$route.snapshot.data.payment,
+      validation:this.$route.snapshot.data.validation,
+      referrer:this.$route.snapshot.data.referrer
+    };
+
+
+    //
+    // create account
     this.signup = this.$fb.group({
       'name':['', [Validators.required,]],
       'forname':['', [Validators.required]],
-      'email': ['', [Validators.required, InputValidator.emailValidator]],
-      'password': ['', [Validators.required, InputValidator.passwordValidator]],
-      'confirm': ['', [Validators.required, InputValidator.passwordValidator]]
-    });
-
-    this.sign = this.$fb.group({
-      'email': ['', [Validators.required, InputValidator.emailValidator]],
-      'password': ['', [Validators.required, InputValidator.passwordValidator]]
-    });
-
-    this.recover = this.$fb.group({
-      'email': ['', [Validators.required, InputValidator.emailValidator]]
+      'email': ['', [Validators.required, KngInputValidator.emailValidator]],
+      'password': ['', [Validators.required, KngInputValidator.passwordValidator]],
+      'confirm': ['', [Validators.required, KngInputValidator.passwordValidator]]
     });
 
     //
-    // system ready
-    this.$loader.ready().subscribe((loader) => {
-      this.isReady = true;
-      this.config = loader[0];
-      Object.assign(this.user,loader[1]);
+    // login account
+    this.sign = this.$fb.group({
+      'email': ['', [Validators.required, KngInputValidator.emailValidator]],
+      'password': ['', [Validators.required, KngInputValidator.passwordValidator]]
+    });
+
+    //
+    // generate new password
+    this.recover = this.$fb.group({
+      'email': ['', [Validators.required, KngInputValidator.emailValidator]]
+    });
+
+
+    this.updateState();
+  }
+
+  //
+  // if not address or payment
+  // - check is user as a valid address
+  // - check is user as a valid payment solution
+  
+  //
+  // askAction:null (signin)
+  //  - address:payment:validation
+  // askAction:'logout'
+  // askAction:'signup'
+  //  - address:payment:validation
+  updateState(){
+    let isAuth=this.user.isAuthenticated();
+    let hasAddress=this.user.hasPrimaryAddress()!=false;
+    let hasValidMail=this.user.isReady();
+    let hasValidPayment=this.user.payments.every(p=>p.isValid());
+
+    // 
+    // mandatory add,payment
+    if(isAuth){
+      //
+      // logout case
       if(this.askAction==='logout'){
         this.$user.logout().subscribe(
-          ok=>{
-            this.signoutOk=true;
-          },
-          err=>this.$snack.show(err._body)
+          ok=>this.signoutOk=true,
+          err=>this.$snack.show(err.error)
         )
       }
-    });
+      
+      if(this.mandatory.address){
+        return this.askAction='address';
+      }
+      if(this.mandatory.payment){
+        return this.askAction='payment';
+      }    
+      //
+      // we are ok
+      return this.onBack();      
+    }
 
     
   }
 
+
+
+  ngOnInit(){
+    if(this.askAction=='payment'){  
+    }
+  }
+
   //@HostListener('document:click')
-  onWindowClick(){
+  onBack(){    
+    if(this.mandatory.referrer){
+      this.$router.navigate([this.mandatory.referrer])
+    }
+
     if(document['referrer']){
       return this.$location.back();
     }
-    this.$router.navigate(['/store',this.$nav.store]);
+
+    //
+    // last case, HOME
+    return this.$location.back();
+    // this.$router.navigate(['/store',this.$nav.store]);
   }
 
+
+  onUpdateAddress($result){
+    let msg=($result.error)? ($result.error.message||$result.error):'OK';
+    this.$snack.show(msg,'OK');
+  }
+
+  onUpdatePayment($result,other){
+    let msg=($result.error)? ($result.error.message||$result.error):'Ok';
+    this.$snack.show(msg,'OK');
+
+  }
 
   onRecover(){
     this.$user.recover(this.recover.value.email).subscribe(
       ok=>{
-        this.$snack.show(this.$i18n.lang().recover_ok);
+        this.$snack.show(this.$i18n.label().user_recover_ok);
       },err=>{
-        this.$snack.show(err._body,'OK');
+        this.$snack.show(err.error,'OK');
       }
     );
   }
@@ -115,13 +242,13 @@ export class UserSignComponent {
     }).subscribe(
     (user:User) => {
       if(!user.isAuthenticated()){
-        return this.$snack.show(this.$i18n.lang().login_ko,"OK",{
+        return this.$snack.show(this.$i18n.label().user_login_ko,"OK",{
           timeout:5000
         });        
       }
-      this.$router.navigate(['store',this.$nav.store]);
-      this.$snack.show(this.$i18n.lang().login_ok,"OK");
-    },(err)=>this.$snack.show(err._body,"OK"));    
+      this.$snack.show(this.$i18n.label().user_login_ok,"OK");
+      this.onBack();      
+    },(err)=>this.$snack.show(err.error,"OK"));    
   }
 
   onSignup(){
@@ -133,11 +260,16 @@ export class UserSignComponent {
       confirm:this.signup.value.confirm
     };    
     this.$user.register(user).subscribe(
-      ()=>this.$snack.show(this.$i18n.lang().register_ok,"OK"),
-      (err)=>this.$snack.show(err._body,"OK")
+      (user)=>{
+        this.$snack.show(this.$i18n.label().user_register_ok,"OK");
+        this.onBack();        
+      },
+      (err)=>{
+        this.$snack.show(err.error,"OK")
+      }
     )
   }
-  
+
 
   // BACKPORT FROM K1
   // onPostSignIn(){

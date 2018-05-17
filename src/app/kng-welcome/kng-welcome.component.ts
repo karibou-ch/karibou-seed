@@ -8,7 +8,8 @@ import {
   Config
 }  from 'kng2-core';
 
-import { NavigationService } from '../shared/navigation.service';
+import { KngNavigationStateService } from '../shared/navigation.service';
+import { i18n } from '../shared';
 @Component({
   selector: 'kng-welcome',
   templateUrl: './kng-welcome.component.html',
@@ -66,8 +67,9 @@ export class KngWelcomeComponent implements OnInit {
   config:any;
 
   constructor( 
+    public $i18n:i18n,
     private $loader: LoaderService,
-    private $navigation:NavigationService,
+    private $navigation:KngNavigationStateService,
     private $route: ActivatedRoute,
     private $router: Router,    
   ) { 
@@ -87,7 +89,6 @@ export class KngWelcomeComponent implements OnInit {
     //
     this.$loader.ready().subscribe(result=>{
       this.config = result[0];
-      console.log('-----------------',this.config)
     });
     
   }

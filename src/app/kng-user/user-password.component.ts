@@ -1,44 +1,75 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoaderService, User, UserService } from 'kng2-core';
+import { LoaderService, User, UserService, Config } from 'kng2-core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { KngInputValidator, i18n } from '../shared';
+import { MdcSnackbar } from '@angular-mdc/web';
 
 @Component({
-  selector: 'app-user-password',
+  selector: 'kng-user-password',
   templateUrl: './user-password.component.html',
   styleUrls: ['./user-password.component.scss']
 })
-export class UserPasswordComponent implements OnInit {
+export class UserPasswordComponent {
 
+  @Output() updated:EventEmitter<User>=new EventEmitter<User>();
+
+  @Input() user:User;
+  @Input() set config(config:Config){
+    this.main(config);
+  }
+
+  
+  $password:FormGroup;
+  isLoading:boolean;
+  
   constructor(
-    private $loader: LoaderService,
-    private route: ActivatedRoute,
-    private $user: UserService
-  ) { }
+    private $i18n:i18n,
+    private $fb: FormBuilder,
+    private $user:UserService,
+    private $route:ActivatedRoute,
+    private $snack:MdcSnackbar,
+  ){
 
-  @Input() id: any;
-  private currentUser: User;
-  private isReady: boolean;
-  private config: any;
-  private user: User = new User();
-
-  ngOnInit() {
-
-    this.$loader.ready().subscribe(ready => {
-      this.isReady = true;
-      this.config = ready[0];
-      this.currentUser = ready[1];
-
-      if (!this.id) {
-        this.id = this.route.snapshot.params['id'];
-      }
-
-      this.$user.get(this.id).subscribe(res => this.user = res);
+    //
+    // initialize loader
+    let loader=this.$route.snapshot.data.loader;
+    //
+    // system ready
+    this.user   = loader[1];
+    this.config = loader[0];
+    
+    this.isLoading=false;
+    //[ngModelOptions]="{updateOn: 'blur'}"
+    this.$password = this.$fb.group({
+      'previous':   ['', [Validators.required,Validators.minLength(6)]],
+      'password':   ['',[Validators.required,Validators.minLength(6)]],
+      'confirm':  ['', [Validators.required,Validators.minLength(6)]]
+    },{
+      Validators:KngInputValidator.MatchPasswordAndConfirm
     });
+    //[ngModelOptions]="{updateOn: 'blur'}"
   }
 
-  onSave() {
-    // TODO use error feedback for user!
-    //this.$category.save(this.slug,this.category).subscribe(this.noop,this.processErrors);
+
+  //
+  // entry poiont
+  main(config:Config){
   }
 
+
+  onChange(){
+    //
+    // let update password
+    let change={
+      current:this.$password.value.previous,
+      new:this.$password.value.password,
+      email:this.user.email.address
+    }
+    let locale=this.$i18n.locale;
+    this.$user.newpassword(this.user.id,change).subscribe(
+      ()=>this.$snack.show(this.$i18n.label().modify_ok),
+      err=>this.$snack.show(err.error)
+    );
+  }
 }

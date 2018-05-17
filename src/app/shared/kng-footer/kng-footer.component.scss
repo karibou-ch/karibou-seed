@@ -1,0 +1,33 @@
+div.footer{
+  margin-top: 0px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 300px;
+
+  div.main{
+    background-color: #8b6f4e;
+    color: rgba(255,255,255,0.8);  
+    width: 100%;
+    margin: auto;
+    box-sizing: border-box;  
+    padding:20px 0;
+    margin-top: 0px;
+    margin-bottom: 0px;    
+    .line{
+      padding:20px 0;
+      display:flex;
+      flex-flow: row nowrap;
+      justify-content:flex-start; /*halign*/
+      align-items:flex-start; /*valign*/
+      &.marked{
+        border-bottom:2px solid #3fa428;      
+        border-bottom:2px solid #5c4a34;      
+      }
+      .elem{
+        flex:1 0 calc(33% - 40px);
+        padding:20px;
+      }
+    }
+  }
+}

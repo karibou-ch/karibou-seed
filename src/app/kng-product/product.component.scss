@@ -35,6 +35,7 @@
     opacity: 1;
     position: relative;
     margin-top: 20px;
+    margin-bottom: 40px;
     @media (max-width: 769px) {
       margin-top: 0px;
     }
@@ -43,12 +44,12 @@
       cursor: pointer;
       background: transparent;
       border: 0;
-      color: #777;
+      color: white;
       position: absolute;
-      background: white;
       top: 10px;
       right: 10px;
       z-index: 4;
+      text-shadow: 1px 1px 4px #000;
       @media (max-width: 426px) {
         top: 5px;
         right: 5px;
@@ -96,7 +97,6 @@
   letter-spacing: .04em;
   text-decoration: inherit;
   text-transform: inherit;
-  -padding: 24px 24px;
   
   img.photo-owner{
     width:120px;
@@ -116,6 +116,12 @@
     display:flex;
     flex-flow:row;
     justify-content:flex-end; /*halign*/
+    background:linear-gradient(
+      rgba(0, 0, 0, 0.0),
+      rgba(0, 0, 0, 0.5)
+    );
+    transition: background-color .2s ease-in-out;
+  
     background-size: cover;
     background-position: 50% 50%;  
     border-radius: 4px 4px 0 0;
@@ -148,10 +154,6 @@
       font-size: 28px;
       line-height: 30px;      
       
-      background:linear-gradient(
-        rgba(0, 0, 0, 0.0),
-        rgba(0, 0, 0, 0.5)
-      );
 
       .price{
         color:white;

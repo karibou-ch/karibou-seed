@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ControlMessagesComponent } from './control-messages.component';
+import { KngValidateMailComponent } from './kng-validate-mail.component';
 
-describe('ControlMessagesComponent', () => {
-  let component: ControlMessagesComponent;
-  let fixture: ComponentFixture<ControlMessagesComponent>;
+describe('KngValidateMailComponent', () => {
+  let component: KngValidateMailComponent;
+  let fixture: ComponentFixture<KngValidateMailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ControlMessagesComponent ]
+      declarations: [ KngValidateMailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ControlMessagesComponent);
+    fixture = TestBed.createComponent(KngValidateMailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

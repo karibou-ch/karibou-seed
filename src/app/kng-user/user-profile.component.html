@@ -1,4 +1,37 @@
-<h1>Hello World</h1>
+<div>
+  <section>
+      <h1>{{user.display()}}</h1>      
+      <div class="title">Membre depuis le {{user.created|date:'mediumDate'}}</div>
+      <p class="resume">
+        34 commandes, 5 problèmes, X X X X
+      </p>
+
+      <img src="/assets/img/k-avatar.png"/>
+  </section>
+
+  <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()"></kng-mail-confirmation>
+
+  <hr class="dashed"/>
+
+	<mdc-tab-bar disableRipple>
+    <mdc-tab [routerLink]="['./orders']"
+              mdcRouter routerLinkActive #rla="routerLinkActive">
+        Commandes
+    </mdc-tab>
+    <mdc-tab [routerLink]="['./email']"
+              mdcRouter routerLinkActive #rla="routerLinkActive">
+        Email
+    </mdc-tab>
+    <mdc-tab [routerLink]="['./password']"
+              mdcRouter routerLinkActive #rla="routerLinkActive">
+        mot-de-passe
+    </mdc-tab>
+  </mdc-tab-bar>
+
+  <router-outlet></router-outlet>  
+
+</div>
+
 <!--
 <div class="container">
   <h1>User introspection</h1>
@@ -20,7 +53,7 @@
     </tr>
   </div>
   <h1>User Adress</h1>
-  <kng-address *ngFor="let add of user.addresses" [address]="add"></kng-address>
+  <kng-user-address *ngFor="let add of user.addresses" [address]="add"></kng-user-address>
   <h1>User Card</h1>
   <kng-card *ngFor="let card of user.payments" [card]="card"></kng-card>
   <kng-user-orders></kng-user-orders>

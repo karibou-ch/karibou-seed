@@ -10,7 +10,10 @@ import {
   MdcFormFieldModule,
   MdcIconModule,
   MdcIconToggleModule,  
+  MdcListModule,
+  MdcSelectModule,
   MdcSnackbarModule,
+  MdcSwitchModule,
   MdcTextFieldModule  
 } from '@angular-mdc/web';
 
@@ -24,7 +27,10 @@ import {
     MdcFormFieldModule,
     MdcIconModule,
     MdcIconToggleModule,  
-    MdcSnackbarModule,
+    MdcListModule,
+    MdcSelectModule,
+    MdcSnackbarModule,    
+    MdcSwitchModule,
     MdcTextFieldModule
   ],
   declarations: []

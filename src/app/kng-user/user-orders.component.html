@@ -1,7 +1,27 @@
 <div class="container">
-  <h1>My Orders</h1>
 
-  <table class="table">
+
+  <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+    <mdc-list-item *ngFor="let rank of getItems()" (click)="onSelect($event,rank.item)">
+      <mdc-list-item-graphic>
+        <div class="avatar"
+              [ngStyle]="{'background-image': 'url(' + getThumbnail(rank.item) + ')'}">
+
+        </div>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>{{rank.item.title}}
+      </mdc-list-item-text>
+      
+      <mdc-list-item-meta>
+        <div class="score">
+            {{rank.score}}
+        </div>
+      </mdc-list-item-meta>
+    </mdc-list-item>
+  </mdc-list>
+  
+
+  <!-- <table class="table">
     <tr *ngFor="let order of orders ; let i=index" >
       <td>
         <table class="table">
@@ -61,5 +81,5 @@
         </table>
       </td>
     </tr>
-  </table>
+  </table> -->
 </div>

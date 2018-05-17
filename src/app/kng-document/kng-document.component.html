@@ -1,5 +1,5 @@
 <!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
-<div class="document-container markdown-page markdown-{{document?.type}}">
+<div class="page-container markdown-page markdown-{{document?.type}}">
   <div class="home-header text-center" 
     *ngIf="document&&document.photo.header" 
     [ngStyle]="{'background-image': 'url(' + document.photo.header + ')'}" >
@@ -8,15 +8,18 @@
   <div class="container ">
       <h3 class="byline">
         Published <time>{{document?.created| date: 'mediumDate'}}</time> by <span class="author">{{document?.signature}} </span>
+        <button mdc-button [hidden]="!user.isAdmin()" [routerLink]="['../']" >Back</button>
+        <button mdc-button [hidden]="!user.isAdmin()" [routerLink]="['./edit']" >Edit</button>
+        <button mdc-button [hidden]="!user.isAdmin()" (click)="doDelete()" >Delete</button>
       </h3>
 
       <h1>{{document?.title[$i18n.locale]}}</h1> 
-      <h2 class="header" ><span kng-markdown removeRoot="true" data="{{document?.header[$i18n.locale]}}"></span></h2>
+      <h2 class="header" ><span removeRoot="true" kng-markdown  data="{{document?.header[$i18n.locale]}}"></span></h2>
   
       <div class="sidebar-block" >
         <h4 translate="furthermore"></h4>
         <ol  class="list-unstyled">
-          <li *ngFor="let doc of furthermore"><a href="/content/{{doc.slug[0]}}" >{{doc.title[$i18n.locale]}}</a></li>
+          <li *ngFor="let doc of furthermore"><a href="javascript:;" [routerLink]="['../',doc.slug[0]]" >{{doc.title[$i18n.locale]}}</a></li>
           <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
         </ol>   
       </div> 
@@ -25,5 +28,6 @@
       
   </div>
 </div>
+
 <!-- EDIT DOCUMENT CONTENT -->
 <router-outlet></router-outlet>

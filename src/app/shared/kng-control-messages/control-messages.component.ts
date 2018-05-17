@@ -1,21 +1,26 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { InputValidator } from '../input-validator';
+import { KngInputValidator } from '../kng-input-validator';
+import { i18n } from '../i18n.service';
 
 @Component({
   selector: 'kng-control-messages',
   template: `<div *ngIf="errorMessage !== null">{{errorMessage}}</div>`,  
   encapsulation: ViewEncapsulation.None
 })
-export class ControlMessagesComponent {
+export class KngControlMessagesComponent {
 
   @Input() control: FormControl;
-  constructor() { }
+  constructor(
+    private $i18n:i18n
+  ) { 
+
+  }
 
   get errorMessage() {
     for (let propertyName in this.control.errors) {
       if (this.control.errors.hasOwnProperty(propertyName) && this.control.touched) {
-        return InputValidator.getValidatorErrorMessage(propertyName, this.control.errors[propertyName]);
+        return KngInputValidator.getValidatorErrorMessage(this.$i18n,propertyName, this.control.errors[propertyName]);
       }
     }
 

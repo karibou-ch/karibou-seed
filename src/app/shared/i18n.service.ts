@@ -10,8 +10,14 @@ export class i18n  {
 
 
   public fr:any={
+    user_confirmation_mail:"Merci, une confirmation a été envoyée à votre adresse email",
+    user_login_ko:"Ho ho, nous ne pouvons pas vous identifier...",
+    user_login_ok:"Bienvenu !",
+    user_register_ok:"Votre compte a été créé",
+    user_recover_ok:"Un nouveau mot de passe à été envoyé",
     password  :"Confirmer votre mot de passe",
     delete_ok :'Suppression effectuée',    
+    modify_ok :'Modification effectuée',    
     save_ok   :'Sauvegarde effectuée'
   };
 
@@ -27,15 +33,22 @@ export class i18n  {
   constructor(
     private $config:ConfigService
   ) { 
-    this.$config.subscribe(config=>this.config=config);
-    this.currentLocale=this.$config.locale;
+    this.currentLocale='fr';
+    this.$config.subscribe((config:Config)=>{
+      this.config=config;
+      // TODO configure locale switch/setup
+      // this.config.shared.i18n [defaultLocale:string, locales:[]]
+    });
+    //this.currentLocale=this.$config.locale;
   }
 
-  lang(elem?:any){
-    if(elem){
-      return elem[this.currentLocale];
-    }
+  label(){
     return this[this.currentLocale];
+  }
+
+  lang(elem:any){
+    if(!elem) return '';
+    return elem[this.currentLocale];
   }
 
 

@@ -1,4 +1,7 @@
 <div class="blured" ></div>
+<!-- EDIT DOCUMENT CONTENT -->
+<router-outlet></router-outlet>
+
 <div class="container">
   <mdc-list [lines]="2" [avatar]="true" [border]="true" >
     <mdc-list-item [routerLink]="['./create']">
@@ -18,9 +21,9 @@
           <mdc-icon [fontSize]="30">folder</mdc-icon>
         </mdc-list-item-graphic>
         <mdc-list-item-text>
-          <span>{{content.type}}</span><b>/</b><span [innerHtml]="content.title[$i18n.locale]"></span>
+          <span>{{content.type}}</span><b>/</b>{{content.slug[0]}}
           <mdc-list-item-secondary>
-              {{content.slug}}
+              <span [innerHtml]="content.title[$i18n.locale]"></span>
           </mdc-list-item-secondary>              
         </mdc-list-item-text>
         <mdc-list-item-meta>
@@ -39,6 +42,5 @@
     </mdc-list-item>
   </mdc-list>
 </div>
-<!-- EDIT DOCUMENT CONTENT -->
-<router-outlet></router-outlet>
+
 

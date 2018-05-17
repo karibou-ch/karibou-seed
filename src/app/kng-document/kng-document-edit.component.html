@@ -1,50 +1,91 @@
 <!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
-<div class="edit-container markdown-page markdown-{{document?.type}}">
+<div class="page-container page-edit markdown-page markdown-{{document?.type}}">
   <button [routerLink]="['../']" class="close">
       <mdc-icon [fontSize]="30">close</mdc-icon>
   </button>
-    
-  <div>
-  </div>
 
   <div class="container ">
 
 
-      <h3 class="byline">
-        Published <time>{{document?.created| date: 'mediumDate'}}</time> by <span class="author">{{document?.signature}} </span>
+      <h3 class="byline" i18n>
+        Publié le <time>{{document?.created| date: 'mediumDate'}}</time> par <span class="author">{{document?.signature}} </span>        
       </h3>
 
+
       <form [formGroup]="edit.form" (submit)="onSave()">
+        <!-- TOP ACTIONS -->
+        <div class="check">
+          <mdc-form-field>
+              <mdc-switch [ngModel]="document.available" formControlName="available"></mdc-switch>
+              <label i18n>Actif</label>
+          </mdc-form-field>
+          <mdc-form-field>
+              <mdc-switch [ngModel]="document.published" formControlName="published"></mdc-switch>
+              <label i18n>Publié</label>
+          </mdc-form-field>        
+          <mdc-select placeholder="Type" floatingLabel="false" [ngModel]="document.type" formControlName="type"  [box]="false" >
+            <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
+          </mdc-select>
+
+          <button mdc-button (click)="onShow()" i18n>Apperçu</button>    
+        </div>
+        <!-- TOP SLUGS ACTION -->
+        <mdc-list dense="true" interactive="false" border="true">
+          <mdc-list-item *ngFor="let slug of document.slug;let idx=index">
+            /content/{{slug}}
+              <button mdc-button mdc-list-item-meta (click)="document.slug.splice(idx,1)" [disabled]="document.slug.length<2">clear</button>
+          </mdc-list-item>
+        </mdc-list>
+
+        <!-- TOP IMAGES ACTIONS -->
+        <div class="images" [hidden]="!isDocumentReady()">
+          <mdc-list dense="true" interactive="false" border="true">
+            <mdc-list-item *ngFor="let photo of document.photo.bundle;let idx=index">
+              ![votre titre image]({{photo}})            
+              <button mdc-button mdc-list-item-meta (click)="document.photo.bundle.splice(idx,1)">clear</button>
+            </mdc-list-item>
+          </mdc-list>
+            
+          <ngx-uploadcare-widget
+            images-only="true"
+            (on-upload-complete)="onUpload($event)"
+            [public-key]="config.shared.keys.pubUpcare">
+          </ngx-uploadcare-widget>        
+        </div>
+        <!-- SIGNATURE -->
+        <div class="signature">
+          <mdc-text-field i18n-label label="Signature"  type="text" [ngModel]="document.signature||user.display()" formControlName="signature">
+          </mdc-text-field>                
+        </div>
+
+                      
+              
+              
         <!-- TITLE -->
         <h1>
-          <mdc-text-field i18n-label label="Titre" type="text" [ngModel]="edit.content.title" formControlName="title">
+          <mdc-text-field i18n-label label="Titre"  type="text" [ngModel]="document.title[locale]" formControlName="title">
           </mdc-text-field>                
         </h1>
         <h2>
-          <mdc-textarea i18n-label label="En tête" rows="12" formControlName="header"
-          [ngModel]="edit.content.header">
+          <mdc-textarea i18n-label label="En tête" formControlName="header"
+                        kng-autosize rows="3" outline="false"
+                        [ngModel]="document.header[locale]">
           </mdc-textarea>                  
         </h2>
 
         <section>
-            <mdc-textarea i18n-label label="Que souhaitez vous écrire?" rows="24" formControlName="body"
-            [ngModel]="edit.content.body">
+            <mdc-textarea i18n-label label="Que souhaitez vous écrire?" 
+                          kng-autosize rows="4" formControlName="body"
+                          [ngModel]="document.content[locale]">
             </mdc-textarea>                              
         </section>
 
       </form>
-          
       
 
-      <div class="sidebar-block" >
-        <h4 translate="furthermore"></h4>
-        <ol  class="list-unstyled">
-          <li *ngFor="let doc of furthermore"><a href="/content/{{doc.slug[0]}}" >{{doc.title.fr}}</a></li>
-          <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
-        </ol>   
-      </div> 
 
-      <div kng-markdown data="{{document?.content.fr}}"></div>
       
-  </div>
+  </div>  
+  <kng-footer></kng-footer>  
 </div>
+

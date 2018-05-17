@@ -1,0 +1,27 @@
+<div class="container">
+  <!-- <h3 i18n>Modifier votre mot de passe</h3>
+  <h4 i18n>{{user.display()}}</h4> -->
+  <form [formGroup]="$profile" (submit)="onChange()">
+      <mdc-text-field i18n-label label="Votre nom" type="text" formControlName="name" [ngModel]="user.name.familyName">
+        <mdc-icon trailing>name</mdc-icon>
+      </mdc-text-field>
+
+      <mdc-text-field i18n-label label="Votre prénom" type="text" formControlName="forname" [ngModel]="user.name.givenName">
+        <mdc-icon trailing>name</mdc-icon>
+      </mdc-text-field>
+
+      <mdc-text-field i18n-label label="Votre email" type="email" formControlName="email" [ngModel]="user.email.address">
+        <mdc-icon trailing>name</mdc-icon>
+      </mdc-text-field>
+        
+      
+      <mdc-text-field i18n-label label="Confirmer avec votre mot de passe"  type="password" formControlName="password">
+        <mdc-icon trailing>vpn_key</mdc-icon>
+      </mdc-text-field>
+      
+      <button mdc-button [unelevated]="true"  [disabled]="!$profile.valid">
+        <mdc-icon>account_circle</mdc-icon>              
+        <span i18n>Enregistrer</span>
+      </button>            
+  </form>
+</div>

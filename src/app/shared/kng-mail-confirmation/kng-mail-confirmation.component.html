@@ -1,0 +1,15 @@
+<!--
+    http://localhost:4200/store/bretzel/validate/ac97700878eb995cbad18f45c6c6f7543770f208/test1@karibou.ch
+-->
+<div *ngIf="!user.isReady()" class="mail-checker">
+    <h3 i18n>En attente de confirmation</h3>
+    <mdc-linear-progress></mdc-linear-progress>
+    <h2 i18n>Votre adresse mail n'a toujours pas été confirmée.</h2>
+    <p class="block-info" i18n>
+        Pour continuer cette opération, vous devez valider votre adresse de messagerie.
+        Une demande de confirmation vous a été envoyée par mail le {{user.getEmailStatus()|date}}. 
+        Si vous avez perdu ce mail, <a href="javascript:;" (click)="sendConfirmationMail()">vous pouvez activer une nouvelle demande de confirmation</a>
+        (l'envoi peut prendre quelques minutes).
+    </p>
+</div>  
+

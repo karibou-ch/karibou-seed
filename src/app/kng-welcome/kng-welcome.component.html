@@ -1,3 +1,5 @@
+<kng-quick-editor></kng-quick-editor>
+
 <div *ngIf="!isAppReady()"  >
 
 
@@ -7,8 +9,8 @@
       <div class="logo"></div>
       <!-- WELCOME -->
       <div class="inner" [hidden]="askAction">
-        <h1 i18n>{{config?.shared.home.tagLine.h.fr}}</h1>
-        <form>
+        <h1 i18n>{{$i18n.lang(config?.shared.home.tagLine.h)}}</h1>
+        <form [hidden]="true">
             <button mdc-button [icon]="true" [unelevated]="true" [secondary]="true" [routerLink]="'/store/bretzel'">
               <mdc-icon>person_pin</mdc-icon>              
               <span i18n>J'habite le nouveau quartier Jonction</span>
@@ -18,16 +20,16 @@
       </div>
 
       <!-- LOGIN -->
-      <div class="inner" *ngIf="askAction=='login'">
+      <!-- <div class="inner" *ngIf="askAction=='login'">
           <h1 i18n>Bienvenue!</h1>
           <p i18n>Log in with your email and password.</p>
           <form>
-              <mdc-text-field-box i18n-label label="Votre email" style="width:100%" type="email">
+              <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%" type="email">
                 <mdc-icon trailing>person</mdc-icon>
-              </mdc-text-field-box>
-              <mdc-text-field-box label="Votre secret" style="width:100%" type="password">
+              </mdc-text-field>
+              <mdc-text-field [box]="true" label="Votre secret" style="width:100%" type="password">
                   <mdc-icon trailing>vpn_key</mdc-icon>
-                </mdc-text-field-box>
+                </mdc-text-field>
                 
               <button mdc-button [unelevated]="true" [secondary]="true">
                 <mdc-icon>account_circle</mdc-icon>              
@@ -35,23 +37,24 @@
               </button>            
           </form>
           <div class="signup-vs-login" ><a class="link" (click)="askAction='recover'" i18n>J'ai oublié mon mot de passe</a></div>
-        </div>
+        </div> -->
         
       <!-- RECOVER -->
-      <div class="inner" *ngIf="askAction=='recover'">
-          <h1 i18n>Bienvenue!</h1>
-          <p i18n>Log in with your email and password.</p>
-          <form>
-              <mdc-text-field-box i18n-label label="Votre email" style="width:100%">
-                <mdc-icon trailing>email</mdc-icon>
-              </mdc-text-field-box>
-              <button mdc-button [unelevated]="true" [secondary]="true">
-                <mdc-icon>account_circle</mdc-icon>              
-                <span i18n>Envoyer</span>
-              </button>            
-          </form>
-        </div>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=boulangerie-bretzel.ch">
+      <!-- <div class="inner" *ngIf="askAction=='recover'">
+        <h1 i18n>Bienvenue!</h1>
+        <p i18n>Log in with your email and password.</p>
+        <form>
+            <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%">
+              <mdc-icon trailing>email</mdc-icon>
+            </mdc-text-field>
+            <button mdc-button [unelevated]="true" [secondary]="true">
+              <mdc-icon>account_circle</mdc-icon>              
+              <span i18n>Envoyer</span>
+            </button>            
+        </form>
+      </div> -->
+
+      <a [hidden]="true" href="https://www.facebook.com/sharer/sharer.php?u=boulangerie-bretzel.ch">
         <div class="spread"></div>  
       </a>
       
@@ -60,67 +63,30 @@
   </div>
 
   <div class="container middle">
-    <div class="how-it-works" [innerHTML]="config?.shared.home.howto.p.fr">
+    <div class="how-it-works" kng-editor-key="home.howto.p" [innerHTML]="$i18n.lang(config?.shared.home.howto.p)">
                 
     </div>
-    <div class="favorite-products">
-      <div class="elem">LEFT</div>
-      <div class="elem">RIGHT</div>
+    <div class="favorite-products" >
+      <div class="elem"></div>
+      <div class="elem"></div>
     </div>
   </div>
   <div class="container separator"></div>
 
-  <div class="footer">
-    <div class="line marked">
-      <div class="elem">H1</div>
-      <div class="elem">H2</div>
-    </div>
-    <div class="line ">
-      <div class="elem">menu</div>
-      <div class="elem">MAIN</div>
-      <div class="elem">side</div>
-    </div>
-  </div>
-  
+  <kng-footer></kng-footer>
   <div class="background-grid">
     <div class="items-list-wrap">
       <ul class="items-list" >
         <li class="has-details item" *ngFor="let photo of photos"  
-           [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
+          [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
       </ul>        
     </div>
   </div>
-      
-
-
-  <!-- SECOND ROW -->
-  <!-- <div  style="display: none;" >
-    <div fxFlex="30" *ngFor="let item of stores" [routerLink]="['/store/',item.name]">
-      <div class="mdc-grid-tile__primary">
-        <img class="mdc-grid-tile__primary-content" src="{{item.image}}" />
-      </div>
-      <span class="mdc-grid-tile__secondary">
-        <span class="mdc-grid-tile__title">{{item.title}}</span>
-      </span>
-    </div>
-  </div>
-
-  <div class="mdc-grid-list " style="display:none;" >
-    <ul class="mdc-grid-list__tiles">
-      <li class="mdc-grid-tile" *ngFor="let item of stores" [routerLink]="['/store/',item.name]">
-        <div class="mdc-grid-tile__primary">
-            <img class="mdc-grid-tile__primary-content" src="{{item.image}}" />
-          </div>
-        <span class="mdc-grid-tile__secondary">
-          <span class="mdc-grid-tile__title">{{item.title}}</span>
-        </span>
-      </li>
-        
-    </ul>
-  </div>   -->
+  
 </div>
 
-<kng-navbar [hidden]="!isAppReady()">
+
+<kng-navbar [hidden]="!isAppReady()" style="height:100%">
   <router-outlet ></router-outlet>
 </kng-navbar>
 

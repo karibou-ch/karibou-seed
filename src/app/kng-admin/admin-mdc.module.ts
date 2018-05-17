@@ -43,7 +43,7 @@ import {
     MdcRadioModule,
     MdcRippleModule,
     MdcSnackbarModule,
-    MdcTextFieldModule,
+    MdcTextFieldModule,    
     MdcTabModule,
     MdcToolbarModule
   ],

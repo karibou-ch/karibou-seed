@@ -1,10 +1,11 @@
+
 <!-- NAVIGATION  -->
 <mdc-drawer drawer='temporary' #navigation [fixed]="true" >
   <mdc-drawer-header>
       
   </mdc-drawer-header>
   <mdc-drawer-content >
-    <mdc-list-group>
+    <!-- <mdc-list-group>
       <mdc-list>
           <a mdc-list-item [routerLink]="['/']"><mdc-icon mdc-list-item-graphic>home</mdc-icon> Page principale</a>
       </mdc-list>
@@ -15,57 +16,78 @@
         </a>
         <mdc-list-divider></mdc-list-divider>
       </mdc-list>
-    </mdc-list-group>
+    </mdc-list-group> -->
+
   </mdc-drawer-content>
 </mdc-drawer>
 
 <!-- CART SIDEBAR -->
-<mdc-drawer drawer='temporary' #cart [fixed]="true" dir="rtl" class="right">
+<!-- <mdc-drawer drawer='temporary' #cart [fixed]="true" dir="rtl" class="right">
   <mdc-drawer-content dir="ltr">
     <kng-cart></kng-cart>
   </mdc-drawer-content>
-</mdc-drawer>
+</mdc-drawer> -->
 
 <!-- MAIN LAYOUT -->
-<div style="display:flex;flex-flow: row nowrap;" [hidden]="!isAppReady()">      
+<div [hidden]="!isAppReady()" class="navbar">      
 
   <mdc-toolbar
-    [mdc-elevation]="1"
     #toolbar
-    [flexible]="!$navigation.isMobileOrTablet()&&!$navigation.isAdminLayout"
     [fixed]="true"
-    [waterfall]="false"
-    [fixedLastrow]="true"  
     (change)="handleToolbarChange($event)">
     <!-- howto set image  -->
     <!-- [ngStyle]="{'background-image': 'url(' + image + ')'}" -->
-    <mdc-toolbar-row class="mdc-toolbar__row--with-image" #section>
-      <mdc-toolbar-section [alignStart]="true">
+
+    <mdc-toolbar-row class="mdc-toolbar__row--with-tabs" #section>
+      <mdc-toolbar-section [alignStart]="true" [shrinkToFit]="true">
         <button mdc-toolbar-menu-icon material-icon (click)="navigation.open()" >menu</button>
         <mdc-toolbar-title>{{title}}</mdc-toolbar-title>      
       </mdc-toolbar-section>
-      <!-- SEARCH SECTION -->
-      <mdc-toolbar-section mdc-search-bar [hidden]="$navigation.isAdminLayout">
-      </mdc-toolbar-section>    
-      <!-- RIGHT MENU SECTION -->
+
+      <mdc-toolbar-section class="tabs" >
+        <mdc-tab-bar [secondary]="true" [hidden]="$navigation.isAdminLayout">
+          <mdc-tab *ngFor="let menu of primary;let idx=index;" 
+                    [routerLink]="'.'+menu.url" 
+                    mdcRouter routerLinkActive #rla="routerLinkActive">
+            <span [innerHTML]="menu.name[locale]"></span>
+          </mdc-tab>
+          <!-- <mdc-tab [routerLink]="['/store/'+store]" mdcRouter routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" [routerLinkActiveOptions]="{exact:
+            true}">
+            Boulangerie
+          </mdc-tab>
+          <mdc-tab [routerLink]="['/store/'+store+'/cart']" mdcRouter routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" [routerLinkActiveOptions]="{exact:
+            true}">
+            Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>
+          </mdc-tab>
+          <mdc-tab [routerLink]="['/store/'+store+'/content/comment-ca-marche']" mdcRouter routerLinkActive #rla="routerLinkActive" [active]="rla.isActive" [routerLinkActiveOptions]="{exact:
+            true}">
+            A propos
+          </mdc-tab> -->
+        </mdc-tab-bar>          
+      </mdc-toolbar-section>
+        
+      <!-- <mdc-toolbar-section [alignEnd]="true" >
+        <button mdc-toolbar-icon class="primary" (click)="cart.open()"><i  material-icon>shopping_cart</i><span class="hide-md">Panier</span></button>
+      </mdc-toolbar-section> -->
+
       <mdc-toolbar-section [alignEnd]="true" [shrinkToFit]="true"  class="mdc-menu-anchor">
-          <button (click)="admin.open()" class="" mdc-toolbar-icon material-icon [hidden]="!user.isAdmin()">vpn_key</button>        
-          <button (click)="profile.open(3)" class="" mdc-toolbar-icon material-icon [hidden]="!user.isAuthenticated()">account_box</button>        
-          <button [routerLink]="['/store',store,'me','login']" mdc-toolbar-icon material-icon [hidden]="user.isAuthenticated()">account_circle</button>        
-        <button (click)="shipping.open()" mdc-toolbar-icon >
+        <a (click)="shipping.open()" mdc-toolbar-icon class="btn-shipping" >
             <i material-icon class="primary">update</i>
-            <span class="hide-md" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
-        </button>        
+            <span class="hide-md hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
+        </a>        
+        <a (click)="admin.open()" class="primary" mdc-toolbar-icon material-icon [hidden]="!user.isAdmin()">vpn_key</a>        
+        <a (click)="profile.open(3)" class="primary" mdc-toolbar-icon material-icon [hidden]="!user.isAuthenticated()">account_box</a>        
+        <a [routerLink]="['/store',store,'me','login']" class="primary" mdc-toolbar-icon material-icon [hidden]="user.isAuthenticated()">account_circle</a>        
   
-        <button mdc-toolbar-icon material-icon class="mat-toolbar--open-search mat-search--mobile ">search</button>
+        <button mdc-toolbar-icon material-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button>
         <!-- menu content anchor to toolbar-section -->
-        <mdc-menu #shipping (select)="handleMenuSelect($event)" >
-          <mdc-menu-item id="0" *ngFor="let day of getShippingDays()">
+        <mdc-menu #shipping >
+          <mdc-menu-item id="0" *ngFor="let day of getShippingDays();let idx=index" (click)="doSetCurrentShippingDay($event,day,idx)">
               {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
               <mdc-icon mdc-list-item-meta>info</mdc-icon>                
           </mdc-menu-item>
           <mdc-menu-divider></mdc-menu-divider>
-          <mdc-menu-item>
+          <mdc-menu-item [disabled]="true">
               <!-- <h5 i18n>Ouverture</h5> -->
               <div class="align-days">
                 <div class="label-shipping" *ngFor="let day of getShippingWeek()">
@@ -82,51 +104,22 @@
                          [routerLink]="getRouterLink(menu.url)"><mdc-icon>radio_button_checked</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
         </mdc-menu>
         <mdc-menu #profile >
-          <mdc-menu-item id="0" [routerLink]="['/store',store,'me']"><mdc-icon>favorite</mdc-icon>&nbsp;<span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
+          <mdc-menu-item id="0" [routerLink]="['/store',store,'me','orders']"><mdc-icon>favorite</mdc-icon>&nbsp;<span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
           <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon>&nbsp;<span i18n>Logout</span></mdc-menu-item>
-          <mdc-menu-item id="2" [routerLink]="['/store',store,'me','orders']"><mdc-icon>shopping_cart</mdc-icon>&nbsp;<span i18n>Voir mes commandes</span></mdc-menu-item>          
           <mdc-menu-divider></mdc-menu-divider>
           <mdc-menu-item id="3" *ngIf="user.shops.length" [routerLink]="['/store',store,'shop',user.shops[0].urlpath,'edit']"><mdc-icon>mode_edit</mdc-icon><span i18n>Editer</span> {{user.shops[0].name}}</mdc-menu-item>
 
            
 
           <!-- FOR SHOP & ADMIN -->
-          <mdc-menu-item [id]="4+i" 
+          <!-- <mdc-menu-item [id]="4+i" 
                          [hidden]="!$navigation.isShopOwner"
                          *ngFor="let menu of $navigation.getMenuItems('shop');let i=index;" 
                          [routerLink]="getRouterLink(menu.url)"><mdc-icon>attach_money</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
-          <mdc-menu-divider [hidden]="!$navigation.isShopOwner"></mdc-menu-divider>
-          <!-- FOR LOGISTIC & ADMIN -->
-          <mdc-menu-item [id]="10+i" 
-                         [hidden]="!$navigation.isLogistic"
-                         *ngFor="let menu of $navigation.getMenuItems('shipping');let i=index;" 
-                         [routerLink]="getRouterLink(menu.url)"><mdc-icon>pin_drop</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
-        </mdc-menu>
-              
-        
+          <mdc-menu-divider [hidden]="!$navigation.isShopOwner"></mdc-menu-divider> -->
+        </mdc-menu>                      
       </mdc-toolbar-section>
       
-    </mdc-toolbar-row>
-
-    <mdc-toolbar-row class="mdc-toolbar__row--with-tabs" [hidden]="$navigation.isAdminLayout">
-      <mdc-toolbar-section [alignStart]="true" >
-      </mdc-toolbar-section>
-      <mdc-toolbar-section class="tabs" [shrinkToFit]="true">
-        <mdc-tab-bar [secondary]="true" >
-          <mdc-tab [routerLink]="['/store/'+store]" routerLinkActive #rla [active]="rla.isActive">
-            Ma boulangerie
-          </mdc-tab>
-          <mdc-tab [routerLink]="['/store/'+store+'/departement']" routerLinkActive #rla [active]="rla.isActive">
-            Ma commande
-          </mdc-tab>
-          <mdc-tab [routerLink]="['/store/'+store+'/shops']" routerLinkActive #rla [active]="rla.isActive">
-            A propos
-          </mdc-tab>
-        </mdc-tab-bar>          
-      </mdc-toolbar-section>
-      <!-- <mdc-toolbar-section [alignEnd]="true" >
-        <button mdc-toolbar-icon class="primary" (click)="cart.open()"><i  material-icon>shopping_cart</i><span class="hide-md">Panier</span></button>
-      </mdc-toolbar-section> -->
     </mdc-toolbar-row>
     
   </mdc-toolbar>
@@ -134,4 +127,7 @@
   <div class="mdc-content">
     <ng-content></ng-content>
   </div>
+
+  <!-- FOOTER -->
+  <kng-footer></kng-footer>  
 </div>

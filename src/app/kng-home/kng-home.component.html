@@ -15,11 +15,11 @@
       <h3>{{category.description}}</h3>
     </section>
               
-    <div class="mdc-layout-grid__inner" >
+    <div class="kng-layout-card" >
         <kng-product-thumbnail 
             [sku]="product.sku"
             *ngFor="let product of group[category.name];let j=index"
-            class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2-desktop mdc-layout-grid__cell--span-2">
+            class="">
         </kng-product-thumbnail>
 
 

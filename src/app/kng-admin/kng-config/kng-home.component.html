@@ -1,0 +1,92 @@
+<div class="container">
+  <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+    <mdc-list-item (click)="onConfigSave()">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">save</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>
+        <mdc-list-item-text i18n>
+          Sauver vos modifications
+          <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
+        </mdc-list-item-text>
+      </mdc-list-item-text>
+      <mdc-list-item-meta>
+        <mdc-icon class="pink">favorite</mdc-icon>
+      </mdc-list-item-meta>
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+
+    <!-- MAINTENANCE/HOME -->                  
+    <mdc-list-item class="config large">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>                    
+        <mdc-list-item-secondary >
+            <mdc-textarea i18n-label label="Message de maintenance" rows="12" 
+                          [ngModel]="config?.shared.maintenance.reason[$i18n.locale]"></mdc-textarea>                  
+        </mdc-list-item-secondary>               
+      </mdc-list-item-text>        
+      <mdc-list-item-meta>
+          <mdc-form-field>
+              <mdc-checkbox [checked]="config?.shared.maintenance.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
+          </mdc-form-field>
+      </mdc-list-item-meta>                                    
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+      
+    <!-- SITE HEADER -->
+    <mdc-list-item class="config large">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>
+        <mdc-list-item-secondary>
+          <mdc-textarea i18n-label label="Message d'entête" rows="12" [ngModel]="config?.shared.header.message[$i18n.locale]"></mdc-textarea>
+        </mdc-list-item-secondary>
+      </mdc-list-item-text>
+      <mdc-list-item-meta>
+        <mdc-form-field>
+          <mdc-checkbox [checked]="config?.shared.header.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
+        </mdc-form-field>
+      </mdc-list-item-meta>
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+  
+    <!-- TAGLINE -->
+    <mdc-list-item class="config">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>
+        <mdc-list-item-secondary>
+          <mdc-text-field i18n-label label="Titre tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.h[$i18n.locale]">
+          </mdc-text-field>
+        </mdc-list-item-secondary>
+      </mdc-list-item-text>
+    </mdc-list-item>
+
+    <mdc-list-item class="config large">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>
+        <!-- IMAGE -->
+        <div class="images" style="float: right;">  
+          <ngx-uploadcare-widget
+            images-only="true"
+            [value]="config.shared.home.tagLine.image"
+            (on-upload-complete)="onUpload($event,'tagLine')"
+            [public-key]="config.shared.keys.pubUpcare">            
+          </ngx-uploadcare-widget>        
+        </div>    
+          
+        <mdc-list-item-secondary>
+          <mdc-textarea i18n-label label="Paragraphe tagline du site" rows="12" [(ngModel)]="config?.shared.home.tagLine.p[$i18n.locale]"></mdc-textarea>  
+        </mdc-list-item-secondary>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+
+  </mdc-list>
+</div>

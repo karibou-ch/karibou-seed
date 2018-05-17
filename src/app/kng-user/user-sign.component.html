@@ -1,16 +1,18 @@
 <div class="blured" [hidden]="isReady"></div>
 <div class="container top">
-  <button (click)="onWindowClick()" class="close">
+  <button (click)="onBack()" class="close">
       <mdc-icon [fontSize]="30">close</mdc-icon>
   </button>
   <div class="sign" >
-    <div class="logo" [routerLink]="'/'"></div>
+    <div class="logo" 
+         [routerLink]="'/store'+store" 
+         [hidden]="askAction=='payment'||askAction=='address'"></div>
 
     <!-- LOGIN -->
     <div class="inner" *ngIf="!askAction">
       <h3 i18n>Identifiez-vous avec votre email</h3>
       <form [formGroup]="sign" (submit)="onSign()">
-          <mdc-text-field label="Votre email" style="width:100%" type="email" formControlName="email">
+          <mdc-text-field i18n-label label="Votre email" style="width:100%" type="email" formControlName="email">
             <mdc-icon trailing>person</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
@@ -22,11 +24,11 @@
             
           <button mdc-button [unelevated]="true"  [disabled]="!sign.valid">
             <mdc-icon>account_circle</mdc-icon>              
-            <span i18n>Login {{sign.valid}}</span>
+            <span i18n>Login</span>
           </button>            
       </form>
-      <div class="signup-vs-login" i18n><a class="link" (click)="askAction='recover'">J'ai oublié mon mot de passe</a></div>
-      <div class="signup-vs-login" i18n><a class="link" (click)="askAction='signup'">Je n'ai pas de compte</a></div>
+      <div class="signup-vs-login black" i18n><a class="link" (click)="askAction='signup'">Je n'ai pas de compte</a></div>
+      <div class="signup-vs-login light" i18n><a class="link" (click)="askAction='recover'">J'ai oublié mon mot de passe</a></div>
     </div>
       
     <!-- RECOVER -->
@@ -77,15 +79,24 @@
             <span i18n>Créer votre compte</span>
           </button>            
       </form>
-      <div class="signup-vs-login" i18n><a class="link" (click)="askAction=null">J'ai déjà un compte</a></div>
-      
+      <div class="signup-vs-login" i18n><a class="link" (click)="askAction=null">J'ai déjà un compte</a></div>      
     </div>
 
+    <!-- ADDRESS -->
+    <div class="inner" *ngIf="askAction=='address'">
+      <kng-user-address [user]="user" [config]="config" (updated)="onUpdateAddress($event)"></kng-user-address>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="inner" *ngIf="askAction=='payment'">
+      <kng-user-payment [user]="user" [config]="config" (updated)="onUpdatePayment($event)"></kng-user-payment>
+    </div>
+      
     <!-- LOGOUT -->
     <div class="inner" *ngIf="askAction=='logout'">
-        <h3 i18n>Merci vous êtes maintenant déconnecté</h3>
-        <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">Je nesouhaite ouvrir une session</a></div>
-      </div>
+      <h3 i18n>Merci vous êtes maintenant déconnecté</h3>
+      <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">Je nesouhaite ouvrir une session</a></div>
+    </div>
       
   </div>
 </div>
