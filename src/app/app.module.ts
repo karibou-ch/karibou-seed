@@ -1,6 +1,6 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
@@ -29,8 +29,9 @@ import { KngNavbarComponent } from './kng-navbar';
 //
 // App directives
 
-
-
+//
+// environnement
+import { environment } from '../environments/environment';
 
 //
 // routing
@@ -42,7 +43,17 @@ import { ProductComponent,
          ProductListComponent } from './kng-product';
 import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
-import { KngCartComponent } from './kng-cart/kng-cart.component';
+import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
+
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  constructor() { }
+  handleError(error) {
+     // IMPORTANT: Rethrow the error otherwise it gets swallowed
+     throw error;
+  } 
+}
+
 
 @NgModule({
   declarations: [
@@ -52,28 +63,30 @@ import { KngCartComponent } from './kng-cart/kng-cart.component';
     KngNavbarComponent,
     KngHomeComponent,
     KngWelcomeComponent,
-    KngCartComponent    
+    KngValidateMailComponent    
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
     HttpClientModule,
     MdcModule,
-    SharedModule.forRoot(),
     Kng2CoreModule.forRoot({
-      API_SERVER:'http://api.beta.boulangerie-bretzel.ch',
+      API_SERVER:environment.API_SERVER,
       loader:[
-        "categories"
+        "categories",
+        "shops"
       ]
     }),
+    SharedModule.forRoot(),
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'fr' }
+    { provide: LOCALE_ID, useValue: 'fr' },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler}
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
