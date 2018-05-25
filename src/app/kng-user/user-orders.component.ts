@@ -57,7 +57,7 @@ export class UserOrdersComponent implements OnInit {
   ngOnInit() {
     this.$order.findOrdersByUser(this.user).pipe(
       flatMap(orders=>{
-        this.onDone(orders);
+        this.processOrders(orders);
         if(!this.items.length){
           return [];
         }
@@ -85,11 +85,14 @@ export class UserOrdersComponent implements OnInit {
     return this.photos[item.sku]||'/assets/img/icon-finefood.png';
   }
 
-  onDone(orders: Order[]){
+  processOrders(orders: Order[]){
     let scoreditem:{[key:string]:ScoredItem;}={};
-    this.orders=orders.filter(order=>{
-      return order.shipping.when>this.filter.current
-    });
+    // this.orders=orders.filter(order=>{
+    //   return order.shipping.when>this.filter.current
+    // });
+    //
+    // display 20 last orders
+    this.orders=orders.sort((o1,o2)=>o2.shipping.when.getTime()-o1.shipping.when.getTime()).splice(0,10);
     this.orders.forEach(order=>{
       order.items.forEach(item=>{
         if(!scoreditem[item.sku]){

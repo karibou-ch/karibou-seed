@@ -1,12 +1,17 @@
-<div>
+<div class="user-container">
   <section>
       <h1>{{user.display()}}</h1>      
-      <div class="title">Membre depuis le {{user.created|date:'mediumDate'}}</div>
-      <p class="resume">
-        34 commandes, 5 problèmes, X X X X
+      <div class="title" i18n>Membre depuis le {{user.created|date:'mediumDate'}}</div>
+      <p class="resume ">
+        <!-- 34 commandes, 5 problèmes, X X X X -->
+        &nbsp;
       </p>
 
       <img src="/assets/img/k-avatar.png"/>
+
+      <button mdc-button unelevated="true" icon="true" [routerLink]="['./logout']" i18n>        
+        <mdc-icon>person</mdc-icon>Fermer votre session
+      </button>
   </section>
 
   <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()"></kng-mail-confirmation>

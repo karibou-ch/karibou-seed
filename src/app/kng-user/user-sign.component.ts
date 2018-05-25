@@ -108,7 +108,6 @@ export class UserSignComponent {
     this.isReady= true;
     this.config = loader[0];
     this.user   = loader[1];
-    this.store  = this.$nav.store;
 
     this.mandatory={
       address:this.$route.snapshot.data.address,
@@ -161,6 +160,7 @@ export class UserSignComponent {
     let hasAddress=this.user.hasPrimaryAddress()!=false;
     let hasValidMail=this.user.isReady();
     let hasValidPayment=this.user.payments.every(p=>p.isValid());
+    this.store  = this.$nav.store;
 
     // 
     // mandatory add,payment

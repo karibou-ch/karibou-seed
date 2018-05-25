@@ -24,6 +24,7 @@ import { IsAuthenticatedGard } from '../shared';
 // get an EmptyError: no elements in sequence with this route
 const routes: Routes = [
   { path: '', component: UserProfileComponent, resolve:{ loader:LoaderResolve }, canActivateChild:[IsAuthenticatedGard], children:[
+    { path: '', redirectTo: 'orders', pathMatch: 'full'},
     { path: 'orders', component: UserOrdersComponent, resolve:{ loader:LoaderResolve } },
     { path: 'email', component: UserEmailComponent, resolve:{ loader:LoaderResolve }  },
     { path: 'password', component: UserPasswordComponent, resolve:{ loader:LoaderResolve }  }  

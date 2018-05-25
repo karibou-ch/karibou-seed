@@ -21,9 +21,18 @@ div{
     }
   }
   mdc-list-item-text{
+    max-width: 70vw;
+    
+    @media screen and (max-width:376px) {
+      max-width: 50vw;        
+    }
+      
     text-align: left;
     .error{
       color: red;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     button{
       position: absolute;

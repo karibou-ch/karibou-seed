@@ -1,5 +1,8 @@
-div{
+div.user-container{
   width: 740px;
+  margin-bottom: 50px;
+  margin-top: 50px;
+
   @media (max-width:426px) {
     width: 100%;
   }
