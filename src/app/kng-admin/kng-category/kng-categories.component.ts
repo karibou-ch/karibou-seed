@@ -9,6 +9,7 @@ import {
 import { KngNavigationStateService, i18n } from '../../shared';
 import { MdcSnackbar, MdcDialogComponent, MdcListItemChange } from '@angular-mdc/web';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kng-categories',
@@ -37,9 +38,13 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     private $i18n:i18n,
     private $loader: LoaderService,
     private $category: CategoryService,
+    private $route:ActivatedRoute,
     private $snack:MdcSnackbar,
     private $navigation:KngNavigationStateService
   ){
+    
+    let loader=this.$route.snapshot.data.loader;
+    this.config=loader[0];      
     
     //
     // init edit struct
@@ -66,11 +71,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     });
     
     this.$navigation.isAdminLayout=true;
-    this.$loader.ready().subscribe((loader) => {
-      this.isReady=true;
-      this.config=loader[0];
-      this.loadCategories()
-    });
+    this.loadCategories()
   }
 
   ngOnDestroy(){
@@ -79,6 +80,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   loadCategories(){
     this.$category.select({stats:true}).subscribe((categories:Category[])=>{
+      this.isReady=true;
       this.categories=categories.sort(this.sortByGroupAndWeight.bind(this));
     });
   }
