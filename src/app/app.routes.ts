@@ -8,6 +8,8 @@ import { ProductListComponent, ProductComponent } from './kng-product';
 import { KngCartComponent } from './kng-cart/kng-cart.component';
 import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
 import { IsWelcomeGard } from './shared';
+import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
+import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 
 //
 // /store/geneva/
@@ -31,7 +33,7 @@ export const appRoutes: Routes = [
   {
     path:'store',
     children:[
-    { path:'', component:KngWelcomeComponent },{ 
+    { path:'',pathMatch: 'full', redirectTo:'/'},{ 
       path:':store',
       component:KngWelcomeComponent,
       resolve:{ loader:LoaderResolve },
@@ -42,23 +44,21 @@ export const appRoutes: Routes = [
         { path: 'content', loadChildren: './kng-document/kng-document.module#KngDocumentModule' },      
         { path: 'admin', loadChildren: './kng-admin/admin.module#AdminModule'  },
         { path: 'cart',loadChildren: './kng-cart/kng-cart.module#KngCartModule'   },
-        { path: 'departement',component:KngDepartementComponent },
+        // { path: 'departement',component:KngDepartementComponent },
         { path: 'products/category/:category', component: ProductListComponent },
-        { path:'',component:KngHomeComponent,children:[
+        { path:'home',component:KngHomeComponent,resolve:{ loader:LoaderResolve },children:[
           { path: 'products/:sku', component: ProductComponent},
         ]},
+        { path:'',pathMatch: 'full', redirectTo:'home'}
       ]
     }]
   },
   // { path: 'products/category/:category/:sku', component: ProductComponent, outlet:'modal'},
   // { path: 'products/category/:category', component: ProductListComponent},
 
-  { path: 'products/category/:category', component: ProductListComponent,children:[
+  { path: 'products/category/:category',resolve:{ loader:LoaderResolve }, component: ProductListComponent,children:[
     { path: ':sku', component: ProductComponent, outlet:'modal' }
   ]},
-  
-  
-//  { path: 'dashboard', component: DashboardComponent },
   {
     path: '',
     pathMatch: 'full',    
@@ -66,5 +66,6 @@ export const appRoutes: Routes = [
     canActivate:[IsWelcomeGard],
     component: KngWelcomeComponent
   },
-  // { path: '**', component: PageNotFoundComponent }
+  { path: 'oops', component: KngServerErrorFoundComponent},    
+  { path: '**', component: KngPageNotFoundComponent},  
 ];

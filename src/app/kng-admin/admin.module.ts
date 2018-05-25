@@ -16,19 +16,22 @@ import { KngConfigComponent,
          KngHomeComponent,
          KngShopComponent,
          KngPageContentComponent, 
-         KngDepositComponent } from './kng-config/kng-config.component';
+         KngDepositComponent, 
+         KngInformationCfgComponent} from './kng-config/kng-config.component';
 import { AdminMdcModule } from './admin-mdc.module';
+import { LoaderResolve } from 'kng2-core';
 
 //
 // define routes module
 const routes: Routes = [
-  { path: 'category', component: KngCategoriesComponent },
-  { path: 'config', component: KngConfigComponent },
-  { path: 'welcome', component: KngWelcomeCfgComponent },
-  { path: 'home', component: KngHomeComponent },
-  { path: 'shop', component: KngShopComponent },
-  { path: 'navigation', component: KngNavigationComponent , data:{menu:true}},
-  { path: 'deposit', component: KngDepositComponent , data:{deposit:true}},
+  { path: 'category', component: KngCategoriesComponent,resolve:{ loader:LoaderResolve } },
+  { path: 'config', component: KngConfigComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'information', component: KngInformationCfgComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'welcome', component: KngWelcomeCfgComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'home', component: KngHomeComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'shop', component: KngShopComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'navigation', component: KngNavigationComponent , data:{menu:true}, resolve:{ loader:LoaderResolve }},
+  { path: 'deposit', component: KngDepositComponent , data:{deposit:true}, resolve:{ loader:LoaderResolve }},
   { path: 'page', component: KngPageContentComponent,children:[{
     path:'', loadChildren: '../kng-document/kng-document.module#KngDocumentModule'
   }] }
@@ -56,6 +59,7 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     KngHomeComponent, 
     KngShopComponent, 
     KngWelcomeCfgComponent, 
+    KngInformationCfgComponent,
     KngNavigationComponent]
 })
 export class AdminModule { }

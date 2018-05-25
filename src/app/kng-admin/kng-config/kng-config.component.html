@@ -1,5 +1,5 @@
 <div class="container">
-  <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+  <mdc-list [lines]="2" avatar="true" border="true" interactive="false">
     <mdc-list-item (click)="onConfigSave()">
       <mdc-list-item-graphic>
         <mdc-icon [fontSize]="30">save</mdc-icon>
@@ -28,6 +28,17 @@
         </mdc-list-item-secondary>
       </mdc-list-item-text>
     </mdc-list-item>
+    <mdc-list-item class="config">
+      <mdc-list-item-text>
+        <button mdc-button outlined="true"  dense="true" class="align-right"
+               (click)="onClear('siteName')">remove image</button>
+        <div class="images" style="float: right;">          
+          <ngx-uploadcare-widget images-only="true" [value]="config.shared.home.siteName.image" (on-upload-complete)="onUpload($event,'siteName')"
+            [public-key]="config.shared.keys.pubUpcare">
+          </ngx-uploadcare-widget>
+        </div>
+      </mdc-list-item-text>
+    </mdc-list-item>
 
     <!-- EMAIL -->
     <mdc-list-item class="config">
@@ -53,23 +64,6 @@
           </mdc-text-field>
         </mdc-list-item-secondary>
       </mdc-list-item-text>
-    </mdc-list-item>
-
-    <!-- CHECKOUT MSG -->
-    <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Message lors du checkout" rows="12" [ngModel]="config?.shared.checkout.message[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
-      </mdc-list-item-text>
-      <mdc-list-item-meta>
-        <mdc-form-field>
-          <mdc-checkbox [checked]="config?.shared.checkout.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
-        </mdc-form-field>
-      </mdc-list-item-meta>
     </mdc-list-item>
   </mdc-list>
 
@@ -98,7 +92,7 @@
   
   <hr class="dashed"/>
   <h3 i18n>Configuration des clés publiques (API tiers)</h3>
-  <mdc-list [lines]="2" [avatar]="true" [border]="true">
+  <mdc-list [lines]="2" avatar="true" border="true">
     <!-- PUBKEYS -->
     <mdc-list-item class="config">
       <mdc-list-item-graphic>

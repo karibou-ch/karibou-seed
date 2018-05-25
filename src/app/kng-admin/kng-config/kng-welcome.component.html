@@ -1,5 +1,5 @@
 <div class="container">
-  <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+  <mdc-list [lines]="2" avatar="true" border="true" interactive="false">
     <mdc-list-item (click)="onConfigSave()">
       <mdc-list-item-graphic>
         <mdc-icon [fontSize]="30">save</mdc-icon>
@@ -16,32 +16,14 @@
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
-    <!-- WELCOME/MSG -->
-    <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Message de Welcome" rows="12" [ngModel]="config?.shared.welcome.message[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
-      </mdc-list-item-text>
-      <mdc-list-item-meta>
-        <mdc-form-field>
-          <mdc-checkbox [checked]="config?.shared.welcome.active" ([ngModel])="config.shared.maintenance.active"></mdc-checkbox>
-        </mdc-form-field>
-      </mdc-list-item-meta>
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
-
-    <!-- SITE About -->
+    <!-- SITE TAGLINE -->
     <mdc-list-item class="config">
       <mdc-list-item-graphic>
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
         <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Titre about du site" type="text" [(ngModel)]="config?.shared.home.about.t[$i18n.locale]">
+          <mdc-text-field i18n-label label="Titre tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.t[$i18n.locale]">
           </mdc-text-field>
         </mdc-list-item-secondary>
       </mdc-list-item-text>
@@ -52,7 +34,7 @@
       </mdc-list-item-graphic>
       <mdc-list-item-text>
         <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Header about du site" type="text" [(ngModel)]="config?.shared.home.about.h[$i18n.locale]">
+          <mdc-text-field i18n-label label="Header tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.h[$i18n.locale]">
           </mdc-text-field>
         </mdc-list-item-secondary>
       </mdc-list-item-text>
@@ -62,14 +44,22 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Paragraphe about du site" rows="12" [(ngModel)]="config?.shared.home.about.p[$i18n.locale]"></mdc-textarea>
-
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Paragraphe tagline du site" rows="4" kng-autosize [(ngModel)]="config?.shared.home.tagLine.p[$i18n.locale]"></mdc-textarea>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <!-- TAGLINE IMAGE -->
+    <mdc-list-item class="config">
+      <mdc-list-item-text>
+        <button mdc-button outlined="true"  dense="true" class="align-right"
+          (click)="onClear('tagLine')">remove image</button>   
+        <div class="images" style="float: right;">
+          <ngx-uploadcare-widget images-only="true" [value]="config.shared.home.tagLine.image" (on-upload-complete)="onUpload($event,'tagLine')"
+            [public-key]="config.shared.keys.pubUpcare">
+          </ngx-uploadcare-widget>
+        </div>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
-
     <!-- SITE Howto -->
     <mdc-list-item class="config">
       <mdc-list-item-graphic>
@@ -98,54 +88,24 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <!-- IMAGE -->
-        <div class="images" style="float: right;">  
-          <ngx-uploadcare-widget
-            images-only="true"
-            [value]="config.shared.home.howto.image"
-            (on-upload-complete)="onUpload($event,'howto')"
-            [public-key]="config.shared.keys.pubUpcare">            
-          </ngx-uploadcare-widget>        
-        </div>    
         <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Paragraphe howto du site" rows="12" [(ngModel)]="config?.shared.home.howto.p[$i18n.locale]"></mdc-textarea>
+          <mdc-textarea i18n-label label="Paragraphe howto du site" kng-autosize rows="4" [(ngModel)]="config?.shared.home.howto.p[$i18n.locale]"></mdc-textarea>
         </mdc-list-item-secondary>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <!-- HOWTO IMAGE -->
+    <mdc-list-item class="config">
+      <mdc-list-item-text>
+        <button mdc-button outlined="true"  dense="true" class="align-right"
+          (click)="onClear('howto')">remove image</button>   
+        <div class="images" style="float: right;">
+          <ngx-uploadcare-widget images-only="true" [value]="config.shared.home.howto.image" (on-upload-complete)="onUpload($event,'howto')"
+            [public-key]="config.shared.keys.pubUpcare">
+          </ngx-uploadcare-widget>
+        </div>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
-    <!-- SITE Footer -->
-    <!-- <mdc-list-item class="config">
-                <mdc-list-item-graphic>
-                    <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-                </mdc-list-item-graphic>
-                <mdc-list-item-text >                    
-                    <mdc-list-item-secondary >
-                        <mdc-text-field i18n-label label="Titre footer du site" type="text" 
-                                        [(ngModel)]="config?.shared.home.footer.t[$i18n.locale]">
-                        </mdc-text-field> 
-                    </mdc-list-item-secondary>               
-                </mdc-list-item-text>        
-            </mdc-list-item> -->
-    <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Header footer du site" type="text" [(ngModel)]="config?.shared.home.footer.h[$i18n.locale]">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Paragraphe footer du site" rows="12" [(ngModel)]="config?.shared.home.footer.p[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
-      </mdc-list-item-text>
-    </mdc-list-item>
+
   </mdc-list>
 </div>

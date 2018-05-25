@@ -73,6 +73,8 @@ export class KngWelcomeComponent implements OnInit {
     private $route: ActivatedRoute,
     private $router: Router,    
   ) { 
+    let loader=this.$route.snapshot.data.loader;
+    this.config=loader[0];      
     
   }
 
@@ -82,15 +84,7 @@ export class KngWelcomeComponent implements OnInit {
     // 
     this.$route.params.subscribe(params=>{
       this.$navigation.store=this.store=params['store'];
-      
-    });
-
-    //
-    //
-    this.$loader.ready().subscribe(result=>{
-      this.config = result[0];
-    });
-    
+    });    
   }
 
   isAppReady(){

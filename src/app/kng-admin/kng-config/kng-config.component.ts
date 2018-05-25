@@ -15,11 +15,13 @@ import {
   Config,
   UserAddress,
   Utils,
-  DocumentHeader
+  DocumentHeader,
+  DepositAddress
 }  from 'kng2-core';
 
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { concat } from 'rxjs/observable/concat';
+import { ActivatedRoute } from '@angular/router';
 //import { mergeMap, filter } from 'rxjs/operators';
 
 
@@ -43,11 +45,14 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     public $i18n: i18n,
     public $config: ConfigService,
     public $loader: LoaderService,
+    public $route:ActivatedRoute,
     public $snack:MdcSnackbar,
     public $navigation:KngNavigationStateService
   ) { 
     this.$navigation.isAdminLayout=true;
     this.isLoading=false;
+    let loader=this.$route.snapshot.data.loader;
+    this.config=loader[0];      
     this.ngConstruct();
   }
 
@@ -58,13 +63,8 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   ngOnInit() {
     //
     // set navigation layout
-    this.$navigation.isAdminLayout=true;
-    
-    
-    this.$loader.ready().subscribe(result=>{
-      this.config = result[0];
-      this.buildMenu();    
-    });
+    this.$navigation.isAdminLayout=true;  
+    this.buildMenu();    
   }
 
 
@@ -93,10 +93,20 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   }
 
   onUpload(info:any,key:string){
+    if(!this.config.shared.home[key]){
+      return;    
+    }
     this.config.shared.home[key].image=info.cdnUrl;
     this.onConfigSave();
   }
   
+  onClear(key:string){
+    if(!this.config.shared.home[key]){
+      return;    
+    }
+    this.config.shared.home[key].image=null;
+    this.onConfigSave();
+  }
 
   onConfigSave(){
     this.isLoading=true;
@@ -117,6 +127,14 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   }
 
 
+}
+
+@Component({
+  selector: 'kng-information',
+  templateUrl: './kng-information.component.html',
+  styleUrls: ['./kng-config.component.scss']
+})
+export class KngInformationCfgComponent extends KngConfigComponent {
 }
 
 @Component({
@@ -172,16 +190,10 @@ export class KngPageContentComponent  {
     // concat(categories).subscribe(docs=>{
     //   this.contents=docs;      
     // });
-
-
-
     
-    this.$loader.ready().subscribe(result=>{
-      this.config = result[0];
-      this.$document.getAll(true).subscribe((docs:DocumentHeader[])=>{
-        this.contents=docs;
-      },err=>this.$snack.show(err.error));
-    });
+    this.$document.getAll(true).subscribe((docs:DocumentHeader[])=>{
+      this.contents=docs;
+    },err=>this.$snack.show(err.error));
   }
 
   ngOnDestroy(){
@@ -339,7 +351,9 @@ export class KngDepositComponent extends KngConfigComponent {
     this.edit.address.fees=value.fees;
     this.edit.address.weight=value.weight;
     this.edit.address.name=value.name;
-    this.edit.address.streetAddress=value.streetAddress;
+    // FIXME streetAddress vs streetAdress !
+    this.edit.address.streetAdress=value.streetAddress;
+    this.edit.address.floor=value.floor;
     this.edit.address.postalCode=value.postalCode;
     this.edit.address.region=value.region;
     this.edit.address.note=value.note;    
@@ -364,6 +378,7 @@ export class KngDepositComponent extends KngConfigComponent {
       'active':['', []],
       'name': ['', [Validators.required]],
       'streetAddress': ['', [Validators.required,Validators.minLength(4)]],
+      'floor': ['', [Validators.required,Validators.minLength(1)]],
       'postalCode': ['', [Validators.required,Validators.minLength(4)]],
       'region': ['', [Validators.required]],
       'note': ['', [Validators.required]],
@@ -399,7 +414,7 @@ export class KngDepositComponent extends KngConfigComponent {
       // FIXME place the string in our i18n service
       return window.alert('Impossible de supprimer cet élément');
     }
-    this.config.shared.deposit.splice(this.edit.idx, 1);
+    this.config.shared.deposits.splice(this.edit.idx, 1);
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
@@ -426,10 +441,10 @@ export class KngDepositComponent extends KngConfigComponent {
   onSave($event){
     this.assign(this.edit.form.value);
     if(this.edit.idx==null){
-      this.config.shared.deposit=this.config.shared.deposit||[];
-      this.edit.idx=this.config.shared.deposit.push({})-1;
+      this.config.shared.deposits=this.config.shared.deposits||[];
+      this.edit.idx=this.config.shared.deposits.push({})-1;
     }
-    Object.assign(this.config.shared.deposit[this.edit.idx],this.edit.address);
+    Object.assign(this.config.shared.deposits[this.edit.idx],this.edit.address);
 
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;

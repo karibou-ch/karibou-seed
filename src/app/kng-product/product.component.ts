@@ -46,6 +46,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $product: ProductService,
     private $router: Router
   ) {
+    let loader=this.$route.parent.snapshot.data.loader;
+    this.config=loader[0];      
+    this.user=loader[1];    
   }
 
 
@@ -69,10 +72,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
   ngOnInit() {
-    this.$loader.ready().subscribe((loader) => {
       this.isReady = true;
-      this.config = loader[0];
-      Object.assign(this.user, loader[1]);
       //
       // product action belongs to a shop or a category 
       this.rootProductPath = (this.$route.snapshot.params['shop']) ?
@@ -83,22 +83,26 @@ export class ProductComponent implements OnInit, OnDestroy {
       if (!this.sku) {
         this.isDialog = true;
         this.sku = this.$route.snapshot.params['sku'];
+
         //
         // DIALOG INIT HACK 
         document.body.classList.add('mdc-dialog-scroll-lock');
       }
 
       this.$product.findBySku(this.sku).subscribe(prod => {
+        this.isReady=true;
         this.product = prod;
         this.cartItem = this.$cart.findBySku(prod.sku);
         this.updateBackground();
-      })
+      });
+
+      //
+      // simple animation
       if (this.dialog) {
         this.dialog.nativeElement.classList.remove('fadeout')
       }
 
 
-    });
   }
 
   updateBackground() {

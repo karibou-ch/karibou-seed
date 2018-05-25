@@ -1,10 +1,17 @@
 
 <div class="cart-container" mdcTypography>
-  <section>
-    <h2>Résumer de votre commande</h2>
-    <h3 class="primary">Livraison le {{$cart.getCurrentShippingDay()|date:'mediumDate'}}</h3>
+  <section [hidden]="items.length">
+    <h2 i18n>Votre panier est vide</h2>
+    <h3 class="primary">Prochaine livraison le {{$cart.getCurrentShippingDay()|date:'EEEE, MMMM d'}}</h3>
+    <hr/>
   </section>
-  <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+  
+  <section [hidden]="!items.length">
+    <h2>Résumer de votre commande</h2>
+    <h3 class="primary">Prochaine livraison le {{$cart.getCurrentShippingDay()|date:'EEEE, MMMM d'}}</h3>
+    <h4 [hidden]="!hasOrderError">Vous devez corriger votre panier!</h4>
+  </section>
+  <mdc-list [lines]="2" avatar="true" border="true" [interactive]="false" [hidden]="!items.length">
     <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
       <mdc-list-item-graphic>
         <div class="avatar"
@@ -12,8 +19,13 @@
 
         </div>
       </mdc-list-item-graphic>
-      <mdc-list-item-text>{{item.title}}
-          <mdc-list-item-secondary>notes</mdc-list-item-secondary>
+      <mdc-list-item-text [class.error]="item.error">
+          <span class="title">{{item.title}}</span>
+          <div class="message" >{{item.error}}</div>          
+          <mdc-list-item-secondary>
+            <a href="javascript:;" class="gray" i18n (click)="removeAll(item)">
+                <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>enlever</a>
+          </mdc-list-item-secondary>
       </mdc-list-item-text>
       
       <mdc-list-item-meta>
@@ -49,6 +61,7 @@
       <button [routerLink]="['/store/'+store+'/me/login-or-register']" 
               class="style1"
               mdc-button
+              unelevated="true"
               mdcHeadline2>Continuer la commande</button>
 
   </div>
@@ -60,8 +73,7 @@
   <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()">      
     <div class="cart-flow" [class.flow-done]="currentShipping().name!=null" >1</div>
     <h2>Sélectionner la livraison ou la collecte à la boulangerie </h2>
-    <p class="block-info">
-        Si vous passer prendre votre commande à la boulangerie, le café vous est offert!
+    <p class="block-info" [innerHtml]="config?.shared.checkout.address[$i18n.locale]">        
     </p>
 
     <!-- USER ADDRESS -->
@@ -136,8 +148,7 @@
   <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()">      
     <div class="cart-flow" [class.flow-done]="currentGatewayLabel()!='Aucun'">2</div>
     <h2 i18n>Sélectionner votre mode de paiement </h2>
-    <p class="block-info" i18n>
-      Selon le mode de paiement.... 
+    <p class="block-info" [innerHtml]="config?.shared.checkout.payment[$i18n.locale]">
     </p>
       
     <mdc-card *ngFor="let payment of user.payments" 
@@ -183,7 +194,7 @@
       Si vous n'êtes pas présent lors de la livraison et sans indication contraire de votre part,<br/> les produits seront déposés devant votre porte.
     </p>
     <!-- TAX & SHIPPING -->
-    <mdc-list [lines]="1" [avatar]="true" [border]="true" [interactive]="false">
+    <mdc-list [lines]="1" avatar="true" border="true" [interactive]="false">
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
           <div class="info">Livraison</div>
@@ -223,15 +234,20 @@
     <div class="customer">
       <img src="/assets/img/k-pin.png" class="pin"/>
       <strong>{{currentShipping().name}}</strong>            
-      <address>{{currentShipping().streetAddress||currentShipping().streetAdress}}</address>
+      <address>{{currentShipping().streetAdress}}</address>
       <address>{{currentShipping().postalCode}}/{{currentShipping().region}}</address>
     </div>      
 
+    <!-- CHECKOUT BRETEZL MSG -->
+    <div class="checkout-msg" *ngIf="config.shared.checkout.active">
+      <div [innerHtml]="config.shared.checkout.message[$i18n.locale]"></div>
+    </div>
+      
     <!-- ORDER FINAL ACTION -->
     <div>
       <mdc-checkbox (change)="cgAccepted=!cgAccepted"></mdc-checkbox>
       <label>J'ai lu et j'accepte <a href="javascript:;" [routerLink]="['/store',store,'content','conditions-generales-de-vente']">les conditions générales de vente</a></label>  
     </div>
-    <button class="" mdc-button [disabled]="!cgAccepted" (click)="doOrder()" >Commander maintenant</button>    
+    <button class="" mdc-button unelevated="true" [disabled]="!cgAccepted" (click)="doOrder()" >Commander maintenant</button>    
   </div>
 </div>

@@ -52,6 +52,7 @@ export class KngDocumentComponent implements OnInit {
 
   //
   // document context
+  error:any;
   create:boolean;
   document:Document;
   furthermore:DocumentHeader[]=[];
@@ -98,6 +99,7 @@ export class KngDocumentComponent implements OnInit {
   
   ngOnInit() {
     this.document=new Document();
+    this.error=null;
     
     //
     // only if /page/:slug/edit? is present
@@ -113,6 +115,8 @@ export class KngDocumentComponent implements OnInit {
     )
     .subscribe((furthermore:DocumentHeader[]) => {        
       this.furthermore=furthermore;
+    },oups=>{
+      this.error={msg:oups.error,slug:this.$route.snapshot.params['slug']};
     });            
   }
 

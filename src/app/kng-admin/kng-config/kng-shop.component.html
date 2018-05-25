@@ -1,5 +1,5 @@
 <div class="container">
-  <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+  <mdc-list [lines]="2" avatar="true" border="true" interactive="false">
     <mdc-list-item (click)="onConfigSave()">
       <mdc-list-item-graphic>
         <mdc-icon [fontSize]="30">save</mdc-icon>
@@ -46,20 +46,24 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <!-- IMAGE -->
-        <div class="images" style="float: right;">  
-          <ngx-uploadcare-widget
-            images-only="true"
-            [value]="config.shared.home.shop.image"
-            (on-upload-complete)="onUpload($event,'shop')"
-            [public-key]="config.shared.keys.pubUpcare">            
-          </ngx-uploadcare-widget>        
-        </div>    
         <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Paragraphe shop du site" rows="12" [(ngModel)]="config?.shared.home.shop.p[$i18n.locale]"></mdc-textarea>          
+          <mdc-textarea i18n-label label="Paragraphe shop du site" kng-autosize rows="4" [(ngModel)]="config?.shared.home.shop.p[$i18n.locale]"></mdc-textarea>          
         </mdc-list-item-secondary>
       </mdc-list-item-text>
     </mdc-list-item>
+    <mdc-list-item class="config">
+        <mdc-list-item-text><!-- IMAGE -->
+          <div class="images" style="float: right;">  
+            <ngx-uploadcare-widget
+              images-only="true"
+              [value]="config.shared.home.shop.image"
+              (on-upload-complete)="onUpload($event,'shop')"
+              [public-key]="config.shared.keys.pubUpcare">            
+            </ngx-uploadcare-widget>        
+          </div>              
+        </mdc-list-item-text>
+      </mdc-list-item>
+      
     <mdc-list-divider></mdc-list-divider>
 
   </mdc-list>

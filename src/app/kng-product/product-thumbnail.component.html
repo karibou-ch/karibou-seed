@@ -5,7 +5,7 @@
 -->
 
 
-<mdc-card class="product-card"
+<mdc-card class="product-card card-skeleton"
 	[outlined]="false"	
 	[class.incart]="cartItem&&cartItem?.quantity"
 	[class.noavailable]="!product.isAvailableForOrder()" 
@@ -19,7 +19,7 @@
 		<mdc-card-media
 			[square]="true"
 			[ngStyle]="{'background-image': bgStyle}"
-			class="media">
+			class="media ">
 					
 		</mdc-card-media>
 		<div class="product-card__primary">

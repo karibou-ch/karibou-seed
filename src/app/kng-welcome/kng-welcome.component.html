@@ -1,4 +1,3 @@
-<kng-quick-editor></kng-quick-editor>
 
 <div *ngIf="!isAppReady()"  >
 
@@ -9,14 +8,13 @@
       <div class="logo"></div>
       <!-- WELCOME -->
       <div class="inner" [hidden]="askAction">
-        <h1 i18n>{{$i18n.lang(config?.shared.home.tagLine.h)}}</h1>
-        <form [hidden]="true">
-            <button mdc-button [icon]="true" [unelevated]="true" [secondary]="true" [routerLink]="'/store/bretzel'">
-              <mdc-icon>person_pin</mdc-icon>              
-              <span i18n>J'habite le nouveau quartier Jonction</span>
-            </button>            
-        </form>
-        <div class="signup-vs-login hide" i18n><a class="link" (click)="askAction='login'">J'ai déjà un compte</a></div>
+        <h1>{{config.shared.home.tagLine.t[$i18n.locale]}}</h1>
+        <h2 [hidden]="!config.shared.home.tagLine.h[$i18n.locale]" 
+          [innerHtml]="config.shared.home.tagLine.h[$i18n.locale]">
+        </h2>
+        <div [hidden]="!config.shared.home.tagLine.p[$i18n.locale]" 
+             [innerHtml]="config.shared.home.tagLine.p[$i18n.locale]">
+        </div>
       </div>
 
       <!-- LOGIN -->

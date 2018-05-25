@@ -1,5 +1,5 @@
 <div class="container">
-    <mdc-list [lines]="2" [avatar]="true" [border]="true" [interactive]="false">
+    <mdc-list [lines]="2" avatar="true" border="true" [interactive]="false">
       <mdc-list-item (click)="onAddressCreate()">
           <mdc-list-item-graphic>
             <mdc-icon [fontSize]="30">folder</mdc-icon>
@@ -10,7 +10,7 @@
           </mdc-list-item-text>        
       </mdc-list-item>
       <mdc-list-divider></mdc-list-divider>
-      <mdc-list-item *ngFor="let address of config.shared.deposit; let i = index" 
+      <mdc-list-item *ngFor="let address of config.shared.deposits; let i = index" 
                       [class.disabled]="!address.active"
                       (click)="onAddressSelect($event,address,i)">
           <mdc-list-item-graphic>
@@ -67,6 +67,9 @@
               </mdc-text-field>                
               <mdc-text-field i18n-label label="Rue/N°" type="text" [ngModel]="edit.address.streetAdress" formControlName="streetAddress" style="width: 50%">
               </mdc-text-field>                
+              <mdc-text-field i18n-label label="Étage" type="text" [ngModel]="edit.address.floor" formControlName="floor" style="width: 20%">
+              </mdc-text-field>                
+              
               <mdc-text-field i18n-label label="Note" type="text" [ngModel]="edit.address.note" formControlName="note" style="width: 50%">
               </mdc-text-field>                
               

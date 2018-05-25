@@ -39,6 +39,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
   items:CartItem[];
   sign:any;
   cgAccepted:boolean=false;
+  hasOrderError:boolean=false;
+
+  subscription;
 
   //
   // generating dynamic background image url 
@@ -105,26 +108,40 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
 
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
+  }
+
+
   ngOnInit() {
     this.store=this.$navigation.store;
 
-    this.$cart.subscribe(
-      (state:CartState)=>{
-        this.items=this.$cart.getItems();
-      },
-      error=>{
-        console.log('CART',error);
+    this.subscription=this.$loader.update().subscribe(emit=>{
+      // emit signal for config
+      if(emit.config){
+
       }
-    );
-    this.$user.subscribe(user=>{
-      this.user=user;
+      // emit signal for user
+      if(emit.user){
+        this.user=emit.user;
+        this.checkPaymentMethod();        
+      }
+      // emit signal for cart
+      if(emit.state){
+        this.items=this.$cart.getItems();
+      }
+      console.log(this.constructor.name,'------------',emit)
+    },error=>{
+      console.log('loader-update',error);      
     })
+
     this.checkPaymentMethod();
   }
 
-  ngOnDestroy(){
-
+  add(item:CartItem) {
+    this.$cart.add(item);
   }
+
 
   doOrder(){
 
@@ -154,18 +171,30 @@ export class KngCartComponent implements OnInit, OnDestroy {
       16
     );
 
+    this.hasOrderError=false;
 
     this.$order.create(
       shipping,
       this.items.map(item=>item.toDEPRECATED()),
       this.$cart.getCurrentPaymentMethod()
     ).subscribe((order)=>{
-        this.$snack.show("Votre  commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
+        //
+        // check order errors 
+        if(order.errors){
+          this.$cart.setError(order.errors);
+          this.hasOrderError=true;
+          this.$snack.show("Votre commande doit être corrigée ");
+          window.scroll(0,0);          
+          return;
+        }
+        this.$snack.show("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
         this.$router.navigate(['/store',this.store,'me','orders']);
         this.items=[];
         this.$cart.empty();
       },
-      err=>this.$snack.show(err.error)
+      err=>{
+        this.$snack.show(err.error)
+      }
     )
   }
 
@@ -207,17 +236,18 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
   
   getDepositAddress(){
-    return this.config.shared.deposit;
+    return this.config.shared.deposits;
   }
 
-  setShippingAddress(address:UserAddress){
-    this.$cart.setShippingAddress(address);
+  
+  goBack(): void {
+    this.$router.navigate(['../home'], { relativeTo: this.$route });
   }
+  
 
-  isSelectedAddress(add){
+  isSelectedAddress(add:UserAddress){
     let current=this.$cart.getCurrentShippingAddress();
-    return current.name==add.name&&
-           (current.streetAdress||current['streetAddress'])==(add.streetAdress||add['streetAddress'])
+    return add.isEqual(current);
   }
 
   isSelectedPayment(payment:UserCard){
@@ -234,6 +264,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return this.user.isReady()&&(payment.fees>=0)&&address.name&&this.items.length;
   }
 
+  setShippingAddress(address:UserAddress){
+    console.log('-----------',address)
+    this.$cart.setShippingAddress(address);
+  }
+  
   setPaymentMethod(payment:UserCard){
     if(!payment.isValid()){
       this.$snack.show(payment.error,"OK",{multiline:true})
@@ -242,12 +277,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$cart.setPaymentMethod(payment);      
   }
 
-  add(item:CartItem) {
-    this.$cart.add(item);
-  }
 
   remove(item:CartItem){
     this.$cart.remove(item);
+  }
+  
+  removeAll(item:CartItem){
+    this.$cart.removeAll(item);
   }
   
   onSelect(source,item){

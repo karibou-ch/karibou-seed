@@ -13,14 +13,18 @@
   mdc-list{
     mdc-list-item.config{
       &.large{
-        min-height: 300px;
+        min-height: 200px;
+        height: 100%;
       }
       mdc-list-item-text{
         width: 100%;
+        button{
+          margin-left: 54px;
+        }
         mdc-textarea, mdc-text-field{
           font-size: 90%;
           width: 98%;
-          border: 0;
+          border-color: #ddd;
         }
       }
     }

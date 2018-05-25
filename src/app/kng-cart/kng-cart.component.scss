@@ -1,5 +1,5 @@
 .cart-container{
-  padding-top: 10px;
+  padding-top: 30px;
 
   width: 740px;
   @media (max-width:426px) {
@@ -13,7 +13,7 @@
       color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
       font-size: 1.875rem;
       -font-size: 0.875rem;
-      -text-transform: uppercase;    
+      text-transform: uppercase;    
       margin-top: 40px;
       text-align:center;
     }
@@ -80,9 +80,9 @@
     z-index: 1;
     cursor: pointer;   
     margin: 04px 0;             
-    color:var(--mdc-theme-secondary);
-    background: white;
-    border:1px solid #ddd;    
+    // color:var(--mdc-theme-secondary);
+    // background: white;
+    // border:1px solid #ddd;    
 
     &.style1{
       flex:0 0 50%;
@@ -95,9 +95,9 @@
     }
   
     &.action{
-      background-color: var(--mdc-theme-secondary);
-      color: white;
-      border-radius: 20px;
+      // background-color: var(--mdc-theme-secondary);
+      // color: white;
+      // border-radius: 20px;
       padding: 5px;      
       width: 50%;        
     }
@@ -116,7 +116,30 @@
     
 
     mdc-list-item-text{
+      div.title{
+        display: block;        
+      }
+      div.message{
+        display: none;
+      }
+      &.error{
+        overflow: visible;
+        white-space: inherit;
+        .title{
+          display: none;        
+        }          
+        .message{
+          display: block;
+          background: rgb(255, 180, 180);
+          font-size: 12px;
+          line-height: 18px;
+          padding: 2px;          
+        }        
+      }
       max-width: 45vw;
+      @media screen and (max-width:376px) {
+        max-width: 30vw;        
+      }
     }
   
     mdc-list-item-graphic{
@@ -168,7 +191,7 @@
   // card elements
   mdc-card{
     &.selected{
-      border:2px solid rgba(0, 0, 0, 0.87);
+      border:2px solid var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
       border-radius: 0;
     }
     border-radius: 5px;  
@@ -311,6 +334,14 @@
       padding: 20px;      
     }
 
+    .checkout-msg{
+      width: 100%;
+      background: gold;
+      color:white;
+      padding: 20px;
+      margin: 0;
+    }
+      
     
     mdc-form-field,mdc-list{
       width:80%;

@@ -1,25 +1,126 @@
 /**
+ * PRESENTATION
  */
 
 .markdown-page{
+  font-family: Helvetica,Arial, sans-serif;
+  margin-top: 80px;
+  
+  h1,h2,h3,h4,h5{
+    margin-top: 25px;
+    margin-bottom: 25px;    
+    font-weight: 700;
+    padding-bottom:20px;
+  }
+
+  h2.header{
+    color: #999;
+    font-size: 1.5em;
+    line-height: 1.3em;
+    font-style: italic;
+    font-weight: 400;    
+  }
+
+  .home-header{
+    margin-top: 100px;
+    border-bottom: 1px solid #EEE;
+    position: relative;
+    height: 500px;
+    margin-bottom: 50px;    
+  }
+
+  a{
+    color: #365899;
+  }
+  .byline{
+    color: #aaa;
+    font-size: .8em;
+    font-weight: 400;
+    line-height: 1.5em;
+    button{
+      float: right;
+    }
+  }        
+
+  .sidebar-block{
+    float: right;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #eee;
+    ol{
+      padding-left: 15px;
+      list-style: inherit;
+      margin-bottom: 20px;      
+    }    
+  }
+  .container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    blockquote{
+      margin:50px 0px;
+      font-style: italic;
+      color: #888;  
+      font-size: 1.3em;
+    }
+      
+    ul{
+      line-height: 1.4em;
+      font-size: 1.3em;
+      font-weight: 200;
+      font-style: normal;
+      letter-spacing: -.003em;      
+      padding-left: 15px;
+      list-style: inherit;
+      margin-bottom: 20px;        
+    }
+
+    p{
+      line-height: 1.4em;
+      font-size: 1.3em;
+      font-weight: 200;
+      font-style: normal;
+      letter-spacing: -.003em;      
+      margin-top: 10px;
+      margin-bottom: 10px;
+      img{
+        max-width: 100%;
+        margin-bottom: 20px;        
+      }      
+
+    }      
+  }  
+} 
+
+/**
+ * EDITION 
+ */
+.page-edit{
   width: 100%;
   margin: 0;
   font-size: large;
   background: #fbfbfb;
   display: flex;
   flex-direction: column;
-  
-  &.page-edit{
-    margin-top: 50px;
-    padding-top: 8vh !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto!important;
-    z-index: 3;
+
+
+  /* EDITION */
+  margin-top: 50px;
+  padding-top: 8vh !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto!important;
+  z-index: 3;
+  margin: auto;
+  align-items: center;
+
+  a{
+    color: #365899;
   }
+  
 
   &.page-container{
     color: #424242;
@@ -90,8 +191,10 @@
         background: #eee;
         align-self:flex-start;
         width:100%;
-        padding: 10px;
         margin-bottom: 20px;
+        mdc-text-field{
+          margin-left: 15px;
+        }
       }
       
       .images{
@@ -110,87 +213,7 @@
     }
   }
 
-  a{
-    color: #365899;
-  }
-  h2,h3,h4{
-    font-weight: 400;
-  }
-  
-  h1,h2,h3{
-    font-weight: 400;
-    margin-top: 25px;
-    margin-bottom: 25px;
-  }
-  
-  ul,ol{
-    padding-left: 10px;
-    list-style: inherit;
-    margin-bottom: 20px;
-  }
-  
-  p{
-      margin-top: 10px;
-      margin-bottom: 10px;
-      color: #444;
-  }
-  
-  blockquote{
-    margin:50px -25px;
-    font-style: italic;
-    color: #888;  
-    font-size: 1.3em;
-  }
-
-  .home-header{
-    border-bottom: 1px solid #EEE;
-    position: relative;
-    height: 500px;
-    margin-bottom: 50px;
-    background-size: cover;
-    background-repeat: no-repeat;        
-    
-  }
-  
-    
-  .container {
-    margin: 10px auto;  
-    padding: 20px;
-
-    @media (max-width: 400px) {
-      width: 100%;
-    }    
-
-    .byline{
-      color: #aaa;
-      font-size: .8em;
-      font-weight: 400;
-      line-height: 1.5em;
-      button{
-        float: right;
-      }
-    }        
-    img{
-      max-width: 100%!important;
-      margin-bottom:20px;
-    }
-    .sidebar-block{
-      float: right;
-      padding: 10px;
-      border-radius: 8px;
-      background-color: #eee;	
-      list-style: none;
-      margin-left:10px; 
-    }
-    
-    h2.header{
-      color: #999;
-      font-size: 1.5em;
-      line-height: 1.3em;
-      font-style:italic;
-      font-weight: 400;
-    }  
-  }
+  /* new version */
 
 
   kng-footer{
