@@ -14,7 +14,10 @@ import { CartService,
          Shop} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../shared';
-import { MdcToolbar, MdcSnackbar, MdcMenu } from '@angular-mdc/web';
+import { MdcToolbar, MdcSnackbar, MdcMenu, MdcAppBar } from '@angular-mdc/web';
+
+import { merge } from 'rxjs/observable/merge';
+import { map } from 'rxjs/operators';
 
 
 
@@ -22,8 +25,7 @@ import { MdcToolbar, MdcSnackbar, MdcMenu } from '@angular-mdc/web';
   selector: 'kng-navbar',
   templateUrl: './kng-navbar.component.html',
   styleUrls: ['./kng-navbar.component.scss'],
-  encapsulation: ViewEncapsulation.None
-  
+  encapsulation: ViewEncapsulation.None  
 })
 export class KngNavbarComponent implements OnInit, OnDestroy {
 
@@ -50,12 +52,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   cartItemCountElem:any;
   currentShippingDay:Date;
   isFixed: boolean = true;
-  @ViewChild('navigation') navigation: any;
-  //@ViewChild('cart') cart: any;
+  subscription;
+  //@ViewChild('navigation') navigation: any;
+  //@ViewChild('toolbar') toolbar:MdcToolbar;
+  //@ViewChild('profile') profile:MdcMenu;
+  //@ViewChild('bottombar') bottombar: MdcAppBar;
   @ViewChild('section') section:ElementRef;
-  @ViewChild('toolbar') toolbar:MdcToolbar;
   @ViewChild('shipping') shipping:MdcMenu;
-
   constructor(
     public  $cart:CartService,
     private $config:ConfigService,
@@ -76,18 +79,17 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.categories=<Category[]>loader[2]||[];
     this.shops=<Shop[]>loader[3]||[];
 
-    console.log('init navbar')
    
   }
  
+
   ngOnDestroy() {
     //this.route$.unsubscribe();
     // this.$cart.unsubscribe();
     // this.$user.unsubscribe();
-    // this.$config.unsubscribe();
-  }
+    this.subscription.unsubscribe();
+  }  
 
-  
   ngOnInit() {
     //
     // karibou.ch context is ready
@@ -101,7 +103,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     //  - p,h,image
     //    - fr,en
     this.image=this.config.shared.home.tagLine.image;
-    this.subtitle=this.config.shared.home.about.h.fr;
+    this.title=this.config.shared.home.siteName[this.locale];
     this.primary=this.config.shared.menu.filter(menu=>menu.group==='primary');
     this.store=this.$navigation.store;
     this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
@@ -111,60 +113,49 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.$cart.setContext(this.config,this.user,this.shops);
     this.currentShippingDay=this.$cart.getCurrentShippingDay();
 
-    this.config.getShippingDays().forEach((day,idx)=>{
-      if(+day==+this.currentShippingDay){
-        // FIXME, init DOM without using timeout hack!
-        setTimeout(()=>{
-          this.shipping.setSelectedIndex(idx);
-        },200)
-      }
-    })
 
-    //
-    // update user 
-    this.$user.subscribe(
-      (user:User)=>{
-        Object.assign(this.user, user);        
+    this.subscription=merge(
+      this.$user.user$.pipe(map(user=>({user:user}))),
+      this.$config.config$.pipe(map(config=>({config:config}))),
+      this.$cart.cart$.pipe(map(state=>({state:state})))
+    ).subscribe((emit:any)=>{
+
+      //
+      // update user 
+      if(emit.user){
+        Object.assign(this.user, emit.user);        
         this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config,this.user);
       }
-    );
-    //
-    // update config
-    this.$config.subscribe(
-      (config:Config)=>{
-        Object.assign(this.config, config);
+      //
+      // update config
+      if(emit.config){
+        Object.assign(this.config, emit.config);
         this.$navigation.updateConfig(this.config);            
       }
-    );
-
-    this.$cart.subscribe(
-      (state:CartState)=>{
+      //
+      // update cart
+      if(emit.state){
         this.cardItemsSz=this.$cart.getItems().length||0;
         //
-        // FIXME hugly DOM manipulation
+        // FIXME hugly DOM manipulation for : CART ITEMS COUNT
+        // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>        
         setTimeout(()=>{
           this.cartItemCountElem=this.cartItemCountElem||this.section.nativeElement.querySelector('.cart-items-count');
           if(this.cartItemCountElem){
             this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
             this.cartItemCountElem.innerHTML=this.cardItemsSz;
-          }
-  
+          }  
         },100);
-
-        if(state.action===CartAction.CART_LOADED){
+      
+        //
+        // update shipping date
+        if(emit.state.action===CartAction.CART_LOADED){
           return;
         }
-        this.$snack.show(CartAction[state.action])
-        console.log('----cart',state)
-        // update cart item count
-        // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>        
-
-      },
-      error=>{
-        console.log('CART',error);
+        this.$snack.show(CartAction[emit.state.action])          
       }
-    )
+    });
     
   } 
 
@@ -172,7 +163,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.$cart.setShippingDay(current);
     this.shipping.setSelectedIndex(idx);    
   }
-  
+
   getRouterLink(url){
     return ['/store',this.store].concat(url.split('/').filter(item=>item!==''));
   }
