@@ -1,4 +1,7 @@
- //
+  h2,h3{
+    font-weight: 200;
+  }
+//
   // cart content
   mdc-list-item{    
     &.border-top{
@@ -29,7 +32,7 @@
     mdc-list-item-meta{
       display: flex!important;
       justify-content: flex-start;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       align-items: center;    
       div.action{
         flex:1;
