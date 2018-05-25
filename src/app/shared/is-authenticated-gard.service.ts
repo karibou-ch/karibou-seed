@@ -21,7 +21,7 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
   //see issue : https://stackoverflow.com/questions/42677274/angular-2-route-guard-not-working-on-browser-refresh/42678548
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.$user.me().pipe(
-      catchError(err=>of(this.$user.currentUser))
+      catchError(err=>of(new User()))
     ).toPromise().then(user=>{
       // console.log('------ IsAuthenticatedGard',user.display(),user.isAuthenticated())
       if(user.isAuthenticated()){
@@ -51,7 +51,7 @@ export class IsWelcomeGard implements CanActivate,CanActivateChild{
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):Promise<boolean> {
     console.log('guard welcome');
     return this.$user.me().pipe(
-      catchError(err=>of(this.$user.currentUser))
+      catchError(err=>of(new User()))
     ).toPromise().then(user=>{
       //console.log('------ IsWelcomeGard',user.isAuthenticated())
       if(!user.isAuthenticated()){
@@ -60,7 +60,7 @@ export class IsWelcomeGard implements CanActivate,CanActivateChild{
       //FIXME access this.$navigation.store bretzel 
       this.$router.navigate(['/store','bretzel']);
       return false;
-    });
+    });    
   }
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
