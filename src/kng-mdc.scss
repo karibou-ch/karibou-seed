@@ -3,6 +3,24 @@ mdc-snackbar{
   z-index: 5;
 }
 
+.ng-valid[required], .ng-valid.required  {
+  mdc-floating-label{
+    color: inherit
+  }
+  -border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form):not(.mdc-text-field--focused):not(.ng-untouched){
+  mdc-floating-label{
+    color: red!important;
+  }
+  border-bottom: 1px dotted #ffa400 !important; /* red */
+  input,
+  .mdc-text-field__input{
+    border-bottom-color: #ffa400 !important; /* red */
+  }  
+}
+
 // can be removed (28.02.2018)
 // .mdc-dialog__surface{
 //   transform: translateY(200px) scale(1)!important;

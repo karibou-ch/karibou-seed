@@ -1,0 +1,9 @@
+
+
+@media only screen and (max-width: 999px) {
+  .hide-md    {display: none!important;}
+}
+@media only screen and (min-width: 1024px) {
+  .show-lg    {display: block!important;}
+  .hide-lg    {display: none!important;}
+}

@@ -3,11 +3,11 @@
 A secondary color is used to accent select parts of your UI. 
 It can be complementary or analogous to your primary color */
 $mdc-theme-primary: #2dae76;
-$mdc-theme-primary-light: #ffffff;
-$mdc-theme-primary-dark: #babdbe;
-$mdc-theme-primary-text: #43B02A;
+// $mdc-theme-primary-light: #ffffff;
+// $mdc-theme-primary-dark: #babdbe;
+// $mdc-theme-primary-text: #43B02A;
 $mdc-theme-secondary:#6ab5b1;
-
+$mdc-theme-on-primary:white;
 /** 
 A secondary color is used to accent select parts of your UI. 
 It can be complementary or analogous to your primary color...
@@ -38,11 +38,14 @@ $mdc-theme-background:#f7f7f7;
 
 @import 'kng-search.scss';
 @import 'kng-theme.scss';
+@import 'kng-responsive.scss';
 @import 'kng-mdc.scss';
+@import 'kng-card-skeleton.scss';
 
 @import "~@angular-mdc/theme/material-components-web.scss";
 
 body{
+  margin-top: 0;
   background: var(--mdc-theme-background);
 }
 
