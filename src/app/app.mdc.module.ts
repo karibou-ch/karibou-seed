@@ -3,32 +3,32 @@ import { NgModule } from '@angular/core';
 //
 // import material components
 import {
+  MdcAppBarModule,
   MdcButtonModule,
   MdcCardModule,
   MdcDrawerModule,
   MdcIconModule,
-  MdcIconToggleModule,  
+  MdcListModule,
   MdcMenuModule,
   MdcSnackbarModule,
   MdcTabModule,
   MdcThemeModule,
-  MdcToolbarModule,
   MdcTypographyModule
 } from '@angular-mdc/web';
 
 
 @NgModule({
   exports: [
+    MdcAppBarModule,
     MdcButtonModule,
     MdcCardModule,
     MdcDrawerModule,
     MdcIconModule,
-    MdcIconToggleModule,
     MdcMenuModule,
+    MdcListModule,
     MdcSnackbarModule,
     MdcTabModule,
     MdcThemeModule,
-    MdcToolbarModule,
     MdcTypographyModule
   ],
   declarations: []
