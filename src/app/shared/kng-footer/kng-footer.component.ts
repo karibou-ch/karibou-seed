@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User, Config, UserService } from 'kng2-core';
-import { i18n } from '..';
+import { i18n, KngNavigationStateService } from '..';
 
 @Component({
   selector: 'kng-footer',
@@ -19,10 +19,12 @@ export class KngFooterComponent implements OnInit {
 
   locale:string;
   content:any;
+  store:string;
     
   constructor(
     private $i18n:i18n,
     private $user:UserService,
+    private $navigation:KngNavigationStateService,
     private $route:ActivatedRoute,
   ){
     // init current locale
@@ -40,6 +42,11 @@ export class KngFooterComponent implements OnInit {
   }    
 
   ngOnInit() {
+    this.store=this.$navigation.store;
+  }
+
+  getMenuItems(group:string){
+    return this.$navigation.getMenuItems(group);
   }
 
   main(config:Config){

@@ -4,6 +4,7 @@ div.footer{
   display: flex;
   flex-wrap: wrap;
   min-height: 300px;
+  font-size: .9rem;
 
   div.main{
     background-color: #8b6f4e;
@@ -17,7 +18,7 @@ div.footer{
     .line{
       padding:20px 0;
       display:flex;
-      flex-flow: row nowrap;
+      flex-flow: row wrap;
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
@@ -27,6 +28,16 @@ div.footer{
       .elem{
         flex:1 0 calc(33% - 40px);
         padding:20px;
+
+        ul,ol{
+          list-style: none;
+          padding-left: 0;
+          a{
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px dashed rgba(92, 74, 52, 0.3);            
+          }          
+        }
       }
     }
   }

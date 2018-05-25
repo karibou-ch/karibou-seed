@@ -1,13 +1,21 @@
 <div class="footer">
   <div class="main">
     <div class="line marked">
-      <div class="elem">{{content.home.footer.h[locale]}}</div>
-      <div class="elem">H2</div>
+      <div class="elem"><span [innerHtml]="content.home.footer.t[locale]"></span></div>
+      <div class="elem text-right"><span [innerHtml]="content.home.footer.h[locale]"></span></div>
     </div>
     <div class="line ">
-      <div class="elem">menu</div>
-      <div class="elem">MAIN</div>
-      <div class="elem">side</div>
+      <div class="elem">
+        <ul>
+          <li *ngFor="let elem of getMenuItems('bretzel')"><a [href]="'/store/'+store+elem.url" [innerHtml]="elem.name[locale]"></a></li>
+        </ul>
+      </div>
+      <div class="elem">
+        <ul>
+          <li *ngFor="let elem of getMenuItems('links')"><a [href]="elem.url" [innerHtml]="elem.name[locale]"></a></li>
+        </ul>
+      </div>
+      <div class="elem text-right"><span [innerHtml]="content.home.footer.p[locale]"></span></div>
     </div>
   </div>      
 </div>
