@@ -25,10 +25,12 @@ import {
   MdcIconToggleModule,
   MdcLinearProgressModule
 } from '@angular-mdc/web';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
+    RouterModule,
     MdcIconModule,
     MdcIconToggleModule,
     MdcLinearProgressModule
@@ -39,6 +41,7 @@ import {
     KngFooterComponent,
     KngMailConfirmationComponent,
     InfiniteScrollerDirective,
+    MdcLinearProgressModule,
     MdcSearchBarComponent,
     KngTextfieldAutosizeDirective,
     KngQuickEditorComponent,
