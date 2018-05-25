@@ -35,7 +35,7 @@ import { environment } from '../environments/environment';
 
 //
 // routing
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, Router } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { ProductComponent, 
          ProductThumbnailComponent, 
@@ -44,12 +44,18 @@ import { ProductComponent,
 import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
+import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
+import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   constructor() { }
   handleError(error) {
      // IMPORTANT: Rethrow the error otherwise it gets swallowed
+     if(error.rejection&&error.rejection.status==0){
+       console.log('--- Network error');
+       window.location.href='/oops';
+     }
      throw error;
   } 
 }
@@ -63,7 +69,9 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngNavbarComponent,
     KngHomeComponent,
     KngWelcomeComponent,
-    KngValidateMailComponent    
+    KngValidateMailComponent,
+    KngServerErrorFoundComponent,
+    KngPageNotFoundComponent    
   ],
   imports: [
     BrowserModule,
