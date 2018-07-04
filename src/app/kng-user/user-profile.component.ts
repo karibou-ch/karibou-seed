@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { i18n } from '../shared';
 import { Config, 
          LoaderService, 
          UserService, 
          User } from 'kng2-core';
 import { Location } from '@angular/common';
+
+import { timer } from 'rxjs/observable/timer';
+import { debounce } from 'rxjs/operators';
+
 
 @Component({
   selector: 'kng-user-profile',
@@ -23,6 +27,7 @@ export class UserProfileComponent implements OnInit {
     private $loader: LoaderService,
     private $user: UserService,
     private $route:ActivatedRoute,
+    private $router:Router,
     private $location:Location,
     
   ) { 
@@ -35,6 +40,11 @@ export class UserProfileComponent implements OnInit {
     this.user   = loader[1];
     this.config = loader[0];
     
+  }
+
+  doLogout(){
+    this.$user.logout().pipe(debounce(() => timer(300)))
+      .subscribe(()=>this.$router.navigate(['../'],{relativeTo: this.$route}))
   }
 
   ngOnInit() {

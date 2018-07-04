@@ -45,11 +45,19 @@
         </mdc-text-field>
 
 
-        <mdc-text-field i18n-label label="Adresse"  type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
-        </mdc-text-field>
+        <!-- <mdc-text-field i18n-label label="Adresse"  type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
+        </mdc-text-field> -->
+
+        <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75" [box]="false" (change)="onGeloc()">
+          <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
+        </mdc-select>
+          
         <mdc-text-field i18n-label label="Étage"  type="text" formControlName="floor" class="width-25">
         </mdc-text-field>
-
+        <p class="help-block" i18n>
+          Aujourd'hui nous livrons uniquement à proximité de notre boulangerie.
+        </p>
+  
         <mdc-text-field i18n-label label="Téléphone (mobile)"  type="text" formControlName="phone" >
         </mdc-text-field>
           
@@ -57,6 +65,7 @@
           <!-- <option value="" selected></option> -->
           <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
         </mdc-select>
+        
           
         <!-- <mdc-text-field i18n-label label="Code postal"  type="text" formControlName="postalCode" class="width-50">
         </mdc-text-field> -->

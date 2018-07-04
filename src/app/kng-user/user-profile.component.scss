@@ -2,6 +2,7 @@ div.user-container{
   width: 740px;
   margin-bottom: 50px;
   margin-top: 50px;
+  max-width: 97vw;
 
   @media (max-width:426px) {
     width: 100%;
@@ -19,14 +20,14 @@ div.user-container{
     p.resume{
       color: rgba(0, 0, 0, 0.54);
       font-size: 14px;
-      min-height: 80px;
+      min-height: 40px;
     }
     img{
       position: absolute;
       right: 10px;
       top:-10px;
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       @media (max-width:426px) {
         width: 60px;
         height: 60px;          

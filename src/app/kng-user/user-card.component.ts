@@ -132,14 +132,14 @@ export class CardComponent {
         hidePostalCode:true,
         style: {
           base: {
-            iconColor: '#666EE8',
+            iconColor: '#444',
             color: '#31325F',
             lineHeight: '40px',
             fontWeight: 300,
             fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
             fontSize: '18px',
             '::placeholder': {
-              color: '#CFD7E0'
+              color: '#666'
             }
           }
         }

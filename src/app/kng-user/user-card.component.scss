@@ -1,5 +1,6 @@
 div{
   h1,h2,h3,h4{
+    margin-top: 50px;
     font-weight: 300!important;
   }
 
@@ -90,19 +91,24 @@ div{
     opacity: 1;
   }
   
+
+  
+  .stripe-component::placeholder{
+    color: #333!important;
+  }
   .stripe-component .input.focused::-webkit-input-placeholder,
   .stripe-component .input:not(.empty)::-webkit-input-placeholder {
-    color: #cfd7df;
+    color: #333!important;
   }
   
   .stripe-component .input.focused::-moz-placeholder,
   .stripe-component .input:not(.empty)::-moz-placeholder {
-    color: #cfd7df;
+    color: #333!important;
   }
   
   .stripe-component .input.focused:-ms-input-placeholder,
   .stripe-component .input:not(.empty):-ms-input-placeholder {
-    color: #cfd7df;
+    color: #333!important;
   }
   
   .stripe-component .input.focused + label,
@@ -209,5 +215,18 @@ div{
   
   .stripe-component .success .reset path {
     fill: #24b47e;
+  }  
+}
+
+:host ::ng-deep{
+  .InputElement::-webkit-input-placeholder {
+    color: #444;
+  }
+  
+  .InputElement::-moz-placeholder {
+    color: #444;
+  }
+  .InputElement::placeholder {
+    color: #444;
   }  
 }

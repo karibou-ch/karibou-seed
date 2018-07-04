@@ -1,7 +1,7 @@
 <div class="blured" [hidden]="isReady"></div>
 <div class="container top">
   <button (click)="onBack()" class="close">
-      <mdc-icon [fontSize]="30">close</mdc-icon>
+      <mdc-icon [fontSize]="50">close</mdc-icon>
   </button>
   <div class="sign" >
     <div class="logo" 
@@ -17,7 +17,7 @@
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
           
-          <mdc-text-field i18n-label label="Votre secret" style="width:100%" type="password" formControlName="password">
+          <mdc-text-field i18n-label label="Mot de passe" style="width:100%" type="password" formControlName="password">
             <mdc-icon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
@@ -59,17 +59,24 @@
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
+          <mdc-text-field i18n-label label="Téléphone (mobile)" style="width:100%"  type="text" formControlName="phone" >
+            </mdc-text-field>
+          <p class="help-block" i18n>
+            Le téléphone est essentiel pour pouvoir vous contacter lors d'une commande
+          </p>
+              
+
           <mdc-text-field i18n-label label="Votre email" style="width:100%" formControlName="email">
             <mdc-icon trailing>email</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
 
-          <mdc-text-field i18n-label label="Votre secret" style="width:100%" type="password" formControlName="password">
+          <mdc-text-field i18n-label label="Mot de passe" style="width:100%" type="password" formControlName="password">
             <mdc-icon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
 
-          <mdc-text-field i18n-label label="Votre secret" style="width:100%" type="password" formControlName="confirm">
+          <mdc-text-field i18n-label label="Vérifier le mot de passe" style="width:100%" type="password" formControlName="confirm">
             <mdc-icon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>

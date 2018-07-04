@@ -1,42 +1,96 @@
-<div class="container">
-  <div class="processing" *ngIf="orders&&orders.length" >
-      <h3 i18n>Commande en cours</h3>
-      En cours {{orders[0].oid}},  {{orders[0].getProgress()}}%, 
-      <span class="text-right">livraison le {{orders[0].shipping.when|date:'EEE d MMM y'}}</span>
-      <mdc-linear-progress style="display:block"></mdc-linear-progress>
+<div class="container-orders">
+  <div class="processing" *ngIf="openOrder" >
+      <h3 i18n>Votre commande en cours </h3>
+      <p i18n class="help-block">
+          Votre commande du <b>{{openOrder.shipping.when|date:'EEE d MMM y'}}</b> est en cours de préparation <b>({{openOrder.getProgress()}}%)</b>
+          <br/>La livraison est prévue chez <b>{{openOrder.shipping.name}}</b>
+      </p>
+      <mdc-linear-progress 
+        #progress  determinate="true" [progress]="openOrder.getProgress()/100" [buffer]="0.75" 
+        style="display:block"></mdc-linear-progress>
+      <p class="footer">
+      </p>
   </div>
 
-  <h3 i18n>Mes dernières commandes</h3>
 
-  <mdc-list border="true" [lines]="2">
-    <mdc-list-item *ngFor="let order of orders" >
-      <mdc-list-item-graphic>
-          <mdc-icon class="lime">{{(order.payment.status=='paid')?'check_box':'check_box_outline_blank'}}</mdc-icon>                 
+  <!-- LAST ORDERS -->
+  <p class="no-orders" [hidden]="orders.length" i18n>
+    Vous n'avez pas encore de commandes &#9785;
+  </p>
+    
+  <h3 [hidden]="!orders.length" i18n>Mes dernières commandes et feedbacks</h3>
+  <p [hidden]="!orders.length" i18n class="help-block">
+      Il est possible qu'une erreur se soit produite?, ou vous avez constaté un problème avec un article ?
+      Sélectionner la commande si dessous, et informez l'artisan. 
+  </p>
+
+  <mdc-list border="true" [lines]="2" [hidden]="!orders.length">
+    <mdc-list-item *ngFor="let order of getLimitedOrders()"                   
+                    [selected]="selected?.oid==order.oid"
+                    [class.autoHeight]="selected?.oid==order.oid"
+                    (click)="selectedOrder(order)">
+      <mdc-list-item-graphic class="hide-md">
+          <mdc-icon [class.primary]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                 
       </mdc-list-item-graphic>
       <mdc-list-item-text >             
           <span>{{order.oid}}</span> statut {{order.payment.status}} <span>{{order.payment.issuer}}</span>           
           <mdc-list-item-secondary>
-              Livraison {{order.getShippingPrice()|currency:'CHF'}} - Réduction {{order.getTotalDiscount()|currency:'CHF'}}<br/>Annulation {{order.getFulfilledFailure()}} - Problème {{order.getFulfilledIssue().length}}
-          </mdc-list-item-secondary>               
+              Livraison {{order.getShippingPrice()|currency:'CHF'}} <!-- - Réduction {{order.getTotalDiscount()|currency:'CHF'}}--><br/>Annulation {{order.getFulfilledFailure()}} - Problème {{order.getFulfilledIssue().length}}
+              <a href="javascript:;" class="text-secondary smaller "  
+                  [hidden]="!isPending(order)"
+                  (click)="cancel(order)" i18n>
+                  <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>
+                annuler</a>
+              <a href="javascript:;" class="text-secondary smaller "   
+                 [hidden]="!isPaidOrRefund(order)" (click)="feeback(order)" i18n>
+                  <i class="material-icons " style="transform: translateY(5px);font-size:16px;">sms</i>
+                Une erreur?
+              </a>                
+              
+          </mdc-list-item-secondary>
+          <mdc-list-item-secondary *ngIf="selected?.oid==order.oid">
+            <ul>
+              <li *ngFor="let item of order.items" [class.strike]="item.fulfillment.status=='failure'">
+                {{item.quantity}}x {{item.title}} ({{item.part}}) 
+                <span class="issue red" [hidden]="!item.fulfillment.refunded">remboursé</span>
+              </li>
+            </ul>
+            <div class="info" [hidden]="!isPaidOrRefund(order)" i18n>       
+                Il est possible qu'une erreur se soit produite? N'hésitez pas à 
+                nous transmettre <a href="javascript:;" class="text-secondary" (click)="feeback(order)"> <i class="material-icons " style="transform: translateY(5px);font-size:16px;">sms</i></a> l'information!
+            </div>
+        </mdc-list-item-secondary>                           
       </mdc-list-item-text>  
-      <mdc-list-item-meta class="text-right">
-          <div class="align-right bold">{{order.getTotalPrice()|currency:'CHF'}}</div>
-          <div style="flex:2 0 100%">{{order.shipping.when|date:'EEE d MMM y'}}</div>
+      <mdc-list-item-meta class="text-right hide-md">
+        <div style="flex:2 0 100%">{{order.shipping.when|date:'EEE d MMM y'}}</div>
+        <div class="align-right bold">{{order.getTotalPrice()|currency:'CHF'}}</div>
       </mdc-list-item-meta>                    
     </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
   </mdc-list>
+  <div class="more-orders" [hidden]="orders.length<4">
+      <mdc-icon [fontSize]="45"  (click)="getMoreOrders()">keyboard_arrow_down</mdc-icon>             
+  </div>
 
 
-  <h3 i18n>Mes produits</h3>
+  <!-- LAST PRODUCTS -->
+  <h3 [hidden]="!getItems().length" i18n>Mes produits</h3>
   <mdc-list [lines]="2" avatar="true" border="true" interactive="false">
-    <mdc-list-item *ngFor="let rank of getItems()" (click)="onSelect($event,rank.item)">
+    <mdc-list-item *ngFor="let rank of getItems()">
       <mdc-list-item-graphic>
         <div class="avatar"
               [ngStyle]="{'background-image': 'url(' + getThumbnail(rank.item) + ')'}">
 
         </div>
       </mdc-list-item-graphic>
-      <mdc-list-item-text>{{rank.item.title}}
+      <mdc-list-item-text>
+        {{rank.item.title}}
+        <mdc-list-item-secondary>            
+            <a href="javascript:;" class="text-secondary  small" i18n (click)="addToCard(rank.item)">
+              <i class="material-icons " style="transform: translateY(5px);font-size:16px;">shopping_cart</i>ajouter dans le panier
+            </a>            
+        </mdc-list-item-secondary>      
+      
       </mdc-list-item-text>
       
       <mdc-list-item-meta>
@@ -46,67 +100,57 @@
       </mdc-list-item-meta>
     </mdc-list-item>    
   </mdc-list>
-  
 
-  <!-- <table class="table">
-    <tr *ngFor="let order of orders ; let i=index" >
-      <td>
-        <table class="table">
-          <tr>
-            <td class="bg-success text-white rank">
-              {{order?.rank}}
-            </td>
-            <td style="background-color: #efefef">
-              created at {{order?.created}}
-            </td>
-            <td *ngIf="order?.closed!==undefined" style="background-color: #efefef">
-              closed at {{order?.closed}}
-            </td>
-          </tr>
-        </table>
-        <h2>Items</h2>
-        <table class="table">
-          <tr>
-            <td>Title:</td>
-            <td>Quantity:</td>
-            <td>Price:</td>
-            <td>Total Price:</td>
-          </tr>
-          <tr *ngFor=" let it of order.items">
-            <td> {{it?.title}}</td>
-            <td> {{it?.quantity}}</td>
-            <td> {{it?.price}}</td>
-            <td> {{it?.finalprice}}</td>
-          </tr>
-          <tr>
-            <td>
-              Sub total
-            </td>
-            <td></td><td></td>
-            <td>
-              {{order?.getSubTotal(order)}}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Shipping
-            </td>
-            <td></td><td></td>
-            <td>
-                {{order?.getShippingPrice()}}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Total
-            </td>
-            <td></td><td></td>
-            <td>
-                {{order?.getTotalPrice()}}
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table> -->
+  <!-- FEECK -->
+  <mdc-dialog #dlgFeedback 
+    (accept)="onFeedback()"
+    (decline)="onDecline()"
+    [escapeToClose]="true"
+    [clickOutsideToClose]="true">
+    <mdc-dialog-header>
+      <mdc-dialog-header-title>
+        <span i18n></span>
+      </mdc-dialog-header-title>
+    </mdc-dialog-header>
+    <mdc-dialog-body *ngIf="feedbackOrder">
+        <form  (submit)="onFeedback()">
+            <!-- CHECK -->
+            <div>
+                <h2 style="margin-top:inherit" i18n>N'hésitez pas à nous informer du problème que vous avez rencontré</h2>
+                <ul>
+                  <li *ngFor="let item of feedbackOrder.items" [class.strike]="item.fulfillment.status=='failure'">
+                    {{item.quantity}}x {{item.title}} ({{item.part}}) 
+                    <span class="text-right">
+                        -
+                        <a class="text-secondary  " href="javascript:;" >manquait</a>,
+                        <a class="text-secondary  " href="javascript:;" >qualité</a>,
+                        <a class="text-secondary  " href="javascript:;" >transport</a>    
+                    </span>
+                  </li>
+                </ul>
+                    
+                <mdc-textarea i18n-label label="Note?" class="width-100" [ngModelOptions]="{standalone: true}"
+                  kng-autosize rows="4" 
+                  [ngModel]="feedbackText">
+                </mdc-textarea>                  
+
+                <p class="help-block text-center" i18n>
+                  C'est la meilleure manière pour nous tous d'améliorer le service 
+                  <i class="material-icons">loyalty</i>
+                </p>
+          
+              <!-- <mdc-text-field i18n-label label="Nom" type="text" [ngModel]="edit.address.name" formControlName="name">
+              </mdc-text-field>                 -->
+              
+          </div>
+  
+        </form>
+        
+    </mdc-dialog-body>
+    <mdc-dialog-footer>
+      <button mdc-dialog-button [cancel]="true">Decline</button>
+      <button mdc-dialog-button (click)="onFeedback()" [disabled]="">Send</button>
+    </mdc-dialog-footer>
+  </mdc-dialog>
+    
 </div>

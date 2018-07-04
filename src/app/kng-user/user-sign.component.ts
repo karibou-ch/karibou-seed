@@ -124,7 +124,8 @@ export class UserSignComponent {
       'forname':['', [Validators.required]],
       'email': ['', [Validators.required, KngInputValidator.emailValidator]],
       'password': ['', [Validators.required, KngInputValidator.passwordValidator]],
-      'confirm': ['', [Validators.required, KngInputValidator.passwordValidator]]
+      'confirm': ['', [Validators.required, KngInputValidator.passwordValidator]],
+      'phone':['', [Validators.required,Validators.minLength(9)]]
     });
 
     //
@@ -215,12 +216,13 @@ export class UserSignComponent {
   onUpdateAddress($result){
     let msg=($result.error)? ($result.error.message||$result.error):'OK';
     this.$snack.show(msg,'OK');
+    this.onBack();
   }
 
   onUpdatePayment($result,other){
     let msg=($result.error)? ($result.error.message||$result.error):'Ok';
     this.$snack.show(msg,'OK');
-
+    this.onBack();
   }
 
   onRecover(){
@@ -252,12 +254,15 @@ export class UserSignComponent {
   }
 
   onSignup(){
+    //
+    // phone number is mandatory
     let user={
       email:this.signup.value.email,
       firstname:this.signup.value.forname,
       lastname:this.signup.value.name,
       password:this.signup.value.password,
-      confirm:this.signup.value.confirm
+      confirm:this.signup.value.confirm,
+      phoneNumbers:[{number:this.signup.value.phone,what:'mobile'}]
     };    
     this.$user.register(user).subscribe(
       (user)=>{

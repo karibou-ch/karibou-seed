@@ -5,6 +5,7 @@
   <mdc-list border="true" [lines]="2">
       <mdc-list-item *ngFor="let payment of user.payments" 
       (click)="setPaymentMethod(payment)"
+      [hidden]="payment.issuer=='wallet'"      
       [class.selected]="isSelectedPayment(payment)">
       <mdc-list-item-graphic>
           <div [ngStyle]="{'background-image': 'url(' + issuer[payment.issuer].img + ')'}">

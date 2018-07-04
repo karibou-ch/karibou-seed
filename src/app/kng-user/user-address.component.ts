@@ -4,7 +4,8 @@ import { LoaderService,
          User, 
          UserAddress, 
          UserService, 
-         Config} from 'kng2-core';
+         Config,
+         Utils} from 'kng2-core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { KngUtils } from '../shared';
 import { HttpClient } from '@angular/common/http';
@@ -35,10 +36,26 @@ export class AddressComponent {
     this.main(config);
   }
 
-  
+  addresses=[
+    "Chemin du 23-Août, 4",
+    "Chemin du 23-Août, 5",
+    "Chemin du 23-Août, 6",
+    "Chemin du 23-Août, 7",
+    "Chemin du 23-Août, 8",
+    "Chemin du 23-Août, 9",
+    "Chemin du 23-Août, 10",
+    "Chemin du 23-Août, 11",
+    "Chemin du 23-Août, 12",
+    "Chemin du 23-Août, 13",
+    "Chemin du 23-Août, 14",
+    "Chemin du 23-Août, 16",
+    "Chemin du 23-Août, 17",
+    "Chemin du 23-Août, 18"
+  ];
   $address:FormGroup;
   locations:string[];
   regions:string[];
+  pubkeyMap:string;
   idx:number;
   geo:any;
   isLoading:boolean;
@@ -69,6 +86,7 @@ export class AddressComponent {
   main(config:Config){
     this.locations=config.shared.user.location.list;
     this.regions=config.shared.user.region.list;
+    this.pubkeyMap=config.shared.keys.pubMap||'';
 
     //
     // save phone
@@ -97,7 +115,7 @@ export class AddressComponent {
   }
   
   getStaticMap(address:UserAddress){
-    return KngUtils.getStaticMap(address);    
+    return KngUtils.getStaticMap(address,this.pubkeyMap);    
   }
 
 
@@ -106,7 +124,9 @@ export class AddressComponent {
   }
 
   loadMap(config:Config){
-    KngUtils.lazyload('<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key='+config.shared.keys.pubMap+'">');
+    Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key='+config.shared.keys.pubMap,'maps').subscribe(()=>{
+    })
+    // KngUtils.lazyload('<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key='+config.shared.keys.pubMap+'">');
     // TODO
     // https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete?hl=fr
     
@@ -124,7 +144,7 @@ export class AddressComponent {
        !this.$address.value.region){
          return;
     }
-    KngUtils.getGeoCode(this.$http,this.$address.value.street,this.$address.value.postalCode,this.$address.value.region).subscribe(
+    KngUtils.getGeoCode(this.$http,this.$address.value.street,this.$address.value.postalCode,this.$address.value.region,this.pubkeyMap).subscribe(
       (geo)=>{
         this.geo=(geo||{}).location;
       }

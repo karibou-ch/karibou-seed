@@ -22,6 +22,7 @@ export class UserEmailComponent {
   
   $profile:FormGroup;
   isLoading:boolean;
+  phone:string;
   
   constructor(
     private $i18n:i18n,
@@ -38,12 +39,20 @@ export class UserEmailComponent {
     // system ready
     this.user   = loader[1];
     this.config = loader[0];
+
+    //
+    // in case of missing phone
+    if(!this.user.phoneNumbers||!this.user.phoneNumbers.length){
+      this.user.phoneNumbers=[{what:'mobile',number:''}];
+    }
+    this.phone  = this.user.phoneNumbers[0].number;
     
     this.isLoading=false;
     //[ngModelOptions]="{updateOn: 'blur'}"
     this.$profile = this.$fb.group({
       'name':['', [Validators.required,Validators.minLength(2)]],
       'forname':['', [Validators.required,Validators.minLength(2)]],
+      'phone':['', [Validators.required,Validators.minLength(9)]],
       'email':   ['', [Validators.required,KngInputValidator.emailValidator]],
       'password':   ['',[Validators.required,Validators.minLength(6)]]
     },{
@@ -66,6 +75,7 @@ export class UserEmailComponent {
     update.name.familyName=this.$profile.value.name;
     update.name.givenName=this.$profile.value.forname;
     update.email.address=this.$profile.value.email;
+    update.phoneNumbers[0].number=this.$profile.value.phone;
 
     let locale=this.$i18n.locale;
     this.$user.save(update).subscribe(

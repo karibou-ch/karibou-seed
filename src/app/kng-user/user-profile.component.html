@@ -1,34 +1,39 @@
 <div class="user-container">
   <section>
-      <h1>{{user.display()}}</h1>      
+      <h1 class="text-capitalize">{{user.display()}}</h1>      
       <div class="title" i18n>Membre depuis le {{user.created|date:'mediumDate'}}</div>
       <p class="resume ">
         <!-- 34 commandes, 5 problèmes, X X X X -->
         &nbsp;
+        <!-- <button mdc-button outlined="true"  icon="true" (click)="doLogout()" i18n>        
+          <mdc-icon>person</mdc-icon>Fermer votre session
+        </button> -->
+        <a href="javascript:;" (click)="doLogout()" style="float:left" i18n>        
+          Fermer votre session
+        </a>
+          
       </p>
 
-      <img src="/assets/img/k-avatar.png"/>
+      <img src="/assets/img/k-user.png"/>
 
-      <button mdc-button unelevated="true" icon="true" [routerLink]="['./logout']" i18n>        
-        <mdc-icon>person</mdc-icon>Fermer votre session
-      </button>
   </section>
 
   <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()"></kng-mail-confirmation>
 
   <hr class="dashed"/>
 
-	<mdc-tab-bar disableRipple>
+	<mdc-tab-bar disableRipple="true" dense="true">
+    <!-- mdcRouter -->
     <mdc-tab [routerLink]="['./orders']"
-              mdcRouter routerLinkActive #rla="routerLinkActive">
+              routerLinkActive #rla="routerLinkActive">
         Commandes
     </mdc-tab>
     <mdc-tab [routerLink]="['./email']"
-              mdcRouter routerLinkActive #rla="routerLinkActive">
-        Email
+              routerLinkActive #rla="routerLinkActive">
+        Compte
     </mdc-tab>
     <mdc-tab [routerLink]="['./password']"
-              mdcRouter routerLinkActive #rla="routerLinkActive">
+              routerLinkActive #rla="routerLinkActive">
         mot-de-passe
     </mdc-tab>
   </mdc-tab-bar>

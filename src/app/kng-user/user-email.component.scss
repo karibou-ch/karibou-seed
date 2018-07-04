@@ -2,5 +2,15 @@ div.container{
   form{
     display: flex;
     flex-direction: column;    
+    button{
+      align-self:center;
+    }
+
   }
+}
+
+:host ::ng-deep{
+  .mdc-text-field input{
+    padding-left: 1px!important;
+  }  
 }
