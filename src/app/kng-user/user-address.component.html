@@ -48,7 +48,7 @@
         <!-- <mdc-text-field i18n-label label="Adresse"  type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
         </mdc-text-field> -->
 
-        <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75" [box]="false" (change)="onGeloc()">
+        <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75" [box]="false" (selectionChange)="onGeloc($event)">
           <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
         </mdc-select>
           
@@ -61,7 +61,7 @@
         <mdc-text-field i18n-label label="Téléphone (mobile)"  type="text" formControlName="phone" >
         </mdc-text-field>
           
-        <mdc-select placeholder="Région" formControlName="region" class="width-50" [box]="false" (change)="onGeloc()">
+        <mdc-select placeholder="Région" formControlName="region" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
           <!-- <option value="" selected></option> -->
           <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
         </mdc-select>
@@ -69,7 +69,7 @@
           
         <!-- <mdc-text-field i18n-label label="Code postal"  type="text" formControlName="postalCode" class="width-50">
         </mdc-text-field> -->
-        <mdc-select placeholder="Code postal" formControlName="postalCode" class="width-50" [box]="false" (change)="onGeloc()">
+        <mdc-select placeholder="Code postal" formControlName="postalCode" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
           <!-- <option value="" selected></option> -->
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
         </mdc-select>

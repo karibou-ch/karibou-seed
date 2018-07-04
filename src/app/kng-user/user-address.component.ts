@@ -138,7 +138,7 @@ export class AddressComponent {
   }
 
 
-  onGeloc(){
+  onGeloc(event: { index: number, value: any }){
     if(!this.$address.value.street||
        !this.$address.value.postalCode||
        !this.$address.value.region){
