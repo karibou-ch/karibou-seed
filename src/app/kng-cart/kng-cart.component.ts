@@ -105,6 +105,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.user=loader[1];
     this.items=[];
 
+
   }
 
 
@@ -130,10 +131,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
       if(emit.state){
         this.items=this.$cart.getItems();
       }
-      console.log(this.constructor.name,'------------',emit)
+
     },error=>{
       console.log('loader-update',error);      
     })
+    //
+    // on open page => force scroll to top
+    setTimeout(()=>{
+      try{window.scroll(0,0);}catch(e){}
+    },100)
 
     this.checkPaymentMethod();
   }
@@ -232,7 +238,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }  
 
   getStaticMap(address:UserAddress){
-    return KngUtils.getStaticMap(address);
+    return KngUtils.getStaticMap(address,this.config.shared.keys.pubMap||'');
   }
   
   getDepositAddress(){
@@ -244,6 +250,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$router.navigate(['../home'], { relativeTo: this.$route });
   }
   
+  isCartDeposit(){
+    let current=this.$cart.getCurrentShippingAddress();
+    // deposit address contains fees
+    // TODO make a test for that
+    return current['fees']!=undefined;
+  }  
 
   isSelectedAddress(add:UserAddress){
     let current=this.$cart.getCurrentShippingAddress();
@@ -261,11 +273,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
   isOrderReady(){
     let payment=this.$cart.getCurrentGateway();
     let address=this.$cart.getCurrentShippingAddress();
-    return this.user.isReady()&&(payment.fees>=0)&&address.name&&this.items.length;
+    return this.user.isReady()&&(payment.label!='Aucun')&&address.name&&this.items.length;
   }
 
   setShippingAddress(address:UserAddress){
-    console.log('-----------',address)
     this.$cart.setShippingAddress(address);
   }
   

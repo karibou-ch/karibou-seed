@@ -1,3 +1,26 @@
+//
+// innerHtml CASE
+:host ::ng-deep{
+  .order-address,
+  .order-resume{
+    section {
+      flex:1 0 100%;
+      h1,h2,h3,
+      p.block-info{
+        font-weight: 300;
+        padding: 0 10px;
+        text-align: center;
+        width:100%;
+        max-width: 800px;
+        text-shadow: 1px 1px 0 white;
+        margin-top: -15px;    
+      }  
+      p.block-info{
+        color: #aaa;
+      }
+    }
+  }
+}
 .cart-container{
   padding-top: 30px;
 
@@ -229,13 +252,14 @@
         left: 0;
         right:0;
         text-align: center;
-        font-size: 110%;
+        font-size: 90%;
         background: rgba(154, 154, 154, 0.6);
-        background: rgba(105, 181, 177,.8);
-        color: white;
+        background: rgba(45, 174, 116, 0.64);
+        background: rgba(214, 214, 214, 0.4);
+        color: #196141;
         text-transform: capitalize;
-        text-shadow: 0 0 1px #353535;
-        padding: 10px 3px;
+        -text-shadow: 0 0 1px #353535;
+        padding: 5px 3px;
       }
     }
     .card__primary,
@@ -244,6 +268,12 @@
       padding: 5px 0px;
       margin: 0;
       font-size: smaller;
+      .note{
+        color: #799689;        
+      }
+      .type{
+        font-weight: bold;
+      }
       .price{
         position: absolute;
         right: 10px;
@@ -278,12 +308,14 @@
     flex-direction:row;
     position: relative;
 
-    >h1,>h2,>h3,
-    p.block-info{
-      padding: 0 10px;
-      text-align: center;
-      width:100%;
-      max-width: 800px;
+    section{
+      h1,h2,h3,
+      p.block-info{
+        padding: 0 10px;
+        text-align: center;
+        width:100%;
+        max-width: 800px;
+      }  
     }
 
     button.action{
