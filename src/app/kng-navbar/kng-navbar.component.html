@@ -18,7 +18,7 @@
         </mdc-list-item>    
         <mdc-list-divider></mdc-list-divider>      
         <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
-          <mdc-icon mdc-list-item-graphic>account_box</mdc-icon><span i18n>Votre compte</span>
+          <mdc-icon mdc-list-item-graphic>account_box</mdc-icon><span i18n>Vos commandes</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
           <mdc-icon mdc-list-item-graphic>account_circle</mdc-icon><span i18n>Connectez-vous</span>
@@ -60,27 +60,37 @@
     <kng-cart></kng-cart>
   </mdc-drawer-content>
 </mdc-drawer> -->
-
 <!-- MAIN LAYOUT -->
 <div [hidden]="!isAppReady()" class="navbar">      
 
   <!--- [dense]="$navigation.isMobileOrTablet()" -->
-  <mdc-app-bar #appbar fixed="false"  dense="true">
+  <mdc-app-bar #appbar fixed="false"  [dense]="true">
     <mdc-app-bar-row>
       <!-- APPBAR-SECTION-START -->
       <mdc-app-bar-section align="start">
-        <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">update</mdc-icon>
+        <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">menu</mdc-icon>
         <mdc-app-bar-title>{{title}}</mdc-app-bar-title>
       </mdc-app-bar-section>       
       <!-- APP BAR MENU ICON --> 
       <mdc-app-bar-section align="end">
-          <a (click)="shipping.open()" mdcAppBarActionItem class="hide btn-shipping" >
+          <!-- <a (click)="shipping.open()" mdcAppBarActionItem class="btn-shipping" >
               <i material-icon >update</i>
               <span class="hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
           </a>
-          <a (click)="admin.open()" class="hide" mdcAppBarActionItem material-icon [hidden]="!user.isAdmin()">vpn_key</a>        
-          <a [routerLink]="['/store',store,'me']"  mdcAppBarActionItem material-icon [hidden]="!user.isAuthenticated()">account_box</a>        
-          <a [routerLink]="['/store',store,'me','login']"  mdcAppBarActionItem material-icon [hidden]="user.isAuthenticated()">account_circle</a>        
+
+          <a (click)="admin.open()" class="hide" mdcAppBarActionItem material-icon [hidden]="!user.isAdmin()">vpn_key</a>         -->
+
+
+          <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;"
+              mdcAppBarActionItem
+              [routerLink]="'.'+menu.url"                     
+              routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
+            <span [innerHTML]="menu.name[locale]"></span>
+          </a>
+          
+                    
+          <!-- <a [routerLink]="['/store',store,'me']"  mdcAppBarActionItem material-icon [hidden]="!user.isAuthenticated()">account_box</a>        
+          <a [routerLink]="['/store',store,'me','login']"  mdcAppBarActionItem material-icon [hidden]="user.isAuthenticated()">account_circle</a>         -->
     
           <button mdc-toolbar-icon material-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button>
           <!-- menu content anchor to toolbar-section -->
@@ -126,11 +136,19 @@
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-app-bar-section #section>
         <mdc-tab-bar>
+          <!-- mdcRouter -->
           <mdc-tab *ngFor="let menu of primary;let idx=index;" 
                     [routerLink]="'.'+menu.url"                     
-                    mdcRouter routerLinkActive #rla="routerLinkActive">
+                     routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
             <span [innerHTML]="menu.name[locale]"></span>
           </mdc-tab>
+          <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
+            <mdc-icon class="hide">account_box</mdc-icon><span i18n>Vos commandes</span>
+          </mdc-tab>
+          <mdc-tab [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
+            <mdc-icon class="hide">account_circle</mdc-icon><span i18n>Login</span>
+          </mdc-tab>
+            
         </mdc-tab-bar>        
       
         <!-- <mdc-tab-bar-scroller>

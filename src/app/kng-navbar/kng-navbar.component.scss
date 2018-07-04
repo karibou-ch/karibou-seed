@@ -78,34 +78,41 @@ div.navbar{
     min-height: calc(100vh - 414px);
     margin-bottom:50px;
     max-width: 740px;
+    width: 740px;
     padding-right: 20px;
     padding-left: 20px;
     margin-right: auto;
     margin-left: auto;  
     margin-top: 80px;
     background: var(--mdc-theme-background-container);
-    @media (max-width: 426px) {
-      padding: 5px;
-    }
 
     @media (max-width: 769px) {
       max-width: 728px;
+      min-width: 690px;
+      width: inherit;
+    }
+
+    @media (max-width: 426px) {
+      padding: 5px;
+      min-width: 326px;
     }
     
   }
   
   .cart-items-count{
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     display: inline-block;
     border-radius: 50%;
     background: #E8104A;
     background: white!important;
     color: #009200 !important;
     font-weight: 600;
-    transform: translateY(-7px);
+    transform: translateY(-2px) translateX(5px);
     visibility: hidden;
-    line-height:21px;
+    line-height:17px;
+    font-size: 13px;
+    letter-spacing: -1px;        
   }
 
   .mdc-bottom-app-bar{
@@ -120,6 +127,10 @@ div.navbar{
 
     .mdc-tab{
       color:var(--mdc-theme-on-primary, rgba(0, 0, 0, 0.87));
+      @media screen and (max-width: 600px){
+        min-width: 72px;
+        padding: 0 8px;
+      }      
     }
     .mdc-tab-bar__indicator{
       background: var(--mdc-theme-on-primary, rgba(0, 0, 0, 0.87));

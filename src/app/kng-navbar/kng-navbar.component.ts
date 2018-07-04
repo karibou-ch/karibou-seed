@@ -44,6 +44,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   // content
   store:string;
   primary:ConfigMenu[];
+  topmenu:ConfigMenu[];
   image:string;
   title:string;
   subtitle:string;
@@ -79,6 +80,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.categories=<Category[]>loader[2]||[];
     this.shops=<Shop[]>loader[3]||[];
 
+    this.primary=[];
+    this.topmenu=[];
    
   }
  
@@ -104,10 +107,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     //    - fr,en
     this.image=this.config.shared.home.tagLine.image;
     this.title=this.config.shared.home.siteName[this.locale];
-    this.primary=this.config.shared.menu.filter(menu=>menu.group==='primary');
+    this.primary=this.config.shared.menu.filter(menu=>menu.group==='primary'&&menu.active);
+    this.topmenu=this.config.shared.menu.filter(menu=>menu.group==='topmenu'&&menu.active);
     this.store=this.$navigation.store;
     this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
-
+    console.log('----- appbar',this.topmenu)
     //
     // init cart here because navbar is loaded on all pages
     this.$cart.setContext(this.config,this.user,this.shops);
@@ -153,7 +157,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         if(emit.state.action===CartAction.CART_LOADED){
           return;
         }
-        this.$snack.show(CartAction[emit.state.action])          
+        
+        this.$snack.show(this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')')          
       }
     });
     
