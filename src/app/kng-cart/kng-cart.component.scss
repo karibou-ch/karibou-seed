@@ -80,7 +80,7 @@
     font-weight: 700;    
     &.flow-done{
       background: var(--mdc-theme-primary);
-      color: var(--mdc-theme-text);
+      color: var(--mdc-theme-primary-text);
     }
     &::after{
       content: "";
@@ -252,13 +252,12 @@
         left: 0;
         right:0;
         text-align: center;
-        font-size: 90%;
+        font-size: 150%;
         background: rgba(154, 154, 154, 0.6);
         background: rgba(45, 174, 116, 0.64);
-        background: rgba(214, 214, 214, 0.4);
-        color: #196141;
+        background: rgba(214, 214, 214, 0.7);
+        color: #000;
         text-transform: capitalize;
-        -text-shadow: 0 0 1px #353535;
         padding: 5px 3px;
       }
     }
@@ -368,10 +367,11 @@
 
     .checkout-msg{
       width: 100%;
-      background: gold;
-      color:white;
-      padding: 20px;
+      background: var(--mdc-theme-primary);      
+      color:var(--mdc-theme-primary-text);
+      padding: 30px;
       margin: 0;
+      margin-bottom:30px;
     }
       
     

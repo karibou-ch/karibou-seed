@@ -37,13 +37,20 @@ export class KngFooterComponent implements OnInit {
     // system ready
     this.user   = loader[1];
     this.config = loader[0];
-
-
+    this.content= this.config&&this.config.shared;
   }    
 
   ngOnInit() {
     this.store=this.$navigation.store;
   }
+
+  getFooter(key){
+    if(!this.content||!this.content.home.footer[key]){
+      return;
+    }
+    return this.content.home.footer[key][this.locale];
+  }
+  
 
   getMenuItems(group:string){
     return this.$navigation.getMenuItems(group);
@@ -51,6 +58,7 @@ export class KngFooterComponent implements OnInit {
 
   main(config:Config){
     this.content=config.shared;
+    this.$navigation.updateConfig(config);
   }
 
 

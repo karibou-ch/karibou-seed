@@ -12,7 +12,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-mdc/web": "^0.35.3",
+    "@angular-mdc/web": "0.35.3",
     "@angular/animations": "^5.2.10",
     "@angular/cdk": "^5.2.5",
     "@angular/common": "^5.2.10",
@@ -27,9 +27,9 @@
     "core-js": "^2.4.1",
     "kng2-core": "file:../kng2-core/dist",
     "ngx-stripe": "^0.8.2",
-    "ngx-uploadcare-widget": "^0.2.1",
     "rxjs": "^5.5.6",
     "showdown": "^1.8.6",
+    "uploadcare-widget": "^3.5.1",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
@@ -51,6 +51,6 @@
     "protractor": "~5.3.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
-    "typescript": "^2.6.2"
+    "typescript": "^2.8.3"
   }
 }

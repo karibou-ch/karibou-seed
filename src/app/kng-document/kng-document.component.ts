@@ -74,18 +74,6 @@ export class KngDocumentComponent implements OnInit {
   }
 
 
-  doDelete(){
-    let password="";
-    this.$document.remove(this.document.slug[0],password).subscribe(
-      ()=>{
-        console.log('---delete',this.$i18n.label().save_ok,this.$i18n.label())
-        this.$snack.show(this.$i18n.label().save_ok,'OK');
-        this.$router.navigate(['../']);
-      },
-      err=>this.$snack.show(err.error)
-    )
-  }
-  
   getCategories() {
     return this.$document.getCategories();
   };
@@ -96,7 +84,10 @@ export class KngDocumentComponent implements OnInit {
     return this.document.title[this.locale]&&this.document.type&&this.document.signature;
   }
 
-  
+  ngOnDestroy(){
+    document.body.style.overflowY='auto';
+  }
+
   ngOnInit() {
     this.document=new Document();
     this.error=null;
@@ -115,6 +106,12 @@ export class KngDocumentComponent implements OnInit {
     )
     .subscribe((furthermore:DocumentHeader[]) => {        
       this.furthermore=furthermore;
+      
+      //
+      // on open page => force scroll to top
+      setTimeout(()=>{
+        try{window.scroll(0,0);}catch(e){}
+      },100);      
     },oups=>{
       this.error={msg:oups.error,slug:this.$route.snapshot.params['slug']};
     });            
@@ -141,8 +138,8 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     this.document.signature=this.user.display();
     this.document.created=this.document.created||new Date();
     this.locale=this.$i18n.locale;
-
- 
+    document.body.style.overflowY='hidden';
+    //document.body.classList.add('mdc-dialog-scroll-lock');
 
     //
     // init edit struct
@@ -171,17 +168,37 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
          (this.edit.lastupdate+this.edit.TTS)>Date.now()){
         return;
       }
-      this.onSave()
+      this.edit.lastupdate=Date.now();
+      this.onSave(false,false)
     });
     
   }
 
+  doDelete(){
+    let password="";
+
+    //
+    // confirm delete
+    if(!confirm("Voulez-vous vraiment supprimer l'élément ?")){
+      return;
+    }
+    this.$document.remove(this.document.slug[0],password).subscribe(
+      ()=>{
+        this.$snack.show(this.$i18n.label().save_ok,"OK",{
+          timeout:5000
+        });
+        this.$router.navigate(['../']);
+      },
+      err=>this.$snack.show(err.error)
+    )
+  }
+  
   removeSlug(idx:number){
     if(this.document.slug.length<2){
       return
     }
     this.document.slug.splice(idx,1);
-    this.onSave();
+    this.onSave(false,false);
   }
 
   onShow(){
@@ -190,10 +207,10 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     }
 
     // save and close
-    this.onSave(true);
+    this.onSave(true,true);
   }
 
-  onSave(closeAfter:boolean=false){
+  onSave(closeAfter:boolean=false,displaySnack:boolean=true){
     if(!this.edit.form.valid){
       return;
     }
@@ -202,6 +219,7 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     this.document.type=this.edit.form.value.type;
     this.document.available=this.edit.form.value.available;
     this.document.published=this.edit.form.value.published;
+    this.document.signature=this.edit.form.value.signature;
 
     // i18n 
     this.document.title[this.locale]=this.edit.form.value.title;
@@ -210,27 +228,46 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
 
     if(this.create){
       this.$document.create(this.document).subscribe(
-        (doc)=>this.onResult(doc,closeAfter),
-        (err)=>this.onResult(err.error,closeAfter)
+        (doc)=>this.onResult(doc,closeAfter,displaySnack),
+        (err)=>this.onResult(err.error,closeAfter,displaySnack)
       )  
     }else{
       this.$document.save(this.document.slug[0],this.document).subscribe(
-        (doc)=>this.onResult(doc,closeAfter),
-        (err)=>this.onResult(err.error,closeAfter)
+        (doc)=>this.onResult(doc,closeAfter,displaySnack),
+        (err)=>this.onResult(err.error,closeAfter,displaySnack)
       )
         
     }
   }
+
+  onDialogOpen(dialog){
+    dialog.done(dlg=>{
+      if(dlg.state()=='rejected'){
+        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
+      }
+    })
+  }
+
   onUpload(info:any){
     this.document.photo.bundle.push(info.cdnUrl);
     this.onSave();
   }
 
-  onResult(result:Document|string,closeAfter:boolean){
+  onResult(result:Document|string,closeAfter:boolean,displaySnack:boolean){
     this.create=false;
     this.edit.lastupdate=Date.now();
-    this.$snack.show(this.$i18n[this.locale].save_ok);
-    this.$router.navigate(['../'],{ relativeTo: this.$route });
+    if(displaySnack){
+      this.$snack.show(this.$i18n[this.locale].save_ok);
+    }
+    if(closeAfter){
+      this.$router.navigate(['../'],{ relativeTo: this.$route });
+    }
   }
+
+  ucValidator(info){
+    if (info.size !== null && info.size > 150 * 1024) {
+    throw new Error("fileMaximumSize");
+  }  
+}
 
 }

@@ -5,6 +5,7 @@ import { AfterContentChecked, Directive, ElementRef, HostListener } from '@angul
 })
 export class KngTextfieldAutosizeDirective implements AfterContentChecked {
   textarea;
+  lastHeight;
 
   constructor(public element: ElementRef) {
   }
@@ -24,14 +25,20 @@ export class KngTextfieldAutosizeDirective implements AfterContentChecked {
   }
 
   public resize() {    
+
     //
     // init child control
     this.textarea=this.textarea||this.element.nativeElement.querySelector('textarea');
     const style = this.textarea.style||{};
+    const height = this.textarea.scrollHeight;
+
+    if((this.lastHeight+50)>height){
+      return;
+    }
+    this.lastHeight=height;
     style.overflow = 'hidden';
     style.height = 'auto';
 
-    const height = this.textarea.scrollHeight;
     style.height = `${height}px`;
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Config, ConfigService } from 'kng2-core';
+import { Config, ConfigService, CartAction } from 'kng2-core';
 
 /**
  * 
@@ -10,6 +10,7 @@ export class i18n  {
 
 
   public fr:any={
+    img_max_sz:"Attention, la taille maximum d'une image est limitée à 150kb",
     user_confirmation_mail:"Merci, une confirmation a été envoyée à votre adresse email",
     user_login_ko:"Ho ho, nous ne pouvons pas vous identifier...",
     user_login_ok:"Bienvenu !",
@@ -18,9 +19,11 @@ export class i18n  {
     password  :"Confirmer votre mot de passe",
     delete_ok :'Suppression effectuée',    
     modify_ok :'Modification effectuée',    
-    save_ok   :'Sauvegarde effectuée'
+    save_ok   :'Sauvegarde effectuée',
+    ITEM_ADD:"ajouter: ",
+    ITEM_REMOVE:"supprimer: ",
   };
-
+  
   //
   // bind 
   public _= this.lang.bind(this);

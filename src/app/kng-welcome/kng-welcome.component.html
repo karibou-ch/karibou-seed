@@ -1,19 +1,26 @@
+<!-- 
+<ng-container *ngIf="!(loading$ | async); else loadingTpl">
 
-<div *ngIf="!isAppReady()"  >
+  <input placeholder="Search Product.." [formControl]="search">
 
+  <app-product *ngFor="let product of (products$ | async)" [product]="product"></app-product>
 
+</ng-container>
 
+<ng-template #loadingTpl>...</ng-template> -->
+
+<ng-container *ngIf="!isAppReady(); else loadingTpl">
   <div class="container top">
     <div class="welcome">
       <div class="logo"></div>
       <!-- WELCOME -->
       <div class="inner" [hidden]="askAction">
-        <h1>{{config.shared.home.tagLine.t[$i18n.locale]}}</h1>
-        <h2 [hidden]="!config.shared.home.tagLine.h[$i18n.locale]" 
-          [innerHtml]="config.shared.home.tagLine.h[$i18n.locale]">
+        <h1>{{getTagline('t')}}</h1>
+        <h2 [hidden]="!getTagline('h')" 
+          [innerHtml]="getTagline('h')">
         </h2>
-        <div [hidden]="!config.shared.home.tagLine.p[$i18n.locale]" 
-             [innerHtml]="config.shared.home.tagLine.p[$i18n.locale]">
+        <div [hidden]="!getTagline('p')" 
+             [innerHtml]="getTagline('p')">
         </div>
       </div>
 
@@ -71,7 +78,7 @@
   </div>
   <div class="container separator"></div>
 
-  <kng-footer></kng-footer>
+  <kng-footer [config]="config" ></kng-footer>
   <div class="background-grid">
     <div class="items-list-wrap">
       <ul class="items-list" >
@@ -79,14 +86,14 @@
           [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
       </ul>        
     </div>
-  </div>
-  
-</div>
+  </div>  
+</ng-container>
 
-
-<kng-navbar [hidden]="!isAppReady()" style="height:100%">
-  <router-outlet ></router-outlet>
-</kng-navbar>
+<ng-template #loadingTpl>
+  <kng-navbar style="height:100%">
+    <router-outlet ></router-outlet>
+  </kng-navbar>  
+</ng-template>
 
 
     

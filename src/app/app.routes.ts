@@ -30,6 +30,7 @@ import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-foun
 
 export const appRoutes: Routes = [
   { path: 'validate/:uid/:mail',component:KngValidateMailComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'me', loadChildren: './kng-user/user.module#UserModule' },
   {
     path:'store',
     children:[

@@ -20,6 +20,7 @@
 			[square]="true"
 			[ngStyle]="{'background-image': bgStyle}"
 			class="media ">
+			<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 					
 		</mdc-card-media>
 		<div class="product-card__primary">

@@ -2,16 +2,16 @@
 <div class="cart-container" mdcTypography>
   <section [hidden]="items.length">
     <h2 i18n>Votre panier est vide</h2>
-    <h3 class="primary" i18n>Prochaine livraison le {{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</h3>
+    <h3 class="primary-text" i18n>Prochaine livraison le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
     <hr/>
   </section>
   
   <section [hidden]="!items.length">
     <h2 i18n>Résumer de votre commande</h2>
-    <h3 class="primary" i18n>Prochaine livraison le {{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</h3>
+    <h3 class="primary-text" i18n>Prochaine livraison le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
     <h4 [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
   </section>
-  <mdc-list [lines]="2" avatar="true" border="true" [interactive]="false" [hidden]="!items.length">
+  <mdc-list [lines]="2" avatar="true" [interactive]="false" [hidden]="!items.length">
     <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
       <mdc-list-item-graphic>
         <div class="avatar"
@@ -59,7 +59,7 @@
       </section>
 
       <button [routerLink]="['/store/'+store+'/me/login-or-register']" 
-              class="style1"
+              class="style1 white"
               mdc-button
               unelevated="true"
               mdcHeadline2>Continuer la commande</button>
@@ -89,7 +89,6 @@
           <span class="card__subtitle" >
               <span class="text-capitalize"><strong>{{address.name}}</strong></span><br/>
               {{address.streetAdress}}
-              {{address.postalCode}}/{{address.region}}              
           </span>
         </div>
         <div class="card__secondary">
@@ -105,6 +104,7 @@
     <!-- ADDRESS DEPOSIT -->
     <mdc-card *ngFor="let address of getDepositAddress()" 
               [outlined]="false"	
+              [hidden]="!address.active"
               (click)="setShippingAddress(address)"
               [class.selected]="isSelectedAddress(address)">
       <mdc-card-primary-action>
@@ -196,7 +196,7 @@
       Si vous n'êtes pas présent lors de la livraison et sans indication contraire de votre part,<br/> les produits seront déposés devant votre porte.
     </p>
     <!-- TAX & SHIPPING -->
-    <mdc-list [lines]="1" avatar="true" border="true" [interactive]="false">
+    <mdc-list [lines]="1" avatar="true" [interactive]="false">
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
           <div class="info" i18n>Sous total pour {{$cart.getItems().length}} produits</div>

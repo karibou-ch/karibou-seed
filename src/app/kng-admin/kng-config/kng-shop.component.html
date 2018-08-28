@@ -57,7 +57,9 @@
             <ngx-uploadcare-widget
               images-only="true"
               [value]="config.shared.home.shop.image"
+              [validator]="ucValidator"
               (on-upload-complete)="onUpload($event,'shop')"
+              (on-dialog-open)="onDialogOpen($event)"
               [public-key]="config.shared.keys.pubUpcare">            
             </ngx-uploadcare-widget>        
           </div>              

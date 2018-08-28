@@ -78,6 +78,13 @@ export class KngWelcomeComponent implements OnInit {
     
   }
 
+  getTagline(key){
+    if(!this.config||!this.config.shared.home.tagLine[key]){
+      return;
+    }
+    return this.config.shared.home.tagLine[key][this.$i18n.locale];
+  }
+  
 
   ngOnInit() {
     //

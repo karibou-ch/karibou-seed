@@ -75,6 +75,22 @@
   }
   
 .container{
+  a.enter,
+  button.enter{
+    width:75%;
+    max-width: 350px;
+    background: #2dae76;
+    padding: 20px 10px;
+    border: 1px solid rgba(45, 174, 118, 0.87);
+    border-radius: 45px;
+    display: block;
+    margin: auto;
+    margin-top: 5px;
+    color: white;
+    text-decoration: none;        
+    font-size:large;  
+  }
+
   &.top{
     color: #424242;
     background-color:rgba(0,0,0,0.1);
@@ -197,6 +213,7 @@
       .why{
         flex: 1 0 29%;
         padding:25px;
+        min-width:200px;
         @media (max-width: 700px) {
           flex: 1;        
           padding:10px;

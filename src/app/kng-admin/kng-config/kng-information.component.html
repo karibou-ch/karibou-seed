@@ -70,6 +70,29 @@
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
+    <h4 class="text-center">Page de checkout</h4>
+    <!-- CHECKOUT ADDRESS -->    
+    <mdc-list-item class="config large">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>
+        <mdc-list-item-secondary>
+            <mdc-textarea i18n-label label="Info adresse lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.address[$i18n.locale]"></mdc-textarea>
+        </mdc-list-item-secondary>
+      </mdc-list-item-text>
+    </mdc-list-item>    
+    <!-- CHECKOUT PAYMENT -->    
+    <mdc-list-item class="config large">
+      <mdc-list-item-graphic>
+        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text>
+        <mdc-list-item-secondary>
+          <mdc-textarea i18n-label label="Info payment lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.payment[$i18n.locale]"></mdc-textarea>
+        </mdc-list-item-secondary>
+      </mdc-list-item-text>
+    </mdc-list-item>
     <!-- CHECKOUT MSG -->
     <mdc-list-item class="config large">
       <mdc-list-item-graphic>
@@ -77,7 +100,7 @@
       </mdc-list-item-graphic>
       <mdc-list-item-text>
         <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Message lors du checkout" rows="12" [(ngModel)]="config?.shared.checkout.message[$i18n.locale]"></mdc-textarea>
+          <mdc-textarea i18n-label label="Message lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.message[$i18n.locale]"></mdc-textarea>
         </mdc-list-item-secondary>
       </mdc-list-item-text>
       <mdc-list-item-meta>
@@ -85,30 +108,6 @@
           <mdc-checkbox [checked]="config?.shared.checkout.active" [(ngModel)]="config?.shared.checkout.active"></mdc-checkbox>
         </mdc-form-field>
       </mdc-list-item-meta>
-    </mdc-list-item>
-    <!-- CHECKOUT ADDRESS -->    
-    <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Checkout demande adresse" type="text" [(ngModel)]="config?.shared.checkout.address[$i18n.locale]">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
-      </mdc-list-item-text>
-    </mdc-list-item>    
-    <!-- CHECKOUT PAYMENT -->    
-    <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Checkout demande payment" type="text" [(ngModel)]="config?.shared.checkout.payment[$i18n.locale]">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
-      </mdc-list-item-text>
     </mdc-list-item>
     
   </mdc-list>

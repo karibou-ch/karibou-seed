@@ -15,7 +15,9 @@
         margin-top: auto;
         margin-bottom: 12px;    
       }
-    
+      mdc-list-item-text{
+        max-width: 60%;
+      }
       mdc-list-item-graphic{
         img{
           width: 38px!important;
@@ -35,11 +37,34 @@ mdc-dialog{
 
   mdc-dialog-body{
     form{
+      .image{
+        width: 200px;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: block;
+        mdc-form-field{
+          width: 200px;
+          float: right;
+        }
+        img{
+          width: 140px;
+          height: auto;
+          border-radius: 5px;
+          float: right;
+          margin-right: 12px;
+        }
+      }
+  
       display: flex;
       flex-flow: column wrap;
       justify-content:flex-start; /*halign*/
       background: transparent;
       width: 100%;
+
+      .mdc-text-field{
+        margin-right: 8px;        
+      }
 
       >div{
         display: flex;
@@ -47,6 +72,10 @@ mdc-dialog{
         justify-content:flex-start;
         &.between{
           justify-content:space-between;
+        }
+
+        &.around{
+          justify-content: space-around;
         }
 
       }

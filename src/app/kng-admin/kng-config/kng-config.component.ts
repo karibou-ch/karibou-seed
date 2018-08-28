@@ -64,8 +64,10 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     //
     // set navigation layout
     this.$navigation.isAdminLayout=true;  
+    //this.formatDates();
     this.buildMenu();    
   }
+
 
 
   buildMenu(){
@@ -87,10 +89,37 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     //return this.menus.find(menu=>menu.id===item.id).index;
   }
 
+  formatDates(){
+    let format=(d:Date)=>{
+      d=new Date(d);
+      return d.getDate()+'/'+d.getMonth()+'/'+d.getFullYear();
+    }
+    (this.config.shared.noshipping||[]).forEach(noshipping=>{
+      noshipping.from=format(<Date>noshipping.from);
+      noshipping.to=format(noshipping.to);
+    })
+  }
+
   ngOnDestroy(){
     this.$navigation.isAdminLayout=false;
     this.isLoading=false
   }
+
+
+  onDialogOpen(dialog){
+    dialog.done(dlg=>{
+      if(dlg.state()=='rejected'){
+        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
+      }
+    })
+  }
+
+  ucValidator(info){
+      if (info.size !== null && info.size > 150 * 1024) {
+      throw new Error("fileMaximumSize");
+    }  
+  }
+
 
   onUpload(info:any,key:string){
     if(!this.config.shared.home[key]){
@@ -335,6 +364,7 @@ export class KngNavigationComponent extends KngConfigComponent {
 })
 export class KngDepositComponent extends KngConfigComponent {
 
+  pubMap:string;
   STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
   //
   // edit content
@@ -358,11 +388,12 @@ export class KngDepositComponent extends KngConfigComponent {
     this.edit.address.region=value.region;
     this.edit.address.note=value.note;    
     this.edit.address.active=value.active;    
-    console.log('--update',this.edit.address)
   }
   
   ngOnInit(){
     super.ngOnInit();
+    this.pubMap=this.config.shared.keys.pubMap;
+
     //
     // init edit struct
     this.edit={
@@ -394,12 +425,16 @@ export class KngDepositComponent extends KngConfigComponent {
     //
     this.edit.form.valueChanges.subscribe(value => {
       newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
-      if(Math.abs(lastlen-newlen)<3||newlen<20||!value.name){
+      if(Math.abs(lastlen-newlen)<2||
+        !value.name||
+        !value.streetAddress||
+        !value.postalCode||
+        !value.region){
         return;
       }
       lastlen=newlen;
       // get geo only if last value changed more than 3 chars
-      KngUtils.getGeoCode(this.http,value.streetAddress,value.postalCode,value.region).subscribe((geo)=>{
+      KngUtils.getGeoCode(this.http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((geo)=>{
         if(!geo.location){return;}
         this.edit.address.geo={
           lat:geo.location.lat,
@@ -426,7 +461,7 @@ export class KngDepositComponent extends KngConfigComponent {
 
 
   getStaticMap(address:UserAddress){
-    return KngUtils.getStaticMap(address);    
+    return KngUtils.getStaticMap(address,this.pubMap);    
   }
   
   onDecline(){

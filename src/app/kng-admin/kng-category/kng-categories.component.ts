@@ -7,7 +7,7 @@ import {
 }  from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../../shared';
-import { MdcSnackbar, MdcDialogComponent, MdcListItemChange } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent, MdcListItemChange, MdcRadioChange } from '@angular-mdc/web';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -26,6 +26,8 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   edit:{
     category:Category;
     form: any;
+    create:boolean;
+    pubUpcare:string;
   }
 
 
@@ -50,7 +52,9 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     // init edit struct
     this.edit={
       form:null,
-      category:null
+      create:false,
+      category:null,
+      pubUpcare:this.config.shared.keys.pubUpcare
     };
 
   }
@@ -62,9 +66,9 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
       'weight':['', [Validators.required]],
       'active':['', []],
       'home': ['', []],
-      'color':['', [Validators.required]],
-      'cover': ['', [Validators.required]],
+      'color':['', []],
       'image': ['', [Validators.required]],
+      'group': ['', []],
       'name': ['', [Validators.required]],
       'description': ['', [Validators.required]],
       'type': ['', [Validators.required]]
@@ -78,6 +82,13 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     this.$navigation.isAdminLayout=false;
   }
 
+
+  getImagePrefix(image){
+    if(!/^((http|https):\/\/)/.test(image)){
+      return "https:"+image;
+    }
+  }
+
   loadCategories(){
     this.$category.select({stats:true}).subscribe((categories:Category[])=>{
       this.isReady=true;
@@ -89,15 +100,31 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     //console.log('---------------',this.edit.form.value)
     //
     // copy data 
+
+    // FIXME radio button is not working
+    delete this.edit.form.value.type;
     Object.assign(this.edit.category,this.edit.form.value)
-    this.$category.save(this.edit.category.slug,this.edit.category).subscribe(
-      ()=>{
+    let sub=(this.edit.create)?
+      this.$category.create(this.edit.category):
+      this.$category.save(this.edit.category.slug,this.edit.category);
+    sub.subscribe(
+      (category)=>{
+        if(this.edit.create){
+          category.usedBy=[];
+          this.categories.push(category);
+        }
         this.edit.category=null;
+        this.edit.create=false;
         this.$snack.show(this.$i18n.label().save_ok,"OK")
       },
       (err)=>this.$snack.show(err.error,"OK")
     );
   }
+
+  // FIXME radio button is not working
+  onTypeChange(evt: MdcRadioChange): void {
+    this.edit.category.type = evt.value;
+  }  
 
   onDecline(){
     this.edit.category=null;
@@ -105,28 +132,64 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   onDelete(){
     let position=-1;
-    let pwd=window.prompt(this.$i18n.label().password,"");
+    let pwd=window.prompt(this.$i18n.label().password,"CONFIRMER AVEC LE PASSWORD");
+    // FIXME, server should always respond an JSON (simple string like "OK" hang)
+    let onOk=()=>{
+      this.$snack.show(this.$i18n.label().delete_ok,"OK");
+      position=this.categories.findIndex(elem=>elem.slug==this.edit.category.slug);
+      if(position>-1){
+        this.categories.splice(position, 1);
+      }
+      
+      this.dlgEdit.close();
+      this.edit.create=false;
+      this.edit.category=null;
+    }
 
     this.$category.remove(this.edit.category.slug,pwd).subscribe(
-      ()=>{
-        this.$snack.show(this.$i18n.label().delete_ok,"OK");
-        position=this.categories.findIndex(elem=>elem.slug===this.edit.category.slug);
-        if(position>-1){
-          this.categories.splice(position, 1);
+      ()=>onOk,
+      (err)=>{
+        if(err.status==200){
+          return onOk();
         }
-        
-        this.dlgEdit.close();
-        this.edit.category=null;
-      },
-      (err)=>this.$snack.show(err.error,"OK")
+        this.$snack.show(err.error,"OK")
+      }
     );
   }
 
   onCategorySelect($event,category){
     this.edit.category=category;
+    this.edit.create=false;
     this.dlgEdit.show();
   }
 
+  onCategoryCreate(){
+    this.edit.category=new Category();
+    this.edit.category.usedBy=[];
+    this.edit.create=true;
+    this.dlgEdit.show();
+  }
+
+  onDialogOpen(dialog){
+    dialog.done(dlg=>{
+      if(dlg.state()=='rejected'){
+        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
+      }
+    })
+  }
+
+  onUpload(info:any){
+    if(this.edit.category.cover==info.cdnUrl){
+      return;
+    }
+    this.edit.category.cover=info.cdnUrl;//.replace('https:','');
+  }
+
+  ucValidator(info){
+    if (info.size !== null && info.size > 150 * 1024) {
+    throw new Error("fileMaximumSize");
+  }  
+}
 
   sortByGroupAndWeight(c1,c2){
     let g1=c1.group||'';
@@ -136,5 +199,6 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     }
     return g1.toLowerCase().localeCompare(g2.toLowerCase());
   }
+
 
 }

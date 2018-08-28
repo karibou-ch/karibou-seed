@@ -5,7 +5,7 @@ import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterSt
 import { KngNavigationStateService } from './navigation.service';
 
 import { of } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -21,16 +21,16 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
   //see issue : https://stackoverflow.com/questions/42677274/angular-2-route-guard-not-working-on-browser-refresh/42678548
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.$user.me().pipe(
-      catchError(err=>of(new User()))
-    ).toPromise().then(user=>{
-      // console.log('------ IsAuthenticatedGard',user.display(),user.isAuthenticated())
-      if(user.isAuthenticated()){
-        return true;
-      }
-      //FIXME access this.$navigation.store bretzel 
-      this.$router.navigate(['/store','bretzel','me','login']);
-      return false;
-    });    
+      map(user=>{
+        console.log('------ IsAuthenticatedGard',user.display(),user.isAuthenticated());
+        if(user.isAuthenticated()){
+          return true;
+        }
+        //FIXME access this.$navigation.store bretzel 
+        this.$router.navigate(['/store','bretzel','me','login']);  
+        return false;
+      })
+    ).toPromise();
   }
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {

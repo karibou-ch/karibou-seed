@@ -10,7 +10,7 @@
 }
 
 .product-card{
-  height: 14rem;
+  height: 13rem;
   background: white;
   position: relative;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.04), 
@@ -30,11 +30,23 @@
     border-radius: 50%;  
   }
 
+  img.highlight-new{
+    position: absolute;
+    top: -22px;
+    left: -25px;
+    border-radius: 0;
+    border: none;
+    width: auto;
+    height: 17%;
+    transform: rotate(-45deg);    
+    opacity: .5;
+  }
+
   
   .action-add,.action-remove{
     background-color: rgba(0, 0, 0, 0.15);
     background-color: rgba(255, 255, 255, 0.6);
-    background-color: var(--mdc-theme-secondary) !important;
+    background-color: var(--mdc-theme-primary) !important;
     color: white!important;
     opacity: 0.5;
     border: 0;
@@ -77,6 +89,7 @@
 
   .media{
     height: 9rem;
+    background-color:#ddd;
     @media (max-width: 426px) {
       height: 9rem;
     }

@@ -105,6 +105,21 @@
     margin-right: 10px;
   }
 
+  &.incart .header{
+    .action-remove,
+    .action-add
+    {
+      visibility: visible!important;
+      opacity: 0.9!important;
+    }
+    
+    .info-quantity{
+      visibility: visible!important;
+    }
+  
+  }
+
+  
 
   .header{
     width: 100%;
@@ -129,23 +144,71 @@
     @media (max-width: 376px) {
       min-height: 310px;
     }
+    .actions{
+      width: 100%;
+      display: flex;
+      align-items:flex-end;
+      justify-content: flex-start;
+      flex-flow: row;
+      max-width: 280px;
+      margin-bottom: 30px;
+      margin-right: 20%;
+
+      @media (max-width: 426px) {
+        align-items:center;
+        margin: auto;
+      }
+  
+      .action-add,
+      .action-remove{
+        background-color: rgba(0, 0, 0, 0.15);
+        background-color: rgba(255, 255, 255, 0.6);
+        background-color: var(--mdc-theme-primary) !important;
+        color: white!important;
+        opacity: 0.7;
+        border: 0;
+        font-weight: bold;
+        border-radius: 25px;
+        width: calc( 48px * 1.9 );
+        height: calc( 26px * 1.8 );
+        padding: 0px;
+        outline: 0;
+        z-index: 1;
+        cursor: pointer;
+        &.right{
+          flex: 0 1 auto;
+          margin-left: auto;                  
+        }
+      }
+    
+    
+      .action-remove{
+        visibility: hidden;
+      }
+      
+      .info-quantity{
+        font-size: 30px;
+        line-height: 32px;
+        text-shadow: 0 0 6px rgba(0,0,0,0.9);
+        text-align: center;
+        width: 35px;
+        margin: 10px 40px;
+        z-index: 1;
+        color: white;
+        visibility: hidden;
+      }
+
+    }
         
     aside{
       width: 66%;
       padding: 0px;
       position: relative;
       height: 100%;
-      .product-qty{
-        padding: 10px;
-        position: absolute;
-        top: 0%;
-        left: 0%;
-        right: 0;
-        text-align: center;
-        background-color: black;
-        background-color: rgba(0, 0, 0, 0.40);
-      }              
+      
     }
+
+
     section{
       width: 33%;
       position: relative;
@@ -153,7 +216,6 @@
       align-self:flex-end;
       font-size: 28px;
       line-height: 30px;      
-      
 
       .price{
         color:white;

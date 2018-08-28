@@ -1,4 +1,4 @@
-<div class="home-header width-full" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
+<div class="home-header -width-full" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
   <h2 [innerHtml]="getAboutContent('t')"></h2>
   <div  [hidden]="!hasAboutContent('h')"
         [innerHtml]="getAboutContent('h')">    
@@ -27,6 +27,24 @@
     <div class="info" *ngIf="config.shared.header.active" [innerHtml]="config.shared.header.message[locale]">    
     </div>
 </div>
+
+<!-- FAB -->
+<!-- <button mdc-fab [exited]="scrollDirection<-5||!scrollDirection"   
+        (click)="showCategories=!showCategories"
+        class='text-primary bottom-right'>
+  <mdc-icon>drag_indicator</mdc-icon>
+</button>  
+
+<div class="fab-list" [class.show]="showCategories">
+  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
+  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
+  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
+  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
+</div> -->
+
+<!-- Window virtual scroll (manage size) 
+  -- https://medium.com/@yongtze_chi/virtual-scrolling-with-angular-145233f79384
+  -->
 <div class="product-container mdc-layout-grid"
     infiniteScroller
     scrollPerecnt="70"
@@ -38,10 +56,10 @@
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
-  <div *ngFor="let category of getCategories();let i=index">
+  <div *ngFor="let category of getCategories();let i=index" [hidden]="!category.active">
     <section>
       <h2>{{category.name}}</h2>
-      <h3>{{category.description}}</h3>
+      <h3 [innerHtml]="category.description"></h3>
     </section>
               
     <div class="kng-layout-card" >
@@ -55,5 +73,7 @@
     </div>
   </div>
 
+      
 </div>
+  
 <router-outlet ></router-outlet>

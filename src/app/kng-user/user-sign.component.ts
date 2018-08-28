@@ -266,11 +266,15 @@ export class UserSignComponent {
     };    
     this.$user.register(user).subscribe(
       (user)=>{
-        this.$snack.show(this.$i18n.label().user_register_ok,"OK");
+        this.$snack.show(this.$i18n.label().user_register_ok,"OK",{
+          timeout:8000
+        });        
         this.onBack();        
       },
       (err)=>{
-        this.$snack.show(err.error,"OK")
+        this.$snack.show(err.error,"OK",{
+          timeout:8000
+        })
       }
     )
   }

@@ -24,13 +24,13 @@
       Sélectionner la commande si dessous, et informez l'artisan. 
   </p>
 
-  <mdc-list border="true" [lines]="2" [hidden]="!orders.length">
+  <mdc-list [lines]="2" [hidden]="!orders.length">
     <mdc-list-item *ngFor="let order of getLimitedOrders()"                   
                     [selected]="selected?.oid==order.oid"
                     [class.autoHeight]="selected?.oid==order.oid"
                     (click)="selectedOrder(order)">
       <mdc-list-item-graphic class="hide-md">
-          <mdc-icon [class.primary]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                 
+          <mdc-icon [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                 
       </mdc-list-item-graphic>
       <mdc-list-item-text >             
           <span>{{order.oid}}</span> statut {{order.payment.status}} <span>{{order.payment.issuer}}</span>           
@@ -42,7 +42,7 @@
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>
                 annuler</a>
               <a href="javascript:;" class="text-secondary smaller "   
-                 [hidden]="!isPaidOrRefund(order)" (click)="feeback(order)" i18n>
+                 [hidden]="!isPaidOrRefund(order)||true" (click)="feeback(order)" i18n>
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">sms</i>
                 Une erreur?
               </a>                
@@ -68,14 +68,14 @@
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
   </mdc-list>
-  <div class="more-orders" [hidden]="orders.length<4">
+  <div class="more-orders" [hidden]="orders.length<4||orders.length<=limitTo">
       <mdc-icon [fontSize]="45"  (click)="getMoreOrders()">keyboard_arrow_down</mdc-icon>             
   </div>
 
 
   <!-- LAST PRODUCTS -->
   <h3 [hidden]="!getItems().length" i18n>Mes produits</h3>
-  <mdc-list [lines]="2" avatar="true" border="true" interactive="false">
+  <mdc-list [lines]="2" avatar="true" interactive="false">
     <mdc-list-item *ngFor="let rank of getItems()">
       <mdc-list-item-graphic>
         <div class="avatar"

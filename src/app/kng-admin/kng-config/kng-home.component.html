@@ -56,7 +56,12 @@
         <button mdc-button outlined="true"  dense="true" class="align-right"
           (click)="onClear('about')">remove image</button>
         <div class="images" style="float: right;">
-          <ngx-uploadcare-widget images-only="true" [value]="config.shared.home.about.image" (on-upload-complete)="onUpload($event,'about')"
+          <ngx-uploadcare-widget 
+            images-only="true" 
+            [value]="config.shared.home.about.image" 
+            (on-upload-complete)="onUpload($event,'about')"
+            [validator]="ucValidator"
+            (on-dialog-open)="onDialogOpen($event)"
             [public-key]="config.shared.keys.pubUpcare">
           </ngx-uploadcare-widget>
         </div>

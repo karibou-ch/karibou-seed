@@ -8,7 +8,7 @@
 
     <mdc-list-group>
       <mdc-list>
-        <a class="title1" mdc-list-item [routerLink]="['/']"><span [innerHtml]="config.shared.home.tagLine.t[locale]"></span></a>
+        <a class="title1" mdc-list-item [routerLink]="['/']"><span [innerHtml]="getTagline('t')"></span></a>
         <mdc-list-item class="hide">
           <div class="align-days">
             <div class="label-shipping" *ngFor="let day of getShippingWeek()">
@@ -17,16 +17,16 @@
           </div>
         </mdc-list-item>    
         <mdc-list-divider></mdc-list-divider>      
-        <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
-          <mdc-icon mdc-list-item-graphic>account_box</mdc-icon><span i18n>Vos commandes</span>
+        <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="bold">
+          <mdc-icon mdc-list-item-graphic class="pink">account_box</mdc-icon><span i18n>Vos commandes</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-          <mdc-icon mdc-list-item-graphic>account_circle</mdc-icon><span i18n>Connectez-vous</span>
+          <mdc-icon mdc-list-item-graphic class="pink">account_circle</mdc-icon><span i18n>Connectez-vous</span>
         </mdc-list-item>
               
         <mdc-list-divider></mdc-list-divider>
         <mdc-list-item i18n class="bold">
-          <mdc-icon mdc-list-item-graphic>directions_bike</mdc-icon>
+          <mdc-icon mdc-list-item-graphic class="primary-text">directions_bike</mdc-icon>
           Prochaines livraisons
         </mdc-list-item>
         <mdc-list-item *ngFor="let day of getShippingDays();let idx=index" 
@@ -41,14 +41,14 @@
     </mdc-list-group>
     <!-- ADMIN -->
     <mdc-list-group class="admin" [hidden]="!$navigation.isAdmin">
-      <mdc-list-item i18n>
-        <mdc-icon mdc-list-item-graphic>settings</mdc-icon>
+      <mdc-list-item i18n class="black bold">
+        <mdc-icon mdc-list-item-graphic class="red">settings</mdc-icon>
         Admin
       </mdc-list-item>
       <mdc-menu-divider></mdc-menu-divider>
-      <mdc-list-item [id]="20+i" class="admin-item" 
+      <mdc-list-item [id]="20+i" class="admin-item " 
         *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
-        [routerLink]="getRouterLink(menu.url)"><mdc-icon  mdc-list-item-graphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
+        [routerLink]="getRouterLink(menu.url)"><mdc-icon class="red"  mdc-list-item-graphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
       </mdc-list-item>
     </mdc-list-group>
   </mdc-drawer-content>
@@ -188,5 +188,5 @@
   
   
   <!-- FOOTER -->
-  <kng-footer></kng-footer>  
+  <kng-footer [config]="config"></kng-footer>  
 </div>

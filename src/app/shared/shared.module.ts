@@ -18,7 +18,7 @@ import { KngQuickEditorComponent, KngEditorDirective } from './kng-quick-editor/
 
 //
 // that should be in a specific admin module
-import { UcWidgetComponent } from 'ngx-uploadcare-widget';
+import { UcWidgetComponent } from './kng-uc-widget/uc-widget';
 
 import {
   MdcIconModule,
@@ -26,6 +26,8 @@ import {
   MdcLinearProgressModule
 } from '@angular-mdc/web';
 import { RouterModule } from '@angular/router';
+import { KngOrderFeedbackComponent } from './kng-order-feedback/kng-order-feedback.component';
+import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 
 @NgModule({
   imports: [
@@ -33,7 +35,7 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     MdcIconModule,
     MdcIconToggleModule,
-    MdcLinearProgressModule
+    MdcLinearProgressModule,
     ],
   exports:[
     KngControlMessagesComponent,
@@ -45,7 +47,7 @@ import { RouterModule } from '@angular/router';
     MdcSearchBarComponent,
     KngTextfieldAutosizeDirective,
     KngQuickEditorComponent,
-    UcWidgetComponent       
+    UcWidgetComponent
   ],
   declarations: [
     KngControlMessagesComponent,
@@ -56,6 +58,8 @@ import { RouterModule } from '@angular/router';
     MdcSearchBarComponent,
     KngQuickEditorComponent,
     KngTextfieldAutosizeDirective,
+    KngOrderFeedbackComponent,
+    KngLazyLoadDirective,
     UcWidgetComponent
   ],
 })

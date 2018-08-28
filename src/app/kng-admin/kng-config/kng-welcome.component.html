@@ -53,7 +53,11 @@
         <button mdc-button outlined="true"  dense="true" class="align-right"
           (click)="onClear('tagLine')">remove image</button>   
         <div class="images" style="float: right;">
-          <ngx-uploadcare-widget images-only="true" [value]="config.shared.home.tagLine.image" (on-upload-complete)="onUpload($event,'tagLine')"
+          <ngx-uploadcare-widget images-only="true" 
+            [value]="config.shared.home.tagLine.image" 
+            [validator]="ucValidator"
+            (on-upload-complete)="onUpload($event,'tagLine')"
+            (on-dialog-open)="onDialogOpen($event)"
             [public-key]="config.shared.keys.pubUpcare">
           </ngx-uploadcare-widget>
         </div>

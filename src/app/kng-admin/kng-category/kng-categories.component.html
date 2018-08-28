@@ -1,12 +1,12 @@
 <div class="container">
   <mdc-list [lines]="2" avatar="true" border="true" >
-    <mdc-list-item >
+    <mdc-list-item  (click)="onCategoryCreate()">
         <mdc-list-item-graphic>
           <mdc-icon [fontSize]="30">folder</mdc-icon>
         </mdc-list-item-graphic>
         <mdc-list-item-text i18n>
           Ajouter une nouvelle catégorie
-          <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
+          <mdc-list-item-secondary i18n >Cliquer ici pour ajouter</mdc-list-item-secondary>
         </mdc-list-item-text>        
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
@@ -57,8 +57,24 @@
   </mdc-dialog-header>
   <mdc-dialog-body *ngIf="edit.category">
       <form [formGroup]="edit.form" (submit)="onSave()">
-          <!-- CHECK -->
+          <!-- IMAGE -->
+          <div class="image">
+              <img [src]="edit.category.cover" />
+              <mdc-form-field>
+                  <ngx-uploadcare-widget
+                    images-only="true"
+                    [value]="edit.category.cover"
+                    [validator]="ucValidator"
+                    (on-upload-complete)="onUpload($event)"
+                    (on-dialog-open)="onDialogOpen($event)"
+                    [public-key]="edit.pubUpcare">            
+                  </ngx-uploadcare-widget>          
+                </mdc-form-field>      
+          </div>
+
+          <!-- CHECK -->          
           <div>
+
             <mdc-form-field>
                 <mdc-checkbox [ngModel]="edit.category.active" formControlName="active"></mdc-checkbox>
                 <span i18n>Actif</span>
@@ -72,25 +88,32 @@
             <!-- TYPE -->
             <div class="align-end">
               <mdc-form-field>
-                <mdc-radio value="Category" formControlName="type" [ngModel]="edit.category.type"></mdc-radio>
+                <mdc-radio value="Category"  formControlName="type" [checked]="edit.category.type=='Category'" (change)="onTypeChange($event)"></mdc-radio>
                 <label>Category</label>
               </mdc-form-field>
               <mdc-form-field>
-                <mdc-radio value="Catalog" formControlName="type" [ngModel]="edit.category.type"></mdc-radio>
+                <mdc-radio value="Catalog" formControlName="type" [checked]="edit.category.type=='Catalog'" (change)="onTypeChange($event)"></mdc-radio>
                 <label>Catalog</label>
               </mdc-form-field>
             </div>            
         </div>
-        <div class="between">
-          <!-- MORE -->
-          <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="edit.category.weight" formControlName="weight">
+        <div class="-between">
+          <!-- GROUP -->
+          <mdc-text-field i18n-label label="Group" type="text" [ngModel]="edit.category.group" formControlName="group" >
           </mdc-text-field>
 
-          <mdc-text-field class="double" i18n-label label="Cover" type="text" [ngModel]="edit.category.cover" formControlName="cover">
+          <!-- WEIGHT -->
+          <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="edit.category.weight" formControlName="weight" style="width: 80px">
           </mdc-text-field>
 
-          <mdc-text-field i18n-label label="Image" type="text" [ngModel]="edit.category.image" formControlName="image">
+          <!-- ICON -->
+          <mdc-text-field i18n-label label="Icon" type="text" [ngModel]="edit.category.image" formControlName="image" [ngClass]="edit.category.color">
           </mdc-text-field>
+
+          <!-- COLOR -->
+          <mdc-text-field i18n-label label="Color" type="text" [ngModel]="edit.category.color" formControlName="color" style="width: 80px">
+          </mdc-text-field>
+
         </div>
 
         <div>                      
@@ -101,6 +124,9 @@
           <mdc-text-field class="double" i18n-label label="Description" type="text" [ngModel]="edit.category.description" formControlName="description" >
           </mdc-text-field>
         </div>
+        <!-- <div>
+          {{edit.form.value|json}}
+        </div> -->
       </form>
       
   </mdc-dialog-body>

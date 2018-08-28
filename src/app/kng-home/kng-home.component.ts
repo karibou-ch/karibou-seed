@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { timer } from  'rxjs/observable/timer';
 import { map } from 'rxjs/operators';
@@ -17,6 +17,7 @@ import {
 import { ActionSequence } from 'protractor';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../shared';
+import { runInThisContext } from 'vm';
 
 
 @Component({
@@ -30,15 +31,17 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   config: Config;
   categories:Category[];
   cached:any={};
-  products: Product[] = [];
   group:any={};
   user:User;
   locale:string;
   subscription;
+  showCategories:boolean;
 
   //
   // infinite scroll callback
   scrollCallback;
+  scrollPosition:number;
+  scrollDirection:number;
   currentPage:number=3;
 
   //
@@ -51,13 +54,20 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   //
   // products for home
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
-  options:{discount:boolean;home:boolean;maxcat:number;when:Date|boolean}={
+  options:{
+    discount:boolean;
+    home:boolean;
+    maxcat:number;
+    available:boolean;
+    status:boolean;
+    when:Date|boolean;
+  }={
     discount:true,
     home:true,
     maxcat:8,
     // popular:true,
-    // available:true,
-    // status:true
+    available:true,
+    status:true,
     when:true
   };
 
@@ -99,17 +109,37 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       }
 
       // emit signal for CartAction[state]
+      // ITEM_ADD       = 1,
+      // ITEM_REMOVE    = 2,
+      // ITEM_MAX       = 3,
+      // CART_INIT      = 4,
+      // CART_LOADED    = 5,
+      // CART_LOAD_ERROR= 6,
+      // CART_SAVE_ERROR= 7,
+      // CART_ADDRESS   = 8,
+      // CART_PAYMENT   = 9,
+      // CART_SHPPING   =10,      
       if(emit.state){
+        if(CartAction.CART_SHPPING==emit.state.action){
+          this.options.when=this.$cart.getCurrentShippingDay();
+        }
         if([CartAction.CART_SHPPING,CartAction.CART_LOADED].indexOf(emit.state.action)>-1||
-          !this.isReady){
-         this.options.when=this.$cart.getCurrentShippingDay();
-         this.productsGroupByCategory();
-       }
-     }
-     this.isReady = true;
-     console.log(this.constructor.name,'------------',emit)
+           !Object.keys(this.group).length){
+          this.productsGroupByCategory();
+        }
+      }
+      this.isReady = true;
+      console.log(this.constructor.name,'------------',emit)
       
     });    
+  }
+
+  doDirectionUp(){
+    
+  }
+
+  doDirectionDown(){
+
   }
 
   getHeaderStyle(){
@@ -176,4 +206,32 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return a.weight-b.weight;
   }
   
+
+  @HostListener('window:scroll', ['$event'])
+  windowScroll() {
+      const scrollPosition = window.pageYOffset;
+      if(Math.abs(this.scrollPosition-scrollPosition)<4){
+        return;
+      }
+      if (scrollPosition > this.scrollPosition) {
+        if(this.scrollDirection<0){
+          this.scrollDirection--;
+        }else{
+          this.scrollDirection=-1;
+        }
+    } else {
+      if(this.scrollDirection>0){
+        this.scrollDirection++;
+      }else{
+        this.scrollDirection=1;
+      }
+    }
+    if(this.scrollDirection>20){
+      this.doDirectionUp();
+    }
+    if(this.scrollDirection<-20){
+      this.doDirectionDown();
+    }
+    this.scrollPosition = scrollPosition;      
+  }
 }

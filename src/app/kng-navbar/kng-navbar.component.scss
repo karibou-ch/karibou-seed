@@ -99,20 +99,27 @@ div.navbar{
     
   }
   
-  .cart-items-count{
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    border-radius: 50%;
-    background: #E8104A;
-    background: white!important;
-    color: #009200 !important;
-    font-weight: 600;
-    transform: translateY(-2px) translateX(5px);
-    visibility: hidden;
-    line-height:17px;
-    font-size: 13px;
-    letter-spacing: -1px;        
+  .cart-items-count{    
+    -color: #009200 !important;
+    -color: #20714e!important;
+    color: var(--mdc-theme-primary-text);
+    font-weight: 600;    
+    text-shadow: 0 0 40px var(--mdc-theme-primary-light), 
+                 0 0 55px var(--mdc-theme-primary-light), 
+                 0 0 75px var(--mdc-theme-primary-light);
+    // width: 18px;
+    // height: 18px;
+    // display: inline-block;
+    // border-radius: 50%;
+    // background: #E8104A;
+    // background: white!important;
+    // color: #009200 !important;
+    // font-weight: 600;
+    // transform: translateY(-2px) translateX(5px);
+    // visibility: hidden;
+    // line-height:17px;
+    // font-size: 13px;
+    // letter-spacing: -1px;        
   }
 
   .mdc-bottom-app-bar{
@@ -123,101 +130,23 @@ div.navbar{
 
   .mdc-top-app-bar{
     z-index: 2;
-    color:var(--mdc-theme-on-primary, rgba(0, 0, 0, 0.87));
+    color:var(--mdc-theme-primary-text, rgba(0, 0, 0, 0.87));
 
     .mdc-tab{
-      color:var(--mdc-theme-on-primary, rgba(0, 0, 0, 0.87));
+      color:var(--mdc-theme-primary-text, rgba(0, 0, 0, 0.87));
       @media screen and (max-width: 600px){
         min-width: 72px;
         padding: 0 8px;
       }      
     }
     .mdc-tab-bar__indicator{
-      background: var(--mdc-theme-on-primary, rgba(0, 0, 0, 0.87));
-      background: rgba(0, 255, 0, 1);
+      background: var(--mdc-theme-primary-dark, rgba(0, 0, 0, 0.87));
+      -background: rgba(0, 255, 0, 1);
     }
 
   }
 
 
-  /* DEPRECATED */
-  .mdc-toolbar-OLD {
-    box-shadow: none!important;
-    border-bottom: 0px solid #eee;
-    background-color: inherit;
-  
-    .mdc-toolbar__row{
-      background-color: var(--mdc-theme-primary-light);
-      background-color:rgba(255, 255, 255, 1.0);
-      z-index: 2;
-      
-      button{
-        outline: 0;
-      }
-  
-      .btn-shipping{
-        width: unset;
-      }    
-    }
-  
-    .mdc-toolbar__row--with-tabs{
-      align-items:normal;
-      z-index: 1;
-      .mdc-toolbar__section.tabs{
-        -min-width: 100%;
-        -max-width: 1024px;
-        @media (max-width: 426px) {
-          padding: 0px;
-        }
-            
-        .mdc-tab-bar{
-          background-color: var(--mdc-theme-primary-light);        
-        }
-      }
-    }
-  
-    // .mdc-toolbar--flexible-default-behavior .mdc-toolbar__row{
-    //   min-height: 48px!important;
-    // }
-    
-    // .mdc-toolbar--flexible-default-behavior .mdc-toolbar__section.tabs{
-    // }
-      
-  
-    .mdc-tab-bar__indicator{
-      background-color: var(--mdc-theme-secondary)!important;    
-      height: 2px;
-      margin-bottom: -1px;
-    }  
-  
-  
-    .mdc-toolbar__menu-icon,
-    .mdc-toolbar__icon{
-      color: var(--mdc-theme-primary-dark);  
-    }
-  
-  
-    .mdc-text-field{
-      background: white;
-      color: var(--mdc-theme-primary-dark);
-    }
-  
-    //'https://d2d8wwwkmhfcva.cloudfront.net/1920x/filters:quality(50)/d2lnr5mha7bycj.cloudfront.net/warehouse/background_image/1/27ad618f-fa8c-46bf-be99-2d08f76197cc.jpg'
-    .mdc-toolbar__row--with-image{
-      &:first-child::after{
-        background-image: 
-        linear-gradient(
-          rgba(0, 0, 0, 0.5),
-          rgba(0, 0, 0, 0.05)
-        ),url('/assets/img/bretzel-header-md.jpg');
-        background-size: cover!important;
-        background-position: center!important;
-    
-      }
-    }
-  
-  }
-    
 }
 
 

@@ -48,7 +48,9 @@
             
           <ngx-uploadcare-widget
             images-only="true"
+            [validator]="ucValidator"
             (on-upload-complete)="onUpload($event)"
+            (on-dialog-open)="onDialogOpen($event)"
             [public-key]="config.shared.keys.pubUpcare">
           </ngx-uploadcare-widget>        
         </div>
@@ -81,11 +83,17 @@
         </section>
 
       </form>
+
+      <div class="flex-row">
+        <button mdc-button class="important "  unelevated="true"  [hidden]="!user.isAdmin()" (click)="doDelete()" >Supprimer cette page</button>
+        <button mdc-button class="align-right "  unelevated="true"   (click)="onSave()" >Enregistrer</button>  
+      </div>
+
       
 
 
       
   </div>  
-  <kng-footer></kng-footer>  
+  <kng-footer [config]="config"></kng-footer>  
 </div>
 

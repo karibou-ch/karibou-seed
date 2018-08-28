@@ -1,7 +1,8 @@
 <div class="product-dialog fadeout" #dialog>
     <div class="product-backdrop"></div>
     <div class="product-dialog__surface">
-        <div class="product-wide">
+        <div class="product-wide"
+            [class.incart]="cartItem&&cartItem?.quantity">
 
             <!-- CLOSE -->
             <button (click)="onClose(true)"  class="close">
@@ -9,22 +10,18 @@
             </button>        
             <div class="header " [bgGradient]="true" [bgSrc]="product.photo.url">
               <aside [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
-                <!-- DISPLAY PHOTO -->
-                <!-- <img [bgSrc]="product.photo.url" class="item-image" [class.hide]="!product.photo.url">
-                <img [bgSrc]="//placehold.it/400x320/eeeeee/000000&text=missing" class="item-image" [class.hide]="product.photo.url"> -->
-        
-        
-        
-                <!-- CART QUANTITY -->
-                <!-- TODO
-                <div class="sexy white product-qty" [hidden]="!cart.findBySku(product.sku).quantity" >
-                    {{cart.findBySku(product.sku).quantity}} article(s) dans votre panier</span>
-                </div>
-                -->
-        
-        
+
+                      
               </aside>
+
+              <div class="actions ">
+                <button  class="action-remove " (click)="removeToCart(product)"><mdc-icon [fontSize]="26">remove</mdc-icon></button>	  
+                <div class="info-quantity">{{cartItem?.quantity}}</div>		
+                <button  class="action-add right " (click)="addToCart(product)"><mdc-icon [fontSize]="26">add</mdc-icon></button>	
+              </div>
+    
               <section>
+    
                 <!-- PRICE-->
                 <div class="price" *ngIf="product.pricing.price">
         
@@ -42,13 +39,6 @@
                   <div class="em" >{{product.pricing?.part}}</div>
                   <div class="part" [hidden]="product.pricing?.part[0]!=='~'">{{product.pricing.part|portion}}</div>
                   <div class="part" [hidden]="product.pricing?.part.indexOf('gr')===-1">Fr {{product.pricing.part|baseprice:product.getPrice()}} / 100gr</div> <br/>
-                  <!-- ACTIONS -->
-        
-                  <!-- BY DIRECTIVE -->
-                  <!-- TODO 
-                  <cart-button ng-model="product" bt-class="btn-lg" />
-                  -->
-        
                 </div>
         
         
@@ -56,7 +46,7 @@
             </div>
         
             <!-- USER ACTIONS -->
-            <div class="user-actions">
+            <!-- <div class="user-actions ">
                 <button mdc-button [primary]="true" class="align-start"
                        (click)="onEdit(product)"
                        [hidden]="!user.isOwnerOrAdmin(product.vendor.name)"><span i18n>Éditer</span></button>
@@ -65,7 +55,7 @@
                     <mdc-icon >{{hasFavorite(product)}}</mdc-icon>
                     <span i18n>J'aime</span>
                 </button>
-            </div>
+            </div> -->
 
             <!-- ADMIN OR OWNER ACTIONS -->
             <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
@@ -92,10 +82,10 @@
             </div>
         
             <!-- CERTIFIED -->
-            <div class="certified">
+            <div class="certified " >
               <ul class="info " [hidden]="!product.quantity.display||!product.shelflife.display">
-                <li [hidden]="!product.quantity.display">Test{{product.quantity.comment}}</li>
-                <li [hidden]="!product.shelflife.display">Ok{{product.shelflife.comment}}</li>
+                <li [hidden]="!product.quantity.display">{{product.quantity.comment}}</li>
+                <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
               </ul>
               <div>
                 <span [hidden]="!product.details.homemade" class="label label-product">Artisanal</span>
@@ -111,7 +101,7 @@
             </div>
         
             <!-- AVAILABLE -->
-            <div class="availability">
+            <div class="availability" hidden>
               <ul class="list-inline">
                 <li>
                   <div class="bold">Livraisons:</div>

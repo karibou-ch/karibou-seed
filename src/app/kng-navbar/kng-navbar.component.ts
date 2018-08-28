@@ -2,8 +2,6 @@ import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, Vie
 import { ActivatedRoute } from '@angular/router';
 import { CartService, 
          CartAction,
-         CartState, 
-         CartItem, 
          Config, 
          ConfigMenu,
          ConfigService, 
@@ -14,7 +12,7 @@ import { CartService,
          Shop} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../shared';
-import { MdcToolbar, MdcSnackbar, MdcMenu, MdcAppBar } from '@angular-mdc/web';
+import { MdcSnackbar, MdcMenu, MdcAppBar } from '@angular-mdc/web';
 
 import { merge } from 'rxjs/observable/merge';
 import { map } from 'rxjs/operators';
@@ -111,7 +109,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.topmenu=this.config.shared.menu.filter(menu=>menu.group==='topmenu'&&menu.active);
     this.store=this.$navigation.store;
     this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
-    console.log('----- appbar',this.topmenu)
     //
     // init cart here because navbar is loaded on all pages
     this.$cart.setContext(this.config,this.user,this.shops);
@@ -148,7 +145,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.cartItemCountElem=this.cartItemCountElem||this.section.nativeElement.querySelector('.cart-items-count');
           if(this.cartItemCountElem){
             this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
-            this.cartItemCountElem.innerHTML=this.cardItemsSz;
+            this.cartItemCountElem.innerHTML='['+this.cardItemsSz+']';
           }  
         },100);
       
@@ -167,6 +164,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   doSetCurrentShippingDay($event:any,current:Date,idx:number){
     this.$cart.setShippingDay(current);
     this.shipping.setSelectedIndex(idx);    
+  }
+
+  getTagline(key){
+    if(!this.config||!this.config.shared.home.tagLine[key]){
+      return '';
+    }
+    return this.config.shared.home.tagLine[key][this.locale];
   }
 
   getRouterLink(url){

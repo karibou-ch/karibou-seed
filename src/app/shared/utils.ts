@@ -8,7 +8,7 @@ export class KngUtils {
   //
   // TODO share staticmap generator
   // https://developers.google.com/maps/documentation/static-maps/intro?hl=fr
-  static getStaticMap(address:UserAddress){
+  static getStaticMap(address:UserAddress,key:string){
     // TODO use this.config.shared.keys.pubMap
     if(!address||!address.geo){
       return "https://image.flaticon.com/icons/svg/235/235861.svg";
@@ -17,7 +17,7 @@ export class KngUtils {
     // default value for name
     let name=(address.name)?address.name:'-';
     let params={
-      key:"AIzaSyD5w46BmWX6hX-uJ2yMycS_cRb2HRvDXQU",
+      key:key,
       center:address.geo.lat+","+address.geo.lng,
       maptype:"roadmap",
       zoom:'14',
@@ -28,10 +28,10 @@ export class KngUtils {
     return KngUtils.STATIC_MAP+Utils.encodeQuery(params);
   }
  
-  static getGeoCode(http, street:string, postal:string, region:string): Observable<any> {
+  static getGeoCode(http, street:string, postal:string, region:string,key:string): Observable<any> {
     // check if needed encodeURIComponent(str)
     let fulladdress=[street,postal,(region||'Suisse')].join(',');
-    var url = "//maps.googleapis.com/maps/api/geocode/json?address=" + fulladdress + "&sensor=false";
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + fulladdress + "&sensor=false&key="+key;
     return http.get(url, { withCredentials: false }).pipe(
       map((geo:any) =>{ 
         return (!geo.results.length || !geo.results[0].geometry)?{}:geo.results[0].geometry;
@@ -45,6 +45,16 @@ export class KngUtils {
   static lazyload(script:string){
     const fragment = document.createRange().createContextualFragment(script);
     document.body.appendChild(fragment);
+  }
+
+
+  static screen(){
+    if (window && window.matchMedia) {
+      return window.matchMedia('(max-width: 759px)').matches
+    } else {
+      // likely IE 9
+      return false
+    }
   }
 
 }

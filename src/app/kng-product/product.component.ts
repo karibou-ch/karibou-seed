@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MdcDialogComponent } from '@angular-mdc/web';
+//import { MdcDialogComponent, } from '@angular-mdc/web';
 
 import {
   CartService,
@@ -13,6 +13,7 @@ import {
   config,
   CartItem
 } from 'kng2-core';
+import { i18n } from '../shared';
 
 
 @Component({
@@ -24,6 +25,9 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   @Input() sku: number;
 
+  static WEEK_1:number=86400*7;
+  static WEEK_2:number=86400*14;
+
   user: User = new User();
   isReady: boolean;
   isDialog: boolean = false;
@@ -33,6 +37,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   bgStyle: string;
   cartItem: CartItem;
 
+  isHighlighted:boolean;
   WaitText: boolean = false;
   rootProductPath: string;
 
@@ -40,6 +45,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   constructor(
     private $cart: CartService,
+    public  $i18n:i18n,
     private $route: ActivatedRoute,
     private $loader: LoaderService,
     private $location: Location,
@@ -89,10 +95,15 @@ export class ProductComponent implements OnInit, OnDestroy {
         document.body.classList.add('mdc-dialog-scroll-lock');
       }
 
-      this.$product.findBySku(this.sku).subscribe(prod => {
+      this.$product.findBySku(this.sku).subscribe(product => {
         this.isReady=true;
-        this.product = prod;
-        this.cartItem = this.$cart.findBySku(prod.sku);
+        this.product = product;
+        //
+        // get cart value
+        this.cartItem = this.$cart.findBySku(product.sku);
+        //
+        // updated product is hilighted for 2 weeks
+        this.isHighlighted=(Date.now()-product.updated.getTime())>ProductComponent.WEEK_2;
         this.updateBackground();
       });
 
@@ -104,6 +115,8 @@ export class ProductComponent implements OnInit, OnDestroy {
 
 
   }
+
+
 
   updateBackground() {
     this.bgStyle = 'url(' + this.product.photo.url + '/-/resize/200x/)';
@@ -138,6 +151,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   save(product: Product) {
+    this.$product.save(product).subscribe(
+      (product)=>{
+      }
+    );
 
   }
   love(product: Product) {
