@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { timer } from  'rxjs/observable/timer';
+import { Observable ,  timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {

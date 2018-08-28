@@ -3,10 +3,8 @@ import { UserService, User } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
 import { i18n } from '../i18n.service';
 
-import { Observable } from 'rxjs/Observable';
-import { timer } from 'rxjs/observable/timer';
+import { Observable ,  timer ,  Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'kng-mail-confirmation',

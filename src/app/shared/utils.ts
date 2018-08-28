@@ -1,5 +1,5 @@
 import { UserAddress, Utils } from "kng2-core";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export class KngUtils {

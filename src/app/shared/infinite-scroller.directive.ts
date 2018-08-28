@@ -1,8 +1,6 @@
 import { Directive, AfterViewInit, ElementRef, Input, OnDestroy, Renderer } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { fromEvent } from  'rxjs/observable/fromEvent';
+import { Observable ,  Subscription ,  fromEvent } from 'rxjs';
 import { exhaustMap, filter, map, pairwise, startWith } from 'rxjs/operators';
  
 interface ScrollPosition {

@@ -14,7 +14,7 @@ import { CartService,
 import { KngNavigationStateService, i18n } from '../shared';
 import { MdcSnackbar, MdcMenu, MdcAppBar } from '@angular-mdc/web';
 
-import { merge } from 'rxjs/observable/merge';
+import { merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 
@@ -151,10 +151,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       
         //
         // update shipping date
-        if(emit.state.action===CartAction.CART_LOADED){
+        if([CartAction.ITEM_MAX,CartAction.ITEM_REMOVE,CartAction.ITEM_ADD].indexOf(emit.state.action)==-1){
           return;
         }
-        
+
         this.$snack.show(this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')')          
       }
     });

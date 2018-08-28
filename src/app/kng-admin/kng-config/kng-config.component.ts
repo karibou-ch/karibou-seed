@@ -19,8 +19,7 @@ import {
   DepositAddress
 }  from 'kng2-core';
 
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { concat } from 'rxjs/observable/concat';
+import { forkJoin ,  concat } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 //import { mergeMap, filter } from 'rxjs/operators';
 

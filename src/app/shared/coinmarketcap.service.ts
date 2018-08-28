@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { TimerObservable } from "rxjs/observable/TimerObservable";
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 export class Coinmarketcap{

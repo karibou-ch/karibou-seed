@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { LoaderService, Order, OrderService, User, UserService, OrderItem, Category, ProductService, EnumCancelReason, CartService, CartItem, EnumFulfillments } from 'kng2-core';
 import { MdcSnackbar, MdcDialogComponent } from '@angular-mdc/web';

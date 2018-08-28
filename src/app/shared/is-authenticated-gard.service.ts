@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LoaderService, User, UserService } from 'kng2-core';
-import { Observable } from "rxjs/Observable";
+import { Observable ,  of } from "rxjs";
 import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { KngNavigationStateService } from './navigation.service';
-
-import { of } from 'rxjs/observable/of';
 import { catchError, map } from 'rxjs/operators';
 
 

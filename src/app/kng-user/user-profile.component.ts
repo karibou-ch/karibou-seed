@@ -7,7 +7,7 @@ import { Config,
          User } from 'kng2-core';
 import { Location } from '@angular/common';
 
-import { timer } from 'rxjs/observable/timer';
+import { timer } from 'rxjs';
 import { debounce } from 'rxjs/operators';
 
 
