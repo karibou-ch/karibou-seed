@@ -11,6 +11,7 @@ import { StripeService, Elements, ElementsOptions, TokenResult } from 'ngx-strip
 
 
 export interface PaymentEvent{
+  deleted?:UserCard[];
   card?:UserCard;
   error?:Error|any;
 }
@@ -36,6 +37,8 @@ export class CardComponent {
   }
 
   defaultUser:User=new User();
+  isValid:boolean;
+
 
   //
   // payment 
@@ -113,7 +116,6 @@ export class CardComponent {
   main(config:Config){
     //
     // set the stripe key
-    console.log('--- stripe',config.shared.keys.pubStripe)
     this.$stripe.setKey(config.shared.keys.pubStripe);
 
     if(this.user.isAuthenticated()){
@@ -144,7 +146,19 @@ export class CardComponent {
           }
         }
       });
+
+
       setTimeout(()=>{
+        this.card.addEventListener('change', (event)=> {
+          //event.brand=> "mastercard"
+          //event.complete=> true|false
+          //event.elementType=> "card"
+          //event.empty=> false
+          //event.error=> undefined
+          //event.value=> {postalCode: ""}                    
+          this.isValid=event.complete;
+        });
+        
         this.card.mount('#card-element');
       },100)      
     });    
@@ -155,6 +169,14 @@ export class CardComponent {
     return this.selected&&this.selected.alias==payment.alias;
   }
 
+  onDelete(payment:UserCard){
+    this.$user.deletePaymentMethod(payment.alias,this.user.id).subscribe(
+      user=>{
+        this.onEmit(<PaymentEvent>({deleted:user.payments}));
+      },
+      err=>this.onEmit(<PaymentEvent>({error:new Error(err.error)}))
+    )  
+  }
 
   onEmit(result:PaymentEvent){
     this.isLoading=false;

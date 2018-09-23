@@ -13,7 +13,7 @@
         </mdc-list-item-graphic>
         <mdc-list-item-text >             
             <span>{{issuer[payment.issuer].label}}</span>                 
-            <button [hidden]="!isSelectedPayment(payment)" mdc-button [outlined]="true">
+            <button [hidden]="!isSelectedPayment(payment)" mdc-button [outlined]="true" (click)="onDelete(payment)">
               Supprimer</button>
             <mdc-list-item-secondary>
                 {{payment.number}}
@@ -38,7 +38,7 @@
     </mdc-text-field>
 
     <div id="card-element" class="field"></div>
-    <button type="submit" [disabled]="isLoading||!user.isReady()" i18n>
+    <button type="submit" [disabled]="isLoading||!isValid" i18n>
       Enregistrer
     </button>
   </form>      
