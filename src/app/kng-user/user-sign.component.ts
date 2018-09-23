@@ -220,6 +220,12 @@ export class UserSignComponent {
   }
 
   onUpdatePayment($result,other){
+    //
+    // delete payment method
+    if($result.deleted){
+      this.user.payments=$result.deleted;
+      return;
+    }
     let msg=($result.error)? ($result.error.message||$result.error):'Ok';
     this.$snack.show(msg,'OK');
     this.onBack();
@@ -245,7 +251,8 @@ export class UserSignComponent {
     (user:User) => {
       if(!user.isAuthenticated()){
         return this.$snack.show(this.$i18n.label().user_login_ko,"OK",{
-          timeout:5000
+          timeout:5000,
+          multiline:true
         });        
       }
       this.$snack.show(this.$i18n.label().user_login_ok,"OK");
@@ -267,13 +274,15 @@ export class UserSignComponent {
     this.$user.register(user).subscribe(
       (user)=>{
         this.$snack.show(this.$i18n.label().user_register_ok,"OK",{
-          timeout:8000
+          timeout:8000,
+          multiline:true
         });        
         this.onBack();        
       },
       (err)=>{
         this.$snack.show(err.error,"OK",{
-          timeout:8000
+          timeout:8000,
+          multiline:true
         })
       }
     )
