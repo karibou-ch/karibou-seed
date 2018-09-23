@@ -19,6 +19,9 @@ div.footer{
     margin-bottom: 0px;    
     .line{
       padding:2px 0;
+      @media screen and (max-width:426px){
+        padding-left: 30px;
+      }
       display:flex;
       flex-flow: row wrap;
       justify-content:flex-start; /*halign*/
