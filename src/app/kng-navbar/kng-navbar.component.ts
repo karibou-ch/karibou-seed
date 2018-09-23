@@ -151,7 +151,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       
         //
         // update shipping date
-        if(emit.state.action===CartAction.CART_LOADED){
+        if(!emit.state.item){
           return;
         }
         
