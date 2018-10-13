@@ -21,9 +21,11 @@ div.home-header{
     text-transform: uppercase;
     text-align: center;
     margin: 30px;
-    margin-top: 60px;
+    margin-top: 30px;
     margin-left: 30px;
     line-height: 1.3em;
+    color:var(--mdc-theme-text-primary-on-primary,rgba(0,0,0,.87));
+    font-weight: 600;
     @media screen and (max-width:426px){
       flex:0 1 10px;
     }
@@ -59,14 +61,15 @@ div.home-header{
       border-radius: 4px;      
     }    
   }
-  p{
+  >p{
+    
     display: flex;
     justify-content: center;
     align-items: center;
     flex-flow: wrap;
-    margin: 0 auto;
+    margin: 0 30px;
     max-width: 780px;
-    color: #aaa;
+    color: #666;
     padding: 0 5px;
     div.fact{
       flex: 1;
@@ -138,7 +141,7 @@ div.fab-list{
 }
 
 div.product-container{
-  margin-top: 30px;
+  margin-top: 0px;
   width: 740px;
   @media (max-width:426px) {
     width: 100%;
@@ -218,9 +221,9 @@ div.product-container{
   .mdc-layout-grid__inner,
   .kng-layout-card{
     background-color: #fff;
-    padding: 10px 10px 40px 10px;    
+    padding: 10px 10px 0px 10px;    
     @media (max-width: 426px) {
-      padding: 0 0 40px 0;    
+      padding: 0 0 10px 0;    
     }
   }
 

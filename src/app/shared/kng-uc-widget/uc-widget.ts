@@ -10,6 +10,9 @@ import {
   VERSION
 } from '@angular/core';
 
+import { Utils } from 'kng2-core';
+
+
 //import uploadcare from 'uploadcare-widget';
 import * as uploadcare from "uploadcare-widget";
 
@@ -56,6 +59,14 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   constructor(renderer: Renderer2, element: ElementRef) {
     this.element = element;
     this.renderer = renderer;
+
+    //
+    // use dynamic loader
+    // https://github.com/ded/script.js/blob/master/src/script.js#L70
+    // Utils.script().subscribe(
+    //   (uploadcare)
+
+    // )
   }
 
   @Input('public-key')

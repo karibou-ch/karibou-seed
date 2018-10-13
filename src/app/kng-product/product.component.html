@@ -1,52 +1,56 @@
 <div class="product-dialog fadeout" #dialog>
-    <div class="product-backdrop"></div>
-    <div class="product-dialog__surface">
-        <div class="product-wide"
-            [class.incart]="cartItem&&cartItem?.quantity">
+  <div class="product-backdrop"></div>
+  <div class="product-dialog__surface">
+    <div class="product-wide" [class.incart]="cartItem&&cartItem?.quantity">
 
-            <!-- CLOSE -->
-            <button (click)="onClose(true)"  class="close">
-                <mdc-icon [fontSize]="40">close</mdc-icon>
-            </button>        
-            <div class="header " [bgGradient]="true" [bgSrc]="product.photo.url">
-              <aside [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
+      <!-- CLOSE -->
+      <button (click)="onClose(true)" class="close">
+        <mdc-icon [fontSize]="40">close</mdc-icon>
+      </button>
+      <div class="header " [bgGradient]="true" [bgSrc]="product.photo.url">
+        <aside [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
 
-                      
-              </aside>
 
-              <div class="actions ">
-                <button  class="action-remove " (click)="removeToCart(product)"><mdc-icon [fontSize]="26">remove</mdc-icon></button>	  
-                <div class="info-quantity">{{cartItem?.quantity}}</div>		
-                <button  class="action-add right " (click)="addToCart(product)"><mdc-icon [fontSize]="26">add</mdc-icon></button>	
-              </div>
-    
-              <section>
-    
-                <!-- PRICE-->
-                <div class="price" *ngIf="product.pricing.price">
-        
-                  <!-- REGULAR -->
-                  <span [hidden]="product.attributes.discount" class="small primary bold ">
-                    Fr {{product.pricing.price| number:'1.2-2'}}
-                  </span>
-                  <!-- DISCOUNT -->
-                  <span [hidden]="!product.attributes.discount" >
-                    <span class="red bold strike"> {{product.pricing.price| number:'1.2-2'}}</span>
-                    <span class="primary bold small">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
-                  </span>
-        
-                  <!-- SHOULD BE INLINED IN PHONE -->
-                  <div class="em" >{{product.pricing?.part}}</div>
-                  <div class="part" [hidden]="product.pricing?.part[0]!=='~'">{{product.pricing.part|portion}}</div>
-                  <div class="part" [hidden]="product.pricing?.part.indexOf('gr')===-1">Fr {{product.pricing.part|baseprice:product.getPrice()}} / 100gr</div> <br/>
-                </div>
-        
-        
-              </section>
-            </div>
-        
-            <!-- USER ACTIONS -->
-            <!-- <div class="user-actions ">
+        </aside>
+
+        <div class="actions ">
+          <button class="action-remove " (click)="removeToCart(product)">
+            <mdc-icon [fontSize]="26">remove</mdc-icon>
+          </button>
+          <div class="info-quantity">{{cartItem?.quantity}}</div>
+          <button class="action-add right " (click)="addToCart(product)">
+            <mdc-icon [fontSize]="26">add</mdc-icon>
+          </button>
+        </div>
+
+        <section>
+
+          <!-- PRICE-->
+          <div class="price" *ngIf="product.pricing.price">
+
+            <!-- REGULAR -->
+            <span [hidden]="product.attributes.discount" class="small primary bold ">
+              Fr {{product.pricing.price| number:'1.2-2'}}
+            </span>
+            <!-- DISCOUNT -->
+            <span [hidden]="!product.attributes.discount">
+              <span class="red bold strike"> {{product.pricing.price| number:'1.2-2'}}</span>
+              <span class="primary bold small">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+            </span>
+
+            <!-- SHOULD BE INLINED IN PHONE -->
+            <div class="em">{{product.pricing?.part}}</div>
+            <div class="part" [hidden]="product.pricing?.part[0]!=='~'">{{product.pricing.part|portion}}</div>
+            <div class="part" [hidden]="product.pricing?.part.indexOf('gr')===-1">Fr
+              {{product.pricing.part|baseprice:product.getPrice()}} / 100gr</div> <br />
+          </div>
+
+
+        </section>
+      </div>
+
+      <!-- USER ACTIONS -->
+      <!-- <div class="user-actions ">
                 <button mdc-button [primary]="true" class="align-start"
                        (click)="onEdit(product)"
                        [hidden]="!user.isOwnerOrAdmin(product.vendor.name)"><span i18n>Éditer</span></button>
@@ -57,94 +61,120 @@
                 </button>
             </div> -->
 
-            <!-- ADMIN OR OWNER ACTIONS -->
-            <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
-              <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
-              <div role="group" aria-label="Justified button group">
-                <button mdc-button [secondary]="true" role="button" 
-                            (click)="product.pricing.stock=0;save(product);" [disabled]="WaitText">0</button>
-                <button mdc-button [secondary]="true" role="button" 
-                            (click)="product.pricing.stock=10;save(product);" [disabled]="WaitText">10</button>
-                <button mdc-button [secondary]="true" role="button" 
-                            (click)="product.pricing.stock=40;save(product);" [disabled]="WaitText">40</button>
-              </div>      
+      <!-- ADMIN OR OWNER ACTIONS -->
+      <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
+        <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
+        <div role="group" aria-label="Justified button group">
+          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=0;save(product);"
+            [disabled]="WaitText">0</button>
+          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=10;save(product);"
+            [disabled]="WaitText">10</button>
+          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=40;save(product);"
+            [disabled]="WaitText">40</button>
+        </div>
+      </div>
+
+
+
+      <!-- TITLE -->
+      <h2 class="title">{{product.title}} </h2>
+
+      <!-- DESCRIPTION -->
+      <div class="description">
+        <span kng-markdown removeRoot="true" data="{{product.details.description}}"></span>
+        <span [hidden]="!product.details?.origin" class="small">{{product.details.origin}}</span>
+      </div>
+
+      <!-- CERTIFIED -->
+      <div class="certified ">
+        <ul class="info " [hidden]="!product.quantity.display||!product.shelflife.display">
+          <li [hidden]="!product.quantity.display">{{product.quantity.comment}}</li>
+          <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
+        </ul>
+        <div>
+          <span [hidden]="!product.details.homemade" class="label label-product">Artisanal</span>
+          <span [hidden]="!product.details.local" class="label label-product">Local</span>
+          <span [hidden]="!product.details.lactose" class="label label-product">Sans lactose</span>
+          <span [hidden]="!product.details.gluten" class="label label-product">Sans gluten</span>
+          <span [hidden]="!product.details.grta" class="label label-product">GRTA</span>
+          <span [hidden]="!product.details.bio&&!product.details.biodynamics" class="label label-product">BIO</span>
+          <span [hidden]="!product.details.biodynamics" class="label label-product">Biodynamie</span>
+          <span [hidden]="!product.details.bioconvertion" class="label label-product">Bioconversion</span>
+          <span [hidden]="!product.details.natural" class="label label-product" title="Naturel">Sans chimie de synthèse</span>
+        </div>
+      </div>
+
+      <!-- AVAILABLE -->
+      <div class="availability">
+        <ul class="list-inline">
+          <li>
+            <div class="bold">Livraisons:</div>
+            <div class="indicator">&nbsp;</div>
+          </li>
+          <li>
+            <div>Lun.</div>
+            <div class="indicator">
+              <mdc-icon [fontSize]="15">{{getAvailability(product,1)}}</mdc-icon>
             </div>
-        
-        
-        
-            <!-- TITLE -->
-            <h2 class="title">{{product.title}} </h2>
-            
-            <!-- DESCRIPTION -->
-            <div class="description">
-              <span kng-markdown removeRoot="true" data="{{product.details.description}}"></span>
-              <span [hidden]="!product.details?.origin" class="small">{{product.details.origin}}</span>
+          </li>
+          <li>
+            <div>Mar.</div>
+            <div class="indicator">
+              <mdc-icon [fontSize]="15">{{getAvailability(product,2)}}</mdc-icon>
             </div>
-        
-            <!-- CERTIFIED -->
-            <div class="certified " >
-              <ul class="info " [hidden]="!product.quantity.display||!product.shelflife.display">
-                <li [hidden]="!product.quantity.display">{{product.quantity.comment}}</li>
-                <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
-              </ul>
-              <div>
-                <span [hidden]="!product.details.homemade" class="label label-product">Artisanal</span>
-                <span [hidden]="!product.details.local" class="label label-product">Local</span>
-                <span [hidden]="!product.details.lactose" class="label label-product">Sans lactose</span>
-                <span [hidden]="!product.details.gluten" class="label label-product">Sans gluten</span>
-                <span [hidden]="!product.details.grta" class="label label-product">GRTA</span>
-                <span [hidden]="!product.details.bio&&!product.details.biodynamics" class="label label-product">BIO</span>
-                <span [hidden]="!product.details.biodynamics" class="label label-product">Biodynamie</span>
-                <span [hidden]="!product.details.bioconvertion" class="label label-product">Bioconversion</span>
-                <span [hidden]="!product.details.natural" class="label label-product" title="Naturel">Sans chimie de synthèse</span>
-              </div>
+          </li>
+          <li>
+            <div>Mer.</div>
+            <div class="indicator">
+              <mdc-icon [fontSize]="15">{{getAvailability(product,3)}}</mdc-icon>
             </div>
-        
-            <!-- AVAILABLE -->
-            <div class="availability" hidden>
-              <ul class="list-inline">
-                <li>
-                  <div class="bold">Livraisons:</div>
-                  <div class="indicator">&nbsp;</div>
-                </li>
-                <li>
-                  <div>Lun.</div>
-                  <div class="indicator"><mdc-icon [fontSize]="15">{{getAvailability(product,1)}}</mdc-icon></div>
-                </li>
-                <li>
-                  <div>Mar.</div>
-                  <div class="indicator"><mdc-icon [fontSize]="15">{{getAvailability(product,2)}}</mdc-icon></div>
-                </li>
-                <li>
-                  <div>Mer.</div>
-                  <div class="indicator"><mdc-icon [fontSize]="15">{{getAvailability(product,3)}}</mdc-icon></div>
-                </li>
-                <li>
-                  <div>Jeu.</div>
-                  <div class="indicator"><mdc-icon [fontSize]="15">{{getAvailability(product,4)}}</mdc-icon></div>
-                </li>
-                <li>
-                  <div>Ven.</div>
-                  <div class="indicator"><mdc-icon [fontSize]="15">{{getAvailability(product,5)}}</mdc-icon></div>
-                </li>
-              </ul>
+          </li>
+          <li>
+            <div>Jeu.</div>
+            <div class="indicator">
+              <mdc-icon [fontSize]="15">{{getAvailability(product,4)}}</mdc-icon>
             </div>
-            
-            <!-- VENDOR-->
-            <div class="vendor" *ngIf="product.vendor.photo">
-                  <img [hidden]="!product.vendor.photo?.owner"
-                    [src]="product.vendor.photo?.owner"  align="left"
-                    alt="160x160" class="thumbnail-owner photo-owner" >
-                  <img [hidden]="!product.vendor.photo?.fg||product.vendor.photo?.owner" align="left"
-                    [src]="product.vendor.photo?.fg"
-                    alt="160x160" class="thumbnail-owner photo-owner">
-        
-                  <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;{{product.vendor.description}} <a class="link" href="/shop/{{product.vendor.urlpath}}">Visiter la boutique</a>
+          </li>
+          <li>
+            <div>Ven.</div>
+            <div class="indicator">
+              <mdc-icon [fontSize]="15">{{getAvailability(product,5)}}</mdc-icon>
             </div>
-            <!-- VENDOR-->
-            <div id="disqus_thread" class="disqus" ></div>
-          </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- VENDOR-->
+      <div class="vendor" *ngIf="product.vendor.photo">
+        <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
+          class="thumbnail-owner photo-owner">
+        <img [hidden]="!product.vendor.photo?.fg||product.vendor.photo?.owner" align="left" [src]="product.vendor.photo?.fg"
+          alt="160x160" class="thumbnail-owner photo-owner">
+
+        <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;{{product.vendor.description}} <a class="link" href="/shop/{{product.vendor.urlpath}}">Visiter
+          la boutique</a>
+      </div>
+
+      <!-- DISQUS -->
+      <div id="disqus_thread" class="disqus"></div>
+
+      <!-- FURTHER -->
+      <div class="further-product-container mdc-layout-grid" >
+        <section>
+          <!-- <h2>{{category.name}}</h2>
+          <h3 [innerHtml]="category.description"></h3> -->
+        </section>
+
+        <div class="kng-layout-card">
+          <kng-product-thumbnail [sku]="product.sku" *ngFor="let product of products;let j=index" class=""></kng-product-thumbnail>
+        </div>
+
+
+
+      </div>
+
     </div>
+  </div>
 </div>
 
 

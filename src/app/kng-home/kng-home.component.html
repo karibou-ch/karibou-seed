@@ -29,7 +29,7 @@
 </div>
 
 <!-- FAB -->
-<!-- <button mdc-fab [exited]="scrollDirection<-5||!scrollDirection"   
+<button mdc-fab [exited]="scrollDirection<-5||!scrollDirection"   
         (click)="showCategories=!showCategories"
         class='text-primary bottom-right'>
   <mdc-icon>drag_indicator</mdc-icon>
@@ -40,7 +40,7 @@
   <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
   <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
   <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-</div> -->
+</div>
 
 <!-- Window virtual scroll (manage size) 
   -- https://medium.com/@yongtze_chi/virtual-scrolling-with-angular-145233f79384
@@ -52,11 +52,10 @@
     infiniteScrollContainer="window"
     [scrollCallback]="scrollCallback">
 
-<!-- <div class="product-container mdc-layout-grid"> -->
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
-  <div *ngFor="let category of getCategories();let i=index" [hidden]="!category.active">
+  <div *ngFor="let category of getCategories();let i=index" [hidden]="!category.active" #section>
     <section>
       <h2>{{category.name}}</h2>
       <h3 [innerHtml]="category.description"></h3>

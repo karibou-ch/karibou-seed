@@ -7,8 +7,8 @@
   </section>
   
   <section [hidden]="!items.length">
-    <h2 i18n>Résumer de votre commande</h2>
-    <h3 class="primary-text" i18n>Prochaine livraison le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
+    <h2 i18n>Résumé de votre commande</h2>
+    <h3 class="primary-text" i18n>Réservation pour le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
     <h4 [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
   </section>
   <mdc-list [lines]="2" avatar="true" [interactive]="false" [hidden]="!items.length">

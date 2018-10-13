@@ -8,7 +8,7 @@ export class KngUtils {
   //
   // TODO share staticmap generator
   // https://developers.google.com/maps/documentation/static-maps/intro?hl=fr
-  static getStaticMap(address:UserAddress,key:string){
+  static getStaticMap(address:UserAddress,key:string,size?:string){
     // TODO use this.config.shared.keys.pubMap
     if(!address||!address.geo){
       return "https://image.flaticon.com/icons/svg/235/235861.svg";
@@ -22,7 +22,7 @@ export class KngUtils {
       maptype:"roadmap",
       zoom:'14',
       scale:'2',
-      size:'200x200',
+      size:(size||'200x200'),
       markers:'color:0x5fea89|label:'+name[0].toUpperCase()+'|'+address.geo.lat+','+address.geo.lng
     }
     return KngUtils.STATIC_MAP+Utils.encodeQuery(params);
