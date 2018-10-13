@@ -15,7 +15,7 @@
 	<button  class="action-remove " (click)="removeToCart(product)"><mdc-icon [fontSize]="26">remove</mdc-icon></button>	
 	<div class="info-quantity">{{cartItem?.quantity}}</div>		
 
-	<mdc-card-primary-action mdc-ripple [routerLink]="['products',product.sku]">
+	<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
 		<mdc-card-media
 			[square]="true"
 			[ngStyle]="{'background-image': bgStyle}"

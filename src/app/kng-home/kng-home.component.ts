@@ -1,4 +1,12 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
+import { Component, 
+         OnInit, 
+         OnDestroy, 
+         ViewEncapsulation, 
+         HostListener, 
+         ViewChildren, 
+         ElementRef, 
+         QueryList 
+        } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { timer } from  'rxjs/observable/timer';
 import { map } from 'rxjs/operators';
@@ -27,6 +35,9 @@ import { runInThisContext } from 'vm';
   encapsulation: ViewEncapsulation.None,
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
+
+  @ViewChildren('section') sections: QueryList<ElementRef>;
+    
   isReady: boolean = false;
   config: Config;
   categories:Category[];
@@ -134,6 +145,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     });    
   }
 
+  add(product:Product){
+    this.$cart.add(product);
+  }
+
   doDirectionUp(){
     
   }
@@ -141,6 +156,26 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   doDirectionDown(){
 
   }
+
+  getNextPage(){
+    //
+    // next page must be async loaded 
+    return timer(10).pipe(map(ctx=>this.currentPage++));
+  }
+
+  getCategories(){
+    if(this.cached.categories && this.currentPage===this.cached.currentPage){
+      return this.cached.categories;
+    }
+    if(!this.isReady){
+      return [];
+    }
+    this.cached.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
+      return c.active&&(c.type==='Category');
+    }).slice(0,this.currentPage);
+    this.cached.currentPage=this.currentPage;
+    return this.cached.categories;
+  }  
 
   getHeaderStyle(){
     //{'background-image': 'url(' + getStaticMap(edit.address) + ')'}
@@ -178,28 +213,29 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  add(product:Product){
-    this.$cart.add(product);
+
+  scrollNextSectionIntoView(currentIndex: number) {
+    const nextSection = this.findNextSection(currentIndex);
+    this.scrollElIntoView(nextSection);
   }
 
-  getNextPage(){
-    //
-    // next page must be async loaded 
-    return timer(10).pipe(map(ctx=>this.currentPage++));
+  scrollHasNextSection(currentIndex: number) {
+    return true;//currentIndex < this.images.length - 1;
   }
 
-  getCategories(){
-    if(this.cached.categories && this.currentPage===this.cached.currentPage){
-      return this.cached.categories;
-    }
-    if(!this.isReady){
-      return [];
-    }
-    this.cached.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
-      return c.active&&(c.type==='Category');
-    }).slice(0,this.currentPage);
-    this.cached.currentPage=this.currentPage;
-    return this.cached.categories;
+  private findNextSection(currentIndex: number): HTMLElement {
+    const nextIndex = currentIndex + 1;
+    const sectionNativeEls = this.getSectionsNativeElements();
+    return sectionNativeEls[nextIndex];
+  }
+
+  private getSectionsNativeElements() {
+    return this.sections.toArray().map(el => el.nativeElement);
+  }
+
+
+  scrollElIntoView(el: HTMLElement) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }  
 
   sortByWeight(a:Category,b:Category){
@@ -207,6 +243,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
   
 
+  //
+  // detect scrall motion and hide component
   @HostListener('window:scroll', ['$event'])
   windowScroll() {
       const scrollPosition = window.pageYOffset;

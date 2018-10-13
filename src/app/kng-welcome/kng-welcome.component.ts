@@ -5,7 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   LoaderService,
   User,
-  Config
+  Config,
+  PhotoService
 }  from 'kng2-core';
 
 import { KngNavigationStateService } from '../shared/navigation.service';
@@ -68,14 +69,15 @@ export class KngWelcomeComponent implements OnInit {
 
   constructor( 
     public $i18n:i18n,
-    private $loader: LoaderService,
     private $navigation:KngNavigationStateService,
     private $route: ActivatedRoute,
-    private $router: Router,    
+    private $photo: PhotoService
   ) { 
     let loader=this.$route.snapshot.data.loader;
     this.config=loader[0];      
-    
+    this.$photo.shops({active:true,random:40}).subscribe((photos:any)=>{
+      this.photos=photos.map(shop=>shop.photo.fg);
+    })
   }
 
   getTagline(key){

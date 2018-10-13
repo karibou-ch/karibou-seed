@@ -71,7 +71,7 @@ export class UserOrdersComponent implements OnInit {
         if(!this.items.length){
           return [];
         }
-        return this.$products.photos(this.items.map(rank=>rank.item.sku+''));        
+        return this.$products.photos(this.items.slice(1, 20).map(rank=>rank.item.sku+''));        
       })
     ).subscribe(
       items => {
