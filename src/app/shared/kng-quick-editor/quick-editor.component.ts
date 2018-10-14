@@ -29,11 +29,12 @@ export class KngQuickEditorComponent implements OnInit {
       Object.assign(this.user, loader[1]);
     });   
 
-    this.$config.subscribe(
-      (config:Config)=>{
-        Object.assign(this.config, config);        
-      }
-    )
+    // FIXME subscribe to config
+    // this.$config.subscribe(
+    //   (config:Config)=>{
+    //     Object.assign(this.config, config);        
+    //   }
+    // )
   }
 
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { LoaderService, Order, OrderService, User, UserService, OrderItem, Category, ProductService, EnumCancelReason, CartService, CartItem, EnumFulfillments } from 'kng2-core';
+import { LoaderService, Order, OrderService, User, UserService, OrderItem, Category, ProductService, EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService } from 'kng2-core';
 import { MdcSnackbar, MdcDialogComponent } from '@angular-mdc/web';
 
 import { mergeMap, flatMap } from 'rxjs/operators';
@@ -42,6 +42,7 @@ export class UserOrdersComponent implements OnInit {
     private $products:ProductService,
     private $route:ActivatedRoute,
     private $user: UserService,
+    private $photo:PhotoService,
     private $snack:MdcSnackbar
   ) { 
     //
@@ -71,7 +72,7 @@ export class UserOrdersComponent implements OnInit {
         if(!this.items.length){
           return [];
         }
-        return this.$products.photos(this.items.slice(1, 20).map(rank=>rank.item.sku+''));        
+        return this.$photo.products(this.items.slice(1, 20).map(rank=>rank.item.sku+''));        
       })
     ).subscribe(
       items => {

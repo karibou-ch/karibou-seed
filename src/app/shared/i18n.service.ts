@@ -37,11 +37,12 @@ export class i18n  {
     private $config:ConfigService
   ) { 
     this.currentLocale='fr';
-    this.$config.subscribe((config:Config)=>{
-      this.config=config;
-      // TODO configure locale switch/setup
-      // this.config.shared.i18n [defaultLocale:string, locales:[]]
-    });
+    // FIXME subscribe to config
+    // this.$config.subscribe((config:Config)=>{
+    //   this.config=config;
+    //   // TODO configure locale switch/setup
+    //   // this.config.shared.i18n [defaultLocale:string, locales:[]]
+    // });
     //this.currentLocale=this.$config.locale;
   }
 

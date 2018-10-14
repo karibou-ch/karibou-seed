@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
-import { Observable ,  timer } from 'rxjs';
-=======
 import { Component, 
          OnInit, 
          OnDestroy, 
@@ -13,7 +9,6 @@ import { Component,
         } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { timer } from  'rxjs/observable/timer';
->>>>>>> oe-mdc
 import { map } from 'rxjs/operators';
 
 import {
