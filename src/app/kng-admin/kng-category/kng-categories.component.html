@@ -87,19 +87,22 @@
 
             <!-- TYPE -->
             <div class="align-end">
-              <mdc-form-field>
-                <mdc-radio value="Category"  formControlName="type" [checked]="edit.category.type=='Category'" (change)="onTypeChange($event)"></mdc-radio>
-                <label>Category</label>
-              </mdc-form-field>
-              <mdc-form-field>
-                <mdc-radio value="Catalog" formControlName="type" [checked]="edit.category.type=='Catalog'" (change)="onTypeChange($event)"></mdc-radio>
-                <label>Catalog</label>
-              </mdc-form-field>
+              <!-- FIXME upgrade mdc angular 6 -->
+              <!--<mdc-radio-group formControlName="type" [(ngModel)]="edit.category.type">-->
+                <mdc-form-field>
+                  <mdc-radio  value="Category" [checked]="(edit.category.type=='Category')" (change)="onTypeChange($event,'Category')" formControlName="type" ></mdc-radio>
+                  <label>Category</label>
+                </mdc-form-field>
+                <mdc-form-field>
+                  <mdc-radio  value="Catalog" [checked]="(edit.category.type=='Catalog')"  (change)="onTypeChange($event,'Catalog')" formControlName="type" ></mdc-radio>
+                  <label>Catalog</label>
+                </mdc-form-field>
+              <!--</mdc-radio-group>-->
             </div>            
         </div>
         <div class="-between">
           <!-- GROUP -->
-          <mdc-text-field i18n-label label="Group" type="text" [ngModel]="edit.category.group" formControlName="group" >
+          <mdc-text-field i18n-label label="Group" type="text" [ngModel]="edit.category.group" formControlName="group" style="width: 80px">
           </mdc-text-field>
 
           <!-- WEIGHT -->
@@ -107,13 +110,13 @@
           </mdc-text-field>
 
           <!-- ICON -->
-          <mdc-text-field i18n-label label="Icon" type="text" [ngModel]="edit.category.image" formControlName="image" [ngClass]="edit.category.color">
+          <mdc-text-field i18n-label label="Icon" type="text" [ngModel]="edit.category.image" formControlName="image" style="width: 80px">
           </mdc-text-field>
 
           <!-- COLOR -->
-          <mdc-text-field i18n-label label="Color" type="text" [ngModel]="edit.category.color" formControlName="color" style="width: 80px">
+          <mdc-text-field i18n-label label="Color" type="text" [ngModel]="edit.category.color" formControlName="color" style="width: 110px">
           </mdc-text-field>
-
+  
         </div>
 
         <div>                      
@@ -124,6 +127,35 @@
           <mdc-text-field class="double" i18n-label label="Description" type="text" [ngModel]="edit.category.description" formControlName="description" >
           </mdc-text-field>
         </div>
+
+        <!-- CHILD CATEGORY -->
+        <div>
+          <mdc-list>
+            <mdc-list-item *ngFor="let child of edit.category.child;let idx = index" >
+                <mdc-list-item-text>
+                  <mdc-text-field label="Name"  type="text" [(ngModel)]="child.name" [ngModelOptions]="{standalone: true}" class="child"></mdc-text-field>
+                  <mdc-text-field label="Weight"  type="number" [(ngModel)]="child.weight" [ngModelOptions]="{standalone: true}" class="child"></mdc-text-field>
+          
+                </mdc-list-item-text>
+                <mdc-list-item-meta>
+                  <mdc-form-field>
+                      <button mdc-button><mdc-icon >delete</mdc-icon></button>
+                  </mdc-form-field>
+                </mdc-list-item-meta>
+            </mdc-list-item>
+            <mdc-list-divider></mdc-list-divider>
+          
+            <mdc-list-item  (click)="edit.category.child.push({name:'',weight:0})">
+                <mdc-list-item-graphic>
+                  <mdc-icon [fontSize]="30">playlist_add</mdc-icon>
+                </mdc-list-item-graphic>
+                <mdc-list-item-text >                  
+                  <mdc-list-item-secondary i18n >Ajouter une nouvelle catégorie enfant</mdc-list-item-secondary>
+                </mdc-list-item-text>        
+            </mdc-list-item>          
+          </mdc-list>
+        </div>
+
         <!-- <div>
           {{edit.form.value|json}}
         </div> -->

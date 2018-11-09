@@ -74,8 +74,15 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
     // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
     let elem=this.elm.nativeElement;
     if(this.infiniteScrollContainer){
-      elem=document.querySelector(this.infiniteScrollContainer)
-      // this.renderer.listenGlobal("document.body", "scroll", (e) => console.log("body event",e));
+      //TODO get ElementRef from HTMLDivElement ??;
+      //TODO get scroll from ElementRef
+      //TODO scroll with rxjs6 https://www.bennadel.com/blog/3446-monitoring-document-and-element-scroll-percentages-using-rxjs-in-angular-6-0-2.htm
+      // console.log('---container',this.infiniteScrollContainer,fromEvent(this.infiniteScrollContainer, 'scroll'));
+      if(this.infiniteScrollContainer instanceof  ElementRef){
+        elem=this.infiniteScrollContainer.nativeElement;
+      }else{
+        elem=document.querySelector(this.infiniteScrollContainer);
+      }
       elem=elem||window;
     }
     this.scrollEvent$ = fromEvent(elem, 'scroll');
@@ -83,10 +90,11 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
 
   private streamScrollEvents() {
     this.userScrolledDown$ = this.scrollEvent$.pipe(
-      map((e: any): ScrollPosition => ({
-        sH: e.target.scrollingElement.scrollHeight,
-        sT: e.target.scrollingElement.scrollTop,
-        cH: e.target.scrollingElement.clientHeight
+      map((e: any)=>e.target.scrollingElement||e.target),
+      map((target: any): ScrollPosition => ({
+        sH: target.scrollHeight,
+        sT: target.scrollTop,
+        cH: target.clientHeight
       })),
       pairwise(),
       filter(positions => this.isUserScrollingDown(positions) && this.isScrollExpectedPercent(positions[1]))

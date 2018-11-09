@@ -3,45 +3,47 @@
 	https://github.com/material-components/material-components-web/tree/master/packages/mdc-card
 	https://stackoverflow.com/questions/44741936/angular-4-multiple-named-router-outlets-in-a-child-route-supported/44742481
 -->
+<ng-container *ngIf="hidden else loadingTpl">
+	<div class="product-card loader" ></div>
+</ng-container>
 
+<ng-template #loadingTpl>
+	<mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
+	 [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
 
-<mdc-card class="product-card card-skeleton"
-	[outlined]="false"	
-	[class.incart]="cartItem&&cartItem?.quantity"
-	[class.noavailable]="!product.isAvailableForOrder()" 
-	[class.noinstock]="!product.pricing.stock">
+		<button class="action-add right " (click)="addToCart(product)">
+			<mdc-icon [fontSize]="26">add</mdc-icon>
+		</button>
+		<button class="action-remove " (click)="removeToCart(product)">
+			<mdc-icon [fontSize]="26">remove</mdc-icon>
+		</button>
+		<div class="info-quantity">{{cartItem?.quantity}}</div>
 
-	<button  class="action-add right " (click)="addToCart(product)"><mdc-icon [fontSize]="26">add</mdc-icon></button>	
-	<button  class="action-remove " (click)="removeToCart(product)"><mdc-icon [fontSize]="26">remove</mdc-icon></button>	
-	<div class="info-quantity">{{cartItem?.quantity}}</div>		
+		<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
+			<mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
+				<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
-	<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
-		<mdc-card-media
-			[square]="true"
-			[ngStyle]="{'background-image': bgStyle}"
-			class="media ">
-			<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
-					
-		</mdc-card-media>
-		<div class="product-card__primary">
-			<span class="product-card__subtitle" >{{product.title}}</span>
-		</div>
-		<div class="product-card__secondary" >
-			<div class="part">
-					{{product.pricing.part}}
+			</mdc-card-media>
+			<div class="product-card__primary">
+				<span class="product-card__subtitle">{{product.title}}</span>
 			</div>
-			<div class="price ">
-				<span [hidden]="product.attributes.discount" class=" ">
-					Fr {{product.pricing.price| number:'1.2-2'}}
-				</span>
-				<span [hidden]="!product.attributes.discount" >
-					<span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
-				</span>      
-			</div>				
-		</div>	
-	</mdc-card-primary-action>
+			<div class="product-card__secondary">
+				<div class="part">
+					{{product.pricing.part}}
+				</div>
+				<div class="price ">
+					<span [hidden]="product.attributes.discount" class=" ">
+						Fr {{product.pricing.price| number:'1.2-2'}}
+					</span>
+					<span [hidden]="!product.attributes.discount">
+						<span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+					</span>
+				</div>
+			</div>
+		</mdc-card-primary-action>
+	</mdc-card>
+</ng-template>
 
-</mdc-card>
 
 <!--
 <mdc-card class="demo-card" fxFlexOffset="4">

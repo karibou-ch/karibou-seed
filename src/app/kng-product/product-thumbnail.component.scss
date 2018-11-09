@@ -10,6 +10,16 @@
 }
 
 .product-card{
+  &.loader{
+    width: auto;
+    height: 190px;
+    margin: 4px;
+    background-image: url('/assets/img/k-product-placeholder.png');
+    background-repeat: repeat-x;
+    background-position: left;
+    background-size: cover;
+
+  }
   height: 13rem;
   background: white;
   position: relative;
@@ -55,20 +65,20 @@
     width: 48px;
     height: 26px;
     position: absolute;
-    top: 10px;
+    top: 5px;
     padding: 0px;
     outline: 0;
     z-index: 1;
     cursor: pointer;
     &.right{
-      right:10px;
+      right:5px;
     }
   }
 
 
   .action-remove{
     visibility: hidden;
-    left:10px;
+    left:5px;
   }
   
   .info-quantity{
@@ -117,7 +127,7 @@
 
   .price{
     position: absolute;
-    right: 10px;
+    right: 5px;
     bottom: 10px;
     font-size: large;
     font-weight: 500;

@@ -1,3 +1,10 @@
+.mdc-dialog-scroll-lock{
+  div.product-container,
+  div.home-header{
+    /* WARNING when display is non, scrollIntoView doesnt works */
+    -display: none!important;
+  }
+}
 div.home-header{
   display: flex!important;
   flex-flow: column;
@@ -144,7 +151,10 @@ div.product-container{
   margin-top: 0px;
   width: 740px;
   @media (max-width:426px) {
-    width: 100%;
+    width: 100vw;
+    padding: 0;
+    margin-left: -3px;
+    margin-top: 32px;
   }
   
 
@@ -194,12 +204,11 @@ div.product-container{
   }
   section{
     h2,h3{
-      font-weight: 500;
+      font-weight: 300;
       color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
-      font-size: 1.875rem;
-      -font-size: 0.875rem;
+      font-size: 1.675rem;
       text-transform: uppercase;    
-      margin-top: 20px;
+      margin-top: 10px;
       text-align:center;
     }
     h3{
@@ -231,12 +240,63 @@ div.product-container{
     display: flex!important;
     justify-content: center;
     flex-wrap: wrap;
-    align-items: center;    
+    align-items: center;   
+    padding-bottom:0; 
+    div.category,
     kng-product-thumbnail{
-      flex: 0 0 137px;
+      flex: 1 0 130px;
       width: 137px;
       margin: 8px;
       margin-bottom: 0;
+      @media (max-width: 426px) {
+        flex: 1 0;
+        min-width: 29vw;
+        margin: 4px 4px 0;
+      }
+    }
+    div.category{
+      cursor: pointer;
+      height: 9rem;
+      max-width: 23%;
+      margin-left: 0;
+      margin-right: auto;      
+      background: blueviolet ;
+      background: var(--mdc-theme-primary);
+      color: white;
+      position: relative;
+      border-radius: 4px;
+      margin-bottom: auto;      
+      display: flex;
+      margin-left: 4px;
+      margin-right: 4px;      
+      flex-direction: column;
+      &.loader{
+        background-color: #f1f1f1!important;
+        height: 9rem;
+        align-items: self-end;
+        margin-bottom: 0;        
+      }
+      div{
+
+        padding: 20px 10px;        
+        font-size: larger;
+        margin-bottom: 0;
+        margin-top: auto;        
+        &.icon{
+          align-self: flex-start;
+          margin-top: 0;
+          margin-bottom: auto;          
+          padding: 10px;
+          i{
+            font-size: 36px;
+          }
+        
+        }
+        &:last-child{
+          padding-top: 0;
+        }
+
+      }
     }
   }
 }

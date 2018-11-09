@@ -65,20 +65,25 @@
 
   <!--- [dense]="$navigation.isMobileOrTablet()" -->
   <mdc-app-bar #appbar fixed="false"  [dense]="true">
-    <mdc-app-bar-row>
+    <mdc-app-bar-row >
       <!-- APPBAR-SECTION-START -->
-      <mdc-app-bar-section align="start">
+      <mdc-app-bar-section align="start" mdc-ripple >
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">menu</mdc-icon>
-        <mdc-app-bar-title>{{title}}</mdc-app-bar-title>
+        <mdc-app-bar-title class="home" [routerLink]="['/store',store]">{{title}}</mdc-app-bar-title>        
       </mdc-app-bar-section>       
+      <mdc-app-bar-section>
+        <mdc-app-bar-title class="shipping hide-sm">
+          « {{currentShippingDay|date:'EEEE d MMMM':'':'fr'}} »
+        </mdc-app-bar-title>
+      </mdc-app-bar-section>
       <!-- APP BAR MENU ICON --> 
       <mdc-app-bar-section align="end">
           <!-- <a (click)="shipping.open()" mdcAppBarActionItem class="btn-shipping" >
               <i material-icon >update</i>
               <span class="hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
-          </a>
+          </a>-->
 
-          <a (click)="admin.open()" class="hide" mdcAppBarActionItem material-icon [hidden]="!user.isAdmin()">vpn_key</a>         -->
+          <a [routerLink]="['/store',store,'cart']" style="width: auto" class="show-sm" mdcAppBarActionItem ><material-icon>shopping_cart</material-icon> <span class="cart-items-count label"></span></a>         
 
 
           <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;"
@@ -92,16 +97,15 @@
           <!-- <a [routerLink]="['/store',store,'me']"  mdcAppBarActionItem material-icon [hidden]="!user.isAuthenticated()">account_box</a>        
           <a [routerLink]="['/store',store,'me','login']"  mdcAppBarActionItem material-icon [hidden]="user.isAuthenticated()">account_circle</a>         -->
     
-          <button mdc-toolbar-icon material-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button>
+          <!-- <button mdc-toolbar-icon material-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button> -->
           <!-- menu content anchor to toolbar-section -->
-          <mdc-menu #shipping [anchorCorner]="'bottom-start'">
+          <!-- <mdc-menu #shipping [anchorCorner]="'bottom-start'">
             <mdc-menu-item id="0" *ngFor="let day of getShippingDays();let idx=index" (click)="doSetCurrentShippingDay($event,day,idx)">
                 {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
                 <mdc-icon mdc-list-item-meta>info</mdc-icon>                
             </mdc-menu-item>
             <mdc-menu-divider></mdc-menu-divider>
             <mdc-menu-item [disabled]="true" >
-                <!-- <h5 i18n>Ouverture</h5> -->
                 <div class="align-days">
                   <div class="label-shipping" *ngFor="let day of getShippingWeek()">
                   {{day.label}} <span class="bullet {{day.state}}"></span>
@@ -110,7 +114,6 @@
             </mdc-menu-item>
           </mdc-menu>
           <mdc-menu #admin>
-            <!-- FOR ADMIN -->
             <mdc-menu-item [id]="20+i" class="admin-item" 
                            [hidden]="!$navigation.isAdmin"
                            *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
@@ -120,15 +123,11 @@
             <mdc-menu-item id="0" [routerLink]="['/store',store,'me','orders']"><mdc-icon>favorite</mdc-icon>&nbsp;<span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
             <mdc-menu-divider></mdc-menu-divider>
             <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon>&nbsp;<span i18n>Logout</span></mdc-menu-item>
-            <!--
-            <mdc-menu-divider></mdc-menu-divider>
-            <mdc-menu-item id="3" *ngIf="user.shops.length" [routerLink]="['/store',store,'shop',user.shops[0].urlpath,'edit']"><mdc-icon>mode_edit</mdc-icon><span i18n>Editer</span> {{user.shops[0].name}}</mdc-menu-item>           
-            -->
-          </mdc-menu>                              
+          </mdc-menu>                               -->
   
       </mdc-app-bar-section>
     </mdc-app-bar-row>
-    <mdc-app-bar-row [hidden]="$navigation.isAdminLayout">
+    <mdc-app-bar-row [hidden]="$navigation.isAdminLayout || $navigation.isMobileOrTablet()" >
       <!-- APPBAR-SECTION-START -->
       <mdc-app-bar-section align="start"></mdc-app-bar-section>
 

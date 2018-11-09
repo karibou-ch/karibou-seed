@@ -47,9 +47,9 @@ export const appRoutes: Routes = [
         { path: 'admin', loadChildren: './kng-admin/admin.module#AdminModule'  },
         { path: 'cart',loadChildren: './kng-cart/kng-cart.module#KngCartModule'   },
         // { path: 'departement',component:KngDepartementComponent },
-        { path: 'products/category/:category', component: ProductListComponent },
         { path:'home',component:KngHomeComponent,resolve:{ loader:LoaderResolve },children:[
           { path: 'products/:sku', component: ProductComponent},
+          { path: 'category/:category', component: ProductListComponent}
         ]},
         { path:'',pathMatch: 'full', redirectTo:'home'}
       ]

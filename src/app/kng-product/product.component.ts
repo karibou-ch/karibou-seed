@@ -1,5 +1,13 @@
-import { Component, ElementRef, HostListener, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, 
+         ChangeDetectionStrategy,
+         ElementRef, 
+         HostListener, 
+         OnInit, 
+         OnDestroy, 
+         Input,          
+         ViewChild, 
+         ChangeDetectorRef,
+         ViewEncapsulation} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 //import { MdcDialogComponent, } from '@angular-mdc/web';
 
@@ -14,11 +22,15 @@ import {
 } from 'kng2-core';
 import { i18n } from '../shared';
 
+import { timer } from  'rxjs/observable/timer';
+import { map } from 'rxjs/operators';
 
+//  changeDetection:ChangeDetectionStrategy.OnPush
 @Component({
   selector: 'kng-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.scss']
+  styleUrls: ['./product.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ProductComponent implements OnInit, OnDestroy {
 
@@ -38,7 +50,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   category:Category;
   categories:Category[];
   thumbnail: boolean = false;
-  bgStyle: string;
+  bgStyle: string='/-/resize/200x/';
+  photosz:string;
   cartItem: CartItem;
 
   // FIXME store resolution
@@ -48,6 +61,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   WaitText: boolean = false;
   rootProductPath: string;
 
+  //
+  // scroll 
+  currentPage:number=1;
+  scrollCallback;
 
   //
   // products for home
@@ -68,6 +85,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $router: Router,
+    private cdr: ChangeDetectorRef,
     private el:ElementRef
   ) {
     let loader=this.$route.parent.snapshot.data.loader;
@@ -75,6 +93,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.user=loader[1];    
     this.categories=loader[2];    
     this.products=[];
+    this.scrollCallback=this.getNextPage.bind(this);
+
   }
 
 
@@ -90,6 +110,14 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.updateBackground();
   }
 
+  getNextPage(){
+    return timer(10).pipe(map(ctx=>this.currentPage+=4));
+  }
+  
+  getDialog(){
+    return this.dialog;
+  }
+  
   hasFavorite(product) {
     return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
   }
@@ -99,6 +127,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   // on init with should now which one is loaded
   ngOnInit() {
       this.isReady = true;
+
+      
       //
       // product action belongs to a shop or a category 
       this.rootProductPath = (this.$route.snapshot.params['shop']) ?
@@ -107,7 +137,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       //
       // when display wider 
       if(!this.sku){
+  
         this.isDialog = true;
+        this.photosz='/-/resize/600x/'
         //this.sku = this.$route.snapshot.params['sku'];
         this.$route.params.subscribe(params=>{
           this.sku = params.sku;
@@ -118,10 +150,11 @@ export class ProductComponent implements OnInit, OnDestroy {
         // DIALOG INIT HACK 
         document.body.classList.add('mdc-dialog-scroll-lock');
 
+      }else{
+        this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
       }
 
 
-      this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
 
       //
       // simple animation
@@ -129,6 +162,12 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.dialog.nativeElement.classList.remove('fadeout')
       }
   }
+
+  ngAfterViewInit() {
+    // if(!this.isDialog){
+    //   this.cdr.detach();
+    // }
+  }  
 
   loadProduct(product){    
     this.isReady=true;
@@ -143,25 +182,29 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     // FIXME categories can contains shops
     // get category
-    this.category=this.categories.find(c=>this.product.categories._id==c._id);
+    //this.category=this.categories.find(c=>this.product.categories._id==c._id);
 
     // FIXME, should load on rx.pipe
     // load category 
-    if(this.isDialog && this.category){
-      this.$product.findByCategory(this.category.slug,this.options).subscribe((products)=>{
+    let params={
+      available:true,
+      when:true,
+      shopname:[product.vendor.urlpath]
+    };
+    if(this.isDialog ){
+      this.$product.select(params).subscribe((products)=>{
         this.products = products;
       });
 
-      //this.el.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
       setTimeout(()=>{
-        document.querySelector('body').scrollTo(0,0)
+        if(this.dialog)this.dialog.nativeElement.scrollTo(0,0);
       },10)
     }
   }
 
 
   updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url + '/-/resize/200x/)';
+    this.bgStyle = 'url(' + this.product.photo.url +this.photosz+')';
   }
 
   ngOnDestroy() {
@@ -177,7 +220,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   onClose(closedialog) {
     this.dialog.nativeElement.classList.add('fadeout')
     setTimeout(() => {
-      this.$router.navigate(['../'])
+      this.$router.navigate(['../../'],{relativeTo: this.$route})
       //this.$location.back()
     }, 200)
   }
@@ -209,6 +252,12 @@ export class ProductComponent implements OnInit, OnDestroy {
   styleUrls: ['./product-thumbnail.component.scss']
 })
 export class ProductThumbnailComponent extends ProductComponent {
+
+  hidden:boolean=true;
+  @Input('visibility') set visibility(value:boolean){
+    this.hidden=(!value);
+  }
+
   bgGradient = `linear-gradient(
         rgba(50, 50, 50, 0.7),
         rgba(50, 50, 50, 0.3)

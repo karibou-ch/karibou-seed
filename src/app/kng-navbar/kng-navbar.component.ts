@@ -137,15 +137,22 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //
       // update cart
       if(emit.state){
-        this.cardItemsSz=this.$cart.getItems().length||0;
+        this.cardItemsSz=this.$cart.getItems().reduce((sum,item)=>{
+          return sum+item.quantity;
+        },0);
         //
         // FIXME hugly DOM manipulation for : CART ITEMS COUNT
         // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>        
         setTimeout(()=>{
+          //
+          // top bar
+          (<Element>(document.querySelector('.cart-items-count')||{})).innerHTML='('+this.cardItemsSz+')';
+          //
+          // tab bar
           this.cartItemCountElem=this.cartItemCountElem||this.section.nativeElement.querySelector('.cart-items-count');
           if(this.cartItemCountElem){
             this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
-            this.cartItemCountElem.innerHTML='['+this.cardItemsSz+']';
+            this.cartItemCountElem.innerHTML='('+this.cardItemsSz+')';
           }  
         },100);
       
@@ -193,26 +200,5 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.$navigation.store !== undefined;    
   }
 
-  handleToolbarChange(position:number){
-    
-    //
-    // desktop
-    // if(this.toolbar.flexible){
-    //   if(position===0&&this.section){
-    //     this.section.nativeElement.style.height='56px';
-    //     this.section.nativeElement.style.minHeight='56px';
-    //   }  
-    // }
-
-    //
-    // mobile
-    // if(!this.toolbar.flexible){
-    //   if(position===1&&this.section){
-    //     this.section.nativeElement.style.height='56px';
-    //     this.section.nativeElement.style.minHeight='56px';
-    //   }  
-    // }    
-    
-  }
 
 }

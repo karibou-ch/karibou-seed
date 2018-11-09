@@ -5,9 +5,9 @@ import { Component,
          HostListener, 
          ViewChildren, 
          ElementRef, 
-         QueryList 
+         QueryList, 
+         ChangeDetectionStrategy
         } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { timer } from  'rxjs/observable/timer';
 import { map } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ import { runInThisContext } from 'vm';
   selector: 'kng-home',
   templateUrl: './kng-home.component.html',
   styleUrls: ['./kng-home.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
 
@@ -46,7 +46,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   user:User;
   locale:string;
   subscription;
-  showCategories:boolean;
 
   //
   // infinite scroll callback
@@ -54,6 +53,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   scrollPosition:number;
   scrollDirection:number;
   currentPage:number=3;
+  visibility:any={};
 
   //
   //gradient of background image 
@@ -69,14 +69,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     discount:boolean;
     home:boolean;
     maxcat:number;
+    popular:boolean;
     available:boolean;
     status:boolean;
     when:Date|boolean;
   }={
     discount:true,
     home:true,
-    maxcat:8,
-    // popular:true,
+    maxcat:10,
+    popular:true,
     available:true,
     status:true,
     when:true
@@ -98,6 +99,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.config = loader[0];
     this.user=loader[1];
     this.categories=loader[2]||[];
+    this.currentPage=1000;
 
 
     
@@ -109,7 +111,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {        
     this.locale=this.$i18n.locale;
-
+    setTimeout(()=>{
+      this.detectVisibility(0);
+    },800)
+    
     this.subscription=this.$loader.update().subscribe(emit=>{
       // emit signal for config
       if(emit.config){
@@ -140,8 +145,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
       }
       this.isReady = true;
-      console.log(this.constructor.name,'------------',emit)
-      
+      console.log(this.constructor.name,'------------',emit,this.sections)      
     });    
   }
 
@@ -174,6 +178,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       return c.active&&(c.type==='Category');
     }).slice(0,this.currentPage);
     this.cached.currentPage=this.currentPage;
+    this.cached.categories.forEach(cat=>this.visibility[cat.slug]=false);
     return this.cached.categories;
   }  
 
@@ -205,6 +210,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.group={};
     this.$product.select(this.options).subscribe((products: Product[]) => {
       products.forEach(product=>{
+        if(!product.categories){
+          return console.log('DEBUG----',product.sku,product.title);
+        }
         if(!this.group[product.categories.name]){
           this.group[product.categories.name]=[];
         }
@@ -214,8 +222,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
 
-  scrollNextSectionIntoView(currentIndex: number) {
-    const nextSection = this.findNextSection(currentIndex);
+  scrollNextSectionIntoView(slug: string) {
+    const nextSection = this.findNextSection(slug);
     this.scrollElIntoView(nextSection);
   }
 
@@ -223,9 +231,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return true;//currentIndex < this.images.length - 1;
   }
 
-  private findNextSection(currentIndex: number): HTMLElement {
-    const nextIndex = currentIndex + 1;
+  private findNextSection(slug: string): HTMLElement {
     const sectionNativeEls = this.getSectionsNativeElements();
+    const nextIndex = sectionNativeEls.findIndex(el=>el.className==slug);
+
+    console.log('----',slug,nextIndex,this.sections.toArray()[nextIndex])
     return sectionNativeEls[nextIndex];
   }
 
@@ -235,28 +245,65 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   scrollElIntoView(el: HTMLElement) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    if(!el){
+      return;
+    }
+    el.scrollIntoView({ behavior: 'instant', block: 'start' });
   }  
 
   sortByWeight(a:Category,b:Category){
     return a.weight-b.weight;
   }
   
+  //
+  // detect if current container is visible 
+  // on the screen (based on scroll position)
+  detectVisibility(scrollPosition:number){
+    this.sections.forEach(container=>{
+      let scrollTop = container.nativeElement.offsetTop;
+      let height = container.nativeElement.clientHeight;
+
+      //
+      // container.nativeElement.className visible!
+      if(scrollPosition>=scrollTop&& 
+         scrollPosition<(scrollTop+height)){
+          this.visibility[container.nativeElement.className]=true;
+      }
+      if((scrollPosition+window.innerHeight)>=scrollTop&&
+         (scrollPosition+window.innerHeight)<(scrollTop+height)){
+          this.visibility[container.nativeElement.className]=true;
+      }
+      if((scrollPosition+window.innerHeight)>=scrollTop&&
+         (scrollPosition+window.innerHeight)>(scrollTop+height)){
+          this.visibility[container.nativeElement.className]=true;
+      }
+
+      // console.log('---',this.visibility[container.nativeElement.className])
+    });
+  }
 
   //
   // detect scrall motion and hide component
   @HostListener('window:scroll', ['$event'])
   windowScroll() {
-      const scrollPosition = window.pageYOffset;
-      if(Math.abs(this.scrollPosition-scrollPosition)<4){
-        return;
+    const scrollPosition = window.pageYOffset;
+    // 
+    // avoid CPU usage
+    if(Math.abs(this.scrollPosition-scrollPosition)<6){
+      return;
+    }
+    // console.log('-- pageYOffset',window.pageYOffset);
+    // console.log('-- screenTop',window.screenTop);
+    // console.log('-- screenY',window.screenY);
+
+    this.detectVisibility(scrollPosition);
+
+    if (scrollPosition > this.scrollPosition) {
+      if(this.scrollDirection<0){
+        this.scrollDirection--;
+      }else{
+        this.scrollDirection=-6;
       }
-      if (scrollPosition > this.scrollPosition) {
-        if(this.scrollDirection<0){
-          this.scrollDirection--;
-        }else{
-          this.scrollDirection=-1;
-        }
     } else {
       if(this.scrollDirection>0){
         this.scrollDirection++;
@@ -264,6 +311,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         this.scrollDirection=1;
       }
     }
+
     if(this.scrollDirection>20){
       this.doDirectionUp();
     }

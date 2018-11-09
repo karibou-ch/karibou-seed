@@ -5,61 +5,45 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close">
-        <mdc-icon [fontSize]="40">close</mdc-icon>
+        <mdc-icon [fontSize]="40">navigate_before</mdc-icon>
       </button>
-      <div class="header " [bgGradient]="true" [bgSrc]="product.photo.url">
-        <aside [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
 
+      <mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
+      [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
+   
+   
+       <mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
+         <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
+           <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
-        </aside>
-
-        <div class="actions ">
+           <button class="action-add right " (click)="addToCart(product)">
+            <mdc-icon [fontSize]="26">add</mdc-icon>
+          </button>
           <button class="action-remove " (click)="removeToCart(product)">
             <mdc-icon [fontSize]="26">remove</mdc-icon>
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
-          <button class="action-add right " (click)="addToCart(product)">
-            <mdc-icon [fontSize]="26">add</mdc-icon>
-          </button>
-        </div>
-
-        <section>
-
-          <!-- PRICE-->
-          <div class="price" *ngIf="product.pricing.price">
-
-            <!-- REGULAR -->
-            <span [hidden]="product.attributes.discount" class="small primary bold ">
-              Fr {{product.pricing.price| number:'1.2-2'}}
-            </span>
-            <!-- DISCOUNT -->
-            <span [hidden]="!product.attributes.discount">
-              <span class="red bold strike"> {{product.pricing.price| number:'1.2-2'}}</span>
-              <span class="primary bold small">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
-            </span>
-
-            <!-- SHOULD BE INLINED IN PHONE -->
-            <div class="em">{{product.pricing?.part}}</div>
-            <div class="part" [hidden]="product.pricing?.part[0]!=='~'">{{product.pricing.part|portion}}</div>
-            <div class="part" [hidden]="product.pricing?.part.indexOf('gr')===-1">Fr
-              {{product.pricing.part|baseprice:product.getPrice()}} / 100gr</div> <br />
-          </div>
-
-
-        </section>
-      </div>
-
-      <!-- USER ACTIONS -->
-      <!-- <div class="user-actions ">
-                <button mdc-button [primary]="true" class="align-start"
-                       (click)="onEdit(product)"
-                       [hidden]="!user.isOwnerOrAdmin(product.vendor.name)"><span i18n>Éditer</span></button>
-                <button mdc-button [primary]="true"><span i18n>J'achête</span></button>
-                <button mdc-button (click)="love(product)" [icon]="true" [secondary]="true">
-                    <mdc-icon >{{hasFavorite(product)}}</mdc-icon>
-                    <span i18n>J'aime</span>
-                </button>
-            </div> -->
+              
+         </mdc-card-media>
+         <div class="product-card__primary">
+           <span class="product-card__subtitle">{{product.title}}</span>
+         </div>
+         <div class="product-card__secondary">
+           <div class="part">
+             {{product.pricing.part}}
+           </div>
+           <div class="price ">
+             <span [hidden]="product.attributes.discount" class=" ">
+               Fr {{product.pricing.price| number:'1.2-2'}}
+             </span>
+             <span [hidden]="!product.attributes.discount">
+               <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+             </span>
+           </div>
+         </div>
+       </mdc-card-primary-action>
+     </mdc-card>
+   
 
       <!-- ADMIN OR OWNER ACTIONS -->
       <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
@@ -76,13 +60,10 @@
 
 
 
-      <!-- TITLE -->
-      <h2 class="title">{{product.title}} </h2>
-
       <!-- DESCRIPTION -->
       <div class="description">
-        <span kng-markdown removeRoot="true" data="{{product.details.description}}"></span>
-        <span [hidden]="!product.details?.origin" class="small">{{product.details.origin}}</span>
+        <div kng-markdown removeRoot="true" data="{{product.details.description}}"></div>
+        <div [hidden]="!product.details?.origin" class="light">{{product.details.origin}}</div>
       </div>
 
       <!-- CERTIFIED -->
@@ -92,22 +73,37 @@
           <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
         </ul>
         <div>
-          <span [hidden]="!product.details.homemade" class="label label-product">Artisanal</span>
-          <span [hidden]="!product.details.local" class="label label-product">Local</span>
-          <span [hidden]="!product.details.lactose" class="label label-product">Sans lactose</span>
-          <span [hidden]="!product.details.gluten" class="label label-product">Sans gluten</span>
-          <span [hidden]="!product.details.grta" class="label label-product">GRTA</span>
-          <span [hidden]="!product.details.bio&&!product.details.biodynamics" class="label label-product">BIO</span>
-          <span [hidden]="!product.details.biodynamics" class="label label-product">Biodynamie</span>
-          <span [hidden]="!product.details.bioconvertion" class="label label-product">Bioconversion</span>
-          <span [hidden]="!product.details.natural" class="label label-product" title="Naturel">Sans chimie de synthèse</span>
+          <div [hidden]="!product.details.homemade" class="label label-product">Artisanal</div>
+          <div [hidden]="!product.details.local" class="label label-product">Local</div>
+          <div [hidden]="!product.details.lactose" class="label label-product">Sans lactose</div>
+          <div [hidden]="!product.details.gluten" class="label label-product">Sans gluten</div>
+          <div [hidden]="!product.details.grta" class="label label-product">GRTA</div>
+          <div [hidden]="!product.details.bio&&!product.details.biodynamics" class="label label-product">BIO</div>
+          <div [hidden]="!product.details.biodynamics" class="label label-product">Biodynamie</div>
+          <div [hidden]="!product.details.bioconvertion" class="label label-product">Bioconversion</div>
+          <div [hidden]="!product.details.natural" class="label label-product" title="Naturel">Sans chimie de synthèse</div>
         </div>
+      </div>
+
+      <div class="breaker small"></div>
+
+      <!-- VENDOR-->
+      <div class="vendor" *ngIf="product.vendor.photo">
+        <a class="link" href="/shop/{{product.vendor.urlpath}}">
+          <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
+               class="thumbnail-owner photo-owner">
+        </a>
+        <img [hidden]="!product.vendor.photo?.fg||product.vendor.photo?.owner" align="left" [src]="product.vendor.photo?.fg"
+          alt="160x160" class="thumbnail-owner photo-owner">
+
+        <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;
+        <span kng-markdown data="{{product.vendor.description}}"></span> 
       </div>
 
       <!-- AVAILABLE -->
       <div class="availability">
         <ul class="list-inline">
-          <li>
+          <li class="hide-sm">
             <div class="bold">Livraisons:</div>
             <div class="indicator">&nbsp;</div>
           </li>
@@ -144,79 +140,31 @@
         </ul>
       </div>
 
-      <!-- VENDOR-->
-      <div class="vendor" *ngIf="product.vendor.photo">
-        <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
-          class="thumbnail-owner photo-owner">
-        <img [hidden]="!product.vendor.photo?.fg||product.vendor.photo?.owner" align="left" [src]="product.vendor.photo?.fg"
-          alt="160x160" class="thumbnail-owner photo-owner">
+    </div>
 
-        <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;{{product.vendor.description}} <a class="link" href="/shop/{{product.vendor.urlpath}}">Visiter
-          la boutique</a>
-      </div>
-
-      <!-- DISQUS -->
-      <div id="disqus_thread" class="disqus"></div>
-
-      <!-- FURTHER -->
-      <div class="further-product-container mdc-layout-grid" >
+    <!-- FURTHER -->
+    <div class="further-product-container mdc-layout-grid" >
         <section>
           <!-- <h2>{{category.name}}</h2>
           <h3 [innerHtml]="category.description"></h3> -->
         </section>
-
-        <div class="kng-layout-card">
-          <kng-product-thumbnail [sku]="product.sku" *ngFor="let product of products;let j=index" class=""></kng-product-thumbnail>
+        <div infiniteScroller
+             scrollPercent="0"
+             immediateCallback="false"
+             [infiniteScrollContainer]="getDialog()"
+             [scrollCallback]="scrollCallback" 
+             class="kng-layout-card">
+          <kng-product-thumbnail             
+              *ngFor="let product of products;let j=index" 
+              [sku]="product.sku" 
+              [visibility]="currentPage>j"
+              class="">
+          </kng-product-thumbnail>
         </div>
 
 
 
       </div>
-
-    </div>
+  
   </div>
 </div>
-
-
-<!-- 
-<div [class.thumbnail]="thumbnail" class="product-wide">
-   <div class="popupcontent" >
-
-    </div>
-  </div>
--->
-<!--
-<div class="container">
-	<h1>{{product?.title}}</h1>
-	<h4>Category : {{product?.categories?.name}}</h4>
-<div>
-<div *ngIf="currentUser?.isOwnerOrAdmin(product?.vendor.name)">
-	<a [routerLink]="['/product/edit',product.sku]"><button>Edit</button></a>
-</div>
-<div>
-	<h3>Price</h3>
-	<label>{{product?.pricing?.price}} CHF </label>
-	<div>
-		<label>TVA : {{product?.pricing?.tva}} </label> <label>Part :
-			{{product?.pricing?.part}} </label> <label *ngIf="currentUser?.isOwnerOrAdmin(product?.vendor.name)">Stock :
-			{{product?.pricing?.stock}} </label>
-	</div>
-</div>
-<div>
-	<h3>Vendor</h3>
-	<label>{{product?.vendor?.name}} CHF </label>
-	<h4>Description</h4>
-	<div>
-		<label>{{product?.vendor?.description}} </label>
-	</div>
-</div>
-<div [hidden]="!product?.photo">
-	<img
-		title=""
-		class="img-thumbnail"
-		[src]="product?.photo.url"
-		*ngIf="product?.photo.url">
-</div>
-
-</div>
--->
