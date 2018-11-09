@@ -94,6 +94,7 @@ div.navbar{
 
     @media (max-width: 426px) {
       padding: 5px;
+      margin-top: 10px;
       min-width: 326px;
     }
     
@@ -107,19 +108,24 @@ div.navbar{
     text-shadow: 0 0 40px var(--mdc-theme-primary-light), 
                  0 0 55px var(--mdc-theme-primary-light), 
                  0 0 75px var(--mdc-theme-primary-light);
-    // width: 18px;
-    // height: 18px;
-    // display: inline-block;
-    // border-radius: 50%;
-    // background: #E8104A;
-    // background: white!important;
-    // color: #009200 !important;
-    // font-weight: 600;
-    // transform: translateY(-2px) translateX(5px);
-    // visibility: hidden;
-    // line-height:17px;
-    // font-size: 13px;
-    // letter-spacing: -1px;        
+    &.label{
+      display: inline-block;
+      transform:translateY(-15px) translateX(-1px)
+      // width: 18px;
+      // height: 18px;
+      // display: inline-block;
+      // border-radius: 50%;
+      // background: #E8104A;
+      // background: white!important;
+      // color: #009200 !important;
+      // font-weight: 600;
+      // transform: translateY(-2px) translateX(5px);
+      // visibility: hidden;
+      // line-height:17px;
+      // font-size: 13px;
+      // letter-spacing: -1px;        
+
+    }             
   }
 
   .mdc-bottom-app-bar{
@@ -131,6 +137,18 @@ div.navbar{
   .mdc-top-app-bar{
     z-index: 2;
     color:var(--mdc-theme-primary-text, rgba(0, 0, 0, 0.87));
+
+    .home{
+      outline: 0px;
+    }
+    
+    .shipping{
+      letter-spacing: -0.5px;
+      text-transform: capitalize;
+      text-align: center;
+      margin: auto;
+      transform: translateX(-60px);      
+    }
 
     .mdc-tab{
       color:var(--mdc-theme-primary-text, rgba(0, 0, 0, 0.87));

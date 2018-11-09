@@ -1,5 +1,5 @@
 <div class="home-header -width-full" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
-  <h2 [innerHtml]="getAboutContent('t')"></h2>
+  <h2 [hidden]="!hasAboutContent('t')" [innerHtml]="getAboutContent('t')"></h2>
   <div  [hidden]="!hasAboutContent('h')"
         [innerHtml]="getAboutContent('h')">    
       <!-- <mdc-card [outlined]="true">
@@ -28,46 +28,65 @@
     </div>
 </div>
 
-<!-- FAB -->
-<button mdc-fab [exited]="scrollDirection<-5||!scrollDirection"   
-        (click)="showCategories=!showCategories"
-        class='text-primary bottom-right'>
-  <mdc-icon>drag_indicator</mdc-icon>
-</button>  
-
-<div class="fab-list" [class.show]="showCategories">
-  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-  <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-</div>
+<!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
+<kng-ui-bottom-actions [exited]="scrollDirection<-5" 
+                       [categories]="categories"
+                       (selected)="scrollNextSectionIntoView($event)">  
+</kng-ui-bottom-actions>
 
 <!-- Window virtual scroll (manage size) 
   -- https://medium.com/@yongtze_chi/virtual-scrolling-with-angular-145233f79384
   -->
-<div class="product-container mdc-layout-grid"
+<!-- <div class="product-container mdc-layout-grid"
     infiniteScroller
     scrollPerecnt="70"
     immediateCallback="false"
     infiniteScrollContainer="window"
-    [scrollCallback]="scrollCallback">
-
+    [scrollCallback]="scrollCallback"> -->
+<div class="product-container mdc-layout-grid" hidden>
+  <mdc-card>
+      <mdc-card-primary-action mdc-ripple >
+        <mdc-card-media  [ngStyle]="{'background-image': 'url(https://ucarecdn.com/801453f4-ecb2-4c91-8dbc-196bdbe4c4b3/-/preview/300x300/)'}" class="media ">          
+  
+        </mdc-card-media>
+        <div class="">
+          <span class="">Test 1</span>
+        </div>
+        <div class="">
+            <span class="">Test 12/span></span>
+        </div>
+      </mdc-card-primary-action>
+  
+  </mdc-card>
+</div>
+    
+<div class="product-container mdc-layout-grid">
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
-  <div *ngFor="let category of getCategories();let i=index" [hidden]="!category.active" #section>
+  <div *ngFor="let category of getCategories();let i=index" 
+       [class]="category.slug"
+       [hidden]="!category.active" 
+       #section>
     <section>
       <h2>{{category.name}}</h2>
       <h3 [innerHtml]="category.description"></h3>
     </section>
-              
     <div class="kng-layout-card" >
         <kng-product-thumbnail 
+            [visibility]="visibility[category.slug]"
             [sku]="product.sku"
             *ngFor="let product of group[category.name];let j=index"
             class="">
         </kng-product-thumbnail>
+        <div class="category" 
+             [hidden]="!visibility[category.slug]"
+             [ngClass]="category.color" 
+             [routerLink]="['category',category.slug]" >
+          <div class="icon"><i class="material-icons">playlist_add</i></div>
+          <div>{{category.name}} </div>
 
+        </div>
 
     </div>
   </div>

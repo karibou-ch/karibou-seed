@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ProductService,
@@ -8,15 +8,24 @@ import {
   User,
   Category,
   CategoryService,
-  config
+  config,
+  Shop
 } from 'kng2-core';
+import { timer } from 'rxjs/observable/timer';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kng-product-list',
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  styleUrls: ['./product-list.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ProductListComponent implements OnInit {
+
+  @ViewChild('dialog') dialog: ElementRef;
+  scrollCallback;
+  currentPage:number=10;
+  bgStyle: string='/-/resize/200x/';
 
   isReady: boolean = false;
   config: any;
@@ -29,16 +38,19 @@ export class ProductListComponent implements OnInit {
     current: Category;
     similar: Category[];
   };
+  vendors:Shop[];
 
   options = {
     available: true,
-    status: true
+    status: true,
+    when:true
   };
 
   constructor(
     private $loader: LoaderService,
     private $product: ProductService,
     private $category: CategoryService,
+    private $router: Router,
     private $route: ActivatedRoute
   ) {
     this.category = {
@@ -47,11 +59,18 @@ export class ProductListComponent implements OnInit {
       current: null,
       similar: []
     }
+    this.vendors=[];
 
-    let loader = this.$route.snapshot.data.loader;
+    let loader = this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
     this.user = loader[1];
     this.category.categories = loader[2];
+    this.scrollCallback=this.getNextPage.bind(this);
+
+  }
+
+  ngOnDestroy() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   ngOnInit() {
@@ -68,25 +87,54 @@ export class ProductListComponent implements OnInit {
       .filter(cat => cat.group === this.category.current.group && cat.slug !== this.category.slug)
       .sort(cat => cat.weight);
 
+    this.bgStyle = 'url(' + this.category.current.cover+')';
+
     this.filterProduct();
+    //
+    // DIALOG INIT HACK 
+    document.body.classList.add('mdc-dialog-scroll-lock');
+    this.dialog.nativeElement.classList.remove('fadeout')
+
   }
 
+
+  getDialog(){
+    return this.dialog;
+  }
+
+
+  getNextPage(){
+    return timer(10).pipe(map(ctx=>this.currentPage+=10));
+  }  
   loadProducts() {
     this.$product.select(this.options).subscribe((products: Product[]) => {
       this.products = products.sort();
+
     });
   }
 
   filterProduct() {
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort();
+      this.setVendors(this.products);
+      console.log('-----OK',this.products.length)
+      console.log('-----OK',this.category)
     });
   }
 
-  loadLovedProduct() {
-    this.$product.findLove().subscribe((products: Product[]) => {
-      this.products = products.sort();
-    });
+  setVendors(products:Product[]){
+    let map={};
+    products.forEach(product=>map[product.vendor.urlpath]=product.vendor);
+    this.vendors=Object.keys(map).map(key=>map[key]);
+    console.log('-vendors',this.vendors)
+  }
+
+  onClose(closedialog) {
+    this.dialog.nativeElement.classList.add('fadeout')
+    setTimeout(() => {
+      this.$router.navigate(['../../'],{relativeTo: this.$route})
+      //this.$location.back()
+    }, 200)
   }
 
 

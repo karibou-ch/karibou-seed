@@ -41,8 +41,7 @@ export class UserOrdersComponent implements OnInit {
     private $order: OrderService,
     private $products:ProductService,
     private $route:ActivatedRoute,
-    private $user: UserService,
-    private $photo:PhotoService,
+    private $photos: PhotoService,
     private $snack:MdcSnackbar
   ) { 
     //
@@ -72,7 +71,10 @@ export class UserOrdersComponent implements OnInit {
         if(!this.items.length){
           return [];
         }
-        return this.$photo.products(this.items.slice(1, 20).map(rank=>rank.item.sku+''));        
+        return this.$photos.products({
+          skus:this.items.slice(1, 20).map(rank=>rank.item.sku+''),
+          active:true
+        });        
       })
     ).subscribe(
       items => {

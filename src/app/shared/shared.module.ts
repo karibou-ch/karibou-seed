@@ -23,19 +23,24 @@ import { UcWidgetComponent } from './kng-uc-widget/uc-widget';
 import {
   MdcIconModule,
   MdcIconToggleModule,
-  MdcLinearProgressModule
+  MdcLinearProgressModule,
+  MdcListModule,
+  MdcFabModule
 } from '@angular-mdc/web';
 import { RouterModule } from '@angular/router';
 import { KngOrderFeedbackComponent } from './kng-order-feedback/kng-order-feedback.component';
 import { KngLazyLoadDirective } from './kng-lazy-load.directive';
+import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bottom-actions.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
+    MdcFabModule,
     MdcIconModule,
     MdcIconToggleModule,
     MdcLinearProgressModule,
+    MdcListModule
     ],
   exports:[
     KngControlMessagesComponent,
@@ -47,7 +52,8 @@ import { KngLazyLoadDirective } from './kng-lazy-load.directive';
     MdcSearchBarComponent,
     KngTextfieldAutosizeDirective,
     KngQuickEditorComponent,
-    UcWidgetComponent
+    UcWidgetComponent,
+    KngUiBottomActionsComponent
   ],
   declarations: [
     KngControlMessagesComponent,
@@ -60,7 +66,8 @@ import { KngLazyLoadDirective } from './kng-lazy-load.directive';
     KngTextfieldAutosizeDirective,
     KngOrderFeedbackComponent,
     KngLazyLoadDirective,
-    UcWidgetComponent
+    UcWidgetComponent,
+    KngUiBottomActionsComponent
   ],
 })
 export class SharedModule { 

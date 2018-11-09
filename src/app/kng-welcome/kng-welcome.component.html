@@ -59,7 +59,7 @@
         </form>
       </div> -->
 
-      <a [hidden]="true" href="https://www.facebook.com/sharer/sharer.php?u=boulangerie-bretzel.ch">
+      <a  hidden href="https://www.facebook.com/sharer/sharer.php?u=karibou-ch">
         <div class="spread"></div>  
       </a>
       
@@ -71,9 +71,9 @@
     <div class="how-it-works" kng-editor-key="home.howto.p" [innerHTML]="$i18n.lang(config?.shared.home.howto.p)">
                 
     </div>
-    <div class="favorite-products" >
-      <div class="elem"></div>
-      <div class="elem"></div>
+    <div class="favorite-products" [ngStyle]="getWelcomeImage()">
+      <div class="elem" [innerHTML]="$i18n.lang(config?.shared.home.howto.h)"></div>
+      <!-- <div class="elem"></div> -->
     </div>
   </div>
   <div class="container separator"></div>

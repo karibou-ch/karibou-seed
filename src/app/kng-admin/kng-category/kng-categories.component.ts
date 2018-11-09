@@ -104,10 +104,10 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     // FIXME radio button is not working
     delete this.edit.form.value.type;
     Object.assign(this.edit.category,this.edit.form.value)
-    let sub=(this.edit.create)?
+    let editor=(this.edit.create)?
       this.$category.create(this.edit.category):
       this.$category.save(this.edit.category.slug,this.edit.category);
-    sub.subscribe(
+    editor.subscribe(
       (category)=>{
         if(this.edit.create){
           category.usedBy=[];
@@ -122,8 +122,8 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   }
 
   // FIXME radio button is not working
-  onTypeChange(evt: MdcRadioChange): void {
-    this.edit.category.type = evt.value;
+  onTypeChange(evt: MdcRadioChange,value:string): void {
+    this.edit.category.type = value;
   }  
 
   onDecline(){

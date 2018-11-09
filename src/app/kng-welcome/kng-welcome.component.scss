@@ -121,7 +121,7 @@
       
       .logo,
       .spread{
-        background-image: url(/assets/img/bretzel-logo-lg.jpg);
+        background-image: url(/assets/img/k-brand-lg.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
@@ -133,6 +133,7 @@
           margin: 0 30px;
         }
       }
+
       .spread{
         background-image: url(/assets/img/bretzel-spread-lg.jpg);
         height: 50px;
@@ -154,6 +155,9 @@
           width: 100%;
         }
         
+        h2{
+          font-weight: 300;
+        }
         h1{
           margin: 0 30px;
           font-weight: 400;
@@ -245,7 +249,7 @@
     .favorite-products{
       background-image:url("/assets/img/k-bretzel-md.jpg");
       background-repeat:no-repeat;
-      background-position: 0% 35% ;
+      background-position: center;
       background-color:white!important;
       background-size: cover;
       min-height: 800px;
@@ -258,7 +262,10 @@
       max-width: 1200px;
       .elem{
         flex: 1 0 50%;
-        min-height:200px;
+        color: white;
+        font-size: xx-large;
+        padding: 20px;
+        align-self: flex-end;        
       }
     }
   }

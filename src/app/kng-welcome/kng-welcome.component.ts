@@ -57,7 +57,15 @@ export class KngWelcomeComponent implements OnInit {
     "//ucarecdn.com/4b477288-fcb8-4550-a149-1c619973443a/",
     "//ucarecdn.com/78122f08-f100-4a14-9a0a-46eebbe33c50/",
     "//ucarecdn.com/58a621c7-8af8-445d-a8b7-4828151928e2/" 
-  ]
+  ];
+
+  //
+  //gradient of background image 
+  bgGradient = `linear-gradient(
+    rgba(50, 50, 50, 0.1),
+    rgba(50, 50, 50, 0.7)
+  ),`;
+
 
   stores=[
     {title:"Genève",name:"geneve",image:"http://www.davidfraga.ch/blog/wp-content/uploads/cathedraleStPierre_vignette.jpg"},
@@ -85,6 +93,15 @@ export class KngWelcomeComponent implements OnInit {
       return;
     }
     return this.config.shared.home.tagLine[key][this.$i18n.locale];
+  }
+
+  getWelcomeImage(){
+    if(!this.config){
+      return {};
+    }
+
+    let bgStyle = 'url(' + this.config.shared.home.howto.image + ')';
+    return {'background-image':this.bgGradient+bgStyle};
   }
   
 

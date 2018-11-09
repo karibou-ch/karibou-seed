@@ -1,18 +1,84 @@
-<div class="product-container mdc-layout-grid">
-  <!-- Layout documentation
-       https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
-  <section>
-    <h4>
-      <span *ngFor="let similar of category.similar;let i=index">{{similar.name}} <span class="black">/</span> </span>
-    </h4>
-    <h2>{{category.current?.name}}</h2>
-  </section>
-             
-  <div class="mdc-layout-grid__inner">
-      <kng-product-thumbnail 
-          [sku]="product.sku"
-          *ngFor="let product of products;let i=index"
-          class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-2">
-      </kng-product-thumbnail>
+<div class="product-dialog fadeout" #dialog>
+  <div class="product-backdrop"></div>
+  <div class="product-dialog__surface">
+    <div class="category-wide" >
+
+      <!-- CLOSE -->
+      <button (click)="onClose(true)" class="close">
+        <mdc-icon [fontSize]="40">navigate_before</mdc-icon>
+      </button>
+
+      <mdc-card class="category-card card-skeleton" [outlined]="false">
+   
+   
+       <mdc-card-primary-action mdc-ripple >
+         <!-- <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">           
+         </mdc-card-media> -->
+         <div class="product-card__primary">
+           <span class="product-card__subtitle">{{category.current.name}}</span>
+           <div>{{category.current.description}}</div>
+
+         </div>
+       </mdc-card-primary-action>
+     </mdc-card>
+   
+
+      <!-- ADMIN OR OWNER ACTIONS -->
+      <!-- <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
+        <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
+        <div role="group" aria-label="Justified button group">
+          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=0;save(product);"
+            [disabled]="WaitText">0</button>
+          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=10;save(product);"
+            [disabled]="WaitText">10</button>
+          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=40;save(product);"
+            [disabled]="WaitText">40</button>
+        </div>
+      </div> -->
+
+
+
+
+
+      <div class="breaker small"></div>
+
+      <!-- CATEGORY -->
+      <div class="certified ">
+        <div class="label label-product" *ngFor="let child of category.current.child;let j=index" >{{child.name}}</div>
+      </div>
+
+
+      <!-- VENDORS-->
+      <div class="vendor" >
+        <div class="owner" *ngFor="let vendor of vendors"><img [src]="vendor.photo.owner"></div>
+      </div>
+  
+
+    </div>
+
+    <!-- FURTHER -->
+    <div class="further-product-container mdc-layout-grid" >
+        <section>
+          <!-- <h2>{{category.name}}</h2>
+          <h3 [innerHtml]="category.description"></h3> -->
+        </section>
+        <div infiniteScroller
+             scrollPercent="0"
+             immediateCallback="false"
+             [infiniteScrollContainer]="getDialog()"
+             [scrollCallback]="scrollCallback" 
+             class="kng-layout-card">
+          <kng-product-thumbnail             
+              *ngFor="let product of products;let j=index" 
+              [sku]="product.sku" 
+              [visibility]="currentPage>j"
+              class="">
+          </kng-product-thumbnail>
+        </div>
+
+
+
+      </div>
+  
   </div>
 </div>

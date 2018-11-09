@@ -26,11 +26,13 @@
   }
 
   .home-header{
-    margin-top: 100px;
+    margin-top: 30px;
     border-bottom: 1px solid #EEE;
     position: relative;
     height: 500px;
     margin-bottom: 50px;    
+    background-size: cover;
+    background-position: center;    
   }
 
   a{
@@ -55,6 +57,10 @@
     color: var(--mdc-theme-primary-text);
     margin-top: 40px;
     margin-bottom: 40px;
+    @media screen and (max-width:426px){
+      width:calc( 100vw - 90px );
+    }
+    
     h4{
       margin-top: 5px;
       margin-bottom: 20px;    
@@ -113,6 +119,11 @@
         display: block;
         margin-left: auto;
         margin-right: auto;              
+        @media screen and (max-width:426px) {
+          max-width: 100vw;          
+          margin-left: -35px;
+          margin-right: -35px;              
+          }
       }      
 
     }      
