@@ -22,10 +22,8 @@ import {
   CartState,
   CartAction
 }  from 'kng2-core';
-import { ActionSequence } from 'protractor';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../shared';
-import { runInThisContext } from 'vm';
 
 
 @Component({

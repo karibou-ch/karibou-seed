@@ -20,8 +20,8 @@ export class i18n  {
     delete_ok :'Suppression effectuée',    
     modify_ok :'Modification effectuée',    
     save_ok   :'Sauvegarde effectuée',
-    ITEM_ADD:"ajouter: ",
-    ITEM_REMOVE:"supprimer: ",
+    ITEM_ADD:"ajouté: ",
+    ITEM_REMOVE:"supprimé: ",
   };
   
   //

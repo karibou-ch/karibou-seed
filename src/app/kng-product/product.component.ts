@@ -229,7 +229,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (!product.vendor.available || !product.vendor.available.weekdays) {
       return 'radio_button_unchecked';
     }
-    return (product.vendor.available.weekdays.indexOf(pos) !== -1) ?
+    return (product.vendor.available.weekdays.indexOf(pos) == -1) ?
       'radio_button_unchecked' : 'radio_button_checked';
   }
 
