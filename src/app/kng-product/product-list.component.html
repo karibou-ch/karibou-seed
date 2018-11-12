@@ -44,13 +44,19 @@
 
       <!-- CATEGORY -->
       <div class="certified ">
-        <div class="label label-product" *ngFor="let child of category.current.child;let j=index" >{{child.name}}</div>
+        <div class="label label-product" 
+            (click)="toggleChild(child.name)"            
+            [class.selected]="filterChild==child.name"
+            *ngFor="let child of category.current.child;let j=index" >{{child.name}}</div>
       </div>
 
 
       <!-- VENDORS-->
       <div class="vendor" >
-        <div class="owner" *ngFor="let vendor of vendors"><img [src]="vendor.photo.owner"></div>
+        <div class="owner" mdc-ripple
+            (click)="toggleVendor(vendor)"            
+            *ngFor="let vendor of vendors">
+            <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>
   
 
@@ -62,16 +68,17 @@
           <!-- <h2>{{category.name}}</h2>
           <h3 [innerHtml]="category.description"></h3> -->
         </section>
-        <div infiniteScroller
-             scrollPercent="0"
+        <!-- <div infiniteScroller
+             scrollPercent="30"
              immediateCallback="false"
              [infiniteScrollContainer]="getDialog()"
-             [scrollCallback]="scrollCallback" 
+             [scrollCallback]="scrollCallback"  -->
+        <div 
              class="kng-layout-card">
           <kng-product-thumbnail             
-              *ngFor="let product of products;let j=index" 
+              *ngFor="let product of getProducts();let j=index" 
               [sku]="product.sku" 
-              [visibility]="currentPage>j"
+              [visibility]="getVisibility(j)"
               class="">
           </kng-product-thumbnail>
         </div>

@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, 
+         OnInit, 
+         ViewChild, 
+         ElementRef, 
+         ViewEncapsulation,
+         ChangeDetectionStrategy,
+         ChangeDetectorRef,
+         NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -18,7 +25,8 @@ import { map } from 'rxjs/operators';
   selector: 'kng-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent implements OnInit {
 
@@ -40,6 +48,9 @@ export class ProductListComponent implements OnInit {
   };
   vendors:Shop[];
 
+  filterVendor:string;
+  filterChild:string;
+
   options = {
     available: true,
     status: true,
@@ -51,7 +62,9 @@ export class ProductListComponent implements OnInit {
     private $product: ProductService,
     private $category: CategoryService,
     private $router: Router,
-    private $route: ActivatedRoute
+    private $route: ActivatedRoute,
+    private zone:NgZone,
+    private cdr: ChangeDetectorRef
   ) {
     this.category = {
       slug: null,
@@ -104,8 +117,22 @@ export class ProductListComponent implements OnInit {
 
 
   getNextPage(){
-    return timer(10).pipe(map(ctx=>this.currentPage+=10));
+    this.currentPage+=10;
+    this.cdr.markForCheck();
+    console.log('--', this.currentPage)
+    return timer(1).pipe(map(ctx=>this.currentPage));
   }  
+
+  getProducts(){
+    return this.products.filter(product=>{
+      return !this.filterVendor||product.vendor.urlpath==this.filterVendor;
+    })
+  }
+
+  getVisibility(j){
+    return (this.currentPage>j);
+  }
+
   loadProducts() {
     this.$product.select(this.options).subscribe((products: Product[]) => {
       this.products = products.sort();
@@ -115,10 +142,11 @@ export class ProductListComponent implements OnInit {
 
   filterProduct() {
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
-      this.products = products.sort();
-      this.setVendors(this.products);
-      console.log('-----OK',this.products.length)
-      console.log('-----OK',this.category)
+      this.zone.run(() => {
+        this.products = products.sort();
+        this.setVendors(this.products);  
+        this.cdr.markForCheck();
+      });
     });
   }
 
@@ -126,8 +154,21 @@ export class ProductListComponent implements OnInit {
     let map={};
     products.forEach(product=>map[product.vendor.urlpath]=product.vendor);
     this.vendors=Object.keys(map).map(key=>map[key]);
-    console.log('-vendors',this.vendors)
   }
+
+  toggleVendor(vendor:Shop){
+    if(this.filterVendor==vendor.urlpath){
+      return this.filterVendor=null;
+    }
+    this.filterVendor=vendor.urlpath;
+  }
+  toggleChild(child:string){
+    if(this.filterChild==child){
+      return this.filterChild=null;
+    }
+    this.filterChild=child;
+  }
+
 
   onClose(closedialog) {
     this.dialog.nativeElement.classList.add('fadeout')
