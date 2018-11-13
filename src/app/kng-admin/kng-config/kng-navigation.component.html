@@ -46,6 +46,7 @@
   [escapeToClose]="true"
   [class.loading]="isLoading"
   [clickOutsideToClose]="true">
+  <mdc-dialog-surface>
   <mdc-dialog-header>
     <mdc-dialog-header-title>
       <span i18n>{{edit.menu?.group||'Create'}}<b>/</b> {{edit.menu?.name[$i18n.locale]||'Navigation'}}</span>
@@ -79,4 +80,5 @@
     <button mdc-dialog-button [cancel]="true">Decline</button> <!-- TODO add !edit.form.valid|| -->
     <button mdc-dialog-button (click)="onSave($event)" [disabled]="isLoading">Accept</button>
   </mdc-dialog-footer>
+  </mdc-dialog-surface>
 </mdc-dialog>

@@ -10,16 +10,14 @@ import {
   MdcElevationModule,
   MdcFabModule,
   MdcIconModule,
-  MdcIconToggleModule,  
   MdcListModule,
   MdcMenuModule,
   MdcRippleModule,
   MdcSnackbarModule,
   MdcSelectModule,
-  MdcTabModule,
+  MdcTabBarModule,
   MdcThemeModule,
-  MdcTextFieldModule,
-  MdcToolbarModule
+  MdcTextFieldModule
 } from '@angular-mdc/web';
 
 
@@ -32,16 +30,14 @@ import {
     MdcElevationModule,
     MdcFabModule,
     MdcIconModule,
-    MdcIconToggleModule,
     MdcListModule,
     MdcMenuModule,
     MdcRippleModule,
     MdcSelectModule,
     MdcSnackbarModule,
     MdcTextFieldModule,
-    MdcTabModule,
-    MdcThemeModule,
-    MdcToolbarModule
+    MdcTabBarModule,
+    MdcThemeModule
   ],
   declarations: []
 })

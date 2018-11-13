@@ -67,9 +67,9 @@
   <mdc-app-bar #appbar fixed="false"  [dense]="true">
     <mdc-app-bar-row >
       <!-- APPBAR-SECTION-START -->
-      <mdc-app-bar-section align="start" mdc-ripple >
+      <mdc-app-bar-section align="start" >
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">menu</mdc-icon>
-        <mdc-app-bar-title class="home" [routerLink]="['/store',store]">{{title}}</mdc-app-bar-title>        
+        <mdc-app-bar-title class="home" [routerLink]="['/store',store]" mdc-ripple>{{title}}</mdc-app-bar-title>        
       </mdc-app-bar-section>       
       <mdc-app-bar-section>
         <mdc-app-bar-title class="shipping hide-sm">
@@ -79,11 +79,11 @@
       <!-- APP BAR MENU ICON --> 
       <mdc-app-bar-section align="end">
           <!-- <a (click)="shipping.open()" mdcAppBarActionItem class="btn-shipping" >
-              <i material-icon >update</i>
+              <i mdc-icon >update</i>
               <span class="hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
           </a>-->
 
-          <a [routerLink]="['/store',store,'cart']" style="width: auto" class="show-sm" mdcAppBarActionItem ><material-icon>shopping_cart</material-icon> <span class="cart-items-count label"></span></a>         
+          <a [routerLink]="['/store',store,'cart']" style="width: auto" class="show-sm" mdcAppBarActionItem ><mdc-icon>shopping_cart</mdc-icon> <span class="cart-items-count label"></span></a>         
 
 
           <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;"
@@ -94,15 +94,15 @@
           </a>
           
                     
-          <!-- <a [routerLink]="['/store',store,'me']"  mdcAppBarActionItem material-icon [hidden]="!user.isAuthenticated()">account_box</a>        
-          <a [routerLink]="['/store',store,'me','login']"  mdcAppBarActionItem material-icon [hidden]="user.isAuthenticated()">account_circle</a>         -->
+          <!-- <a [routerLink]="['/store',store,'me']"  mdcAppBarActionItem mdc-icon [hidden]="!user.isAuthenticated()">account_box</a>        
+          <a [routerLink]="['/store',store,'me','login']"  mdcAppBarActionItem mdc-icon [hidden]="user.isAuthenticated()">account_circle</a>         -->
     
-          <!-- <button mdc-toolbar-icon material-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button> -->
+          <!-- <button mdc-toolbar-icon mdc-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button> -->
           <!-- menu content anchor to toolbar-section -->
           <!-- <mdc-menu #shipping [anchorCorner]="'bottom-start'">
             <mdc-menu-item id="0" *ngFor="let day of getShippingDays();let idx=index" (click)="doSetCurrentShippingDay($event,day,idx)">
                 {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
-                <mdc-icon mdc-list-item-meta>info</mdc-icon>                
+                <mdc-icon mdcListItemMeta>info</mdc-icon>                
             </mdc-menu-item>
             <mdc-menu-divider></mdc-menu-divider>
             <mdc-menu-item [disabled]="true" >
@@ -136,9 +136,10 @@
       <mdc-app-bar-section #section>
         <mdc-tab-bar>
           <!-- mdcRouter -->
+          <mdc-tab-scroller>
           <mdc-tab *ngFor="let menu of primary;let idx=index;" 
                     [routerLink]="'.'+menu.url"                     
-                     routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                     routerLinkActive #rla="routerLinkActive" >
             <span [innerHTML]="menu.name[locale]"></span>
           </mdc-tab>
           <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
@@ -147,8 +148,8 @@
           <mdc-tab [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
             <mdc-icon class="hide">account_circle</mdc-icon><span i18n>Login</span>
           </mdc-tab>
-            
-        </mdc-tab-bar>        
+        </mdc-tab-scroller>
+      </mdc-tab-bar>        
       
         <!-- <mdc-tab-bar-scroller>
           <mdc-tab-bar-scroll-back>

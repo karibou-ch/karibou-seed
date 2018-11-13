@@ -107,50 +107,52 @@
     (decline)="onDecline()"
     [escapeToClose]="true"
     [clickOutsideToClose]="true">
-    <mdc-dialog-header>
-      <mdc-dialog-header-title>
-        <span i18n></span>
-      </mdc-dialog-header-title>
-    </mdc-dialog-header>
-    <mdc-dialog-body *ngIf="feedbackOrder">
-        <form  (submit)="onFeedback()">
-            <!-- CHECK -->
-            <div>
-                <h2 style="margin-top:inherit" i18n>N'hésitez pas à nous informer du problème que vous avez rencontré</h2>
-                <ul>
-                  <li *ngFor="let item of feedbackOrder.items" [class.strike]="item.fulfillment.status=='failure'">
-                    {{item.quantity}}x {{item.title}} ({{item.part}}) 
-                    <span class="text-right">
-                        -
-                        <a class="text-secondary  " href="javascript:;" >manquait</a>,
-                        <a class="text-secondary  " href="javascript:;" >qualité</a>,
-                        <a class="text-secondary  " href="javascript:;" >transport</a>    
-                    </span>
-                  </li>
-                </ul>
-                    
-                <mdc-textarea i18n-label label="Note?" class="width-100" [ngModelOptions]="{standalone: true}"
-                  kng-autosize rows="4" 
-                  [ngModel]="feedbackText">
-                </mdc-textarea>                  
+    <mdc-dialog-surface>
+      <mdc-dialog-header>
+        <mdc-dialog-header-title>
+          <span i18n></span>
+        </mdc-dialog-header-title>
+      </mdc-dialog-header>
+      <mdc-dialog-body *ngIf="feedbackOrder">
+          <form  (submit)="onFeedback()">
+              <!-- CHECK -->
+              <div>
+                  <h2 style="margin-top:inherit" i18n>N'hésitez pas à nous informer du problème que vous avez rencontré</h2>
+                  <ul>
+                    <li *ngFor="let item of feedbackOrder.items" [class.strike]="item.fulfillment.status=='failure'">
+                      {{item.quantity}}x {{item.title}} ({{item.part}}) 
+                      <span class="text-right">
+                          -
+                          <a class="text-secondary  " href="javascript:;" >manquait</a>,
+                          <a class="text-secondary  " href="javascript:;" >qualité</a>,
+                          <a class="text-secondary  " href="javascript:;" >transport</a>    
+                      </span>
+                    </li>
+                  </ul>
+                      
+                  <mdc-textarea i18n-label label="Note?" class="width-100" [ngModelOptions]="{standalone: true}"
+                    kng-autosize rows="4" 
+                    [ngModel]="feedbackText">
+                  </mdc-textarea>                  
 
-                <p class="help-block text-center" i18n>
-                  C'est la meilleure manière pour nous tous d'améliorer le service 
-                  <i class="material-icons">loyalty</i>
-                </p>
+                  <p class="help-block text-center" i18n>
+                    C'est la meilleure manière pour nous tous d'améliorer le service 
+                    <i class="material-icons">loyalty</i>
+                  </p>
+            
+                <!-- <mdc-text-field i18n-label label="Nom" type="text" [ngModel]="edit.address.name" formControlName="name">
+                </mdc-text-field>                 -->
+                
+            </div>
+    
+          </form>
           
-              <!-- <mdc-text-field i18n-label label="Nom" type="text" [ngModel]="edit.address.name" formControlName="name">
-              </mdc-text-field>                 -->
-              
-          </div>
-  
-        </form>
-        
-    </mdc-dialog-body>
-    <mdc-dialog-footer>
-      <button mdc-dialog-button [cancel]="true">Decline</button>
-      <button mdc-dialog-button (click)="onFeedback()" [disabled]="">Send</button>
-    </mdc-dialog-footer>
+      </mdc-dialog-body>
+      <mdc-dialog-footer>
+        <button mdc-dialog-button [cancel]="true">Decline</button>
+        <button mdc-dialog-button (click)="onFeedback()" [disabled]="">Send</button>
+      </mdc-dialog-footer>
+    </mdc-dialog-surface>
   </mdc-dialog>
     
 </div>

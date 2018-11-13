@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CartService, 
          CartAction,
@@ -12,7 +12,7 @@ import { CartService,
          Shop} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../shared';
-import { MdcSnackbar, MdcMenu, MdcAppBar } from '@angular-mdc/web';
+import { MdcSnackbar, MdcMenu, MdcAppBar, MdcAppBarSection } from '@angular-mdc/web';
 
 import { merge } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,7 +23,8 @@ import { map } from 'rxjs/operators';
   selector: 'kng-navbar',
   templateUrl: './kng-navbar.component.html',
   styleUrls: ['./kng-navbar.component.scss'],
-  encapsulation: ViewEncapsulation.None  
+  encapsulation: ViewEncapsulation.None,
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class KngNavbarComponent implements OnInit, OnDestroy {
 
@@ -56,7 +57,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   //@ViewChild('toolbar') toolbar:MdcToolbar;
   //@ViewChild('profile') profile:MdcMenu;
   //@ViewChild('bottombar') bottombar: MdcAppBar;
-  @ViewChild('section') section:ElementRef;
+  @ViewChild('section') section:MdcAppBarSection;
   @ViewChild('shipping') shipping:MdcMenu;
   constructor(
     public  $cart:CartService,
@@ -66,7 +67,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $route: ActivatedRoute,
     private $user:UserService,
     public  $navigation:KngNavigationStateService,
-    private $snack:MdcSnackbar
+    private $snack:MdcSnackbar,
+    private cdr: ChangeDetectorRef,
   ) {
 
     let loader=this.$route.snapshot.data.loader;
@@ -149,7 +151,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           (<Element>(document.querySelector('.cart-items-count')||{})).innerHTML='('+this.cardItemsSz+')';
           //
           // tab bar
-          this.cartItemCountElem=this.cartItemCountElem||this.section.nativeElement.querySelector('.cart-items-count');
+          this.cartItemCountElem=this.cartItemCountElem||this.section.elementRef.nativeElement.querySelector('.cart-items-count');
           if(this.cartItemCountElem){
             this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
             this.cartItemCountElem.innerHTML='('+this.cardItemsSz+')';
@@ -166,11 +168,17 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       }
     });
     
+
   } 
 
   doSetCurrentShippingDay($event:any,current:Date,idx:number){
     this.$cart.setShippingDay(current);
-    this.shipping.setSelectedIndex(idx);    
+    this.currentShippingDay=this.$cart.getCurrentShippingDay();
+
+    //
+    // FIXME when using dropdown for shipping
+    //this.shipping.setSelectedIndex(idx);    
+    this.cdr.markForCheck();
   }
 
   getTagline(key){

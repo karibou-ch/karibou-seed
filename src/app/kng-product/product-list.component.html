@@ -53,7 +53,8 @@
 
       <!-- VENDORS-->
       <div class="vendor" >
-        <div class="owner" mdc-ripple
+        <div class="owner" 
+             mdc-ripple
             (click)="toggleVendor(vendor)"            
             *ngFor="let vendor of vendors">
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>

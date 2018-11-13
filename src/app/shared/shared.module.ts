@@ -22,7 +22,6 @@ import { UcWidgetComponent } from './kng-uc-widget/uc-widget';
 
 import {
   MdcIconModule,
-  MdcIconToggleModule,
   MdcLinearProgressModule,
   MdcListModule,
   MdcFabModule
@@ -38,7 +37,6 @@ import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bott
     RouterModule,
     MdcFabModule,
     MdcIconModule,
-    MdcIconToggleModule,
     MdcLinearProgressModule,
     MdcListModule
     ],

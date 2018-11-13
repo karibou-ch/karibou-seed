@@ -3,23 +3,28 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "karibou-seed-app": {
+    "karibou-client": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "verbose":false,
-            "outputPath": "dist",
+            "outputPath": "dist/karibou-client",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
@@ -108,51 +113,50 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "karibou-seed-app:build"
+            "browserTarget": "karibou-client:build"
           },
           "configurations": {
             "local": {
               "optimization": false,
-              "browserTarget": "karibou-seed-app:build:local"
+              "browserTarget": "karibou-client:build:local"
             },
             "auto": {
               "optimization": false,
-              "browserTarget": "karibou-seed-app:build:auto"
+              "browserTarget": "karibou-client:build:auto"
             },
             "production": {
               "optimization": false,
-              "browserTarget": "karibou-seed-app:build:production"
+              "browserTarget": "karibou-client:build:production"
             },
             "devel": {
               "optimization": false,
-              "browserTarget": "karibou-seed-app:build:devel"
+              "browserTarget": "karibou-client:build:devel"
             },
             "bretzel": {
               "optimization": false,
-              "browserTarget": "karibou-seed-app:build:bretzel"
+              "browserTarget": "karibou-client:build:bretzel"
             }
-          }
-        },
+          }        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "karibou-seed-app:build"
+            "browserTarget": "karibou-client:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [],
+            "karmaConfig": "src/karma.conf.js",
             "styles": [
               "src/styles.scss"
             ],
+            "scripts": [],
             "assets": [
-              "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/assets"
             ]
           }
         },
@@ -170,24 +174,26 @@
         }
       }
     },
-    "karibou-seed-app-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
+    "karibou-client-e2e": {
+      "root": "e2e/",
       "projectType": "application",
       "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "karibou-seed-app:serve"
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "karibou-client:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "karibou-client:serve:production"
+            }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
+            "tsConfig": "e2e/tsconfig.e2e.json",
             "exclude": [
               "**/node_modules/**"
             ]
@@ -196,14 +202,5 @@
       }
     }
   },
-  "defaultProject": "karibou-seed-app",
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "app",
-      "styleext": "scss"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "app"
-    }
-  }
+  "defaultProject": "karibou-client"
 }

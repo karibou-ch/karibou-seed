@@ -23,7 +23,8 @@
   <hr class="dashed"/>
 
 	<mdc-tab-bar disableRipple="true" dense="true">
-    <!-- mdcRouter -->
+    <mdc-tab-scroller>
+          <!-- mdcRouter -->
     <mdc-tab [routerLink]="['./orders']"
               routerLinkActive #rla="routerLinkActive">
         Commandes
@@ -36,6 +37,7 @@
               routerLinkActive #rla="routerLinkActive">
         mot-de-passe
     </mdc-tab>
+    </mdc-tab-scroller>
   </mdc-tab-bar>
 
   <router-outlet></router-outlet>  

@@ -22,10 +22,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Nom du site" type="text" [(ngModel)]="config?.shared.home.siteName[$i18n.locale]">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Nom du site" type="text" [(ngModel)]="config?.shared.home.siteName[$i18n.locale]">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -50,10 +48,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Mail de contact" type="text" [(ngModel)]="config?.shared.home.email">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Mail de contact" type="text" [(ngModel)]="config?.shared.home.email">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     
@@ -63,10 +59,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Téléphone de contact" type="text" [(ngModel)]="config?.shared.home.phone">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Téléphone de contact" type="text" [(ngModel)]="config?.shared.home.phone">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
 
@@ -76,9 +70,7 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Sujet des mails" type="text" [(ngModel)]="config?.shared.home.mail.subject"></mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Sujet des mails" type="text" [(ngModel)]="config?.shared.home.mail.subject"></mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
 
@@ -88,9 +80,7 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Signature des mails " kng-autosize rows="4" [(ngModel)]="config?.shared.home.mail.signature"></mdc-textarea>
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Signature des mails " kng-autosize rows="4" [(ngModel)]="config?.shared.home.mail.signature"></mdc-textarea>
       </mdc-list-item-text>
     </mdc-list-item>
 
@@ -100,16 +90,21 @@
         <mdc-icon [fontSize]="30">date_range</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field class="width-33" i18n-label label="pour quelle raison? " type="text" [(ngModel)]="noshipping.reason[$i18n.locale]"></mdc-text-field>
-          <mdc-text-field class="width-25" i18n-label label="jj/mm/aaaa" type="text" [(ngModel)]="noshipping.from" required></mdc-text-field>
-          <mdc-text-field class="width-25" i18n-label label="jj/mm/aaaa" type="text" [(ngModel)]="noshipping.to" required></mdc-text-field>
-          <button mdc-button icon="true" (click)="config?.shared.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
-        </mdc-list-item-secondary>
+        <div class="width-33" style="display: inline-block">
+            <mdc-text-field  i18n-label label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason||{})[$i18n.locale]"></mdc-text-field>
+        </div>        
+        <div class="width-25" style="display: inline-block">
+            <mdc-text-field  i18n-label label="jj/mm/aaaa" type="text" [(ngModel)]="noshipping.from" required></mdc-text-field>
+        </div>
+        <div class="width-25" style="display: inline-block">
+            <mdc-text-field  i18n-label label="jj/mm/aaaa" type="text" [(ngModel)]="noshipping.to" required></mdc-text-field>
+        </div>
+
+        <button mdc-button outlined dense (click)="config?.shared.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item >
-      <button mdc-button icon="true" (click)="config?.shared.noshipping.push({})"><mdc-icon>add_alarm</mdc-icon></button>
+      <button mdc-button outlined dense  (click)="config?.shared.noshipping.push({})"><mdc-icon>add_alarm</mdc-icon></button>
     </mdc-list-item>
 
   </mdc-list>
@@ -146,10 +141,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Gateway public key (stripe)" type="text" [(ngModel)]="config?.shared.keys.pubStripe">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Gateway public key (stripe)" type="text" [(ngModel)]="config?.shared.keys.pubStripe">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -157,10 +150,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Uploadcare public key" type="text" [(ngModel)]="config?.shared.keys.pubUpcare">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Uploadcare public key" type="text" [(ngModel)]="config?.shared.keys.pubUpcare">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
 
@@ -169,10 +160,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Github public key" type="text" [(ngModel)]="config?.shared.keys.pubGithub">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Github public key" type="text" [(ngModel)]="config?.shared.keys.pubGithub">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -180,10 +169,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Map public key" type="text" [(ngModel)]="config?.shared.keys.pubMap">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Map public key" type="text" [(ngModel)]="config?.shared.keys.pubMap">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -191,10 +178,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Disqus public key" type="text" [(ngModel)]="config?.shared.keys.pubDisqus">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Disqus public key" type="text" [(ngModel)]="config?.shared.keys.pubDisqus">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -202,10 +187,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Chat public key" type="text" [(ngModel)]="config?.shared.keys.pubChat">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Chat public key" type="text" [(ngModel)]="config?.shared.keys.pubChat">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -213,10 +196,8 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Google Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubGoogle">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Google Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubGoogle">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
@@ -224,14 +205,9 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-text-field i18n-label label="Facebook Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubFacebook">
-          </mdc-text-field>
-        </mdc-list-item-secondary>
+        <mdc-text-field i18n-label label="Facebook Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubFacebook">
+        </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
-
-
-
   </mdc-list>
 </div>

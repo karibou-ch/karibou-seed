@@ -11,8 +11,9 @@ import {
   MdcIconModule,
   MdcListModule,
   MdcMenuModule,
+  MdcRippleModule,
   MdcSnackbarModule,
-  MdcTabModule,
+  MdcTabBarModule,
   MdcThemeModule,
   MdcTypographyModule
 } from '@angular-mdc/web';
@@ -28,8 +29,9 @@ import {
     MdcIconModule,
     MdcMenuModule,
     MdcListModule,
+    MdcRippleModule,
     MdcSnackbarModule,
-    MdcTabModule,
+    MdcTabBarModule,
     MdcThemeModule,
     MdcTypographyModule
   ],

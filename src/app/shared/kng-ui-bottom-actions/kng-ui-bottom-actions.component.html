@@ -1,5 +1,5 @@
 
-<div class="results" [hidden]="!show">
+<div class="results" [hidden]="!show" mdc-ripple>
   <ul>
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
