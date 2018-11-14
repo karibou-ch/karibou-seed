@@ -2,7 +2,7 @@
   <h2 mdc-typography-title i18n [hidden]="!user.payments.length" i18n>
     Vos méthodes de paiement
   </h2>
-  <mdc-list border="true" [lines]="2">
+  <mdc-list border="true" [twoLine]="true">
       <mdc-list-item *ngFor="let payment of user.payments" 
       (click)="setPaymentMethod(payment)"
       [hidden]="payment.issuer=='wallet'"      

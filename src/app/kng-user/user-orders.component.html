@@ -24,7 +24,7 @@
       Sélectionnez la commande ci-dessous, et informez l'artisan. 
   </p>
 
-  <mdc-list [lines]="2" [hidden]="!orders.length">
+  <mdc-list [twoLine]="true" [hidden]="!orders.length">
     <mdc-list-item *ngFor="let order of getLimitedOrders()"                   
                     [selected]="selected?.oid==order.oid"
                     [class.autoHeight]="selected?.oid==order.oid"
@@ -75,7 +75,7 @@
 
   <!-- LAST PRODUCTS -->
   <h3 [hidden]="!getItems().length" i18n>Mes produits</h3>
-  <mdc-list [lines]="2" avatar="true" interactive="false">
+  <mdc-list [twoLine]="true" avatar="true" interactive="false">
     <mdc-list-item *ngFor="let rank of getItems()">
       <mdc-list-item-graphic>
         <div class="avatar"

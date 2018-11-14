@@ -11,7 +11,7 @@
     <h3 class="primary-text" i18n>Livraison  le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
     <h4 [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
   </section>
-  <mdc-list [lines]="2" avatar="true" [interactive]="false" [hidden]="!items.length">
+  <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
     <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
       <mdc-list-item-graphic>
         <div class="avatar"

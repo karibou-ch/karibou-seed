@@ -64,20 +64,20 @@
 <div [hidden]="!isAppReady()" class="navbar">      
 
   <!--- [dense]="$navigation.isMobileOrTablet()" -->
-  <mdc-app-bar #appbar fixed="false"  [dense]="true">
-    <mdc-app-bar-row >
+  <mdc-top-app-bar #appbar fixed="false"  [dense]="true">
+    <mdc-top-app-bar-row >
       <!-- APPBAR-SECTION-START -->
-      <mdc-app-bar-section align="start" >
+      <mdc-top-app-bar-section align="start" >
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">menu</mdc-icon>
-        <mdc-app-bar-title class="home" [routerLink]="['/store',store]" mdc-ripple>{{title}}</mdc-app-bar-title>        
-      </mdc-app-bar-section>       
-      <mdc-app-bar-section>
-        <mdc-app-bar-title class="shipping hide-sm">
+        <mdc-top-app-bar-title class="home" [routerLink]="['/store',store]" mdc-ripple>{{title}}</mdc-top-app-bar-title>        
+      </mdc-top-app-bar-section>       
+      <mdc-top-app-bar-section>
+        <mdc-top-app-bar-title class="shipping hide-sm">
           « {{currentShippingDay|date:'EEEE d MMMM':'':'fr'}} »
-        </mdc-app-bar-title>
-      </mdc-app-bar-section>
+        </mdc-top-app-bar-title>
+      </mdc-top-app-bar-section>
       <!-- APP BAR MENU ICON --> 
-      <mdc-app-bar-section align="end">
+      <mdc-top-app-bar-section align="end">
           <!-- <a (click)="shipping.open()" mdcAppBarActionItem class="btn-shipping" >
               <i mdc-icon >update</i>
               <span class="hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
@@ -125,15 +125,15 @@
             <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon>&nbsp;<span i18n>Logout</span></mdc-menu-item>
           </mdc-menu>                               -->
   
-      </mdc-app-bar-section>
-    </mdc-app-bar-row>
-    <mdc-app-bar-row [hidden]="$navigation.isAdminLayout || $navigation.isMobileOrTablet()" >
+      </mdc-top-app-bar-section>
+    </mdc-top-app-bar-row>
+    <mdc-top-app-bar-row [hidden]="$navigation.isAdminLayout || $navigation.isMobileOrTablet()" >
       <!-- APPBAR-SECTION-START -->
-      <mdc-app-bar-section align="start"></mdc-app-bar-section>
+      <mdc-top-app-bar-section align="start"></mdc-top-app-bar-section>
 
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
-      <mdc-app-bar-section #section>
+      <mdc-top-app-bar-section #section>
         <mdc-tab-bar>
           <!-- mdcRouter -->
           <mdc-tab-scroller>
@@ -161,13 +161,13 @@
             <mdc-icon>navigate_next</mdc-icon>
           </mdc-tab-bar-scroll-forward>
         </mdc-tab-bar-scroller> -->
-      </mdc-app-bar-section>      
+      </mdc-top-app-bar-section>      
 
       <!-- APPBAR-SECTION-END -->
-      <mdc-app-bar-section align="end" class="" >
-      </mdc-app-bar-section>
-    </mdc-app-bar-row>
-  </mdc-app-bar>
+      <mdc-top-app-bar-section align="end" class="" >
+      </mdc-top-app-bar-section>
+    </mdc-top-app-bar-row>
+  </mdc-top-app-bar>
 
 
   <!-- CONTENT APP -->
@@ -176,15 +176,15 @@
   </div>
 
   <!-- BOTTOM APP BAR-->
-  <mdc-app-bar hidden #bottombar fixed="false"  dense="true" class="mdc-bottom-app-bar">
-    <mdc-app-bar-row>
+  <mdc-top-app-bar hidden #bottombar fixed="false"  dense="true" class="mdc-bottom-app-bar">
+    <mdc-top-app-bar-row>
       <!-- APPBAR-SECTION-START -->
-      <mdc-app-bar-section align="start">
+      <mdc-top-app-bar-section align="start">
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">update</mdc-icon>
-        <mdc-app-bar-title>{{title}}</mdc-app-bar-title>
-      </mdc-app-bar-section>       
-    </mdc-app-bar-row>
-  </mdc-app-bar>
+        <mdc-top-app-bar-title>{{title}}</mdc-top-app-bar-title>
+      </mdc-top-app-bar-section>       
+    </mdc-top-app-bar-row>
+  </mdc-top-app-bar>
   
   
   <!-- FOOTER -->

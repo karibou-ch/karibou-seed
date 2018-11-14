@@ -4,7 +4,7 @@
       Vos adresses 
     </h2>
           
-    <mdc-list border="true" [lines]="2">
+    <mdc-list border="true" [twoLine]="true">
         <mdc-list-item *ngFor="let address of getUser().addresses;let idx=index" 
         (click)="setAddress(address,idx)"
         [class.selected]="isSelectedAddress(address,idx)">
