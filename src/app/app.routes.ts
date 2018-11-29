@@ -49,6 +49,7 @@ export const appRoutes: Routes = [
         // { path: 'departement',component:KngDepartementComponent },
         { path:'home',component:KngHomeComponent,resolve:{ loader:LoaderResolve },children:[
           { path: 'products/:sku', component: ProductComponent},
+          { path: 'category/:category/:child', component: ProductListComponent},
           { path: 'category/:category', component: ProductListComponent}
         ]},
         { path:'',pathMatch: 'full', redirectTo:'home'}

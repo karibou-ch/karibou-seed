@@ -52,7 +52,15 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     this.isLoading=false;
     let loader=this.$route.snapshot.data.loader;
     this.config=loader[0];      
+    this.config.shared.maintenance.reason=this.config.shared.maintenance.reason||{};
+    this.config.shared.welcome.message=this.config.shared.welcome.message||{};
+    this.config.shared.header.message=this.config.shared.header.message||{};
+    this.config.shared.checkout.address=this.config.shared.checkout.address||{};
+    this.config.shared.checkout.payment=this.config.shared.checkout.payment||{};
+    this.config.shared.checkout.message=this.config.shared.checkout.message||{};
+
     this.ngConstruct();
+
   }
 
   ngConstruct(){
@@ -63,7 +71,7 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     //
     // set navigation layout
     this.$navigation.isAdminLayout=true;  
-    //this.formatDates();
+    this.formatDates();
     this.buildMenu();    
   }
 
@@ -91,11 +99,14 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   formatDates(){
     let format=(d:Date)=>{
       d=new Date(d);
-      return d.getDate()+'/'+d.getMonth()+'/'+d.getFullYear();
+      let month=("0" + (d.getMonth() + 1)).slice(-2);
+      let day=("0" + d.getDate()).slice(-2);
+      //return day+'-'+month+'-'+d.getFullYear();
+      return d.getFullYear()+'-'+month+'-'+day;
     }
     (this.config.shared.noshipping||[]).forEach(noshipping=>{
       noshipping.from=format(<Date>noshipping.from);
-      noshipping.to=format(noshipping.to);
+      noshipping.to=format(<Date>noshipping.to);
     })
   }
 
@@ -139,8 +150,10 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   onConfigSave(){
     this.isLoading=true;
     this.$config.save(this.config).subscribe(
-      ()=>this.$snack.show(this.$i18n.label().save_ok,"OK"),
-      (err)=>this.$snack.show(err.error,"OK"),
+      ()=>{
+        this.formatDates();
+        this.$snack.show(this.$i18n.label().save_ok,"OK")
+      },(err)=>this.$snack.show(err.error,"OK"),
       ()=>this.isLoading=false
     );      
   }

@@ -12,18 +12,32 @@
       [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
    
    
-       <mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
+       <mdc-card-primary-action mdc-ripple >
          <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
            <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
-           <button class="action-add right " (click)="addToCart(product)">
+           <button class="action-add right " (click)="addToCart($event,product)">
             <mdc-icon [fontSize]="26">add</mdc-icon>
           </button>
-          <button class="action-remove " (click)="removeToCart(product)">
+          <button class="action-remove " (click)="removeToCart($event,product)">
             <mdc-icon [fontSize]="26">remove</mdc-icon>
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
               
+          <div [hidden]="!user.isAdmin()" class="image-links">
+              <a target="_blank" href="{{product.photo.url}}">fullwidth</a>&nbsp;
+              <a target="_blank" href="{{product.photo.url}}-/resize/300x/">300x(resize)</a>&nbsp;
+              <a target="_blank" href="{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
+          </div>
+          
+          <!-- VARIANTS -->          
+          <div *ngIf="openVariant" class="product-variants">
+            <ul>
+              <li (click)="addToCart($event,product,variant.short)"
+                  *ngFor="let variant of product.variants">{{variant.short}}</li>
+            </ul>
+          </div>
+  
          </mdc-card-media>
          <div class="product-card__primary">
            <span class="product-card__subtitle">{{product.title}}</span>
@@ -49,12 +63,17 @@
       <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
         <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
         <div role="group" aria-label="Justified button group">
-          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=0;save(product);"
+          <button mdc-button primary role="button" (click)="product.pricing.stock=0;save(product);"
             [disabled]="WaitText">0</button>
-          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=10;save(product);"
+          <button mdc-button primary role="button" (click)="product.pricing.stock=10;save(product);"
             [disabled]="WaitText">10</button>
-          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=40;save(product);"
+          <button mdc-button primary role="button" (click)="product.pricing.stock=40;save(product);"
             [disabled]="WaitText">40</button>
+          <button mdc-button primary role="button" 
+                  [hidden]="!user.isAdmin()"
+                 (click)="product.attributes.boost=!product.attributes.boost;save(product);"
+            [disabled]="WaitText">BOOST ({{product.attributes.boost}})</button>
+
         </div>
       </div>
 
@@ -72,7 +91,20 @@
           <li [hidden]="!product.quantity.display">{{product.quantity.comment}}</li>
           <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
         </ul>
-        <div>
+
+        <mdc-chip-set>
+          <mdc-chip [hidden]="!product.details.homemade"><mdc-chip-text  class="label label-product">Artisanal</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.local"><mdc-chip-text  class="label label-product">Local</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.lactose"><mdc-chip-text  class="label label-product">Sans lactose</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.gluten"><mdc-chip-text  class="label label-product">Sans gluten</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.grta"><mdc-chip-text  class="label label-product">GRTA</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.bio&&!product.details.biodynamics"><mdc-chip-text class="label label-product">BIO</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.biodynamics"><mdc-chip-text  class="label label-product">Biodynamie</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.bioconvertion"><mdc-chip-text  class="label label-product">Bioconversion</mdc-chip-text></mdc-chip>
+          <mdc-chip [hidden]="!product.details.natural"><mdc-chip-text  class="label label-product" title="Naturel">Sans chimie de synthèse</mdc-chip-text></mdc-chip>
+        </mdc-chip-set>
+    
+        <!-- <div>
           <div [hidden]="!product.details.homemade" class="label label-product">Artisanal</div>
           <div [hidden]="!product.details.local" class="label label-product">Local</div>
           <div [hidden]="!product.details.lactose" class="label label-product">Sans lactose</div>
@@ -82,14 +114,14 @@
           <div [hidden]="!product.details.biodynamics" class="label label-product">Biodynamie</div>
           <div [hidden]="!product.details.bioconvertion" class="label label-product">Bioconversion</div>
           <div [hidden]="!product.details.natural" class="label label-product" title="Naturel">Sans chimie de synthèse</div>
-        </div>
+        </div> -->
       </div>
 
-      <div class="breaker small"></div>
+      <div class="breaker"></div>
 
       <!-- VENDOR-->
       <div class="vendor" *ngIf="product.vendor.photo">
-        <a class="link" href="/shop/{{product.vendor.urlpath}}">
+        <a class="link" [routerLink]="['/store',store,'shops',product.vendor.urlpath]">
           <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
                class="thumbnail-owner photo-owner">
         </a>

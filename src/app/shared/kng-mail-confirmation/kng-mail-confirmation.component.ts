@@ -54,9 +54,14 @@ export class KngMailConfirmationComponent implements OnInit,OnDestroy {
       //.email:string
       //.owner:string
       this.user.email.status=status.created;
-      this.$snack.show(this.$i18n.label().user_confirmation_mail)
+      this.$snack.show(
+        this.$i18n.label().user_confirmation_mail,
+        this.$i18n.label().thanks,this.$i18n.snackOpt)
     },err=>{
-      this.$snack.show(err.error);
+      this.$snack.show(
+        err.error,
+        this.$i18n.label().thanks,this.$i18n.snackOpt
+      );
     });
   }
   

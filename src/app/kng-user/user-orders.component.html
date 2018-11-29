@@ -24,25 +24,22 @@
       Sélectionnez la commande ci-dessous, et informez l'artisan. 
   </p>
 
-  <mdc-list [twoLine]="true" [hidden]="!orders.length">
+  <mdc-list twoLine [hidden]="!orders.length">
     <mdc-list-item *ngFor="let order of getLimitedOrders()"                   
                     [selected]="selected?.oid==order.oid"
                     [class.autoHeight]="selected?.oid==order.oid"
                     (click)="selectedOrder(order)">
-      <mdc-list-item-graphic class="hide-md">
-          <mdc-icon [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                 
-      </mdc-list-item-graphic>
+      <mdc-icon class="hide-md" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                    
       <mdc-list-item-text >             
           <span>{{order.oid}}</span> statut {{order.payment.status}} <span>{{order.payment.issuer}}</span>           
-          <mdc-list-item-secondary>
-              Livraison {{order.getShippingPrice()|currency:'CHF'}} <!-- - Réduction {{order.getTotalDiscount()|currency:'CHF'}}--><br/>Annulation {{order.getFulfilledFailure()}} - Problème {{order.getFulfilledIssue().length}}
+          <mdc-list-item-secondary>Livraison {{order.getShippingPrice()|currency:'CHF'}} <!-- - Réduction {{order.getTotalDiscount()|currency:'CHF'}}--><br/>Annulation {{order.getFulfilledFailure()}} - Problème {{order.getFulfilledIssue().length}}
               <a href="javascript:;" class="text-secondary smaller "  
                   [hidden]="!isPending(order)"
                   (click)="cancel(order)" i18n>
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>
                 annuler</a>
               <a href="javascript:;" class="text-secondary smaller "   
-                 [hidden]="!isPaidOrRefund(order)||true" (click)="feeback(order)" i18n>
+                 [hidden]="!isPaidOrRefund(order)" (click)="feeback(order)" i18n>
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">sms</i>
                 Une erreur?
               </a>                

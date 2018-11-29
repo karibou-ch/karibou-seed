@@ -59,15 +59,18 @@ body{
     width: 100%;
     text-align: center;
     display: block;
-    color: #aaa;
+    color: #999;
     letter-spacing: 4px;
     position: relative;
     top: -8px;    
-    font-size: 22px;
+    font-size: 26px;
   }
   height: 1px;
-  margin: 6rem auto;
+  margin: 4rem auto;
   width: 100%;
+  &.large{
+    margin: 6rem auto;
+  }
   &.small{
     margin: 2rem auto;
   }

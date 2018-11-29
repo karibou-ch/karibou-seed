@@ -8,19 +8,18 @@
         <mdc-icon [fontSize]="40">navigate_before</mdc-icon>
       </button>
 
-      <mdc-card class="category-card card-skeleton" [outlined]="false">
-   
-   
+      <h3 mdcHeadline5 class="title" [innerHtml]="category.current.name"></h3>
+      <h6 mdcSubtitle1 class="subtitle" [innerHtml]="category.current.description"></h6>
+      
+      <!-- <mdc-card class="category-card card-skeleton hide" [outlined]="false">   
        <mdc-card-primary-action mdc-ripple >
-         <!-- <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">           
-         </mdc-card-media> -->
          <div class="product-card__primary">
            <span class="product-card__subtitle">{{category.current.name}}</span>
            <div>{{category.current.description}}</div>
 
          </div>
        </mdc-card-primary-action>
-     </mdc-card>
+     </mdc-card> -->
    
 
       <!-- ADMIN OR OWNER ACTIONS -->
@@ -44,17 +43,27 @@
 
       <!-- CATEGORY -->
       <div class="certified ">
-        <div class="label label-product" 
+        <!-- <div class="label label-product" 
             (click)="toggleChild(child.name)"            
             [class.selected]="filterChild==child.name"
-            *ngFor="let child of category.current.child;let j=index" >{{child.name}}</div>
+            *ngFor="let child of category.current.child;let j=index" >{{child.name}}</div> -->
+
+        <!-- TODO BUILD PERSISTENT SUB CAT [routerLink]="['./',child.name]"-->
+        <!-- TODO [selected]="filterChild==child.name"-->
+        <mdc-chip-set choice #subcategory>
+          <mdc-chip (click)="toggleChild(child.name)"                     
+                    [id]="'child'+j"                    
+                    *ngFor="let child of getChildCategory(category.current);let j=index">
+            <mdc-chip-text>{{child.name}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+        
       </div>
 
 
       <!-- VENDORS-->
       <div class="vendor" >
         <div class="owner" 
-             mdc-ripple
             (click)="toggleVendor(vendor)"            
             *ngFor="let vendor of vendors">
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
@@ -69,12 +78,11 @@
           <!-- <h2>{{category.name}}</h2>
           <h3 [innerHtml]="category.description"></h3> -->
         </section>
-        <!-- <div infiniteScroller
+        <div infiniteScroller
              scrollPercent="30"
              immediateCallback="false"
              [infiniteScrollContainer]="getDialog()"
-             [scrollCallback]="scrollCallback"  -->
-        <div 
+             [scrollCallback]="scrollCallback" 
              class="kng-layout-card">
           <kng-product-thumbnail             
               *ngFor="let product of getProducts();let j=index" 

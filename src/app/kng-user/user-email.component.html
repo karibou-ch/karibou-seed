@@ -2,22 +2,22 @@
   <!-- <h3 i18n>Modifier votre mot de passe</h3>
   <h4 i18n>{{user.display()}}</h4> -->
   <form [formGroup]="$profile" (submit)="onChange()">
-      <mdc-text-field i18n-label label="Votre nom" type="text" formControlName="name" [ngModel]="user.name.familyName">
+      <mdc-text-field fullwidth i18n-label label="Votre nom" type="text" formControlName="name" [ngModel]="user.name.familyName">
         <mdc-icon trailing class="primary">face</mdc-icon>
       </mdc-text-field>
 
-      <mdc-text-field i18n-label label="Votre prénom" type="text" formControlName="forname" [ngModel]="user.name.givenName">
+      <mdc-text-field fullwidth i18n-label label="Votre prénom" type="text" formControlName="forname" [ngModel]="user.name.givenName">
       </mdc-text-field>
 
-      <mdc-text-field i18n-label label="Votre téléphone" type="text" formControlName="phone" [ngModel]="phone">
+      <mdc-text-field fullwidth i18n-label label="Votre téléphone" type="text" formControlName="phone" [ngModel]="phone">
         <mdc-icon trailing class="primary">phone</mdc-icon>
       </mdc-text-field>
       
-      <mdc-text-field i18n-label label="Votre email" type="email" formControlName="email" [ngModel]="user.email.address">
+      <mdc-text-field fullwidth i18n-label label="Votre email" type="email" formControlName="email" [ngModel]="user.email.address">
       </mdc-text-field>
         
       
-      <mdc-text-field i18n-label label="Confirmer avec votre mot de passe"  type="password" formControlName="password">
+      <mdc-text-field fullwidth i18n-label label="Confirmer avec votre mot de passe"  type="password" formControlName="password">
         <mdc-icon trailing class="primary">vpn_key</mdc-icon>
       </mdc-text-field>
       

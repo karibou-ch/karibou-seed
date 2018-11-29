@@ -11,19 +11,30 @@
 	<mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
 	 [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
 
-		<button class="action-add right " (click)="addToCart(product)">
-			<mdc-icon [fontSize]="26">add</mdc-icon>
-		</button>
-		<button class="action-remove " (click)="removeToCart(product)">
-			<mdc-icon [fontSize]="26">remove</mdc-icon>
-		</button>
-		<div class="info-quantity">{{cartItem?.quantity}}</div>
 
 		<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
 			<mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
 				<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
+				<!-- VARIANTS -->
+				<div *ngIf="openVariant" class="product-variants">
+					<ul>
+						<li (click)="addToCart($event,product,variant.short)"
+								*ngFor="let variant of product.variants">{{variant.short}}</li>
+					</ul>
+				</div>
 			</mdc-card-media>
+			<!-- CART ACTIONS -->
+			<button class="action-add right " (click)="addToCart($event,product)">
+				<mdc-icon [fontSize]="26">add</mdc-icon>
+			</button>
+			<button class="action-remove " (click)="removeToCart($event,product)">
+				<mdc-icon [fontSize]="26">remove</mdc-icon>
+			</button>
+			<div class="info-quantity">{{cartItem?.quantity}}</div>
+			<div class="info-score">{{product.stats.score.toFixed(2)}}</div>
+		
+			<!-- TITLE -->
 			<div class="product-card__primary">
 				<span class="product-card__subtitle">{{product.title}}</span>
 			</div>
@@ -32,7 +43,7 @@
 					{{product.pricing.part}}
 				</div>
 				<div class="price ">
-					<span [hidden]="product.attributes.discount" class=" ">
+					<span [hidden]="product.attributes.discount" >
 						Fr {{product.pricing.price| number:'1.2-2'}}
 					</span>
 					<span [hidden]="!product.attributes.discount">

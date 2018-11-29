@@ -1,28 +1,19 @@
 <div class="container">
-  <mdc-list [twoLine]="true" avatar="true" border="true" interactive="false">
+  <mdc-list  avatar="true"  interactive="false">
     <mdc-list-item (click)="onConfigSave()">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">save</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-text i18n>
-          Sauver vos modifications
-          <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
-        </mdc-list-item-text>
+      <mdc-icon mdcListItemGraphic>save</mdc-icon>
+      <mdc-list-item-text i18n>Sauver vos modifications
+        <mdc-list-item-secondary >Cliquer ici</mdc-list-item-secondary>
       </mdc-list-item-text>
-      <mdc-list-item-meta>
-        <mdc-icon class="pink">favorite</mdc-icon>
-      </mdc-list-item-meta>
+      <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
     <!-- SITE TAGLINE -->
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Titre tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.t[$i18n.locale]">
+        <mdc-text-field fullwidth i18n-label label="Titre tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.t[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
@@ -31,7 +22,7 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Header tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.h[$i18n.locale]">
+        <mdc-text-field fullwidth i18n-label label="Header tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.h[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
@@ -66,7 +57,7 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Titre howto du site" type="text" [(ngModel)]="config?.shared.home.howto.t[$i18n.locale]">
+        <mdc-text-field fullwidth i18n-label label="Titre howto du site" type="text" [(ngModel)]="config?.shared.home.howto.t[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
@@ -75,7 +66,7 @@
         <mdc-icon [fontSize]="30">folder_special</mdc-icon>
       </mdc-list-item-graphic>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Header howto du site" type="text" [(ngModel)]="config?.shared.home.howto.h[$i18n.locale]">
+        <mdc-text-field fullwidth i18n-label label="Header howto du site" type="text" [(ngModel)]="config?.shared.home.howto.h[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>

@@ -20,6 +20,7 @@ import {
 } from 'kng2-core';
 import { timer } from 'rxjs/observable/timer';
 import { map } from 'rxjs/operators';
+import { MdcChipSet } from '@angular-mdc/web';
 
 @Component({
   selector: 'kng-product-list',
@@ -30,6 +31,7 @@ import { map } from 'rxjs/operators';
 })
 export class ProductListComponent implements OnInit {
 
+  @ViewChild('subcategory') subcategory:MdcChipSet;
   @ViewChild('dialog') dialog: ElementRef;
   scrollCallback;
   currentPage:number=10;
@@ -96,13 +98,18 @@ export class ProductListComponent implements OnInit {
       return;
     }
     this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
+    this.category.current.child = this.category.current.child.sort((a,b)=>{
+      return a.weight-b.weight; 
+    });
+
+
     this.category.similar = this.category.categories
       .filter(cat => cat.group === this.category.current.group && cat.slug !== this.category.slug)
       .sort(cat => cat.weight);
 
     this.bgStyle = 'url(' + this.category.current.cover+')';
 
-    this.filterProduct();
+    this.loadProducts();
     //
     // DIALOG INIT HACK 
     document.body.classList.add('mdc-dialog-scroll-lock');
@@ -110,6 +117,9 @@ export class ProductListComponent implements OnInit {
 
   }
 
+  getChildCategory(category:Category){
+    return category.child;
+  }
 
   getDialog(){
     return this.dialog;
@@ -119,13 +129,17 @@ export class ProductListComponent implements OnInit {
   getNextPage(){
     this.currentPage+=10;
     this.cdr.markForCheck();
-    console.log('--', this.currentPage)
+    // console.log('--', this.currentPage)
     return timer(1).pipe(map(ctx=>this.currentPage));
   }  
 
   getProducts(){
+    //[hidden]="filterChild&&filterChild!=product.belong.name"
+
     return this.products.filter(product=>{
-      return !this.filterVendor||product.vendor.urlpath==this.filterVendor;
+      let vendor=!this.filterVendor||product.vendor.urlpath==this.filterVendor;
+      let cat=!this.filterChild||product.belong.name==this.filterChild;
+      return cat&&vendor;
     })
   }
 
@@ -133,18 +147,18 @@ export class ProductListComponent implements OnInit {
     return (this.currentPage>j);
   }
 
+
   loadProducts() {
-    this.$product.select(this.options).subscribe((products: Product[]) => {
-      this.products = products.sort();
-
-    });
-  }
-
-  filterProduct() {
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.zone.run(() => {
-        this.products = products.sort();
+        this.products = products.sort(this.sortProducts);
         this.setVendors(this.products);  
+        //
+        // select first child category
+        //this.subcategory.chips.filter(elem=>true)[0].selected=true;
+        if(this.category.current.child[0]){
+          this.toggleChild(this.category.current.child[0].name)
+        }
         this.cdr.markForCheck();
       });
     });
@@ -162,10 +176,13 @@ export class ProductListComponent implements OnInit {
     }
     this.filterVendor=vendor.urlpath;
   }
+
   toggleChild(child:string){
     if(this.filterChild==child){
+      this.subcategory.chips.forEach((elem:any)=>elem.selected=false);
       return this.filterChild=null;
     }
+    this.subcategory.chips.forEach((elem:any)=>elem.selected=(elem.chipText.elementRef.nativeElement.innerText==child));    
     this.filterChild=child;
   }
 
@@ -179,4 +196,22 @@ export class ProductListComponent implements OnInit {
   }
 
 
+  //
+  // sort products by:
+  //  - belong.weight
+  //  - stats.score
+  sortProducts(a,b){
+    // sort : HighScore => LowScore
+    let score=b.stats.score-a.stats.score;
+    if(!a.belong||!a.belong){
+      return score;
+    }
+
+    // sort : LowWeight => HighWeight 
+    let belong=a.belong.weight-b.belong.weight;
+    if(belong!=0){
+      return belong;
+    }
+    return score;
+  }
 }

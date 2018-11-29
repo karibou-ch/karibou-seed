@@ -8,6 +8,7 @@ import { Component,
          ViewChild, 
          ChangeDetectorRef,
          ViewEncapsulation} from '@angular/core';
+
 import { ActivatedRoute, Router } from '@angular/router';
 //import { MdcDialogComponent, } from '@angular-mdc/web';
 
@@ -18,9 +19,10 @@ import {
   Product,
   LoaderService,
   User,
-  CartItem
+  CartItem,
+  Shop
 } from 'kng2-core';
-import { i18n } from '../shared';
+import { i18n, KngNavigationStateService } from '../shared';
 
 import { timer } from  'rxjs/observable/timer';
 import { map } from 'rxjs/operators';
@@ -67,6 +69,11 @@ export class ProductComponent implements OnInit, OnDestroy {
   scrollCallback;
 
   //
+  // variant
+  openVariant:boolean;
+
+
+  //
   // products for home
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
   options:any={
@@ -81,6 +88,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   constructor(
     private $cart: CartService,
     public  $i18n:i18n,
+    private $navigation:KngNavigationStateService,
     private $loader:LoaderService,
     private $product: ProductService,
     private $route: ActivatedRoute,
@@ -98,13 +106,22 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
 
-  addToCart(product: Product) {
-    this.$cart.add(product);
+  addToCart($event,product: Product,variant?:string) {
+    $event.stopPropagation();
+    if(product.variants.length&&!variant){
+      this.openVariant=true;
+      return;
+    }
+
+    this.openVariant=false;
+
+
+    this.$cart.add(product,variant);
     this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
 
-  removeToCart(product:Product){
+  removeToCart($event,product:Product){
     this.$cart.remove(product);
     this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
@@ -128,7 +145,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnInit() {
       this.isReady = true;
 
-      
       //
       // product action belongs to a shop or a category 
       this.rootProductPath = (this.$route.snapshot.params['shop']) ?
@@ -193,7 +209,11 @@ export class ProductComponent implements OnInit, OnDestroy {
     };
     if(this.isDialog ){
       this.$product.select(params).subscribe((products)=>{
-        this.products = products;
+        this.products = products.sort(this.sortProducts);
+        // this.products.forEach(prod=>{
+        //   console.log(prod.belong.name, prod.stats.score)
+        // })
+        
       });
 
       setTimeout(()=>{
@@ -218,10 +238,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
-    this.dialog.nativeElement.classList.add('fadeout')
+    //FIXME fadeout brakes window
+    //this.dialog.nativeElement.classList.add('fadeout')
     setTimeout(() => {
+      if(this.$navigation.hasHistory()){
+        return this.$navigation.back();
+      }
       this.$router.navigate(['../../'],{relativeTo: this.$route})
-      //this.$location.back()
     }, 200)
   }
 
@@ -240,10 +263,25 @@ export class ProductComponent implements OnInit, OnDestroy {
     );
 
   }
-  love(product: Product) {
 
+  //
+  // sort products by:
+  //  - belong.weight
+  //  - stats.score
+  sortProducts(a,b){
+    // sort : HighScore => LowScore
+    let score=b.stats.score-a.stats.score;
+    if(!a.belong||!a.belong){
+      return score;
+    }
+
+    // sort : LowWeight => HighWeight 
+    let belong=a.belong.weight-b.belong.weight;
+    if(belong!=0){
+      return belong;
+    }
+    return score;
   }
-
 }
 
 @Component({
@@ -264,7 +302,7 @@ export class ProductThumbnailComponent extends ProductComponent {
       ),`;
 
   updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url + '/-/resize/200x/)';
+    this.bgStyle = 'url(' + this.product.photo.url + '/-/resize/250x/)';
     if (this.cartItem) {
       this.bgStyle=this.bgGradient+this.bgStyle;
     }

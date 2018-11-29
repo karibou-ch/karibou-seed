@@ -19,7 +19,6 @@ import {
   Product,
   LoaderService,
   User,
-  CartState,
   CartAction
 }  from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
@@ -30,7 +29,8 @@ import { i18n } from '../shared';
   selector: 'kng-home',
   templateUrl: './kng-home.component.html',
   styleUrls: ['./kng-home.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  //changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
 
@@ -41,6 +41,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   categories:Category[];
   cached:any={};
   group:any={};
+  home:Product[]=[];
   user:User;
   locale:string;
   subscription;
@@ -142,7 +143,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
           this.productsGroupByCategory();
         }
       }
-      this.isReady = true;
       console.log(this.constructor.name,'------------',emit,this.sections)      
     });    
   }
@@ -190,6 +190,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return {'background-image':this.bgGradient+bgStyle};
   }
 
+
   getAboutContent(elem:string){
     return this.config.shared.home.about[elem][this.$i18n.locale];
   }
@@ -204,10 +205,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   productsGroupByCategory() {
-    //this.options.when
+    //FIXME inner size
+    let divider=(window.innerWidth<426)?2:4;
     this.group={};
     this.$product.select(this.options).subscribe((products: Product[]) => {
-      products.forEach(product=>{
+      products.forEach((product:Product)=>{
+        if(product.attributes.home){
+          this.home.push(product);
+        }
+
         if(!product.categories){
           return console.log('DEBUG----',product.sku,product.title);
         }
@@ -216,7 +222,19 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
         this.group[product.categories.name].push(product);
       });
+      this.home=this.home.slice(0,6);
+      Object.keys(this.group).forEach(cat=>{
+        this.group[cat]=this.group[cat].sort((a,b)=>{
+          return b.stats.score-a.stats.score;
+        });
+        if(this.group[cat].length%divider==0){
+          this.group[cat].pop()
+        }
+      })
+      this.isReady = true;
+
     });
+
   }
 
 
@@ -233,7 +251,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     const sectionNativeEls = this.getSectionsNativeElements();
     const nextIndex = sectionNativeEls.findIndex(el=>el.className==slug);
 
-    console.log('----',slug,nextIndex,this.sections.toArray()[nextIndex])
+    // console.log('----',slug,nextIndex,this.sections.toArray()[nextIndex])
     return sectionNativeEls[nextIndex];
   }
 
@@ -257,6 +275,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // detect if current container is visible 
   // on the screen (based on scroll position)
   detectVisibility(scrollPosition:number){
+    
     this.sections.forEach(container=>{
       let scrollTop = container.nativeElement.offsetTop;
       let height = container.nativeElement.clientHeight;
@@ -274,10 +293,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       if((scrollPosition+window.innerHeight)>=scrollTop&&
          (scrollPosition+window.innerHeight)>(scrollTop+height)){
           this.visibility[container.nativeElement.className]=true;
-      }
-
+      }  
       // console.log('---',this.visibility[container.nativeElement.className])
     });
+    // console.log('-- detectVisibility',scrollPosition)
+    // console.log('-- detectVisibility',this.visibility)
+
   }
 
   //

@@ -41,35 +41,24 @@ $mdc-theme-primary-text: #966000;
 $mdc-theme-primary:#43b02a;
 $mdc-theme-primary-light: #67e1a5;
 $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-$mdc-theme-primary-text: rgba(67, 176, 42, 0.87);
+$mdc-theme-primary-text: #fff;
 
-// GREEN
-$mdc-theme-primary:#fff;
+// // GREEN
+// $mdc-theme-primary:#fff;
+// $mdc-theme-primary-light: #43b02a;
+// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
+// $mdc-theme-primary-text: rgba(67, 176, 42, 0.87);
+
+// BLUE
+$mdc-theme-primary:rgba(0, 0, 50, 0.9);
 $mdc-theme-primary-light: #43b02a;
 $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-$mdc-theme-primary-text: rgba(67, 176, 42, 0.87);
+$mdc-theme-primary-text: #fff;
 
 //$mdc-theme-primary:rgba(0, 0, 0, 0.73);
 
 $mdc-theme-background:#f7f7f7;
 
-textarea,
-input.text,
-input[type="text"],
-input[type="button"],
-input[type="submit"],
-.input-checkbox {
-  -webkit-appearance: none;
-  border-radius: 0;
-}
-
-@import 'kng-search.scss';
-@import 'kng-theme.scss';
-@import 'kng-responsive.scss';
-@import 'kng-mdc.scss';
-@import 'kng-card-skeleton.scss';
-
-@import "~@angular-mdc/theme/material-components-web.scss";
 
 body{
   margin-top: 0;
@@ -77,10 +66,10 @@ body{
 }
 
 :root {
-  --mdc-theme-primary: rgba(0, 0, 50, 0.9);
-  --mdc-theme-primary-light: #43b02a;
-  --mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-  --mdc-theme-primary-text: #fff;
+  --mdc-theme-primary: #{$mdc-theme-primary};
+  --mdc-theme-primary-light: #{$mdc-theme-primary-light};
+  --mdc-theme-primary-dark: #{$mdc-theme-primary-dark};
+  --mdc-theme-primary-text: #{$mdc-theme-primary-text};
     
   --mdc-theme-on-primary:#fff;
   --mdc-theme-background-container: white;
@@ -97,3 +86,25 @@ body{
   --mdc-theme-secondary-text: #777;  
   --mdc-theme-on-secondary:#444;
 }
+
+@import "~@angular-mdc/theme/material";
+
+@import 'kng-search.scss';
+@import 'kng-theme.scss';
+@import 'kng-responsive.scss';
+@import 'kng-mdc.scss';
+@import 'kng-card-skeleton.scss';
+
+
+//
+// input iOS
+textarea,
+input.text,
+input[type="text"],
+input[type="button"],
+input[type="submit"],
+.input-checkbox {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+

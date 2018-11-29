@@ -1,3 +1,26 @@
-<p>
-  kng-shops works!
-</p>
+<div class="shop" *ngIf="vendor">
+
+  <div class="owner">
+    <img [src]="vendor.photo.owner">
+  </div>
+
+  <h1>{{vendor.name}}</h1>
+
+  <div class="card">
+    <img [src]="vendor.photo.fg">
+    <div>
+        <section [innerHtml]="vendor.description"></section>
+    </div>  
+  </div>
+
+  <div class="products">
+  </div>
+</div>
+<div class="background-grid">
+  <div class="items-list-wrap">
+    <ul class="items-list" >
+      <li class="has-details item" *ngFor="let photo of photos"  
+        [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
+    </ul>        
+  </div>
+</div>  

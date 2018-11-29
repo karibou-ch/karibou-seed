@@ -1,0 +1,21 @@
+kng-user-reminder{
+  background-color: rgba(20, 17, 68, 0.1);
+  display: block;
+  margin-left: -6px;
+  @media (max-width:425px) {
+    width: 100vw;    
+  }
+  color: #888;
+
+  div.title{
+    padding: 5px;
+  }
+  
+  mdc-radio-group{
+    display: flex;
+    overflow-x: auto;
+    margin-top: 10px;  
+    display: none;
+  }
+  
+}

@@ -1,15 +1,38 @@
+<div class="bottom-actions" >
+  <div class="fabs">
+    
+    <button mdc-fab  extended label="MENU"
+      (click)="doToggle()"
+      class='-text-primary'>
+      <mdc-icon>restaurant_menu</mdc-icon>
+    </button>  
+
+  </div>
+  
+
+  <div class="search">
+    <i class="left material-icons">search</i>
+    <input type="text" 
+          (input)="doInput($event.target.value)"
+          (change)="doInput()" 
+          (focus)="onFocus()" 
+          placeholder="Rechercher" #search>    
+    <i class="right material-icons" [hidden]="!hasSearch()" (click)="doClear()">close</i>
+  </div>  
+
+</div>  
 
 <div class="results" [hidden]="!show" mdc-ripple>
   <ul>
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
-      {{category.name}}
+      <mdc-icon>radio_button_unchecked</mdc-icon>&nbsp;{{category.name}}
     </li>                
     <li>&nbsp;</li>
   </ul>
 
-  <mdc-list [lines]="2" avatar="true" [interactive]="false" [hidden]="!products.length">
+  <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!products.length">
       <mdc-list-item *ngFor="let product of products">
         <mdc-list-item-graphic [routerLink]="['/store',store,'home','products',product.sku]">
           <div class="avatar" [ngStyle]="{'background-image': 'url(' + product.photo.url + '/-/resize/128x/)'}">
@@ -17,10 +40,10 @@
           </div>
         </mdc-list-item-graphic>
         <mdc-list-item-text >
-            <span class="title">{{product.title}}</span>
+            <span class="title" [routerLink]="['/store',store,'home','products',product.sku]">{{product.title}}</span>
             <mdc-list-item-secondary>
               {{product.pricing.part}} - {{product.pricing.price|currency:'CHF'}}
-              <a href="javascript:;" class="gray" i18n (click)="addToCard(product)">
+              <a href="javascript:;" class="gray" i18n (click)="addToCard(product)" [hidden]="product.variants.length">
                   <i class="material-icons" style="transform: translateY(5px);font-size:20px">add</i>ajouter</a>
             </mdc-list-item-secondary>
         </mdc-list-item-text>
@@ -34,32 +57,3 @@
 
 </div>
 
-<div class="bottom-actions" >
-    <div class="fabs">
-      
-      <button mdc-fab    
-        (click)="doToggle()"
-        class='-text-primary'>
-        <mdc-icon>drag_indicator</mdc-icon>
-      </button>  
-
-    </div>
-    
-
-    <div class="search">
-      <i class="left material-icons">search</i>
-      <input type="text" 
-            (input)="doInput($event.target.value)"
-            (change)="doInput()" 
-            (focus)="onFocus()" 
-            placeholder="Rechercher" #search>    
-      <i class="right material-icons" [hidden]="!hasSearch()" (click)="doClear()">close</i>
-    </div>  
-    <!-- <div class="fab-list" >
-      <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-      <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-      <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-      <button mdc-fab >  <mdc-icon>drag_indicator</mdc-icon></button>
-    </div> -->
-
-  </div>  

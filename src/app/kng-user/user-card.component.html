@@ -2,15 +2,14 @@
   <h2 mdc-typography-title i18n [hidden]="!user.payments.length" i18n>
     Vos méthodes de paiement
   </h2>
-  <mdc-list border="true" [twoLine]="true">
+  <mdc-list  twoLine>
       <mdc-list-item *ngFor="let payment of user.payments" 
       (click)="setPaymentMethod(payment)"
       [hidden]="payment.issuer=='wallet'"      
       [class.selected]="isSelectedPayment(payment)">
-      <mdc-list-item-graphic>
-          <div [ngStyle]="{'background-image': 'url(' + issuer[payment.issuer].img + ')'}">
-          </div>
-        </mdc-list-item-graphic>
+      <div  [ngStyle]="{'background-image': 'url(' + issuer[payment.issuer].img + ')'}"
+            mdcListItemGraphic></div>
+
         <mdc-list-item-text >             
             <span>{{issuer[payment.issuer].label}}</span>                 
             <button [hidden]="!isSelectedPayment(payment)" mdc-button [outlined]="true" (click)="onDelete(payment)">
@@ -20,9 +19,9 @@
                 <div class="error" [hidden]="!payment.error">{{payment.error}}</div>
             </mdc-list-item-secondary>               
         </mdc-list-item-text>  
-        <mdc-list-item-meta [class.invalid]="!payment.isValid()" >
+        <div [class.invalid]="!payment.isValid()" mdcListItemMeta>
             {{payment.expiryToDate()|date:'MM/y'}}
-        </mdc-list-item-meta>                    
+        </div>                    
     </mdc-list-item>
   </mdc-list>
   <hr class="dashed"/>

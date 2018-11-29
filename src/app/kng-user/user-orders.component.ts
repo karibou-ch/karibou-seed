@@ -94,7 +94,10 @@ export class UserOrdersComponent implements OnInit {
 
   cancel(order:Order){
     this.$order.cancelWithReason(order,EnumCancelReason.customer).subscribe(result=>{
-      this.$snack.show(this.$i18n.label().delete_ok);
+      this.$snack.show(
+        this.$i18n.label().delete_ok,
+        this.$i18n.label().thanks,this.$i18n.snackOpt
+      );
       Object.assign(order,result);
     },error=>this.$snack.show(error.error))
   }

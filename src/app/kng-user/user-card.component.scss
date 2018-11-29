@@ -34,6 +34,7 @@ div{
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transform: translateY(-5px);
     }
     button{
       position: absolute;
@@ -46,10 +47,8 @@ div{
 
     }
   }
-  mdc-list-item-meta{
-    &.invalid{
-      color: red;
-    }
+  div.invalid{
+    color: red;
   }
 
 

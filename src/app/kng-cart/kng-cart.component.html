@@ -7,9 +7,9 @@
   </section>
   
   <section [hidden]="!items.length">
-    <h2 i18n>Résumé de votre commande</h2>
+    <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
     <h3 class="primary-text" i18n>Livraison  le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
-    <h4 [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
+    <h4 class="title-error" [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
     <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
@@ -20,23 +20,23 @@
         </div>
       </mdc-list-item-graphic>
       <mdc-list-item-text [class.error]="item.error">
-          <span class="title">{{item.title}}</span>
+          <span class="title">{{item.title}} <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span></span>
           <div class="message" >{{item.error}}</div>          
           <mdc-list-item-secondary>
-            <a href="javascript:;" class="gray" i18n (click)="removeAll(item)">
+            <a href="javascript:;" class="gray" i18n (click)="removeAll(item,item.variant)">
                 <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>enlever</a>
           </mdc-list-item-secondary>
       </mdc-list-item-text>
       
       <mdc-list-item-meta>
         <div class="action left" [hidden]="!item.selected">
-          <button (click)="remove(item)"><mdc-icon>remove</mdc-icon></button> 
+          <button (click)="remove(item,item.variant)"><mdc-icon>remove</mdc-icon></button> 
         </div>
         <div class="quantity">
             {{item.quantity}}
         </div>
         <div class="action right" [hidden]="!item.selected">
-            <button (click)="add(item)"><mdc-icon>add</mdc-icon></button> 
+            <button (click)="add(item,item.variant)"><mdc-icon>add</mdc-icon></button> 
         </div>
         <div class="price" [class.hidden]="item.selected">
             {{item.price*item.quantity|currency:'CHF'}}
@@ -190,13 +190,12 @@
   <!-- RESUME -->
   <div class="order-resume" *ngIf="isOrderReady()">
     <div class="cart-flow flow-done">3</div>
-    
-    <h2 i18n>Votre commande est prête à partir</h2>
-    <p class="block-info" i18n [hidden]="isCartDeposit()">
-      Si vous n'êtes pas présent lors de la livraison et sans indication contraire de votre part,<br/> les produits seront déposés devant votre porte.
-    </p>
+    <section class="header" [class.deposit]="!isCartDeposit()" 
+         [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
+  </section>
+
     <!-- TAX & SHIPPING -->
-    <mdc-list [lines]="1" avatar="true" [interactive]="false">
+    <mdc-list avatar="true" [interactive]="false">
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
           <div class="info" i18n>Sous total pour {{$cart.getItems().length}} produits</div>

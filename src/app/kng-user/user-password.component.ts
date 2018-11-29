@@ -68,7 +68,10 @@ export class UserPasswordComponent {
     }
     let locale=this.$i18n.locale;
     this.$user.newpassword(this.user.id,change).subscribe(
-      ()=>this.$snack.show(this.$i18n.label().modify_ok),
+      ()=>this.$snack.show(
+        this.$i18n.label().modify_ok,
+        this.$i18n.label().thanks,this.$i18n.snackOpt
+      ),
       err=>this.$snack.show(err.error)
     );
   }

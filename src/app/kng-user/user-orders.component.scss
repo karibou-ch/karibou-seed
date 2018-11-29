@@ -21,7 +21,8 @@
     
   //
     // cart content
-    mdc-list-item{    
+    mdc-list-item{ 
+      min-height: 90px;   
       >::before{
         background-color: var(--mdc-theme-primary);      
         opacity: .16;
@@ -47,8 +48,8 @@
       }
   
       mdc-list-item-text{
-        @media screen and (max-width:400px){
-          max-width: 45vw;          
+        @media screen and (max-width:425px){
+          max-width: 95vw;          
         }
         mdc-list-item-secondary{
           div.info{

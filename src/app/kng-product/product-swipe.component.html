@@ -1,0 +1,21 @@
+<div class="selected">
+  <section>
+    <div class="pink">
+        <mdc-icon>star</mdc-icon>
+        <mdc-icon>star</mdc-icon>
+        <mdc-icon>star</mdc-icon>
+    </div>
+    <h2 class="">{{getSelectedContent('t')}}</h2>
+    <h3 [innerHtml]="getSelectedContent('h')"></h3>
+  </section>
+  <div class="content">
+      <div class="mdc-layout-grid">
+        <kng-product-thumbnail 
+          [visibility]="true"
+          [sku]="section.sku"
+          *ngFor="let section of products;let j=index"
+          class="">
+        </kng-product-thumbnail>
+      </div>      
+  </div>
+</div>

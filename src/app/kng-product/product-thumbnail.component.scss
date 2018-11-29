@@ -28,10 +28,35 @@
               0px 1px 5px 0px rgba(0, 0, 0, 0.06);
   box-shadow: inherit;
  
+  @media (max-width:425px) {
+    height: 11rem;    
+    height: 13rem;    
+  }
+
   .mdc-card__primary{
     padding: 10px;
   }
 
+  mdc-card-media{
+    position: relative;
+    .product-variants{
+      position: absolute;
+      top: 0;
+      width: 100%;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: 2;
+      ul{
+        list-style: none;
+        padding: 15px;
+        li{
+          padding: 5px 0px;
+          border-bottom: 1px solid #666;
+        }          
+      }
+
+    }
+  }
   img{
     width: 58px;
     height: 58px;
@@ -68,7 +93,6 @@
     top: 5px;
     padding: 0px;
     outline: 0;
-    z-index: 1;
     cursor: pointer;
     &.right{
       right:5px;
@@ -84,7 +108,6 @@
   .info-quantity{
     font-size: 30px;
     line-height: 32px;
-    text-shadow: 0 0 6px rgba(0,0,0,0.9);
     text-align: center;
     width: 35px;
     position: absolute;
@@ -93,8 +116,18 @@
     right: 0;
     left: 0;
     z-index: 1;
+    text-shadow: 0 0 6px rgba(0,0,0,0.9);
     color: white;
     visibility: hidden;
+  }
+
+  .info-score{
+    position: absolute;
+    top: 5px;
+    margin: 0 auto;
+    left: 5px;
+    text-shadow: 0 0 6px rgba(0,0,0,0.9);
+    color: white;
   }
 
   .media{

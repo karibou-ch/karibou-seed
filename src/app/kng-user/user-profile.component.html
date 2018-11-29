@@ -18,9 +18,11 @@
 
   </section>
 
-  <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()"></kng-mail-confirmation>
+  <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()||true"></kng-mail-confirmation>
 
-  <hr class="dashed"/>
+  <kng-user-reminder [user]="user"></kng-user-reminder>
+
+  <div class="breaker small"></div>
 
 	<mdc-tab-bar disableRipple="true" dense="true">
     <mdc-tab-scroller>
@@ -43,31 +45,3 @@
   <router-outlet></router-outlet>  
 
 </div>
-
-<!--
-<div class="container">
-  <h1>User introspection</h1>
-  <div class="row">
-    <div class="col-xs-3">User object</div>
-    <div class="col-xs-9  pull-left">{{ user.displayName }}</div>
-  </div>
-  <div class="row">
-    <div class="col-xs-3">Address mail</div>
-    <div class="col-xs-9  pull-left">{{ user.email.address }}</div>
-  </div>
-  <div class="row">
-    <div class="col-xs-3">Téléphone</div>
-    <tr class="col-xs-9 " *ngFor="let tel of user.phoneNumbers ">
-      <p>
-        <b>Number: </b> {{tel.number}}
-        <b>What: </b> {{tel.what}}
-      </p>
-    </tr>
-  </div>
-  <h1>User Adress</h1>
-  <kng-user-address *ngFor="let add of user.addresses" [address]="add"></kng-user-address>
-  <h1>User Card</h1>
-  <kng-card *ngFor="let card of user.payments" [card]="card"></kng-card>
-  <kng-user-orders></kng-user-orders>
-</div>
--->

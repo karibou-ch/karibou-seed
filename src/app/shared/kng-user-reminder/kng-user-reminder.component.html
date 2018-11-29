@@ -1,0 +1,17 @@
+
+<div class="title" mdcBody1 i18n>
+  <b>Pratique!</b>
+  Nous pouvons vous envoyer un mail de rappel afin de vous aider dans l'organisation de vos courses
+</div>
+<mdc-radio-group >
+  <mdc-form-field *ngFor="let time of times">
+    <mdc-radio [value]="time.value"></mdc-radio><label>{{time.label}}</label>
+  </mdc-form-field>
+</mdc-radio-group>
+
+<mdc-radio-group >
+  <mdc-form-field *ngFor="let day of weekdays">
+    <mdc-checkbox [checked]="isChecked(day.value)"></mdc-checkbox><label>{{day.label}}</label>
+  </mdc-form-field>
+</mdc-radio-group>
+  

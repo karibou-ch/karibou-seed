@@ -1,32 +1,24 @@
-<div class="home-header -width-full" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
+<div class="home-header" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
   <h2 [hidden]="!hasAboutContent('t')" [innerHtml]="getAboutContent('t')"></h2>
   <div  [hidden]="!hasAboutContent('h')"
         [innerHtml]="getAboutContent('h')">    
-      <!-- <mdc-card [outlined]="true">
-        <mdc-card-primary-action mdc-ripple>
-          <div class="home-card__header-row">
-            <mdc-card-media [square]="true" class="home-card__media"></mdc-card-media>
-            <div class="home-card__header-info">
-              <div class="home-card__header-title" mdcHeadline5>Title</div>
-              <div class="home-card__header-artist" mdcBody2>Under the Grave</div>
-              <div class="home-card__header-year" mdcBody2>(2016)</div>
-            </div>
-          </div>
-        </mdc-card-primary-action>
-        <mdc-list-divider></mdc-list-divider>
-      </mdc-card> -->              
     </div>            
-    <p  [hidden]="!hasAboutContent('p')" 
+    <div  [hidden]="!hasAboutContent('p')" 
           [innerHtml]="getAboutContent('p')">    
-    </p>
+  </div>
 
     <!-- INFORMATION -->
-    <div class="maintenance" *ngIf="config.shared.maintenance.active" [innerHtml]="config.shared.maintenance.reason[locale]">    
+    <div class="maintenance" *ngIf="config.shared.maintenance.active" >    
+      <div [innerHtml]="config.shared.maintenance.reason[locale]"></div>
     </div>
   
-    <div class="info" *ngIf="config.shared.header.active" [innerHtml]="config.shared.header.message[locale]">    
+    <div class="info" *ngIf="config.shared.header.active" >
+      <div [innerHtml]="config.shared.header.message[locale]"></div>    
     </div>
 </div>
+
+
+<kng-product-swipe *ngIf="home.length>3" [products]="home"></kng-product-swipe>
 
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
 <kng-ui-bottom-actions [exited]="scrollDirection<-5" 
@@ -42,25 +34,8 @@
     scrollPerecnt="70"
     immediateCallback="false"
     infiniteScrollContainer="window"
-    [scrollCallback]="scrollCallback"> -->
-<div class="product-container mdc-layout-grid" hidden>
-  <mdc-card>
-      <mdc-card-primary-action mdc-ripple >
-        <mdc-card-media  [ngStyle]="{'background-image': 'url(https://ucarecdn.com/801453f4-ecb2-4c91-8dbc-196bdbe4c4b3/-/preview/300x300/)'}" class="media ">          
-  
-        </mdc-card-media>
-        <div class="">
-          <span class="">Test 1</span>
-        </div>
-        <div class="">
-            <span class="">Test 12/span></span>
-        </div>
-      </mdc-card-primary-action>
-  
-  </mdc-card>
-</div>
-    
-<div class="product-container mdc-layout-grid">
+    [scrollCallback]="scrollCallback"> -->    
+<div class="product-container mdc-layout-grid" [hidden]="!isReady">
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->

@@ -4,12 +4,12 @@ import { CommonModule } from '@angular/common';
 
 import { KngShopsComponent } from './kng-shops.component';
 
-import { Kng2CoreModule  } from 'kng2-core';
+import { Kng2CoreModule, LoaderResolve  } from 'kng2-core';
 
 //
 // define routes module
 const routes: Routes = [
-  { path: '', component: KngShopsComponent }
+  { path: ':urlpath', component: KngShopsComponent, resolve:{ loader:LoaderResolve } }  
 ];
 
 const routing: ModuleWithProviders = RouterModule.forChild(routes);

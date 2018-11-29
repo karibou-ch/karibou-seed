@@ -1,34 +1,25 @@
 <div class="container">
-  <mdc-list [twoLine]="true" avatar="true" border="true" interactive="false">
+  <mdc-list  avatar="true"  interactive="false">
     <mdc-list-item (click)="onConfigSave()">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">save</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-text i18n>
-          Sauver vos modifications
-          <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
-        </mdc-list-item-text>
+      <mdc-icon mdcListItemGraphic>save</mdc-icon>
+      <mdc-list-item-text i18n>Sauver vos modifications
+        <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
       </mdc-list-item-text>
-      <mdc-list-item-meta>
-        <mdc-icon class="pink">favorite</mdc-icon>
-      </mdc-list-item-meta>
+      <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
     <!-- SITE Name -->
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Nom du site" type="text" [(ngModel)]="config?.shared.home.siteName[$i18n.locale]">
+        <mdc-text-field fullwidth i18n-label label="Nom du site" type="text" [(ngModel)]="config?.shared.home.siteName[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
       <mdc-list-item-text>
-        <button mdc-button outlined="true"  dense="true" class="align-right"
+        <button mdc-button outlined primary class="align-right"
                (click)="onClear('siteName')">remove image</button>
         <div class="images" style="float: right;">          
           <ngx-uploadcare-widget images-only="true" 
@@ -44,168 +35,111 @@
 
     <!-- EMAIL -->
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Mail de contact" type="text" [(ngModel)]="config?.shared.home.email">
+        <mdc-text-field fullwidth i18n-label label="Mail de contact" type="text" [(ngModel)]="config?.shared.home.email">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     
     <!-- PHONE -->
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Téléphone de contact" type="text" [(ngModel)]="config?.shared.home.phone">
+        <mdc-text-field fullwidth i18n-label label="Téléphone de contact" type="text" [(ngModel)]="config?.shared.home.phone">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
 
     <!-- SUBJECT -->
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Sujet des mails" type="text" [(ngModel)]="config?.shared.home.mail.subject"></mdc-text-field>
+        <mdc-text-field fullwidth i18n-label label="Sujet des mails" type="text" [(ngModel)]="config?.shared.home.mail.subject"></mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
 
     <!-- SIGNATURE -->
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-textarea i18n-label label="Signature des mails " kng-autosize rows="4" [(ngModel)]="config?.shared.home.mail.signature"></mdc-textarea>
       </mdc-list-item-text>
     </mdc-list-item>
 
-    <!-- SIGNATURE -->
-    <mdc-list-item class="config " *ngFor="let noshipping of config?.shared.noshipping;let idx=index;">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">date_range</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <div class="width-33" style="display: inline-block">
-            <mdc-text-field  i18n-label label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason||{})[$i18n.locale]"></mdc-text-field>
-        </div>        
-        <div class="width-25" style="display: inline-block">
-            <mdc-text-field  i18n-label label="jj/mm/aaaa" type="text" [(ngModel)]="noshipping.from" required></mdc-text-field>
-        </div>
-        <div class="width-25" style="display: inline-block">
-            <mdc-text-field  i18n-label label="jj/mm/aaaa" type="text" [(ngModel)]="noshipping.to" required></mdc-text-field>
-        </div>
-
-        <button mdc-button outlined dense (click)="config?.shared.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
-      </mdc-list-item-text>
+    <!-- FERMETURE -->
+    <mdc-list-divider></mdc-list-divider>
+    <h3 i18n>Interrompre les dates de livraisons suivantes</h3>
+    <mdc-list-item class="config row-form" *ngFor="let noshipping of config?.shared.noshipping;let idx=index;">
+      <mdc-text-field class="large" fullwidth  i18n-label label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
+      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
+      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
+      <button class="small" mdc-button outlined primary (click)="config?.shared.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
     </mdc-list-item>
     <mdc-list-item >
-      <button mdc-button outlined dense  (click)="config?.shared.noshipping.push({})"><mdc-icon>add_alarm</mdc-icon></button>
+      <button mdc-button outlined primary  (click)="config?.shared.noshipping.push({reason:{}})"><mdc-icon>add_alarm</mdc-icon>Ajouter</button>
     </mdc-list-item>
 
   </mdc-list>
-
-  <!-- FERMETURE -->
-<!-- 
-        <h3 class="page-header">Interrompre les dates de livraisons suivantes</h3>
-        <div class="clearfix" ng-repeat="noshipping in config.shared.noshipping" style="border-bottom:1px dotted #ddd;margin-bottom:5px">
-          <div class="col-xs-7 nopadding">
-            <input type="text" value="{{noshipping.reason}}" ng-model="config.shared.noshipping[$index].reason[$i18n.locale]" placeholder="pour quelle raison?" class="form-control input-lg col-md-10">
-          </div>
-          <div class="col-xs-2">
-            <input type="text" class="form-control input-lg" ng-model="config.shared.noshipping[$index].from" placeholder="jj/mm/aaaa" format-date="DD/MM/YYYY" required />
-          </div>           
-          <div class="col-xs-2">
-            <input type="text" format-date="DD/MM/YYYY" class="form-control input-lg" ng-model="config.shared.noshipping[$index].to" placeholder="jj/mm/aaaa"  required />
-          </div>           
-          <div class="col-xs-1 nopadding">
-            <a class="pull-right btn btn-default btn-lg" href ng-click="config.shared.noshipping.splice($index, 1)"><i class="fa fa-remove"></i></a>
-          </div>           
-        </div>
-        <div class="clearfix">
-          <button href ng-click="config.shared.noshipping.push({})" class="btn btn-transparent btn-lg btn-block ">Ajouter une date <i class="fa fa-plus"></i></button>
-          <p class="help-block">Spécifier les dates de fermetures et de réouverture</p>
-        </div>
--->
   
   <hr class="dashed"/>
   <h3 i18n>Configuration des clés publiques (API tiers)</h3>
-  <mdc-list [twoLine]="true" avatar="true" border="true">
+  <mdc-list  avatar="true" >
     <!-- PUBKEYS -->
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Gateway public key (stripe)" type="text" [(ngModel)]="config?.shared.keys.pubStripe">
+        <mdc-text-field fullwidth i18n-label label="Gateway public key (stripe)" type="text" [(ngModel)]="config?.shared.keys.pubStripe">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Uploadcare public key" type="text" [(ngModel)]="config?.shared.keys.pubUpcare">
+        <mdc-text-field fullwidth i18n-label label="Uploadcare public key" type="text" [(ngModel)]="config?.shared.keys.pubUpcare">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
 
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Github public key" type="text" [(ngModel)]="config?.shared.keys.pubGithub">
+        <mdc-text-field fullwidth i18n-label label="Github public key" type="text" [(ngModel)]="config?.shared.keys.pubGithub">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Map public key" type="text" [(ngModel)]="config?.shared.keys.pubMap">
+        <mdc-text-field fullwidth i18n-label label="Map public key" type="text" [(ngModel)]="config?.shared.keys.pubMap">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Disqus public key" type="text" [(ngModel)]="config?.shared.keys.pubDisqus">
+        <mdc-text-field fullwidth i18n-label label="Disqus public key" type="text" [(ngModel)]="config?.shared.keys.pubDisqus">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Chat public key" type="text" [(ngModel)]="config?.shared.keys.pubChat">
+        <mdc-text-field fullwidth i18n-label label="Chat public key" type="text" [(ngModel)]="config?.shared.keys.pubChat">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Google Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubGoogle">
+        <mdc-text-field fullwidth i18n-label label="Google Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubGoogle">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-text-field i18n-label label="Facebook Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubFacebook">
+        <mdc-text-field fullwidth i18n-label label="Facebook Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubFacebook">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>

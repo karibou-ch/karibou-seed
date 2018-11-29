@@ -1,13 +1,11 @@
 <div class="container">
-    <mdc-list [twoLine]="true" avatar="true"  [interactive]="false">
+    <mdc-list  avatar="true"  [interactive]="false">
       <mdc-list-item (click)="onAddressCreate()">
-          <mdc-list-item-graphic>
-            <mdc-icon [fontSize]="30">folder</mdc-icon>
-          </mdc-list-item-graphic>
-          <mdc-list-item-text i18n>
-            Ajouter une nouvelle adresse de collecte
+          <mdc-icon mdcListItemGraphic>save</mdc-icon>
+          <mdc-list-item-text i18n>Ajouter une nouvelle adresse de collecte
             <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
           </mdc-list-item-text>        
+          <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
       </mdc-list-item>
       <mdc-list-divider></mdc-list-divider>
       <mdc-list-item *ngFor="let address of config.shared.deposits; let i = index" 

@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+
+import { Location } from '@angular/common';
 
 import { Config, Category } from 'kng2-core';
+
+import { interval } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 //import { i18n } from './i18n.service';
 
 /**
@@ -13,6 +19,10 @@ export class KngNavigationStateService  {
     title:string;
     image:string;    
   }
+
+  public referrer:string;
+  public timestamp:number;
+  public TTL=200000;
 
   private categories:Category[];
   private config:Config;
@@ -28,11 +38,39 @@ export class KngNavigationStateService  {
   isAdminLayout:boolean=false;
 
   constructor(
+    private $location:Location,
+    private $router:Router
   ) { 
     this.menu={};
     //
     // init common parameters
     this.agent=navigator.userAgent||navigator.vendor||window['opera'];
+
+    this.referrer = this.$router.url;
+
+    this.$router.events
+      .pipe(filter(event => event instanceof NavigationEnd)).subscribe((event:any)=>{
+          // console.log(event.url)        
+          this.timestamp=Date.now();
+      });
+
+    // interval(5000).pipe(
+    //   tap(()=>{
+    //     console.log('check',this.timestamp,this.TTL,(this.timestamp+this.TTL)>Date.now())
+    //     if((this.timestamp+this.TTL)>Date.now()){
+    //       return;
+    //     }
+    //     window.location.reload();
+    //   })
+    // ).subscribe()
+  }
+
+  back(){
+    this.$location.back();
+  }
+  hasHistory(){
+    //console.log(this.referrer,this.$router.url)
+    return this.referrer!==this.$router.url;
   }
 
   updateLocale(locale:string){

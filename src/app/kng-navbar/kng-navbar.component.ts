@@ -12,7 +12,7 @@ import { CartService,
          Shop} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../shared';
-import { MdcSnackbar, MdcMenu, MdcAppBar, MdcAppBarSection } from '@angular-mdc/web';
+import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { merge } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -57,7 +57,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   //@ViewChild('toolbar') toolbar:MdcToolbar;
   //@ViewChild('profile') profile:MdcMenu;
   //@ViewChild('bottombar') bottombar: MdcAppBar;
-  @ViewChild('section') section:MdcAppBarSection;
+  @ViewChild('section') section:MdcTopAppBarSection;
   @ViewChild('shipping') shipping:MdcMenu;
   constructor(
     public  $cart:CartService,
@@ -80,6 +80,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.categories=<Category[]>loader[2]||[];
     this.shops=<Shop[]>loader[3]||[];
 
+    console.log('')
     this.primary=[];
     this.topmenu=[];
    
@@ -129,6 +130,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         Object.assign(this.user, emit.user);        
         this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config,this.user);
+        this.cdr.markForCheck();
       }
       //
       // update config
@@ -164,7 +166,19 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.$snack.show(this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')')          
+        if(emit.state.action==CartAction.ITEM_MAX){
+          return this.$snack.show(
+            this.$i18n.label()[CartAction[emit.state.action]],
+            this.$i18n.label().thanks,
+            this.$i18n.snackOpt
+          );
+        }
+
+        this.$snack.show(
+          this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')',
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+        );
       }
     });
     
@@ -209,4 +223,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
 
+  onLang($event,lang){
+    console.log('---- changed locale')
+  }
 }

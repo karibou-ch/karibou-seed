@@ -282,7 +282,7 @@
       }
     }
     .card__secondary{
-      color:#666;      
+      color:#777 ;      
     }
     .card__secondary.payment{
       &.invalid{
@@ -366,12 +366,14 @@
     }
 
     .checkout-msg{
-      width: 100%;
+      width: 100vw;
       background: var(--mdc-theme-primary);      
       color:var(--mdc-theme-primary-text);
       padding: 30px;
       margin: 0;
       margin-bottom:30px;
+      margin-left: -20px;
+      margin-right: -20px;
     }
       
     

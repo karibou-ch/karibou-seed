@@ -18,7 +18,6 @@ import { Kng2CoreModule  } from 'kng2-core';
 import { SharedModule } from './shared/shared.module';
 
 import { MdcModule } from './app.mdc.module';
-//import { Material2Module } from './app.material2.module';
 
 //
 // App components
@@ -35,12 +34,13 @@ import { environment } from '../environments/environment';
 
 //
 // routing
-import { RouterModule, Routes, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { ProductComponent, 
          ProductThumbnailComponent, 
          ProductTinyComponent, 
-         ProductListComponent } from './kng-product';
+         ProductListComponent,
+         ProductSwipeComponent } from './kng-product';
 import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
@@ -65,13 +65,17 @@ export class GlobalErrorHandler implements ErrorHandler {
   declarations: [
     AppComponent,
     KngDepartementComponent,
-    ProductComponent, ProductThumbnailComponent, ProductTinyComponent, ProductListComponent,
+    ProductComponent, 
+    ProductThumbnailComponent, 
+    ProductTinyComponent, 
+    ProductListComponent,
+    ProductSwipeComponent,
     KngNavbarComponent,
     KngHomeComponent,
     KngWelcomeComponent,
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
-    KngPageNotFoundComponent    
+    KngPageNotFoundComponent
   ],
   imports: [
     BrowserModule,

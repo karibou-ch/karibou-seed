@@ -9,14 +9,12 @@ import {
   MdcDialogModule,
   MdcElevationModule,
   MdcFabModule,
-  MdcIconModule,
   MdcListModule,
   MdcMenuModule,
   MdcRippleModule,
   MdcSnackbarModule,
   MdcSelectModule,
   MdcTabBarModule,
-  MdcThemeModule,
   MdcTextFieldModule
 } from '@angular-mdc/web';
 
@@ -29,15 +27,13 @@ import {
     MdcDialogModule,
     MdcElevationModule,
     MdcFabModule,
-    MdcIconModule,
     MdcListModule,
     MdcMenuModule,
     MdcRippleModule,
     MdcSelectModule,
     MdcSnackbarModule,
     MdcTextFieldModule,
-    MdcTabBarModule,
-    MdcThemeModule
+    MdcTabBarModule
   ],
   declarations: []
 })

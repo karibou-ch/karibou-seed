@@ -63,14 +63,18 @@
       background: transparent;
       border: 0;
       color: #777;
-      position: absolute;
-      top: 10px;
-      left: 10px;
+      position: fixed;
+      top: 30px;
+      left: calc(( 100vw - 860px ) / 2 );;      
       z-index: 1;
-      -text-shadow: 1px 1px 4px #000;
       @media (max-width: 426px) {
-        top: 5px;
-        right: 5px;
+        top: 2px;
+        left: -7px;
+        padding: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;        
       }
         
     }
@@ -92,6 +96,13 @@
   text-decoration: inherit;
   text-transform: inherit;
   line-height: 1.3rem;
+
+  .title,
+  .subtitle{
+    margin: auto;
+    text-align: center;
+    margin-top: 15px;
+  }
   
   img.photo-owner{
     width:120px;
@@ -105,18 +116,16 @@
     align-items: center;
     background: white;
 
-    margin-top: 50px;
+    margin-top: 8px;
     position: relative;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.04), 
                 0px 2px 2px 0px rgba(0, 0, 0, 0.04), 
                 0px 1px 5px 0px rgba(0, 0, 0, 0.06);
     box-shadow: inherit;
-   
-    mdc-card-primary-action{
-      max-width: 600px;
-      width: 85%;
+    @media (max-width: 426px) {
+      margin-top: 4px;
     }
-  
+ 
     img{
       width: 58px;
       height: 58px;
@@ -128,17 +137,18 @@
   
     .media{
       height: 400px;
-      background-color:#ddd;
-      @media (max-width: 426px) {
-        height: 270px;
-      }
-  
+      background-color:#ddd;  
       background-repeat: no-repeat;
       background-size: cover;  
       background-position-y: 50%;
       border-radius: 5px;  
       transition: background-color .2s ease-in-out;
-  
+
+      @media (max-width: 426px) {
+        height: 270px;
+        border-radius: 0px;  
+      }
+
     }  
   
     .product-card__subtitle{
@@ -153,22 +163,7 @@
       font-size: 20px;
       line-height: 24px;      
     }
-  
-  
-    .price{
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      font-weight: 900;
-      font-size: large;
-    }
-  
-    .part{
-      position: absolute;
-      left: 5px;
-      bottom: 10px;
-      font-weight: 500;    
-    }
+
   }
   
   
@@ -188,7 +183,7 @@
   .description{
     -border-top: dotted 2px #ddd;
     display: relative;
-    width: 85%;
+    width: 95%;
     max-width: 600px;
     margin: auto;
     flex: 1;
@@ -211,7 +206,7 @@
 
 
   .breaker.small{
-    margin-top: 0;
+    margin-top: 25px;
   }
 
   .vendor{
@@ -221,13 +216,14 @@
     justify-content: flex-start;
     width: 94%;
     margin-top: 15px;
+    padding-left: 5px;
     border-top: 2px dotted #eee;
     padding-top: 5px;    
 
     div.owner{
       overflow: hidden;
-      width: 60px;
-      height: 60px;
+      width: 48px;
+      height: 48px;
       cursor: pointer;
       img{
         border-radius: 50%;
@@ -236,7 +232,7 @@
         border: 2px solid #fff;
         padding: 1px;
         &.selected{
-          border: 2px solid #5d9a5e;
+          border: 2px solid var(--mdc-theme-primary);
         }
       }      
     }
@@ -248,18 +244,10 @@
     height: auto;
     flex-flow: row wrap;
   
-    .label-product{
-      cursor: pointer;
-      background-color: rgba(92, 184, 92, 0.06);
-      border-radius: 15px;
-      padding: 4px 10px;
-      border: 1px solid rgba(70, 140, 70, 0.99);  
-      color: rgba(70, 140, 70, 0.99);
-      margin: 4px;
-      &.selected{
-        border: 2px solid #5d9a5e;
-      }
-  }
+    .mdc-chip-set--choice .mdc-chip.mdc-chip--selected {
+      background-color: var(--mdc-theme-primary);
+      color: var(--mdc-theme-surface, #fff);
+    }  
   
   }
   
@@ -303,6 +291,10 @@
         flex: 1 0;
         min-width: 29vw;
         margin: 4px 4px 0;
+        flex: 0 0 140px;
+        min-width: 41vw;
+        margin: 4px 8px 0;
+
       }
     }
   }

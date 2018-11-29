@@ -1,48 +1,33 @@
 <div class="container">
-  <mdc-list [twoLine]="true" avatar="true" border="true" interactive="false">
+  <mdc-list  avatar="true"  interactive="false">
     <mdc-list-item (click)="onConfigSave()">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">save</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-list-item-text i18n>
-          Sauver vos modifications
-          <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
-        </mdc-list-item-text>
+      <mdc-icon mdcListItemGraphic>save</mdc-icon>
+      <mdc-list-item-text i18n>Sauver vos modifications
+        <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
       </mdc-list-item-text>
-      <mdc-list-item-meta>
-        <mdc-icon class="pink">favorite</mdc-icon>
-      </mdc-list-item-meta>
+      <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
+    <h2 class="text-center" i18n>Infos principales</h2>
+
     <!-- WELCOME/MSG -->
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
           <mdc-textarea i18n-label label="Message de Welcome" kng-autosize rows="4" [(ngModel)]="config?.shared.welcome.message[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
       </mdc-list-item-text>
-      <mdc-list-item-meta>
-        <mdc-form-field>
-          <mdc-checkbox [checked]="config?.shared.welcome.active" [(ngModel)]="config?.shared.welcome.active"></mdc-checkbox>
-        </mdc-form-field>
-      </mdc-list-item-meta>
+      <mdc-form-field mdcListItemMeta>
+        <mdc-checkbox [checked]="config?.shared.welcome.active" [(ngModel)]="config?.shared.welcome.active"></mdc-checkbox>
+      </mdc-form-field>
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
     <!-- MAINTENANCE/MSG -->
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Message de maintenance" kng-autosize rows="4" [(ngModel)]="config?.shared.maintenance.reason[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Message de maintenance" kng-autosize rows="4" [(ngModel)]="config?.shared.maintenance.reason[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
       <mdc-list-item-meta>
         <mdc-form-field>
@@ -54,13 +39,9 @@
 
     <!-- HEADER/MSG -->
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Message d'entête " kng-autosize rows="4" [(ngModel)]="config?.shared.header.message[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Message d'entête " kng-autosize rows="4" [(ngModel)]="config?.shared.header.message[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
       <mdc-list-item-meta>
         <mdc-form-field>
@@ -70,38 +51,44 @@
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
 
-    <h4 class="text-center">Page de checkout</h4>
+    <h2 class="text-center" i18n>Page de checkout</h2>
+    <!-- CHECKOUT TITLE -->    
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Titre au checkout" type="text" 
+                        [(ngModel)]="config?.shared.checkout.title[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>    
+  
     <!-- CHECKOUT ADDRESS -->    
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-            <mdc-textarea i18n-label label="Info adresse lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.address[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Info adresse lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.address[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
     </mdc-list-item>    
     <!-- CHECKOUT PAYMENT -->    
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Info payment lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.payment[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Info payment lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.payment[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
     </mdc-list-item>
+
+    <!-- CHECKOUT RESUME -->    
+    <mdc-list-item class="config large">
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-textarea i18n-label label="Résumé du paiement" rows="4" [(ngModel)]="config?.shared.checkout.resume[$i18n.locale]"></mdc-textarea>
+      </mdc-list-item-text>
+    </mdc-list-item>  
     <!-- CHECKOUT MSG -->
     <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon [fontSize]="30">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
-        <mdc-list-item-secondary>
-          <mdc-textarea i18n-label label="Message lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.message[$i18n.locale]"></mdc-textarea>
-        </mdc-list-item-secondary>
+        <mdc-textarea i18n-label label="Message lors du checkout" rows="4" [(ngModel)]="config?.shared.checkout.message[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
       <mdc-list-item-meta>
         <mdc-form-field>

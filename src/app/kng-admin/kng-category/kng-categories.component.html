@@ -1,43 +1,39 @@
 <div class="container">
-  <mdc-list [twoLine]="true" avatar="true" border="true" >
+  <mdc-list twoLine avatar="true" border>
     <mdc-list-item  (click)="onCategoryCreate()">
-        <mdc-list-item-graphic>
-          <mdc-icon [fontSize]="30">folder</mdc-icon>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text i18n>
-          Ajouter une nouvelle catégorie
-          <mdc-list-item-secondary i18n >Cliquer ici pour ajouter</mdc-list-item-secondary>
-        </mdc-list-item-text>        
+        <mdc-icon mdcListItemGraphic>save</mdc-icon>
+        <mdc-list-item-text i18n>Ajouter une nouvelle catégorie
+          <mdc-list-item-secondary >Cliquer ici</mdc-list-item-secondary>
+        </mdc-list-item-text>
+        <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let category of categories" 
                    [class.disabled]="!category.active"
                    (click)="onCategorySelect($event,category)">
-        <mdc-list-item-graphic>
-          <img src="{{category.cover}}" [hidden]="!category.cover"/>
-          <mdc-icon [hidden]="category.cover" [fontSize]="30">folder</mdc-icon>
-        </mdc-list-item-graphic>
+        <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
+        <mdc-icon mdcListItemGraphic [hidden]="category.cover" [fontSize]="30">folder</mdc-icon>
         <mdc-list-item-text>
           <span>{{category.type}}/{{category.name}} ({{category.usedBy?.lenght||0}})</span>
           <mdc-list-item-secondary>
-              {{category.description||'«pas de desciption»'}}<br>
+              {{category.description||'«pas de desciption»'}} // 
               <i class="{{category.image}}"></i> {{category.image}}  
           </mdc-list-item-secondary>              
         </mdc-list-item-text>
         <mdc-list-item-meta>
-            <mdc-form-field>
-                <mdc-checkbox [checked]="category.home" [disabled]="true" name="home"></mdc-checkbox>
-                <span class="hide-md">Home</span>
-            </mdc-form-field>
-              
-            <mdc-chip>
-              <mdc-chip-icon leading><mdc-icon >folder</mdc-icon></mdc-chip-icon>
-              <mdc-chip-text>{{category.group}}</mdc-chip-text>
-            </mdc-chip>
-            <mdc-chip>
-              <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
-              <mdc-chip-text>{{category.weight}}</mdc-chip-text>
-            </mdc-chip>
+            <mdc-chip-set choice>
+              <mdc-chip [hidden]="category.home" class="chip-primary">
+                <mdc-chip-icon trailing>thumb_up</mdc-chip-icon>
+              </mdc-chip>
+              <mdc-chip >
+                <mdc-chip-text>{{category.group}}</mdc-chip-text>
+                <mdc-chip-icon trailing>folder</mdc-chip-icon>
+              </mdc-chip>
+              <mdc-chip>
+                <mdc-chip-text>{{category.weight}}</mdc-chip-text>
+                <mdc-chip-icon trailing><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+              </mdc-chip>
+            </mdc-chip-set>                      
             
         </mdc-list-item-meta>
         <mdc-list-divider></mdc-list-divider>
@@ -89,16 +85,16 @@
               <!-- TYPE -->
               <div class="align-end">
                 <!-- FIXME upgrade mdc angular 6 -->
-                <!--<mdc-radio-group formControlName="type" [(ngModel)]="edit.category.type">-->
+                <mdc-radio-group formControlName="type" [(ngModel)]="edit.category.type">
                   <mdc-form-field>
-                    <mdc-radio  value="Category" [checked]="(edit.category.type=='Category')" (change)="onTypeChange($event,'Category')" formControlName="type" ></mdc-radio>
+                    <mdc-radio class="radio-primary" value="Category"  (change)="onTypeChange($event,'Category')" ></mdc-radio>
                     <label>Category</label>
                   </mdc-form-field>
                   <mdc-form-field>
-                    <mdc-radio  value="Catalog" [checked]="(edit.category.type=='Catalog')"  (change)="onTypeChange($event,'Catalog')" formControlName="type" ></mdc-radio>
+                    <mdc-radio class="radio-primary" value="Catalog"  (change)="onTypeChange($event,'Catalog')" ></mdc-radio>
                     <label>Catalog</label>
                   </mdc-form-field>
-                <!--</mdc-radio-group>-->
+                </mdc-radio-group>
               </div>            
           </div>
           <div class="-between">
@@ -122,10 +118,10 @@
 
           <div>                      
             <!-- NAME/DESC -->
-            <mdc-text-field i18n-label label="Nom" type="text" [ngModel]="edit.category.name" formControlName="name" >
+            <mdc-text-field fullwidth i18n-label label="Nom" type="text" [ngModel]="edit.category.name" formControlName="name" >
             </mdc-text-field>
 
-            <mdc-text-field class="double" i18n-label label="Description" type="text" [ngModel]="edit.category.description" formControlName="description" >
+            <mdc-text-field fullwidth class="double" i18n-label label="Description" type="text" [ngModel]="edit.category.description" formControlName="description" >
             </mdc-text-field>
           </div>
 

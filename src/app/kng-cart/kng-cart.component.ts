@@ -144,8 +144,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.checkPaymentMethod();
   }
 
-  add(item:CartItem) {
-    this.$cart.add(item);
+  add(item:CartItem,variant?:string) {
+    this.$cart.add(item,variant);
   }
 
 
@@ -189,7 +189,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
         if(order.errors){
           this.$cart.setError(order.errors);
           this.hasOrderError=true;
-          this.$snack.show("Votre commande doit être corrigée ");
+          this.$snack.show(
+            "Votre commande doit être corrigée ",
+            this.$i18n.label().thanks,
+            this.$i18n.snackOpt
+          );
           window.scroll(0,0);          
           return;
         }
@@ -199,7 +203,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
         this.$cart.empty();
       },
       err=>{
-        this.$snack.show(err.error)
+        this.$snack.show(
+          err.error,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+      );
       }
     )
   }
@@ -289,12 +297,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
 
-  remove(item:CartItem){
-    this.$cart.remove(item);
+  remove(item:CartItem,variant?:string){
+    this.$cart.remove(item,variant);
   }
   
-  removeAll(item:CartItem){
-    this.$cart.removeAll(item);
+  removeAll(item:CartItem,variant?:string){
+    this.$cart.removeAll(item,variant);
   }
   
   onSelect(source,item){

@@ -1,75 +1,86 @@
 
 <!-- NAVIGATION  -->
-<mdc-drawer drawer='temporary' #navigation [fixed]="true" >
-  <mdc-drawer-header>
-      <img [src]="config.shared.home.siteName.image" />
+<mdc-drawer drawer="modal" #navigation  (click)="navigation.close()">
+  <mdc-drawer-header [title]="getTagline('h')" 
+                     [subtitle]="getTagline('t')" 
+                     [routerLink]="['/']">
+    <!-- <h3 mdcDrawerTitle>TODO Title</h3>
+    <h6 mdcDrawerSubtitle>{{getTagline('t')}}</h6> -->
+    <img [src]="config.shared.home.siteName.image" />
   </mdc-drawer-header>
   <mdc-drawer-content >
 
-    <mdc-list-group>
+    <mdc-list-group subheader="">
       <mdc-list>
-        <a class="title1" mdc-list-item [routerLink]="['/']"><span [innerHtml]="getTagline('t')"></span></a>
-        <mdc-list-item class="hide">
-          <div class="align-days">
-            <div class="label-shipping" *ngFor="let day of getShippingWeek()">
-            {{day.label}} <span class="bullet {{day.state}}"></span>
-            </div>
-          </div>
-        </mdc-list-item>    
-        <mdc-list-divider></mdc-list-divider>      
-        <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="bold">
-          <mdc-icon mdc-list-item-graphic class="pink">account_box</mdc-icon><span i18n>Vos commandes</span>
+        <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
+          <mdc-icon mdcListItemGraphic class="">account_box</mdc-icon><span i18n>Vos commandes</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-          <mdc-icon mdc-list-item-graphic class="pink">account_circle</mdc-icon><span i18n>Connectez-vous</span>
+          <mdc-icon mdcListItemGraphic class="">account_circle</mdc-icon><span i18n>Connectez-vous</span>
         </mdc-list-item>
               
         <mdc-list-divider></mdc-list-divider>
-        <mdc-list-item i18n class="bold">
-          <mdc-icon mdc-list-item-graphic class="primary-text">directions_bike</mdc-icon>
-          Prochaines livraisons
-        </mdc-list-item>
-        <mdc-list-item *ngFor="let day of getShippingDays();let idx=index" 
+        <h3 mdcListGroupSubheader i18n>Prochaines livraisons</h3>
+        <h3 mdcListGroupSubheader i18n>Dates</h3>
+          <mdc-list-item *ngFor="let day of getShippingDays();let idx=index" 
                        [selected]="day.equalsDate(currentShippingDay)"
                        (click)="doSetCurrentShippingDay($event,day,idx)">
-            <mdc-icon mdc-list-item-graphic>radio_button_checked</mdc-icon>
+            <mdc-icon mdcListItemGraphic>radio_button_checked</mdc-icon>
             {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
             <!-- <mdc-icon mdc-list-item-meta>info</mdc-icon>                 -->
         </mdc-list-item>
-        <mdc-menu-divider></mdc-menu-divider>
+        <mdc-list-divider></mdc-list-divider>
+        <h3 mdcListGroupSubheader i18n>Contactez-nous!</h3>
+        <mdc-list-item >
+          <mdc-icon mdcListItemGraphic >phone</mdc-icon><a href="tel:{{config.shared.home.phone}}" i18n>{{config.shared.home.phone}}</a>
+        </mdc-list-item>
+        <mdc-list-item >
+          <mdc-icon mdcListItemGraphic >email</mdc-icon><a href="mailto:{{config.shared.home.email}}" i18n>{{config.shared.home.email}}</a>
+        </mdc-list-item>
+  
       </mdc-list>
     </mdc-list-group>
     <!-- ADMIN -->
-    <mdc-list-group class="admin" [hidden]="!$navigation.isAdmin">
-      <mdc-list-item i18n class="black bold">
-        <mdc-icon mdc-list-item-graphic class="red">settings</mdc-icon>
-        Admin
-      </mdc-list-item>
-      <mdc-menu-divider></mdc-menu-divider>
-      <mdc-list-item [id]="20+i" class="admin-item " 
-        *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
-        [routerLink]="getRouterLink(menu.url)"><mdc-icon class="red"  mdc-list-item-graphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
-      </mdc-list-item>
+    <mdc-list-group class="admin" 
+                    [hidden]="!$navigation.isAdmin" >
+      <mdc-list>
+        <mdc-list-item>
+          <mdc-icon mdcListItemGraphic>loop</mdc-icon>
+          <div>
+            <mdc-radio-group [(ngModel)]="$i18n.locale">
+              <mdc-form-field>
+                <mdc-radio class="radio-primary" value="en"  (change)="onLang($event,'en')" ></mdc-radio>
+                <label>En</label>
+              </mdc-form-field>
+              <mdc-form-field>
+                <mdc-radio class="radio-primary" value="fr"  (change)="onLang($event,'fr')" ></mdc-radio>
+                <label>Fr</label>
+              </mdc-form-field>
+            </mdc-radio-group>      
+          </div>
+        </mdc-list-item>
+      
+        <mdc-list-divider></mdc-list-divider>
+        <h3 mdcListGroupSubheader>Administration</h3>
+        <h6 mdcListGroupSubheader>Config</h6>
+          <mdc-list-item [id]="20+i" class="admin-item " 
+          *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
+          [routerLink]="getRouterLink(menu.url)"><mdc-icon class="red"  mdcListItemGraphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
+        </mdc-list-item>
+      </mdc-list>
     </mdc-list-group>
   </mdc-drawer-content>
 </mdc-drawer>
 
-<!-- CART SIDEBAR -->
-<!-- <mdc-drawer drawer='temporary' #cart [fixed]="true" dir="rtl" class="right">
-  <mdc-drawer-content dir="ltr">
-    <kng-cart></kng-cart>
-  </mdc-drawer-content>
-</mdc-drawer> -->
 <!-- MAIN LAYOUT -->
 <div [hidden]="!isAppReady()" class="navbar">      
 
-  <!--- [dense]="$navigation.isMobileOrTablet()" -->
   <mdc-top-app-bar #appbar fixed="false"  [dense]="true">
     <mdc-top-app-bar-row >
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start" >
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">menu</mdc-icon>
-        <mdc-top-app-bar-title class="home" [routerLink]="['/store',store]" mdc-ripple>{{title}}</mdc-top-app-bar-title>        
+        <mdc-top-app-bar-title class="home" [routerLink]="['/store',store]" >{{title}}</mdc-top-app-bar-title>        
       </mdc-top-app-bar-section>       
       <mdc-top-app-bar-section>
         <mdc-top-app-bar-title class="shipping hide-sm">
@@ -83,7 +94,7 @@
               <span class="hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
           </a>-->
 
-          <a [routerLink]="['/store',store,'cart']" style="width: auto" class="show-sm" mdcAppBarActionItem ><mdc-icon>shopping_cart</mdc-icon> <span class="cart-items-count label"></span></a>         
+          <a [routerLink]="['/store',store,'cart']" style="width: auto;margin-right: 8px;" class="show-sm" mdcAppBarActionItem ><mdc-icon>shopping_cart</mdc-icon> <span class="cart-items-count label"></span></a>         
 
 
           <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;"
@@ -104,7 +115,7 @@
                 {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
                 <mdc-icon mdcListItemMeta>info</mdc-icon>                
             </mdc-menu-item>
-            <mdc-menu-divider></mdc-menu-divider>
+            <mdc-list-divider></mdc-list-divider>
             <mdc-menu-item [disabled]="true" >
                 <div class="align-days">
                   <div class="label-shipping" *ngFor="let day of getShippingWeek()">
@@ -121,7 +132,7 @@
           </mdc-menu>
           <mdc-menu #profile [anchorCorner]="'bottom-start'">
             <mdc-menu-item id="0" [routerLink]="['/store',store,'me','orders']"><mdc-icon>favorite</mdc-icon>&nbsp;<span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
-            <mdc-menu-divider></mdc-menu-divider>
+            <mdc-list-divider></mdc-list-divider>
             <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon>&nbsp;<span i18n>Logout</span></mdc-menu-item>
           </mdc-menu>                               -->
   
@@ -169,6 +180,14 @@
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
 
+  <!-- <div class="mdc-category">
+    <ul>
+      <li *ngFor="let category of categories" 
+          [hidden]="!category.active||category.type!='Category'" >
+        <mdc-icon>radio_button_unchecked</mdc-icon>&nbsp;{{category.name}}
+      </li>                
+    </ul>  
+  </div> -->
 
   <!-- CONTENT APP -->
   <div class="mdc-content">
@@ -176,15 +195,14 @@
   </div>
 
   <!-- BOTTOM APP BAR-->
-  <mdc-top-app-bar hidden #bottombar fixed="false"  dense="true" class="mdc-bottom-app-bar">
+  <!-- <mdc-top-app-bar hidden #bottombar fixed="false"  dense="true" class="mdc-bottom-app-bar">
     <mdc-top-app-bar-row>
-      <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()"  class="">update</mdc-icon>
         <mdc-top-app-bar-title>{{title}}</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>       
     </mdc-top-app-bar-row>
-  </mdc-top-app-bar>
+  </mdc-top-app-bar> -->
   
   
   <!-- FOOTER -->

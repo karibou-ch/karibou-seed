@@ -215,7 +215,7 @@ export class UserSignComponent {
 
   onUpdateAddress($result){
     let msg=($result.error)? ($result.error.message||$result.error):'OK';
-    this.$snack.show(msg,'OK');
+    this.$snack.show(msg,this.$i18n.label().thanks,this.$i18n.snackOpt);
     this.onBack();
   }
 
@@ -227,16 +227,16 @@ export class UserSignComponent {
       return;
     }
     let msg=($result.error)? ($result.error.message||$result.error):'Ok';
-    this.$snack.show(msg,'OK');
+    this.$snack.show(msg,this.$i18n.label().thanks,this.$i18n.snackOpt);
     this.onBack();
   }
 
   onRecover(){
     this.$user.recover(this.recover.value.email).subscribe(
       ok=>{
-        this.$snack.show(this.$i18n.label().user_recover_ok);
+        this.$snack.show(this.$i18n.label().user_recover_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
       },err=>{
-        this.$snack.show(err.error,'OK');
+        this.$snack.show(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt);
       }
     );
   }
@@ -250,14 +250,11 @@ export class UserSignComponent {
     }).subscribe(
     (user:User) => {
       if(!user.isAuthenticated()){
-        return this.$snack.show(this.$i18n.label().user_login_ko,"OK",{
-          timeout:5000,
-          multiline:true
-        });        
+        return this.$snack.show(this.$i18n.label().user_login_ko,this.$i18n.label().thanks,this.$i18n.snackOpt);        
       }
-      this.$snack.show(this.$i18n.label().user_login_ok,"OK");
+      this.$snack.show(this.$i18n.label().user_login_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
       this.onBack();      
-    },(err)=>this.$snack.show(err.error,"OK"));    
+    },(err)=>this.$snack.show(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt));    
   }
 
   onSignup(){
@@ -273,74 +270,19 @@ export class UserSignComponent {
     };    
     this.$user.register(user).subscribe(
       (user)=>{
-        this.$snack.show(this.$i18n.label().user_register_ok,"OK",{
+        this.$snack.show(this.$i18n.label().user_register_ok,this.$i18n.label().thanks,{
           timeout:8000,
           multiline:true
         });        
         this.onBack();        
       },
       (err)=>{
-        this.$snack.show(err.error,"OK",{
+        this.$snack.show(err.error,this.$i18n.label().thanks,{
           timeout:8000,
           multiline:true
         })
       }
     )
   }
-
-
-  // BACKPORT FROM K1
-  // onPostSignIn(){
-
-  //   //
-  //   // if referer is in protected path?
-  //   if($scope.referrer&&_.find(config.loginPath,function(path){
-  //       return ($scope.referrer.indexOf(path)!==-1);})){
-  //     return $location.url($scope.referrer);
-  //   }
-  //   if($scope.referrer&&_.find(config.readonlyPath,function(path){
-  //       return ($scope.referrer.indexOf(path)!==-1);})){
-  //     return $location.url($scope.referrer);
-  //   }
-
-  //   //
-  //   // admin collect food
-  //   if(user.isAdmin()){
-  //     return $location.url('/admin/collect');
-  //   }
-
-  //   //
-  //   // user is a shopper 
-  //   if(user.hasRole('logistic')){
-  //     return $location.url('/admin/shipping');
-  //   }
-
-  //   //
-  //   // user manage his shop
-  //   if(user.shops.length){
-  //     return $location.url('/admin/orders');
-  //   }
-
-  //   //
-  //   // else goto '/'
-  //   $location.url('/');
-  
-  // }
-
-  // $scope.hasPostalCode=function(cp) {
-  //   var lst=user.logistic.postalCode||[];
-  //   return lst.indexOf(cp)!==-1;
-  // }
-
-  // $scope.togglePostalCode=function(cp) {
-  //   var lst=user.logistic.postalCode||[];
-  //   var pos=lst.indexOf(cp);
-  //   if(pos===-1){
-  //     lst.push(cp);
-  //   }else{
-  //     lst.splice(pos,1);
-  //   }    
-  //   user.logistic.postalCode=lst;
-  // }
 
 }

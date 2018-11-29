@@ -1,21 +1,16 @@
 <div class="container">
-  <mdc-list [twoLine]="true" avatar="true" border="true" >
+  <mdc-list avatar="true" border="true" >
     <mdc-list-item (click)="onMenuCreate()">
-        <mdc-list-item-graphic>
-          <mdc-icon [fontSize]="30">folder</mdc-icon>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text i18n>
-          Ajouter un nouveau menu
+        <mdc-icon mdcListItemGraphic>save</mdc-icon>
+        <mdc-list-item-text i18n>Ajouter un nouveau menu
           <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
-        </mdc-list-item-text>        
+        </mdc-list-item-text>
+        <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>    
     </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let menu of menus" 
                     [class.disabled]="!menu.active"
                     (click)="onMenuSelect($event,menu)">
-        <mdc-list-item-graphic>
-          <mdc-icon [fontSize]="30">folder</mdc-icon>
-        </mdc-list-item-graphic>
+        <mdc-icon mdcListItemGraphic>folder</mdc-icon>
         <mdc-list-item-text>
           <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name[$i18n.locale]"></span>
           <mdc-list-item-secondary>

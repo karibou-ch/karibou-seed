@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy } from '@angular/core';
-import { MdcSearchBarComponent } from '../mdc-search-bar/mdc-search-bar.component';
+import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Category, ProductService, Product, CartService } from 'kng2-core';
 
 @Component({
   selector: 'kng-ui-bottom-actions',
   templateUrl: './kng-ui-bottom-actions.component.html',
   styleUrls: ['./kng-ui-bottom-actions.component.scss'],
-  encapsulation: ViewEncapsulation.None  
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
@@ -31,7 +31,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   
   constructor(
     private $cart: CartService,
-    private $products:ProductService
+    private $products:ProductService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -40,6 +41,10 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     }).sort((b,a)=>b.weight-a.weight);
   }
 
+
+
+  ngAfterContentChecked(){
+  }
 
   ngOnDestroy(){
     document.body.classList.remove('mdc-dialog-scroll-lock');
@@ -55,7 +60,9 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   doClear(){
     this.products=[];
-    this.search.nativeElement.value='';
+    this.search.nativeElement.value=null;
+    document.body.classList.add('mdc-dialog-scroll-lock');
+    this.cdr.markForCheck();    
   }
 
   doGoCategory(slug){
@@ -69,18 +76,24 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     let blur=!value;
     value=value||this.search.nativeElement.value;
     let tokens=value.split(' ').map(val=>(val||'').length);
-    // console.log('--search', value, tokens, tokens.every(len=>len>=3))
+    document.body.classList.add('mdc-dialog-scroll-lock');
+
 
     //
     // on search open window
     if(tokens.every(len=>len>=3)){
       this.show=true;
       this.findGetNull=false;
-      document.body.classList.add('mdc-dialog-scroll-lock');
       this.$products.search(value).subscribe(products=>{
+        //
+        // async clear?
+        if(!this.search.nativeElement.value){
+          return;
+        }
         this.findGetNull=!products.length
         this.products=products;
         blur&&this.search.nativeElement.blur();
+        this.cdr.markForCheck();
       });
     }
   }
@@ -92,8 +105,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       document.body.classList.add('mdc-dialog-scroll-lock');
       // this.search.nativeElement.focus();
     } else{
-      document.body.classList.remove('mdc-dialog-scroll-lock');
       this.doClear();
+      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
 
   }

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'kng2-core';
+import { i18n } from '../shared';
 
 @Component({
   selector: 'app-kng-server-error-found',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class KngServerErrorFoundComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public $i18n:i18n,
+    public $user:UserService
+  ) { 
+    
+  }
 
   ngOnInit() {
+    this.$user.me().subscribe(()=>{      
+      // window.location.href='/';
+    })
   }
 
 }

@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 // exported components and directives
 import { KngControlMessagesComponent } from './kng-control-messages/control-messages.component';
 import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
-import { CoinmarketcapService } from './coinmarketcap.service';
 import { KngNavigationStateService } from './navigation.service';
 import { InfiniteScrollerDirective } from './infinite-scroller.directive';
 import { IsAuthenticatedGard,
@@ -21,22 +20,26 @@ import { KngQuickEditorComponent, KngEditorDirective } from './kng-quick-editor/
 import { UcWidgetComponent } from './kng-uc-widget/uc-widget';
 
 import {
-  MdcIconModule,
   MdcLinearProgressModule,
   MdcListModule,
-  MdcFabModule
+  MdcFabModule,
+  MdcFormFieldModule,
+  MdcRadioModule,
+  MdcCheckboxModule,
 } from '@angular-mdc/web';
 import { RouterModule } from '@angular/router';
 import { KngOrderFeedbackComponent } from './kng-order-feedback/kng-order-feedback.component';
 import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bottom-actions.component';
+import { KngUserReminderComponent } from './kng-user-reminder/kng-user-reminder.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
+    MdcCheckboxModule,
     MdcFabModule,
-    MdcIconModule,
+    MdcRadioModule,
     MdcLinearProgressModule,
     MdcListModule
     ],
@@ -45,8 +48,13 @@ import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bott
     KngEditorDirective,
     KngFooterComponent,
     KngMailConfirmationComponent,
+    KngUserReminderComponent,
     InfiniteScrollerDirective,
+    MdcCheckboxModule,
+    MdcFabModule,
+    MdcRadioModule,
     MdcLinearProgressModule,
+    MdcListModule,
     MdcSearchBarComponent,
     KngTextfieldAutosizeDirective,
     KngQuickEditorComponent,
@@ -65,7 +73,8 @@ import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bott
     KngOrderFeedbackComponent,
     KngLazyLoadDirective,
     UcWidgetComponent,
-    KngUiBottomActionsComponent
+    KngUiBottomActionsComponent,
+    KngUserReminderComponent
   ],
 })
 export class SharedModule { 
@@ -73,7 +82,6 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
-        CoinmarketcapService,
         i18n,
         KngNavigationStateService,
         IsAuthenticatedGard,
