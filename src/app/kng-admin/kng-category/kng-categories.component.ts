@@ -115,6 +115,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         }
         this.edit.category=null;
         this.edit.create=false;
+        // FIXME, verify IF name != old.name =>  update SLUG
         // this.categories.find()
         this.$snack.show(this.$i18n.label().save_ok,"OK")
       },
