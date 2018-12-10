@@ -12,7 +12,8 @@ import { CartService,
          UserAddress,
          UserCard,
          UserService,
-         OrderService} from 'kng2-core';
+         OrderService,
+         Shop} from 'kng2-core';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../shared';
@@ -34,13 +35,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
   // }        
   
   store:string;
+  shops:Shop[];
+  vendorAmount:any;
   user:User=new User();
   config:Config;
   items:CartItem[];
   sign:any;
   cgAccepted:boolean=false;
   hasOrderError:boolean=false;
-
+  noshippingMsg:string;
   subscription;
 
   //
@@ -100,12 +103,24 @@ export class KngCartComponent implements OnInit, OnDestroy {
   ) { 
     //
     // initialize loader
-    let loader=this.$route.snapshot.data.loader;
+    let loader=this.$route.snapshot.data.loader;    
     this.config=loader[0];      
+    this.noshippingMsg=this.getNoShippingMessage();
+
     this.user=loader[1];
+    this.shops=loader[3];
     this.items=[];
+    this.vendorAmount={};
 
+    //
+    // compute available discount and delta to get one
+    this.computeDiscount();
 
+  }
+
+  getNoShippingMessage(){    
+    let noshipping=this.config.noShippingMessage().find(shipping=>!!shipping.message);
+    return noshipping&&noshipping.message;
   }
 
 
@@ -146,6 +161,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   add(item:CartItem,variant?:string) {
     this.$cart.add(item,variant);
+    this.computeDiscount();
   }
 
 
@@ -245,6 +261,61 @@ export class KngCartComponent implements OnInit, OnDestroy {
     })
   }  
 
+
+  computeDiscount() {
+    // init
+    Object.keys(this.vendorAmount).forEach(vendor=>{
+      if(!this.vendorAmount[vendor]){
+        return; 
+      }
+      this.vendorAmount[vendor].amount=0;
+    });
+
+    //
+    // sum total by vendor
+    this.$cart.getItems().forEach(item=>{
+      //let vendor=this.shops.find(shop=>shop.urlpath==item.vendor.urlpath).urlpath;
+      let vendor=item.vendor.urlpath;
+      if(!this.vendorAmount[vendor]){
+        this.vendorAmount[vendor]={
+          amount:0,discount:{}
+        };        
+        Object.assign(this.vendorAmount[vendor].discount,item.vendor.discount,{total:0});
+      }
+      this.vendorAmount[vendor].amount+=(item.price*item.quantity);  
+    });
+
+    //
+    // compute available discount
+    Object.keys(this.vendorAmount)
+          .map(vendor=>this.vendorAmount[vendor])
+          .filter(vendor=>vendor.discount.threshold)
+          .forEach(vendor=>{
+      let amount=vendor.amount;
+      let discountMagnitude=Math.floor(amount/vendor.discount.threshold);      
+      vendor.discount.needed=Math.ceil(vendor.discount.threshold/amount)
+      vendor.discount.total=discountMagnitude*vendor.discount.amount;
+    });
+
+    //
+    // DEBUG 
+    // Object.keys(this.vendorAmount).forEach(vendor=>{
+    //   console.log('--- vendor.discount',vendor,this.vendorAmount[vendor])
+    // });
+  }  
+
+  getVendorDiscount(item:CartItem){
+    return this.vendorAmount[item.vendor.urlpath].discount;
+  }
+
+  getTotalDiscount() {
+    var amount=0;
+    for(var slug in this.vendorAmount){
+      amount+=this.vendorAmount[slug].discount.total;
+    }
+    return amount;
+  }  
+
   getStaticMap(address:UserAddress){
     return KngUtils.getStaticMap(address,this.config.shared.keys.pubMap||'');
   }
@@ -299,10 +370,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   remove(item:CartItem,variant?:string){
     this.$cart.remove(item,variant);
+    this.computeDiscount();
   }
   
   removeAll(item:CartItem,variant?:string){
     this.$cart.removeAll(item,variant);
+    this.computeDiscount();
   }
   
   onSelect(source,item){

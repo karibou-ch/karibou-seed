@@ -25,6 +25,7 @@
           <mdc-list-item-secondary>
             <a href="javascript:;" class="gray" i18n (click)="removeAll(item,item.variant)">
                 <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>enlever</a>
+            <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 rabais quantité</span>                
           </mdc-list-item-secondary>
       </mdc-list-item-text>
       
@@ -45,11 +46,19 @@
     </mdc-list-item>
     <mdc-list-item class="border-top">
       <mdc-list-item-meta>
-        <div class="info">Sous total</div>
+        <div class="info" i18n>Sous total</div>
         <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>      
+    <mdc-list-item class="slim-item">
+      <mdc-list-item-meta>
+        <div class="info" i18n>Rabais commerçant</div>
+        <div class="price" >{{getTotalDiscount()|currency:'CHF'}}</div>
+      </mdc-list-item-meta>
+    </mdc-list-item>      
+
   </mdc-list>
+
 
 
   <!-- NOT LOGGED -->
@@ -67,7 +76,6 @@
   </div>
   
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
-
 
   <!-- ADDRESS IFF isAuth()-->
   <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()">      
@@ -233,29 +241,36 @@
         
     </mdc-list>                    
 
-    <!-- (SRC) HUB -->
-    <div class="vendor">
-      <img src="/assets/img/k-car-shipping.jpg" />
-    </div>          
+    <div class="shipping">
+      <!-- (SRC) HUB -->
+      <div class="vendor">
+        <img src="/assets/img/k-shipping.png" />
+      </div>          
 
-    <!-- SHIPPING -->
-    <div class="customer">
-      <img src="/assets/img/k-pin.png" class="pin"/>
-      <strong>{{currentShipping().name}}</strong>            
-      <address>{{currentShipping().streetAdress}}</address>
-      <address>{{currentShipping().postalCode}}/{{currentShipping().region}}</address>
-    </div>      
+      <!-- SHIPPING -->
+      <div class="customer">
+        <img src="/assets/img/k-pin.png" class="pin"/>
+        <strong>{{currentShipping().name}}</strong>            
+        <address>{{currentShipping().streetAdress}}</address>
+        <address>{{currentShipping().postalCode}}/{{currentShipping().region}}</address>
+      </div>          
+    </div>
 
     <!-- CHECKOUT BRETEZL MSG -->
     <div class="checkout-msg" *ngIf="config.shared.checkout.active">
       <div [innerHtml]="config.shared.checkout.message[$i18n.locale]"></div>
     </div>
+
+    <div class="block-warning" *ngIf="noshippingMsg">
+        <i class="material-icons">info</i> {{noshippingMsg[$i18n.locale]}} 
+    </div>
+  
       
     <!-- ORDER FINAL ACTION -->
     <div>
-      <mdc-checkbox (change)="cgAccepted=!cgAccepted"></mdc-checkbox>
+      <mdc-checkbox [(ngModel)]="cgAccepted"></mdc-checkbox>
       <label i18n>J'ai lu et j'accepte <a href="javascript:;" [routerLink]="['/store',store,'content','conditions-generales-de-vente']">les conditions générales de vente</a></label>  
     </div>
-    <button class="" mdc-button unelevated="true" [disabled]="!cgAccepted" (click)="doOrder()" >Commander maintenant</button>    
+    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted" (click)="doOrder()" >Commander maintenant</button>    
   </div>
 </div>
