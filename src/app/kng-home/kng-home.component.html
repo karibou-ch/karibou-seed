@@ -1,23 +1,13 @@
+<!-- INFORMATION -->
 <div class="home-header" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
-  <h2 [hidden]="!hasAboutContent('t')" [innerHtml]="getAboutContent('t')"></h2>
-  <div  [hidden]="!hasAboutContent('h')"
-        [innerHtml]="getAboutContent('h')">    
-    </div>            
-    <div  [hidden]="!hasAboutContent('p')" 
-          [innerHtml]="getAboutContent('p')">    
+  <!-- <h2 [hidden]="!hasAboutContent('t')" [innerHtml]="getAboutContent('t')"></h2>
+  <div [hidden]="!hasAboutContent('h')" [innerHtml]="getAboutContent('h')">
+  </div> -->
+  <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">
   </div>
-
-    <!-- INFORMATION -->
-    <div class="maintenance" *ngIf="config.shared.maintenance.active" >    
-      <div [innerHtml]="config.shared.maintenance.reason[locale]"></div>
-    </div>
-  
-    <div class="info" *ngIf="config.shared.header.active" >
-      <div [innerHtml]="config.shared.header.message[locale]"></div>    
-    </div>
 </div>
 
-
+<!-- SELECTION -->
 <kng-product-swipe *ngIf="home.length>3" [products]="home"></kng-product-swipe>
 
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
@@ -26,6 +16,20 @@
                        (selected)="scrollNextSectionIntoView($event)">  
 </kng-ui-bottom-actions>
 
+
+<!-- INFORMATION -->
+<div class="home-header">
+  <div class="maintenance" *ngIf="config.shared.maintenance.active" 
+      [innerHtml]="config.shared.maintenance.reason[locale]">    
+  </div>
+
+  <div class="info" *ngIf="config.shared.header.active" 
+      [innerHtml]="config.shared.header.message[locale]">
+  </div>
+</div>
+  
+  
+  
 <!-- Window virtual scroll (manage size) 
   -- https://medium.com/@yongtze_chi/virtual-scrolling-with-angular-145233f79384
   -->
@@ -35,7 +39,7 @@
     immediateCallback="false"
     infiniteScrollContainer="window"
     [scrollCallback]="scrollCallback"> -->    
-<div class="product-container mdc-layout-grid" [hidden]="!isReady">
+<div class="product-container mdc-layout-grid" >
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
@@ -64,6 +68,7 @@
         </div>
 
     </div>
+    <div class="breaker small"></div>
   </div>
 
       

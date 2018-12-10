@@ -67,12 +67,13 @@
       top: 30px;
       left: calc(( 100vw - 860px ) / 2 );;      
       z-index: 1;
-      @media (max-width: 426px) {
+      @media (max-width: 769px) {
         top: 2px;
         left: -7px;
         padding: 3px;
         background: rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
+        text-shadow: 0px 2px 0px #333;
+        color: #aaa;
         width: 45px;
         height: 45px;        
       }
@@ -287,6 +288,7 @@
       width: 137px;
       margin: 8px;
       margin-bottom: 0;
+      max-width: 300px;
       @media (max-width: 426px) {
         flex: 1 0;
         min-width: 29vw;

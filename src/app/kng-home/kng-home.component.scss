@@ -1,10 +1,6 @@
-.mdc-dialog-scroll-lock{
-  div.product-container,
-  div.home-header{
-    /* WARNING when display is non, scrollIntoView doesnt works */
-    -display: none!important;
-  }
-}
+
+//
+// BOX INFO
 div.home-header{
   display: flex!important;
   flex-flow: column;
@@ -12,93 +8,112 @@ div.home-header{
   font-size: 1.2em;
   font-weight: 200;    
   background-size: cover;
-  // &.style-a{
-  //   color: #009200 !important;
-  //   font-style: italic;
-  //   background: gold;    
-  //   min-height: 200px;
-  //   h1,h2,h3{
-  //     flex:0 1 140px;
-  //     margin:20px;  
-  //   }  
-  // }
-
-  h1,h2,h3{
-    text-transform: uppercase;
-    text-align: center;
-    margin: 0px;
-    margin-top: 10px;
-    line-height: 1.3em;
-    color:var(--mdc-theme-text-primary-on-primary,rgba(0,0,0,.87));
-    font-weight: 600;
-    @media screen and (max-width:426px){
-      flex:0 1 10px;
-    }
-  }
-  h2{
-    @media screen and (max-width:426px){
-      font-size: 20px;
-    }
-  }
   
-
-  // p.style-a{
-  //   display: flex;
-  //   justify-content: space-around;
-  //   align-items: center;
-  //   flex-flow: wrap;
-  //   margin: 0;
-  //   div.fact{
-  //     flex: 0 1 200px;
-  //     text-align: center;
-  //     font-size: .9rem;
-  //     margin: 5px;
-  //     text-shadow: 0 0 1px rgba(0,0,0,.71);
-  //     background: rgba(138, 111, 75, 0.64);
-  //     padding: 2px 10px;
-  //     border-radius: 4px;      
-  //   }    
-  // }
-
-  >p,
+  
   >div{    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-flow: wrap;
-    margin: 0 30px;
-    max-width: 780px;
-    color: #777;
-    padding: 0 5px;
-    flex:1;
-    div.fact{
-      flex: 1;
-      text-align: center;
-      font-size: .8rem;
-      margin: 0 auto;
-      text-shadow: 0 0 1px rgba(0,0,0,.71);
-      background: rgba(138, 111, 75, 0.64);
-      padding: 2px 10px;
-      font-weight: 600;      
-      @media screen and (max-width:426px){
-        min-width: 360px;
-      }
-    }    
-  }
-
-  .info,
-  .maintenance{
     width: 100%;
-    background: var(--mdc-theme-primary-light);
-    color:white;
+    background: var(--mdc-theme-background-container);
     margin: 0;
+    margin-top:0px;
+    margin-bottom:30px;
+    box-shadow: 0px 2px 5px #eee;
+    overflow: hidden;
+
+    >p,
     >div{
       padding: 20px;
+      color: var(--mdc-theme-text-hint-on-background);
+    }
+
+    h1,h2,h3{
+      text-transform: uppercase;
+      text-align: center;      
+      margin: 0px;
+      margin-top: 10px;
+      line-height: 1.3em;
+      color:var(--mdc-theme-text-primary-on-primary,rgba(0,0,0,.87));
+      font-weight: 500;
+      &.left{
+        text-align: left;
+      }
+      @media screen and (max-width:426px){
+        flex:0 1 10px;
+      }
+    }
+  
+  }
+
+  .welcome{
+    margin-left: -40px;
+    margin-right: -40px;
+    width: auto;
+    @media screen and (max-width:426px){
+      margin-left: auto;
+      margin-right: auto;
+      }
+  }
+
+  .welcome,
+  .info,
+  .maintenance{
+    margin-bottom:30px;
+    position: relative;
+    min-height: 120px;
+    width: auto;
+
+    >div{
+      display: flex;
+      flex-flow: row wrap;
+      padding: 0px;
       font-size: x-large;
+      margin-bottom:-5px;
+      overflow: hidden;
+      .left-half{
+        max-width: 29%;        
+        img{
+          width: 100%;
+        }
+        @media (max-width:426px) {
+          max-width:100%;
+        }
+      }
+      .left{
+        max-width: 48%;        
+        @media (max-width:426px) {
+          max-width:100%;
+        }
+        margin-bottom:-6px;
+        img{
+          width: 100%;
+        }
+      }
+
+      .right{
+        &.text-left{
+          text-align: left;
+          h1,h2,h3,h4,div{
+            text-align: left;
+          }
+        }
+        &.full{
+          max-width: 60%;        
+          @media (max-width:426px) {
+            max-width:100%;
+          }
+        }
+        padding: 20px;
+        align-self: center;
+        max-width: 45%;        
+        @media (max-width:426px) {
+          max-width:100%;
+        }
+      }
+
     }
   }
-  >div{
-    margin-top: 5px;
+
+  .maintenance{
+    background: var(--mdc-theme-primary);
   }
 
   &.cover{
@@ -123,57 +138,28 @@ div.home-header{
 
 }
 
-div.fab-list{
-  flex-direction: column-reverse;
-  margin: 66px 0;
-  position: fixed;
-  bottom: 30px;
-  right:30px;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  min-width: 56px;
-  min-height: 56px;  
-  &.show{
-    display: flex;
-    button{
-      opacity: 1;
-      visibility: visible;
-      transform: scale(01);      
-    }
-  }
-
-  button{
-    transition: transform .2s ease 10ms,opacity .2s ease 10ms,-webkit-transform .2s ease 10ms;    
-    margin: 8px 0;
-    width: 40px;
-    height: 40px;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0);    
-    &.show{
-      opacity: 1;
-      visibility: visible;
-      transform: scale(01);      
-    }
-
-  }
+//
+// HOME SELECTION
+kng-product-swipe{
+  margin-top:10px;
+  background: var(--mdc-theme-background-container);
 }
 
 div.product-container{
   margin-top: 0px;
-  width: 740px;
   padding-top: 0;
+  padding: 0;
+  width: 100%;  
   @media (max-width:426px) {
     width: 100vw;
     padding: 0;
     margin-left: -3px;
-    margin-top: 32px;
   }
   
   >div{
-    border-bottom: 2px solid rgba(50, 42, 167, 0.1);
-    margin-bottom:30px;
+    -border-bottom: 2px solid rgba(50, 42, 167, 0.1);
+    padding-bottom:30px;
+    background: var(--mdc-theme-background-container);
   }
 
   //
@@ -195,9 +181,10 @@ div.product-container{
   }
   section{
     text-align:center;
+    padding-top:10px;
     h2,h3{
       font-weight: 500;
-      color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
+      color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));      
       font-size: 1.675rem;
       text-transform: uppercase;    
       margin-top: 20px;
@@ -239,7 +226,7 @@ div.product-container{
     padding-bottom:0; 
     div.category,
     kng-product-thumbnail{
-      flex: 1 0 130px;
+      flex: 1 0 137px;
       width: 137px;
       margin: 8px;
       margin-bottom: 0;

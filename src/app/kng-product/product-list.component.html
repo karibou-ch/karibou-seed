@@ -65,7 +65,7 @@
       <div class="vendor" >
         <div class="owner" 
             (click)="toggleVendor(vendor)"            
-            *ngFor="let vendor of vendors">
+            *ngFor="let vendor of getVendors()">
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>
   
@@ -74,10 +74,10 @@
 
     <!-- FURTHER -->
     <div class="further-product-container mdc-layout-grid" >
-        <section>
-          <!-- <h2>{{category.name}}</h2>
-          <h3 [innerHtml]="category.description"></h3> -->
-        </section>
+        <!-- <section>
+          <h2>{{category.name}}</h2>
+          <h3 [innerHtml]="category.description"></h3>
+        </section> -->
         <div infiniteScroller
              scrollPercent="30"
              immediateCallback="false"

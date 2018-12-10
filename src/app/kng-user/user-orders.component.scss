@@ -117,5 +117,19 @@
         }
       }
     }
+
+    mdc-dialog{
+      .mdc-dialog__surface{
+        background: white;
+      }
+
+      ul{
+        list-style: none;
+        padding-left: 0;        
+        max-height: 200px;
+        overflow: hidden;
+        overflow-y: auto;        
+      }
+    }
   }
   

@@ -2,7 +2,10 @@
   <h2 mdc-typography-title i18n [hidden]="!user.payments.length" i18n>
     Vos méthodes de paiement
   </h2>
-  <mdc-list  twoLine>
+  <p class="help-block" i18n>
+    Sélectionner pour éditer
+  </p>
+  <mdc-list   twoLine>
       <mdc-list-item *ngFor="let payment of user.payments" 
       (click)="setPaymentMethod(payment)"
       [hidden]="payment.issuer=='wallet'"      
@@ -21,10 +24,10 @@
         </mdc-list-item-text>  
         <div [class.invalid]="!payment.isValid()" mdcListItemMeta>
             {{payment.expiryToDate()|date:'MM/y'}}
-        </div>                    
+        </div>                 
     </mdc-list-item>
   </mdc-list>
-  <hr class="dashed"/>
+  <div class="breaker small"></div>
   <h2 mdc-typography-title i18n  i18n [hidden]="!user.isReady()">
       Ajouter une méthode de paiement
   </h2>

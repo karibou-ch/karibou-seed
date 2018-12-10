@@ -6,7 +6,6 @@ import { KngInputValidator, KngNavigationStateService, i18n } from '../shared';
 
 import { MdcSnackbar } from '@angular-mdc/web'; 
 import { Config, LoaderService, User, UserService, UserCard, UserAddress } from 'kng2-core';
-import { BoundCallbackObservable } from 'rxjs/observable/BoundCallbackObservable';
 import { StripeService, Elements, ElementsOptions } from 'ngx-stripe';
 
 @Component({

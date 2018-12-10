@@ -9,7 +9,8 @@ import { CartService,
          User, 
          UserService,
          Category, 
-         Shop} from 'kng2-core';
+         Shop,
+         Order} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../shared';
 import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
@@ -48,6 +49,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   title:string;
   subtitle:string;
   content:any;
+  cgAccepted:boolean;
+  noshippingMsg:string;  
   cardItemsSz:number=0;
   cartItemCountElem:any;
   currentShippingDay:Date;
@@ -74,6 +77,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     let loader=this.$route.snapshot.data.loader;
     this.config=<Config>loader[0];
     this.user=<User>loader[1];
+    this.noshippingMsg=this.getNoShippingMessage();
 
     //
     // not mandatory
@@ -83,7 +87,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     console.log('')
     this.primary=[];
     this.topmenu=[];
-   
+
   }
  
 
@@ -115,6 +119,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     //
     // init cart here because navbar is loaded on all pages
     this.$cart.setContext(this.config,this.user,this.shops);
+
     this.currentShippingDay=this.$cart.getCurrentShippingDay();
 
 
@@ -215,7 +220,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   getShippingDays(){
+    // return this.config.potentialShippingWeek();
     return this.config.getShippingDays();
+  }
+  getNoShippingMessage(){    
+    let noshipping=this.config.noShippingMessage().find(shipping=>!!shipping.message);
+    return noshipping&&noshipping.message;
   }
   
   isAppReady(){

@@ -73,6 +73,10 @@
                   [hidden]="!user.isAdmin()"
                  (click)="product.attributes.boost=!product.attributes.boost;save(product);"
             [disabled]="WaitText">BOOST ({{product.attributes.boost}})</button>
+          <button mdc-button primary role="button" 
+                  [hidden]="!user.isAdmin()"
+                 (click)="product.attributes.home=!product.attributes.home;save(product);"
+            [disabled]="WaitText">HOME ({{product.attributes.home}})</button>
 
         </div>
       </div>

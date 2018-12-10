@@ -22,6 +22,7 @@
         <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader i18n>Prochaines livraisons</h3>
         <h3 mdcListGroupSubheader i18n>Dates</h3>
+          <mdc-list-item *ngIf="noshippingMsg"><b>{{noshippingMsg[locale]}}</b></mdc-list-item>
           <mdc-list-item *ngFor="let day of getShippingDays();let idx=index" 
                        [selected]="day.equalsDate(currentShippingDay)"
                        (click)="doSetCurrentShippingDay($event,day,idx)">
@@ -83,8 +84,8 @@
         <mdc-top-app-bar-title class="home" [routerLink]="['/store',store]" >{{title}}</mdc-top-app-bar-title>        
       </mdc-top-app-bar-section>       
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="shipping hide-sm">
-          « {{currentShippingDay|date:'EEEE d MMMM':'':'fr'}} »
+        <mdc-top-app-bar-title class="shipping hide-sm" (click)="navigation.open()">
+          « {{currentShippingDay|date:'EEEE d MMMM':'':'fr'}} » <i class="material-icons " [hidden]="!noshippingMsg">info</i>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <!-- APP BAR MENU ICON --> 
@@ -138,7 +139,7 @@
   
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
-    <mdc-top-app-bar-row [hidden]="$navigation.isAdminLayout || $navigation.isMobileOrTablet()" >
+    <mdc-top-app-bar-row [hidden]="$navigation.isAdminLayout || $navigation.isMobile()" >
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start"></mdc-top-app-bar-section>
 
@@ -184,7 +185,8 @@
     <ul>
       <li *ngFor="let category of categories" 
           [hidden]="!category.active||category.type!='Category'" >
-        <mdc-icon>radio_button_unchecked</mdc-icon>&nbsp;{{category.name}}
+        <i [class]="category.image"></i>
+        &nbsp;{{category.name}}
       </li>                
     </ul>  
   </div> -->

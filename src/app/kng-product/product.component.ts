@@ -24,7 +24,7 @@ import {
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../shared';
 
-import { timer } from  'rxjs/observable/timer';
+import { timer } from  'rxjs';
 import { map } from 'rxjs/operators';
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
@@ -292,6 +292,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 export class ProductThumbnailComponent extends ProductComponent {
 
   hidden:boolean=true;
+  @Input() large:boolean;
   @Input('visibility') set visibility(value:boolean){
     this.hidden=(!value);
   }

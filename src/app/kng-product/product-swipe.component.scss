@@ -1,11 +1,12 @@
 kng-product-swipe{
-  height: 280px !important;
+  min-height: 280px !important;
   overflow: hidden;
   display: block;
   border-bottom: 2px solid rgba(50, 42, 167, 0.1);
   -border-top: 2px solid rgba(50, 42, 167, 0.1);
   -margin-top: 25px;
   margin-bottom: 35px;
+  box-shadow: 0px 2px 10px #eee;
 
   @media (max-width:425px) {
     width: 100vw;    
@@ -15,7 +16,7 @@ kng-product-swipe{
     display: flex;
     flex-flow: column;
     -webkit-overflow-scrolling: touch;
-    height: 310px;
+    height: auto;
     section{
       position: relative;
       width: 100%;
@@ -27,10 +28,10 @@ kng-product-swipe{
         right: 10px;
       }
       h2,h3{
-        font-weight: 300;
+        text-transform: uppercase;
+        font-weight: 500;
         color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
         font-size: 1.675rem;
-        -text-transform: uppercase;    
         margin-bottom: 5px;
         background-color: #fff;
         margin-top:15px;
@@ -45,7 +46,7 @@ kng-product-swipe{
       }  
     }
     div.content{
-  
+      margin-bottom:-15px;
       overflow: hidden;
       overflow-x: auto;
       &::-webkit-scrollbar {
@@ -60,12 +61,12 @@ kng-product-swipe{
       
         kng-product-thumbnail,
         .selected-card {
-          width: 160px;
-          flex: 1 0 160px;
+          width: 250px;
+          flex: 1 0 250px;
           margin: 0 6px;
           @media (max-width:425px) {
-            width: 120px;
-            flex: 1 0 120px;
+            width: 180px;
+            flex: 1 0 180px;
           }
         }
         

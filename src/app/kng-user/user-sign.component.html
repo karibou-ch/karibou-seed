@@ -22,7 +22,7 @@
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
             
-          <button mdc-button unelevated="true"  [disabled]="!sign.valid" class="align-center">
+          <button primary mdc-button unelevated  [disabled]="!sign.valid" class="align-center">
             <mdc-icon>account_circle</mdc-icon>              
             <span i18n>Login</span>
           </button>            
@@ -39,7 +39,7 @@
             <mdc-icon trailing>email</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="recover.controls.email"><span i18n>L'envoi peut prendre quelques minutes          </span></kng-control-messages>
-          <button mdc-button unelevated="true"  [disabled]="!recover.valid" class="align-center">
+          <button primary  mdc-button unelevated  [disabled]="!recover.valid" class="align-center">
             <mdc-icon>account_circle</mdc-icon>              
             <span i18n>Envoyer</span>
           </button>            
@@ -81,7 +81,7 @@
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 
-          <button mdc-button unelevated="true"  [disabled]="!signup.valid" class="align-center">
+          <button primary  mdc-button unelevated  [disabled]="!signup.valid" class="align-center">
             <mdc-icon>account_circle</mdc-icon>              
             <span i18n>Créer votre compte</span>
           </button>            

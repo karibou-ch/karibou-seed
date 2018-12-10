@@ -2,7 +2,7 @@
   <div class="processing" *ngIf="openOrder" >
       <h3 i18n>Votre commande en cours </h3>
       <p i18n class="help-block">
-          Votre commande du <b>{{openOrder.shipping.when|date:'EEE d MMM y'}}</b> est en cours de préparation <b>({{openOrder.getProgress()}}%)</b>
+          Votre commande du <b>{{openOrder.shipping.when|date:'EEE d MMM y'}}</b> est en cours de préparation <b>({{openOrder.getProgress().toFixed(0)}}%)</b>
           <br/>La livraison est prévue chez <b>{{openOrder.shipping.name}}</b>
       </p>
       <mdc-linear-progress 
@@ -114,16 +114,21 @@
           <form  (submit)="onFeedback()">
               <!-- CHECK -->
               <div>
-                  <h2 style="margin-top:inherit" i18n>N'hésitez pas à nous informer du problème que vous avez rencontré</h2>
+                  <h2 style="margin-top:inherit" i18n>Vous avez eu un problème avec un produit?</h2>
+                  <p>Nous sommes désolé! mais quand ça arrive, on vous rembourse toujours!</p>
+
                   <ul>
                     <li *ngFor="let item of feedbackOrder.items" [class.strike]="item.fulfillment.status=='failure'">
-                      {{item.quantity}}x {{item.title}} ({{item.part}}) 
-                      <span class="text-right">
+                      <mdc-form-field>
+                        <mdc-checkbox ([ngModel])="item.checked"></mdc-checkbox>
+                        <label>{{item.quantity}}x {{item.title}} ({{item.part}}) </label>
+                      </mdc-form-field>
+                      <!-- <span class="text-right">
                           -
                           <a class="text-secondary  " href="javascript:;" >manquait</a>,
                           <a class="text-secondary  " href="javascript:;" >qualité</a>,
                           <a class="text-secondary  " href="javascript:;" >transport</a>    
-                      </span>
+                      </span> -->
                     </li>
                   </ul>
                       
@@ -134,7 +139,7 @@
 
                   <p class="help-block text-center" i18n>
                     C'est la meilleure manière pour nous tous d'améliorer le service 
-                    <i class="material-icons">loyalty</i>
+                    <i class="material-icons pink">loyalty</i>
                   </p>
             
                 <!-- <mdc-text-field i18n-label label="Nom" type="text" [ngModel]="edit.address.name" formControlName="name">
@@ -146,8 +151,7 @@
           
       </mdc-dialog-body>
       <mdc-dialog-footer>
-        <button mdc-dialog-button [cancel]="true">Decline</button>
-        <button mdc-dialog-button (click)="onFeedback()" [disabled]="">Send</button>
+        <button mdc-dialog-button (click)="onFeedback()" [disabled]="">OK</button>
       </mdc-dialog-footer>
     </mdc-dialog-surface>
   </mdc-dialog>

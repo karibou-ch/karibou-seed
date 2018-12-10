@@ -67,16 +67,15 @@
       top: 30px;
       left: calc(( 100vw - 860px ) / 2 );;      
       z-index: 1;
-      @media (max-width: 426px) {
+      @media (max-width: 769px) {
         top: 2px;
         left: -9px;
         padding: 3px;
         background: rgba(255, 255, 255, 0.3);
-        text-shadow: 1px 1px 0px #000;
-        border-radius: 50%;
+        text-shadow: 0px 2px 0px #333;
+        color: #aaa;
         width: 45px;
         height: 45px;        
-        color: white;
       }
       // @media (min-width: 1025px) {
       //   top: -5px;
@@ -481,6 +480,10 @@
         flex: 1 0;
         min-width: 29vw;
         margin: 4px 4px 0;
+        flex: 0 0 140px;
+        min-width: 39vw;
+        margin: 4px 10px 0;
+
       }
     }
   }

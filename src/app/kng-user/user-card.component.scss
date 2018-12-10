@@ -1,7 +1,7 @@
 div{
   h1,h2,h3,h4{
     margin-top: 50px;
-    font-weight: 300!important;
+    font-weight: 400!important;
   }
 
   .block-info{
@@ -9,17 +9,16 @@ div{
     text-shadow: 1px 1px 0 white;
     margin-top: -15px;    
   }
+  mdc-list-item:nth-child(1n+2){
+    border-top: 1px solid #ddd;
+  }
 
-  mdc-list-item-graphic{
+  .mdc-list-item__graphic{
     width: 52px;
     margin-right:12px;
-    >div{
-      margin-top: 20px;
-      width: 52px;
-      height: 52px;
-      background-size: contain;          
-      background-repeat:no-repeat;
-    }
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 35px;    
   }
   mdc-list-item-text{
     max-width: 70vw;

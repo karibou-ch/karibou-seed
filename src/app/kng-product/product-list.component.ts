@@ -18,7 +18,7 @@ import {
   config,
   Shop
 } from 'kng2-core';
-import { timer } from 'rxjs/observable/timer';
+import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MdcChipSet } from '@angular-mdc/web';
 
@@ -40,6 +40,10 @@ export class ProductListComponent implements OnInit {
   isReady: boolean = false;
   config: any;
   products: Product[] = [];
+  cache:{
+    products: Product[];
+  }
+  
   password: string;
   user: User;
   category: {
@@ -68,6 +72,10 @@ export class ProductListComponent implements OnInit {
     private zone:NgZone,
     private cdr: ChangeDetectorRef
   ) {
+    this.cache={
+      products:[]
+    }
+
     this.category = {
       slug: null,
       categories: [],
@@ -134,15 +142,13 @@ export class ProductListComponent implements OnInit {
   }  
 
   getProducts(){
-    //[hidden]="filterChild&&filterChild!=product.belong.name"
-
-    return this.products.filter(product=>{
-      let vendor=!this.filterVendor||product.vendor.urlpath==this.filterVendor;
-      let cat=!this.filterChild||product.belong.name==this.filterChild;
-      return cat&&vendor;
-    })
+    return this.cache.products;
   }
 
+  getVendors(){
+    let available=this.getProducts().map(product=>product.vendor.urlpath);
+    return this.vendors.filter(vendor=>available.indexOf(vendor.urlpath)>-1);
+  }
   getVisibility(j){
     return (this.currentPage>j);
   }
@@ -152,15 +158,26 @@ export class ProductListComponent implements OnInit {
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.zone.run(() => {
         this.products = products.sort(this.sortProducts);
-        this.setVendors(this.products);  
         //
         // select first child category
         //this.subcategory.chips.filter(elem=>true)[0].selected=true;
         if(this.category.current.child[0]){
           this.toggleChild(this.category.current.child[0].name)
         }
+
+        //
+        // set vendors after toggle of child category
+        this.setVendors(this.products);  
         this.cdr.markForCheck();
       });
+    });
+  }
+
+  setProducts(){
+    return this.cache.products=this.products.filter(product=>{
+      let vendor=!this.filterVendor||product.vendor.urlpath==this.filterVendor;
+      let cat=!this.filterChild||product.belong.name==this.filterChild;
+      return cat&&vendor;
     });
   }
 
@@ -168,6 +185,7 @@ export class ProductListComponent implements OnInit {
     let map={};
     products.forEach(product=>map[product.vendor.urlpath]=product.vendor);
     this.vendors=Object.keys(map).map(key=>map[key]);
+    this.setProducts();
   }
 
   toggleVendor(vendor:Shop){
@@ -175,15 +193,19 @@ export class ProductListComponent implements OnInit {
       return this.filterVendor=null;
     }
     this.filterVendor=vendor.urlpath;
+    this.setProducts();
   }
 
   toggleChild(child:string){
     if(this.filterChild==child){
       this.subcategory.chips.forEach((elem:any)=>elem.selected=false);
-      return this.filterChild=null;
+      this.filterChild=null;
+      this.setProducts();
+      return;
     }
     this.subcategory.chips.forEach((elem:any)=>elem.selected=(elem.chipText.elementRef.nativeElement.innerText==child));    
     this.filterChild=child;
+    this.setProducts();
   }
 
 

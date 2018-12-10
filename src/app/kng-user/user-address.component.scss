@@ -3,35 +3,36 @@ div{
   text-align: left;
 
   h1,h2,h3,h4{
-    font-weight: 300!important;
+    text-align: center;
+    font-weight: 400!important;
   }
 
   .block-info{
     color: #aaa;
     text-shadow: 1px 1px 0 white;
-    margin-top: -15px;    
+    text-align: center;
+    padding: 0 20px;
   }
   .help-block{
-    max-width: 90%;
     text-align: center;
     color: #ccc;    
+    text-align: center;
+    padding: 0 20px;
   }
   
-  div{
-
+  mdc-list-item:nth-child(odd){
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
   }
+
   mdc-list-item{
     padding: 0;
-    mdc-list-item-graphic{
-      width: 52px;
-      margin-right:12px;
-      >div{
-        margin-top: 2px;
-        width: 52px;
-        height: 52px;
-        background-size: contain;          
-        background-repeat:no-repeat;
-      }
+    .mdc-list-item__graphic{
+      width: 72px;
+      height: 72px;
+      margin-right:6px;
+      background-size: cover;          
+      background-repeat:no-repeat;
     }
     mdc-list-item-text{
       text-align: left;
@@ -49,10 +50,8 @@ div{
   
       }
     }
-    mdc-list-item-meta{
-      &.invalid{
-        color: red;
-      }
+    div.invalid{
+      color: red;
     }
   
   }

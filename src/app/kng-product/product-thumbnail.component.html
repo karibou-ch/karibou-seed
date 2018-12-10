@@ -8,7 +8,9 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-	<mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
+	<mdc-card class="product-card card-skeleton" [outlined]="false" 
+						[class.large]="large"
+						[class.incart]="cartItem&&cartItem?.quantity"
 	 [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
 
 

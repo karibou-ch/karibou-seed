@@ -3,14 +3,15 @@
     <h2 mdc-typography-title i18n [hidden]="!user.addresses.length" i18n>
       Vos adresses 
     </h2>
-          
-    <mdc-list border="true" [twoLine]="true">
+    <p class="help-block" i18n>
+      Sélectionner pour éditer
+    </p>
+              
+    <mdc-list twoLine>
         <mdc-list-item *ngFor="let address of getUser().addresses;let idx=index" 
         (click)="setAddress(address,idx)"
         [class.selected]="isSelectedAddress(address,idx)">
-          <mdc-list-item-graphic>
-            <div [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}"></div>
-          </mdc-list-item-graphic>
+          <div [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}" mdcListItemGraphic></div>
           <mdc-list-item-text >             
               <span>{{address.name}}</span>                 
               <button [hidden]="!isSelectedAddress(address,idx)" 
@@ -21,13 +22,11 @@
                   {{address.postalCode}}/{{address.region}}                          
               </mdc-list-item-secondary>               
           </mdc-list-item-text>  
-          <mdc-list-item-meta [class.primary]="address.primary" >
-              
-          </mdc-list-item-meta>                    
+          <div [class.primary]="address.primary" mdcListItemMeta></div>                    
       </mdc-list-item>
     </mdc-list>
 
-    <hr class="dotted dashed"/>
+    <div class="breaker small"></div>
   </div>
 
   <!-- <div [hidden]="!small" *ngIf="idx">
@@ -40,25 +39,25 @@
     <h2 mdc-typography-title>Ajouter une adresse de livraison</h2>
     <form [formGroup]="$address" (submit)="onSave()">
 
-        <mdc-text-field i18n-label label="Nom Prénom"  type="text" formControlName="name" [ngModel]="user.display()">
+        <mdc-text-field fullwidth i18n-label label="Nom Prénom"  type="text" formControlName="name" [ngModel]="user.display()">
           <mdc-icon trailing>person</mdc-icon>
         </mdc-text-field>
 
 
-        <!-- <mdc-text-field i18n-label label="Adresse"  type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
+        <!-- <mdc-text-field fullwidth i18n-label label="Adresse"  type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
         </mdc-text-field> -->
 
         <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75" [box]="false" (selectionChange)="onGeloc($event)">
           <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
         </mdc-select>
           
-        <mdc-text-field i18n-label label="Étage"  type="text" formControlName="floor" class="width-25">
+        <mdc-text-field fullwidth i18n-label label="Étage"  type="text" formControlName="floor" class="width-25">
         </mdc-text-field>
         <p class="help-block" i18n>
-          Aujourd'hui nous livrons uniquement à proximité de notre boulangerie.
+          Aujourd'hui nous livrons uniquement les code postaux proposés.
         </p>
   
-        <mdc-text-field i18n-label label="Téléphone (mobile)"  type="text" formControlName="phone" >
+        <mdc-text-field fullwidth i18n-label label="Téléphone (mobile)"  type="text" formControlName="phone" >
         </mdc-text-field>
           
         <mdc-select placeholder="Région" formControlName="region" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
@@ -67,21 +66,20 @@
         </mdc-select>
         
           
-        <!-- <mdc-text-field i18n-label label="Code postal"  type="text" formControlName="postalCode" class="width-50">
-        </mdc-text-field> -->
-        <mdc-select placeholder="Code postal" formControlName="postalCode" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
-          <!-- <option value="" selected></option> -->
+        <mdc-text-field fullwidth i18n-label label="Code postal"  type="text" formControlName="postalCode" class="width-50">
+        </mdc-text-field>
+        <!-- <mdc-select placeholder="Code postal" formControlName="postalCode" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
-        </mdc-select>
+        </mdc-select> -->
         
-        <mdc-text-field i18n-label label="Note au livreur, code, autres remarques "  type="text" formControlName="note">
+        <mdc-text-field fullwidth i18n-label label="Note au livreur, code, autres remarques "  type="text" formControlName="note">
           <mdc-icon trailing>person</mdc-icon>
         </mdc-text-field>
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
         <button mdc-button 
                 type="button"
-                [primary]="false"
+                [primary]="true"
                 [unelevated]="true" 
                 [disabled]="idx==null||idx==undefined" 
                 (click)="idx=null;"

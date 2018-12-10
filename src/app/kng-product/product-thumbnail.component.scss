@@ -9,7 +9,14 @@
   visibility: visible;
 }
 
+
 .product-card{
+  &.large{
+    height: 16rem;
+    .media{
+      height: 12rem;
+    }
+  }
   &.loader{
     width: auto;
     height: 190px;
@@ -88,7 +95,7 @@
     font-weight: bold;
     border-radius: 25px;
     width: 48px;
-    height: 26px;
+    height: 32px;
     position: absolute;
     top: 5px;
     padding: 0px;

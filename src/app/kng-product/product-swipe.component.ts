@@ -19,7 +19,7 @@ import {
   config,
   Shop
 } from 'kng2-core';
-import { timer } from 'rxjs/observable/timer';
+import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { baseDirectiveCreate } from '@angular/core/src/render3/instructions';
 import { i18n } from '../shared';

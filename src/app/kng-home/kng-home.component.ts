@@ -8,7 +8,7 @@ import { Component,
          QueryList, 
          ChangeDetectionStrategy
         } from '@angular/core';
-import { timer } from  'rxjs/observable/timer';
+import { timer } from  'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -72,6 +72,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     available:boolean;
     status:boolean;
     when:Date|boolean;
+    reload?:number;
   }={
     discount:true,
     home:true,
@@ -99,8 +100,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.user=loader[1];
     this.categories=loader[2]||[];
     this.currentPage=1000;
-
-
+    this.options.maxcat=(window.innerWidth<426)?6:8
     
   }
 
@@ -115,12 +115,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     },800)
     
     this.subscription=this.$loader.update().subscribe(emit=>{
+
       // emit signal for config
       if(emit.config){
       }
 
       // emit signal for user
       if(emit.user){
+        // force reload product list (avoid cache between anonymous and user transition)
+        this.options.reload=emit.user.isAuthenticated()?1:0;
       }
 
       // emit signal for CartAction[state]

@@ -1,3 +1,7 @@
+:host{
+  padding-top: 50px;
+  background-color: var(--mdc-theme-secondary, white);  
+}
 div.footer{
   margin-top: 0px;
   width: 100%;
@@ -6,11 +10,17 @@ div.footer{
   min-height: 200px;
   font-size: .9rem;
 
-  div.main{
-    background-color: #8b6f4e;
-    background-color: var(--mdc-theme-secondary,white);      
-    color: var(--mdc-theme-secondary-text);  
+  background-image: url(/assets/img/k-footer.png);
+  background-position-y: top;
+  background-position-x: 40%;
+  background-repeat: repeat-x;
+  padding-top: 110px;
+  background-color: var(--mdc-theme-secondary,white);      
 
+
+  div.main{
+    color: var(--mdc-theme-secondary-text);  
+    background: #d0d0d9;
     width: 100%;
     margin: auto;
     box-sizing: border-box;  
@@ -27,7 +37,7 @@ div.footer{
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
-        border-bottom:1px solid var(--mdc-theme-secondary-dark);      
+        border-bottom:5px dotted var(--mdc-theme-secondary-dark);      
       }
       .elem{
         flex:1 0 calc(33% - 40px);
