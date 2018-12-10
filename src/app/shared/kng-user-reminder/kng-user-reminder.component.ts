@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { User } from 'kng2-core';
+import { User, UserService } from 'kng2-core';
 
 @Component({
   selector: 'kng-user-reminder',
@@ -10,6 +10,8 @@ import { User } from 'kng2-core';
 export class KngUserReminderComponent implements OnInit {
 
   @Input() user:User;
+
+  show:boolean;
 
   times=[
     {value:'8',label:'8h00'},
@@ -30,12 +32,20 @@ export class KngUserReminderComponent implements OnInit {
   ]
 
 
-  constructor() { }
+  constructor(
+    private $user:UserService
+  ) { 
+
+  }
+
+  doUpdate(){
+    this.$user.save(this.user).subscribe();
+  }
 
   ngOnInit() {
   }
 
   isChecked(day:number){
-    return this.user.reminder.weekdays.indexOf(day)>-1;
+    return (this.user.reminder.weekdays||[]).indexOf(day|0)>-1;
   }
 }

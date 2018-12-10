@@ -1,21 +1,33 @@
 kng-user-reminder{
-  background-color: rgba(20, 17, 68, 0.1);
   display: block;
   margin-left: -6px;
   @media (max-width:425px) {
     width: 100vw;    
   }
-  color: #888;
+  color: #333;
+
+  .mdc-radio__outer-circle,
+  .mdc-radio__inner-circle{
+    border-color: var(--mdc-theme-primary)!important;
+  }
 
   div.title{
-    padding: 5px;
+    padding: 15px;
+    cursor: pointer;
+    background-color: rgba(20, 17, 68, 0.1);
   }
-  
-  mdc-radio-group{
+  div.content{
     display: flex;
-    overflow-x: auto;
-    margin-top: 10px;  
-    display: none;
-  }
+    flex-flow: column;
+    margin: 0;
+    border-bottom: 1px solid var(--mdc-theme-primary);
+    mdc-radio-group{
+      width: 100%;
+      margin: 0;
+      margin-top: 10px;  
+      flex: 0 0 100%;
+    }
+  
+  }  
   
 }

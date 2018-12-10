@@ -1,17 +1,19 @@
 
-<div class="title" mdcBody1 i18n>
+<div class="title" mdcBody1 i18n (click)="show=!show">
   <b>Pratique!</b>
   Nous pouvons vous envoyer un mail de rappel afin de vous aider dans l'organisation de vos courses
 </div>
-<mdc-radio-group >
-  <mdc-form-field *ngFor="let time of times">
-    <mdc-radio [value]="time.value"></mdc-radio><label>{{time.label}}</label>
-  </mdc-form-field>
-</mdc-radio-group>
-
-<mdc-radio-group >
-  <mdc-form-field *ngFor="let day of weekdays">
-    <mdc-checkbox [checked]="isChecked(day.value)"></mdc-checkbox><label>{{day.label}}</label>
-  </mdc-form-field>
-</mdc-radio-group>
+<div [hidden]="!show"class="content">
+  <mdc-radio-group >
+    <mdc-form-field *ngFor="let time of times" >
+      <mdc-radio (click)="doUpdate(null,time.value)" [value]="time.value" [checked]="user.reminder.time==time.value"></mdc-radio><label>{{time.label}}</label>
+    </mdc-form-field>
+  </mdc-radio-group>
+  
+  <mdc-radio-group >
+    <mdc-form-field *ngFor="let day of weekdays">
+      <mdc-checkbox (change)="doUpdate(day.value)" [checked]="isChecked(day.value)"></mdc-checkbox><label>{{day.label}}</label>
+    </mdc-form-field>
+  </mdc-radio-group>      
+</div>
   
