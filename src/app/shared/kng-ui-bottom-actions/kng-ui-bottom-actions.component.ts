@@ -28,6 +28,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Output() selected:EventEmitter<string>=new EventEmitter<string>();
 
   @ViewChild('search') search:ElementRef;
+  @ViewChild('stats') stats:ElementRef;
   
   constructor(
     private $cart: CartService,
@@ -38,7 +39,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
       return c.active&&(c.type==='Category');
-    }).sort((b,a)=>b.weight-a.weight);
+    });
   }
 
 
@@ -61,6 +62,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   doClear(){
     this.products=[];
     this.search.nativeElement.value=null;
+    this.stats.nativeElement.innerText='';
     document.body.classList.add('mdc-dialog-scroll-lock');
     this.cdr.markForCheck();    
   }
@@ -74,24 +76,32 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   doInput(value?:string){
     let blur=!value;
+    let margin=8; // display stats result
     value=value||this.search.nativeElement.value;
     let tokens=value.split(' ').map(val=>(val||'').length);
     document.body.classList.add('mdc-dialog-scroll-lock');
 
+    this.stats.nativeElement.innerText='';
 
     //
     // on search open window
-    if(tokens.every(len=>len>=3)){
+    if(tokens.some(len=>len>=3)){
       this.show=true;
       this.findGetNull=false;
+      margin=(this.search.nativeElement.value||'').length*margin;
+
       this.$products.search(value).subscribe(products=>{
         //
         // async clear?
+        this.stats.nativeElement.style.marginLeft=35+margin+'px';
         if(!this.search.nativeElement.value){
+          this.stats.nativeElement.innerText='';
           return;
         }
+        this.stats.nativeElement.innerText='('+products.length+')';
+
         this.findGetNull=!products.length
-        this.products=products;
+        this.products=products.sort(this.sortByScore);
         blur&&this.search.nativeElement.blur();
         this.cdr.markForCheck();
       });
@@ -113,8 +123,13 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   onFocus(){
     try{
       this.search.nativeElement.select();
+      
     }catch(e){}
     
+  }
+
+  sortByScore(a,b){
+    return b.stats.score-a.stats.score;
   }
 
   sortByWeight(a:Category,b:Category){

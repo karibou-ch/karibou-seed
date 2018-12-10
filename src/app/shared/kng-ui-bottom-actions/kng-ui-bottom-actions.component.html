@@ -4,7 +4,7 @@
     <button mdc-fab  extended label="MENU"
       (click)="doToggle()"
       class='-text-primary'>
-      <mdc-icon>restaurant_menu</mdc-icon>
+      <mdc-icon>menu</mdc-icon>
     </button>  
 
   </div>
@@ -12,6 +12,7 @@
 
   <div class="search">
     <i class="left material-icons">search</i>
+    <span #stats class="stats"></span>
     <input type="text" 
           (input)="doInput($event.target.value)"
           (change)="doInput()" 
@@ -23,11 +24,14 @@
 </div>  
 
 <div class="results" [hidden]="!show" mdc-ripple>
-  <ul>
+  <ul class="col">
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
-      <mdc-icon>radio_button_unchecked</mdc-icon>&nbsp;{{category.name}}
+      <i [class]="category.image" class="icon"></i>
+      <!-- <img src="assets/img/icon-wine.svg" width="32px" height="32px"/> -->
+      <!-- <mdc-icon>radio_button_unchecked</mdc-icon> -->
+      &nbsp;{{category.name}}
     </li>                
     <li>&nbsp;</li>
   </ul>
@@ -51,9 +55,9 @@
       </mdc-list-item>
     </mdc-list>
 
-  <div [hidden]="!findGetNull" class="info">
+  <!-- <div [hidden]="!findGetNull" class="info">
     <h4>Pas de résultat avec votre recherche</h4>
-  </div>
+  </div> -->
 
 </div>
 

@@ -12,7 +12,7 @@ kng-ui-bottom-actions{
 
   &.show{
     top: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 1);
     bottom: 0;
     height: 100vh;  
     transform: none;  
@@ -28,9 +28,9 @@ kng-ui-bottom-actions{
     justify-content: flex-end;
 
     overflow-y: auto;
-    max-height: calc( 100% - 100px);
+    max-height: calc( 100% - 70px);
     height: 100%;
-    padding-top: 40px;
+    padding-top: 10px;
     background-color: white;
     // &::-webkit-scrollbar { 
     //   display: none; 
@@ -43,6 +43,7 @@ kng-ui-bottom-actions{
       margin-right: auto;
       margin-left: auto;
       width: 100vw;
+      padding-top: 20px;
 
     }
 
@@ -92,6 +93,40 @@ kng-ui-bottom-actions{
   
     }
     ul{
+      &.col{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-left: 1px;
+        align-content: space-evenly;
+
+        @media (max-width:426px) {
+          align-content: space-between;
+          li{
+            font-size: 14px;
+            i.fa{
+              width: 50px!important;
+              height: 50px!important;
+  
+            }
+          }
+        }
+        li{
+          text-align: center;
+          max-width: calc( 31% - 20px );
+          flex:1 1 30%;
+          padding-left: 0px;
+          i.fa{
+            width: 70px;
+            height: 70px;
+            display: block;
+            text-align: center;
+            margin: auto;
+            margin-bottom: 20px;
+          }          
+        }        
+      }
       list-style: none;
       padding-left: 15px;
       height: 100%;
@@ -102,7 +137,7 @@ kng-ui-bottom-actions{
       li{
         padding: 8px;
         font-size: 18px;
-        padding-left: 15px;
+        padding-left: 5px;
         cursor: pointer;
         font-weight: 500;
         color: #555;
@@ -115,6 +150,7 @@ kng-ui-bottom-actions{
     .info{
       color: #aaa;
       padding: 25px;        
+      margin: auto;
     }
   }
   .bottom-actions{
@@ -200,6 +236,14 @@ kng-ui-bottom-actions{
           right: 25px;
         }
   
+      }
+      .stats{
+        font-size: 90%;
+        position: absolute;
+        margin-top: 15px;
+        font-weight: 900;
+        color: #999;     
+        transition: all .3s;   
       }
       input{
         padding-left: 30px;
