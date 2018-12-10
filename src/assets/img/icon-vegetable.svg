@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="3.968415mm"
+   height="4.4276562mm"
+   viewBox="0 0 14.061313 15.688546"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="icon-vegetable.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.4"
+     inkscape:cx="14.674743"
+     inkscape:cy="9.3930947"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1871"
+     inkscape:window-height="1056"
+     inkscape:window-x="49"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-92.035785,-134.85139)">
+    <g
+       inkscape:export-ydpi="512.03998"
+       inkscape:export-xdpi="512.03998"
+       id="g14553"
+       transform="matrix(0.49160875,0,0,-0.49160872,38.14753,332.22864)"
+       style="display:inline;fill:#b4b4b4;fill-opacity:1">
+      <g
+         id="g14555"
+         transform="translate(118.4579,391.7334)"
+         style="fill:#b4b4b4;fill-opacity:1">
+        <path
+           d="M 0,0 C 1.395,0.844 1.935,1.058 2.531,1.226 2.316,2.785 2.436,4.251 3.001,5.738 3.368,6.707 1.826,7.154 1.46,6.192 0.848,4.582 0.725,2.916 0.915,1.234 -0.239,4.263 -2.013,7.032 -4.122,9.488 -4.799,10.277 -5.963,9.17 -5.291,8.387 -4.347,7.288 -3.474,6.113 -2.695,4.879 -1.693,3.193 -1.252,2.23 -1.086,1.554 -3.052,3.411 -4.25,5.875 -5.407,8.326 -5.847,9.261 -7.21,8.408 -6.772,7.481 c 0.665,-1.41 1.349,-2.777 2.156,-4.045 -0.99,1.07 -1.899,2.219 -2.717,3.414 -0.582,0.852 -1.952,0.013 -1.366,-0.844 1.828,-2.673 4.043,-5.102 6.672,-7.001 -1.577,0.619 -3.218,0.931 -4.931,0.756 -1.024,-0.104 -0.991,-1.71 0.04,-1.605 1.582,0.161 3.08,-0.121 4.53,-0.733 C -2.032,-1.904 -1.395,-0.844 0,0"
+           style="fill:#b4b4b4;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path14557"
+           inkscape:connector-curvature="0" />
+      </g>
+      <g
+         id="g14559"
+         transform="translate(137.5089,373.1709)"
+         style="fill:#b4b4b4;fill-opacity:1">
+        <path
+           d="m 0,0 -8.807,13.245 c -1.512,-0.492 -2.563,-1.326 -3.024,-1.991 -0.496,-0.735 -1.054,-0.57 -1.379,-0.273 -0.324,0.296 -0.439,0.628 0.251,1.436 0.362,0.424 0.839,0.903 1.571,1.362 0.454,0.286 1.011,0.563 1.673,0.831 l -2.679,4.029 c -0.527,0.606 -1.228,0.924 -2.068,0.924 -1.241,0 -2.948,-0.931 -3.918,-1.593 -0.596,-0.407 -1.068,-0.814 -1.321,-1.067 -0.319,-0.32 -0.684,-0.806 -1.012,-1.381 -0.53,-0.933 -0.96,-2.102 -0.929,-3.192 0.027,-0.938 0.387,-1.721 1.067,-2.326 l 0.789,-0.574 c 0.147,1.681 0.601,3.273 1.817,4.656 0.684,0.78 1.816,-0.36 1.136,-1.136 -1.16,-1.319 -1.405,-2.964 -1.42,-4.634 l 5.142,-3.736 c 0.264,1.098 0.737,2.14 1.567,3.083 0.684,0.78 1.816,-0.36 1.135,-1.135 -0.769,-0.876 -1.134,-1.895 -1.299,-2.969 l 8.817,-6.409 c 0.554,-0.49 1.14,-0.741 1.717,-0.741 0.745,0 1.4,0.419 1.709,1.092 C 0.892,-1.717 0.697,-0.806 0,0"
+           style="fill:#b4b4b4;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path14561"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+  </g>
+</svg>
