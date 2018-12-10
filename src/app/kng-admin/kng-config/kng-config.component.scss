@@ -75,6 +75,8 @@
   }
 }
 
+
+
 mdc-dialog{
 
   &.loading{
@@ -85,6 +87,10 @@ mdc-dialog{
     flex:2;
   }
 
+  mdc-dialog-surface{
+    background-color: white;
+  }
+    
   mdc-dialog-body{
     .geomap{
       height: 180px;

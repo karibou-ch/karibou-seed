@@ -35,6 +35,10 @@ mdc-dialog{
     flex:2;
   }
 
+  mdc-dialog-surface{
+    background-color: white;
+  }
+
   mdc-dialog-body{
     form{
       .image{
@@ -67,7 +71,7 @@ mdc-dialog{
       }
 
       .child{
-        width: 33vw;
+        width: 23vw;
       }
 
       >div{
