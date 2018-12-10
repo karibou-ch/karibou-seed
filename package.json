@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "^7.0.3",
     "@angular/router": "^7.0.3",
     "core-js": "^2.5.7",
-    "kng2-core": "^2.35.0",
+    "kng2-core": "^2.44.0",
     "ngx-stripe": "^6.0.0-rc.0",
     "rxjs": "^6.3.3",
     "showdown": "^1.9.0",
