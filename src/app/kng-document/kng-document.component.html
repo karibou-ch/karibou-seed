@@ -26,7 +26,7 @@
   <div class="sidebar-block" [hidden]="!furthermore.length">
     <h4 i18n>A lire aussi</h4>
     <ol  class="list-unstyled">
-      <li *ngFor="let doc of furthermore"><a href="javascript:;" [routerLink]="['../',doc.slug[0]]" >{{doc.title[$i18n.locale]}}</a></li>
+      <li *ngFor="let doc of furthermore" [hidden]="!doc.title[$i18n.locale]"><a href="javascript:;" [routerLink]="['../',doc.slug[0]]" >{{doc.title[$i18n.locale]}}</a></li>
       <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
     </ol>   
   </div> 

@@ -1,8 +1,7 @@
 
 <!-- NAVIGATION  -->
 <mdc-drawer drawer="modal" #navigation  (click)="navigation.close()">
-  <mdc-drawer-header [title]="getTagline('h')" 
-                     [subtitle]="getTagline('t')" 
+  <mdc-drawer-header [title]="getTagline('t')" 
                      [routerLink]="['/']">
     <!-- <h3 mdcDrawerTitle>TODO Title</h3>
     <h6 mdcDrawerSubtitle>{{getTagline('t')}}</h6> -->
@@ -13,32 +12,36 @@
     <mdc-list-group subheader="">
       <mdc-list>
         <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
-          <mdc-icon mdcListItemGraphic class="">account_box</mdc-icon><span i18n>Vos commandes</span>
+          <mdc-icon mdcListItemGraphic class="">account_box</mdc-icon><span i18n>{{$i18n.label().nav_account}}</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-          <mdc-icon mdcListItemGraphic class="">account_circle</mdc-icon><span i18n>Connectez-vous</span>
+          <mdc-icon mdcListItemGraphic class="">account_circle</mdc-icon><span i18n>{{$i18n.label().nav_login}}</span>
         </mdc-list-item>
-              
+                      
         <mdc-list-divider></mdc-list-divider>
-        <h3 mdcListGroupSubheader i18n>Prochaines livraisons</h3>
-        <h3 mdcListGroupSubheader i18n>Dates</h3>
+        <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_shipping}}</h3>
+        <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_shipping2}}</h3>
           <mdc-list-item *ngIf="noshippingMsg"><b>{{noshippingMsg[locale]}}</b></mdc-list-item>
           <mdc-list-item *ngFor="let day of getShippingDays();let idx=index" 
                        [selected]="day.equalsDate(currentShippingDay)"
                        (click)="doSetCurrentShippingDay($event,day,idx)">
             <mdc-icon mdcListItemGraphic>radio_button_checked</mdc-icon>
-            {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
+            {{day|date:'EEEE d MMMM':'':locale}}&nbsp;
             <!-- <mdc-icon mdc-list-item-meta>info</mdc-icon>                 -->
         </mdc-list-item>
         <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader i18n>Contactez-nous!</h3>
         <mdc-list-item >
-          <mdc-icon mdcListItemGraphic >phone</mdc-icon><a href="tel:{{config.shared.home.phone}}" i18n>{{config.shared.home.phone}}</a>
+          <mdc-icon mdcListItemGraphic >phone</mdc-icon><a href="tel:{{config.shared.home.phone}}" >{{config.shared.home.phone}}</a>
         </mdc-list-item>
         <mdc-list-item >
-          <mdc-icon mdcListItemGraphic >email</mdc-icon><a href="mailto:{{config.shared.home.email}}" i18n>{{config.shared.home.email}}</a>
+          <mdc-icon mdcListItemGraphic >email</mdc-icon><a href="mailto:{{config.shared.home.email}}" >{{config.shared.home.email}}</a>
         </mdc-list-item>
-  
+        <mdc-list-divider></mdc-list-divider>
+        <mdc-list-item [hidden]="!beforeinstallprompt" (click)="installApp()">
+          <mdc-icon mdcListItemGraphic class="pink">get_app</mdc-icon><span i18n>{{$i18n.label().nav_installapp}}</span>
+        </mdc-list-item>
+
       </mdc-list>
     </mdc-list-group>
     <!-- ADMIN -->
@@ -85,58 +88,18 @@
       </mdc-top-app-bar-section>       
       <mdc-top-app-bar-section>
         <mdc-top-app-bar-title class="shipping hide-sm" (click)="navigation.open()">
-          « {{currentShippingDay|date:'EEEE d MMMM':'':'fr'}} » <i class="material-icons " [hidden]="!noshippingMsg">info</i>
+          « {{currentShippingDay|date:'EEEE d MMMM':'':locale}} » <i class="material-icons " [hidden]="!noshippingMsg">info</i>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <!-- APP BAR MENU ICON --> 
       <mdc-top-app-bar-section align="end">
-          <!-- <a (click)="shipping.open()" mdcAppBarActionItem class="btn-shipping" >
-              <i mdc-icon >update</i>
-              <span class="hide" [class.primary]="$navigation.isMobileOrTablet()" i18n>Prochaines livraisons</span>          
-          </a>-->
-
           <a [routerLink]="['/store',store,'cart']" style="width: auto;margin-right: 8px;" class="show-sm" mdcAppBarActionItem ><mdc-icon>shopping_cart</mdc-icon> <span class="cart-items-count label"></span></a>         
-
-
           <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;"
               mdcAppBarActionItem
               [routerLink]="'.'+menu.url"                     
               routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
             <span [innerHTML]="menu.name[locale]"></span>
-          </a>
-          
-                    
-          <!-- <a [routerLink]="['/store',store,'me']"  mdcAppBarActionItem mdc-icon [hidden]="!user.isAuthenticated()">account_box</a>        
-          <a [routerLink]="['/store',store,'me','login']"  mdcAppBarActionItem mdc-icon [hidden]="user.isAuthenticated()">account_circle</a>         -->
-    
-          <!-- <button mdc-toolbar-icon mdc-icon class="hide mat-toolbar--open-search mat-search--mobile ">search</button> -->
-          <!-- menu content anchor to toolbar-section -->
-          <!-- <mdc-menu #shipping [anchorCorner]="'bottom-start'">
-            <mdc-menu-item id="0" *ngFor="let day of getShippingDays();let idx=index" (click)="doSetCurrentShippingDay($event,day,idx)">
-                {{day|date:'EEEE d MMMM':'':'fr'}}&nbsp;
-                <mdc-icon mdcListItemMeta>info</mdc-icon>                
-            </mdc-menu-item>
-            <mdc-list-divider></mdc-list-divider>
-            <mdc-menu-item [disabled]="true" >
-                <div class="align-days">
-                  <div class="label-shipping" *ngFor="let day of getShippingWeek()">
-                  {{day.label}} <span class="bullet {{day.state}}"></span>
-                </div>
-              </div>
-            </mdc-menu-item>
-          </mdc-menu>
-          <mdc-menu #admin>
-            <mdc-menu-item [id]="20+i" class="admin-item" 
-                           [hidden]="!$navigation.isAdmin"
-                           *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;" 
-                           [routerLink]="getRouterLink(menu.url)"><mdc-icon>radio_button_checked</mdc-icon>&nbsp;{{menu.name.fr}}</mdc-menu-item>
-          </mdc-menu>
-          <mdc-menu #profile [anchorCorner]="'bottom-start'">
-            <mdc-menu-item id="0" [routerLink]="['/store',store,'me','orders']"><mdc-icon>favorite</mdc-icon>&nbsp;<span i18n>Bonjour</span>&nbsp;{{user?.name.givenName}}</mdc-menu-item>
-            <mdc-list-divider></mdc-list-divider>
-            <mdc-menu-item id="1" [routerLink]="['/store',store,'me','logout']"><mdc-icon>exit_to_app</mdc-icon>&nbsp;<span i18n>Logout</span></mdc-menu-item>
-          </mdc-menu>                               -->
-  
+          </a>                         
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
     <mdc-top-app-bar-row [hidden]="$navigation.isAdminLayout || $navigation.isMobile()" >
@@ -155,24 +118,13 @@
             <span [innerHTML]="menu.name[locale]"></span>
           </mdc-tab>
           <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
-            <mdc-icon class="hide">account_box</mdc-icon><span i18n>Vos commandes</span>
+            <mdc-icon class="hide">account_box</mdc-icon><span i18n>{{$i18n.label().nav_account}}</span>
           </mdc-tab>
           <mdc-tab [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-            <mdc-icon class="hide">account_circle</mdc-icon><span i18n>Login</span>
+            <mdc-icon class="hide">account_circle</mdc-icon><span i18n>{{$i18n.label().nav_login2}}</span>
           </mdc-tab>
         </mdc-tab-scroller>
-      </mdc-tab-bar>        
-      
-        <!-- <mdc-tab-bar-scroller>
-          <mdc-tab-bar-scroll-back>
-            <mdc-icon>navigate_before</mdc-icon>
-          </mdc-tab-bar-scroll-back>
-          <mdc-tab-bar-scroll-frame>        
-          </mdc-tab-bar-scroll-frame>              
-          <mdc-tab-bar-scroll-forward>
-            <mdc-icon>navigate_next</mdc-icon>
-          </mdc-tab-bar-scroll-forward>
-        </mdc-tab-bar-scroller> -->
+      </mdc-tab-bar>              
       </mdc-top-app-bar-section>      
 
       <!-- APPBAR-SECTION-END -->

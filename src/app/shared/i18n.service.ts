@@ -16,6 +16,18 @@ export class i18n  {
 
 
   public fr:any={
+    cart_discount:"rabais qunatité",
+    cart_signin:"Continuer la commande",
+    cart_login:"Pour finaliser votre commande, vous devez vous connecter",
+    cart_empty:"Votre panier est vide",
+    cart_nextshipping:"Prochaine livraison",
+    nav_account:"Vos commandes",
+    nav_login:"Connectez-vous",
+    nav_login2:"Login",
+    nav_shipping:"Prochaines livraison",
+    nav_shipping2:"Dates",
+    nav_contactus:"Contactez-nous!",
+    nav_installapp:"Installer karibou.ch",
     e404:"Cette page n'existe pas :-(",
     eServer:"Il y a un problème :-(",
     eSession:"<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page",
@@ -37,6 +49,18 @@ export class i18n  {
   };
 
   public en:any={
+    cart_discount:"discount",
+    cart_signin:"Sign In!",
+    cart_login:"Please sign in before the checkout",
+    cart_empty:"Your cart is empty",
+    cart_nextshipping:"Next delivery",
+    nav_account:"Your orders",
+    nav_login:"Sign in",
+    nav_login2:"Login",
+    nav_shipping:"Next delivery",
+    nav_shipping2:"When",
+    nav_contactus:"Contact-us!",
+    nav_installapp:"Install karibou.ch",
     e404:"We couldn't find this page :-(",
     eServer:"Ooops, there is an issue in our matrix :-(",
     eSession:"<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page",
@@ -69,7 +93,11 @@ export class i18n  {
   constructor(
     private $config:ConfigService
   ) { 
-    this.currentLocale='fr';
+    this.currentLocale=this.$config.locale||'fr';
+    if(this.currentLocale.indexOf('en-')>-1){
+      this.currentLocale='en';
+    }
+
     // FIXME subscribe to config
     // this.$config.subscribe((config:Config)=>{
     //   this.config=config;
@@ -79,6 +107,8 @@ export class i18n  {
     // this.currentLocale = navigator.language || navigator['userLanguage']; 
 
     //this.currentLocale=this.$config.locale;
+
+    
   }
 
   label(){
@@ -97,6 +127,7 @@ export class i18n  {
   }
 
   get locale(){
+    
     return this.currentLocale;
   }
 

@@ -1,14 +1,14 @@
 
 <div class="cart-container" mdcTypography>
   <section [hidden]="items.length">
-    <h2 i18n>Votre panier est vide</h2>
-    <h3 class="primary-text" i18n>Prochaine livraison le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
+    <h2 i18n>{{$i18n.label().cart_empty}}</h2>
+    <h3 class="primary-text" i18n>{{$i18n.label().cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
     <hr/>
   </section>
   
   <section [hidden]="!items.length">
     <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
-    <h3 class="primary-text" i18n>Livraison  le <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM'}}</b></h3>
+    <h3 class="primary-text" i18n>{{$i18n.label().cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
@@ -25,7 +25,7 @@
           <mdc-list-item-secondary>
             <a href="javascript:;" class="gray" i18n (click)="removeAll(item,item.variant)">
                 <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>enlever</a>
-            <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 rabais quantité</span>                
+            <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 {{$i18n.label().cart_discount}}</span>                
           </mdc-list-item-secondary>
       </mdc-list-item-text>
       
@@ -64,14 +64,14 @@
   <!-- NOT LOGGED -->
   <div class="order-login" [hidden]="user.isAuthenticated()||!items.length">
       <section>
-        <h3 i18n>Pour finaliser votre commande, vous devez vous connecter </h3>
+        <h3 i18n>{{$i18n.label().cart_login}}</h3>
       </section>
 
       <button [routerLink]="['/store/'+store+'/me/login-or-register']" 
               class="style1 white"
               mdc-button
               unelevated="true"
-              mdcHeadline2>Continuer la commande</button>
+              mdcHeadline2>{{$i18n.label().cart_signin}}</button>
 
   </div>
   
