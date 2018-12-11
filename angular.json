@@ -24,7 +24,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.json"
             ],
             "styles": [
               "src/styles.scss"
@@ -54,7 +55,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.auto.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             },
             "production": {
               "optimization": true,
@@ -70,7 +72,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             },
             "devel": {
               "optimization": true,
@@ -102,7 +105,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.bretzel.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             }
           }
         },
@@ -132,7 +136,8 @@
               "optimization": false,
               "browserTarget": "karibou-client:build:bretzel"
             }
-          }        },
+          }
+        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
@@ -152,7 +157,8 @@
             "scripts": [],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.json"
             ]
           }
         },

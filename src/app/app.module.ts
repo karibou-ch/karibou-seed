@@ -46,6 +46,7 @@ import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
 import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -92,7 +93,8 @@ export class GlobalErrorHandler implements ErrorHandler {
       ]
     }),
     SharedModule.forRoot(),
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
