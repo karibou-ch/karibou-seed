@@ -22,7 +22,7 @@ import {
   CartItem,
   Shop
 } from 'kng2-core';
-import { i18n, KngNavigationStateService } from '../shared';
+import { i18n, KngNavigationStateService } from '../common';
 
 import { timer } from  'rxjs';
 import { map } from 'rxjs/operators';
@@ -119,6 +119,27 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.$cart.add(product,variant);
     this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
+  }
+
+  hasLabel(product:Product, label:string){
+    switch (label) {
+      case 'grta':
+      case 'bioconversion':
+      case 'biodynamics':
+      return product.details[label];
+      case 'bio':
+      return product.details.bio&&
+            !product.details.bioconvertion&&
+            !product.details.biodynamics;
+      case 'natural':
+      return product.details.natural&&
+            !product.details.bio&&
+            !product.details.bioconvertion&&
+            !product.details.biodynamics;
+    
+      default:
+      return false;
+    }
   }
 
   removeToCart($event,product:Product){
@@ -218,7 +239,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
       setTimeout(()=>{
         if(this.dialog)this.dialog.nativeElement.scrollTo(0,0);
-      },10)
+      },100)
     }
   }
 

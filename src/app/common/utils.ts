@@ -30,11 +30,20 @@ export class KngUtils {
  
   static getGeoCode(http, street:string, postal:string, region:string,key:string): Observable<any> {
     // check if needed encodeURIComponent(str)
-    let fulladdress=[street,postal,(region||'Suisse')].join(',');
+    postal=postal||'';
+    region=region||'Suisse';
+    let fulladdress=[street,postal,region].join(',');
     var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + fulladdress + "&sensor=false&key="+key;
     return http.get(url, { withCredentials: false }).pipe(
       map((geo:any) =>{ 
-        return (!geo.results.length || !geo.results[0].geometry)?{}:geo.results[0].geometry;
+        let result:any={};
+        if(!geo||!geo.results.length || !geo.results[0].geometry){
+          return result;
+        }
+
+        result.geo=geo.results[0].geometry;
+        result.components=(geo.results[0].address_components||[]).map(comp=>comp.long_name);
+        return result;
       })
     );
   }

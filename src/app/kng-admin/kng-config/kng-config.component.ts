@@ -1,22 +1,18 @@
 import { Component, OnInit,OnDestroy, ViewChild } from '@angular/core';
 
-import { KngNavigationStateService, i18n, KngUtils } from '../../shared';
+import { KngNavigationStateService, i18n, KngUtils } from '../../common';
 
-import { MdcSnackbar, MdcDialogComponent, MdcListItemChange } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent } from '@angular-mdc/web';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import {
   DocumentService,
-  Document,
   LoaderService,
   ConfigService,
-  User,
   Config,
   UserAddress,
-  Utils,
-  DocumentHeader,
-  DepositAddress
+  DocumentHeader
 }  from 'kng2-core';
 
 import { forkJoin ,  concat } from 'rxjs';

@@ -1,7 +1,5 @@
 import { LOCALE_ID, NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -15,18 +13,12 @@ registerLocaleData(localeFr, 'fr');
 //
 // app modules
 import { Kng2CoreModule  } from 'kng2-core';
-import { SharedModule } from './shared/shared.module';
-
-import { MdcModule } from './app.mdc.module';
+import { KngCommonModule } from './common/common.module';
 
 //
 // App components
 import { AppComponent } from './app.component';
-import { KngDepartementComponent } from './kng-departement/departement.component';
 import { KngNavbarComponent } from './kng-navbar';
-
-//
-// App directives
 
 //
 // environnement
@@ -36,17 +28,12 @@ import { environment } from '../environments/environment';
 // routing
 import { RouterModule } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { ProductComponent, 
-         ProductThumbnailComponent, 
-         ProductTinyComponent, 
-         ProductListComponent,
-         ProductSwipeComponent } from './kng-product';
-import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
 import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { KngRootComponent } from './kng-root/kng-root.component';
+// import { ServiceWorkerModule } from '@angular/service-worker';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -56,7 +43,16 @@ export class GlobalErrorHandler implements ErrorHandler {
      if(error.rejection&&error.rejection.status==0){
        console.log('--- Network error');
        window.location.href='/oops';
+       throw error;
      }
+     //
+     // USING SENTRY AS DEBUG
+     try{
+      (<any>window).Sentry.captureException(error.originalError || error);
+     }catch(e){
+
+     }
+
      throw error;
   } 
 }
@@ -65,26 +61,19 @@ export class GlobalErrorHandler implements ErrorHandler {
 @NgModule({
   declarations: [
     AppComponent,
-    KngDepartementComponent,
-    ProductComponent, 
-    ProductThumbnailComponent, 
-    ProductTinyComponent, 
-    ProductListComponent,
-    ProductSwipeComponent,
     KngNavbarComponent,
-    KngHomeComponent,
-    KngWelcomeComponent,
+    KngRootComponent,
+    KngWelcomeComponent,    
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent
   ],
+  exports:[
+  ],
   imports: [
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
     HttpModule,
     HttpClientModule,
-    MdcModule,
     Kng2CoreModule.forRoot({
       API_SERVER:environment.API_SERVER,
       loader:[
@@ -92,9 +81,9 @@ export class GlobalErrorHandler implements ErrorHandler {
         "shops"
       ]
     }),
-    SharedModule.forRoot(),
-    RouterModule.forRoot(appRoutes),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    KngCommonModule.forRoot(),
+    RouterModule.forRoot(appRoutes,{ enableTracing: false }),
+    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

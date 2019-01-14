@@ -56,7 +56,7 @@
                   "with": "src/environments/environment.auto.ts"
                 }
               ],
-              "serviceWorker": true
+              "serviceWorker": false
             },
             "production": {
               "optimization": true,

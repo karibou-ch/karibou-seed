@@ -1,5 +1,5 @@
 import { AbstractControl } from "@angular/forms";
-import { i18n } from "./i18n.service";
+import { i18n } from "../common/i18n.service";
 
 /**
  * 

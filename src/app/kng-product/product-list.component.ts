@@ -56,6 +56,8 @@ export class ProductListComponent implements OnInit {
 
   filterVendor:string;
   filterChild:string;
+  childSub;
+  relative:string="./";
 
   options = {
     available: true,
@@ -94,6 +96,7 @@ export class ProductListComponent implements OnInit {
 
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    this.childSub.unsubscribe();
   }
 
   ngOnInit() {
@@ -123,6 +126,8 @@ export class ProductListComponent implements OnInit {
     document.body.classList.add('mdc-dialog-scroll-lock');
     this.dialog.nativeElement.classList.remove('fadeout')
 
+
+
   }
 
   getChildCategory(category:Category){
@@ -145,9 +150,13 @@ export class ProductListComponent implements OnInit {
     return this.cache.products;
   }
 
+  getVendorsClosed(){
+    let available=this.getProducts().map(product=>product.vendor.urlpath);
+    return this.vendors.filter(vendor=>available.indexOf(vendor.urlpath)==-1);
+  }
   getVendors(){
     let available=this.getProducts().map(product=>product.vendor.urlpath);
-    return this.vendors.filter(vendor=>available.indexOf(vendor.urlpath)>-1);
+    return this.vendors.filter(vendor=>available.indexOf(vendor.urlpath)!=-1);
   }
   getVisibility(j){
     return (this.currentPage>j);
@@ -161,9 +170,22 @@ export class ProductListComponent implements OnInit {
         //
         // select first child category
         //this.subcategory.chips.filter(elem=>true)[0].selected=true;
-        if(this.category.current.child[0]){
-          this.toggleChild(this.category.current.child[0].name)
-        }
+
+        //
+        // update child only after products 
+        // TODO     .pipe(takeWhile(() => !this.destroyed))
+
+        this.childSub=this.$route.params.subscribe(param=>{
+          if(param['child']){
+            this.relative='../';
+            this.toggleChild(param['child']);
+          }
+          else if(this.category.current.child[0]){
+            this.relative='./';
+            this.toggleChild(this.category.current.child[0].name)    
+          }
+        });
+    
 
         //
         // set vendors after toggle of child category

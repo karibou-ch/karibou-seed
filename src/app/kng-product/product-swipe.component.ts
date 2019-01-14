@@ -1,13 +1,10 @@
 import { Component, 
          OnInit, 
-         ViewChild, 
-         ElementRef, 
          ViewEncapsulation,
          ChangeDetectionStrategy,
          ChangeDetectorRef,
-         NgZone, 
          Input} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import {
   ProductService,
@@ -19,10 +16,7 @@ import {
   config,
   Shop
 } from 'kng2-core';
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { baseDirectiveCreate } from '@angular/core/src/render3/instructions';
-import { i18n } from '../shared';
+import { i18n } from '../common';
 
 @Component({
   selector: 'kng-product-swipe',
@@ -61,6 +55,9 @@ export class ProductSwipeComponent implements OnInit {
   }
 
   getSelectedContent(elem:string){
+    if(!this.config||!this.config.shared.home){
+      return '';
+    }
     return this.config.shared.home.selection[elem][this.$i18n.locale];
   }
 
@@ -68,10 +65,18 @@ export class ProductSwipeComponent implements OnInit {
     // document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
+  ngAfterViewInit(){
+    try{
+      document.querySelector('kng-product-swipe > div > div.content').scrollLeft=70;
+    }catch(e){}    
+  }
+  
   ngOnInit() {
     if(!this.products||!this.products.length){
       this.load();
     }
+
+
 
     //
     // DIALOG INIT HACK 

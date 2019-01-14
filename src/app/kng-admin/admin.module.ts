@@ -28,13 +28,15 @@ const routes: Routes = [
   { path: 'config', component: KngConfigComponent, resolve:{ loader:LoaderResolve } },
   { path: 'information', component: KngInformationCfgComponent, resolve:{ loader:LoaderResolve } },
   { path: 'welcome', component: KngWelcomeCfgComponent, resolve:{ loader:LoaderResolve } },
-  { path: 'home', component: KngHomeComponent, resolve:{ loader:LoaderResolve } },
+  { path: 'main-home', component: KngHomeComponent, resolve:{ loader:LoaderResolve } },
   { path: 'shop', component: KngShopComponent, resolve:{ loader:LoaderResolve } },
   { path: 'navigation', component: KngNavigationComponent , data:{menu:true}, resolve:{ loader:LoaderResolve }},
   { path: 'deposit', component: KngDepositComponent , data:{deposit:true}, resolve:{ loader:LoaderResolve }},
   { path: 'page', component: KngPageContentComponent,children:[{
     path:'', loadChildren: '../kng-document/kng-document.module#KngDocumentModule'
-  }] }
+  }] },
+  { path:'**', redirectTo:'config'}
+
 ];
 
 //

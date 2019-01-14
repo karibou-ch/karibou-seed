@@ -9,10 +9,9 @@ import { CartService,
          User, 
          UserService,
          Category, 
-         Shop,
-         Order} from 'kng2-core';
+         Shop } from 'kng2-core';
 
-import { KngNavigationStateService, i18n } from '../shared';
+import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { merge } from 'rxjs';
@@ -55,6 +54,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   cartItemCountElem:any;
   currentShippingDay:Date;
   isFixed: boolean = true;
+  beforeinstallprompt:any;
   subscription;
   //@ViewChild('navigation') navigation: any;
   //@ViewChild('toolbar') toolbar:MdcToolbar;
@@ -75,6 +75,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   ) {
 
     let loader=this.$route.snapshot.data.loader;
+    if(loader[0].length){
+      loader=loader[0];  
+    }
+    
     this.config=<Config>loader[0];
     this.user=<User>loader[1];
     this.noshippingMsg=this.getNoShippingMessage();
@@ -88,6 +92,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.primary=[];
     this.topmenu=[];
 
+    //
+    // PWA Adding an Install button
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      this.beforeinstallprompt = event;
+    });    
   }
  
 
@@ -228,6 +238,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return noshipping&&noshipping.message;
   }
   
+  // Install PWA app if available!
+  installApp(){
+    this.beforeinstallprompt.prompt();
+  }
+
   isAppReady(){
     return this.$navigation.store !== undefined;    
   }

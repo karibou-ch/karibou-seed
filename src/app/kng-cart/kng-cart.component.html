@@ -8,7 +8,11 @@
   
   <section [hidden]="!items.length">
     <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
-    <h3 class="primary-text" i18n>{{$i18n.label().cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
+    <h3 class="primary-text" i18n>
+      {{$i18n.label().cart_nextshipping}} 
+      <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
+      <br/>entre {{shippingTime}}
+    </h3>
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
@@ -30,6 +34,9 @@
       </mdc-list-item-text>
       
       <mdc-list-item-meta>
+        <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
+            <b>🛈</b> {{$i18n.label().cart_discount_title}} {{getVendorDiscount(item).needed}} fr de {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
+        </div>
         <div class="action left" [hidden]="!item.selected">
           <button (click)="remove(item,item.variant)"><mdc-icon>remove</mdc-icon></button> 
         </div>
@@ -52,7 +59,7 @@
     </mdc-list-item>      
     <mdc-list-item class="slim-item">
       <mdc-list-item-meta>
-        <div class="info" i18n>Rabais commerçant</div>
+        <div class="info" i18n>{{$i18n.label().cart_discount_info}}</div>
         <div class="price" >{{getTotalDiscount()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>      
@@ -100,7 +107,7 @@
           </span>
         </div>
         <div class="card__secondary">
-          <div class="note">{{address.note}}</div>
+          <div class="note"></div>
           <div class="type">livraison</div>
           <div class="price">
             
@@ -129,8 +136,7 @@
           </span>
         </div>
         <div class="card__secondary">
-          <div class="note">{{address.note}}</div>
-          <div class="type">dépôt</div>
+          <div class="type">dépôt {{address.note}}</div>
         </div>
       </mdc-card-primary-action>                      
     </mdc-card>      
@@ -159,10 +165,11 @@
 
 
     <!-- FIXME hide wallet method -->
+    <!--               [hidden]="payment.issuer=='wallet'"-->
     <mdc-card *ngFor="let payment of user.payments" 
               [outlined]="false"	
-              (click)="setPaymentMethod(payment)"
               [hidden]="payment.issuer=='wallet'"
+              (click)="setPaymentMethod(payment)"
               [class.selected]="isSelectedPayment(payment)">
       <mdc-card-primary-action>                
         <mdc-card-media class="card__media" 
@@ -233,14 +240,23 @@
       </mdc-list-item>
             
       <mdc-list-item class="border-top">
-        <mdc-list-item-meta>
-          <div class="info">Total</div>
+        <mdc-list-item-meta (click)="showInfoAmount=!showInfoAmount">
+          <div class="info"><i class="material-icons">info</i>Total provisoire</div>
           <div class="price" >{{$cart.total()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
-      </mdc-list-item>
-        
-    </mdc-list>                    
+      </mdc-list-item>        
+    </mdc-list>       
+    <div class="amount-info" [hidden]="!showInfoAmount">
+      {{$i18n.label().cart_amount_1}} 
+      <b >{{$cart.total()*1.10|currency:'CHF'}} CHF</b>
+      {{$i18n.label().cart_amount_2}}
+    </div>
 
+
+    <h3 class="primary-text" i18n>
+      <span class="bold text-capitalize">{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</span>
+      entre <b>{{shippingTime}}</b>
+    </h3>  
     <div class="shipping">
       <!-- (SRC) HUB -->
       <div class="vendor">
@@ -253,8 +269,11 @@
         <strong>{{currentShipping().name}}</strong>            
         <address>{{currentShipping().streetAdress}}</address>
         <address>{{currentShipping().postalCode}}/{{currentShipping().region}}</address>
+        <p class="block-info">{{currentShipping().note}}</p>
       </div>          
+    
     </div>
+
 
     <!-- CHECKOUT BRETEZL MSG -->
     <div class="checkout-msg" *ngIf="config.shared.checkout.active">

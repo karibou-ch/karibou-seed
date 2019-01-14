@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { KngInputValidator } from '../kng-input-validator';
-import { i18n } from '../i18n.service';
+import { i18n } from '../../common/i18n.service';
 
 @Component({
   selector: 'kng-control-messages',

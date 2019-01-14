@@ -7,7 +7,7 @@ import { LoaderService,
          Config,
          Utils} from 'kng2-core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { KngUtils } from '../shared';
+import { KngUtils } from '../common';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -88,6 +88,7 @@ export class AddressComponent {
     this.regions=config.shared.user.region.list;
     this.pubkeyMap=config.shared.keys.pubMap||'';
 
+    
     //
     // save phone
     if(this.user.phoneNumbers.length){
@@ -99,7 +100,9 @@ export class AddressComponent {
     // console.log('--- load map',config.shared.keys.pubMap)
     // FIXME this line for universal app
     if(!window['google']&&config.shared.keys.pubMap){
-      this.loadMap(config);
+      this.loadMap(config).subscribe(()=>{
+        //DONE!
+      });
     }
     
   }
@@ -124,12 +127,7 @@ export class AddressComponent {
   }
 
   loadMap(config:Config){
-    Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key='+config.shared.keys.pubMap,'maps').subscribe(()=>{
-    })
-    // KngUtils.lazyload('<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key='+config.shared.keys.pubMap+'">');
-    // TODO
-    // https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete?hl=fr
-    
+    return Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key='+config.shared.keys.pubMap,'maps');
   }
   
   onEmit(result:AddressEvent){
@@ -138,15 +136,23 @@ export class AddressComponent {
   }
 
 
-  onGeloc(event: { index: number, value: any }){
-    if(!this.$address.value.street||
-       !this.$address.value.postalCode||
-       !this.$address.value.region){
+  onGeloc(event?: { index: number, value: any }){
+    if(!this.$address.value.street){
          return;
     }
     KngUtils.getGeoCode(this.$http,this.$address.value.street,this.$address.value.postalCode,this.$address.value.region,this.pubkeyMap).subscribe(
-      (geo)=>{
-        this.geo=(geo||{}).location;
+      (result)=>{
+        this.geo=(result.geo||{}).location;
+        //
+        // autofill region and location
+        result.components.forEach(comp=>{
+          if(this.locations.indexOf(comp)>-1){
+            this.$address.patchValue({postalCode:comp});
+          }
+          if(this.regions.indexOf(comp)>-1){
+            this.$address.patchValue({region:comp});
+          }
+        });        
       }
     )
   }
@@ -210,8 +216,18 @@ export class AddressComponent {
   }
 
   setAddress(address:UserAddress,idx:number){
+    let defaultAddress={
+      name:'',
+      street:'',
+      floor:'',
+      region:address.region,
+      postalCode:address.postalCode,
+      note:''
+    }
+
     if(this.idx==idx){
       this.idx=null;
+      this.$address.patchValue(defaultAddress);
       return; 
     }
     this.idx=idx;

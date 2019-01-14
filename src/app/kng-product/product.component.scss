@@ -179,12 +179,12 @@
       background-color: rgba(255, 255, 255, 0.6);
       background-color: var(--mdc-theme-primary) !important;
       color: white!important;
-      opacity: 0.5;
+      opacity: 0.9;
       border: 0;
       font-weight: bold;
       border-radius: 25px;
-      width: 58px;
-      height: 36px;
+      width: 68px;
+      height: 46px;
       position: absolute;
       bottom: 10px;
       padding: 0px;
@@ -203,11 +203,11 @@
     }
     
     .info-quantity{
-      font-size: 22px;
-      line-height: 32px;
-      text-shadow: 0 0 6px rgba(0,0,0,0.9);
+      font-size: 32px;
+      line-height: 42px;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
       text-align: center;
-      width: 35px;
+      width: 46px;
       position: absolute;
       bottom: 11px;
       margin: 0 auto;
@@ -465,6 +465,7 @@
   .kng-layout-card{
     display: flex!important;
     justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
@@ -480,9 +481,9 @@
         flex: 1 0;
         min-width: 29vw;
         margin: 4px 4px 0;
-        flex: 0 0 140px;
+        flex: 0 0 49%;
         min-width: 39vw;
-        margin: 4px 10px 0;
+        margin: 4px 0px 0;
 
       }
     }

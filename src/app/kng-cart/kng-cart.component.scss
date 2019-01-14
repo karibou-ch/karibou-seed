@@ -1,3 +1,5 @@
+@import "~colors.scss";
+
 //
 // innerHtml CASE
 :host ::ng-deep{
@@ -23,6 +25,7 @@
 }
 .cart-container{
   padding-top: 30px;
+  background-color: $mdc-theme-background-container;
   background: var(--mdc-theme-background-container);
   margin-left: -20px;
   margin-right: -20px;
@@ -212,7 +215,26 @@
       display: flex!important;
       justify-content: flex-start;
       flex-wrap: nowrap;
-      align-items: center;    
+      align-items: center;   
+      div.label{
+        flex: 1;
+        position: absolute;
+        z-index: 1;
+        right: 180px;
+        background: white;
+        padding: 12px;
+        color: black;
+        border: 1px solid #ddd;
+        @media (max-width:426px) {
+          font-size: 80%;                      
+          padding: 8px;
+        }
+    
+      } 
+      div.info i{
+        transform: translateY(5px);
+        color: #ffa506;
+      }
       div.action{
         flex:1;
         position: absolute;
@@ -246,14 +268,13 @@
   mdc-card{
     &.selected{
       border:2px solid var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
-      border-radius: 0;
     }
-    border-radius: 5px;  
+    border-radius: 0;
     padding:5px;
     background: white;
     position: relative;
-    flex: 0 0 120px;
-    width: 120px;
+    flex: 0 0 140px;
+    width: 140px;
     margin: 8px;    
     box-shadow: inherit;
       
@@ -297,9 +318,9 @@
       text-align: center;
       padding: 5px 0px;
       margin: 0;
+      margin-top:auto;
       font-size: smaller;
       .note{
-        color: #799689;        
       }
       .type{
         font-weight: bold;
@@ -313,11 +334,15 @@
       }
     }
     .card__secondary{
-      color:#777 ;      
+      color:#333 ;      
+      background-color: rgba(66, 63, 58, 0.4);
     }
+
     .card__secondary.payment{
       &.invalid{
         color:red;        
+        text-shadow: 0 0 2px #ddd;
+        font-weight: 400;        
       }
     }
     .card__subtitle{
@@ -350,6 +375,10 @@
 
     button.action{
       width: 50%;
+    }
+
+    mdc-card-primary-action{
+      height: 100%;
     }
 
   }
@@ -395,16 +424,27 @@
         text-transform: capitalize;
         height: 150px;
         margin: auto;
+        .block-info{
+          margin-top: 5px;
+          padding: 0;
+        }
       }
         
+      .block-info{
+        padding: 30px;
+      }
     }
 
+    .amount-info{
+      padding: 20px;
+      background: #eee;      
+    }
 
     .checkout-msg{
       min-height: 100px;
       position: relative;
       width: 100vw;
-      background: var(--mdc-theme-primary-light);      
+      background: var(--mdc-theme-primary);      
       color:var(--mdc-theme-primary-text);
       padding: 30px;
       margin: 0;

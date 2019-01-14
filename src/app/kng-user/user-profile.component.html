@@ -20,17 +20,20 @@
 
   <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()||true"></kng-mail-confirmation>
 
-  <kng-user-reminder [user]="user"></kng-user-reminder>
+  <div class="breaker small "></div>
 
-  <div class="breaker small"></div>
-
-	<mdc-tab-bar disableRipple="true" dense="true" [activeTabIndex]="0">
+	<mdc-tab-bar   [activeTabIndex]="0">
     <mdc-tab-scroller>
-          <!-- mdcRouter -->
+          <!-- mdcRouter -->          
     <mdc-tab [routerLink]="['./orders']"
               routerLinkActive #rla="routerLinkActive">
         Commandes
     </mdc-tab>
+    <mdc-tab [routerLink]="['./reminder']"
+              routerLinkActive #rla="routerLinkActive">
+        Souscription
+    </mdc-tab>
+
     <mdc-tab [routerLink]="['./email']"
               routerLinkActive #rla="routerLinkActive">
         Compte

@@ -11,13 +11,19 @@
 	<mdc-card class="product-card card-skeleton" [outlined]="false" 
 						[class.large]="large"
 						[class.incart]="cartItem&&cartItem?.quantity"
-	 [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
+	 [class.noavailable]="!product.isAvailableForOrder()" 
+	 [class.popular]="product.stats.score>0.25"
+	 [class.noinstock]="!product.pricing.stock">
+
 
 
 		<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
 			<mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
 				<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
+				<div class="product-available">
+					non disponible
+				</div>
 				<!-- VARIANTS -->
 				<div *ngIf="openVariant" class="product-variants">
 					<ul>
@@ -25,6 +31,15 @@
 								*ngFor="let variant of product.variants">{{variant.short}}</li>
 					</ul>
 				</div>
+				<!-- LABEL -->				
+				<div class="bio">
+					<span [hidden]="!hasLabel(product,'bio')"><i class="icons fa-leaf"></i> bio</span>
+					<span [hidden]="!hasLabel(product,'bioconvertion')"><i class="icons fa-leaf"></i> bioconversion</span>
+					<span [hidden]="!hasLabel(product,'biodynamics')"><i class="icons fa-leaf"></i> biodynamie</span>
+					<span [hidden]="!hasLabel(product,'natural')"><i class="icons fa-leaf"></i> 100% naturel</span>
+					<span [hidden]="!hasLabel(product,'grta')" class="text-right">GRTA</span>
+				</div>
+
 			</mdc-card-media>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
@@ -34,7 +49,7 @@
 				<mdc-icon [fontSize]="26">remove</mdc-icon>
 			</button>
 			<div class="info-quantity">{{cartItem?.quantity}}</div>
-			<div class="info-score">{{product.stats.score.toFixed(2)}}</div>
+			<div class="info-score"><i class="material-icons">star</i><!--{{product.stats.score.toFixed(2)}}--></div>
 		
 			<!-- TITLE -->
 			<div class="product-card__primary">

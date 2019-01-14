@@ -251,8 +251,14 @@
     }  
   
   }
-  
+
+  .empty-products{
+    color: #aaa;
+    font-size: x-large;
+    letter-spacing: -.5px;    
+  }
 }
+
 
 
 
@@ -280,6 +286,7 @@
   .kng-layout-card{
     display: flex!important;
     justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
@@ -293,9 +300,9 @@
         flex: 1 0;
         min-width: 29vw;
         margin: 4px 4px 0;
-        flex: 0 0 140px;
-        min-width: 41vw;
-        margin: 4px 8px 0;
+        flex: 0 0 49%;
+        min-width: 40vw;
+        margin: 4px 0px 0;
 
       }
     }

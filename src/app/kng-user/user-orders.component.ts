@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoaderService, Order, OrderService, User, UserService, OrderItem, Category, ProductService, EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService } from 'kng2-core';
-import { MdcSnackbar, MdcDialogComponent } from '@angular-mdc/web';
+import { Order, OrderService, User, OrderItem, Category, ProductService, EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService } from 'kng2-core';
+import { MdcSnackbar } from '@angular-mdc/web';
 
-import { mergeMap, flatMap } from 'rxjs/operators';
-import { i18n } from '../shared';
+import { flatMap } from 'rxjs/operators';
+import { i18n } from '../common';
 
 interface ScoredItem{
   score:number;
@@ -24,7 +23,6 @@ export class UserOrdersComponent implements OnInit {
   orders: Order[];
   limitTo:number;
   openOrder:Order;
-  feedbackOrder:Order;
   selected:Order;
   items:ScoredItem[]=[];
   photos:any={};
@@ -32,12 +30,23 @@ export class UserOrdersComponent implements OnInit {
 
   filter:any={};
 
-  @ViewChild('dlgFeedback') dlgFeedback: MdcDialogComponent;
+  i18n:any={
+    fr:{
+      title_no_order:"Vous n'avez pas encore de commandes",
+      title_last_order:"Mes dernières commandes et feedbacks",
+      title_cancel_order:"Annuler la commande en attente"
+    },
+    en:{
+      title_no_order:"You have no orders yet",
+      title_last_order:"My previous orders and feedbacks",
+      title_cancel_order:"Cancel the pending order"  
+    }
+  }
+
   
   constructor(
     private $cart:CartService,
     private $i18n:i18n,
-    private $loader: LoaderService,
     private $order: OrderService,
     private $products:ProductService,
     private $route:ActivatedRoute,
@@ -65,7 +74,7 @@ export class UserOrdersComponent implements OnInit {
 
 
   ngOnInit() {
-    this.$order.findOrdersByUser(this.user).pipe(
+    this.$order.findOrdersByUser(this.user,{limit:10}).pipe(
       flatMap(orders=>{
         this.processOrders(orders);
         if(!this.items.length){
@@ -102,11 +111,6 @@ export class UserOrdersComponent implements OnInit {
     },error=>this.$snack.show(error.error))
   }
 
-  feeback(order:Order){
-    this.feedbackOrder=order;
-    this.dlgFeedback.show();
-  }
-
   getLimitedOrders(){
     return this.orders.filter((item, idx) => idx < this.limitTo );
   }
@@ -114,6 +118,7 @@ export class UserOrdersComponent implements OnInit {
   getOpenOrder(){
     return this.openOrder;
   }
+
   getMoreOrders(){
     this.limitTo+=5;
   }
@@ -145,8 +150,6 @@ export class UserOrdersComponent implements OnInit {
     return 'cancel';
   }
 
-
-
   // /-/resize/128x/
   getThumbnail(item:OrderItem){
     return this.photos[item.sku]||'/assets/img/icon-finefood.png';
@@ -159,6 +162,10 @@ export class UserOrdersComponent implements OnInit {
   isPending(order:Order){
     //console.log('....',order.payment.status,order.fulfillments.status)
     return ['authorized'].indexOf(order.payment.status)>-1&&order.fulfillments.status==EnumFulfillments[EnumFulfillments.reserved]
+  }
+
+  get locale(){
+    return this.$i18n.locale;
   }
 
   processOrders(orders: Order[]){

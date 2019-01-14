@@ -5,40 +5,36 @@
 <div class="container">
   <mdc-list [twoLine]="true" avatar="true" border="true" >
     <mdc-list-item [routerLink]="['./create']">
-        <mdc-list-item-graphic>
-          <mdc-icon [fontSize]="30">folder</mdc-icon>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text i18n>
-          Ajouter un nouveau contenu
-          <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
-        </mdc-list-item-text>        
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder</mdc-icon>
+      <mdc-list-item-text i18n>
+        Ajouter un nouveau contenu
+        <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
+      </mdc-list-item-text>        
     </mdc-list-item>
+    <!-- LIST OF PAGES -->
     <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let content of contents" 
                     [routerLink]="['./',content.slug[0]]"
                     [class.disabled]="!content.available">
-        <mdc-list-item-graphic>
-          <mdc-icon [fontSize]="30">folder</mdc-icon>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text>
-          <span>{{content.type}}</span><b>/</b>{{content.slug[0]}}
-          <mdc-list-item-secondary>
-              <span [innerHtml]="content.title[$i18n.locale]"></span>
-          </mdc-list-item-secondary>              
-        </mdc-list-item-text>
-        <mdc-list-item-meta>
-            <mdc-form-field>
-                <mdc-checkbox [checked]="content.available" [disabled]="true" ></mdc-checkbox>
-                <span class="hide-md">Active</span>
-            </mdc-form-field>
-              
-            <mdc-chip>
-              <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
-              <mdc-chip-text>{{content.weight}}</mdc-chip-text>
-            </mdc-chip>
-            
-        </mdc-list-item-meta>
-        <mdc-list-divider></mdc-list-divider>
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder</mdc-icon>
+      <mdc-list-item-text>
+        <span>{{content.type}}</span><b>/</b>{{content.slug[0]}}
+        <mdc-list-item-secondary>
+            <span [innerHtml]="content.title[$i18n.locale]"></span>
+        </mdc-list-item-secondary>              
+      </mdc-list-item-text>
+      <div mdcListItemMeta>
+        <mdc-form-field>
+            <mdc-checkbox [checked]="content.available" [disabled]="true" ></mdc-checkbox>
+            <span class="hide-md">Active</span>
+        </mdc-form-field>
+          
+        <mdc-chip>
+          <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+          <mdc-chip-text>{{content.weight}}</mdc-chip-text>
+        </mdc-chip>          
+      </div>
+      <mdc-list-divider></mdc-list-divider>
     </mdc-list-item>
   </mdc-list>
 </div>

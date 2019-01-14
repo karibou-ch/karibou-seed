@@ -51,7 +51,7 @@
         <!-- TODO BUILD PERSISTENT SUB CAT [routerLink]="['./',child.name]"-->
         <!-- TODO [selected]="filterChild==child.name"-->
         <mdc-chip-set choice #subcategory>
-          <mdc-chip (click)="toggleChild(child.name)"                     
+          <mdc-chip [routerLink]="[relative,child.name]"                     
                     [id]="'child'+j"                    
                     *ngFor="let child of getChildCategory(category.current);let j=index">
             <mdc-chip-text>{{child.name}}</mdc-chip-text>
@@ -69,6 +69,11 @@
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>
   
+      <!-- <div class="vendor" >
+        <div class="owner" 
+            *ngFor="let vendor of getVendorsClosed()">
+            <img [src]="vendor.photo.owner" ></div>
+      </div> -->
 
     </div>
 
@@ -90,6 +95,10 @@
               [visibility]="getVisibility(j)"
               class="">
           </kng-product-thumbnail>
+        </div>
+
+        <div *ngIf="!getProducts().length" class="empty-products">
+          Rien à proposer pour la prochaine livraison!
         </div>
 
 

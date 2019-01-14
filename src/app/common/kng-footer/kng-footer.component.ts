@@ -58,7 +58,8 @@ export class KngFooterComponent implements OnInit {
 
   main(config:Config){
     this.content=config.shared;
-    this.$navigation.updateConfig(config);
+    // Use one uniq central point for updateConfig
+    // this.$navigation.updateConfig(config);
   }
 
 

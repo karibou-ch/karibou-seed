@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { i18n } from '../shared';
+import { i18n } from '../common';
 import { Config, 
          LoaderService, 
          UserService, 
@@ -39,7 +39,6 @@ export class UserProfileComponent implements OnInit {
     this.isReady= true;
     this.user   = loader[1];
     this.config = loader[0];
-    
   }
 
   doLogout(){

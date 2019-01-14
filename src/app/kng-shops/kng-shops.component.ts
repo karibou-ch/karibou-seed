@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { i18n } from '../shared';
+import { i18n } from '../common';
 import { Config, User, Shop, PhotoService } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { ShopService } from 'kng2-core';

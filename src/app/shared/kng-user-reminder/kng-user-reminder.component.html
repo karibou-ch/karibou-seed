@@ -3,7 +3,7 @@
   <b>Pratique!</b>
   Nous pouvons vous envoyer un mail de rappel afin de vous aider dans l'organisation de vos courses
 </div>
-<div [hidden]="!show"class="content">
+<div class="content">
   <mdc-radio-group >
     <mdc-form-field *ngFor="let time of times" >
       <mdc-radio (click)="doUpdate(null,time.value)" [value]="time.value" [checked]="user.reminder.time==time.value"></mdc-radio><label>{{time.label}}</label>

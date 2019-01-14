@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KngOrderFeedbackComponent } from './kng-order-feedback.component';
+import { KngFeedbackComponent } from './kng-feedback.component';
 
-describe('KngOrderFeedbackComponent', () => {
-  let component: KngOrderFeedbackComponent;
-  let fixture: ComponentFixture<KngOrderFeedbackComponent>;
+describe('KngFeedbackComponent', () => {
+  let component: KngFeedbackComponent;
+  let fixture: ComponentFixture<KngFeedbackComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KngOrderFeedbackComponent ]
+      declarations: [ KngFeedbackComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KngOrderFeedbackComponent);
+    fixture = TestBed.createComponent(KngFeedbackComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

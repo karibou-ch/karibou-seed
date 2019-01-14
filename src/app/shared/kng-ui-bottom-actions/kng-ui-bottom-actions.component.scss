@@ -191,7 +191,7 @@ kng-ui-bottom-actions{
       }
 
       @media (min-width: 1025px) {
-        margin-right:calc( ( 100vw - 780px ) / 2 - 60px );
+        margin-right:calc( ( 100vw - 780px ) / 2 - 90px );
       }
     }
 
@@ -251,7 +251,8 @@ kng-ui-bottom-actions{
         border: 1px solid rgba(185, 185, 185, 0.8);
         border-radius: 25px;
         background: #fff;
-        width: calc( 100vw - 55px);
+        width:500px;
+        max-width: calc( 100vw - 55px);
         box-shadow: 0px 0px 10px 1px rgba(109, 109, 109, 0.26);        
         font-size: 15px;
       }

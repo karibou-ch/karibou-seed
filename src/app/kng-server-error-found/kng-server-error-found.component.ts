@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'kng2-core';
-import { i18n } from '../shared';
+import { i18n } from '../common';
 
 @Component({
   selector: 'app-kng-server-error-found',

@@ -24,41 +24,6 @@
         </div>
       </div>
 
-      <!-- LOGIN -->
-      <!-- <div class="inner" *ngIf="askAction=='login'">
-          <h1 i18n>Bienvenue!</h1>
-          <p i18n>Log in with your email and password.</p>
-          <form>
-              <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%" type="email">
-                <mdc-icon trailing>person</mdc-icon>
-              </mdc-text-field>
-              <mdc-text-field [box]="true" label="Votre secret" style="width:100%" type="password">
-                  <mdc-icon trailing>vpn_key</mdc-icon>
-                </mdc-text-field>
-                
-              <button mdc-button [unelevated]="true" [secondary]="true">
-                <mdc-icon>account_circle</mdc-icon>              
-                <span i18n>Login</span>
-              </button>            
-          </form>
-          <div class="signup-vs-login" ><a class="link" (click)="askAction='recover'" i18n>J'ai oublié mon mot de passe</a></div>
-        </div> -->
-        
-      <!-- RECOVER -->
-      <!-- <div class="inner" *ngIf="askAction=='recover'">
-        <h1 i18n>Bienvenue!</h1>
-        <p i18n>Log in with your email and password.</p>
-        <form>
-            <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%">
-              <mdc-icon trailing>email</mdc-icon>
-            </mdc-text-field>
-            <button mdc-button [unelevated]="true" [secondary]="true">
-              <mdc-icon>account_circle</mdc-icon>              
-              <span i18n>Envoyer</span>
-            </button>            
-        </form>
-      </div> -->
-
       <a  hidden href="https://www.facebook.com/sharer/sharer.php?u=karibou-ch">
         <div class="spread"></div>  
       </a>
@@ -90,9 +55,7 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-  <kng-navbar style="height:100%">
-    <router-outlet ></router-outlet>
-  </kng-navbar>  
+  <router-outlet ></router-outlet>
 </ng-template>
 
 

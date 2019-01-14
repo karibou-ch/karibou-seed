@@ -1,12 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { KngInputValidator, KngNavigationStateService, i18n } from '../shared';
+import { FormBuilder, Validators } from '@angular/forms';
+import { KngInputValidator } from '../shared';
+import { KngNavigationStateService, i18n } from '../common';
 
 import { MdcSnackbar } from '@angular-mdc/web'; 
-import { Config, LoaderService, User, UserService, UserCard, UserAddress } from 'kng2-core';
-import { StripeService, Elements, ElementsOptions } from 'ngx-stripe';
+import { Config, LoaderService, User, UserService } from 'kng2-core';
 
 @Component({
   selector: 'kng-user-sign',
@@ -86,7 +86,6 @@ export class UserSignComponent {
 
   constructor(
     private $i18n: i18n,
-    private $loader: LoaderService,
     private $user: UserService,
     private $route:ActivatedRoute,
     private $router: Router,

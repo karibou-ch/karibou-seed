@@ -12,7 +12,7 @@ import { mergeMap, filter } from 'rxjs/operators';
 // import { merge } from 'rxjs/observable/merge';
 
 
-import { i18n } from '../shared';
+import { i18n } from '../common';
 
 
 import {
@@ -66,8 +66,10 @@ export class KngDocumentComponent implements OnInit {
     public $router:Router,
     public $snack:MdcSnackbar
   ) { 
+
     this.create=this.$route.snapshot.data.create;
-    let loader=this.$route.snapshot.data.loader;
+    let loader=this.$route.snapshot.data.loader[0];
+    this.document=this.$route.snapshot.data.loader[1];
     this.config=<Config>loader[0];
     this.user=<User>loader[1];
     this.isReady = true;    

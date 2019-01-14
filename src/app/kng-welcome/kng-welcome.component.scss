@@ -260,6 +260,9 @@
       flex-flow:row nowrap;
       background-color:#eee;
       max-width: 1200px;
+      @media (max-width:426px) {
+        min-height: 500px;        
+      }
       .elem{
         flex: 1 0 50%;
         color: white;

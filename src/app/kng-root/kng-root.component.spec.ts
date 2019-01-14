@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KngQuickEditorComponent } from './quick-editor.component';
+import { KngRootComponent } from './kng-root.component';
 
-describe('KngQuickEditorComponent', () => {
-  let component: KngQuickEditorComponent;
-  let fixture: ComponentFixture<KngQuickEditorComponent>;
+describe('KngRootComponent', () => {
+  let component: KngRootComponent;
+  let fixture: ComponentFixture<KngRootComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KngQuickEditorComponent ]
+      declarations: [ KngRootComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KngQuickEditorComponent);
+    fixture = TestBed.createComponent(KngRootComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

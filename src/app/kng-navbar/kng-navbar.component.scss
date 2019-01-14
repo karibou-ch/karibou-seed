@@ -53,11 +53,6 @@ div.navbar{
   //FIXME width-full goes larger than it should
   overflow: hidden;
 
-  mdc-top-app-bar :-webkit-any-link,
-  mdc-top-app-bar :any-link {
-    color: var(--mdc-theme-primary-text)!important;
-  }
-  
 
   .mdc-drawer--temporary.right .mdc-drawer__drawer{
     left:initial;
@@ -113,10 +108,9 @@ div.navbar{
       width: 760px;        
     }
 
-    @media (max-width: 769px) {
-      max-width: 728px;
-      min-width: 690px;
-      width: inherit;
+    @media (max-width: 1024px) {
+      padding: 0px;
+      width: 100%;      
     }
 
     @media (max-width: 426px) {
@@ -166,6 +160,13 @@ div.navbar{
     z-index: 2;
     color:var(--mdc-theme-primary-text)!important;
 
+    //
+    // override firefox *:any-link{
+    a{
+      color: var(--mdc-theme-primary-text)!important;
+      text-decoration:none;
+    }
+        
     .home{
       outline: 0px;
     }
@@ -175,7 +176,10 @@ div.navbar{
       text-transform: capitalize;
       text-align: center;
       margin: auto;
-      transform: translateX(-60px);      
+      transform: translateX(-50px);    
+      i{
+        transform: translateY(4px);
+      }  
     }
 
     .mdc-tab{

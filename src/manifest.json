@@ -1,7 +1,7 @@
 {
   "name": "Le plaisir de bien manger",
   "short_name": "karibou.ch",
-  "theme_color": "#000032",
+  "theme_color": "#423f3b",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/",

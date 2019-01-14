@@ -65,6 +65,9 @@
       }
       
       .logo{
+        &.small{
+          margin-bottom:-150px; 
+        }
         background-image: url(/assets/img/k-brand-lg.png);
         background-repeat: no-repeat;
         background-position: center;

@@ -1,16 +1,19 @@
 <div class="shop" *ngIf="vendor">
 
-  <div class="owner">
-    <img [src]="vendor.photo.owner">
-  </div>
-
-  <h1>{{vendor.name}}</h1>
 
   <div class="card">
     <img [src]="vendor.photo.fg">
+
+    <div class="owner">
+      <img [src]="vendor.photo.owner">
+    </div>
+  
+    <h1>{{vendor.name}}</h1>
+
     <div>
         <section [innerHtml]="vendor.description"></section>
     </div>  
+    
   </div>
 
   <div class="products">

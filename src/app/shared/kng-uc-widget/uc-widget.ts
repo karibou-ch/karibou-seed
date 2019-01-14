@@ -14,11 +14,10 @@ import { Utils } from 'kng2-core';
 
 
 //import uploadcare from 'uploadcare-widget';
-import * as uploadcare from "uploadcare-widget";
+//import * as uploadcare from "uploadcare-widget";
 
-//const pkg = require('../../../package.json');
-const APP_VERSION=uploadcare.version;//= JSON.stringify(pkg.version);
-uploadcare.start({ integration: `Angular/${VERSION.full}; Ngx-Uploadcare-Widget/${APP_VERSION}` });
+const CDNJS_UPLOADCARE="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js";
+const APP_VERSION='3.x';
 
 @Component({
   selector: 'ngx-uploadcare-widget',
@@ -29,6 +28,7 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   @Output('on-change') onChange = new EventEmitter<any>();
   @Output('on-progress') onProgress = new EventEmitter<any>();
   @Output('on-dialog-open') onDialogOpen = new EventEmitter<any>();
+
 
   private element: ElementRef;
   private inputElement: Node;
@@ -56,6 +56,8 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   private _isClearValue = false;
   private _validators=[];
 
+  private uploadcare:any;
+
   constructor(renderer: Renderer2, element: ElementRef) {
     this.element = element;
     this.renderer = renderer;
@@ -63,10 +65,12 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
     //
     // use dynamic loader
     // https://github.com/ded/script.js/blob/master/src/script.js#L70
-    // Utils.script().subscribe(
-    //   (uploadcare)
+    this.uploadcare=Utils.script(CDNJS_UPLOADCARE,"uploadcare").toPromise();
 
-    // )
+    this.uploadcare.then((uploadcare:any)=>{
+      uploadcare=window['uploadcare'];
+      uploadcare.start({ integration: `Angular/${VERSION.full}; Ngx-Uploadcare-Widget/${APP_VERSION}` });      
+    });
   }
 
   @Input('public-key')
@@ -205,7 +209,9 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewInit() {
-    this.widget = this.init();
+    this.init().then(widget=>{
+      this.widget=widget;
+    });
   }
 
   ngAfterViewChecked() {
@@ -278,52 +284,59 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
       this.clearUploads();
     }
     this.initInputElement();
-    const widget = uploadcare.Widget(this.inputElement);
+    return this.uploadcare.then((uploadcare:any)=>{
+      uploadcare=window['uploadcare'];
+      const widget = uploadcare.Widget(this.inputElement);
 
-    widget.onDialogOpen((dialog)=>{
-      this.onDialogOpen.emit(dialog);
+      widget.onDialogOpen((dialog)=>{
+        this.onDialogOpen.emit(dialog);
+      });
+  
+      widget.onUploadComplete((fileInfo) => {
+        this.onUploadComplete.emit(fileInfo);
+        this._value = fileInfo.uuid;
+      });
+      widget.onChange((selectionPromise) => {
+        if(!selectionPromise){
+          return;
+        }
+        this.onChange.emit(selectionPromise);
+        if (typeof selectionPromise.promise === 'function') {
+          selectionPromise.promise()
+            .progress((progress) => {
+              this.onProgress.emit(progress);
+            });
+        } else {
+          selectionPromise
+            .progress((progress) => {
+              this.onProgress.emit(progress);
+            });
+        }
+      });      
+
+      //
+      // bind validators
+      this._validators.forEach(validator=>{
+        widget.validators.push(validator);
+      });
+
+
+      return widget;
+
     });
-
-    widget.onUploadComplete((fileInfo) => {
-      this.onUploadComplete.emit(fileInfo);
-      this._value = fileInfo.uuid;
-    });
-    widget.onChange((selectionPromise) => {
-      if(!selectionPromise){
-        return;
-      }
-      this.onChange.emit(selectionPromise);
-      if (typeof selectionPromise.promise === 'function') {
-        selectionPromise.promise()
-          .progress((progress) => {
-            this.onProgress.emit(progress);
-          });
-      } else {
-        selectionPromise
-          .progress((progress) => {
-            this.onProgress.emit(progress);
-          });
-      }
-    });
-
-
-    //
-    // bind validators
-    this._validators.forEach(validator=>{
-      widget.validators.push(validator);
-    });
-
-
-    return widget;
   }
 
   private destroy() {
-    const $ = uploadcare.jQuery;
-    $(this.widget.inputElement.nextSibling).remove();
-    $(this.widget.inputElement).clone().appendTo($(this.element.nativeElement));
-    $(this.widget.inputElement).remove();
-    //this.renderer.destroyNode(this.inputElement);
-    this.renderer.removeChild(this.element.nativeElement, this.element.nativeElement.children[0]);
-    delete this.widget;
+    this.uploadcare.then(uploadcare=>{
+      uploadcare=window['uploadcare'];
+
+      const $ = uploadcare.jQuery;
+      $(this.widget.inputElement.nextSibling).remove();
+      $(this.widget.inputElement).clone().appendTo($(this.element.nativeElement));
+      $(this.widget.inputElement).remove();
+      //this.renderer.destroyNode(this.inputElement);
+      this.renderer.removeChild(this.element.nativeElement, this.element.nativeElement.children[0]);
+      delete this.widget;;  
+    })
   }
 }

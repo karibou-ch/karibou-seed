@@ -1,21 +1,10 @@
-<!-- INFORMATION -->
-<div class="home-header" [class.cover]="hasBackgroundCover()" [ngStyle]="getHeaderStyle()">
-  <!-- <h2 [hidden]="!hasAboutContent('t')" [innerHtml]="getAboutContent('t')"></h2>
-  <div [hidden]="!hasAboutContent('h')" [innerHtml]="getAboutContent('h')">
-  </div> -->
-  <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">
-  </div>
-</div>
+<!-- FEEDBACK -->
+<kng-feedback [user]="user" forceload="true">
+    <h3>Comment était votre dernière commande?</h3>
+</kng-feedback>
 
 <!-- SELECTION -->
-<kng-product-swipe *ngIf="home.length>3" [products]="home"></kng-product-swipe>
-
-<!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
-<kng-ui-bottom-actions [exited]="scrollDirection<-5" 
-                       [categories]="categories"
-                       (selected)="scrollNextSectionIntoView($event)">  
-</kng-ui-bottom-actions>
-
+<kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
 
 <!-- INFORMATION -->
 <div class="home-header">
@@ -27,6 +16,14 @@
       [innerHtml]="config.shared.header.message[locale]">
   </div>
 </div>
+
+<!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
+<kng-ui-bottom-actions [exited]="scrollDirection<-5" 
+                       [categories]="categories"
+                       (selected)="scrollNextSectionIntoView($event)">  
+</kng-ui-bottom-actions>
+
+
   
   
   
@@ -43,8 +40,19 @@
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
-  <div *ngFor="let category of getCategories();let i=index" 
-       [class]="category.slug"
+
+  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()">
+
+  <!-- INFORMATION -->
+  <div class="home-header" *ngIf="i==2"
+       [class.cover]="hasBackgroundCover()" 
+       [ngStyle]="getHeaderStyle()">
+    <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">
+    </div>
+  </div>
+  
+  
+  <div [class]="category.slug"
        [hidden]="!category.active" 
        #section>
     <section>
@@ -70,7 +78,7 @@
     </div>
     <div class="breaker small"></div>
   </div>
-
+  </ng-template>
       
 </div>
   

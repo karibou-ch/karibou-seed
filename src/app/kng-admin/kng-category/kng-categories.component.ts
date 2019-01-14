@@ -1,14 +1,13 @@
-import { Component, EventEmitter, OnDestroy,OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy,OnInit, ViewChild } from '@angular/core';
 import {
   CategoryService,
   Category,
   LoaderService,
-  config
 }  from 'kng2-core';
 
-import { KngNavigationStateService, i18n } from '../../shared';
-import { MdcSnackbar, MdcDialogComponent, MdcListItemChange, MdcRadioChange } from '@angular-mdc/web';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { KngNavigationStateService, i18n } from '../../common';
+import { MdcSnackbar, MdcDialogComponent, MdcRadioChange } from '@angular-mdc/web';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

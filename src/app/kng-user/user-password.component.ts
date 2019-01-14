@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoaderService, User, UserService, Config } from 'kng2-core';
+import { User, UserService, Config } from 'kng2-core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { KngInputValidator, i18n } from '../shared';
+import { KngInputValidator } from '../shared';
+import { i18n } from '../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 @Component({

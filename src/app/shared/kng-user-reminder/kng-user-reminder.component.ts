@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { User, UserService } from 'kng2-core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kng-user-reminder',
@@ -33,9 +34,13 @@ export class KngUserReminderComponent implements OnInit {
 
 
   constructor(
-    private $user:UserService
+    private $user:UserService,
+    private $route: ActivatedRoute
   ) { 
-
+    let loader=this.$route.snapshot.parent.data['loader']||this.$route.snapshot.data['loader'];
+    if(loader.length){
+      this.user=this.user||loader[1];
+    }
   }
 
   doUpdate(){

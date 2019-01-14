@@ -22,7 +22,7 @@ import {
   CartAction
 }  from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
-import { i18n } from '../shared';
+import { i18n } from '../common';
 
 
 @Component({
@@ -93,8 +93,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   ) { 
     // bind infinite scroll callback function
     this.scrollCallback=this.getNextPage.bind(this);
-
-    let loader=this.$route.snapshot.parent.data['loader'];
+    let loader=this.$route.snapshot.parent.data['loader']||this.$route.snapshot.data['loader'];
     this.isReady = false;
     this.config = loader[0];
     this.user=loader[1];
@@ -211,10 +210,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     //FIXME inner size
     let divider=(window.innerWidth<426)?2:4;
     this.group={};
+
     this.$product.select(this.options).subscribe((products: Product[]) => {
       products.forEach((product:Product)=>{
         if(product.attributes.home){
           this.home.push(product);
+          return;
         }
 
         if(!product.categories){
@@ -225,7 +226,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
         this.group[product.categories.name].push(product);
       });
-      this.home=this.home.slice(0,6);
+      this.home=this.home.slice(0,8);
       Object.keys(this.group).forEach(cat=>{
         this.group[cat]=this.group[cat].sort((a,b)=>{
           return b.stats.score-a.stats.score;
@@ -278,7 +279,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // detect if current container is visible 
   // on the screen (based on scroll position)
   detectVisibility(scrollPosition:number){
-    
+    // safe test
+    if(!this.sections){
+      return;
+    }
     this.sections.forEach(container=>{
       let scrollTop = container.nativeElement.offsetTop;
       let height = container.nativeElement.clientHeight;

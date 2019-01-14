@@ -5,6 +5,7 @@
   </button>
   <div class="sign" >
     <div class="logo" 
+         [class.small]="askAction=='signup'"
          [routerLink]="'/store/'+store" 
          [hidden]="askAction=='payment'||askAction=='address'"></div>
 

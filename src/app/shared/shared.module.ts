@@ -1,80 +1,82 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 //
 // exported components and directives
 import { KngControlMessagesComponent } from './kng-control-messages/control-messages.component';
-import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
-import { KngNavigationStateService } from './navigation.service';
 import { InfiniteScrollerDirective } from './infinite-scroller.directive';
-import { IsAuthenticatedGard,
-         IsWelcomeGard } from './is-authenticated-gard.service';
-import { i18n } from './i18n.service';
 import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
-import { KngFooterComponent } from './kng-footer/kng-footer.component';
 import { KngTextfieldAutosizeDirective } from './kng-textfield-autosize.directive';
-import { KngQuickEditorComponent, KngEditorDirective } from './kng-quick-editor/quick-editor.component';
 
 //
 // that should be in a specific admin module
 import { UcWidgetComponent } from './kng-uc-widget/uc-widget';
 
-import {
-  MdcLinearProgressModule,
-  MdcListModule,
-  MdcFabModule,
-  MdcFormFieldModule,
-  MdcRadioModule,
-  MdcCheckboxModule,
-} from '@angular-mdc/web';
-import { RouterModule } from '@angular/router';
-import { KngOrderFeedbackComponent } from './kng-order-feedback/kng-order-feedback.component';
-import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bottom-actions.component';
 import { KngUserReminderComponent } from './kng-user-reminder/kng-user-reminder.component';
+
+
+import { RouterModule } from '@angular/router';
+import { KngCommonModule } from '../common/common.module';
+import { KngHomeComponent } from '../kng-home/kng-home.component';
+
+import { ProductSwipeComponent, 
+         ProductListComponent, 
+         ProductThumbnailComponent, 
+         ProductComponent, 
+         ProductTinyComponent} from '../kng-product';
+import { CommonModule } from '@angular/common';
+import { Kng2CoreModule } from 'kng2-core';
+import { KngSharedMdcModule } from './shared.mdc.module';
+
+import { appRoutes } from './shared.routes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { KngNavbarComponent } from '../kng-navbar';
+import { KngRootComponent } from '../kng-root/kng-root.component';
+import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
+import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
+
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
-    MdcCheckboxModule,
-    MdcFabModule,
-    MdcRadioModule,
-    MdcLinearProgressModule,
-    MdcListModule
-    ],
+    KngSharedMdcModule,
+    Kng2CoreModule,
+    KngCommonModule,
+    RouterModule.forChild(appRoutes),
+  ],
   exports:[
+    RouterModule,
     KngControlMessagesComponent,
-    KngEditorDirective,
-    KngFooterComponent,
+    KngFeedbackComponent,
+    KngHomeComponent,
     KngMailConfirmationComponent,
-    KngUserReminderComponent,
-    InfiniteScrollerDirective,
-    MdcCheckboxModule,
-    MdcFabModule,
-    MdcRadioModule,
-    MdcLinearProgressModule,
-    MdcListModule,
-    MdcSearchBarComponent,
     KngTextfieldAutosizeDirective,
-    KngQuickEditorComponent,
+    KngUserReminderComponent,
+    KngUiBottomActionsComponent,
+    InfiniteScrollerDirective,
     UcWidgetComponent,
-    KngUiBottomActionsComponent
   ],
   declarations: [
+    // KngNavbarComponent,
+    // KngRootComponent,
+    KngHomeComponent,
     KngControlMessagesComponent,
-    KngEditorDirective,
-    KngFooterComponent,
+    KngTextfieldAutosizeDirective,
     KngMailConfirmationComponent,
     InfiniteScrollerDirective,
-    MdcSearchBarComponent,
-    KngQuickEditorComponent,
-    KngTextfieldAutosizeDirective,
-    KngOrderFeedbackComponent,
-    KngLazyLoadDirective,
-    UcWidgetComponent,
     KngUiBottomActionsComponent,
-    KngUserReminderComponent
+    KngUserReminderComponent,
+    MdcSearchBarComponent,
+    UcWidgetComponent,
+    ProductComponent,
+    ProductTinyComponent,
+    ProductListComponent,
+    ProductThumbnailComponent,
+    ProductSwipeComponent,
+    KngFeedbackComponent,
   ],
 })
 export class SharedModule { 
@@ -82,10 +84,6 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
-        i18n,
-        KngNavigationStateService,
-        IsAuthenticatedGard,
-        IsWelcomeGard
       ]
     }        
   }

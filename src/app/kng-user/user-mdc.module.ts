@@ -3,16 +3,12 @@ import { NgModule } from '@angular/core';
 //
 // import material components
 import {
-  MdcButtonModule,
-  MdcCardModule,
-  MdcDrawerModule,
+  MdcCheckboxModule,
   MdcDialogModule,
   MdcElevationModule,
-  MdcFabModule,
-  MdcListModule,
+  MdcLinearProgressModule,
   MdcMenuModule,
   MdcRippleModule,
-  MdcSnackbarModule,
   MdcSelectModule,
   MdcTabBarModule,
   MdcTextFieldModule
@@ -21,17 +17,13 @@ import {
 
 @NgModule({
   exports: [
-    MdcButtonModule,
-    MdcCardModule,
-    MdcDrawerModule,
+    MdcCheckboxModule,
     MdcDialogModule,
     MdcElevationModule,
-    MdcFabModule,
-    MdcListModule,
+    MdcLinearProgressModule,
     MdcMenuModule,
     MdcRippleModule,
     MdcSelectModule,
-    MdcSnackbarModule,
     MdcTextFieldModule,
     MdcTabBarModule
   ],

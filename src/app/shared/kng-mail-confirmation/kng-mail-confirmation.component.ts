@@ -1,9 +1,9 @@
 import { Component, OnInit,OnDestroy, Input, ViewEncapsulation } from '@angular/core';
 import { UserService, User } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
-import { i18n } from '../i18n.service';
+import { i18n } from '../../common';
 
-import { Observable ,  timer ,  Subscription } from 'rxjs';
+import { timer ,  Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
 @Component({

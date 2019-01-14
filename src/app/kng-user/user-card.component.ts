@@ -1,12 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { LoaderService, 
-         User, 
+import { User, 
          UserCard, 
          UserService, 
          Config} from 'kng2-core';
 
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { KngUtils } from '../shared';
 import { StripeService, Elements, ElementsOptions, TokenResult } from 'ngx-stripe';
 
 

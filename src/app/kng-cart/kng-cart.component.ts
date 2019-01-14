@@ -2,12 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CartService, 
-         CartState, 
-         CartAction, 
          CartItem, 
          Config, 
          LoaderService, 
-         Utils,
+         OrderShipping,
          User, 
          UserAddress,
          UserCard,
@@ -16,9 +14,8 @@ import { CartService,
          Shop} from 'kng2-core';
 
 import { MdcSnackbar } from '@angular-mdc/web';
-import { KngNavigationStateService, KngUtils, i18n } from '../shared';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OrderShipping } from '../../../../kng2-core/dist/order/order';
+import { KngNavigationStateService, KngUtils, i18n } from '../common';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'kng-cart',
@@ -45,6 +42,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   hasOrderError:boolean=false;
   noshippingMsg:string;
   subscription;
+  shippingTime;
 
   //
   // generating dynamic background image url 
@@ -107,14 +105,16 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.config=loader[0];      
     this.noshippingMsg=this.getNoShippingMessage();
 
+    // 
+    // FIXME currently only one shipping time!
+    this.shippingTime=Object.keys(this.config.shared.order.shippingtimes)[0];
+    this.shippingTime=this.config.shared.order.shippingtimes[this.shippingTime];
+
     this.user=loader[1];
     this.shops=loader[3];
     this.items=[];
     this.vendorAmount={};
 
-    //
-    // compute available discount and delta to get one
-    this.computeDiscount();
 
   }
 
@@ -131,6 +131,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store=this.$navigation.store;
+
+    //
+    // compute available discount and delta to get one
+    this.computeDiscount();
 
     this.subscription=this.$loader.update().subscribe(emit=>{
       // emit signal for config
@@ -293,8 +297,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
           .forEach(vendor=>{
       let amount=vendor.amount;
       let discountMagnitude=Math.floor(amount/vendor.discount.threshold);      
-      vendor.discount.needed=Math.ceil(vendor.discount.threshold/amount)
+      vendor.discount.needed=vendor.discount.threshold-amount%(vendor.discount.threshold|0)+amount;
       vendor.discount.total=discountMagnitude*vendor.discount.amount;
+      
     });
 
     //
@@ -303,6 +308,19 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //   console.log('--- vendor.discount',vendor,this.vendorAmount[vendor])
     // });
   }  
+
+  getDiscount(item:CartItem){
+    let discount=this.vendorAmount[item.vendor.urlpath].discount;
+
+    if(discount.threshold){
+      // discount.total;
+      // discount.needed;
+      // discount.threshold;
+      // console.log('--- vendor.discount',this.vendorAmount[item.vendor.urlpath]);
+      return discount.needed;
+    }
+    return "";
+  }
 
   getVendorDiscount(item:CartItem){
     return this.vendorAmount[item.vendor.urlpath].discount;

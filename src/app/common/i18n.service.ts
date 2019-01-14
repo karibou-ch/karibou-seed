@@ -16,12 +16,18 @@ export class i18n  {
 
 
   public fr:any={
-    cart_discount:"rabais qunatité",
+    action_ko:"À, Corriger!",
+    action_save:"Enregistrer",
+    cart_discount_info:"Rabais livraison",
+    cart_discount:"rabais quantité",
+    cart_discount_title:"rabais à partir de ",
     cart_signin:"Continuer la commande",
     cart_login:"Pour finaliser votre commande, vous devez vous connecter",
     cart_empty:"Votre panier est vide",
+    cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",
+    cart_amount_2:"pour permettre des modifications de commande (prix au poids, ou ajout de produits).",
     cart_nextshipping:"Prochaine livraison",
-    nav_account:"Vos commandes",
+    nav_account:"Votre compte",
     nav_login:"Connectez-vous",
     nav_login2:"Login",
     nav_shipping:"Prochaines livraison",
@@ -34,14 +40,13 @@ export class i18n  {
     img_max_sz:"Attention, la taille maximum d'une image est limitée à 150kb",
     user_confirmation_mail:"Merci, une confirmation a été envoyée à votre adresse email",
     user_login_ko:"Ho ho, nous ne pouvons pas vous identifier...",
-    user_login_ok:"Bienvenu !",
+    user_login_ok:"Bienvenue !",
     user_register_ok:"Votre compte a été créé",
     user_recover_ok:"Un nouveau mot de passe à été envoyé",
     password  :"Confirmer votre mot de passe",
     delete_ok :'Suppression effectuée',    
     modify_ok :'Modification effectuée',    
     save_ok   :'Sauvegarde effectuée',
-    action_ko:"À, Corriger!",
     thanks:"OK, Merci!",
     ITEM_ADD:"ajouté: ",
     ITEM_REMOVE:"supprimé: ",
@@ -49,12 +54,18 @@ export class i18n  {
   };
 
   public en:any={
+    action_ko:"Retry!",
+    action_save:"Save!",
     cart_discount:"discount",
+    cart_discount_info:"Vendor delivery discount ",
+    cart_discount_title:"rabais livraison à partir de ",
     cart_signin:"Sign In!",
     cart_login:"Please sign in before the checkout",
     cart_empty:"Your cart is empty",
+    cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",
+    cart_amount_2:"pour permettre des modifications de commande (prix au poids, ou ajout de produits).",
     cart_nextshipping:"Next delivery",
-    nav_account:"Your orders",
+    nav_account:"Your account",
     nav_login:"Sign in",
     nav_login2:"Login",
     nav_shipping:"Next delivery",
@@ -75,7 +86,6 @@ export class i18n  {
     modify_ok :'Updated',    
     save_ok   :'Save done!',
     thanks:"OK, Thanks!",
-    action_ko:"Retry!",
     ITEM_ADD:"Add: ",
     ITEM_REMOVE:"Remove: ",
     ITEM_MAX:'Oops reach the order limit of this produtc'
@@ -93,10 +103,11 @@ export class i18n  {
   constructor(
     private $config:ConfigService
   ) { 
-    this.currentLocale=this.$config.locale||'fr';
-    if(this.currentLocale.indexOf('en-')>-1){
-      this.currentLocale='en';
-    }
+    // this.currentLocale=this.$config.locale||'fr';
+    // if(this.currentLocale.indexOf('en-')>-1){
+    //   this.currentLocale='en';
+    // }
+    this.currentLocale='fr';
 
     // FIXME subscribe to config
     // this.$config.subscribe((config:Config)=>{

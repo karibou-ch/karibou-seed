@@ -56,7 +56,7 @@ export class IsWelcomeGard implements CanActivate,CanActivateChild{
         return true;
       }
       //FIXME access this.$navigation.store 
-      this.$router.navigate(['/store','geneva']);
+      this.$router.navigate(['/store','geneva','home']);
       return false;
     });    
   }
