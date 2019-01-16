@@ -23,6 +23,7 @@ export const appRoutes: Routes = [
     loadChildren: './shared/shared.module#SharedModule'
     // children:[{path:'', loadChildren: './shared/shared.module#SharedModule'}]    
   },
+  { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/geneva/home/products/:sku' },
   {
     path: '',
     pathMatch: 'full',    
