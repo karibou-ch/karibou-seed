@@ -1,79 +1,80 @@
+@import "~colors.scss";
+
+.background-grid{
+  position: fixed;
+  overflow: hidden;
+  top:0;
+  @media (max-width: 426px) {
+    display: none;
+  }
   
-  .background-grid{
-    position: fixed;
+  
+  height: 110%;
+  z-index: -1;  
+  .items-list-wrap{
+    width: 120%;
     overflow: hidden;
-    top:0;
-    @media (max-width: 426px) {
-      display: none;
-    }
-    
-    
-    height: 110%;
-    z-index: -1;  
-    .items-list-wrap{
-      width: 120%;
-      overflow: hidden;
+    box-sizing: border-box;
+    will-change: transform;
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+    animation: slowScroll 120s;
+    animation-iteration-count: 3;
+    animation-delay: 0.5s;
+    animation-timing-function: easeInOutSine;    
+    ul{
       box-sizing: border-box;
-      will-change: transform;
+      margin: 0;
+      padding: 0;
+      list-style: none;      
+      li{
+        display: inline-block;
+        position: relative;
+        width: 273px;
+        height: 203px;
+        vertical-align: top;
+        background: #8b6f4e;
+        text-align: left;
+        color: #5a5a5a;
+        font-weight: 400;
+        margin: 0px;
+        cursor: pointer;
+        white-space: initial;
+        border: 10px solid #fefefe;
+        background-size: cover;
+        background-position: center;          
+      }
+    }
+  }
+}
+
+@keyframes slowScroll {
+  0% {
       -webkit-transform: translateY(0);
       -moz-transform: translateY(0);
       -ms-transform: translateY(0);
       -o-transform: translateY(0);
       transform: translateY(0);
-      animation: slowScroll 120s;
-      animation-iteration-count: 3;
-      animation-delay: 0.5s;
-      animation-timing-function: easeInOutSine;    
-      ul{
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        list-style: none;      
-        li{
-          display: inline-block;
-          position: relative;
-          width: 273px;
-          height: 203px;
-          vertical-align: top;
-          background: #8b6f4e;
-          text-align: left;
-          color: #5a5a5a;
-          font-weight: 400;
-          margin: 0px;
-          cursor: pointer;
-          white-space: initial;
-          border: 10px solid #fefefe;
-          background-size: cover;
-          background-position: center;          
-        }
-      }
-    }
   }
+  50% {
+      -webkit-transform: translateY(-380px);
+      -moz-transform: translateY(-380px);
+      -ms-transform: translateY(-380px);
+      -o-transform: translateY(-380px);
+      transform: translateY(-380px);
+  }
+  100% {
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -ms-transform: translateY(0);
+      -o-transform: translateY(0);
+      transform: translateY(0);
+  }
+}
 
-  @keyframes slowScroll {
-    0% {
-        -webkit-transform: translateY(0);
-        -moz-transform: translateY(0);
-        -ms-transform: translateY(0);
-        -o-transform: translateY(0);
-        transform: translateY(0);
-    }
-    50% {
-        -webkit-transform: translateY(-380px);
-        -moz-transform: translateY(-380px);
-        -ms-transform: translateY(-380px);
-        -o-transform: translateY(-380px);
-        transform: translateY(-380px);
-    }
-    100% {
-        -webkit-transform: translateY(0);
-        -moz-transform: translateY(0);
-        -ms-transform: translateY(0);
-        -o-transform: translateY(0);
-        transform: translateY(0);
-    }
-  }
-  
 .container{
   a.enter,
   button.enter{

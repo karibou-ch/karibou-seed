@@ -1,3 +1,5 @@
+@import "~colors.scss";
+
 kng-product-swipe{
   min-height: 280px !important;
   overflow: hidden;
@@ -26,7 +28,8 @@ kng-product-swipe{
       h2,h3{
         text-transform: uppercase;
         font-weight: 500;
-        color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
+        color: #{$mdc-theme-text-primary-on-background};
+        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
         font-size: 1.675rem;
         margin-bottom: 5px;
         margin-top:15px;

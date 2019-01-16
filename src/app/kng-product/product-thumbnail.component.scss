@@ -1,3 +1,5 @@
+@import "~colors.scss";
+
 .product-card.incart .action-remove,
 .product-card.incart .action-add
 {
@@ -90,6 +92,7 @@
       position: absolute;
       left: 5px;
       bottom: 5px;
+      color: #{$mdc-theme-primary};
       color: var(--mdc-theme-primary);
       font-weight: 600;
       font-size: 11px;
@@ -121,8 +124,7 @@
 
   
   .action-add,.action-remove{
-    background-color: rgba(0, 0, 0, 0.15);
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: #{$mdc-theme-primary}!important;
     background-color: var(--mdc-theme-primary) !important;
     color: white!important;
     opacity: 0.7;
@@ -167,7 +169,6 @@
     top: 5px;
     margin: 0 auto;
     left: 5px;
-    color: rgba(255, 255, 255, 0.85);
     color: rgba(255, 215, 0, 0.85);
     display: none;
   }

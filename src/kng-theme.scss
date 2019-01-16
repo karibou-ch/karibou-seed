@@ -1,3 +1,4 @@
+@import "~colors.scss";
 
 
 [hidden], .hide {
@@ -25,7 +26,6 @@ body{
 .flex-row{
   display: flex;
   flex-flow: row;
-  -justify-content:flex-start; /*halign*/
   align-items:flex-start; /*valign*/
   justify-content: space-between;
 }
@@ -61,12 +61,14 @@ body{
   text-indent: -999999px;
   &.primary{
     &::before{
-      background: var(mdc-theme-primary);
+      background: $mdc-theme-primary;
+      background: var(--mdc-theme-primary);
     }
   }
   &.secondary{
     &::before{
-      background: var(mdc-theme-secondary);
+      background: $mdc-theme-secondary;
+      background: var(--mdc-theme-secondary);
     }
   }
 
@@ -184,15 +186,46 @@ body{
 //
 // colors
 
-.secondary-bg     {background:      var(--mdc-theme-secondary)!important;}
-.primary-bg       {background:      var(--mdc-theme-primary)!important;}
-.secondary-text   {color:           var(--mdc-theme-secondary)!important;}
-.primary-text     {color:           var(--mdc-theme-primary)!important;}
-.text-primary-dark{color:           var(--mdc-theme-primary-dark)!important;}
-.text-primary     {color:           var(--mdc-theme-text-primary-on-background)!important;}
-.text-secondary   {color:           var(--mdc-theme-text-secondary-on-background)!important;outline: 0;}
-.text-primary     {color:           var(--mdc-theme-primary-text)!important;}
-.text-secondary   {color:           var(--mdc-theme-secondary-text)!important;outline: 0;}
+.secondary-bg     {
+  background:      $mdc-theme-secondary!important;
+  background:      var(--mdc-theme-secondary)!important;
+}
+.primary-bg       {
+  background:      $mdc-theme-primary!important;
+  background:      var(--mdc-theme-primary)!important;
+}
+
+.secondary-text   {
+  color:           $mdc-theme-secondary!important;
+  color:           var(--mdc-theme-secondary)!important;
+}
+.primary-text     {
+  color:           $mdc-theme-primary!important;
+  color:           var(--mdc-theme-primary)!important;
+}
+.text-primary-dark{
+  color:           $mdc-theme-primary-dark!important;
+  color:           var(--mdc-theme-primary-dark)!important;
+}
+.text-primary     {
+  color:           $mdc-theme-text-primary-on-background!important;
+  color:           var(--mdc-theme-text-primary-on-background)!important;
+}
+
+.text-secondary   {
+  color:           $mdc-theme-text-primary-on-background!important;
+  color:           var(--mdc-theme-text-secondary-on-background)!important;
+  outline: 0;
+}
+.text-primary     {
+  color:           $mdc-theme-primary-text!important;
+  color:           var(--mdc-theme-primary-text)!important;
+}
+.text-secondary   {
+  color:           $mdc-theme-secondary-text!important;
+  color:           var(--mdc-theme-secondary-text)!important;
+  outline: 0;
+}
 .green            {color:         #43b02a!important;}
 .lime             {color:         lime!important;}
 .red              {color:         red!important;}

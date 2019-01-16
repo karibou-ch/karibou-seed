@@ -1,3 +1,5 @@
+@import "~colors.scss";
+@import "~@angular-mdc/theme/material";
 /**
  * PRESENTATION
  */
@@ -5,6 +7,7 @@
 .markdown-page{
   font-family: Helvetica,Arial, sans-serif;
   margin: 30px;
+  background: $mdc-theme-background-container;
   background: var(--mdc-theme-background-container);
   margin-left: -20px;
   margin-right: -20px;
@@ -67,8 +70,10 @@
     float: right;
     padding: 10px;
     border-radius: 4px;
-    background-color: var(--mdc-theme-primary);
+    color: $mdc-theme-primary-text;
+    background-color: $mdc-theme-primary;
     color: var(--mdc-theme-primary-text);
+    background-color: var(--mdc-theme-primary);
     margin-top: 40px;
     margin-bottom: 40px;
     @media screen and (max-width:426px){
@@ -80,6 +85,7 @@
       margin-bottom: 20px;    
       padding-bottom: 10px;
       border-bottom: 1px solid #389422;      
+      border-color: $mdc-theme-primary-text;
       border-color: var(--mdc-theme-primary-text);
     }
 
@@ -92,6 +98,7 @@
         margin: 15px 0;
       }
       a{
+        color: $mdc-theme-primary-text;
         color: var(--mdc-theme-primary-text);
         text-decoration:none;
       }
@@ -170,7 +177,8 @@
 
   &.page-container{
     color: #424242;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: $mdc-theme-background-container;
+    background-color: var(--mdc-theme-background-container);
     padding: 0;
 
     .close{
@@ -186,7 +194,8 @@
 
 
     form{
-      background: white;
+      background-color: $mdc-theme-background-container;
+      background-color: var(--mdc-theme-background-container);
       display: flex;
       flex-flow: column;
       flex:1 0 100%;

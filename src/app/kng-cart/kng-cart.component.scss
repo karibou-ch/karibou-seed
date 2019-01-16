@@ -44,6 +44,7 @@
   section{
     h2,h3{
       font-weight: 500;
+      color: $mdc-theme-primary;
       color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
       font-size: 1.875rem;
       -font-size: 0.875rem;
@@ -62,6 +63,7 @@
   
     h5,h4{
       text-align: center;
+      color: $mdc-theme-primary;
       color:var(--mdc-theme-primary);
       font-weight: 500;
       margin-bottom: 0px;    
@@ -94,7 +96,9 @@
   }
 
   .cart-flow{
+    color: $mdc-theme-primary;
     color: var(--mdc-theme-primary);
+    background: $mdc-theme-primary-text;
     background: var(--mdc-theme-primary-text);
     width: 30px;
     height: 30px;
@@ -107,7 +111,10 @@
     justify-content: center;
     font-weight: 700;    
     &.flow-done{
+      background: $mdc-theme-primary;
       background: var(--mdc-theme-primary);
+      
+      color: $mdc-theme-primary-text;
       color: var(--mdc-theme-primary-text);
     }
     &::after{
@@ -156,7 +163,7 @@
 
   //
   // cart content
-  mdc-list-item{    
+  mdc-list-item{        
     &.border-top{
       border-top: 1px solid #aaa;
     }
@@ -164,6 +171,7 @@
       margin-top: -20px;
     }
 
+    color: #333;
     button{
       width: 31px;
       height: 34px;  
@@ -214,6 +222,8 @@
     .mdc-list-item__meta{
       display: flex!important;
       justify-content: flex-start;
+      color: #333!important;
+
       flex-wrap: nowrap;
       align-items: center;   
       div.label{
@@ -267,6 +277,7 @@
   // card elements
   mdc-card{
     &.selected{
+      border:2px solid rgba(0, 0, 0, 0.87);
       border:2px solid var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
     }
     border-radius: 0;
@@ -444,7 +455,9 @@
       min-height: 100px;
       position: relative;
       width: 100vw;
+      background: $mdc-theme-primary;
       background: var(--mdc-theme-primary);      
+      color:$mdc-theme-primary-text;
       color:var(--mdc-theme-primary-text);
       padding: 30px;
       margin: 0;

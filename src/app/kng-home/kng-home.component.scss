@@ -1,3 +1,4 @@
+@import "~colors.scss";
 
 //
 // BOX INFO
@@ -13,6 +14,7 @@ div.home-header{
 
   >div{    
     width: 100%;
+    background: $mdc-theme-background-container;
     background: var(--mdc-theme-background-container);
     margin: 0;
     margin-top:0px;
@@ -23,7 +25,8 @@ div.home-header{
     >p,
     >div{
       padding: 20px;
-      color: var(--mdc-theme-text-hint-on-background);
+      color: #{$mdc-theme-text-primary-on-background};
+      color: var(--mdc-theme-text-primary-on-background);
     }
 
     h1,h2,h3{
@@ -32,7 +35,8 @@ div.home-header{
       margin: 0px;
       margin-top: 10px;
       line-height: 1.3em;
-      color:var(--mdc-theme-text-primary-on-primary,rgba(0,0,0,.87));
+      color:$mdc-theme-text-primary-on-background;
+      color:var(--mdc-theme-text-primary-on-background,rgba(0,0,0,.87));
       font-weight: 500;
       &.left{
         text-align: left;
@@ -66,9 +70,9 @@ div.home-header{
       display: flex;
       flex-flow: row wrap;
       padding: 0px;
-      font-size: x-large;
+      font-size: 22px;
       margin-bottom:-5px;
-      overflow: hidden;
+      overflow: hidden; 
       .left-half{
         max-width: 29%;        
         img{
@@ -121,6 +125,7 @@ div.home-header{
   }
 
   .maintenance{
+    background: $mdc-theme-primary;
     background: var(--mdc-theme-primary);
   }
 
@@ -150,7 +155,6 @@ div.home-header{
 // HOME SELECTION
 kng-product-swipe{
   margin-top:10px;
-  -background: var(--mdc-theme-background-container);
 }
 
 div.product-container{
@@ -165,8 +169,8 @@ div.product-container{
   }
   
   >div{
-    -border-bottom: 2px solid rgba(50, 42, 167, 0.1);
     padding-bottom:30px;
+    background: $mdc-theme-background-container;
     background: var(--mdc-theme-background-container);
   }
 
@@ -192,7 +196,8 @@ div.product-container{
     padding-top:10px;
     h2,h3{
       font-weight: 500;
-      color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));      
+      color: rgba(0, 0, 0, 0.87);      
+      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
       font-size: 1.675rem;
       text-transform: uppercase;    
       margin-top: 20px;
@@ -210,6 +215,7 @@ div.product-container{
     }
   
     h5,h4{
+      color:$mdc-theme-secondary;
       color:var(--mdc-theme-secondary);
       font-weight: 500;
       margin-bottom: 0px;    
@@ -254,7 +260,7 @@ div.product-container{
       max-width: 32%;
       margin-left: 0;
       margin-right: auto;      
-      background: blueviolet ;
+      background: $mdc-theme-primary;
       background: var(--mdc-theme-primary);
       color: white;
       position: relative;

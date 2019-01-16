@@ -1,5 +1,7 @@
+@import "~colors.scss";
 
 :host{
+  background: #{$mdc-theme-background};
   background: var(--mdc-theme-background);
   // width: 100vw;
   // position: fixed;
@@ -28,6 +30,7 @@
       margin: auto;
       margin-top: -20px;
       min-height: 100vh;
+      background-color: $mdc-theme-secondary;
       background-color: var(--mdc-theme-secondary, white);
       @media (max-width:1024px){
         margin-left: -4px;

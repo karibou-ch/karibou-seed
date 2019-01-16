@@ -1,3 +1,4 @@
+@import "~colors.scss";
 
 .product-dialog{
   overflow-y: scroll;
@@ -41,7 +42,6 @@
   .product-dialog__surface{
     /* see overflow in mdc-style.scss */
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
-    background-color: var(--mdc-theme-background, #fff);
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -175,8 +175,7 @@
   
     
     .action-add,.action-remove{
-      background-color: rgba(0, 0, 0, 0.15);
-      background-color: rgba(255, 255, 255, 0.6);
+      background-color: #{$mdc-theme-primary} !important;
       background-color: var(--mdc-theme-primary) !important;
       color: white!important;
       opacity: 0.9;
@@ -360,6 +359,7 @@
       transform: translateX(-4px);
     }
     .mdc-chip--selected{
+      background-color: #{$mdc-theme-primary-light};
       background-color: var(--mdc-theme-primary-light);
     }
     >div{

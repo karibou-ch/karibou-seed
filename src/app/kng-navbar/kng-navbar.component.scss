@@ -1,3 +1,5 @@
+@import "~colors.scss";
+
 mdc-drawer{
   a{
     color: #0a072b;
@@ -19,10 +21,12 @@ mdc-drawer{
       width: 100%;
   
       .label-shipping{
+        color: $mdc-theme-primary-dark;
         color: var(--mdc-theme-primary-dark);
         font-size: 85%;
         margin-right: 5px;    
         .bullet{
+          background: $mdc-theme-secondary;
           background: var(--mdc-theme-secondary);
           border-radius: 50%;
           padding: 0;
@@ -101,7 +105,6 @@ div.navbar{
     margin-right: auto;
     margin-left: auto;  
     margin-top: 100px;
-    -background: var(--mdc-theme-background-container);
 
     @media (min-width:1024px) {
       max-width: 760px;
@@ -125,27 +128,12 @@ div.navbar{
   .cart-items-count{    
     -color: #009200 !important;
     -color: #20714e!important;
+    color: $mdc-theme-primary-text;
     color: var(--mdc-theme-primary-text);
     font-weight: 600;    
-    -text-shadow: 0 0 40px var(--mdc-theme-primary-light), 
-                 0 0 55px var(--mdc-theme-primary-light), 
-                 0 0 75px var(--mdc-theme-primary-light);
     &.label{
       display: inline-block;
       transform:translateY(-15px) translateX(-1px)
-      // width: 18px;
-      // height: 18px;
-      // display: inline-block;
-      // border-radius: 50%;
-      // background: #E8104A;
-      // background: white!important;
-      // color: #009200 !important;
-      // font-weight: 600;
-      // transform: translateY(-2px) translateX(5px);
-      // visibility: hidden;
-      // line-height:17px;
-      // font-size: 13px;
-      // letter-spacing: -1px;        
 
     }             
   }
@@ -158,11 +146,11 @@ div.navbar{
 
   .mdc-top-app-bar{
     z-index: 2;
-    color:var(--mdc-theme-primary-text)!important;
 
     //
     // override firefox *:any-link{
     a{
+      color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       text-decoration:none;
     }
@@ -183,15 +171,16 @@ div.navbar{
     }
 
     .mdc-tab{
-      color:var(--mdc-theme-primary-text);
+      color: $mdc-theme-primary-text!important;
+      color: var(--mdc-theme-primary-text)!important;
       @media screen and (max-width: 600px){
         min-width: 72px;
         padding: 0 8px;
       }      
     }
     .mdc-tab-bar__indicator{
+      background: $mdc-theme-primary-dark;
       background: var(--mdc-theme-primary-dark);
-      -background: rgba(0, 255, 0, 1);
     }
 
   }

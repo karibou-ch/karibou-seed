@@ -1,3 +1,5 @@
+@import "~colors.scss";
+@import "~@angular-mdc/theme/material";
 
 .product-dialog{
   overflow-y: scroll;
@@ -41,6 +43,7 @@
   .product-dialog__surface{
     /* see overflow in mdc-style.scss */
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+    background-color: #{$mdc-theme-background};
     background-color: var(--mdc-theme-background, #fff);
     background-color: #fff;
     display: flex;
@@ -233,6 +236,7 @@
         border: 2px solid #fff;
         padding: 1px;
         &.selected{
+          border: 2px solid #{$mdc-theme-primary};
           border: 2px solid var(--mdc-theme-primary);
         }
       }      
@@ -246,7 +250,9 @@
     flex-flow: row wrap;
   
     .mdc-chip-set--choice .mdc-chip.mdc-chip--selected {
+      background-color: #{$mdc-theme-primary};
       background-color: var(--mdc-theme-primary);
+      color: #{$mdc-theme-surface};
       color: var(--mdc-theme-surface, #fff);
     }  
   
