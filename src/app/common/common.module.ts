@@ -8,6 +8,7 @@ import { KngNavigationStateService } from './navigation.service';
 import { IsAuthenticatedGard,
          IsWelcomeGard } from './is-authenticated-gard.service';
 import { i18n } from './i18n.service';
+import { MetricsService } from './metrics.service';
 
 import { CommonMdcModule } from './common.mdc.module';
 
@@ -43,6 +44,7 @@ export class KngCommonModule {
     return {
       ngModule: KngCommonModule,
       providers: [
+        MetricsService,
         i18n,
         KngNavigationStateService,
         IsAuthenticatedGard,

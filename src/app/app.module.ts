@@ -33,6 +33,7 @@ import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.
 import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
+import { EnumMetrics } from './common/metrics.service';
 // import { ServiceWorkerModule } from '@angular/service-worker';
 
 @Injectable()
@@ -48,7 +49,8 @@ export class GlobalErrorHandler implements ErrorHandler {
      //
      // USING SENTRY AS DEBUG
      try{
-      (<any>window).Sentry.captureException(error.originalError || error);
+      (<any>window).Sentry&&(<any>window).Sentry.captureException(error.originalError || error);
+      (<any>window)['_kmq']&&(<any>window)['_kmq'].push(['record', EnumMetrics[EnumMetrics.metric_error], {error:error.message}]);
      }catch(e){
 
      }

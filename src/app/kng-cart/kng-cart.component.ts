@@ -16,6 +16,7 @@ import { CartService,
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { FormBuilder } from '@angular/forms';
+import { MetricsService, EnumMetrics } from '../common/metrics.service';
 
 @Component({
   selector: 'kng-cart',
@@ -92,6 +93,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     public $loader:LoaderService,
     public $cart:CartService,
     private $fb: FormBuilder,
+    private $metric:MetricsService,
     public $navigation:KngNavigationStateService,
     private $order:OrderService,
     private $route:ActivatedRoute,
@@ -217,6 +219,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
           window.scroll(0,0);          
           return;
         }
+
+        //
+        // Metric ORDER
+        this.$metric.event(EnumMetrics.metric_order_sent,{
+          'shipping':order.getShippingPrice(),
+          'amount':order.getSubTotal()
+        });
+
         this.$snack.show("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
         this.$router.navigate(['/store',this.store,'me','orders']);
         this.items=[];
@@ -375,14 +385,24 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   setShippingAddress(address:UserAddress){
     this.$cart.setShippingAddress(address);
+
+    //
+    // Metric ORDER
+    this.$metric.event(EnumMetrics.metric_order_address,{
+      'deposit':!!(address['active'])
+    });
   }
   
   setPaymentMethod(payment:UserCard){
     if(!payment.isValid()){
-      this.$snack.show(payment.error,"OK",{multiline:true})
+      this.$snack.show(payment.error||this.$i18n.label().cart_payment_not_available,"OK",{multiline:true})
       return;
     }
     this.$cart.setPaymentMethod(payment);      
+
+    //
+    // Metric ORDER
+    this.$metric.event(EnumMetrics.metric_order_payment);
   }
 
 
