@@ -1,0 +1,93 @@
+<div class="container">
+  <mdc-list  avatar="true"  interactive="false">
+    <mdc-list-item (click)="onConfigSave()">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">save</mdc-icon>
+      <mdc-list-item-text i18n>Sauver vos modifications
+        <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
+      </mdc-list-item-text>
+      <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+
+      
+    <!-- SITE About -->
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Titre about du site" type="text" [(ngModel)]="config?.shared.home.about.t[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Header about du site" type="text" [(ngModel)]="config?.shared.home.about.h[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-item class="config large">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-textarea i18n-label label="Paragraphe about du site" kng-autosize rows="4" [(ngModel)]="config?.shared.home.about.p[$i18n.locale]"></mdc-textarea>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <!-- ABOUT IMAGE -->
+    <mdc-list-item class="config">
+      <mdc-list-item-text>
+        <button mdc-button outlined="true"  dense="true" class="align-right"
+          (click)="onClear('about')">remove image</button>
+        <div class="images" style="float: right;">
+          <ngx-uploadcare-widget 
+            images-only="true" 
+            [value]="config.shared.home.about.image" 
+            (on-upload-complete)="onUpload($event,'about')"
+            [validator]="ucValidator"
+            (on-dialog-open)="onDialogOpen($event)"
+            [public-key]="config.shared.keys.pubUpcare">
+          </ngx-uploadcare-widget>
+        </div>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+
+    <!-- SITE Products Selection -->
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Titre de la sélection" type="text" [(ngModel)]="config?.shared.home.selection.t[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Header de la sélection" type="text" [(ngModel)]="config?.shared.home.selection.h[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+  
+    <!-- SITE Footer -->
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Footer (T)" type="text" [(ngModel)]="config?.shared.home.footer.t[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>      
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Footer (H) " type="text" [(ngModel)]="config?.shared.home.footer.h[$i18n.locale]">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    <mdc-list-item class="config large">
+      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-list-item-text>
+        <mdc-textarea i18n-label label="Footer (P)" kng-autosize rows="4" [(ngModel)]="config?.shared.home.footer.p[$i18n.locale]"></mdc-textarea>
+      </mdc-list-item-text>
+    </mdc-list-item>
+    
+  </mdc-list>
+</div>

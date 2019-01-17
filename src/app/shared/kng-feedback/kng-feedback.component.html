@@ -1,0 +1,119 @@
+<!-- ORDER OPEN -->
+<div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
+  <h3 i18n>{{i18n[locale].title_order_open}}</h3>
+  <p i18n class="help-block">
+      Votre commande du 
+      <b>{{order.shipping.when|date:'EEE d MMM y'}}</b> 
+      est en cours de préparation <b hidden>({{order.getProgress().toFixed(0)}}%)</b>
+      <br/>La livraison est prévue chez <b class="text-capitalize">{{order.shipping.name}}</b>
+  </p>
+  <mdc-linear-progress 
+    #progress  determinate="true" [progress]="order.getProgress()/100" [buffer]="0.85" 
+    style="display:block"></mdc-linear-progress>
+  <p class="footer">
+  </p>
+</div>
+
+<!--- ORDER IS CANCEL -->
+<div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='voided'">
+  <div class="details" >
+      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
+      {{i18n[locale].title_order_cancel}}
+      <span class="text-strike">{{order.getTotalPrice()|currency:'CHF'}}</span>
+  </div>                                      
+</div>
+
+<!--- ORDER IS EVALUATED -->
+<div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='evaluated'">
+  <div class="details" >
+      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
+      {{order.items.length}} articles
+      <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
+  </div>                                      
+  <div class="form">
+    <!-- Annulation {{order.getFulfilledFailure()}} - 
+    Problème {{order.getFulfilledIssue().length}} -->
+    <span>Votre évaluation:</span>&nbsp;
+    <mdc-icon class="stars" [class.scored]="score>=0">star_rate</mdc-icon> 
+    <mdc-icon class="stars" [class.scored]="score>=1">star_rate</mdc-icon> 
+    <mdc-icon class="stars" [class.scored]="score>=2">star_rate</mdc-icon>
+    <mdc-icon class="stars" [class.scored]="score>=3">star_rate</mdc-icon>
+  </div>
+</div>
+
+
+<!--- ORDER IS PAID -->
+<div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
+  <ng-content></ng-content>
+  <div class="details" >
+      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
+      {{order.items.length}} articles
+      <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
+  </div>                                      
+  <div class="form">
+    <!-- Annulation {{order.getFulfilledFailure()}} - 
+    Problème {{order.getFulfilledIssue().length}} -->
+    <span>{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
+    <mdc-icon class="stars" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</mdc-icon> 
+    <mdc-icon class="stars" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</mdc-icon> 
+    <mdc-icon class="stars" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</mdc-icon>
+    <mdc-icon class="stars" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</mdc-icon>
+  </div>
+  <div class="evaluate" [hidden]="!displayEvaluate()" [class.boxed]="boxed">
+      <div class="label">
+        <span>{{i18n[locale].title_evaluation_save}}</span>
+        <mdc-icon class="stars" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</mdc-icon> 
+        <mdc-icon class="stars" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</mdc-icon> 
+        <mdc-icon class="stars" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</mdc-icon>
+        <mdc-icon class="stars" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</mdc-icon>      
+      </div>
+      <button (click)="saveEvaluate()">{{$i18n.label().action_save}} </button>    
+      <button (click)="openIssue()" class="issue" [hidden]="score>=3">{{i18n[locale].title_issue_question}}</button>    
+  </div>
+</div>
+
+<ng-container *ngIf="askFeedback">
+  <div class="blured" ></div>
+  <div class="container top">
+    <button (click)="onBack()" class="close">
+        <mdc-icon [fontSize]="50">close</mdc-icon>
+    </button>
+    <div class="feedback-container" >
+      <h3 i18n>{{i18n[locale].title_issue_title}}</h3>
+      <p i18n class="help-block" [innerHtml]="i18n[locale].title_issue_header"></p>
+
+      <!-- ORDER ITEMS -->
+      <mdc-list twoLine interactive="false">
+        <mdc-list-item *ngFor="let item of order.items"
+                        [selected]="selected[item.sku]">
+  
+          <mdc-list-item-text>
+            {{item.quantity}}x {{item.title}} ({{item.part}})
+            <!-- ORDER FEEDBACK -->
+            <mdc-textarea i18n-label label="Description du problème" fullwidth [ngModelOptions]="{standalone: true}"
+            [hidden]="!selected[item.sku]"
+            kng-autosize rows="2" 
+            [(ngModel)]="item.note">
+            </mdc-textarea>                              
+
+            <mdc-list-item-secondary >
+            </mdc-list-item-secondary>
+          </mdc-list-item-text>                        
+          <mdc-checkbox mdcListItemMeta [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]"></mdc-checkbox>        
+        </mdc-list-item>
+      </mdc-list>   
+
+      <div class="breaker"></div>
+      <p i18n class="help-block" [innerHtml]="i18n[locale].title_issue_hub"></p>
+      <!-- ORDER FEEDBACK -->
+      <mdc-textarea i18n-label label="Note concernant le service?" fullwidth [ngModelOptions]="{standalone: true}"
+      kng-autosize rows="2" 
+      [(ngModel)]="feedbackText">
+      </mdc-textarea>                  
+
+      <!-- FEEDBACK ACTIONS -->
+      <button  (click)="saveEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>
+
+    </div>
+  </div>    
+</ng-container>

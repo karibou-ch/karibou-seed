@@ -1,0 +1,28 @@
+div.root{
+  padding: 10%;
+  .console{
+    font-family: monospace;
+    margin: 0;
+    letter-spacing: -0.8px;
+    font-weight: 500;
+    color: #000;    
+    pre{
+      color: darkgreen;
+      font-size: 14px;      
+    }
+    p{
+      margin: 2px; 
+    }
+    a{
+      text-decoration: none;
+    }
+  }
+  .error{
+    font-size: 90px;
+    font-family: sans-serif;
+    font-weight: 800;
+    color: #aaa;
+    text-shadow: 3px 3px 0px #ddd;  
+  }  
+
+}

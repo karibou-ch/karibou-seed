@@ -1,0 +1,47 @@
+<div>
+  <h2 mdc-typography-title i18n [hidden]="!user.payments.length" i18n>
+    Vos méthodes de paiement
+  </h2>
+  <p class="help-block" i18n>
+    Sélectionner pour éditer
+  </p>
+  <mdc-list   twoLine>
+      <mdc-list-item *ngFor="let payment of user.payments" 
+      (click)="setPaymentMethod(payment)"
+      [hidden]="payment.issuer=='wallet'"      
+      [class.selected]="isSelectedPayment(payment)">
+      <div  [ngStyle]="{'background-image': 'url(' + issuer[payment.issuer].img + ')'}"
+            mdcListItemGraphic></div>
+
+        <mdc-list-item-text >             
+            <span>{{issuer[payment.issuer].label}}</span>                 
+            <button [disabled]="isLoading" [hidden]="!isSelectedPayment(payment)" mdc-button [outlined]="true" (click)="onDelete(payment)">
+              Supprimer</button>
+            <mdc-list-item-secondary>
+                {{payment.number}}
+                <div class="error" [hidden]="!payment.error">{{payment.error}}</div>
+            </mdc-list-item-secondary>               
+        </mdc-list-item-text>  
+        <div [class.invalid]="!payment.isValid()" mdcListItemMeta>
+            {{payment.expiryToDate()|date:'MM/y'}}
+        </div>                 
+    </mdc-list-item>
+  </mdc-list>
+  <div class="breaker small"></div>
+  <h2 mdc-typography-title i18n  i18n [hidden]="!user.isReady()">
+      Ajouter une méthode de paiement
+  </h2>
+    
+  
+  <form novalidate (ngSubmit)="onPayment()" [formGroup]="stripe" class="stripe-component">
+    <mdc-text-field i18n-label label="Nom & Prénom" style="width:100%" type="text" 
+                    [hidden]="!user.isReady()"
+                    formControlName="name" [ngModel]="user.display()">
+    </mdc-text-field>
+
+    <div id="card-element" class="field"></div>
+    <button type="submit" [disabled]="isLoading||!isValid" i18n>
+      Enregistrer
+    </button>
+  </form>      
+</div>

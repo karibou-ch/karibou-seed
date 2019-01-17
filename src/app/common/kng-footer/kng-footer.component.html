@@ -1,0 +1,21 @@
+<div class="footer">
+  <div class="main">
+    <div class="line marked">
+      <div class="elem"><span [innerHtml]="getFooter('t')"></span></div>
+      <div class="elem right"><span [innerHtml]="getFooter('h')"></span></div>
+    </div>
+    <div class="line ">
+      <div class="elem" [hidden]="!getMenuItems('bretzel').length">
+        <ul>
+          <li *ngFor="let elem of getMenuItems('bretzel')"><a [href]="'/store/'+store+elem.url" [innerHtml]="elem.name[locale]"></a></li>
+        </ul>
+      </div>
+      <div class="elem" [hidden]="!getMenuItems('links').length">
+        <ul>
+          <li *ngFor="let elem of getMenuItems('links')"><a target="_new" [href]="elem.url" [innerHtml]="elem.name[locale]"></a></li>
+        </ul>
+      </div>
+      <div class="elem right"><span [innerHtml]="getFooter('p')"></span></div>
+    </div>
+  </div>      
+</div>

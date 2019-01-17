@@ -1,0 +1,79 @@
+div{
+  padding: 0 10px;
+  text-align: left;
+
+  h1,h2,h3,h4{
+    text-align: center;
+    font-weight: 400!important;
+  }
+
+  .block-info{
+    color: #aaa;
+    text-shadow: 1px 1px 0 white;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .help-block{
+    text-align: center;
+    color: #ccc;    
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  mdc-list-item:nth-child(odd){
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  mdc-list-item{
+    padding: 0;
+    .mdc-list-item__graphic{
+      width: 72px;
+      height: 72px;
+      margin-right:6px;
+      background-size: cover;          
+      background-repeat:no-repeat;
+    }
+    mdc-list-item-text{
+      text-align: left;
+      .error{
+        color: red;
+      }
+      button{
+        position: absolute;
+        top: 15px;
+        right: 5px;
+        bottom: 5px;
+        background: var(--mdc-theme-secondary);
+        background: #d3ecce;
+        -color: var(--mdc-theme-primary-light);
+  
+      }
+    }
+    div.invalid{
+      color: red;
+    }
+  
+  }
+
+  form{
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content:space-between;
+    
+    mdc-text-field,
+    mdc-select,
+    kng-control-messages {
+      flex: 0 1 calc(100% - 0px);
+    }
+  
+    mdc-select{
+      align-self: flex-end;
+      margin-bottom: 8px;        
+    }
+
+    
+  }  
+  
+}

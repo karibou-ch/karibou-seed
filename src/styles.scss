@@ -1,8 +1,53 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~colors.scss";
+
+
 body{
-    overflow-x: hidden;
-    background-color: #f6f9fc;  
-    font-family: Roboto, Open Sans, Segoe UI, sans-serif;
-    font-size: 15px;
-    font-weight: 500;    
+  margin-top: 0;
+  background: #{$mdc-theme-background};
 }
+
+
+@import "~@angular-mdc/theme/material";
+
+@import 'kng-search.scss';
+@import 'kng-theme.scss';
+@import 'kng-responsive.scss';
+@import 'kng-mdc.scss';
+@import 'kng-card-skeleton.scss';
+
+:root {
+  --mdc-theme-primary: #{$mdc-theme-primary};
+  --mdc-theme-primary-light: #{$mdc-theme-primary-light};
+  --mdc-theme-primary-dark: #{$mdc-theme-primary-dark};
+  --mdc-theme-primary-text: #{$mdc-theme-primary-text};
+  // FIXME remove this hardcoding
+  --mdc-theme-text-hint-on-background:#{$mdc-theme-text-hint-on-background};
+  --mdc-theme-text-secondary-on-background:#{$mdc-theme-text-hint-on-background};  
+  --mdc-theme-text-primary-on-background:#{$mdc-theme-text-primary-on-background};
+  --mdc-theme-text-primary-on-primary:#{$mdc-theme-text-primary-on-primary};
+  --mdc-theme-text-icon-on-background:#{$mdc-theme-primary};
+
+  --mdc-theme-on-primary:#{$mdc-theme-on-primary};
+  --mdc-theme-background-container: #{$mdc-theme-background-container};
+
+
+  --mdc-theme-secondary: #f7f7f7;
+  --mdc-theme-secondary-light: #777;
+  --mdc-theme-secondary-dark: #ddd;
+  --mdc-theme-secondary-text: #777;  
+  --mdc-theme-on-secondary:#444;
+}
+
+
+//
+// input iOS
+textarea,
+input.text,
+input[type="text"],
+input[type="button"],
+input[type="submit"],
+.input-checkbox {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+

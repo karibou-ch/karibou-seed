@@ -1,0 +1,295 @@
+
+<div class="cart-container" mdcTypography>
+  <section [hidden]="items.length">
+    <h2 i18n>{{$i18n.label().cart_empty}}</h2>
+    <h3 class="primary-text" i18n>{{$i18n.label().cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
+    <hr/>
+  </section>
+  
+  <section [hidden]="!items.length">
+    <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
+    <h3 class="primary-text" i18n>
+      {{$i18n.label().cart_nextshipping}} 
+      <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
+      <br/>entre {{shippingTime}}
+    </h3>
+    <h4 class="title-error" [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
+  </section>
+  <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
+    <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
+      <mdc-list-item-graphic>
+        <div class="avatar"
+              [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}">
+
+        </div>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text [class.error]="item.error">
+          <span class="title">{{item.title}} <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span></span>
+          <div class="message" >{{item.error}}</div>          
+          <mdc-list-item-secondary>
+            <a href="javascript:;" class="gray" i18n (click)="removeAll(item,item.variant)">
+                <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>enlever</a>
+            <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 {{$i18n.label().cart_discount}}</span>                
+          </mdc-list-item-secondary>
+      </mdc-list-item-text>
+      
+      <mdc-list-item-meta>
+        <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
+            <b>🛈</b> {{$i18n.label().cart_discount_title}} {{getVendorDiscount(item).needed}} fr de {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
+        </div>
+        <div class="action left" [hidden]="!item.selected">
+          <button (click)="remove(item,item.variant)"><mdc-icon>remove</mdc-icon></button> 
+        </div>
+        <div class="quantity">
+            {{item.quantity}}
+        </div>
+        <div class="action right" [hidden]="!item.selected">
+            <button (click)="add(item,item.variant)"><mdc-icon>add</mdc-icon></button> 
+        </div>
+        <div class="price" [class.hidden]="item.selected">
+            {{item.price*item.quantity|currency:'CHF'}}
+        </div>
+      </mdc-list-item-meta>
+    </mdc-list-item>
+    <mdc-list-item class="border-top">
+      <mdc-list-item-meta>
+        <div class="info" i18n>Sous total</div>
+        <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
+      </mdc-list-item-meta>
+    </mdc-list-item>      
+    <mdc-list-item class="slim-item">
+      <mdc-list-item-meta>
+        <div class="info" i18n>{{$i18n.label().cart_discount_info}}</div>
+        <div class="price" >{{getTotalDiscount()|currency:'CHF'}}</div>
+      </mdc-list-item-meta>
+    </mdc-list-item>      
+
+  </mdc-list>
+
+
+
+  <!-- NOT LOGGED -->
+  <div class="order-login" [hidden]="user.isAuthenticated()||!items.length">
+      <section>
+        <h3 i18n>{{$i18n.label().cart_login}}</h3>
+      </section>
+
+      <button [routerLink]="['/store/'+store+'/me/login-or-register']" 
+              class="style1 white"
+              mdc-button
+              unelevated="true"
+              mdcHeadline2>{{$i18n.label().cart_signin}}</button>
+
+  </div>
+  
+  <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
+
+  <!-- ADDRESS IFF isAuth()-->
+  <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()">      
+    <div class="cart-flow" [class.flow-done]="currentShipping().name!=null" >1</div>
+    <section  [innerHtml]="config?.shared.checkout.address[$i18n.locale]"></section>
+
+    <!-- USER ADDRESS -->
+    <mdc-card  *ngFor="let address of user.addresses" class="address-card"
+              [outlined]="false"	
+              [class.selected]="isSelectedAddress(address)"              
+              (click)="setShippingAddress(address)">
+      <mdc-card-primary-action >
+        <mdc-card-media class="card__media" 
+          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"
+          [square]="true">
+          <span>Fr {{computeShippingByAddress(address)|number:'1.2-2'}}</span>          
+        </mdc-card-media>
+        <div class="card__primary">
+          <span class="card__subtitle" >
+              <span class="text-capitalize"><strong>{{address.name}}</strong></span><br/>
+              {{address.streetAdress}}
+          </span>
+        </div>
+        <div class="card__secondary">
+          <div class="note"></div>
+          <div class="type">livraison</div>
+          <div class="price">
+            
+          </div>
+        </div>
+      </mdc-card-primary-action>                      
+    </mdc-card>
+      
+    <!-- ADDRESS DEPOSIT -->
+    <mdc-card *ngFor="let address of getDepositAddress()" 
+              [outlined]="false"	
+              [hidden]="!address.active"
+              (click)="setShippingAddress(address)"
+              [class.selected]="isSelectedAddress(address)">
+      <mdc-card-primary-action>
+          <mdc-card-media class="card__media" 
+          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"
+          [square]="true">
+          <span>Fr {{address.fees|number:'1.2-2'}}</span>
+          
+        </mdc-card-media>
+        <div class="card__primary">
+          <span class="card__subtitle" >
+              <span class="text-capitalize"><strong>{{address.name}}</strong></span><br/>
+              {{address.streetAdress}}
+          </span>
+        </div>
+        <div class="card__secondary">
+          <div class="type">dépôt {{address.note}}</div>
+        </div>
+      </mdc-card-primary-action>                      
+    </mdc-card>      
+
+    <!-- NEW ADDRESS -->
+    <mdc-card [outlined]="false"	
+                [routerLink]="['/store/'+store+'/me/login-or-address']" >
+      <mdc-card-primary-action>
+        <mdc-card-media class="card__media kng-address" [square]="true">
+          
+        </mdc-card-media>
+        <div class="card__primary">
+          <span class="card__subtitle" i18n>
+              Ajouter ou modifier vos adresses
+          </span>
+        </div>
+      </mdc-card-primary-action>                      
+    </mdc-card>      
+          
+  </div>
+
+  <!-- PAYMENT-->
+  <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()">      
+    <div class="cart-flow" [class.flow-done]="currentGatewayLabel()!='Aucun'">2</div>
+    <section  [innerHtml]="config?.shared.checkout.payment[$i18n.locale]"></section>
+
+
+    <!-- FIXME hide wallet method -->
+    <!--               [hidden]="payment.issuer=='wallet'"-->
+    <mdc-card *ngFor="let payment of user.payments" 
+              [outlined]="false"	
+              [hidden]="payment.issuer=='wallet'"
+              (click)="setPaymentMethod(payment)"
+              [class.selected]="isSelectedPayment(payment)">
+      <mdc-card-primary-action>                
+        <mdc-card-media class="card__media" 
+          [ngStyle]="{'background-image': bgGradient + 'url(' + issuer[payment.issuer].img + ')'}"
+          [square]="true">          
+        </mdc-card-media>
+        <div class="card__secondary payment" [class.invalid]="!payment.isValid()" >
+          {{payment.expiryToDate()|date:'MM/y'}}<br/>
+          <span>{{issuer[payment.issuer].label}}</span>          
+        </div>              
+      </mdc-card-primary-action>
+    </mdc-card>
+
+    <!-- <button [routerLink]="['/store/'+store+'/me/login-or-payment']" 
+            class="action"
+            mdc-ripple mdcHeadline2>Modifier vos méthodes de paiements</button> -->
+
+    <mdc-card [outlined]="false"	
+                [routerLink]="['/store/'+store+'/me/login-or-payment']" >
+      <mdc-card-primary-action>
+        <mdc-card-media class="card__media kng-payment" [square]="true">
+          
+        </mdc-card-media>
+        <div class="card__primary">
+          <span class="card__subtitle" i18n>
+              Ajouter ou modifier vos méthodes de paiements
+          </span>
+        </div>
+      </mdc-card-primary-action>                      
+    </mdc-card>                  
+  </div>
+  
+  <!-- RESUME -->
+  <div class="order-resume" *ngIf="isOrderReady()">
+    <div class="cart-flow flow-done">3</div>
+    <section class="header" [class.deposit]="!isCartDeposit()" 
+         [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
+  </section>
+
+    <!-- TAX & SHIPPING -->
+    <mdc-list avatar="true" [interactive]="false">
+      <mdc-list-item class="border-top">
+        <mdc-list-item-meta>
+          <div class="info" i18n>Sous total pour {{$cart.getItems().length}} produits</div>
+          <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
+        </mdc-list-item-meta>
+      </mdc-list-item>      
+      
+      <mdc-list-item class="border-top">
+        <mdc-list-item-meta>
+          <div class="info">Livraison</div>
+          <div class="price" >{{$cart.shipping()|currency:'CHF'}}</div>
+        </mdc-list-item-meta>
+      </mdc-list-item>
+
+      <mdc-list-item >
+        <mdc-list-item-meta>
+          <div class="info" i18n>Méthode de paiement ({{currentGatewayLabel()}}/{{currentGatewayFees()}} %)</div>
+          <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
+        </mdc-list-item-meta>
+      </mdc-list-item>
+        
+      <mdc-list-item  [hidden]="$cart.totalDiscount()==0">
+        <mdc-list-item-meta>
+          <div class="info" i18n>Rabais</div>
+          <div class="price" >{{$cart.totalDiscount()|currency:'CHF'}}</div>
+        </mdc-list-item-meta>
+      </mdc-list-item>
+            
+      <mdc-list-item class="border-top">
+        <mdc-list-item-meta (click)="showInfoAmount=!showInfoAmount">
+          <div class="info"><i class="material-icons">info</i>Total provisoire</div>
+          <div class="price" >{{$cart.total()|currency:'CHF'}}</div>
+        </mdc-list-item-meta>
+      </mdc-list-item>        
+    </mdc-list>       
+    <div class="amount-info" [hidden]="!showInfoAmount">
+      {{$i18n.label().cart_amount_1}} 
+      <b >{{$cart.total()*1.10|currency:'CHF'}} CHF</b>
+      {{$i18n.label().cart_amount_2}}
+    </div>
+
+
+    <h3 class="primary-text" i18n>
+      <span class="bold text-capitalize">{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</span>
+      entre <b>{{shippingTime}}</b>
+    </h3>  
+    <div class="shipping">
+      <!-- (SRC) HUB -->
+      <div class="vendor">
+        <img src="/assets/img/k-shipping.png" />
+      </div>          
+
+      <!-- SHIPPING -->
+      <div class="customer">
+        <img src="/assets/img/k-pin.png" class="pin"/>
+        <strong>{{currentShipping().name}}</strong>            
+        <address>{{currentShipping().streetAdress}}</address>
+        <address>{{currentShipping().postalCode}}/{{currentShipping().region}}</address>
+        <p class="block-info">{{currentShipping().note}}</p>
+      </div>          
+    
+    </div>
+
+
+    <!-- CHECKOUT BRETEZL MSG -->
+    <div class="checkout-msg" *ngIf="config.shared.checkout.active">
+      <div [innerHtml]="config.shared.checkout.message[$i18n.locale]"></div>
+    </div>
+
+    <div class="block-warning" *ngIf="noshippingMsg">
+        <i class="material-icons">info</i> {{noshippingMsg[$i18n.locale]}} 
+    </div>
+  
+      
+    <!-- ORDER FINAL ACTION -->
+    <div>
+      <mdc-checkbox [(ngModel)]="cgAccepted"></mdc-checkbox>
+      <label i18n>J'ai lu et j'accepte <a href="javascript:;" [routerLink]="['/store',store,'content','conditions-generales-de-vente']">les conditions générales de vente</a></label>  
+    </div>
+    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted" (click)="doOrder()" >Commander maintenant</button>    
+  </div>
+</div>

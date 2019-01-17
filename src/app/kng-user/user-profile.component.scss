@@ -1,0 +1,48 @@
+div.user-container{
+  width: 740px;
+  margin-bottom: 50px;
+  padding-top: 5px;
+  max-width: 97vw;
+
+  background: var(--mdc-theme-background-container);
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  @media (max-width:426px) {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;    
+  }
+
+  section{
+    position: relative;
+    margin-top: 30px;
+    h1{
+      margin-bottom: 4px;
+      font-weight: 400!important;
+    }
+    div.title,h3{
+      color: rgba(0, 0, 0, 0.76);
+    }
+    p.resume{
+      color: rgba(0, 0, 0, 0.54);
+      font-size: 14px;
+      min-height: 40px;
+    }
+    img{
+      position: absolute;
+      right: 10px;
+      top:-10px;
+      width: 80px;
+      height: 80px;
+      @media (max-width:426px) {
+        width: 60px;
+        height: 60px;          
+      }
+    }
+  }
+}

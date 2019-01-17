@@ -1,0 +1,81 @@
+/*@import '../node_modules/@angular/material/theming';*/
+@import "~@angular/material/_theming.scss";
+@import "./_var";
+
+@include mat-core();
+
+$pl-green: (
+    50 : #f2f6e5,
+    100 : #dfe7bd,
+    200 : #cad891,
+    300 : #b5c865,
+    400 : #a5bc44,
+    500 : #95b023,
+    600 : #8da91f,
+    700 : #82a01a,
+    800 : #789715,
+    900 : #67870c,
+    A100 : #eaffb7,
+    A200 : #dbff84,
+    A400 : #ccff51,
+    A700 : #c5ff37,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$pl-grey: (
+    50 : #efefef,
+    100 : #d8d8d8,
+    200 : #bebebe,
+    300 : #a3a3a3,
+    400 : #909090,
+    500 : #7c7c7c,
+    600 : #747474,
+    700 : #696969,
+    800 : #5f5f5f,
+    900 : #4c4c4c,
+    A100 : #f7baba,
+    A200 : #f28c8c,
+    A400 : #ff4d4d,
+    A700 : #ff3333,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+
+
+$custom-theme-primary: mat-palette($pl-green);
+$custom-theme-accent: mat-palette($pl-grey);
+$custom-theme-warn: mat-palette($mat-red);
+
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+
+@include angular-material-theme($custom-theme);

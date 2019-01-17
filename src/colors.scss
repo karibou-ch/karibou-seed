@@ -1,0 +1,84 @@
+
+/**
+A secondary color is used to accent select parts of your UI. 
+It can be complementary or analogous to your primary color */
+$mdc-theme-primary: #2dae76;
+$mdc-theme-secondary:#6ab5b1;
+$mdc-theme-on-primary:white;
+
+/**
+//
+// https://material.io/color/#!/?view.left=0&view.right=1&primary.color=ffffff&secondary.color=43b02a&primary.text.color=43b02a&secondary.text.color=ffffff
+
+*/
+
+// BROWN
+$mdc-theme-secondary:#8d6e63;
+$mdc-theme-secondary-light: #be9c91;
+$mdc-theme-secondary-dark: #5f4339;
+$mdc-theme-secondary-text: #d7ccc8;
+
+// ORANGE
+$mdc-theme-secondary: #f7941e;
+$mdc-theme-secondary-light: #FFDBA4;
+$mdc-theme-secondary-dark: #C26900;
+$mdc-theme-secondary-text: #FFC780;
+
+// GRAY
+$mdc-theme-secondary: #eee;
+$mdc-theme-secondary-light: #FFDBA4;
+$mdc-theme-secondary-dark: #aaaaaa;
+$mdc-theme-secondary-text: rgba(0,0,0,.68);
+
+// YELLOW
+// https://medium.com/jexia
+$mdc-theme-primary: #fab700;
+$mdc-theme-primary-light: #fdd923;
+$mdc-theme-primary-dark: #623500;
+$mdc-theme-primary-text: #966000;
+
+// GREEN
+$mdc-theme-primary:#43b02a;
+$mdc-theme-primary-light: #67e1a5;
+$mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
+$mdc-theme-primary-text: #fff;
+
+// // GREEN
+// $mdc-theme-primary:#fff;
+// $mdc-theme-primary-light: #43b02a;
+// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
+// $mdc-theme-primary-text: rgba(67, 176, 42, 0.87);
+
+// BLUE
+$mdc-theme-primary:rgba(0, 0, 50, 0.9);
+$mdc-theme-primary-light: #43b02a;
+$mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
+$mdc-theme-primary-text: #eee;
+
+// BROWN
+$mdc-theme-primary:#423f3b;
+$mdc-theme-primary-light: #CFC3B2;
+$mdc-theme-primary-dark: #5f4339;
+$mdc-theme-primary-text: #fff6f3;
+
+//$mdc-theme-primary:rgba(0, 0, 0, 0.73);
+
+$mdc-theme-background: rgba(83, 82, 119, 0.06);
+$mdc-theme-on-primary: #333;
+$mdc-theme-background-container: #fff;
+$mdc-theme-text-primary-on-primary: #fff;
+$mdc-theme-text-primary-on-background: #{$mdc-theme-primary};
+$mdc-theme-text-hint-on-background:rgba(21, 21, 21, 0.5);
+
+
+:root {
+  // FIXME remove this hardcoding
+  --mdc-theme-text-hint-on-background:#{$mdc-theme-text-hint-on-background}!important;
+  --mdc-theme-text-secondary-on-background:#{$mdc-theme-text-hint-on-background}!important;
+  --mdc-theme-text-primary-on-background:#{$mdc-theme-text-primary-on-background}!important;
+  --mdc-theme-text-primary-on-primary:#{$mdc-theme-text-primary-on-primary}!important;
+  --mdc-theme-text-icon-on-background:#{$mdc-theme-primary}!important;
+  --mdc-theme-on-primary:#{$mdc-theme-on-primary}!important;
+  --mdc-theme-background-container: #{$mdc-theme-background-container}!important;
+
+}

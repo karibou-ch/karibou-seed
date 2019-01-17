@@ -1,0 +1,39 @@
+<!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
+<div class="page-container markdown-page markdown-{{document?.type}}" [hidden]="!error">
+  <h1 i18n>Ce document n'existe pas, voullez-vous le créer?</h1>
+  <button mdc-button unelevated="true" routerLink="../create" >Créer le document</button>
+</div>
+
+<div class="page-container markdown-page markdown-{{document?.type}}" [hidden]="!document.type">
+  <div class="home-header text-center" 
+    *ngIf="document&&document.photo.header" 
+    style="margin-left: -20px;margin-right: -20px;"
+    [ngStyle]="{'background-image': 'url(' + document.photo.header + ')'}" >
+  </div>
+
+  <h3 class="byline" >
+    <button mdc-button [hidden]="!user.isAdmin()" [routerLink]="['../']" >Back</button>
+    <button mdc-button [hidden]="!user.isAdmin()" [routerLink]="['./edit']" >Edit</button>
+  </h3>
+
+  <h1>{{document?.title[$i18n.locale]}}</h1> 
+  <h2 class="header" ><span removeRoot="true" kng-markdown  data="{{document?.header[$i18n.locale]}}"></span></h2>
+
+  <h3 class="byline">
+    <time>{{document?.created| date: 'mediumDate'}}</time> - <span class="author">{{document?.signature}} </span>
+  </h3>
+
+  <div class="sidebar-block" [hidden]="!furthermore.length">
+    <h4 i18n>A lire aussi</h4>
+    <ol  class="list-unstyled">
+      <li *ngFor="let doc of furthermore" [hidden]="!doc.title[$i18n.locale]"><a href="javascript:;" [routerLink]="['../',doc.slug[0]]" >{{doc.title[$i18n.locale]}}</a></li>
+      <!-- <li ng-repeat="other in docs|filter:{available:true, type:document?.type}|orderBy:'-title.fr'" ><a ng-href="/content/{{other.slug[0]}}" i18n-render="other.title"></a></li> -->
+    </ol>   
+  </div> 
+  
+  <div class="container" kng-markdown data="{{document?.content[$i18n.locale]}}"></div>
+      
+</div>
+
+<!-- EDIT DOCUMENT CONTENT -->
+<router-outlet></router-outlet>

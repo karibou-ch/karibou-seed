@@ -1,0 +1,283 @@
+@import "~colors.scss";
+
+.background-grid{
+  position: fixed;
+  overflow: hidden;
+  top:0;
+  @media (max-width: 426px) {
+    display: none;
+  }
+  
+  
+  height: 110%;
+  z-index: -1;  
+  .items-list-wrap{
+    width: 120%;
+    overflow: hidden;
+    box-sizing: border-box;
+    will-change: transform;
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+    animation: slowScroll 120s;
+    animation-iteration-count: 3;
+    animation-delay: 0.5s;
+    animation-timing-function: easeInOutSine;    
+    ul{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      list-style: none;      
+      li{
+        display: inline-block;
+        position: relative;
+        width: 273px;
+        height: 203px;
+        vertical-align: top;
+        background: #8b6f4e;
+        text-align: left;
+        color: #5a5a5a;
+        font-weight: 400;
+        margin: 0px;
+        cursor: pointer;
+        white-space: initial;
+        border: 10px solid #fefefe;
+        background-size: cover;
+        background-position: center;          
+      }
+    }
+  }
+}
+
+@keyframes slowScroll {
+  0% {
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -ms-transform: translateY(0);
+      -o-transform: translateY(0);
+      transform: translateY(0);
+  }
+  50% {
+      -webkit-transform: translateY(-380px);
+      -moz-transform: translateY(-380px);
+      -ms-transform: translateY(-380px);
+      -o-transform: translateY(-380px);
+      transform: translateY(-380px);
+  }
+  100% {
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -ms-transform: translateY(0);
+      -o-transform: translateY(0);
+      transform: translateY(0);
+  }
+}
+
+.container{
+  a.enter,
+  button.enter{
+    width:75%;
+    max-width: 350px;
+    background: #2dae76;
+    padding: 20px 10px;
+    border-radius: 45px;
+    display: block;
+    margin: auto;
+    margin-top: 5px;
+    color: white;
+    text-decoration: none;        
+    font-size:large;  
+  }
+
+  &.top{
+    color: #424242;
+    background-color:rgba(0,0,0,0.1);
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content:center; /*halign*/
+    align-items:center; /*valign*/
+    padding-top: 10vh!important;
+    padding-bottom: 10vh!important;
+    min-height: 80%;
+    box-sizing: border-box;    
+    
+    @media (max-width: 426px) {
+      padding-top: 0!important;
+      padding-bottom: 0!important;
+    }    
+
+    .welcome{
+      display: inline-block;
+      max-width: none;
+      box-shadow: 2px 1px 20px #888;
+      background: rgba(255,255,255,0.95);
+      margin: 0 auto 20px auto;
+      position: relative;
+      z-index: 2;  
+      text-align:center;
+      
+      .logo,
+      .spread{
+        background-image: url(/assets/img/k-brand-lg.png);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        display: block;
+        height: 250px;
+        margin: 10px 70px;  
+        margin-bottom: 20px;
+        @media (max-width: 426px) {
+          margin: 0 30px;
+        }
+      }
+
+      .spread{
+        background-image: url(/assets/img/bretzel-spread-lg.jpg);
+        height: 50px;
+        margin-bottom: 10px;
+        @media (max-width: 765px) {
+          min-height: 50px;
+        }
+            
+      }
+
+      
+      .inner{
+        box-sizing: border-box;
+        padding: 0 0 20px 0;
+        position: relative;
+        z-index: 2;
+        width: 540px;  
+        @media (max-width: 426px) {
+          width: 100%;
+        }
+        
+        h2{
+          font-weight: 300;
+        }
+        h1{
+          margin: 0 30px;
+          font-weight: 400;
+          font-size: 30px;  
+        }
+        p{
+          padding: 10px 70px;  
+          @media (max-width: 426px) {
+            padding: 10px 40px;
+          }
+            
+        }
+        form{
+          background: transparent;
+          display: flex;
+          flex-flow:row wrap;
+          margin: 20px auto;
+          padding: 8px 70px;  
+          min-height:80px;
+          width: auto;
+          button{
+            flex:1;
+            height: 50px;
+            color: white;
+            align-self: center;
+          }
+
+          @media (max-width: 426px) {
+            padding: 8px 30px;  
+          }
+          
+        }      
+        .singup-vs-login{
+          margin: 0;
+          font-size: inherit;  
+        }
+        
+      } 
+    }  
+  }
+  &.middle{
+    color: #424242;
+    background-color:#EEEEEE!important;
+    width:100%;
+    .how-it-works{
+      background-color:white;
+      padding-bottom:40px;
+      margin:auto;
+      max-width: 1200px;
+      width:100%;
+      display:flex;
+      flex-flow: row wrap;
+      justify-content:flex-start; /*halign*/
+      align-items:flex-start; /*valign*/
+      
+      .why{
+        flex: 1 0 29%;
+        padding:25px;
+        min-width:200px;
+        @media (max-width: 700px) {
+          flex: 1;        
+          padding:10px;
+        }
+        text-align:center;
+        .image{
+          max-height:200px;
+          .image-radius{
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            padding: 2px;
+          }
+        }
+        h3{
+          font-weight: 400;
+          font-size: 30px;        
+          margin:20px 0;
+          line-height:46px;
+        }
+        p{
+          font-size: 20px;
+          font-weight: 300;
+          line-height: 1.6em;
+          padding: 0;
+          margin: 0;              
+        }
+      }        
+    }
+    
+    .favorite-products{
+      background-image:url("/assets/img/k-bretzel-md.jpg");
+      background-repeat:no-repeat;
+      background-position: center;
+      background-color:white!important;
+      background-size: cover;
+      min-height: 800px;
+      max-width: 1200px;
+      width:100%;
+      margin: auto;    
+      display:flex; 
+      flex-flow:row nowrap;
+      background-color:#eee;
+      max-width: 1200px;
+      @media (max-width:426px) {
+        min-height: 500px;        
+      }
+      .elem{
+        flex: 1 0 50%;
+        color: white;
+        font-size: xx-large;
+        padding: 20px;
+        align-self: flex-end;        
+      }
+    }
+  }
+
+  &.separator{
+    background-color:#EEEEEE!important;
+    width:100%;
+    height: 80px;
+  }     
+}
+  

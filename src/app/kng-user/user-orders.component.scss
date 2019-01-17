@@ -1,0 +1,113 @@
+  .container-orders{
+    margin-top: 50px;
+
+    h2,h3{
+      margin-top: 40px;
+      font-weight: 400;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;      
+    }
+  
+    .more-orders{
+      text-align: center;
+      width: 100%;    
+    }
+
+    .no-orders{
+      text-align: center;
+      padding-top: 20px;
+      color: #333;      
+    }
+    
+  //
+    // cart content
+    mdc-list-item{ 
+      min-height: 90px;   
+      >::before{
+        background-color: var(--mdc-theme-primary);      
+        opacity: .16;
+      }
+      
+      &.border-top{
+        border-top: 1px solid #aaa;
+      }
+      button{
+        width: 31px;
+        height: 34px;  
+      }
+      
+      height: auto;
+      &.mdc-list-item--selected{
+
+      }
+
+      border-top: 1px solid #eee;
+
+      @media screen and (max-width:426px){
+        padding: 1px;
+      }
+  
+      mdc-list-item-text{
+        width: 90%;
+        @media screen and (max-width:425px){
+          max-width: 95vw;          
+        }
+        mdc-list-item-secondary{
+          div.info{
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            white-space: normal;
+            margin: 20px 0;          
+          }
+            
+          ul{
+            padding-left: 0;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 5px;            
+            li{
+              &.strike{
+                text-decoration: line-through;
+              }
+            }
+          }
+        }
+      }
+    
+      .mdc-list-item__graphic{
+        &.avatar{
+          width: 56px;
+          height: 56px;
+          border-radius: 5px;
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position-y: 50%;    
+        }
+      }
+    
+      .mdc-list-item__meta{
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        text-align: right;   
+        flex-flow: column;
+        margin-top: 10px;
+        margin-bottom: auto;
+      }
+    }
+
+    mdc-dialog{
+      .mdc-dialog__surface{
+        background: white;
+      }
+
+      ul{
+        list-style: none;
+        padding-left: 0;        
+        max-height: 200px;
+        overflow: hidden;
+        overflow-y: auto;        
+      }
+    }
+  }
+  

@@ -1,0 +1,411 @@
+@import "~colors.scss";
+
+
+[hidden], .hide {
+  display: none!important;
+}
+
+// 
+// Screen
+body{
+  font-family: Roboto, sans-serif !important; 
+  margin-right: 0px!important;
+  margin-left: 0px!important;
+  margin-bottom: 0px!important;
+}
+
+.width-full {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.flex-row{
+  display: flex;
+  flex-flow: row;
+  align-items:flex-start; /*valign*/
+  justify-content: space-between;
+}
+
+.width-25 { flex:0 1 calc(25% - 5px)!important;width:25%!important;}
+.width-33 { flex:0 1 calc(33% - 5px)!important;width:33%!important;}
+.width-50 { flex:0 1 calc(50% - 5px)!important;width:50%!important;}
+.width-75 { flex:0 1 calc(75% - 5px)!important;width:75%!important;}
+.width-100{ flex:0 1 calc(100% - 5px)!important;width: 100%!important;}
+
+.align-center{     
+  flex: 0 1 auto;
+  margin: auto;
+}
+
+.align-right{     
+  flex: 0 1 auto;
+  margin-left: auto;
+}
+
+
+.ribbon{
+  width: 12.1em;
+  height: 12.1em;
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+  font-size: 13px;
+  text-decoration: none;
+  text-indent: -999999px;
+  &.primary{
+    &::before{
+      background: $mdc-theme-primary;
+      background: var(--mdc-theme-primary);
+    }
+  }
+  &.secondary{
+    &::before{
+      background: $mdc-theme-secondary;
+      background: var(--mdc-theme-secondary);
+    }
+  }
+
+}
+.ribbon.left-top, 
+.ribbon.left-bottom {
+  right: auto;
+  left: 0;
+}
+
+.ribbon:before, .ribbon:after {
+  /* The right and left classes determine the side we attach our banner to */
+  position: absolute;
+  display: block;
+  width: 15.38em;
+  height: 1.54em;
+  
+  top: 2.23em;
+  right: -4.23em;
+  
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.ribbon:before {
+  content: "";
+
+  /* Add a bit of padding to give some substance outside the "stitching" */
+  padding: .38em 0;
+
+  /* Set the base colour */
+  background-color: #a00;
+
+
+  /* Set a gradient: transparent black at the top to almost-transparent black at the bottom */
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.15)));
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+
+  /* Add a drop shadow */
+  -webkit-box-shadow: 0 .15em .23em 0 rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 .15em .23em 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 .15em .23em 0 rgba(0, 0, 0, 0.5);
+
+  pointer-events: auto;
+}
+
+.ribbon:after {
+  /* Set the text from the data-ribbon attribute */
+  content: attr(title);
+
+  /* Set the text properties */
+  color: #fff;
+  font: 700 1em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.54em;
+  text-decoration: none;
+  text-shadow: 0 -.08em rgba(0, 0, 0, 0.5);
+  text-align: center;
+  text-indent: 0;
+
+  /* Set the layout properties */
+  padding: .15em 0;
+  margin: .15em 0;
+
+  /* Add "stitching" effect */
+  border-width: .08em 0;
+  border-style: dotted;
+  border-color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.dashed{
+  border-color: #dddddd;
+  border-style: dashed;
+  margin: 10px 0;      
+}
+
+.breaker {
+  &:before{
+    content: "• • •";
+    width: 100%;
+    text-align: center;
+    display: block;
+    color: #999;
+    letter-spacing: 4px;
+    position: relative;
+    top: -8px;    
+    font-size: 26px;
+  }
+  height: 1px;
+  margin: 4rem auto;
+  width: 100%;
+  &.large{
+    margin: 6rem auto;
+  }
+  &.small{
+    margin: 2rem auto;
+  }
+}
+
+.evidence {
+  background-image: linear-gradient(to bottom, rgba(39,243,106,0.15), rgba(39,243,106,0.15));
+  color: #666;
+}
+//
+// colors
+
+.secondary-bg     {
+  background:      $mdc-theme-secondary!important;
+  background:      var(--mdc-theme-secondary)!important;
+}
+.primary-bg       {
+  background:      $mdc-theme-primary!important;
+  background:      var(--mdc-theme-primary)!important;
+}
+
+.secondary-text   {
+  color:           $mdc-theme-secondary!important;
+  color:           var(--mdc-theme-secondary)!important;
+}
+.primary-text     {
+  color:           $mdc-theme-primary!important;
+  color:           var(--mdc-theme-primary)!important;
+}
+.text-primary-dark{
+  color:           $mdc-theme-primary-dark!important;
+  color:           var(--mdc-theme-primary-dark)!important;
+}
+.text-primary     {
+  color:           $mdc-theme-text-primary-on-background!important;
+  color:           var(--mdc-theme-text-primary-on-background)!important;
+}
+
+.text-secondary   {
+  color:           $mdc-theme-text-primary-on-background!important;
+  color:           var(--mdc-theme-text-secondary-on-background)!important;
+  outline: 0;
+}
+.text-primary     {
+  color:           $mdc-theme-primary-text!important;
+  color:           var(--mdc-theme-primary-text)!important;
+}
+.text-secondary   {
+  color:           $mdc-theme-secondary-text!important;
+  color:           var(--mdc-theme-secondary-text)!important;
+  outline: 0;
+}
+.green            {color:         #43b02a!important;}
+.lime             {color:         lime!important;}
+.red              {color:         red!important;}
+.gray             {color:         #ccc!important;}
+.black            {color:         black!important;}
+.pink             {color:         #da1c5c!important;}
+.light            {color:           #aaa!important;}
+.white            {color:         white!important;}
+
+
+//
+// Colors themes
+
+.theme-bisque{
+  background: bisque!important;
+  color: black!important;  
+}
+
+.theme-crimson{
+  background: crimson!important;
+  color: white!important;  
+}
+
+.theme-gray{
+  background: slategrey!important;
+  color: white!important;  
+}
+
+.theme-lime{
+  background: lawngreen!important;
+  color: black!important;  
+}
+
+.theme-red{
+  background: red!important;
+  color: black!important;  
+}
+
+.theme-violet{
+  background: violet!important;
+  color: black!important;  
+}
+
+.theme-violetblue{
+  background: blueviolet!important;
+  color: white!important;  
+}
+//
+// text
+.text-right       {text-align: right;}
+.text-center      {text-align: center;}
+.text-capitalize  {text-transform:  capitalize;}
+.text-uppercase   {text-transform: uppercase;}
+.text-strike      {text-decoration: line-through!important;}
+.bold             {font-weight:     bold!important; }
+.small            {font-size: small!important;}
+.smaller          {font-size: smaller!important;}
+.text-shadow-1    {
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: rgba(255,255,255,0.5) 0px 3px 3px;  
+}
+
+.link{
+  border-bottom: 1px dotted var(--mdc-theme-secondary);
+  cursor: pointer;
+  text-decoration:none;
+}
+
+.help-block{
+  color: var(--mdc-theme-text-secondary-on-background);    
+}
+
+//
+// icons
+.icon-alcool, .fa-alcool,
+.icon-bread, .fa-bread,
+.icon-caterer, .fa-caterer,
+.icon-cheese, .fa-cheese,
+.icon-drink, .fa-drink,
+.icon-flour, .fa-flour,
+.icon-finefood, .fa-finefood,
+.icon-honey, .fa-honey,
+.icon-health, .fa-health,
+.icon-meat, .fa-meat,
+.icon-sugar, .fa-sugar,
+.icon-shop, .fa-shop,
+.icon-oil, .fa-oil,
+.icon-pasta, .fa-pasta,
+.icon-vegetable, .fa-vegetable,
+.icon-wine, .fa-wine,
+.icon-beer, .fa-beer,
+.icon-wine, .fa-wine-white
+{
+  width:24px;
+  height: 24px;
+  display: inline-block;
+  margin-right: 3px;
+  background-size:contain;
+  background-position: 50%;
+  background-repeat: no-repeat;  
+  transform:translateY(5px);
+}
+.icon-large{
+  width:32px;
+  height: 32px;
+  font-size: 150%;  
+}
+.icon-alcool, .fa-alcool{
+  background-image: url(/assets/img/icon-alcool.svg);
+}
+
+.icon-bread, .fa-bread{
+  background-image: url(/assets/img/icon-bread.svg)
+}
+
+.icon-beer, .fa-beer{
+  background-image: url(/assets/img/icon-beer.svg)
+}
+
+.icon-caterer, .fa-caterer{
+  background-image: url(/assets/img/icon-caterer.svg);
+}
+
+.icon-cheese, .fa-cheese{
+  background-image: url(/assets/img/icon-cheese.svg)
+}
+
+.icon-drink, .fa-drink{
+  background-image: url(/assets/img/icon-drink.svg)
+}
+
+.icon-flour, .fa-flour{
+  background-image: url(/assets/img/icon-flour.svg)
+}
+
+.icon-finefood, .fa-finefood{
+  background-image: url(/assets/img/icon-finefood.svg)
+}
+
+.icon-honey, .fa-honey{
+  background-image: url(/assets/img/icon-honey.svg)
+}
+
+.icon-health, .fa-health{
+  background-image: url(/assets/img/icon-health.svg)
+}
+
+.icon-meat, .fa-meat{
+  background-image: url(/assets/img/icon-meat.svg)
+}
+
+.icon-oil, .fa-oil{
+  background-image: url(/assets/img/icon-oil.svg)
+}
+
+.icon-pasta, .fa-pasta{
+  background-image: url(/assets/img/icon-pasta.svg)
+}
+
+.icon-sugar, .fa-sugar{
+  background-image: url(/assets/img/icon-sugar.svg)
+}
+
+.icon-shop, .fa-shop{
+  background-image: url(/assets/img/icon-shop.svg)
+}
+
+.icon-vegetable, .fa-vegetable{
+  background-image: url(/assets/img/icon-vegetable.svg)
+}
+
+
+.icon-wine, .fa-wine{
+  background-image: url(/assets/img/icon-wine.svg)
+}
+
+.icon-wine, .fa-wine-white{
+  background-image: url(/assets/img/icon-wine.svg)
+}
+

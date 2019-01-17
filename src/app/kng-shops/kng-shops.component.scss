@@ -1,0 +1,178 @@
+@import "~colors.scss";
+
+:host{
+  background: #{$mdc-theme-background};
+  background: var(--mdc-theme-background);
+  // width: 100vw;
+  // position: fixed;
+  // top: 48px;
+  // left: 0;
+  // z-index: 2;
+  // padding: 32px;
+  @media (max-width:425px){
+    padding: 5px;
+  }
+
+  .shop{
+    display: flex;
+    flex-flow: row wrap;
+
+    justify-content: center;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+
+
+    div.card{
+      flex: 1 0 50vw;
+      display: flex;
+      flex-flow: column nowrap;
+      overflow: hidden;
+      margin: auto;
+      margin-top: -20px;
+      min-height: 100vh;
+      background-color: $mdc-theme-secondary;
+      background-color: var(--mdc-theme-secondary, white);
+      @media (max-width:1024px){
+        margin-left: -4px;
+        flex: 1 0 100vw;
+      }
+
+      img{
+        width: 100%;
+        margin-left: 0;
+        margin-right: auto;
+
+      }
+
+      .owner{
+        flex: 0 0 100px;
+        width: 100px;
+        height: 100px;
+        padding: 0px;
+        border: 3px solid white;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto;
+        transform: translateY(-50px);
+        margin-top: -20px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.3);
+        img{
+          width: 100%;
+          border-radius: 100%;
+          background-color: #f2f2f0;
+        }
+      }
+      h1{    
+        margin: auto 20px;
+        margin-top: -30px!important;
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        text-shadow:0 0 1px rgba(0,30,0,.83);
+        margin: auto;
+      }
+  
+      >div{
+        width: 100%;
+        height: 100%;
+        flex: 1;
+        margin-top: 20px;
+        section{
+          margin: auto;
+          margin: auto 10px;
+          position: relative;
+          font-size: larger;
+          text-align: center;
+          color: var(--mdc-theme-text-primary-on-light);          
+        }
+      }
+    }
+
+    div.products{
+      flex: 1 0 50vw;
+      @media (max-width:1024px){
+        margin-left: -4px;
+        flex: 1 0 100vw;
+      }
+    }
+  }
+
+
+
+  .background-grid{
+    position: fixed;
+    overflow: hidden;
+    top:48px;
+    @media (max-width: 426px) {
+      display: none;
+    }
+    
+    
+    height: 50%;
+    z-index: -1;  
+    .items-list-wrap{
+      opacity: .1;
+      width: 120%;
+      overflow: hidden;
+      box-sizing: border-box;
+      will-change: transform;
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -ms-transform: translateY(0);
+      -o-transform: translateY(0);
+      transform: translateY(0);
+      animation: slowScroll 120s;
+      animation-iteration-count: 3;
+      animation-delay: 0.5s;
+      animation-timing-function: easeInOutSine;    
+      ul{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        list-style: none;      
+        li{
+          display: inline-block;
+          position: relative;
+          width: 273px;
+          height: 203px;
+          vertical-align: top;
+          background: #8b6f4e;
+          text-align: left;
+          color: #5a5a5a;
+          font-weight: 400;
+          margin: 0px;
+          cursor: pointer;
+          white-space: initial;
+          border: 10px solid #fefefe;
+          background-size: cover;
+          background-position: center;          
+        }
+      }
+    }
+  }
+
+  @keyframes slowScroll {
+    0% {
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        -o-transform: translateY(0);
+        transform: translateY(0);
+    }
+    50% {
+        -webkit-transform: translateY(-380px);
+        -moz-transform: translateY(-380px);
+        -ms-transform: translateY(-380px);
+        -o-transform: translateY(-380px);
+        transform: translateY(-380px);
+    }
+    100% {
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        -o-transform: translateY(0);
+        transform: translateY(0);
+    }
+  }
+    
+}

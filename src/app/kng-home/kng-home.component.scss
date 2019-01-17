@@ -1,0 +1,303 @@
+@import "~colors.scss";
+
+//
+// BOX INFO
+div.home-header{
+  display: flex!important;
+  flex-flow: column;
+  flex-wrap: wrap;
+  font-size: 1.2em;
+  font-weight: 200;    
+  background-size: cover;
+  background-color: transparent!important;
+  margin-top: 20px; 
+
+  >div{    
+    width: 100%;
+    background: $mdc-theme-background-container;
+    background: var(--mdc-theme-background-container);
+    margin: 0;
+    margin-top:0px;
+    margin-bottom:30px;
+    box-shadow: 0px 2px 5px #eee;
+    overflow: hidden;
+
+    >p,
+    >div{
+      padding: 20px;
+      color: #{$mdc-theme-text-primary-on-background};
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+
+    h1,h2,h3{
+      text-transform: uppercase;
+      text-align: center;      
+      margin: 0px;
+      margin-top: 10px;
+      line-height: 1.3em;
+      color:$mdc-theme-text-primary-on-background;
+      color:var(--mdc-theme-text-primary-on-background,rgba(0,0,0,.87));
+      font-weight: 500;
+      &.left{
+        text-align: left;
+      }
+      @media screen and (max-width:426px){
+        flex:0 1 10px;
+      }
+    }
+  
+  }
+
+  .welcome{
+    margin-left: -40px;
+    margin-right: -40px;
+    width: auto;
+    @media screen and (max-width:1024px){
+      margin-left: auto;
+      margin-right: auto;
+      }
+  }
+
+  .welcome,
+  .info,
+  .maintenance{
+    margin-bottom:30px;
+    position: relative;
+    min-height: 120px;
+    width: auto;
+
+    >div{
+      display: flex;
+      flex-flow: row wrap;
+      padding: 0px;
+      font-size: 22px;
+      margin-bottom:-5px;
+      overflow: hidden; 
+      .left-half{
+        max-width: 29%;        
+        img{
+          width: 100%;
+        }
+        @media (max-width:426px) {
+          max-width:100%;
+          overflow: hidden;
+          max-height: 230px;          
+        }
+      }
+      .left{
+        max-width: 48%;        
+        @media (max-width:426px) {
+          max-width:100%;
+          font-size:70%;
+        }
+        margin-bottom:-6px;
+        img{
+          width: 100%;
+        }
+      }
+
+      .right{
+        &.text-left{
+          text-align: left;
+          h1,h2,h3,h4,div{
+            text-align: left;
+          }
+        }
+        &.full{
+          max-width: 60%;        
+          @media (max-width:426px) {
+            max-width:100%;
+            font-size:70%;
+          }
+        }
+        p{
+          margin-bottom:2px;
+        }
+        padding: 20px;
+        align-self: center;
+        max-width: 45%;        
+        @media (max-width:426px) {
+          max-width:100%;
+        }
+      }
+
+    }
+  }
+
+  .maintenance{
+    background: $mdc-theme-primary;
+    background: var(--mdc-theme-primary);
+  }
+
+  &.cover{
+    color: #fff!important;
+
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    transform: translateX(-4px);
+    min-height: 350px;
+    text-align: center;
+    >h2,
+    >div,
+    >p{
+      color: white;
+      text-shadow: 0 0 1px rgba(0,0,0,.71);
+    }
+  }
+
+}
+
+//
+// HOME SELECTION
+kng-product-swipe{
+  margin-top:10px;
+}
+
+div.product-container{
+  margin-top: 0px;
+  padding-top: 0;
+  padding: 0;
+  width: 100%;  
+  @media (max-width:426px) {
+    width: 100vw;
+    padding: 0;
+    margin-left: -3px;
+  }
+  
+  >div{
+    padding-bottom:30px;
+    background: $mdc-theme-background-container;
+    background: var(--mdc-theme-background-container);
+  }
+
+  //
+  // display cards
+  .home-header-cards{
+    overflow-x: hidden;
+    overflow-y: hidden;    
+    display: flex!important;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;    
+    width: 700px;
+    
+    @media screen and (max-width:426px){
+      width: 95vw;
+    }
+
+  }
+  section{
+    text-align:center;
+    padding-top:10px;
+    h2,h3{
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.87);      
+      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
+      font-size: 1.675rem;
+      text-transform: uppercase;    
+      margin-top: 20px;
+      margin-left: 10px;
+      margin-right: 10px;      
+    }
+    h3{
+      font-weight: 200;
+      font-size: 1.275rem;
+      color: #aaa;
+      text-shadow:1px 1px 0 white;
+      margin-top: -10px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  
+    h5,h4{
+      color:$mdc-theme-secondary;
+      color:var(--mdc-theme-secondary);
+      font-weight: 500;
+      margin-bottom: 0px;    
+    }
+  
+  }
+
+  .mdc-layout-grid__inner,
+  .kng-layout-card{
+    background-color: #fff;
+    padding: 10px 10px 0px 10px;    
+    @media (max-width: 426px) {
+      padding: 0 0 10px 0;    
+    }
+  }
+
+  .kng-layout-card{
+    display: flex!important;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;   
+    padding-bottom:0; 
+    div.category,
+    kng-product-thumbnail{
+      flex: 1 0 137px;
+      width: 137px;
+      margin: 8px;
+      margin-bottom: 0;
+      max-width: 300px;
+      @media (max-width: 426px) {
+        flex: 1 0;
+        min-width: 29vw;
+        margin: 4px 4px 0;
+        flex: 0 0 140px;
+        min-width: 39vw;
+        margin: 4px 10px 0;
+      }
+    }
+    div.category{
+      cursor: pointer;
+      height: 9rem;
+      max-width: 32%;
+      margin-left: 0;
+      margin-right: auto;      
+      background: $mdc-theme-primary;
+      background: var(--mdc-theme-primary);
+      color: white;
+      position: relative;
+      border-radius: 4px;
+      margin-bottom: auto;      
+      display: flex;
+      margin-left: 4px;
+      margin-right: 4px;      
+      flex-direction: column;
+      &.loader{
+        background-color: #f1f1f1!important;
+        height: 9rem;
+        align-items: self-end;
+        margin-bottom: 0;        
+      }
+      div{
+
+        padding: 20px 10px;        
+        font-size: larger;
+        margin-bottom: 0;
+        margin-top: auto;        
+        &.icon{
+          align-self: flex-start;
+          margin-top: 0;
+          margin-bottom: auto;          
+          padding: 10px;
+          i{
+            font-size: 36px;
+          }
+        
+        }
+        &:last-child{
+          padding-top: 0;
+        }
+
+      }
+    }
+  }
+}
+

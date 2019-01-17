@@ -1,0 +1,85 @@
+<!-- FEEDBACK -->
+<kng-feedback [user]="user" forceload="true">
+    <h3>Comment était votre dernière commande?</h3>
+</kng-feedback>
+
+<!-- SELECTION -->
+<kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
+
+<!-- INFORMATION -->
+<div class="home-header">
+  <div class="maintenance" *ngIf="config.shared.maintenance.active" 
+      [innerHtml]="config.shared.maintenance.reason[locale]">    
+  </div>
+
+  <div class="info" *ngIf="config.shared.header.active" 
+      [innerHtml]="config.shared.header.message[locale]">
+  </div>
+</div>
+
+<!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
+<kng-ui-bottom-actions [exited]="scrollDirection<-5" 
+                       [categories]="categories"
+                       (selected)="scrollNextSectionIntoView($event)">  
+</kng-ui-bottom-actions>
+
+
+  
+  
+  
+<!-- Window virtual scroll (manage size) 
+  -- https://medium.com/@yongtze_chi/virtual-scrolling-with-angular-145233f79384
+  -->
+<!-- <div class="product-container mdc-layout-grid"
+    infiniteScroller
+    scrollPerecnt="70"
+    immediateCallback="false"
+    infiniteScrollContainer="window"
+    [scrollCallback]="scrollCallback"> -->    
+<div class="product-container mdc-layout-grid" >
+    
+  <!-- Layout documentation
+       https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
+
+  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()">
+
+  <!-- INFORMATION -->
+  <div class="home-header" *ngIf="i==2"
+       [class.cover]="hasBackgroundCover()" 
+       [ngStyle]="getHeaderStyle()">
+    <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">
+    </div>
+  </div>
+  
+  
+  <div [class]="category.slug"
+       [hidden]="!category.active" 
+       #section>
+    <section>
+      <h2>{{category.name}}</h2>
+      <h3 [innerHtml]="category.description"></h3>
+    </section>
+    <div class="kng-layout-card" >
+        <kng-product-thumbnail 
+            [visibility]="visibility[category.slug]"
+            [sku]="product.sku"
+            *ngFor="let product of group[category.name];let j=index"
+            class="">
+        </kng-product-thumbnail>
+        <div class="category" 
+             [hidden]="!visibility[category.slug]"
+             [ngClass]="category.color" 
+             [routerLink]="['category',category.slug]" >
+          <div class="icon"><i class="material-icons">playlist_add</i></div>
+          <div>{{category.name}} </div>
+
+        </div>
+
+    </div>
+    <div class="breaker small"></div>
+  </div>
+  </ng-template>
+      
+</div>
+  
+<router-outlet ></router-outlet>

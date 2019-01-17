@@ -1,48 +1,97 @@
+import { LOCALE_ID, NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgModule } from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+//
+// the second parameter 'fr' is optional
+registerLocaleData(localeFr, 'fr');
+
+//
+// app modules
+import { Kng2CoreModule  } from 'kng2-core';
+import { KngCommonModule } from './common/common.module';
+
+//
+// App components
 import { AppComponent } from './app.component';
-import { NgxStripeModule } from 'ngx-stripe';
-import { CoinmarketcapService } from './coinmarketcap.service';
-import { ConfigService, Kng2CoreModule } from 'kng2-core';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { ProductComponent } from './product/product.component';
+import { KngNavbarComponent } from './kng-navbar';
+
+//
+// environnement
+import { environment } from '../environments/environment';
+
+//
+// routing
+import { RouterModule } from '@angular/router';
+import { appRoutes } from './app.routes';
+import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
+import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
+import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
+import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
+import { KngRootComponent } from './kng-root/kng-root.component';
+import { EnumMetrics } from './common/metrics.service';
+// import { ServiceWorkerModule } from '@angular/service-worker';
+
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  constructor() { }
+  handleError(error) {
+     // IMPORTANT: Rethrow the error otherwise it gets swallowed
+     if(error.rejection&&error.rejection.status==0){
+       console.log('--- Network error');
+       window.location.href='/oops';
+       throw error;
+     }
+     //
+     // USING SENTRY AS DEBUG
+     try{
+      (<any>window).Sentry&&(<any>window).Sentry.captureException(error.originalError || error);
+      (<any>window)['_kmq']&&(<any>window)['_kmq'].push(['record', EnumMetrics[EnumMetrics.metric_error], {error:error.message}]);
+     }catch(e){
+
+     }
+
+     throw error;
+  } 
+}
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    WelcomeComponent,
-    ProductComponent
+    KngNavbarComponent,
+    KngRootComponent,
+    KngWelcomeComponent,    
+    KngValidateMailComponent,
+    KngServerErrorFoundComponent,
+    KngPageNotFoundComponent
+  ],
+  exports:[
   ],
   imports: [
     BrowserModule,
-    Kng2CoreModule.forRoot({API_SERVER:'http://api.karibou.evaletolab.ch',
-        loader:[
-          "categories",
-          "shops"
-        ]
-    }),
-    FormsModule,
-    ReactiveFormsModule,
+    HttpModule,
     HttpClientModule,
-    NgxStripeModule.forRoot('pk_test_oi0sKPJYLGjdvOXOM8tE8cMa'),
+    Kng2CoreModule.forRoot({
+      API_SERVER:environment.API_SERVER,
+      loader:[
+        "categories",
+        "shops"
+      ]
+    }),
+    KngCommonModule.forRoot(),
+    RouterModule.forRoot(appRoutes,{ enableTracing: false }),
+    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [CoinmarketcapService],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'fr' },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler}
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { 
-  constructor(){
-    // ConfigService.setDefaultConfig({
-    //   API_SERVER:'https://api.karibou.ch',
-    //   disqus:'7e23b8cfd1ba48cdb5a3487efcbcdc56', /*karibou dev*/
-    //   // disqus:'a0602093a94647cd948e95fadb9b9e38'; /*karibou prod*/
-    //   mapBoxToken:'pk.eyJ1IjoiZ29uemFsZCIsImEiOiJjajR3cW5ybHQwZ3RrMzJvNXJrOWdkbXk5In0.kMW6xbKtCLEYAEo2_BdMjA'
-    // });
-    
-  }
-  
-}
+export class AppModule {}
+

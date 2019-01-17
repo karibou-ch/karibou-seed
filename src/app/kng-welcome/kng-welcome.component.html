@@ -1,0 +1,62 @@
+<!-- 
+<ng-container *ngIf="!(loading$ | async); else loadingTpl">
+
+  <input placeholder="Search Product.." [formControl]="search">
+
+  <app-product *ngFor="let product of (products$ | async)" [product]="product"></app-product>
+
+</ng-container>
+
+<ng-template #loadingTpl>...</ng-template> -->
+
+<ng-container *ngIf="!isAppReady(); else loadingTpl">
+  <div class="container top">
+    <div class="welcome">
+      <div class="logo"></div>
+      <!-- WELCOME -->
+      <div class="inner" [hidden]="askAction">
+        <h1>{{getTagline('t')}}</h1>
+        <h2 [hidden]="!getTagline('h')" 
+          [innerHtml]="getTagline('h')">
+        </h2>
+        <div [hidden]="!getTagline('p')" 
+             [innerHtml]="getTagline('p')">
+        </div>
+      </div>
+
+      <a  hidden href="https://www.facebook.com/sharer/sharer.php?u=karibou-ch">
+        <div class="spread"></div>  
+      </a>
+      
+    </div>
+
+  </div>
+
+  <div class="container middle">
+    <div class="how-it-works" kng-editor-key="home.howto.p" [innerHTML]="$i18n.lang(config?.shared.home.howto.p)">
+                
+    </div>
+    <div class="favorite-products" [ngStyle]="getWelcomeImage()">
+      <div class="elem" [innerHTML]="$i18n.lang(config?.shared.home.howto.h)"></div>
+      <!-- <div class="elem"></div> -->
+    </div>
+  </div>
+  <div class="container separator"></div>
+
+  <kng-footer [config]="config" ></kng-footer>
+  <div class="background-grid">
+    <div class="items-list-wrap">
+      <ul class="items-list" >
+        <li class="has-details item" *ngFor="let photo of photos"  
+          [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
+      </ul>        
+    </div>
+  </div>  
+</ng-container>
+
+<ng-template #loadingTpl>
+  <router-outlet ></router-outlet>
+</ng-template>
+
+
+    

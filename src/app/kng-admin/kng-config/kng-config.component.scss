@@ -1,0 +1,130 @@
+.container{
+  min-width: 600px;
+  z-index: 1;
+  @media (max-width: 426px) {
+    -min-width: 300px;
+  }
+
+  h1,h2,h3{
+    padding-left: 20px;
+  }
+
+
+  mdc-list{
+    
+    mdc-list-item.config{
+      &.large{
+        min-height: 200px;
+        height: 100%;
+      }
+      &.row-form{
+        display: flex;
+        flex-flow: row wrap;
+        button,
+        mdc-text-field{
+          &.large{
+            flex:2;
+          }
+          &.small{
+            flex: 0 0 50px;
+            margin-top: 12px;
+          }
+          flex:1;
+          margin: 4px;
+        }
+      }
+
+      mdc-list-item-text{
+        width: 100%;
+        button{
+          margin-top: -22px;
+        }
+        mdc-textarea, mdc-text-field{
+          font-size: 90%;
+          width: 98%;
+          border-color: #ddd;
+        }
+      }
+    }
+    mdc-list-item{
+      .map{
+        width: 44px;
+        height: 43px;
+        background-size: cover;
+        border-radius: 8px;        
+      }
+      background: white;
+      &.disabled{
+        opacity: 0.4;
+      }
+      mdc-form-field{
+        align-self: start;
+        margin-top: auto;
+        margin-bottom: 12px;    
+      }
+    
+      mdc-list-item-graphic{
+        img{
+          width: 38px!important;
+          height: 38px;
+          border-radius:8px;
+        }
+      }  
+  
+    }
+  }
+}
+
+
+
+mdc-dialog{
+
+  &.loading{
+    filter: brightness(80%);
+  }
+
+  .double{
+    flex:2;
+  }
+
+  mdc-dialog-surface{
+    background-color: white;
+  }
+    
+  mdc-dialog-body{
+    .geomap{
+      height: 180px;
+      width: 180px;
+      position: absolute;
+      right: 15px;
+      top: 15px;  
+      background-size:cover;  
+      border:1px solid #ddd;
+      margin: 2px;
+    }
+      
+    form{
+      display: flex;
+      flex-flow: column wrap;
+      justify-content:flex-start; /*halign*/
+      background: transparent;
+      width: 100%;
+
+      .ng-invalid .mdc-floating-label{
+        color: red!important;
+      }
+
+      >div{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content:flex-start;
+        &.between{
+          justify-content:space-between;
+        }
+
+      }
+
+    }
+  }
+
+}
