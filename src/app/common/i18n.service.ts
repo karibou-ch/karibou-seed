@@ -5,7 +5,9 @@ import { Config, ConfigService, CartAction } from 'kng2-core';
 /**
  * 
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class i18n  {
 
   public snackOpt={
@@ -27,6 +29,7 @@ export class i18n  {
     cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",
     cart_amount_2:"pour permettre des modifications de commande (prix au poids, ou ajout de produits).",
     cart_nextshipping:"Prochaine livraison",
+    cart_payment_not_available:"Cette méthode de paiement n'est plus disponible",
     nav_account:"Votre compte",
     nav_login:"Connectez-vous",
     nav_login2:"Login",
@@ -72,6 +75,7 @@ export class i18n  {
     nav_shipping2:"When",
     nav_contactus:"Contact-us!",
     nav_installapp:"Install karibou.ch",
+    cart_payment_not_available:"This payment method is not more available",
     e404:"We couldn't find this page :-(",
     eServer:"Ooops, there is an issue in our matrix :-(",
     eSession:"<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page",
