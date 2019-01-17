@@ -76,7 +76,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }={
     discount:true,
     home:true,
-    maxcat:10,
+    maxcat:14,
     popular:true,
     available:true,
     status:true,
@@ -99,7 +99,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.user=loader[1];
     this.categories=loader[2]||[];
     this.currentPage=1000;
-    this.options.maxcat=(window.innerWidth<426)?6:8
+    // this.options.maxcat=(window.innerWidth<426)?6:12
     
   }
 
@@ -179,6 +179,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }).slice(0,this.currentPage);
     this.cached.currentPage=this.currentPage;
     this.cached.categories.forEach(cat=>this.visibility[cat.slug]=false);
+
     return this.cached.categories;
   }  
 
@@ -208,6 +209,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   productsGroupByCategory() {
     //FIXME inner size
+    let maxcat=(window.innerWidth<426)?4:8;
     let divider=(window.innerWidth<426)?2:4;
     this.group={};
 
@@ -230,7 +232,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       Object.keys(this.group).forEach(cat=>{
         this.group[cat]=this.group[cat].sort((a,b)=>{
           return b.stats.score-a.stats.score;
-        });
+        }).slice(0,maxcat);
         if(this.group[cat].length%divider==0){
           this.group[cat].pop()
         }
