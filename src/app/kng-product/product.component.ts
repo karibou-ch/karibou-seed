@@ -108,6 +108,11 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   addToCart($event,product: Product,variant?:string) {
     $event.stopPropagation();
+    //
+    // FIXME should not be possible  
+    if(!product.variants){
+
+    }
     if(product.variants.length&&!variant){
       this.openVariant=true;
       return;
@@ -238,7 +243,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       });
 
       setTimeout(()=>{
-        if(this.dialog)this.dialog.nativeElement.scrollTo(0,0);
+        if(this.dialog&&this.dialog.nativeElement){
+          this.dialog.nativeElement.scrollTop=0;
+          // this.dialog.nativeElement.scrollTo(0,0)
+        };
       },100)
     }
   }
