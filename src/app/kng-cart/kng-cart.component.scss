@@ -277,8 +277,8 @@
   // card elements
   mdc-card{
     &.selected{
-      border:2px solid rgba(0, 0, 0, 0.87);
-      border:2px solid var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
+      border:2px solid $mdc-theme-primary;
+      border:2px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
     }
     border-radius: 0;
     padding:5px;
