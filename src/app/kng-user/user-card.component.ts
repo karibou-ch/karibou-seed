@@ -37,7 +37,6 @@ export class CardComponent {
   defaultUser:User=new User();
   isValid:boolean;
 
-
   //
   // payment 
   stripe:FormGroup;
@@ -168,6 +167,7 @@ export class CardComponent {
   }
 
   onDelete(payment:UserCard){
+    this.isLoading=true;
     this.$user.deletePaymentMethod(payment.alias,this.user.id).subscribe(
       user=>{
         this.onEmit(<PaymentEvent>({deleted:user.payments}));
