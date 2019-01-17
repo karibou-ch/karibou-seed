@@ -20,6 +20,13 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve --aot=false -c=devel` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+## Commit description
+We use our commit log to make beautifull and configurable changelog file with the application gitchangelog.
+Please follow the rules, and start your commit description with:
+* new: 
+* chg:
+* fix:
+
 ## Publish code
 * ng build --prod  -c=auto
 * rsync -avu --delete -e 'ssh -p22' dist/* <server>:www/<directory>
