@@ -88,7 +88,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.categories=<Category[]>loader[2]||[];
     this.shops=<Shop[]>loader[3]||[];
 
-    console.log('')
+    // console.log('')
     this.primary=[];
     this.topmenu=[];
 
@@ -249,6 +249,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
 
   onLang($event,lang){
-    console.log('---- changed locale')
+    // console.log('---- changed locale')
   }
 }
