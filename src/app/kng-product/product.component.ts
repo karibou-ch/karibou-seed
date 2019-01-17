@@ -277,6 +277,21 @@ export class ProductComponent implements OnInit, OnDestroy {
     }, 200)
   }
 
+  @HostListener('document:keyup.escape', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+  //It seems that there is a bug here:
+  // The event is fired multiple times and it should be fired only once
+  //First strategy was to call this.onClose(true), but since it was firing multiple events this was not working properly
+  //Therefore I used a regex that is working to close popups
+    var regex = /(.*)\/products\/\d+/g;
+    var url = this.$router.url;
+    var result = regex.exec(url)
+    if(result != null && result.length == 2){
+      //console.log("Navigate to " + result[1])
+      this.$router.navigate([result[1]])
+    }
+  }
+
   getAvailability(product: Product, pos: number) {
     if (!product.vendor.available || !product.vendor.available.weekdays) {
       return 'radio_button_unchecked';
