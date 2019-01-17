@@ -1,7 +1,7 @@
 # Changelog
 
 
-## %%version%% (unreleased)
+## 0.0.0 (unreleased)
 
 ### New
 
