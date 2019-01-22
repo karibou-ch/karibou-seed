@@ -22,6 +22,8 @@ export enum EnumMetrics {
 })
 export class MetricsService {
 
+  isAdmin:boolean;
+
   constructor(
     private $loader:LoaderService,
     private $user:UserService
@@ -93,6 +95,7 @@ export class MetricsService {
         // User metrics
         let user=ctx.user||this.$user.currentUser
         if(user&&user.id){
+          this.isAdmin=user.isAdmin();
           return this.identitySet(user.email.address);
         }
 
@@ -119,7 +122,7 @@ export class MetricsService {
   }
 
   isEnable(){
-    return window.location.origin.indexOf('karibou.ch')!=-1||false;
+    return window.location.origin.indexOf('karibou.ch')!=-1&&!this.isAdmin;
   }
 
   getHost(name:string):any{
