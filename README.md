@@ -1,7 +1,7 @@
 # karibou-seed
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key==)](https://www.browserstack.com/automate/public-build/)
 
-**Testing your karibou-seed with**
+## Testing your karibou-seed with
 [![BrowserStack](https://user-images.githubusercontent.com/1422935/51529667-72d45d00-1e39-11e9-96b0-78bf6906aa4b.png)](https://browserStack.com)
 
 
