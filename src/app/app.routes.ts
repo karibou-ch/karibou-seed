@@ -24,7 +24,9 @@ export const appRoutes: Routes = [
     // children:[{path:'', loadChildren: './shared/shared.module#SharedModule'}]    
   },
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/geneva/home/products/:sku' },
-  {
+  { path: 'shop/:slug', pathMatch: 'full', redirectTo: '/store/geneva/shops/:slug' },  
+  { path: 'account/orders', pathMatch: 'full', redirectTo: '/store/geneva/me/orders' },  
+  {    
     path: '',
     pathMatch: 'full',    
     resolve:{ loader:LoaderResolve },

@@ -43,7 +43,17 @@ export class KngUserReminderComponent implements OnInit {
     }
   }
 
-  doUpdate(){
+  doUpdate(day,time){
+    if(day){
+      var pos=this.user.reminder.weekdays.indexOf(day);
+      if(pos===-1){
+        this.user.reminder.weekdays.push(day);
+      }else{
+        this.user.reminder.weekdays.splice(pos,1);        
+      }  
+    }
+    this.user.reminder.active=!!(this.user.reminder.weekdays.length);
+//    console.log('user',this.user.reminder)
     this.$user.save(this.user).subscribe();
   }
 

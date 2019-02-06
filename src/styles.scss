@@ -9,8 +9,9 @@ body{
 
 @import "~@angular-mdc/theme/material";
 
-@import 'kng-search.scss';
 @import 'kng-theme.scss';
+@import 'kng-root.scss';
+@import 'kng-search.scss';
 @import 'kng-responsive.scss';
 @import 'kng-mdc.scss';
 @import 'kng-card-skeleton.scss';

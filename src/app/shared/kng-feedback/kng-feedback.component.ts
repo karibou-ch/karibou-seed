@@ -130,6 +130,7 @@ export class KngFeedbackComponent implements OnInit {
 
   ngOnDestroy(){
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
   ngOnChanges(){
@@ -167,11 +168,13 @@ export class KngFeedbackComponent implements OnInit {
     //
     // DIALOG INIT HACK 
     document.body.classList.add('mdc-dialog-scroll-lock');
+    document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.askFeedback=true;
   }
 
   onBack(){
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     this.askFeedback=false;
   }
 

@@ -180,9 +180,9 @@
 
     <!-- FURTHER -->
     <div class="further-product-container mdc-layout-grid" >
-        <section>
-          <!-- <h2>{{category.name}}</h2>
-          <h3 [innerHtml]="category.description"></h3> -->
+        <section [hidden]="!product.belong.name">
+          <!-- <h2>{{product.categories.name}}</h2> -->
+          <h3>{{product.belong.name}}</h3>
         </section>
         <div infiniteScroller
              scrollPercent="0"
@@ -191,7 +191,7 @@
              [scrollCallback]="scrollCallback" 
              class="kng-layout-card">
           <kng-product-thumbnail             
-              *ngFor="let product of products;let j=index" 
+              *ngFor="let product of getProducts();let j=index" 
               [sku]="product.sku" 
               [visibility]="currentPage>j"
               class="">

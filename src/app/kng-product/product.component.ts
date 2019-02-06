@@ -37,20 +37,21 @@ import { map } from 'rxjs/operators';
 export class ProductComponent implements OnInit, OnDestroy {
 
   @Input() sku: number;
+  @Input() config: any;
+  @Input() categories:Category[];
+  @Input() user: User = new User();
+
   @ViewChild('dialog') dialog: ElementRef;
 
 
   static WEEK_1:number=86400*7;
   static :number=86400*14;
 
-  user: User = new User();
   isReady: boolean;
   isDialog: boolean = false;
-  config: any;
   product: Product = new Product();
   products: Product[];
   category:Category;
-  categories:Category[];
   thumbnail: boolean = false;
   bgStyle: string='/-/resize/200x/';
   photosz:string;
@@ -96,10 +97,14 @@ export class ProductComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private el:ElementRef
   ) {
-    let loader=this.$route.parent.snapshot.data.loader;
-    this.config=loader[0];      
-    this.user=loader[1];    
-    this.categories=loader[2];    
+
+    let loader=this.$route.parent.snapshot.data.loader||this.$route.snapshot.data.loader;
+    if(loader&&loader.length){
+      this.config=loader[0];      
+      this.user=loader[1];    
+      this.categories=loader[2];      
+    }
+
     this.products=[];
     this.scrollCallback=this.getNextPage.bind(this);
 
@@ -153,12 +158,29 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.updateBackground();
   }
 
+  getAvailability(product: Product, pos: number) {
+    if (!product.vendor.available || !product.vendor.available.weekdays) {
+      return 'radio_button_unchecked';
+    }
+    return (product.vendor.available.weekdays.indexOf(pos) == -1) ?
+      'radio_button_unchecked' : 'radio_button_checked';
+  }
+
   getNextPage(){
     return timer(10).pipe(map(ctx=>this.currentPage+=4));
   }
   
   getDialog(){
     return this.dialog;
+  }
+  
+  getProducts(){    
+    if(!this.product||
+       !this.product.belong||
+       !this.product.belong.name){
+      return this.products;
+    }
+    return this.products.filter(p=>p.belong.name==this.product.belong.name)
   }
   
   hasFavorite(product) {
@@ -191,6 +213,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         //
         // DIALOG INIT HACK 
         document.body.classList.add('mdc-dialog-scroll-lock');
+        document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
       }else{
         this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
@@ -259,6 +282,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
   }
 
@@ -275,14 +299,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
       this.$router.navigate(['../../'],{relativeTo: this.$route})
     }, 200)
-  }
-
-  getAvailability(product: Product, pos: number) {
-    if (!product.vendor.available || !product.vendor.available.weekdays) {
-      return 'radio_button_unchecked';
-    }
-    return (product.vendor.available.weekdays.indexOf(pos) == -1) ?
-      'radio_button_unchecked' : 'radio_button_checked';
   }
 
   save(product: Product) {

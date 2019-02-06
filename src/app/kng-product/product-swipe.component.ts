@@ -32,6 +32,9 @@ export class ProductSwipeComponent implements OnInit {
   @Input() limit:number;
   @Input() config: any;
   @Input() products:Product[];
+  @Input() set autoload(any){
+    this.load();
+  }
 
   options = {
     home:true,
@@ -62,7 +65,6 @@ export class ProductSwipeComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    // document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   ngAfterViewInit(){
@@ -72,15 +74,9 @@ export class ProductSwipeComponent implements OnInit {
   }
   
   ngOnInit() {
-    if(!this.products||!this.products.length){
-      this.load();
-    }
-
-
-
-    //
-    // DIALOG INIT HACK 
-    // document.body.classList.add('mdc-dialog-scroll-lock');
+    // if(!this.products||!this.products.length){
+    //   this.load();
+    // }
   }
 
 

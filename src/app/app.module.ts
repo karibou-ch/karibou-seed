@@ -49,6 +49,13 @@ export class GlobalErrorHandler implements ErrorHandler {
      //
      // USING SENTRY AS DEBUG
      try{
+      console.log('origin',window.location.origin)
+      if(window.location.origin.indexOf('karibou.ch')==-1){
+        console.log('LOCALHOST ERROR----',error.originalError || error);
+        return;
+      } 
+      console.log('ERROR----',error.originalError || error);
+      console.log('ERROR----',(error.originalError || error).message);
       (<any>window).Sentry&&(<any>window).Sentry.captureException(error.originalError || error);
       (<any>window)['_kmq']&&(<any>window)['_kmq'].push(['record', EnumMetrics[EnumMetrics.metric_error], {error:error.message}]);
      }catch(e){

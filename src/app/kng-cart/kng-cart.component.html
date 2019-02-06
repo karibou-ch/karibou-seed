@@ -207,7 +207,7 @@
     <div class="cart-flow flow-done">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
-  </section>
+   </section>
 
     <!-- TAX & SHIPPING -->
     <mdc-list avatar="true" [interactive]="false">
@@ -275,7 +275,7 @@
     </div>
 
 
-    <!-- CHECKOUT BRETEZL MSG -->
+    <!-- CHECKOUT  MSG -->
     <div class="checkout-msg" *ngIf="config.shared.checkout.active">
       <div [innerHtml]="config.shared.checkout.message[$i18n.locale]"></div>
     </div>
@@ -290,6 +290,6 @@
       <mdc-checkbox [(ngModel)]="cgAccepted"></mdc-checkbox>
       <label i18n>J'ai lu et j'accepte <a href="javascript:;" [routerLink]="['/store',store,'content','conditions-generales-de-vente']">les conditions générales de vente</a></label>  
     </div>
-    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted" (click)="doOrder()" >Commander maintenant</button>    
+    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >Commander maintenant</button>    
   </div>
 </div>

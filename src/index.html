@@ -40,23 +40,31 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1976d2">
-  <script crossorigin="anonymous" href="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=es6"></script>
-
-
-    <!-- BROSWER CHECK -->
-    <script> 
-      var $buoop = {required:{e:-4,f:-3,o:-3,s:-3,c:-3},api:2019.01 }; 
-      function $buo_f(){ 
-      var e = document.createElement("script"); 
-      e.src = "//browser-update.org/update.min.js"; 
-      document.body.appendChild(e);
-      };
-      try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
-      catch(e){window.attachEvent("onload", $buo_f)}
-    </script>
+  <script crossorigin="anonymous" href="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=es5,es6"></script>
+  <style>
+    #must-upgrade{
+      padding: 20px;color:#444;
+      display: none;
+    }
+    #version-upgrade{
+      text-transform: capitalize;
+      font-weight: 700;
+    }
+  </style>
+  
 </head>
 <body>
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <div id="must-upgrade">
+    <h1>La version de votre navigateur n'est malheureusement pas supportée.</h1>
+    <p>
+        Il n'est pas possible pour notre petite équipe de rendre compatible notre logiciel 
+        avec tous les navigateurs et toutes les versions. Les navigateurs étant gratuits, 
+        nous vous invitons a utiliser une version plus récente que <span id="version-upgrade"></span><br/>
+        <a href="mailto:hello@karibou.ch">Contactez nous</a> pour avoir un support technique.
+    </p>
+    
+  </div>
 </body>
 </html>

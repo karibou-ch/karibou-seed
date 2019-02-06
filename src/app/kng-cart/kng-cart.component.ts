@@ -40,6 +40,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   items:CartItem[];
   sign:any;
   cgAccepted:boolean=false;
+  isRunning:boolean=false;
   hasOrderError:boolean=false;
   noshippingMsg:string;
   subscription;
@@ -138,7 +139,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // compute available discount and delta to get one
     this.computeDiscount();
 
+        
     this.subscription=this.$loader.update().subscribe(emit=>{
+      console.log('------------DEBUG',emit)
       // emit signal for config
       if(emit.config){
 
@@ -200,23 +203,25 @@ export class KngCartComponent implements OnInit, OnDestroy {
     );
 
     this.hasOrderError=false;
+    this.isRunning=true;
 
     this.$order.create(
       shipping,
       this.items.map(item=>item.toDEPRECATED()),
       this.$cart.getCurrentPaymentMethod()
     ).subscribe((order)=>{
+        this.isRunning=false;
         //
         // check order errors 
         if(order.errors){
           this.$cart.setError(order.errors);
           this.hasOrderError=true;
-          this.$snack.show(
+          this.$snack.open(
             "Votre commande doit être corrigée ",
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
-          window.scroll(0,0);          
+          try{window.scroll(0,0);}catch(e){}
           return;
         }
 
@@ -227,13 +232,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
           'amount':order.getSubTotal()
         });
 
-        this.$snack.show("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
+        this.$snack.open("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
         this.$router.navigate(['/store',this.store,'me','orders']);
         this.items=[];
         this.$cart.empty();
       },
       err=>{
-        this.$snack.show(
+        this.isRunning=false;
+        this.$snack.open(
           err.error,
           this.$i18n.label().thanks,
           this.$i18n.snackOpt
@@ -272,6 +278,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
     }
     this.$user.checkPaymentMethod(this.user).subscribe(user=>{
       //this.user=user;
+    },error=>{
+      if(error.status==401){
+        this.$user.logout().subscribe();
+      }
     })
   }  
 
@@ -395,7 +405,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   
   setPaymentMethod(payment:UserCard){
     if(!payment.isValid()){
-      this.$snack.show(payment.error||this.$i18n.label().cart_payment_not_available,"OK",{multiline:true})
+      this.$snack.open(payment.error||this.$i18n.label().cart_payment_not_available,"OK",{multiline:true})
       return;
     }
     this.$cart.setPaymentMethod(payment);      

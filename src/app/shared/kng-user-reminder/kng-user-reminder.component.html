@@ -9,7 +9,7 @@
       <mdc-radio (click)="doUpdate(null,time.value)" [value]="time.value" [checked]="user.reminder.time==time.value"></mdc-radio><label>{{time.label}}</label>
     </mdc-form-field>
   </mdc-radio-group>
-  
+  <div class="breaker small"></div>
   <mdc-radio-group >
     <mdc-form-field *ngFor="let day of weekdays">
       <mdc-checkbox (change)="doUpdate(day.value)" [checked]="isChecked(day.value)"></mdc-checkbox><label>{{day.label}}</label>

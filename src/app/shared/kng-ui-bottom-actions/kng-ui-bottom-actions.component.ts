@@ -49,6 +49,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
   addToCard(product){
@@ -64,6 +65,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.search.nativeElement.value=null;
     this.stats.nativeElement.innerText='';
     document.body.classList.add('mdc-dialog-scroll-lock');
+    document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.cdr.markForCheck();    
   }
 
@@ -72,6 +74,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.doClear();
     this.show=false;
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
   doInput(value?:string){

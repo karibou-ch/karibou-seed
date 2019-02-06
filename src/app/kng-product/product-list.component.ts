@@ -96,6 +96,7 @@ export class ProductListComponent implements OnInit {
 
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     this.childSub.unsubscribe();
   }
 
@@ -124,6 +125,8 @@ export class ProductListComponent implements OnInit {
     //
     // DIALOG INIT HACK 
     document.body.classList.add('mdc-dialog-scroll-lock');
+    document.documentElement.classList.add('mdc-dialog-scroll-lock');
+
     this.dialog.nativeElement.classList.remove('fadeout')
 
 

@@ -30,6 +30,7 @@ mdc-list{
 
 .mdc-dialog-scroll-lock{
   overflow: hidden!important;
+  position: relative;  
 }
 
 .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, 

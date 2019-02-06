@@ -23,7 +23,7 @@ export class i18n  {
     cart_discount_info:"Rabais livraison",
     cart_discount:"rabais quantité",
     cart_discount_title:"rabais à partir de ",
-    cart_signin:"Continuer la commande",
+    cart_signin:"Finaliser la commande",
     cart_login:"Pour finaliser votre commande, vous devez vous connecter",
     cart_empty:"Votre panier est vide",
     cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",

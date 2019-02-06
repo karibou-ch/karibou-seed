@@ -461,6 +461,29 @@
   @media (max-width:320px) {
     width: calc( 100% - 10px );
   }
+
+  section{
+    h2,h3{
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.87);      
+      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
+      font-size: 1.675rem;
+      text-transform: uppercase;    
+      margin-top: 20px;
+      margin-left: 10px;
+      margin-right: 10px;      
+    }
+    h3{
+      font-weight: 200;
+      font-size: 1.275rem;
+      color: #aaa;
+      text-shadow:1px 1px 0 white;
+      margin-top: -10px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+  }  
   
   .kng-layout-card{
     display: flex!important;

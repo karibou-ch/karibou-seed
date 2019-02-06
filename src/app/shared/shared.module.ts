@@ -57,6 +57,8 @@ import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
     KngUserReminderComponent,
     KngUiBottomActionsComponent,
     InfiniteScrollerDirective,
+    ProductThumbnailComponent,
+    ProductSwipeComponent,
     UcWidgetComponent,
   ],
   declarations: [

@@ -208,7 +208,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   productsGroupByCategory() {
-    //FIXME inner size
+    //FIXME inner size    
     let maxcat=(window.innerWidth<426)?4:8;
     let divider=(window.innerWidth<426)?2:4;
     this.group={};
@@ -228,7 +228,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
         this.group[product.categories.name].push(product);
       });
-      this.home=this.home.slice(0,8);
+      this.home=this.home.slice(0,10);
       Object.keys(this.group).forEach(cat=>{
         this.group[cat]=this.group[cat].sort((a,b)=>{
           return b.stats.score-a.stats.score;

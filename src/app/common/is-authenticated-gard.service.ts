@@ -25,7 +25,9 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
           return true;
         }
         //FIXME access this.$navigation.store bretzel 
-        this.$router.navigate(['/store','geneva','me','login']);  
+        setTimeout(()=>{
+          this.$router.navigate(['/store','geneva','me','login']);  
+        },100);
         return false;
       })
     ).toPromise();
@@ -56,7 +58,9 @@ export class IsWelcomeGard implements CanActivate,CanActivateChild{
         return true;
       }
       //FIXME access this.$navigation.store 
-      this.$router.navigate(['/store','geneva','home']);
+      setTimeout(()=>{
+        this.$router.navigate(['/store','geneva','home']);
+      },100);
       return false;
     });    
   }

@@ -85,8 +85,10 @@ div.home-header{
         }
       }
       .left{
+        flex: 1;
         max-width: 48%;        
         @media (max-width:426px) {
+          flex: 1 0 100%;
           max-width:100%;
           font-size:70%;
         }
@@ -113,6 +115,7 @@ div.home-header{
         p{
           margin-bottom:2px;
         }
+        flex: 1;
         padding: 20px;
         align-self: center;
         max-width: 45%;        
