@@ -1,4 +1,11 @@
 # karibou-seed
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key==)](https://www.browserstack.com/automate/public-build/)
+
+Help us to build the futur of food distribution,
+> Wherever you are, you'll see communities of farmers, foodmakers, wine merchants and grocers appearing on your screens who are committed to serving you the best food in depotit or on your doorstep.
+
+## Fork and Test your karibou-seed with
+[![BrowserStack](https://user-images.githubusercontent.com/1422935/51529667-72d45d00-1e39-11e9-96b0-78bf6906aa4b.png)](https://browserStack.com)
 
 
 ## Prerequisites
