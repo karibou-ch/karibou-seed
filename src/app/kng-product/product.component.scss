@@ -238,7 +238,7 @@
       background-position-y: 50%;
       border-radius: 5px;  
       transition: background-color .2s ease-in-out;
-      position: relative;
+      position: relative!important;
       
       @media (max-width: 426px) {
         height: 270px;
@@ -276,6 +276,10 @@
       -white-space: nowrap;    
       padding: 10px 5px;
       background-color: #f6f6f6;
+    }
+
+    .product-card__secondary{
+      position: relative;
     }
   
   
@@ -333,6 +337,7 @@
     width: 100%;
     margin-top: 10px;
     background: #efefef;
+    opacity: .5;
     button{
       margin-right: 10px;
     }

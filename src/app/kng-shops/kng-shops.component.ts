@@ -26,12 +26,13 @@ export class KngShopsComponent implements OnInit {
   error:string;
   vendor:Shop=new Shop();
   products: Product[];
+  LIMITED_PRODUCTS:number=35;
 
 //
   // generating dynamic background image url 
   bgGradient=`linear-gradient(
-    rgba(100, 100, 100, 0.15),
-    rgba(0, 0, 0, 0.6)
+    rgba(100, 100, 100, 0.05),
+    rgba(0, 0, 0, 0.2)
   ),`;  
 
 
@@ -39,14 +40,14 @@ export class KngShopsComponent implements OnInit {
     fr:{
       map_title:"Infos pratiques",
       faq:"Retrouvez la liste des questions fréquentes (FAQ)",
-      products_title:"Mes produits",
-      products_subtitle:"Retrouvez tous mes produits dans le marché en ligne karibou.ch"
+      products_title:"Nos produits",
+      products_subtitle:""
     },
     en:{
       map_title:"Infos pratiques",
       faq:"Frequently asked questions (FAQ)",
-      products_title:"My products",
-      products_subtitle:"My products are also available on the marketlace karibou.ch"
+      products_title:"Our products",
+      products_subtitle:""
     }
   }
 
@@ -91,7 +92,7 @@ export class KngShopsComponent implements OnInit {
       Object.assign(this.vendor,vendor);
       this.products=products.sort((a,b)=>{
         return b.stats.score-a.stats.score;
-      }).slice(0,18);;
+      }).slice(0,this.LIMITED_PRODUCTS);
     },error=>{
       this.error=error.error;
     });
@@ -111,7 +112,6 @@ export class KngShopsComponent implements OnInit {
 
   getStaticMap(address){
     if(!this.config.shared||!this.config.shared.keys.pubMap){
-      console.log('--ERROR: config.shared.keys.pubMap ');
       return;
     }
     let pubMap=this.config.shared.keys.pubMap;

@@ -11,7 +11,7 @@
 git clone https://github.com/karibou-ch/karibou-seed
 cd karibou-seed
 npm install
-ng serve 
+ng serve -c=devel
 ```
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.4.

@@ -25,7 +25,7 @@ export class UserPasswordComponent {
   isLoading:boolean;
   
   constructor(
-    private $i18n:i18n,
+    public  $i18n:i18n,
     private $fb: FormBuilder,
     private $user:UserService,
     private $route:ActivatedRoute,
@@ -52,6 +52,9 @@ export class UserPasswordComponent {
     //[ngModelOptions]="{updateOn: 'blur'}"
   }
 
+  get locale(){
+    return this.$i18n.locale;
+  }
 
   //
   // entry poiont

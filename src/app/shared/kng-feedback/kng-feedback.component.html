@@ -2,10 +2,9 @@
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
   <h3 i18n>{{i18n[locale].title_order_open}}</h3>
   <p i18n class="help-block">
-      Votre commande du 
-      <b>{{order.shipping.when|date:'EEE d MMM y'}}</b> 
-      est en cours de préparation <b hidden>({{order.getProgress().toFixed(0)}}%)</b>
-      <br/>La livraison est prévue chez <b class="text-capitalize">{{order.shipping.name}}</b>
+      {{i18n[locale].title_order_prepare}}&nbsp;
+      <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b> 
+      <br/>{{i18n[locale].title_order_shipping}} <b class="text-capitalize">{{order.shipping.name}}</b>
   </p>
   <mdc-linear-progress 
     #progress  determinate="true" [progress]="order.getProgress()/100" [buffer]="0.85" 
@@ -26,14 +25,14 @@
 <!--- ORDER IS EVALUATED -->
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='evaluated'">
   <div class="details" >
-      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
+      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y':'':locale}}</span>,
       {{order.items.length}} articles
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
   </div>                                      
   <div class="form">
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
-    <span>Votre évaluation:</span>&nbsp;
+    <span>{{i18n[locale].title_evaluation}}</span>&nbsp;
     <mdc-icon class="stars" [class.scored]="score>=0">star_rate</mdc-icon> 
     <mdc-icon class="stars" [class.scored]="score>=1">star_rate</mdc-icon> 
     <mdc-icon class="stars" [class.scored]="score>=2">star_rate</mdc-icon>
@@ -106,7 +105,7 @@
       <div class="breaker"></div>
       <p i18n class="help-block" [innerHtml]="i18n[locale].title_issue_hub"></p>
       <!-- ORDER FEEDBACK -->
-      <mdc-textarea i18n-label label="Note concernant le service?" fullwidth [ngModelOptions]="{standalone: true}"
+      <mdc-textarea i18n-label [label]="i18n[locale].form_text_label" fullwidth [ngModelOptions]="{standalone: true}"
       kng-autosize rows="2" 
       [(ngModel)]="feedbackText">
       </mdc-textarea>                  

@@ -156,22 +156,23 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //
       // update cart
       if(emit.state){
-        this.cardItemsSz=this.$cart.getItems().reduce((sum,item)=>{
-          return sum+item.quantity;
-        },0);
+        // this.cardItemsSz=this.$cart.getItems().reduce((sum,item)=>{
+        //   return sum+item.quantity;
+        // },0);
+        this.cardItemsSz=this.$cart.subTotal();
         //
         // FIXME hugly DOM manipulation for : CART ITEMS COUNT
         // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>        
         setTimeout(()=>{
           //
           // top bar
-          (<Element>(document.querySelector('.cart-items-count')||{})).innerHTML='('+this.cardItemsSz+')';
+          (<Element>(document.querySelector('.cart-items-count')||{})).innerHTML='('+this.cardItemsSz+' fr)';
           //
           // tab bar
           this.cartItemCountElem=this.cartItemCountElem||this.section.elementRef.nativeElement.querySelector('.cart-items-count');
           if(this.cartItemCountElem){
             this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
-            this.cartItemCountElem.innerHTML='('+this.cardItemsSz+')';
+            this.cartItemCountElem.innerHTML='('+this.cardItemsSz+' fr)';
           }  
         },100);
       
@@ -182,14 +183,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         }
 
         if(emit.state.action==CartAction.ITEM_MAX){
-          return this.$snack.open(
+          return this.$snack.show(
             this.$i18n.label()[CartAction[emit.state.action]],
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
         }
 
-        this.$snack.open(
+        this.$snack.show(
           this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')',
           this.$i18n.label().thanks,
           this.$i18n.snackOpt
@@ -249,6 +250,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
 
   onLang($event,lang){
+    this.$i18n.locale=lang;
     // console.log('---- changed locale')
   }
 }

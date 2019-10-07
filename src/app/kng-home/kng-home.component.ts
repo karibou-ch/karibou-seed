@@ -23,6 +23,7 @@ import {
 }  from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../common';
+import { MetricsService, EnumMetrics } from '../common/metrics.service';
 
 
 @Component({
@@ -43,7 +44,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   group:any={};
   home:Product[]=[];
   user:User;
-  locale:string;
   subscription;
 
   //
@@ -85,9 +85,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private $cart:CartService,
-    private $i18n:i18n,
+    public $cart:CartService,
+    public $i18n:i18n,
     private $loader: LoaderService,
+    private $metric:MetricsService,
     private $product: ProductService,
     private $route: ActivatedRoute
   ) { 
@@ -108,10 +109,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {        
-    this.locale=this.$i18n.locale;
     setTimeout(()=>{
       this.detectVisibility(0);
-    },800)
+    },800);
+
+    //
+    // FIXME avoid double home load
+    let loaded=false;
     
     this.subscription=this.$loader.update().subscribe(emit=>{
 
@@ -139,14 +143,22 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       if(emit.state){
         if(CartAction.CART_SHPPING==emit.state.action){
           this.options.when=this.$cart.getCurrentShippingDay();
-        }
-        if([CartAction.CART_SHPPING,CartAction.CART_LOADED].indexOf(emit.state.action)>-1||
-           !Object.keys(this.group).length){
           this.productsGroupByCategory();
+        }
+        //
+        // FIXME issue 2x CART_LOADED !!
+        if(([CartAction.CART_LOADED].indexOf(emit.state.action)>-1||!Object.keys(this.group).length)
+          && !loaded){
+          this.productsGroupByCategory();
+          loaded=true;
         }
       }
       console.log(this.constructor.name,'------------',emit,this.sections)      
     });    
+  }
+
+  get locale(){
+    return this.$i18n.locale;
   }
 
   add(product:Product){
@@ -209,7 +221,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   productsGroupByCategory() {
     //FIXME inner size    
-    let maxcat=(window.innerWidth<426)?4:8;
+    let maxcat=(window.innerWidth<426)?6:8;
     let divider=(window.innerWidth<426)?2:4;
     this.group={};
 
@@ -238,7 +250,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
       })
       this.isReady = true;
-
     });
 
   }
@@ -270,7 +281,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if(!el){
       return;
     }
-    el.scrollIntoView({ behavior: 'instant', block: 'start' });
+
+    //
+    //type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
+    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
   }  
 
   sortByWeight(a:Category,b:Category){

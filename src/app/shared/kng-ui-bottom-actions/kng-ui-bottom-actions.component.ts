@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Category, ProductService, Product, CartService } from 'kng2-core';
+import { i18n } from '../../common';
 
 @Component({
   selector: 'kng-ui-bottom-actions',
@@ -17,6 +18,15 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   findGetNull:boolean;
   products:Product[]=[];
 
+  i18n:any={
+    fr:{
+      search_placeholder:"Recherche",
+    },
+    en:{
+      search_placeholder:"Search",
+    }
+  }
+
   @HostBinding('class.show') get classShow(): boolean {
     return this.show;
   }
@@ -31,6 +41,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @ViewChild('stats') stats:ElementRef;
   
   constructor(
+    public  $i18n:i18n,
     private $cart: CartService,
     private $products:ProductService,
     private cdr: ChangeDetectorRef
@@ -42,8 +53,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   ngAfterContentChecked(){
   }
 
@@ -51,6 +60,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
+
+  get locale(){
+    return this.$i18n.locale;
+  }
+
 
   addToCard(product){
     this.$cart.add(new Product(product));
@@ -83,6 +97,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     value=value||this.search.nativeElement.value;
     let tokens=value.split(' ').map(val=>(val||'').length);
     document.body.classList.add('mdc-dialog-scroll-lock');
+    document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
     this.stats.nativeElement.innerText='';
 
@@ -116,10 +131,12 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     if(this.show){
       this.products=[];
       document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
       // this.search.nativeElement.focus();
     } else{
       this.doClear();
       document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
 
   }

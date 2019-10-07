@@ -279,6 +279,7 @@
     &.selected{
       border:2px solid $mdc-theme-primary;
       border:2px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
+      border:2px solid #da1c5c !important;
     }
     border-radius: 0;
     padding:5px;
@@ -416,6 +417,19 @@
       text-align: center;
     }
 
+    div.shipping-note{
+      width: 80%;
+      text-align: left;
+      input{
+        border: 1px solid #ddd;
+        padding: 4px;
+        flex: 1;
+        width: 100%;
+        margin: 5px 0;        
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
     div.shipping{
       display: flex;
       flex-flow: row wrap;

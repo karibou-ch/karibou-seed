@@ -45,6 +45,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   noshippingMsg:string;
   subscription;
   shippingTime;
+  shippingNote:string;
 
   //
   // generating dynamic background image url 
@@ -52,6 +53,53 @@ export class KngCartComponent implements OnInit, OnDestroy {
     rgba(0, 50, 0, 0.15),
     rgba(0, 0, 0, 0.1)
   ),`;
+
+
+  i18n:any={
+    fr:{
+      cart_collect:"collect",
+      cart_info_total:"Total provisoire",
+      cart_info_subtotal:"Sous total",
+      cart_info_shipping:"Livraison",
+      cart_info_payment:"Méthode de paiement",
+      cart_info_discount:"Rabais",
+      cart_remove:"enlever",
+      cart_discount_info:"Rabais livraison",
+      cart_discount:"rabais quantité",
+      cart_discount_title:"rabais à partir de ",
+      cart_signin:"Finaliser la commande",
+      cart_login:"Pour finaliser votre commande, vous devez vous connecter",
+      cart_empty:"Votre panier est vide",
+      cart_error:"Vous devez corriger votre panier!",
+      cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",
+      cart_amount_2:"pour permettre des modifications de commande (prix au poids, ou ajout de produits).",
+      cart_nextshipping:"Prochaine livraison",
+      cart_payment_not_available:"Cette méthode de paiement n'est plus disponible",
+      cart_cg:"J'ai lu et j'accepte les conditions générales de vente",
+      cart_order:"Commander maintenant",  
+    },
+    en:{
+      cart_collect:"collect",
+      cart_info_total:"Provisional total",
+      cart_info_subtotal:"Subtotal",
+      cart_info_shipping:"Shipping",
+      cart_info_payment:"Payment method",
+      cart_info_discount:"Discount",
+      cart_remove:"remove",
+      cart_discount:"discount",
+      cart_discount_info:"Vendor delivery discount ",
+      cart_discount_title:"rabais livraison à partir de ",
+      cart_signin:"Sign In!",
+      cart_login:"Please sign in before the checkout",
+      cart_empty:"Your cart is empty",
+      cart_amount_1:"Payment will be made on the day of delivery once the total is known. We reserve the amount of",
+      cart_amount_2:"to allow order changes (price by weight, or addition of products).",
+      cart_nextshipping:"Next delivery",
+      cart_error:"Your cart has to be modified!",
+      cart_cg:"I read and I agree to the general selling conditions",
+      cart_order:"Order now !",  
+    }
+  };
 
   issuer={
     wallet:{
@@ -93,7 +141,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
     public $i18n:i18n,
     public $loader:LoaderService,
     public $cart:CartService,
-    private $fb: FormBuilder,
     private $metric:MetricsService,
     public $navigation:KngNavigationStateService,
     private $order:OrderService,
@@ -119,6 +166,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.vendorAmount={};
 
 
+  }
+
+  get locale(){
+    return this.$i18n.locale;
   }
 
   getNoShippingMessage(){    
@@ -154,6 +205,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for cart
       if(emit.state){
         this.items=this.$cart.getItems();
+      }
+      let current=this.$cart.getCurrentShippingAddress();
+      if(current.note&&!this.shippingNote){
+        this.shippingNote=current.note;
       }
 
     },error=>{
@@ -202,6 +257,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       16
     );
 
+    //
+    // update shipping note
+    shipping.note=this.shippingNote||shipping.note;
+
     this.hasOrderError=false;
     this.isRunning=true;
 
@@ -216,7 +275,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
         if(order.errors){
           this.$cart.setError(order.errors);
           this.hasOrderError=true;
-          this.$snack.open(
+          this.$snack.show(
             "Votre commande doit être corrigée ",
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
@@ -232,14 +291,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
           'amount':order.getSubTotal()
         });
 
-        this.$snack.open("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
+        this.$snack.show("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
         this.$router.navigate(['/store',this.store,'me','orders']);
         this.items=[];
         this.$cart.empty();
       },
       err=>{
         this.isRunning=false;
-        this.$snack.open(
+        this.$snack.show(
           err.error,
           this.$i18n.label().thanks,
           this.$i18n.snackOpt
@@ -397,6 +456,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$cart.setShippingAddress(address);
 
     //
+    // copy note
+    this.shippingNote=address.note;
+
+    //
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_address,{
       'deposit':!!(address['active'])
@@ -405,7 +468,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   
   setPaymentMethod(payment:UserCard){
     if(!payment.isValid()){
-      this.$snack.open(payment.error||this.$i18n.label().cart_payment_not_available,"OK",{multiline:true})
+      this.$snack.show(payment.error||this.i18n[this.locale].cart_payment_not_available,"OK")
       return;
     }
     this.$cart.setPaymentMethod(payment);      

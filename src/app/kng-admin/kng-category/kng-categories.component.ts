@@ -116,9 +116,9 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         this.edit.create=false;
         // FIXME, verify IF name != old.name =>  update SLUG
         // this.categories.find()
-        this.$snack.open(this.$i18n.label().save_ok,"OK")
+        this.$snack.show(this.$i18n.label().save_ok,"OK")
       },
-      (err)=>this.$snack.open(err.error,"OK")
+      (err)=>this.$snack.show(err.error,"OK")
     );
   }
 
@@ -133,10 +133,10 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   onDelete(){
     let position=-1;
-    let pwd=window.prompt(this.$i18n.label().password,"CONFIRMER AVEC LE PASSWORD");
+    let pwd=window.prompt(this.$i18n.label().user_confirm_password,"CONFIRMER AVEC LE PASSWORD");
     // FIXME, server should always respond an JSON (simple string like "OK" hang)
     let onOk=()=>{
-      this.$snack.open(this.$i18n.label().delete_ok,"OK");
+      this.$snack.show(this.$i18n.label().delete_ok,"OK");
       position=this.categories.findIndex(elem=>elem.slug==this.edit.category.slug);
       if(position>-1){
         this.categories.splice(position, 1);
@@ -153,7 +153,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         if(err.status==200){
           return onOk();
         }
-        this.$snack.open(err.error,"OK")
+        this.$snack.show(err.error,"OK")
       }
     );
   }
@@ -174,7 +174,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   onDialogOpen(dialog){
     dialog.done(dlg=>{
       if(dlg.state()=='rejected'){
-        this.$snack.open(this.$i18n.label().img_max_sz,"OK")
+        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
       }
     })
   }

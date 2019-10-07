@@ -296,10 +296,17 @@ body{
   border-bottom: 1px dotted var(--mdc-theme-secondary);
   cursor: pointer;
   text-decoration:none;
+  &.gray{
+    color:#aaa !important;
+  }
 }
 
 .help-block{
   color: var(--mdc-theme-text-secondary-on-background);    
+  
+  a{
+    color: #55a;
+  }
 }
 
 //

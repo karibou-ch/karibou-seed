@@ -17,7 +17,7 @@
 
 
 
-		<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku]">
+		<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku,product.title]">
 			<mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
 				<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
@@ -37,7 +37,7 @@
 					<span [hidden]="!hasLabel(product,'bioconvertion')"><i class="icons fa-leaf"></i> bioconversion</span>
 					<span [hidden]="!hasLabel(product,'biodynamics')"><i class="icons fa-leaf"></i> biodynamie</span>
 					<span [hidden]="!hasLabel(product,'natural')"><i class="icons fa-leaf"></i> 100% naturel</span>
-					<span [hidden]="!hasLabel(product,'grta')" class="text-right">GRTA</span>
+					<span [hidden]="!hasLabel(product,'grta')" class="text-right"> GRTA</span>
 				</div>
 
 			</mdc-card-media>

@@ -1,19 +1,19 @@
 
 <div class="cart-container" mdcTypography>
   <section [hidden]="items.length">
-    <h2 i18n>{{$i18n.label().cart_empty}}</h2>
-    <h3 class="primary-text" i18n>{{$i18n.label().cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
+    <h2 i18n>{{i18n[locale].cart_empty}}</h2>
+    <h3 class="primary-text" i18n>{{i18n[locale].cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
     <hr/>
   </section>
   
   <section [hidden]="!items.length">
     <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
     <h3 class="primary-text" i18n>
-      {{$i18n.label().cart_nextshipping}} 
+      {{i18n[locale].cart_nextshipping}} 
       <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
-      <br/>entre {{shippingTime}}
+      <br/> {{shippingTime}}
     </h3>
-    <h4 class="title-error" [hidden]="!hasOrderError" i18n>Vous devez corriger votre panier!</h4>
+    <h4 class="title-error" [hidden]="!hasOrderError" i18n>{{i18n[locale].cart_error}}</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
     <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
@@ -28,14 +28,14 @@
           <div class="message" >{{item.error}}</div>          
           <mdc-list-item-secondary>
             <a href="javascript:;" class="gray" i18n (click)="removeAll(item,item.variant)">
-                <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>enlever</a>
-            <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 {{$i18n.label().cart_discount}}</span>                
+                <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>{{i18n[locale].cart_remove}}</a>
+            <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                
           </mdc-list-item-secondary>
       </mdc-list-item-text>
       
       <mdc-list-item-meta>
         <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
-            <b>🛈</b> {{$i18n.label().cart_discount_title}} {{getVendorDiscount(item).needed}} fr de {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
+            <b>🛈</b> {{i18n[locale].cart_discount_title}} {{getVendorDiscount(item).needed}} fr de {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
         </div>
         <div class="action left" [hidden]="!item.selected">
           <button (click)="remove(item,item.variant)"><mdc-icon>remove</mdc-icon></button> 
@@ -53,13 +53,13 @@
     </mdc-list-item>
     <mdc-list-item class="border-top">
       <mdc-list-item-meta>
-        <div class="info" i18n>Sous total</div>
+        <div class="info" i18n>{{i18n[locale].cart_info_subtotal}}</div>
         <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>      
     <mdc-list-item class="slim-item">
       <mdc-list-item-meta>
-        <div class="info" i18n>{{$i18n.label().cart_discount_info}}</div>
+        <div class="info" i18n>{{i18n[locale].cart_discount_info}}</div>
         <div class="price" >{{getTotalDiscount()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>      
@@ -71,14 +71,14 @@
   <!-- NOT LOGGED -->
   <div class="order-login" [hidden]="user.isAuthenticated()||!items.length">
       <section>
-        <h3 i18n>{{$i18n.label().cart_login}}</h3>
+        <h3 i18n>{{i18n[locale].cart_login}}</h3>
       </section>
 
       <button [routerLink]="['/store/'+store+'/me/login-or-register']" 
               class="style1 white"
               mdc-button
               unelevated="true"
-              mdcHeadline2>{{$i18n.label().cart_signin}}</button>
+              mdcHeadline2>{{i18n[locale].cart_signin}}</button>
 
   </div>
   
@@ -136,7 +136,7 @@
           </span>
         </div>
         <div class="card__secondary">
-          <div class="type">dépôt {{address.note}}</div>
+          <div class="type">{{i18n[locale].cart_collect}} {{address.note}}</div>
         </div>
       </mdc-card-primary-action>                      
     </mdc-card>      
@@ -150,7 +150,7 @@
         </mdc-card-media>
         <div class="card__primary">
           <span class="card__subtitle" i18n>
-              Ajouter ou modifier vos adresses
+            {{$i18n[locale].cart_address_add}} 
           </span>
         </div>
       </mdc-card-primary-action>                      
@@ -195,7 +195,7 @@
         </mdc-card-media>
         <div class="card__primary">
           <span class="card__subtitle" i18n>
-              Ajouter ou modifier vos méthodes de paiements
+            {{$i18n[locale].cart_payment_add}} 
           </span>
         </div>
       </mdc-card-primary-action>                      
@@ -207,52 +207,57 @@
     <div class="cart-flow flow-done">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
-   </section>
+   </section>  
 
     <!-- TAX & SHIPPING -->
     <mdc-list avatar="true" [interactive]="false">
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
-          <div class="info" i18n>Sous total pour {{$cart.getItems().length}} produits</div>
+          <div class="info" i18n>{{i18n[locale].cart_info_subtotal}} ({{$cart.getItems().length}})</div>
           <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>      
       
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
-          <div class="info">Livraison</div>
+          <div class="info">{{i18n[locale].cart_info_shipping}}</div>
           <div class="price" >{{$cart.shipping()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>
 
       <mdc-list-item >
         <mdc-list-item-meta>
-          <div class="info" i18n>Méthode de paiement ({{currentGatewayLabel()}}/{{currentGatewayFees()}} %)</div>
+          <div class="info" i18n>{{i18n[locale].cart_info_payment}} ({{currentGatewayLabel()}}/{{currentGatewayFees()}} %)</div>
           <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
         </mdc-list-item-meta>
       </mdc-list-item>
         
       <mdc-list-item  [hidden]="$cart.totalDiscount()==0">
         <mdc-list-item-meta>
-          <div class="info" i18n>Rabais</div>
+          <div class="info" i18n>{{i18n[locale].cart_info_discount}}</div>
           <div class="price" >{{$cart.totalDiscount()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>
             
       <mdc-list-item class="border-top">
         <mdc-list-item-meta (click)="showInfoAmount=!showInfoAmount">
-          <div class="info"><i class="material-icons">info</i>Total provisoire</div>
+          <div class="info"><i class="material-icons">info</i>{{i18n[locale].cart_info_total}}</div>
           <div class="price" >{{$cart.total()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>        
     </mdc-list>       
     <div class="amount-info" [hidden]="!showInfoAmount">
-      {{$i18n.label().cart_amount_1}} 
-      <b >{{$cart.total()*1.10|currency:'CHF'}} CHF</b>
-      {{$i18n.label().cart_amount_2}}
+      {{i18n[locale].cart_amount_1}} 
+      <b >{{$cart.total()*1.10|currency:'CHF'}}</b>
+      {{i18n[locale].cart_amount_2}}
     </div>
 
-
+    <!-- INFO SHIPPING NOTE -->
+    <div class="shipping-note">
+      <section class="header">{{$i18n[locale].user_address_note}}</section>
+      <input type="text" [(ngModel)]="shippingNote" />
+    </div>
+  
     <h3 class="primary-text" i18n>
       <span class="bold text-capitalize">{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</span>
       entre <b>{{shippingTime}}</b>
@@ -287,9 +292,11 @@
       
     <!-- ORDER FINAL ACTION -->
     <div>
-      <mdc-checkbox [(ngModel)]="cgAccepted"></mdc-checkbox>
-      <label i18n>J'ai lu et j'accepte <a href="javascript:;" [routerLink]="['/store',store,'content','conditions-generales-de-vente']">les conditions générales de vente</a></label>  
+      <mdc-checkbox [(ngModel)]="cgAccepted" style="transform:translateY(9px)"></mdc-checkbox>
+      <label i18n class="link">        
+        <a href="javascript:;" class="link"
+           [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{i18n[locale].cart_cg}}</a></label>  
     </div>
-    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >Commander maintenant</button>    
+    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{i18n[locale].cart_order}}</button>    
   </div>
 </div>

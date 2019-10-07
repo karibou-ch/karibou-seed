@@ -185,10 +185,10 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     }
     this.$document.remove(this.document.slug[0],password).subscribe(
       ()=>{
-        this.$snack.open(this.$i18n.label().save_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
+        this.$snack.show(this.$i18n.label().save_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
         this.$router.navigate(['../']);
       },
-      err=>this.$snack.open(err.error)
+      err=>this.$snack.show(err.error)
     )
   }
   
@@ -242,7 +242,7 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
   onDialogOpen(dialog){
     dialog.done(dlg=>{
       if(dlg.state()=='rejected'){
-        this.$snack.open(this.$i18n.label().img_max_sz,"OK")
+        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
       }
     })
   }
@@ -256,7 +256,7 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     this.create=false;
     this.edit.lastupdate=Date.now();
     if(displaySnack){
-      this.$snack.open(this.$i18n[this.locale].save_ok);
+      this.$snack.show(this.$i18n[this.locale].save_ok);
     }
     if(closeAfter){
       this.$router.navigate(['../'],{ relativeTo: this.$route });

@@ -17,7 +17,6 @@ export class KngFooterComponent implements OnInit {
     this.main(config);
   }
 
-  locale:string;
   content:any;
   store:string;
     
@@ -27,8 +26,6 @@ export class KngFooterComponent implements OnInit {
     private $navigation:KngNavigationStateService,
     private $route:ActivatedRoute,
   ){
-    // init current locale
-    this.locale=this.$i18n.locale;
 
     //
     // initialize loader
@@ -42,6 +39,10 @@ export class KngFooterComponent implements OnInit {
 
   ngOnInit() {
     this.store=this.$navigation.store;
+  }
+
+  get locale(){
+    return this.$i18n.locale;
   }
 
   getFooter(key){

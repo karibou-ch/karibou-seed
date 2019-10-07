@@ -17,26 +17,34 @@ export class KngFeedbackComponent implements OnInit {
 
   i18n:any={
     fr:{
+      title_order_prepare:"Votre commande est en cours de préparation pour",
       title_order_open:"Vous avez une commande en cours ...", 
+      title_order_shipping:"La livraison est prévue chez",
       title_order_cancel:"la commande a été annulée ", 
+      title_evaluation:"Votre évaluation:",
       title_evaluation_quick:"Évaluation rapide:", 
       title_evaluation_save:"Enregistrer l'évaluation:", 
       title_issue_question:"Un souci avec un article?", 
       title_issue_hub:"Si vous souhaitez faire un commentaire plus général c'est ici", 
       title_issue_title:"Vous avez eu un problème avec un produit?", 
       title_issue_header:"<br/>Nous sommes désolés! mais quand ça arrive, on vous rembourse toujours!\n<br/>Sélectionnez les articles ci-dessous et informé l'artisan.",
-      title_issue_send:"Envoyer le Feedback !"
+      title_issue_send:"Envoyer le Feedback !",
+      form_text_label:"Note concernant le service?"
     },
     en:{
+      title_order_prepare:"You order is being prepared for",
+      title_order_shipping:"Delivery is expected at",
       title_order_open:"You have a pending order",
       title_order_cancel:"Your order has been cancelled",
+      title_evaluation:"Your rating:",
       title_evaluation_quick:"Quick rating",
       title_evaluation_save:"Save your rating",
       title_issue_question:"An issue with your order ?",
       title_issue_title:"Did you have an issue with an item ?",
       title_issue_header:"<br/>We are really sorry but don't worry you will get your money back!\n<br/>select the issues, the maker will be informed",
-      title_issue_hub:"If you have more general comment please write here",
-      title_issue_send:"Send your Feedback !"
+      title_issue_hub:"If you have a more general comment please write here",
+      title_issue_send:"Send your Feedback !",
+      form_text_label:"Add a comment about our service"
     }
   }
 

@@ -1,7 +1,7 @@
 <div class="user-container">
   <section>
       <h1 class="text-capitalize">{{user.display()}}</h1>      
-      <div class="title" i18n>Membre depuis le {{user.created|date:'mediumDate'}}</div>
+      <div class="title" i18n>{{i18n[locale].profile_title}} {{user.created|date:'MMM d, y':'':$i18n.locale}}</div>
       <p class="resume ">
         <!-- 34 commandes, 5 problèmes, X X X X -->
         &nbsp;
@@ -9,7 +9,7 @@
           <mdc-icon>person</mdc-icon>Fermer votre session
         </button> -->
         <a href="javascript:;" (click)="doLogout()" style="float:left" class="text-primary-dark" i18n>        
-          Fermer votre session
+          {{$i18n[locale].user_logout}}
         </a>
           
       </p>
@@ -27,20 +27,20 @@
           <!-- mdcRouter -->          
     <mdc-tab [routerLink]="['./orders']"
               routerLinkActive #rla="routerLinkActive">
-        Commandes
+              {{i18n[locale].profile_order}}
     </mdc-tab>
     <mdc-tab [routerLink]="['./reminder']"
               routerLinkActive #rla="routerLinkActive">
-        Souscription
+              {{i18n[locale].profile_reminder}} 
     </mdc-tab>
 
     <mdc-tab [routerLink]="['./email']"
               routerLinkActive #rla="routerLinkActive">
-        Compte
+              {{i18n[locale].profile_account}} 
     </mdc-tab>
     <mdc-tab [routerLink]="['./password']"
               routerLinkActive #rla="routerLinkActive">
-        mot-de-passe
+              {{i18n[locale].profile_password}} 
     </mdc-tab>
     </mdc-tab-scroller>
   </mdc-tab-bar>

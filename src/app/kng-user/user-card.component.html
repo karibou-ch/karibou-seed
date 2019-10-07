@@ -1,9 +1,9 @@
 <div>
   <h2 mdc-typography-title i18n [hidden]="!user.payments.length" i18n>
-    Vos méthodes de paiement
+    {{i18n[locale].title_header}} 
   </h2>
   <p class="help-block" i18n>
-    Sélectionner pour éditer
+    {{i18n[locale].title_edit}} 
   </p>
   <mdc-list   twoLine>
       <mdc-list-item *ngFor="let payment of user.payments" 
@@ -16,7 +16,7 @@
         <mdc-list-item-text >             
             <span>{{issuer[payment.issuer].label}}</span>                 
             <button [disabled]="isLoading" [hidden]="!isSelectedPayment(payment)" mdc-button [outlined]="true" (click)="onDelete(payment)">
-              Supprimer</button>
+              {{$i18n[locale].action_del}}</button>
             <mdc-list-item-secondary>
                 {{payment.number}}
                 <div class="error" [hidden]="!payment.error">{{payment.error}}</div>
@@ -29,19 +29,19 @@
   </mdc-list>
   <div class="breaker small"></div>
   <h2 mdc-typography-title i18n  i18n [hidden]="!user.isReady()">
-      Ajouter une méthode de paiement
+    {{i18n[locale].action_add}}
   </h2>
     
   
   <form novalidate (ngSubmit)="onPayment()" [formGroup]="stripe" class="stripe-component">
-    <mdc-text-field i18n-label label="Nom & Prénom" style="width:100%" type="text" 
+    <mdc-text-field i18n-label [label]="$i18n[locale].user_display_name" style="width:100%" type="text" 
                     [hidden]="!user.isReady()"
                     formControlName="name" [ngModel]="user.display()">
     </mdc-text-field>
 
     <div id="card-element" class="field"></div>
     <button type="submit" [disabled]="isLoading||!isValid" i18n>
-      Enregistrer
+      {{$i18n[locale].action_save}}
     </button>
   </form>      
 </div>

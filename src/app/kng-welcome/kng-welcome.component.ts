@@ -26,6 +26,14 @@ export class KngWelcomeComponent implements OnInit {
   ),`;
 
 
+  i18n:any={
+    fr:{
+    },
+    en:{
+    }
+  }
+
+
   stores=[
     {title:"Genève",name:"geneve",image:"http://www.davidfraga.ch/blog/wp-content/uploads/cathedraleStPierre_vignette.jpg"},
     {title:"Fribourg",name:"fribourg",image:"https://img.myswitzerland.com/mys/n64489/images/buehne/st0034724_fribourg.jpg"},
@@ -47,6 +55,18 @@ export class KngWelcomeComponent implements OnInit {
     })
   }
 
+  get locale(){
+    return this.$i18n.locale;
+  }
+
+  _(id){
+    return this.$i18n[this.locale][id];
+  }
+
+
+  doLangSwitch(){
+    this.$i18n.localeSwitch();
+  }
   getTagline(key){
     if(!this.config||!this.config.shared.home.tagLine[key]){
       return;

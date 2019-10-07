@@ -52,35 +52,56 @@ var golbalVersion = (function(){
 
   // 
   // please upgrade
-  if(golbalVersion[1]<shouldUpgrade[golbalVersion[0]]){
-    block.style.display='block';
-    version.innerHTML=golbalVersion.join(' ');
-    setTimeout(function(){
-      window['_kmq']&&window['_kmq'].push(['record', 'metric_error_browser', {
-        browser:golbalVersion[0],
-        version:golbalVersion[1]
-      }]);  
-    },1500);
-  }
+//   if(golbalVersion[1]<shouldUpgrade[golbalVersion[0]]){
+//     block.style.display='block';
+//     version.innerHTML=golbalVersion.join(' ');
+//     setTimeout(function(){
+//       window['_kmq']&&window['_kmq'].push(['record', 'metric_error_browser', {
+//         browser:golbalVersion[0],
+//         version:golbalVersion[1]
+//       }]);  
+//     },1500);
+//   }
+// })();
 
+if(window.location.origin.indexOf('karibou.ch')>-1){
+  //
+  // GA
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * (new Date()); a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-})();
+  //
+  // FB
+  (function (f, b, e, v, n, t, s) {
+    if (f.fbq) return; n = f.fbq = function () {
+      n.callMethod ?
+      n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+    }; if (!f._fbq) f._fbq = n;
+    n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+    t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+  })(window,
+    document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');    
+}
 
 //
 // load metrics
-(function(){
-  var _kmk = _kmk || 'b86f4d476760eff81deae793f252b30c49d3dee2';
-  function _kms(u){
-    setTimeout(function(){
-      var d = document, f = d.getElementsByTagName('script')[0],
-      s = d.createElement('script');
-      s.type = 'text/javascript'; s.async = true; s.src = u;
-      f.parentNode.insertBefore(s, f);
-    }, 1);
-  }
-  _kms('//i.kissmetrics.com/i.js');
-  _kms('//scripts.kissmetrics.com/' + _kmk + '.2.js');
-})();
+// (function(){
+//   var _kmk = _kmk || 'b86f4d476760eff81deae793f252b30c49d3dee2';
+//   function _kms(u){
+//     setTimeout(function(){
+//       var d = document, f = d.getElementsByTagName('script')[0],
+//       s = d.createElement('script');
+//       s.type = 'text/javascript'; s.async = true; s.src = u;
+//       f.parentNode.insertBefore(s, f);
+//     }, 1);
+//   }
+//   _kms('//i.kissmetrics.com/i.js');
+//   _kms('//scripts.kissmetrics.com/' + _kmk + '.2.js');
+// })();
 
 
 //

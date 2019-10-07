@@ -131,7 +131,8 @@
         margin: 10px 70px;  
         margin-bottom: 20px;
         @media (max-width: 426px) {
-          margin: 0 30px;
+          margin: 0 10px;
+          margin-top: -30px;
         }
       }
 
@@ -194,6 +195,16 @@
         .singup-vs-login{
           margin: 0;
           font-size: inherit;  
+        }
+
+        .i18n-switch{
+          padding: 5px;
+          span{
+            cursor: pointer;
+            color: #da1c5c;
+            border-bottom: 1px dotted #da1c5c;
+            font-size: 14px;            
+          }          
         }
         
       } 

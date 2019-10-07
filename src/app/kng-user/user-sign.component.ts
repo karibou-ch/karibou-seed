@@ -53,13 +53,48 @@ export class UserSignComponent {
 
 
   i18n:any={
-    login_ok:"Merci, vous êtes dès maintenant connecté",
-    login_ko:"L'utilisateur ou le mot de passe est incorrect",
-    password_change_ok:"Votre mot de passe à été modifié",
-    profil_ok:"Profil enregistré",
-    register_ok:"Votre compte à été créé! Une demande de confirmation vous a été envoyée à votre adresse email",
-    recover_ok:"Merci, une information a été envoyé à votre adresse email",
-    validate_mail_ok:"Votre adresse email à été validée!"
+    fr:{
+      action_reset:"Réinitialiser",
+      login_title:"Identifiez-vous avec votre email",
+      login_why:`Une fois identifié, vous aurez une meilleure expérience du marché en ligne 😉`,
+      login_create_account:"Je n'ai pas de compte",
+      login_forgot_password:"J'ai oublié mon mot de passe",
+      login_reset_password:"Réinitialisez votre mot de passe",
+      login_wait_msg:"L'envoi peut prendre quelques minutes",
+      login_back_login:"J'ai déjà un compte",
+      login_ok:"Merci, vous êtes maintenant connecté",
+      login_ko:"L'utilisateur ou le mot de passe est incorrect",
+      login_skip:"Je ne souhaite pas m'identifier, je veux visiter le marché",
+      signup_create:"Créer votre compte",
+      signup_phone:"Le téléphone est essentiel pour pouvoir vous contacter lors d'une commande",
+      password_change_ok:"Votre mot de passe à été modifié",
+      profil_ok:"Profil enregistré",
+      register_ok:"Votre compte à été créé! Une demande de confirmation vous a été envoyée à votre adresse email",
+      recover_ok:"Merci, une information a été envoyé à votre adresse email",
+      validate_mail_ok:"Votre adresse email à été validée!"  
+    },
+    en:{
+      action_reset:"Reset",
+      login_title:"Use email to Sign in",
+      login_why:`Identified user will have a better experience of the marketplace 😉`,
+      login_create_account:"New to karibou? Sign up",
+      login_forgot_password:"Forgot password?",
+      login_reset_password:"We’ll send you an email to help you reset it",
+      login_wait_msg:"Sending may take a few minutes",
+      login_back_login:"Already have an account? Sign in",
+      login_ok:"1000 Thanks, you are now connected",
+      login_ko:"Username or password are not correct",
+      login_skip:"I want to skip the identification to visit the food store",
+      signup_create:"Continue",
+      signup_phone:"The phone is mandatory to contact you when ordering",
+
+      password_change_ok:"Votre mot de passe à été modifié",
+      profil_ok:"Profil enregistré",
+      register_ok:"Votre compte à été créé! Une demande de confirmation vous a été envoyée à votre adresse email",
+      recover_ok:"Merci, une information a été envoyé à votre adresse email",
+      validate_mail_ok:"Votre adresse email à été validée!"  
+    }
+
   }
   
 
@@ -143,6 +178,10 @@ export class UserSignComponent {
     this.updateState();
   }
 
+  get locale(){
+    return this.$i18n.locale;
+  }
+
   //
   // if not address or payment
   // - check is user as a valid address
@@ -196,13 +235,23 @@ export class UserSignComponent {
 
   //@HostListener('document:click')
   onBack(){    
-    if(this.mandatory.referrer){
-      this.$router.navigate([this.mandatory.referrer])
+    let referrer = this.$route.snapshot.queryParams["referrer"];
+
+
+    if(referrer){
+      return this.$router.navigate([referrer])
     }
+
+    if(this.mandatory.referrer){
+      return this.$router.navigate([this.mandatory.referrer])
+    }
+
 
     if(document['referrer']){
       return this.$location.back();
     }
+
+
 
     //
     // last case, HOME
@@ -269,15 +318,13 @@ export class UserSignComponent {
     this.$user.register(user).subscribe(
       (user)=>{
         this.$snack.show(this.$i18n.label().user_register_ok,this.$i18n.label().thanks,{
-          timeout:8000,
-          multiline:true
+          timeout:9000, multiline:true
         });        
         this.onBack();        
       },
       (err)=>{
         this.$snack.show(err.error,this.$i18n.label().thanks,{
-          timeout:8000,
-          multiline:true
+          timeout:9000, multiline:true
         })
       }
     )

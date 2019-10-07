@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { Config, ConfigService, CartAction } from 'kng2-core';
+import { MdcSnackbarConfig } from '@angular-mdc/web';
+
 
 /**
  * 
@@ -10,27 +12,23 @@ import { Config, ConfigService, CartAction } from 'kng2-core';
 })
 export class i18n  {
 
-  public snackOpt={
-    timeout:3500,
-    actionOnBottom:true,
-    multiline:true
+  public snackOpt:MdcSnackbarConfig={
+    timeout:5000
   }
 
 
   public fr:any={
-    action_ko:"À, Corriger!",
+    action_ko:"À, corriger!",
     action_save:"Enregistrer",
-    cart_discount_info:"Rabais livraison",
-    cart_discount:"rabais quantité",
-    cart_discount_title:"rabais à partir de ",
-    cart_signin:"Finaliser la commande",
-    cart_login:"Pour finaliser votre commande, vous devez vous connecter",
-    cart_empty:"Votre panier est vide",
-    cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",
-    cart_amount_2:"pour permettre des modifications de commande (prix au poids, ou ajout de produits).",
-    cart_nextshipping:"Prochaine livraison",
-    cart_payment_not_available:"Cette méthode de paiement n'est plus disponible",
+    action_del:"Supprimer",
+    action_cancel:"Annuler",
+    action_lang_switch:"switch into English",
+    action_error_reload:"Zut, un problème est survenu lors du chargement de la page. Réessayez?",    
+    cart_address_add: "Ajouter ou modifier vos adresses",
+    cart_payment_add: "Ajouter ou modifier vos méthodes de paiements",
+    home_feedback_title:"Comment était votre dernière commande?",
     nav_account:"Votre compte",
+    nav_i18n:"Changer de langue (BETA)",
     nav_login:"Connectez-vous",
     nav_login2:"Login",
     nav_shipping:"Prochaines livraison",
@@ -46,7 +44,18 @@ export class i18n  {
     user_login_ok:"Bienvenue !",
     user_register_ok:"Votre compte a été créé",
     user_recover_ok:"Un nouveau mot de passe à été envoyé",
-    password  :"Confirmer votre mot de passe",
+    user_logout:"Fermer votre session",
+    user_name:"Votre nom",
+    user_firstname:"Votre prénom",
+    user_display_name:"Nom & Prénom",
+    user_phone:"Téléphone (mobile)",
+    user_email:"Votre email",
+    user_password:"Mot de passe",
+    user_password_old:"Votre ancien mot de passe",
+    user_password_new:"Votre nouveau mot de passe",
+    user_repassword:"Confirmer votre mot de passe",
+    user_confirm_password:"Confirmer avec votre mot de passe",
+    user_address_note:"Note au livreur, code, autres remarques",
     delete_ok :'Suppression effectuée',    
     modify_ok :'Modification effectuée',    
     save_ok   :'Sauvegarde effectuée',
@@ -59,16 +68,15 @@ export class i18n  {
   public en:any={
     action_ko:"Retry!",
     action_save:"Save!",
-    cart_discount:"discount",
-    cart_discount_info:"Vendor delivery discount ",
-    cart_discount_title:"rabais livraison à partir de ",
-    cart_signin:"Sign In!",
-    cart_login:"Please sign in before the checkout",
-    cart_empty:"Your cart is empty",
-    cart_amount_1:"Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de",
-    cart_amount_2:"pour permettre des modifications de commande (prix au poids, ou ajout de produits).",
-    cart_nextshipping:"Next delivery",
+    action_del:"Delete",
+    action_cancel:"Cancel",
+    action_lang_switch:"basculer en français",    
+    action_error_reload:"Ooops, there was a problem loading, try again?",    
+    home_feedback_title:"How was your last order ?",
+    cart_address_add: "Add or modify your shipping address",
+    cart_payment_add: "Add or modify payment methods",
     nav_account:"Your account",
+    nav_i18n:"Choose language (BETA)",
     nav_login:"Sign in",
     nav_login2:"Login",
     nav_shipping:"Next delivery",
@@ -83,9 +91,20 @@ export class i18n  {
     user_confirmation_mail:"Thanks, we just sent an email confirmation ",
     user_login_ko:"Ooops, we dont know who you are...",
     user_login_ok:"Welcome !",
+    user_logout:"Close your session",
     user_register_ok:"Yeah, your accout is almost ready!",
     user_recover_ok:"A new password just be sent",
-    password  :"Confirm your password",
+    user_name:"Name",    
+    user_firstname:"First name",
+    user_display_name:"Name & first name",
+    user_phone:"Your phone (mobile)",
+    user_email:"Your email",
+    user_password:"Your password",
+    user_password_old:"Your current password",
+    user_password_new:"Your new password",
+    user_repassword:"Confirm your password",
+    user_confirm_password:"Confirm with your password",
+    user_address_note:"Note to the deliveryman, door code, or other remarks",
     delete_ok :'Deleted',    
     modify_ok :'Updated',    
     save_ok   :'Save done!',
@@ -107,12 +126,22 @@ export class i18n  {
   constructor(
     private $config:ConfigService
   ) { 
-    // this.currentLocale=this.$config.locale||'fr';
-    // if(this.currentLocale.indexOf('en-')>-1){
-    //   this.currentLocale='en';
-    // }
-    this.currentLocale='fr';
+    this.currentLocale=this.$config.locale||'fr';
+    if(this.currentLocale.indexOf('en-')>-1){
+      this.currentLocale='en';
+    }
+    if(this.currentLocale.indexOf('fr-')>-1){
+      this.currentLocale='fr';
+    }
+    //
+    // FIXME currentLocale fr-CH should be managed on kng2-core
+    // FIXME unit test currentLocale with all possible locale
+    // force default
+    if(['en','fr'].indexOf(this.currentLocale)==-1){
+      this.currentLocale='fr';
+    }
 
+    console.log('---i18n',navigator.language || navigator['userLanguage'],this.$config.locale);
     // FIXME subscribe to config
     // this.$config.subscribe((config:Config)=>{
     //   this.config=config;
@@ -135,6 +164,9 @@ export class i18n  {
     return elem[this.currentLocale];
   }
 
+  localeSwitch(){
+    this.locale=(this.locale=='fr')?'en':'fr';
+  }
 
   set locale(lang:string){
     this.$config.locale=lang;
@@ -145,6 +177,8 @@ export class i18n  {
     
     return this.currentLocale;
   }
+
+
 
 
 

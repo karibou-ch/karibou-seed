@@ -10,6 +10,8 @@ import { IsAuthenticatedGard,
 import { i18n } from './i18n.service';
 import { MetricsService } from './metrics.service';
 
+import { KngHttpInterceptorService } from './kng-http-interceptor.service';
+
 import { CommonMdcModule } from './common.mdc.module';
 
 // import {
@@ -19,6 +21,7 @@ import { CommonMdcModule } from './common.mdc.module';
 import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 
 import { RouterModule } from '@angular/router';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -44,6 +47,7 @@ export class KngCommonModule {
     return {
       ngModule: KngCommonModule,
       providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: KngHttpInterceptorService, multi: true },
         MetricsService,
         i18n,
         KngNavigationStateService,

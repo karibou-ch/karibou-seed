@@ -104,6 +104,14 @@
     <mdc-list-item class="config">
       <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
       <mdc-list-item-text>
+        <mdc-text-field fullwidth i18n-label label="Translate public key" type="text" [(ngModel)]="config?.shared.keys.pubTranslate">
+        </mdc-text-field>
+      </mdc-list-item-text>
+    </mdc-list-item>
+
+    <mdc-list-item class="config">
+      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+      <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Github public key" type="text" [(ngModel)]="config?.shared.keys.pubGithub">
         </mdc-text-field>
       </mdc-list-item-text>

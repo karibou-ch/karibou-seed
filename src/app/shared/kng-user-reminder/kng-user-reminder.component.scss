@@ -1,33 +1,42 @@
-kng-user-reminder{
+:host{
   display: block;
   margin-left: -6px;
   @media (max-width:425px) {
     width: 100vw;    
   }
-  color: #333;
+  color: #333;  
+}
 
-  .mdc-radio__outer-circle,
-  .mdc-radio__inner-circle{
-    border-color: var(--mdc-theme-primary)!important;
-  }
-
-  div.title{
-    padding: 15px;
-    cursor: pointer;
-    background-color: rgba(20, 17, 68, 0.1);
-  }
-  div.content{
-    display: flex;
-    flex-flow: column;
+div.title{
+  padding: 15px;
+  cursor: pointer;
+  background-color: rgba(20, 17, 68, 0.1);
+}
+div.content{
+  display: flex;
+  flex-flow: column;
+  margin: 0;
+  border-bottom: 1px solid var(--mdc-theme-primary);
+  mdc-radio-group{
+    width: 100%;
     margin: 0;
-    border-bottom: 1px solid var(--mdc-theme-primary);
-    mdc-radio-group{
-      width: 100%;
-      margin: 0;
-      margin-top: 10px;  
-      flex: 0 0 100%;
-    }
+    margin-top: 10px;  
+    flex: 0 0 100%;
+  }
+
+  h4,
+  button{
+    margin: 10px;
+  }
   
-  }  
-  
+}  
+
+.mdc-radio__outer-circle,
+.mdc-radio__inner-circle{
+  border-color: var(--mdc-theme-primary)!important;
+}
+
+.mdc-radio__background,
+.mdc-checkbox__background{
+  background-color: #eee!important;
 }

@@ -22,8 +22,25 @@ export class UserProfileComponent implements OnInit {
   user:User;
   isReady:boolean;
 
+  i18n:any={
+    fr:{
+      profile_title:"Membre depuis le",
+      profile_order:"Commandes",
+      profile_reminder:"Alarme",
+      profile_account:"Compte",
+      profile_password:"mot-de-passe",
+    },
+    en:{
+      profile_title:"Member since",
+      profile_order:"Orders",
+      profile_reminder:"Reminder",
+      profile_account:"Account",
+      profile_password:"Security"
+    }
+  }
+
   constructor(
-    private $i18n: i18n,
+    public  $i18n: i18n,
     private $loader: LoaderService,
     private $user: UserService,
     private $route:ActivatedRoute,
@@ -44,6 +61,10 @@ export class UserProfileComponent implements OnInit {
   doLogout(){
     this.$user.logout().pipe(debounce(() => timer(300)))
       .subscribe(()=>this.$router.navigate(['../'],{relativeTo: this.$route}))
+  }
+
+  get locale(){
+    return this.$i18n.locale;
   }
 
   ngOnInit() {

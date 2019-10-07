@@ -24,9 +24,10 @@ export class UserEmailComponent {
   $profile:FormGroup;
   isLoading:boolean;
   phone:string;
+  locale:string;
   
   constructor(
-    private $i18n:i18n,
+    public  $i18n:i18n,
     private $fb: FormBuilder,
     private $user:UserService,
     private $route:ActivatedRoute,
@@ -62,6 +63,10 @@ export class UserEmailComponent {
     //[ngModelOptions]="{updateOn: 'blur'}"
   }
 
+  ngOnInit(){
+    this.locale=this.$i18n.locale;
+  }
+
 
   //
   // entry poiont
@@ -80,11 +85,11 @@ export class UserEmailComponent {
 
     let locale=this.$i18n.locale;
     this.$user.save(update).subscribe(
-      ()=>this.$snack.open(
+      ()=>this.$snack.show(
         this.$i18n.label().modify_ok,
         this.$i18n.label().thanks,this.$i18n.snackOpt
       ),
-      err=>this.$snack.open(err.error)
+      err=>this.$snack.show(err.error)
     );
   }
 }

@@ -17,7 +17,7 @@
           (input)="doInput($event.target.value)"
           (change)="doInput()" 
           (focus)="onFocus()" 
-          placeholder="Rechercher" #search>    
+          [placeholder]="i18n[locale].search_placeholder" #search>    
     <i class="right material-icons" [hidden]="!hasSearch()" (click)="doClear()">close</i>
   </div>  
 

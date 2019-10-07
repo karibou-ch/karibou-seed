@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
 import { Utils } from 'kng2-core';
 import { MetricsService } from './common/metrics.service';
 
@@ -33,7 +32,8 @@ export class AppComponent {
     //   });  
     // }
 
-
+    //
+    // init metric/funnel service
     this.$mterics.init();
     
 
@@ -44,5 +44,6 @@ export class AppComponent {
     //     }
     //   });
     // }
+
   }
 }

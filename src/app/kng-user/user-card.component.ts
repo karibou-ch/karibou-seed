@@ -6,6 +6,7 @@ import { User,
 
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { StripeService, Elements, ElementsOptions, TokenResult } from 'ngx-stripe';
+import { i18n } from '../common';
 
 
 export interface PaymentEvent{
@@ -30,7 +31,16 @@ export class CardComponent {
 
   i18n:any={
     fr:{
-      create_ok:"Votre méthode de paiement a été enregistrée"
+      title_header:"Vos méthodes de paiement",
+      title_edit:"Sélectionner une méthode pour l'éditer",
+      action_add:"Ajouter une méthode de paiement",
+      action_create_ok:"Votre méthode de paiement a été enregistrée",
+    },
+    en:{
+      title_header:"Your payment methods",
+      title_edit:"Select payment method you want to edit",
+      action_add:"Add a new payment method",
+      action_create_ok:"Your payment method has been saved",
     }
   }
 
@@ -95,6 +105,7 @@ export class CardComponent {
   }
 
   constructor(
+    public  $i18n:i18n,
     private $fb: FormBuilder,
     private $stripe: StripeService,
     private $user:UserService
@@ -108,9 +119,21 @@ export class CardComponent {
     this.isLoading=false;
   }
 
+  get locale(){
+    let locale=this.$i18n.locale;
+    switch(locale){
+      case 'fr':
+      this.elementsOptions.locale='fr';
+      break;
+      default:  
+      this.elementsOptions.locale='en';
+    }
+    return locale;
+  }
   //
   // entry point
   main(config:Config){
+    let locale=this.locale;
     //
     // set the stripe key
     this.$stripe.setKey(config.shared.keys.pubStripe);

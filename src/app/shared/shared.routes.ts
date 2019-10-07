@@ -35,7 +35,9 @@ export const appRoutes: Routes = [
   { path: 'admin', loadChildren: '../kng-admin/admin.module#AdminModule'  },
   { path: 'cart',  loadChildren: '../kng-cart/kng-cart.module#KngCartModule'   },
   { path: 'home', component:KngHomeComponent,resolve:{ loader:LoaderResolve },children:[
+    { path: 'products/:sku/:title', component: ProductComponent},
     { path: 'products/:sku', component: ProductComponent},
+    { path: 'products', pathMatch: 'full', redirectTo: '/store/geneva/home'  },
     { path: 'category/:category/:child', component: ProductListComponent},
     { path: 'category/:category', component: ProductListComponent},
     { path: 'category', pathMatch:'full', redirectTo:'' },

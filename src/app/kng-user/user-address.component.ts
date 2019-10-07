@@ -7,7 +7,7 @@ import { LoaderService,
          Config,
          Utils} from 'kng2-core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { KngUtils } from '../common';
+import { KngUtils, i18n } from '../common';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -34,6 +34,29 @@ export class AddressComponent {
   @Input() action:boolean;
   @Input() set config(config:Config){
     this.main(config);
+  }
+
+  i18n:any={
+    fr:{
+      list_title:"Vos adresses actives",
+      list_select:"Sélectionner une adresse pour l'éditer",
+      list_add:"Ajouter une adresse de livraison ci-dessous",
+      address_street:"Adresse",
+      address_floor:"Étage",
+      address_postalcode_title:"Aujourd'hui nous livrons uniquement les code postaux proposés.",
+      address_postalcode:"Code postal",
+      address_region:"Région",
+    },
+    en:{
+      list_title:"Your active shipping addresses",
+      list_select:"Select an address for edition",
+      list_add:"Below add a new shipping address",
+      address_street:"Street, number",
+      address_floor:"Floor",
+      address_postalcode_title:"Today we deliver only the postal codes below.",
+      address_postalcode:"Postal code",
+      address_region:"Region",
+    }
   }
 
   addresses=[
@@ -63,6 +86,7 @@ export class AddressComponent {
   // utiliser l'api 
   // https://tel.search.ch/api/help.fr.html
   constructor(
+    public  $i18n:i18n,
     private $fb: FormBuilder,
     private $http:HttpClient,
     private $user:UserService
@@ -80,6 +104,10 @@ export class AddressComponent {
     //[ngModelOptions]="{updateOn: 'blur'}"
   }
 
+
+  get locale(){
+    return this.$i18n.locale;
+  }
 
   //
   // entry poiont

@@ -36,28 +36,20 @@
         <mdc-list-item [hidden]="!beforeinstallprompt" (click)="installApp()">
           <mdc-icon mdcListItemGraphic class="pink">get_app</mdc-icon><span i18n>{{$i18n.label().nav_installapp}}</span>
         </mdc-list-item>
+        <mdc-list-divider></mdc-list-divider>
+        <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_i18n}}</h3>
+        <mdc-list-item>
+          <mdc-icon mdcListItemGraphic>language</mdc-icon>
+          <mdc-radio class="radio-primary" value="en" [checked]="$i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>En
+          <mdc-radio class="radio-primary" value="fr" [checked]="$i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>Fr
+        </mdc-list-item>
+
 
       </mdc-list>
     </mdc-list-group>
     <!-- ADMIN -->
     <mdc-list-group class="admin" [hidden]="!$navigation.isAdmin">
       <mdc-list>
-        <mdc-list-item>
-          <mdc-icon mdcListItemGraphic>loop</mdc-icon>
-          <div>
-            <!-- FIXME <mdc-radio-group [(ngModel)]="$i18n.locale">
-              <mdc-form-field>
-                <mdc-radio class="radio-primary" value="en"  (change)="onLang($event,'en')" ></mdc-radio>
-                <label>En</label>
-              </mdc-form-field>
-              <mdc-form-field>
-                <mdc-radio class="radio-primary" value="fr"  (change)="onLang($event,'fr')" ></mdc-radio>
-                <label>Fr</label>
-              </mdc-form-field>
-            </mdc-radio-group>       -->
-          </div>
-        </mdc-list-item>
-
         <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader>Administration</h3>
         <h6 mdcListGroupSubheader>Config</h6>
@@ -77,7 +69,7 @@
     <mdc-top-app-bar-row [hidden]="$navigation.isMobile()">
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
-        <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="">menu</mdc-icon>
+        <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="home">menu</mdc-icon>
         <mdc-top-app-bar-title class="home" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section>

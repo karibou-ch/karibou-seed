@@ -5,18 +5,17 @@ import { Component,
          ViewEncapsulation,
          ChangeDetectionStrategy,
          ChangeDetectorRef,
-         NgZone } from '@angular/core';
+         NgZone, 
+         HostListener} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ProductService,
   Product,
-  LoaderService,
   User,
   Category,
-  CategoryService,
-  config,
-  Shop
+  Shop,
+  CartService
 } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -59,19 +58,22 @@ export class ProductListComponent implements OnInit {
   childSub;
   relative:string="./";
 
-  options = {
-    available: true,
-    status: true,
+  options:{
+    available:boolean;
+    status:boolean;
+    when:Date|boolean;
+    reload?:number;
+  }={
+    available:true,
+    status:true,
     when:true
-  };
+  };  
 
   constructor(
-    private $loader: LoaderService,
+    private $cart:CartService,
     private $product: ProductService,
-    private $category: CategoryService,
     private $router: Router,
     private $route: ActivatedRoute,
-    private zone:NgZone,
     private cdr: ChangeDetectorRef
   ) {
     this.cache={
@@ -97,7 +99,10 @@ export class ProductListComponent implements OnInit {
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-    this.childSub.unsubscribe();
+    if(this.childSub){
+      this.childSub.unsubscribe();
+    }
+    
   }
 
   ngOnInit() {
@@ -126,11 +131,12 @@ export class ProductListComponent implements OnInit {
     // DIALOG INIT HACK 
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
+    this.dialog.nativeElement.classList.remove('fadeout');
+  }
 
-    this.dialog.nativeElement.classList.remove('fadeout')
-
-
-
+  @HostListener('document:keyup.escape', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    this.onClose(this.dialog);    
   }
 
   getChildCategory(category:Category){
@@ -167,34 +173,35 @@ export class ProductListComponent implements OnInit {
 
 
   loadProducts() {
+
+    this.options.when=this.$cart.getCurrentShippingDay();
+
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
-      this.zone.run(() => {
-        this.products = products.sort(this.sortProducts);
-        //
-        // select first child category
-        //this.subcategory.chips.filter(elem=>true)[0].selected=true;
+      this.products = products.sort(this.sortProducts);
+      //
+      // select first child category
+      //this.subcategory.chips.filter(elem=>true)[0].selected=true;
 
-        //
-        // update child only after products 
-        // TODO     .pipe(takeWhile(() => !this.destroyed))
+      //
+      // update child only after products 
+      // TODO     .pipe(takeWhile(() => !this.destroyed))
 
-        this.childSub=this.$route.params.subscribe(param=>{
-          if(param['child']){
-            this.relative='../';
-            this.toggleChild(param['child']);
-          }
-          else if(this.category.current.child[0]){
-            this.relative='./';
-            this.toggleChild(this.category.current.child[0].name)    
-          }
-        });
-    
-
-        //
-        // set vendors after toggle of child category
-        this.setVendors(this.products);  
-        this.cdr.markForCheck();
+      this.childSub=this.$route.params.subscribe(param=>{
+        if(param['child']){
+          this.relative='../';
+          this.toggleChild(param['child']);
+        }
+        else if(this.category.current.child[0]){
+          this.relative='./';
+          this.toggleChild(this.category.current.child[0].name)    
+        }
       });
+  
+
+      //
+      // set vendors after toggle of child category
+      this.setVendors(this.products);  
+      this.cdr.markForCheck();
     });
   }
 

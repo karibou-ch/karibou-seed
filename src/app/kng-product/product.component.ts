@@ -116,8 +116,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // FIXME should not be possible  
     if(!product.variants){
-
+      console.log('DEBUG variation hang',variant,product);
     }
+
     if(product.variants.length&&!variant){
       this.openVariant=true;
       return;
@@ -153,6 +154,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   removeToCart($event,product:Product){
+    $event.stopPropagation();
     this.$cart.remove(product);
     this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
@@ -223,8 +225,20 @@ export class ProductComponent implements OnInit, OnDestroy {
 
       //
       // simple animation
+      // capture escape only for dialog instance 
       if (this.dialog) {
-        this.dialog.nativeElement.classList.remove('fadeout')
+        this.dialog.nativeElement.classList.remove('fadeout');
+        //
+        // capture event escape
+        let escape=(e) => {
+          if(e.key=='Escape'){
+            this.onClose(this.dialog);    
+            document.removeEventListener('keyup', escape);
+          }
+        };
+        document.addEventListener('keyup', escape);
+
+
       }
   }
 

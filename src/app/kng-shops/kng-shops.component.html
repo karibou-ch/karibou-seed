@@ -13,7 +13,7 @@
   <div class="right-card">
     <h1>{{vendor.name}}</h1>
 
-    <div class="description" [innerHtml]="vendor.description"></div>  
+    <div class="description" [kng-markdown]="vendor.description"></div>  
     <div class="contact">      
       <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><mdc-icon>phone</mdc-icon> {{vendor.address.phone}}</a>      
     </div>
@@ -28,7 +28,7 @@
 </div>
 <div class="content" *ngIf="vendor">
   <!-- SHOP FAQ -->
-  <section class="FAQ" [hidden]="!vendor.faq||!vendor.faq.length">
+  <section class="FAQ" *ngIf="vendor.faq&&vendor.faq.length">
     <div class="breaker"></div>
     <h2>{{i18n[locale].faq}}</h2>
     <ul>
@@ -37,11 +37,11 @@
         <div [kng-markdown]="faq.a" removeRoot="true" ></div>
       </li>
     </ul>
-  <div class="breaker"></div>
   </section>      
 
   <!-- SHOP GEO -->
   <section class="map" [hidden]="!vendor.address.geo">
+    <div class="breaker"></div>
     <h2>{{i18n[locale].map_title}}</h2>
     <div>
         <img [src]="getStaticMap(vendor.address)" >
@@ -54,11 +54,11 @@
       <a [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
       <!-- <a class="" ng-show="vendor.photo.source&&user.isOwnerOrAdmin(vendor.name)" ng-href="{{vendor.photo.source}}" target="_new">[Votre galerie photo]</a> -->
     </address>
-    <div class="breaker"></div>  
   </section>                        
 
   <!-- SHOP PRODUCTS -->
   <section class="products" *ngIf="products.length">
+    <div class="breaker"></div>
     <h2>{{i18n[locale].products_title}}</h2>
     <h3>{{i18n[locale].products_subtitle}}</h3>
     <div class="kng-layout-card mdc-layout-grid" >
