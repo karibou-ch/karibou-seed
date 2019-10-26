@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserService, LoaderService } from 'kng2-core';
+import { UserService, LoaderService, CartAction } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map, debounce } from 'rxjs/operators';
 
@@ -94,12 +94,12 @@ export class MetricsService {
       this.initFB();
       this.initGA();
       
-      this.$loader.update()
-      .subscribe((ctx:any)=>{
+      this.$loader.update().subscribe((ctx)=>{
         //
         // AddToProducts
-        if(ctx.state&&ctx.state.action==1){
-          this.event(EnumMetrics.metric_add_to_card,{'title':ctx.state.item.title});
+        console.log('-- loader.update',ctx.state);
+        if(ctx.state&&ctx.state.action==CartAction.ITEM_ADD){
+          this.event(EnumMetrics.metric_add_to_card,{'amount':ctx.state.item.price});
         }
 
         //
@@ -166,6 +166,7 @@ export class MetricsService {
   event(metric:EnumMetrics,options?){
     let ga=this.getHost('ga');
     let fbq=this.getHost('fbq');
+
     if(!this.isEnable()){
       return;
     }
@@ -177,6 +178,7 @@ export class MetricsService {
     if(options){
       Object.assign(params,options);
     }
+
 
     //
     // sent event
