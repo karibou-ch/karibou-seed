@@ -91,8 +91,8 @@
             <!-- ORDER FEEDBACK -->
             <mdc-textarea i18n-label label="Description du problème" fullwidth [ngModelOptions]="{standalone: true}"
             [hidden]="!selected[item.sku]"
-            kng-autosize rows="2" 
-            [(ngModel)]="item.note">
+            rows="2" 
+            [(ngModel)]="item.note" kng-autosize>
             </mdc-textarea>                              
 
             <mdc-list-item-secondary >

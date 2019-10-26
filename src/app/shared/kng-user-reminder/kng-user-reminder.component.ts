@@ -67,7 +67,7 @@ export class KngUserReminderComponent implements OnInit {
     }
   }
 
-  doUpdate(event,day:number,time){
+  doUpdate(event,day:number,time?){
     // FIXME change envent called 2x!    
     //console.log('MdcCheckboxChange',event.type)
     if(!event.type){

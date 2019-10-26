@@ -1,6 +1,5 @@
 import { LOCALE_ID, NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -78,10 +77,11 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngPageNotFoundComponent
   ],
   exports:[
+    Kng2CoreModule,
+    KngCommonModule
   ],
   imports: [
     BrowserModule,
-    HttpModule,
     HttpClientModule,
     Kng2CoreModule.forRoot({
       API_SERVER:environment.API_SERVER,

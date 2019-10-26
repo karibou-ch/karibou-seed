@@ -260,7 +260,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     form: any;
   }
   
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
+  @ViewChild('dlgEdit', { static: false }) dlgEdit: MdcDialogComponent;
   
   assign(value){
     let lang=this.$i18n.locale;
@@ -293,7 +293,7 @@ export class KngNavigationComponent extends KngConfigComponent {
   ngOnInit(){
     super.ngOnInit()
   }
-  onDelete($event){
+  onDelete($event?){
     this.isLoading=true;
     let toRemove=this.findMenuItem(this.edit.menu);
     if(toRemove===-1){
@@ -319,7 +319,7 @@ export class KngNavigationComponent extends KngConfigComponent {
   }
 
 
-  onSave($event){
+  onSave($event?){
     let toSave=-1;
     this.isLoading=true;
 
@@ -382,7 +382,7 @@ export class KngDepositComponent extends KngConfigComponent {
     form: any;
   }
   
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
+  @ViewChild('dlgEdit', { static: false }) dlgEdit: MdcDialogComponent;
   
   assign(value){
     let lang=this.$i18n.locale;
@@ -481,7 +481,7 @@ export class KngDepositComponent extends KngConfigComponent {
 
   //
   // save specific address
-  onSave($event){
+  onSave($event?){
     this.assign(this.edit.form.value);
     if(this.edit.idx==null){
       this.config.shared.deposits=this.config.shared.deposits||[];

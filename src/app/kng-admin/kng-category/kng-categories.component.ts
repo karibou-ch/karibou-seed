@@ -32,7 +32,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   errors:any;
 
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
+  @ViewChild('dlgEdit', { static: false }) dlgEdit: MdcDialogComponent;
 
   constructor(
     private $fb: FormBuilder,

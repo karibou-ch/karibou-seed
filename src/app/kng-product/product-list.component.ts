@@ -30,8 +30,8 @@ import { MdcChipSet } from '@angular-mdc/web';
 })
 export class ProductListComponent implements OnInit {
 
-  @ViewChild('subcategory') subcategory:MdcChipSet;
-  @ViewChild('dialog') dialog: ElementRef;
+  @ViewChild('subcategory', { static: false }) subcategory:MdcChipSet;
+  @ViewChild('dialog', { static: false }) dialog: ElementRef;
   scrollCallback;
   currentPage:number=10;
   bgStyle: string='/-/resize/200x/';

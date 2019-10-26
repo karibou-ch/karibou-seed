@@ -1,4 +1,4 @@
-import { AfterContentChecked, Directive, ElementRef, HostListener } from '@angular/core';
+import { AfterContentChecked, Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[kng-autosize]'
@@ -10,13 +10,14 @@ export class KngTextfieldAutosizeDirective implements AfterContentChecked {
   constructor(public element: ElementRef) {
   }
 
+
   @HostListener('input', ['$event.target'])
-  public onInput() {
+  public onInput($target?) {
     this.resize();
   }
 
   @HostListener('click', ['$event.target'])
-  public onClick() {
+  public onClick($target?) {
     this.resize();
   }
   

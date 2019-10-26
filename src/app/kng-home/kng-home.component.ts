@@ -327,7 +327,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   //
   // detect scrall motion and hide component
   @HostListener('window:scroll', ['$event'])
-  windowScroll() {
+  windowScroll($event?) {
     const scrollPosition = window.pageYOffset;
     // 
     // avoid CPU usage

@@ -37,8 +37,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   @Output() selected:EventEmitter<string>=new EventEmitter<string>();
 
-  @ViewChild('search') search:ElementRef;
-  @ViewChild('stats') stats:ElementRef;
+  @ViewChild('search', { static: false }) search:ElementRef;
+  @ViewChild('stats', { static: false }) stats:ElementRef;
   
   constructor(
     public  $i18n:i18n,
