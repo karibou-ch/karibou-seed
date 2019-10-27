@@ -148,7 +148,7 @@ export class MetricsService {
   }
 
   isEnable(){
-    return window.location.origin.indexOf('karibou.ch')==-1&&!this.isAdmin;
+    return (window.location.origin.indexOf('karibou.ch')>-1)&&!this.isAdmin;
   }
 
   getHost(name:string):any{
