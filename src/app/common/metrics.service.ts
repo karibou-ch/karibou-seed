@@ -33,10 +33,23 @@ export class MetricsService {
   ) { }
 
   initFB(){    
-    if(!this.isEnable()){
+    if(!this.isEnable() || (<any>window).fbq){
       return;
     }
-    console.log('Metrics -- load FB');
+
+    //
+    // FB
+    (function (f?:any, b?:any, e?:any, v?:any, n?:any, t?:any, s?) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      }; if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+    })(window,
+      document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');    
+
+    console.log('Metrics -- load FB',this.getHost('fbq'));
 
 
     // ORIGINAL O.E.
@@ -45,21 +58,24 @@ export class MetricsService {
   }
 
   initGA(){
-    if(!this.isEnable()){
+    if(!this.isEnable() || (<any>window).ga){
       return;
     }
     
-    console.log('Metrics -- load GA');
-    // (function (i, s, o, g, r, a, m) {
-    // i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-    //   (i[r].q = i[r].q || []).push(arguments)
-    // }, i[r].l = 1 * (<any>new Date()); a = s.createElement(o),
-    //   m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-    // })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * (<any>new Date()); a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
     // (<any>window).ga('require', 'displayfeatures');
     // (<any>window).ga('create', 'UA-57032730-1', 'auto');
     this.getHost('ga')('require', 'displayfeatures');
     this.getHost('ga')('create', 'UA-57032730-1', 'auto');
+    this.getHost('ga')('send', 'pageview');
+
+    console.log('Metrics -- load GA',this.getHost('ga'));
 
   }
 
@@ -97,8 +113,8 @@ export class MetricsService {
       this.$loader.update().subscribe((ctx)=>{
         //
         // AddToProducts
-        console.log('-- loader.update',ctx.state);
         if(ctx.state&&ctx.state.action==CartAction.ITEM_ADD){
+          console.log('-- metrics.AddToProducts',ctx.state);
           this.event(EnumMetrics.metric_add_to_card,{'amount':ctx.state.item.price});
         }
 
@@ -106,6 +122,7 @@ export class MetricsService {
         // User metrics
         let user=ctx.user||this.$user.currentUser
         if(user&&user.id){
+          console.log('-- metrics.identitySet',user.id);
           this.isAdmin=user.isAdmin();
           return this.identitySet(user.email.address);
         }
@@ -131,7 +148,7 @@ export class MetricsService {
   }
 
   isEnable(){
-    return window.location.origin.indexOf('karibou.ch')!=-1&&!this.isAdmin;
+    return window.location.origin.indexOf('karibou.ch')==-1&&!this.isAdmin;
   }
 
   getHost(name:string):any{
