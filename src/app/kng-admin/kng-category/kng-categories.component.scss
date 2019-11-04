@@ -6,6 +6,13 @@
   }
 
   mdc-list{
+
+    mdc-icon{
+      .size-large {
+        font-size: 30px;
+      }
+    }
+       
     mdc-list-item{
       &.disabled{
         opacity: 0.4;

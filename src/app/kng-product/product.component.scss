@@ -1,5 +1,16 @@
 @import "~colors.scss";
 
+.mdc-list{
+  mdc-icon{
+    .size-large {
+      font-size: 30px;
+    }
+    .size-xlarge {
+      font-size: 50px;
+    }
+  }
+}
+
 .product-dialog{
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;

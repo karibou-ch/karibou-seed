@@ -12,7 +12,7 @@
                    [class.disabled]="!category.active"
                    (click)="onCategorySelect($event,category)">
         <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
-        <mdc-icon mdcListItemGraphic [hidden]="category.cover" [fontSize]="30">folder</mdc-icon>
+        <mdc-icon mdcListItemGraphic [hidden]="category.cover" class="size-large">folder</mdc-icon>
         <mdc-list-item-text>
           <span>{{category.type}}/{{category.name}} ({{category.usedBy?.lenght||0}})</span>
           <mdc-list-item-secondary>
@@ -144,7 +144,7 @@
             
               <mdc-list-item  (click)="edit.category.child.push({name:'',weight:0})">
                   <mdc-list-item-graphic>
-                    <mdc-icon [fontSize]="30">playlist_add</mdc-icon>
+                    <mdc-icon class="size-large">playlist_add</mdc-icon>
                   </mdc-list-item-graphic>
                   <mdc-list-item-text >                  
                     <mdc-list-item-secondary i18n >Ajouter une nouvelle catégorie enfant</mdc-list-item-secondary>
@@ -161,7 +161,7 @@
     </mdc-dialog-body>
     <mdc-dialog-footer>
       <button mdc-dialog-button [disabled]="edit.category?.usedBy.length" (click)="onDelete()" class="align-start">Delete</button>
-      <button mdc-dialog-button [cancel]="true">Decline</button>
+      <button mdcDialogButton mdcDialogAction="close">Decline</button>      
       <button mdc-dialog-button [accept]="true" [disabled]="!edit.form.valid">Accept</button>
     </mdc-dialog-footer>
   </mdc-dialog-surface>

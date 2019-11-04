@@ -11,6 +11,17 @@
 
 
   mdc-list{
+    mdc-icon{
+      .size-small {
+        font-size: 15px;
+      }
+      .size-medium {
+        font-size: 26px;
+      }
+      .size-large {
+        font-size: 40px;
+      }
+    }
     
     mdc-list-item.config{
       &.large{
