@@ -40,16 +40,12 @@
   <!-- EDIT -->
   <mdc-dialog #dlgEdit 
     (accept)="onSave($event)"
-    (decline)="onDecline()"
-    [escapeToClose]="true"
-    [clickOutsideToClose]="true">
+    (decline)="onDecline()">
     <mdc-dialog-surface>
-      <mdc-dialog-header>
-        <mdc-dialog-header-title>
+      <mdc-dialog-title>       
           <span i18n>{{edit.address?.name||'Nouvelle Addresse'}}</span>
-        </mdc-dialog-header-title>
-      </mdc-dialog-header>
-      <mdc-dialog-body *ngIf="edit.address">
+      </mdc-dialog-title>
+      <mdc-dialog-content *ngIf="edit.address">
           <form [formGroup]="edit.form" (submit)="onSave()">
               <!-- CHECK -->
               <div class="geomap" 
@@ -86,12 +82,12 @@
             </div>
           </form>
           
-      </mdc-dialog-body>
-      <mdc-dialog-footer>
+      </mdc-dialog-content>
+      <mdc-dialog-actions>
         <button mdc-dialog-button (click)="onDelete($event)" [hidden]="!edit.idx" [disabled]="edit.address?.active" class="align-start">Delete</button>
-        <button mdc-dialog-button [cancel]="true">Decline</button>
+        <button mdcDialogAction="close">Decline</button>
         <button mdc-dialog-button (click)="onSave($event)" [disabled]="!edit.form.valid">Accept</button>
-      </mdc-dialog-footer>
+      </mdc-dialog-actions>
     </mdc-dialog-surface>
   </mdc-dialog>
   

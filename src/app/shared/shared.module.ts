@@ -49,6 +49,7 @@ import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
   ],
   exports:[
     RouterModule,
+    KngCommonModule,
     KngControlMessagesComponent,
     KngFeedbackComponent,
     KngHomeComponent,

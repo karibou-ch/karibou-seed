@@ -142,7 +142,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         this.categories.splice(position, 1);
       }
       
-      this.dlgEdit.close();
+      this.dlgEdit.dialogRef.close();
       this.edit.create=false;
       this.edit.category=null;
     }
@@ -161,14 +161,14 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   onCategorySelect($event,category){
     this.edit.category=category;
     this.edit.create=false;
-    this.dlgEdit.show();
+    this.dlgEdit.dialogRef.opened();
   }
 
   onCategoryCreate(){
     this.edit.category=new Category();
     this.edit.category.usedBy=[];
     this.edit.create=true;
-    this.dlgEdit.show();
+    this.dlgEdit.dialogRef.opened();
   }
 
   onDialogOpen(dialog){

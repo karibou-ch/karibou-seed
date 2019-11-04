@@ -20,6 +20,7 @@ import { KngConfigComponent,
          KngInformationCfgComponent} from './kng-config/kng-config.component';
 import { AdminMdcModule } from './admin-mdc.module';
 import { LoaderResolve } from 'kng2-core';
+import { MdcIconModule } from '@angular-mdc/web';
 
 //
 // define routes module

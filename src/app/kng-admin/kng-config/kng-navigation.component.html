@@ -38,16 +38,12 @@
   *ngIf="edit.form"
   (accept)="onSave($event)"
   (decline)="onDecline()"
-  [escapeToClose]="true"
-  [class.loading]="isLoading"
-  [clickOutsideToClose]="true">
+  [class.loading]="isLoading">
   <mdc-dialog-surface>
-  <mdc-dialog-header>
-    <mdc-dialog-header-title>
+    <mdc-dialog-title>
       <span i18n>{{edit.menu?.group||'Create'}}<b>/</b> {{edit.menu?.name[$i18n.locale]||'Navigation'}}</span>
-    </mdc-dialog-header-title>
-  </mdc-dialog-header>
-  <mdc-dialog-body *ngIf="edit.menu">
+    </mdc-dialog-title>
+  <mdc-dialog-content *ngIf="edit.menu">
       <form [formGroup]="edit.form" (submit)="onSave()" >
           <!-- CHECK -->
           <div>
@@ -69,11 +65,12 @@
         </div>
       </form>
       
-  </mdc-dialog-body>
-  <mdc-dialog-footer>
+  </mdc-dialog-content>
+  <mdc-dialog-actions>
     <button mdc-dialog-button (click)="onDelete($event)" [disabled]="edit.menu?.active||isLoading" class="align-start">Delete</button>
-    <button mdc-dialog-button [cancel]="true">Decline</button> <!-- TODO add !edit.form.valid|| -->
+    <button mdcDialogAction="close">Decline</button> <!-- TODO add !edit.form.valid|| -->
     <button mdc-dialog-button (click)="onSave($event)" [disabled]="isLoading">Accept</button>
-  </mdc-dialog-footer>
+  </mdc-dialog-actions>
   </mdc-dialog-surface>
 </mdc-dialog>
+ß

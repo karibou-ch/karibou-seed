@@ -304,7 +304,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.close();        
+      this.dlgEdit.dialogRef.close();        
       this.buildMenu();
     },
     (err)=>this.$snack.show(err.error,"OK"),
@@ -315,7 +315,7 @@ export class KngNavigationComponent extends KngConfigComponent {
 
   onDecline(){
     this.edit.menu=null;
-    this.dlgEdit.close();    
+    this.dlgEdit.dialogRef.close();    
   }
 
 
@@ -344,7 +344,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.close();      
+      this.dlgEdit.dialogRef.close();      
       this.buildMenu();
     },
     (err)=>this.$snack.show(err.error,"OK"),
@@ -353,13 +353,13 @@ export class KngNavigationComponent extends KngConfigComponent {
   }
   onMenuCreate(){
     this.edit.menu={name:{fr:'',en:null,de:null}};
-    this.dlgEdit.show();    
+    this.dlgEdit.dialogRef.opened();    
     
   }
 
   onMenuSelect($event,menu){
     this.edit.menu=menu;
-    this.dlgEdit.show();    
+    this.dlgEdit.dialogRef.opened();    
   }  
   
 }
@@ -461,7 +461,7 @@ export class KngDepositComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.close();        
+      this.dlgEdit.dialogRef.close();        
     },
     (err)=>this.$snack.show(err.error,"OK"));  
     return false;
@@ -475,7 +475,7 @@ export class KngDepositComponent extends KngConfigComponent {
   onDecline(){
     this.edit.idx=null;
     this.edit.address=null;
-    this.dlgEdit.close();    
+    this.dlgEdit.dialogRef.close();    
   }
 
 
@@ -492,7 +492,7 @@ export class KngDepositComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.close();      
+      this.dlgEdit.dialogRef.close();      
     },
     (err)=>this.$snack.show(err.error,"OK"));  
     return false;
@@ -501,14 +501,14 @@ export class KngDepositComponent extends KngConfigComponent {
     this.edit.idx=null;
     this.edit.address={};
     this.edit.address.fees=0;
-    this.dlgEdit.show();    
+    this.dlgEdit.dialogRef.opened();    
     
   }
 
   onAddressSelect($event,address,i){
     this.edit.idx=i;
     this.edit.address=address;
-    this.dlgEdit.show();    
+    this.dlgEdit.dialogRef.opened();    
   }  
   
 }
