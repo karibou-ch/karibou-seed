@@ -23,7 +23,7 @@
               <mdc-switch [ngModel]="document.published" formControlName="published"></mdc-switch>
               <label i18n>Publié</label>
           </mdc-form-field>        
-          <mdc-select placeholder="Type" floatingLabel="false" [ngModel]="document.type" formControlName="type"  [box]="false" >
+          <mdc-select placeholder="Type" floatingLabel="false" [ngModel]="document.type" formControlName="type"   >
             <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
           </mdc-select>
 
