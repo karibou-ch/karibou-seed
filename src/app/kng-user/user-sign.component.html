@@ -17,12 +17,12 @@
 
       <form [formGroup]="sign" (submit)="onSign()">
           <mdc-text-field i18n-label [label]="$i18n[locale].user_email" autocomplete fullwidth  type="email" formControlName="email">
-            <mdc-icon trailing>person</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
           
           <mdc-text-field i18n-label [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
-            <mdc-icon trailing>vpn_key</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
             
@@ -41,7 +41,7 @@
       <h3 i18n>{{i18n[locale].login_reset_password}}</h3>
       <form [formGroup]="recover" (submit)="onRecover()">
           <mdc-text-field i18n-label [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <mdc-icon trailing>email</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>email</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="recover.controls.email"><span i18n>{{i18n[locale].login_wait_msg}}</span></kng-control-messages>
           <button primary  mdc-button unelevated  [disabled]="!recover.valid" class="align-center">
@@ -56,11 +56,11 @@
     <div class="inner" *ngIf="askAction=='signup'">
       <form [formGroup]="signup" (submit)="onSignup()">
           <mdc-text-field i18n-label [label]="$i18n[locale].user_name" fullwidth type="text" formControlName="name">
-            <mdc-icon trailing>name</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>name</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.name"></kng-control-messages>
           <mdc-text-field i18n-label [label]="$i18n[locale].user_firstname" fullwidth type="text" formControlName="forname">
-            <mdc-icon trailing>name</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>name</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
@@ -72,17 +72,17 @@
               
 
           <mdc-text-field i18n-label [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <mdc-icon trailing>email</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>email</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
 
           <mdc-text-field i18n-label [label]="$i18n[locale].user_password" fullwidth type="password" formControlName="password">
-            <mdc-icon trailing>vpn_key</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
 
           <mdc-text-field i18n-label [label]="$i18n[locale].user_repassword" fullwidth type="password" formControlName="confirm">
-            <mdc-icon trailing>vpn_key</mdc-icon>
+            <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 

@@ -40,7 +40,7 @@
     <form [formGroup]="$address" (submit)="onSave()">
 
         <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
-          <mdc-icon trailing>person</mdc-icon>
+          <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
         </mdc-text-field>
 
 
@@ -74,7 +74,7 @@
         </mdc-select>
         
         <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">
-          <mdc-icon trailing>person</mdc-icon>
+          <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
         </mdc-text-field>
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
