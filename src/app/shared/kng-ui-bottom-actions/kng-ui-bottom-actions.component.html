@@ -23,7 +23,7 @@
 
 </div>  
 
-<div class="results" [hidden]="!show" mdc-ripple>
+<div class="results" [hidden]="!show">
   <ul class="col">
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 

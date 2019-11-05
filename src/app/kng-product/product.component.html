@@ -12,7 +12,7 @@
       [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
    
    
-       <mdc-card-primary-action mdc-ripple >
+       <mdc-card-primary-action>
          <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
            <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
