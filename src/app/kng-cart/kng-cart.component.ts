@@ -275,7 +275,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
         if(order.errors){
           this.$cart.setError(order.errors);
           this.hasOrderError=true;
-          this.$snack.show(
+          this.$snack.open(
             "Votre commande doit être corrigée ",
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
@@ -291,14 +291,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
           'amount':order.getSubTotal()
         });
 
-        this.$snack.show("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
+        this.$snack.open("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
         this.$router.navigate(['/store',this.store,'me','orders']);
         this.items=[];
         this.$cart.empty();
       },
       err=>{
         this.isRunning=false;
-        this.$snack.show(
+        this.$snack.open(
           err.error,
           this.$i18n.label().thanks,
           this.$i18n.snackOpt
@@ -468,7 +468,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   
   setPaymentMethod(payment:UserCard){
     if(!payment.isValid()){
-      this.$snack.show(payment.error||this.i18n[this.locale].cart_payment_not_available,"OK")
+      this.$snack.open(payment.error||this.i18n[this.locale].cart_payment_not_available,"OK")
       return;
     }
     this.$cart.setPaymentMethod(payment);      

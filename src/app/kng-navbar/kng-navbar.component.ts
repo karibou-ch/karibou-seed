@@ -183,14 +183,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         }
 
         if(emit.state.action==CartAction.ITEM_MAX){
-          return this.$snack.show(
+          return this.$snack.open(
             this.$i18n.label()[CartAction[emit.state.action]],
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
         }
 
-        this.$snack.show(
+        this.$snack.open(
           this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')',
           this.$i18n.label().thanks,
           this.$i18n.snackOpt

@@ -115,7 +115,7 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   onDialogOpen(dialog){
     dialog.done(dlg=>{
       if(dlg.state()=='rejected'){
-        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
+        this.$snack.open(this.$i18n.label().img_max_sz,"OK")
       }
     })
   }
@@ -148,8 +148,8 @@ export class KngConfigComponent implements OnInit,OnDestroy {
     this.$config.save(this.config).subscribe(
       ()=>{
         this.formatDates();
-        this.$snack.show(this.$i18n.label().save_ok,"OK")
-      },(err)=>this.$snack.show(err.error,"OK"),
+        this.$snack.open(this.$i18n.label().save_ok,"OK")
+      },(err)=>this.$snack.open(err.error,"OK"),
       ()=>this.isLoading=false
     );      
   }
@@ -230,7 +230,7 @@ export class KngPageContentComponent  {
     
     this.$document.getAll(true).subscribe((docs:DocumentHeader[])=>{
       this.contents=docs;
-    },err=>this.$snack.show(err.error));
+    },err=>this.$snack.open(err.error));
   }
 
   ngOnDestroy(){
@@ -303,11 +303,11 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.config.shared.menu.splice(toRemove, 1);
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
-      this.$snack.show(this.$i18n.label().save_ok,"OK");
+      this.$snack.open(this.$i18n.label().save_ok,"OK");
       this.dlgEdit.dialogRef.close();        
       this.buildMenu();
     },
-    (err)=>this.$snack.show(err.error,"OK"),
+    (err)=>this.$snack.open(err.error,"OK"),
     ()=>this.isLoading=false
     );  
     return false;
@@ -343,11 +343,11 @@ export class KngNavigationComponent extends KngConfigComponent {
     
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
-      this.$snack.show(this.$i18n.label().save_ok,"OK");
+      this.$snack.open(this.$i18n.label().save_ok,"OK");
       this.dlgEdit.dialogRef.close();      
       this.buildMenu();
     },
-    (err)=>this.$snack.show(err.error,"OK"),
+    (err)=>this.$snack.open(err.error,"OK"),
     ()=>this.isLoading=false);  
     return false;
   }
@@ -460,10 +460,10 @@ export class KngDepositComponent extends KngConfigComponent {
     this.config.shared.deposits.splice(this.edit.idx, 1);
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
-      this.$snack.show(this.$i18n.label().save_ok,"OK");
+      this.$snack.open(this.$i18n.label().save_ok,"OK");
       this.dlgEdit.dialogRef.close();        
     },
-    (err)=>this.$snack.show(err.error,"OK"));  
+    (err)=>this.$snack.open(err.error,"OK"));  
     return false;
   }
 
@@ -491,10 +491,10 @@ export class KngDepositComponent extends KngConfigComponent {
 
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
-      this.$snack.show(this.$i18n.label().save_ok,"OK");
+      this.$snack.open(this.$i18n.label().save_ok,"OK");
       this.dlgEdit.dialogRef.close();      
     },
-    (err)=>this.$snack.show(err.error,"OK"));  
+    (err)=>this.$snack.open(err.error,"OK"));  
     return false;
   }
   onAddressCreate(){

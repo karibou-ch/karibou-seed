@@ -106,9 +106,9 @@ export class KngUserReminderComponent implements OnInit {
   save(){
     this.$user.save(this.user).subscribe(
       user=>{
-        this.$snack.show(this.$i18n.label().save_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
+        this.$snack.open(this.$i18n.label().save_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
       },
-      err=>(err)=>this.$snack.show(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt)
+      err=>(err)=>this.$snack.open(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt)
     );
   }
 }

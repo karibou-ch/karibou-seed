@@ -216,12 +216,12 @@ export class KngFeedbackComponent implements OnInit {
     this.$order.requestIssue(this.order,items,this.score,this.feedbackText).subscribe(
       (info)=>{
         // console.log('----',info)
-        this.$snack.show('Message envoyé merci!');
+        this.$snack.open('Message envoyé merci!');
         this.order.score=this.score;
         this.onBack();
         this.cdr.markForCheck();
       },http=>{
-        this.$snack.show(http.error)
+        this.$snack.open(http.error)
       }
     )
   }
