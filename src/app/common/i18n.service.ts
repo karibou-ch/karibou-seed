@@ -13,7 +13,7 @@ import { MdcSnackbarConfig } from '@angular-mdc/web';
 export class i18n  {
 
   public snackOpt:MdcSnackbarConfig={
-    timeout:5000
+    timeoutMs:5000
   }
 
 
