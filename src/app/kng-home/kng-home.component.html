@@ -4,10 +4,10 @@
 </kng-feedback>
 
 <!-- SELECTION -->
-<kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
+<kng-product-swipe *ngIf="home.length>2 && target == 'home'" [products]="home"></kng-product-swipe>
 
 <!-- INFORMATION -->
-<div class="home-header">
+<div class="home-header" [hidden]="target!='home'">
   <div class="maintenance" *ngIf="config.shared.maintenance.active" 
       [innerHtml]="config.shared.maintenance.reason[locale]">    
   </div>
@@ -19,7 +19,7 @@
 
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
 <kng-ui-bottom-actions [exited]="scrollDirection<-5" 
-                       [categories]="categories"
+                       [categories]="getCategories()"
                        (selected)="scrollNextSectionIntoView($event)">  
 </kng-ui-bottom-actions>
 
@@ -44,7 +44,7 @@
   <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()">
 
   <!-- INFORMATION -->
-  <div class="home-header" *ngIf="i==2"
+  <div class="home-header" *ngIf="i==2 && target=='home'"
        [class.cover]="hasBackgroundCover()" 
        [ngStyle]="getHeaderStyle()">
     <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">

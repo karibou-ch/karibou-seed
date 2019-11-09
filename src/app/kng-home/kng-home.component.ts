@@ -19,7 +19,8 @@ import {
   Product,
   LoaderService,
   User,
-  CartAction
+  CartAction,
+  PhotoService
 }  from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../common';
@@ -38,11 +39,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   @ViewChildren('section') sections: QueryList<ElementRef>;
     
   isReady: boolean = false;
+  
   config: Config;
   categories:Category[];
   cached:any={};
   group:any={};
   home:Product[]=[];
+  target:string; // home, delicacy, cellar
   user:User;
   subscription;
 
@@ -55,11 +58,19 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   visibility:any={};
 
   //
-  //gradient of background image 
+  // gradient of background image 
   bgGradient = `linear-gradient(
     rgba(50, 50, 50, 0.1),
     rgba(50, 50, 50, 0.7)
   ),`;
+
+  //
+  // target
+  categoryFilter={
+    home:['marché'],
+    delicacy:['finefood','autres','delicacy'],
+    cellar:['boissons']
+  };
 
   //
   // products for home
@@ -88,9 +99,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     public $cart:CartService,
     public $i18n:i18n,
     private $loader: LoaderService,
-    private $metric:MetricsService,
     private $product: ProductService,
-    private $route: ActivatedRoute
+    private $route: ActivatedRoute,
+    private $photo: PhotoService
   ) { 
     // bind infinite scroll callback function
     this.scrollCallback=this.getNextPage.bind(this);
@@ -100,7 +111,18 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.user=loader[1];
     this.categories=loader[2]||[];
     this.currentPage=1000;
+
+    // 
+    // default home target (home, delicacy, cellar)
+    this.target=this.$route.snapshot.data.target||'home';
+    // this.target=this.$route.snapshot.params.home||'home';
+
     // this.options.maxcat=(window.innerWidth<426)?6:12
+    this.$photo.shops({active:true,random:1}).subscribe((shops:any)=>{
+      //
+      // deploy random shop picture for outside javascript
+      window['kngRandomShop']=shops[0].photo.fg;
+    })
     
   }
 
@@ -110,8 +132,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {        
     setTimeout(()=>{
+      window.scroll(0,0);
       this.detectVisibility(0);
-    },800);
+    },500);
 
     //
     // FIXME avoid double home load
@@ -187,7 +210,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       return [];
     }
     this.cached.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
-      return c.active&&(c.type==='Category');
+      return c.active && (c.type==='Category') && (this.categoryFilter[this.target].indexOf(c.group.toLocaleLowerCase())>-1);
     }).slice(0,this.currentPage);
     this.cached.currentPage=this.currentPage;
     this.cached.categories.forEach(cat=>this.visibility[cat.slug]=false);
@@ -321,7 +344,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     });
     // console.log('-- detectVisibility',scrollPosition)
     // console.log('-- detectVisibility',this.visibility)
-
   }
 
   //
