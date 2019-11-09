@@ -181,7 +181,7 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   @Input('value')
   set value(value: string) {
     this._value = value;
-    if (this.widget) {
+    if (this.widget && this.widget.value) {
       this.setReinitFlag(false);
       this.widget.value(value);
     }
@@ -229,7 +229,7 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
 
   clearUploads() {
     this._value = null;
-    if (this.widget) {
+    if (this.widget && this.widget.value) {
       this.widget.value(null);
     }
   }
