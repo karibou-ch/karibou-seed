@@ -98,7 +98,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private el:ElementRef
   ) {
 
-    let loader=this.$route.parent.snapshot.data.loader||this.$route.snapshot.data.loader;
+    let loader=this.$route.snapshot.data.loader||this.$route.parent.snapshot.data.loader;
     if(loader&&loader.length){
       this.config=loader[0];      
       this.user=loader[1];    
