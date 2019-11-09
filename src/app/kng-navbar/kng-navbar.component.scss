@@ -42,13 +42,19 @@ mdc-drawer{
   
   }
 
-
   .admin{
-    mdc-list-item{
-      color: #aaa!important;
+    mdc-list{
+      background: #555!important;
+    }
+    mdc-list-item, 
+    h3,
+    h4,
+    h5,
+    h6{
+      color: #eee!important;
     }
   }
-  
+    
 }
 div.navbar{
   display:flex;
@@ -104,7 +110,7 @@ div.navbar{
     padding-left: 20px;
     margin-right: auto;
     margin-left: auto;  
-    margin-top: 100px;
+    margin-top: 135px;
 
     @media (min-width:1024px) {
       max-width: 760px;
@@ -118,7 +124,7 @@ div.navbar{
 
     @media (max-width: 426px) {
       padding: 0px;
-      margin-top: 50px;
+      margin-top: 105px;
       min-width: 326px;
       width: 100%;      
     }
@@ -179,11 +185,12 @@ div.navbar{
         padding: 0 8px;
       }      
     }
-    .mdc-tab-bar__indicator{
-      background: $mdc-theme-primary-dark;
-      background: var(--mdc-theme-primary-dark);
+    .mdc-tab-indicator > span{
+      background: $mdc-theme-primary-text;
+      background: var(--mdc-theme-primary-text);
+      height: 3px;
     }
-
+    
   }
 
 

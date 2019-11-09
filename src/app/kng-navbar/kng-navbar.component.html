@@ -55,7 +55,7 @@
         <h6 mdcListGroupSubheader>Config</h6>
         <mdc-list-item [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;"
           [routerLink]="getRouterLink(menu.url)">
-          <mdc-icon class="red" mdcListItemGraphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
+          <mdc-icon class="white" mdcListItemGraphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
         </mdc-list-item>
       </mdc-list>
     </mdc-list-group>
@@ -65,8 +65,8 @@
 <!-- MAIN LAYOUT -->
 <div [hidden]="!isAppReady()" class="navbar">
 
-  <mdc-top-app-bar fixed="false" [dense]="true">
-    <mdc-top-app-bar-row [hidden]="$navigation.isMobile()">
+  <mdc-top-app-bar fixed="false" [dense]="$navigation.isMobile()">
+    <mdc-top-app-bar-row >
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="home">menu</mdc-icon>
@@ -92,16 +92,16 @@
     <mdc-top-app-bar-row class="navigation">
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
-          <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="show-sm">menu</mdc-icon>
+          <!-- <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="show-sm">menu</mdc-icon> -->
       </mdc-top-app-bar-section>
 
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-top-app-bar-section #section>
-        <mdc-tab-bar>
+        <mdc-tab-bar [activeTabIndex]="currentTab">
           <!-- mdcRouter -->
           <mdc-tab-scroller>
-            <mdc-tab *ngFor="let menu of primary;let idx=index;" [routerLink]="'.'+menu.url" routerLinkActive #rla="routerLinkActive">
+            <mdc-tab *ngFor="let menu of primary;let idx=index;" [routerLink]="'.'+menu.url"  routerLinkActive #rla="routerLinkActive">
               <span [innerHTML]="menu.name[locale]"></span>
             </mdc-tab>
             <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">

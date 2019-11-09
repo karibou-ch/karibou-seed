@@ -37,12 +37,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   user:User;
   categories:Category[];
   shops:Shop[];
-  private route$:any;
 
   //
   // content
   store:string;
   primary:ConfigMenu[];
+  currentTab:number;
   topmenu:ConfigMenu[];
   image:string;
   title:string;
@@ -73,7 +73,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $snack:MdcSnackbar,
     private cdr: ChangeDetectorRef,
   ) {
-
     let loader=this.$route.snapshot.data.loader;
     if(loader[0].length){
       loader=loader[0];  
@@ -126,6 +125,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.topmenu=this.config.shared.menu.filter(menu=>menu.group==='topmenu'&&menu.active);
     this.store=this.$navigation.store;
     this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
+
+    // FIXME mdc-tab activation is BUGGY, this is an alternate version
+    if(this.$route.snapshot.children.length){
+      let target=this.$route.snapshot.children[0].data.target;
+      this.currentTab=this.primary.findIndex(el=>el.url.indexOf(target)>-1);
+      if(this.currentTab==-1) this.currentTab=this.primary.length;
+    }
+
     //
     // init cart here because navbar is loaded on all pages
     this.$cart.setContext(this.config,this.user,this.shops);
@@ -156,13 +163,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //
       // update cart
       if(emit.state){
-        // this.cardItemsSz=this.$cart.getItems().reduce((sum,item)=>{
-        //   return sum+item.quantity;
-        // },0);
         this.cardItemsSz=this.$cart.subTotal();
         //
         // FIXME hugly DOM manipulation for : CART ITEMS COUNT
-        // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>        
         setTimeout(()=>{
           //
           // top bar
@@ -171,7 +174,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           // tab bar
           this.cartItemCountElem=this.cartItemCountElem||this.section.elementRef.nativeElement.querySelector('.cart-items-count');
           if(this.cartItemCountElem){
-            this.cartItemCountElem.style.visibility=(this.cardItemsSz>0)?'visible':'hidden';
             this.cartItemCountElem.innerHTML='('+this.cardItemsSz+' fr)';
           }  
         },100);
