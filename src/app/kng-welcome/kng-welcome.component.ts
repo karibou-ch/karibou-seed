@@ -52,7 +52,7 @@ export class KngWelcomeComponent implements OnInit {
     this.config=loader[0];      
     this.$photo.shops({active:true,random:40}).subscribe((photos:any)=>{
       this.photos=photos.map(shop=>shop.photo.fg);
-    })
+    });
   }
 
   get locale(){
