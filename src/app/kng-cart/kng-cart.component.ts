@@ -62,6 +62,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_subtotal:"Sous total",
       cart_info_shipping:"Livraison",
       cart_info_payment:"Méthode de paiement",
+      cart_info_service_k:"Majoration sur les produits du service karibou.ch ",
       cart_info_discount:"Rabais",
       cart_remove:"enlever",
       cart_discount_info:"Rabais livraison",
@@ -84,6 +85,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_subtotal:"Subtotal",
       cart_info_shipping:"Shipping",
       cart_info_payment:"Payment method",
+      cart_info_service_k:"Service fee on products included by karibou.ch ",
       cart_info_discount:"Discount",
       cart_remove:"remove",
       cart_discount:"discount",
@@ -192,7 +194,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
         
     this.subscription=this.$loader.update().subscribe(emit=>{
-      console.log('------------DEBUG',emit)
       // emit signal for config
       if(emit.config){
 
