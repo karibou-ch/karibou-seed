@@ -11,7 +11,8 @@ import { KngEditDocumentComponent } from '../kng-document/kng-document.component
 import { KngCategoriesComponent } from './kng-category/';
 
 import { KngConfigComponent, 
-         KngNavigationComponent, 
+         KngNavigationComponent,
+         KngNavigationDlgComponent, 
          KngWelcomeCfgComponent,
          KngHomeComponent,
          KngShopComponent,
@@ -63,6 +64,7 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     KngShopComponent, 
     KngWelcomeCfgComponent, 
     KngInformationCfgComponent,
-    KngNavigationComponent]
+    KngNavigationComponent,
+    KngNavigationDlgComponent]
 })
 export class AdminModule { }

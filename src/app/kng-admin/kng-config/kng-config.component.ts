@@ -1,8 +1,8 @@
-import { Component, OnInit,OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit,OnDestroy, ViewChild, Inject } from '@angular/core';
 
 import { KngNavigationStateService, i18n, KngUtils } from '../../common';
 
-import { MdcSnackbar, MdcDialogComponent } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -36,6 +36,7 @@ export class KngConfigComponent implements OnInit,OnDestroy {
 
   constructor(
     public http:HttpClient,
+    public $dlg: MdcDialog,
     public $fb: FormBuilder,
     public $i18n: i18n,
     public $config: ConfigService,
@@ -248,6 +249,39 @@ export class KngPageContentComponent  {
 
 
 @Component({
+  templateUrl: './kng-navigation-dlg.component.html',
+})
+export class KngNavigationDlgComponent {
+  constructor(
+    public $dlgRef: MdcDialogRef<KngNavigationDlgComponent>,
+    public $fb: FormBuilder,
+    @Inject(MDC_DIALOG_DATA) public result:any
+    ) { }
+
+  //
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required]],
+    'active':['', []],
+    'group': ['', [Validators.required]],
+    'name': ['', [Validators.required]],
+    'url': ['', [Validators.required]]
+  });    
+
+  onSave(){
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.$dlgRef.close();
+
+  }
+
+  onDecline() {
+  }
+}
+
+@Component({
   selector: 'kng-navigation',
   templateUrl: './kng-navigation.component.html',
   styleUrls: ['./kng-config.component.scss']
@@ -259,8 +293,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     menu:any;
     form: any;
   }
-  
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
+
   
   assign(value){
     let lang=this.$i18n.locale;
@@ -278,16 +311,6 @@ export class KngNavigationComponent extends KngConfigComponent {
       form:null,
       menu:null
     };
-    
-    //
-    // init formBuilder
-    this.edit.form=this.$fb.group({
-      'weight':['', [Validators.required]],
-      'active':['', []],
-      'group': ['', [Validators.required]],
-      'name': ['', [Validators.required]],
-      'url': ['', [Validators.required]]
-    });    
   }
 
   ngOnInit(){
@@ -304,7 +327,6 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.dialogRef.close();        
       this.buildMenu();
     },
     (err)=>this.$snack.show(err.error,"OK"),
@@ -315,7 +337,6 @@ export class KngNavigationComponent extends KngConfigComponent {
 
   onDecline(){
     this.edit.menu=null;
-    this.dlgEdit.dialogRef.close();    
   }
 
 
@@ -344,7 +365,6 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
       this.$snack.show(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.dialogRef.close();      
       this.buildMenu();
     },
     (err)=>this.$snack.show(err.error,"OK"),
@@ -353,13 +373,21 @@ export class KngNavigationComponent extends KngConfigComponent {
   }
   onMenuCreate(){
     this.edit.menu={name:{fr:'',en:null,de:null}};
-    this.dlgEdit.dialogRef.opened();    
-    
+    let dialogRef = this.$dlg.open(KngNavigationDlgComponent, {
+      data:this.edit 
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('--- on Close dlg navigation',result)
+    });
   }
 
   onMenuSelect($event,menu){
     this.edit.menu=menu;
-    this.dlgEdit.dialogRef.opened();    
+    let dialogRef = this.$dlg.open(KngNavigationDlgComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('--- on Close dlg navigation',result)
+    });
+
   }  
   
 }
