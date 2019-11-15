@@ -1,4 +1,4 @@
-import { Component, OnDestroy,OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy,OnInit, Inject } from '@angular/core';
 import {
   CategoryService,
   Category,
@@ -6,7 +6,7 @@ import {
 }  from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../../common';
-import { MdcSnackbar, MdcDialogComponent, MdcRadioChange } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -32,8 +32,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   errors:any;
 
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
-
+  
   constructor(
     private $fb: FormBuilder,
     private $i18n:i18n,
@@ -41,7 +40,8 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     private $category: CategoryService,
     private $route:ActivatedRoute,
     private $snack:MdcSnackbar,
-    private $navigation:KngNavigationStateService
+    private $navigation:KngNavigationStateService,
+    public $dlg: MdcDialog,
   ){
     
     let loader=this.$route.snapshot.data.loader;
@@ -89,14 +89,16 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   }
 
   loadCategories(){
+    console.log('loadCategories');
     this.$category.select({stats:true}).subscribe((categories:Category[])=>{
       this.isReady=true;
       this.categories=categories.sort(this.sortByGroupAndWeight.bind(this));
     });
+    console.log('loadCategories FIN');
   }
 
-  onSave(){
-    //console.log('---------------',this.edit.form.value)
+  onSave(value : any){
+    console.log('---------------',this.edit.form.value)
     //
     // copy data 
 
@@ -142,7 +144,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         this.categories.splice(position, 1);
       }
       
-      this.dlgEdit.dialogRef.close();
+      // this.$dlg.close(); FIXME ici on ferme la fenêtre mais pas dans kng_config
       this.edit.create=false;
       this.edit.category=null;
     }
@@ -159,16 +161,40 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   }
 
   onCategorySelect($event,category){
+    console.log('onCategorySelect');
     this.edit.category=category;
     this.edit.create=false;
-    this.dlgEdit.dialogRef.opened();
+   
+    console.log('this.edit',this.edit);
+    console.log('this.edit.category',this.edit.category);
+    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
+      data:this.edit
+    });
+    console.log('lallalalalalalalalallaalla');
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('--- on Close dlg navigation onMenuSelect',result)
+      if (result !== 'close') {
+        console.log(' save');
+        this.onSave(result);
+      } else {
+        this.onDecline();
+      }
+    });
+
+   
   }
 
   onCategoryCreate(){
     this.edit.category=new Category();
     this.edit.category.usedBy=[];
     this.edit.create=true;
-    this.dlgEdit.dialogRef.opened();
+    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
+      data:this.edit
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      console.log('--- on Close dlg navigation onMenuCreate',value)
+      this.onSave(value);
+  })
   }
 
   onDialogOpen(dialog){
@@ -202,4 +228,57 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   }
 
 
+}
+
+
+
+@Component({
+  templateUrl: './kng-category-dlg.component.html',
+  styleUrls: ['./kng-categories.component.scss']
+})
+export class KngCategoryDlgComponent {
+  constructor(
+    public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
+    public $fb: FormBuilder,
+    public $i18n:i18n,
+    @Inject(MDC_DIALOG_DATA) public data:any
+    ) { 
+      console.log('--- dlg construct',data);
+      this.edit=data;
+      console.log('coucou');
+      
+    }
+
+    edit:any;
+
+  //
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required]],
+      'active':['', []],
+      'home': ['', []],
+      'color':['', []],
+      'image': ['', [Validators.required]],
+      'group': ['', []],
+      'name': ['', [Validators.required]],
+      'description': ['', [Validators.required]],
+      'type': ['', [Validators.required]]
+  });    
+
+  askSave(){
+    if (this.form.invalid) {
+      return;
+    }
+   
+    this.$dlgRef.close(this.form.value);
+
+  }
+
+  askDelete() {
+    this.$dlgRef.close();
+  }
+
+  askDecline() {
+    this.$dlgRef.close();
+  }
 }
