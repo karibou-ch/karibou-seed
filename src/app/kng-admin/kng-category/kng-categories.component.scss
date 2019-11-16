@@ -44,16 +44,20 @@ mdc-dialog{
 
   mdc-dialog-surface{
     background-color: white;
+    min-width: 865px;
   }
 
   mdc-dialog-content{
     form{
       .image{
-        width: 200px;
         position: absolute;
         right: 10px;
         top: 10px;
-        display: block;
+        background: white;
+        padding: 5px;
+        border-radius: 5px;
+        align-items: center;
+        display: flex;
         mdc-form-field{
           width: 200px;
           float: right;
