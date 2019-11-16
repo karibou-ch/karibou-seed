@@ -10,22 +10,24 @@ mdc-dialog{
 
   mdc-dialog-surface{
     background-color: white;
-    min-width: 865px;
+    max-width: 865px;
   }
     
   mdc-dialog-content{
-    .geomap{
-      height: 180px;
-      width: 180px;
-      position: absolute;
-      right: 15px;
-      top: 15px;  
-      background-size:cover;  
-      border:1px solid #ddd;
-      margin: 2px;
-    }
       
     form{
+      .geomap{
+        height: 180px;
+        width: 180px;
+        position: absolute;
+        right: 15px;
+        top: 15px;  
+        border:1px solid #ddd;
+        background: white;
+        border-radius: 5px;      
+        background-size: contain;
+      }
+  
       display: flex;
       flex-flow: column wrap;
       justify-content:flex-start; /*halign*/
@@ -40,6 +42,7 @@ mdc-dialog{
         display: flex;
         flex-flow: row wrap;
         justify-content:flex-start;
+
         &.between{
           justify-content:space-between;
         }

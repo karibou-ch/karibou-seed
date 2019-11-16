@@ -493,12 +493,14 @@ export class KngDepositDlgComponent{
         return;
       }
       lastlen=newlen;
+      console.log('form add change',value)
       // get geo only if last value changed more than 3 chars
-      KngUtils.getGeoCode(this.$http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((geo)=>{
-        if(!geo.location){return;}
+      KngUtils.getGeoCode(this.$http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((result)=>{
+        console.log('form geo change',result.geo.location)
+        if(!result.geo.location){return;}
         this.address.geo={
-          lat:geo.location.lat,
-          lng:geo.location.lng
+          lat:result.geo.location.lat,
+          lng:result.geo.location.lng
         }
       });        
     });
