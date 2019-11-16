@@ -12,7 +12,6 @@
                   [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}">
               </div>
               <div>
-
                 <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="address.weight" formControlName="weight">
                 </mdc-text-field>                
                 <mdc-text-field i18n-label label="Prix" type="number" [required]="true" [ngModel]="address.fees" formControlName="fees">
@@ -44,9 +43,9 @@
           
       </mdc-dialog-content>
       <mdc-dialog-actions>
-        <button mdc-dialog-button (click)="askDelete()" [hidden]="!idx" [disabled]="address?.active" class="align-start">Delete</button>
-        <button mdcDialogAction="close">Decline</button>
-        <button mdc-dialog-button (click)="askSave()" [disabled]="!form.valid">Accept</button>
+        <button mdcDialogButton (click)="askDelete()" [hidden]="!idx" [disabled]="address?.active" class="align-start">Delete</button>
+        <button mdcDialogButton mdcDialogAction="close">Decline</button>
+        <button mdcDialogButton (click)="askSave()" [disabled]="!form.valid">Accept</button>
       </mdc-dialog-actions>
     </mdc-dialog-surface>
   </mdc-dialog>

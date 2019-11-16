@@ -30,9 +30,9 @@
       
   </mdc-dialog-content>
   <mdc-dialog-actions>
-    <button mdc-dialog-button (click)="askDelete()" [disabled]="menu?.active" class="align-start">Delete</button>
-    <button mdcDialogAction="close">Decline</button> <!-- TODO add !form.valid|| -->
-    <button mdc-dialog-button (click)="askSave()" >Accept</button>
+    <button mdcDialogButton (click)="askDelete()" [disabled]="menu?.active" class="align-start">Delete</button>
+    <button mdcDialogButton mdcDialogAction="close">Decline</button> <!-- TODO add !form.valid|| -->
+    <button mdcDialogButton (click)="askSave()" >Accept</button>
   </mdc-dialog-actions>
   </mdc-dialog-surface>
 </mdc-dialog>
