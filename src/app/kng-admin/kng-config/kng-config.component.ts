@@ -36,7 +36,6 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   
 
   constructor(
-    public http:HttpClient,
     public $dlg: MdcDialog,
     public $fb: FormBuilder,
     public $i18n: i18n,
@@ -424,41 +423,38 @@ export class KngDepositDlgComponent{
   STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
 
   constructor(
+    public $http:HttpClient,
     public $dlgRef: MdcDialogRef<KngDepositDlgComponent>,
     public $fb: FormBuilder,
     public $i18n:i18n,
     @Inject(MDC_DIALOG_DATA) public data:any
-    ) { 
-      console.log('--- dlg construct',data);
-      this.address= data.address;
-      this.idx = data.idx;
-      console.log(' @Inject(MDC_DIALOG_DATA)',this.address);
-    }
+  ) { 
+    this.address= data.edit.address;
+    this.idx = data.edit.idx;
+    this.pubMap = data.pubMap;
+  }
 
   address:any;
   idx: any;
 
   //
   // init formBuilder
-    // init formBuilder
-    form=this.$fb.group({
-      'weight':['', [Validators.required,Validators.min(0)]],
-      'active':['', []],
-      'name': ['', [Validators.required]],
-      'streetAddress': ['', [Validators.required,Validators.minLength(4)]],
-      'floor': ['', [Validators.required,Validators.minLength(1)]],
-      'postalCode': ['', [Validators.required,Validators.minLength(4)]],
-      'region': ['', [Validators.required]],
-      'note': ['', [Validators.required]],
-      'fees': ['', [Validators.required,Validators.min(0)]]
-    });
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required,Validators.min(0)]],
+    'active':['', []],
+    'name': ['', [Validators.required]],
+    'streetAddress': ['', [Validators.required,Validators.minLength(4)]],
+    'floor': ['', [Validators.required,Validators.minLength(1)]],
+    'postalCode': ['', [Validators.required,Validators.minLength(4)]],
+    'region': ['', [Validators.required]],
+    'note': ['', [Validators.required]],
+    'fees': ['', [Validators.required,Validators.min(0)]]
+  });
 
-    ngOnInit(){
-     
-      //this.pubMap=this.config.shared.keys.pubMap; //TOFIX
-      this.pubMap = 'AIzaSyA93ohXyArk6YIitqhGEs6H4Fov5i25oNs';
-      //this.updateMap();
-    }
+  ngOnInit(){    
+    this.updateMap();
+  }
 
   askSave(){
     if (this.form.invalid) {
@@ -480,6 +476,35 @@ export class KngDepositDlgComponent{
   getStaticMap(address:UserAddress){
     return KngUtils.getStaticMap(address,this.pubMap);    
   }
+
+
+  updateMap(){
+    let lastlen=0,newlen;
+    //
+    console.log(this.form);
+    //console.log(value.streetAddres);
+    this.form.valueChanges.subscribe(value => {
+      newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
+      if(Math.abs(lastlen-newlen)<2||
+        !value.name||
+        !value.streetAddress||
+        !value.postalCode||
+        !value.region){
+        return;
+      }
+      lastlen=newlen;
+      // get geo only if last value changed more than 3 chars
+      KngUtils.getGeoCode(this.$http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((geo)=>{
+        if(!geo.location){return;}
+        this.address.geo={
+          lat:geo.location.lat,
+          lng:geo.location.lng
+        }
+      });        
+    });
+
+  }
+
 }
 
 
@@ -492,7 +517,6 @@ export class KngDepositDlgComponent{
 export class KngDepositComponent extends KngConfigComponent {
 
   pubMap:string;
-  STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
   //
   // edit content
   edit:{
@@ -529,37 +553,12 @@ export class KngDepositComponent extends KngConfigComponent {
   ngOnInit(){
     super.ngOnInit();
     this.pubMap=this.config.shared.keys.pubMap;
-   // console.log('this.pubMap',this.pubMap);
-
-    //this.updateMap();
   }
 
-  updateMap(){
-    let lastlen=0,newlen;
-    //
-    console.log(this.edit.form);
-    //console.log(value.streetAddres);
-    this.edit.form.valueChanges.subscribe(value => {
-      newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
-      if(Math.abs(lastlen-newlen)<2||
-        !value.name||
-        !value.streetAddress||
-        !value.postalCode||
-        !value.region){
-        return;
-      }
-      lastlen=newlen;
-      // get geo only if last value changed more than 3 chars
-      KngUtils.getGeoCode(this.http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((geo)=>{
-        if(!geo.location){return;}
-        this.edit.address.geo={
-          lat:geo.location.lat,
-          lng:geo.location.lng
-        }
-      });        
-    });
-
+  getStaticMap(address:UserAddress){
+    return KngUtils.getStaticMap(address,this.pubMap);    
   }
+
   onDelete($event){
     if(this.edit.idx==null){
       // FIXME place the string in our i18n service
@@ -575,11 +574,6 @@ export class KngDepositComponent extends KngConfigComponent {
     return false;
   }
 
-
-  getStaticMap(address:UserAddress){
-    return KngUtils.getStaticMap(address,this.pubMap);    
-  }
-  
   onDecline(){
     this.edit.idx=null;
     this.edit.address=null;
@@ -623,7 +617,10 @@ export class KngDepositComponent extends KngConfigComponent {
     this.edit.address=address;
     this.edit.address=address;
     const dialogRef = this.$dlg.open(KngDepositDlgComponent, {
-      data:this.edit
+      data:{
+        pubMap:this.pubMap,
+        edit:this.edit
+      }      
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('--- on Close dlg navigation onMenuSelect',result)
