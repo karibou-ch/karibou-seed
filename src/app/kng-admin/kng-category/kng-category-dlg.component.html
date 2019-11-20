@@ -115,7 +115,7 @@
           
       </mdc-dialog-content>
       <mdc-dialog-actions>
-        <button mdc-dialog-button [disabled]="edit.category?.usedBy.length" (click)="askDelete()" class="align-start">Delete</button>
+        <button mdcDialogButton [disabled]="edit.category?.usedBy.length" (click)="askDelete()" class="align-start">Delete</button>
         <button mdcDialogButton mdcDialogAction="close">Decline</button>      
         <button mdcDialogButton mdcDialogAction="accept" [disabled]="!edit.form.valid">Accept</button>
       </mdc-dialog-actions>
