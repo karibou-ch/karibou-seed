@@ -260,7 +260,6 @@ export class KngNavigationDlgComponent {
     public $i18n:i18n,
     @Inject(MDC_DIALOG_DATA) public data:any
     ) { 
-      console.log('--- dlg construct',data);
       this.menu=data;
     }
 
@@ -390,7 +389,6 @@ export class KngNavigationComponent extends KngConfigComponent {
       data:this.edit.menu
     });
     dialogRef.afterClosed().subscribe(value => {
-      console.log('--- on Close dlg navigation ojnMenuCreate',value)
       this.onSave(value);
     });
   }
@@ -401,7 +399,6 @@ export class KngNavigationComponent extends KngConfigComponent {
       data:this.edit.menu
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('--- on Close dlg navigation onMenuSelect',result)
       if (result !== 'close') {
         this.onSave(result);
       } else {
@@ -429,10 +426,8 @@ export class KngDepositDlgComponent{
     public $i18n:i18n,
     @Inject(MDC_DIALOG_DATA) public data:any
     ) { 
-      console.log('--- dlg construct',data);
       this.address= data.address;
       this.idx = data.idx;
-      console.log(' @Inject(MDC_DIALOG_DATA)',this.address);
     }
 
   address:any;
@@ -529,7 +524,6 @@ export class KngDepositComponent extends KngConfigComponent {
   ngOnInit(){
     super.ngOnInit();
     this.pubMap=this.config.shared.keys.pubMap;
-   // console.log('this.pubMap',this.pubMap);
 
     //this.updateMap();
   }
@@ -537,8 +531,6 @@ export class KngDepositComponent extends KngConfigComponent {
   updateMap(){
     let lastlen=0,newlen;
     //
-    console.log(this.edit.form);
-    //console.log(value.streetAddres);
     this.edit.form.valueChanges.subscribe(value => {
       newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
       if(Math.abs(lastlen-newlen)<2||
@@ -613,8 +605,7 @@ export class KngDepositComponent extends KngConfigComponent {
       data:this.edit
     });
     dialogRef.afterClosed().subscribe(value => {
-      console.log('--- on Close dlg navigation onMenuCreate',value)
-      this.onSave(value);    
+       this.onSave(value);    
   })
 }
 
@@ -626,7 +617,6 @@ export class KngDepositComponent extends KngConfigComponent {
       data:this.edit
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('--- on Close dlg navigation onMenuSelect',result)
       if (result !== 'close') {
         this.onSave(result);
       } else {

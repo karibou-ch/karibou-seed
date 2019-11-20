@@ -89,16 +89,13 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   }
 
   loadCategories(){
-    console.log('loadCategories');
     this.$category.select({stats:true}).subscribe((categories:Category[])=>{
       this.isReady=true;
       this.categories=categories.sort(this.sortByGroupAndWeight.bind(this));
     });
-    console.log('loadCategories FIN');
   }
 
   onSave(value : any){
-    console.log('---------------',this.edit.form.value)
     //
     // copy data 
 
@@ -161,20 +158,15 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   }
 
   onCategorySelect($event,category){
-    console.log('onCategorySelect');
     this.edit.category=category;
     this.edit.create=false;
    
-    console.log('this.edit',this.edit);
-    console.log('this.edit.category',this.edit.category);
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
       data:this.edit
     });
-    console.log('lallalalalalalalalallaalla');
+
     dialogRef.afterClosed().subscribe(result => {
-      console.log('--- on Close dlg navigation onMenuSelect',result)
       if (result !== 'close') {
-        console.log(' save');
         this.onSave(result);
       } else {
         this.onDecline();
@@ -192,7 +184,6 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
       data:this.edit
     });
     dialogRef.afterClosed().subscribe(value => {
-      console.log('--- on Close dlg navigation onMenuCreate',value)
       this.onSave(value);
   })
   }
@@ -243,9 +234,7 @@ export class KngCategoryDlgComponent {
     public $i18n:i18n,
     @Inject(MDC_DIALOG_DATA) public data:any
     ) { 
-      console.log('--- dlg construct',data);
       this.edit=data;
-      console.log('coucou');
       
     }
 
