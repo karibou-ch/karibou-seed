@@ -121,11 +121,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     );
   }
 
-  // FIXME radio button is not working
-  onTypeChange(evt: MdcRadioChange,value:string): void {
-    this.edit.category.type = value;
-  }  
-
+ 
   onDecline(){
     this.edit.category=null;
   }
@@ -166,10 +162,16 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result !== 'close') {
-        this.onSave(result);
-      } else {
-        this.onDecline();
+      switch (result) {
+        case 'accept':
+            this.onSave(result);
+            break;
+        case 'close':
+            this.onDecline();
+            break;
+        default:
+            this.onDelete();
+            break;
       }
     });
 
@@ -264,10 +266,17 @@ export class KngCategoryDlgComponent {
   }
 
   askDelete() {
+    console.log('askDelete');
     this.$dlgRef.close();
   }
 
   askDecline() {
     this.$dlgRef.close();
   }
+
+   // FIXME radio button is not working
+   onTypeChange(evt: MdcRadioChange,value:string): void {
+    this.edit.category.type = value;
+  }  
+
 }
