@@ -398,10 +398,12 @@ export class KngNavigationComponent extends KngConfigComponent {
       data:this.edit.menu
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result !== 'close') {
-        this.onSave(result);
-      } else {
-        this.onDecline();
+      if (result ==='close') {
+            this.onDecline();
+      } else if (typeof result === 'object') {
+            this.onSave(result);
+      } else{
+            this.onDelete($event);
       }
     });
 
@@ -426,9 +428,10 @@ export class KngDepositDlgComponent{
     public $i18n:i18n,
     @Inject(MDC_DIALOG_DATA) public data:any
   ) { 
-    this.address= data.edit.address;
-    this.idx = data.edit.idx;
-    this.pubMap = data.pubMap;
+   
+      this.address= data.edit ? data.edit.address : null;
+      this.idx = data.edit ? data.edit.idx : null;
+      this.pubMap = data.pubMap;
   }
 
   address:any;
@@ -478,8 +481,7 @@ export class KngDepositDlgComponent{
   updateMap(){
     let lastlen=0,newlen;
     //
-    console.log(this.form);
-    //console.log(value.streetAddres);
+     //console.log(value.streetAddres);
     this.form.valueChanges.subscribe(value => {
       newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
       if(Math.abs(lastlen-newlen)<2||
@@ -600,14 +602,18 @@ export class KngDepositComponent extends KngConfigComponent {
   }
   onAddressCreate(){
     this.edit.idx=null;
-    this.edit.address={};
+    this.edit.address= {};
     this.edit.address.fees=0;
     const dialogRef = this.$dlg.open(KngDepositDlgComponent, {
       data:this.edit
     });
-    dialogRef.afterClosed().subscribe(value => {
-       this.onSave(value);    
-  })
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'close') {
+        this.onDecline();
+  } else if (typeof result === 'object') {
+        this.onSave(result);
+  }
+  });
 }
 
   onAddressSelect($event,address,i){
@@ -621,15 +627,13 @@ export class KngDepositComponent extends KngConfigComponent {
       }      
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result !== 'close') {
-        this.onSave(result);
+      if (result === 'close') {
+            this.onDecline();
+      } else if (typeof result === 'object') {
+            this.onSave(result);
       } else {
-        this.onDecline();
+            this.onDelete($event);
       }
     });
-
-  
-
-  }  
-  
+  }
 }
