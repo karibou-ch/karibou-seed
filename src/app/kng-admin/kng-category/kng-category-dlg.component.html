@@ -9,7 +9,7 @@
       </mdc-dialog-title>
       <mdc-dialog-content *ngIf="edit.category">
           <form [formGroup]="edit.form" (submit)="askSave()">
-              <!-- IMAGE 
+              <!-- IMAGE  -->
               <div class="image">
                   <img [src]="edit.category.cover" />
                   <mdc-form-field>
@@ -22,7 +22,7 @@
                         [public-key]="edit.pubUpcare">            
                       </ngx-uploadcare-widget>          
                     </mdc-form-field>      
-              </div>-->
+              </div>
 
               <!-- CHECK -->          
               <div>
@@ -116,7 +116,6 @@
           
       </mdc-dialog-content>
       <mdc-dialog-actions>
-        {{ edit.category?.usedBy.length }}
         <button mdcDialogButton [disabled]="edit.category?.usedBy.length!=0" (click)="askDelete()" class="align-start">Delete</button>
         <button mdcDialogButton mdcDialogAction="close">Decline</button>      
         <button mdcDialogButton mdcDialogAction="accept" [disabled]="!edit.form.valid">Accept</button>
