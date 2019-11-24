@@ -7,7 +7,7 @@
       <span i18n>{{menu?.group||'Create'}}<b>/</b> {{menu?.name[$i18n.locale]||'Navigation'}}</span>
     </mdc-dialog-title>
   <mdc-dialog-content *ngIf="menu">
-      <form [formGroup]="form" (submit)="onSave()" >
+      <form [formGroup]="form" (submit)="askSave()" >
           <!-- CHECK -->
           <div>
             <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="menu.weight" formControlName="weight">

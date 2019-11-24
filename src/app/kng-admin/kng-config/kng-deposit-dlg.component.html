@@ -6,7 +6,7 @@
           <span i18n>{{address?.name||'Nouvelle Addresse'}}</span>
       </mdc-dialog-title>
       <mdc-dialog-content>
-          <form [formGroup]="form" (submit)="onSave()">
+          <form [formGroup]="form" (submit)="askSave()">
               <!-- CHECK  -->
               <div class="geomap" 
                   [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}">
