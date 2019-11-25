@@ -1,1 +1,1 @@
-export { KngCategoriesComponent } from './kng-categories.component';
+export { KngCategoriesComponent, KngCategoryDlgComponent } from './kng-categories.component';

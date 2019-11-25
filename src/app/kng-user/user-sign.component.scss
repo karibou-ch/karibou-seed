@@ -28,7 +28,14 @@
       }
     }
     
-    
+    mdc-list-item{ 
+      mdc-icon{
+        
+        .size-large {
+          font-size: 50px;
+        }
+      }
+    }  
 
 
     kng-control-messages{

@@ -40,14 +40,14 @@
     <form [formGroup]="$address" (submit)="onSave()">
 
         <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
-          <mdc-icon trailing>person</mdc-icon>
+          <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
         </mdc-text-field>
 
 
         <mdc-text-field autocomplete="false" fullwidth i18n-label [label]="i18n[locale].address_street" type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
         </mdc-text-field>
 
-        <!-- <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75" [box]="false" (selectionChange)="onGeloc($event)">
+        <!-- <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75"  (selectionChange)="onGeloc($event)">
           <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
         </mdc-select> -->
           
@@ -61,7 +61,7 @@
           {{i18n[locale].address_postalcode_title}}
         </p>
           
-        <mdc-select  [placeholder]="i18n[locale].address_region" formControlName="region" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
+        <mdc-select  [placeholder]="i18n[locale].address_region" formControlName="region" class="width-50"  (selectionChange)="onGeloc($event)">
           <!-- <option value="" selected></option> -->
           <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
         </mdc-select>
@@ -69,12 +69,12 @@
           
         <!-- <mdc-text-field fullwidth i18n-label label="Code postal"  type="text" formControlName="postalCode" class="width-50">
         </mdc-text-field> -->
-        <mdc-select [placeholder]="i18n[locale].address_postalcode" formControlName="postalCode" class="width-50" [box]="false" (selectionChange)="onGeloc($event)">
+        <mdc-select [placeholder]="i18n[locale].address_postalcode" formControlName="postalCode" class="width-50"  (selectionChange)="onGeloc($event)">
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
         </mdc-select>
         
         <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">
-          <mdc-icon trailing>person</mdc-icon>
+          <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
         </mdc-text-field>
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
