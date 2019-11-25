@@ -166,11 +166,11 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         case 'accept':
             this.onSave(result);
             break;
-        case 'close':
-            this.onDecline();
+        case 'delete':
+            this.onDelete();
             break;
         default:
-            this.onDelete();
+            this.onDecline();
             break;
       }
     });
@@ -266,8 +266,7 @@ export class KngCategoryDlgComponent {
   }
 
   askDelete() {
-    console.log('askDelete');
-    this.$dlgRef.close();
+    this.$dlgRef.close('delete');
   }
 
   askDecline() {

@@ -284,11 +284,11 @@ export class KngNavigationDlgComponent {
   }
 
   askDelete() {
-    this.$dlgRef.close();
+    this.$dlgRef.close('delete');
   }
 
   askDecline() {
-    this.$dlgRef.close();
+    this.$dlgRef.close('decline');
   }
 }
 
@@ -398,17 +398,17 @@ export class KngNavigationComponent extends KngConfigComponent {
       data:this.edit.menu
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result ==='close') {
-            this.onDecline();
+      if (result === 'delete') {
+            this.onDelete($event);
       } else if (typeof result === 'object') {
             this.onSave(result);
       } else{
-            this.onDelete($event);
+            this.onDecline();
       }
     });
 
   }  
-  
+
 }
 
 @Component({
@@ -466,11 +466,11 @@ export class KngDepositDlgComponent{
   }
 
   askDelete() {
-    this.$dlgRef.close();
+    this.$dlgRef.close('delete');
   }
 
   askDecline() {
-    this.$dlgRef.close();
+    this.$dlgRef.close('decline');
   }
 
   getStaticMap(address:UserAddress){
@@ -627,13 +627,13 @@ export class KngDepositComponent extends KngConfigComponent {
       }      
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result === 'close') {
-            this.onDecline();
+      if (result === 'delete') {
+        this.onDelete($event);
       } else if (typeof result === 'object') {
             this.onSave(result);
-      } else {
-            this.onDelete($event);
+      } else{
+            this.onDecline();
       }
     });
-  }
+}
 }
