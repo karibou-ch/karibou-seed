@@ -5,7 +5,7 @@
 <div class="container">
   <mdc-list [twoLine]="true" avatar="true" border="true" >
     <mdc-list-item [routerLink]="['./create']">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder</mdc-icon>
       <mdc-list-item-text i18n>
         Ajouter un nouveau contenu
         <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
@@ -16,7 +16,7 @@
     <mdc-list-item *ngFor="let content of contents" 
                     [routerLink]="['./',content.slug[0]]"
                     [class.disabled]="!content.available">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder</mdc-icon>
       <mdc-list-item-text>
         <span>{{content.type}}</span><b>/</b>{{content.slug[0]}}
         <mdc-list-item-secondary>
