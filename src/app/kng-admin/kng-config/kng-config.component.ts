@@ -398,16 +398,19 @@ export class KngNavigationComponent extends KngConfigComponent {
       data:this.edit.menu
     });
     dialogRef.afterClosed().subscribe(result => {
+      // on delete
       if (result === 'delete') {
-            this.onDelete($event);
-      } else if (typeof result === 'object') {
-            this.onSave(result);
-      } else{
-            this.onDecline();
+        return this.onDelete($event);
       }
+      // on Save
+      if (typeof result === 'object') {
+        return this.onSave(result);
+      }
+      // on close
+      this.onDecline();
     });
 
-  }  
+  } 
 
 }
 
@@ -610,10 +613,10 @@ export class KngDepositComponent extends KngConfigComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'close') {
         this.onDecline();
-  } else if (typeof result === 'object') {
-        this.onSave(result);
-  }
-  });
+      } else if (typeof result === 'object') {
+            this.onSave(result);
+      }
+    });
 }
 
   onAddressSelect($event,address,i){
@@ -627,13 +630,16 @@ export class KngDepositComponent extends KngConfigComponent {
       }      
     });
     dialogRef.afterClosed().subscribe(result => {
+      // on delete
       if (result === 'delete') {
-        this.onDelete($event);
-      } else if (typeof result === 'object') {
-            this.onSave(result);
-      } else{
-            this.onDecline();
+        return this.onDelete($event);
       }
+      // on Save
+      if (typeof result === 'object') {
+        return this.onSave(result);
+      }
+      // on close
+      this.onDecline();
     });
 }
 }

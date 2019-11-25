@@ -150,13 +150,16 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-        if (result === 'delete') {
-        this.onDelete();
-      } else if (typeof result === 'object') {
-            this.onSave(result);
-      } else{
-            this.onDecline();
+      // on delete
+      if (result === 'delete') {
+        return this.onDelete();
       }
+      // on Save
+      if (typeof result === 'object') {
+        return this.onSave(result);
+      }
+      // on close
+      this.onDecline();
     });
 
    
