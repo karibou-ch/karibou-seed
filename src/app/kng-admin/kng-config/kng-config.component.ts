@@ -337,7 +337,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.config.shared.menu.splice(toRemove, 1);
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
-      this.$snack.show(this.$i18n.label().save_ok,"OK");
+      this.$snack.show(this.$i18n.label().delete_ok,"OK");
       this.buildMenu();
     },
     (err)=>this.$snack.show(err.error,"OK"),
@@ -568,7 +568,7 @@ export class KngDepositComponent extends KngConfigComponent {
     this.config.shared.deposits.splice(this.edit.idx, 1);
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
-      this.$snack.show(this.$i18n.label().save_ok,"OK");
+      this.$snack.show(this.$i18n.label().delete_ok,"OK");
       //this.dlgEdit.dialogRef.close();        
     },
     (err)=>this.$snack.show(err.error,"OK"));  
