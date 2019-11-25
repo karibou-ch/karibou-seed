@@ -1,4 +1,4 @@
-import { Component, OnDestroy,OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy,OnInit, Inject } from '@angular/core';
 import {
   CategoryService,
   Category,
@@ -6,7 +6,7 @@ import {
 }  from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../../common';
-import { MdcSnackbar, MdcDialogComponent, MdcRadioChange } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -32,8 +32,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   errors:any;
 
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
-
+  
   constructor(
     private $fb: FormBuilder,
     private $i18n:i18n,
@@ -41,7 +40,8 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     private $category: CategoryService,
     private $route:ActivatedRoute,
     private $snack:MdcSnackbar,
-    private $navigation:KngNavigationStateService
+    private $navigation:KngNavigationStateService,
+    public $dlg: MdcDialog,
   ){
     
     let loader=this.$route.snapshot.data.loader;
@@ -95,8 +95,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     });
   }
 
-  onSave(){
-    //console.log('---------------',this.edit.form.value)
+  onSave(value : any){
     //
     // copy data 
 
@@ -122,11 +121,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     );
   }
 
-  // FIXME radio button is not working
-  onTypeChange(evt: MdcRadioChange,value:string): void {
-    this.edit.category.type = value;
-  }  
-
+ 
   onDecline(){
     this.edit.category=null;
   }
@@ -142,7 +137,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         this.categories.splice(position, 1);
       }
       
-      this.dlgEdit.close();
+      // this.$dlg.close(); FIXME ici on ferme la fenêtre mais pas dans kng_config
       this.edit.create=false;
       this.edit.category=null;
     }
@@ -161,14 +156,38 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   onCategorySelect($event,category){
     this.edit.category=category;
     this.edit.create=false;
-    this.dlgEdit.show();
+   
+    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
+      data:this.edit
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      switch (result) {
+        case 'accept':
+            this.onSave(result);
+            break;
+        case 'close':
+            this.onDecline();
+            break;
+        default:
+            this.onDelete();
+            break;
+      }
+    });
+
+   
   }
 
   onCategoryCreate(){
     this.edit.category=new Category();
     this.edit.category.usedBy=[];
     this.edit.create=true;
-    this.dlgEdit.show();
+    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
+      data:this.edit
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      this.onSave(value);
+  })
   }
 
   onDialogOpen(dialog){
@@ -201,5 +220,63 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     return g1.toLowerCase().localeCompare(g2.toLowerCase());
   }
 
+
+}
+
+
+
+@Component({
+  templateUrl: './kng-category-dlg.component.html',
+  styleUrls: ['./kng-categories.component.scss']
+})
+export class KngCategoryDlgComponent {
+  constructor(
+    public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
+    public $fb: FormBuilder,
+    public $i18n:i18n,
+    @Inject(MDC_DIALOG_DATA) public data:any
+    ) { 
+      this.edit=data;
+      
+    }
+
+    edit:any;
+
+  //
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required]],
+      'active':['', []],
+      'home': ['', []],
+      'color':['', []],
+      'image': ['', [Validators.required]],
+      'group': ['', []],
+      'name': ['', [Validators.required]],
+      'description': ['', [Validators.required]],
+      'type': ['', [Validators.required]]
+  });    
+
+  askSave(){
+    if (this.form.invalid) {
+      return;
+    }
+   
+    this.$dlgRef.close(this.form.value);
+
+  }
+
+  askDelete() {
+    console.log('askDelete');
+    this.$dlgRef.close();
+  }
+
+  askDecline() {
+    this.$dlgRef.close();
+  }
+
+   // FIXME radio button is not working
+   onTypeChange(evt: MdcRadioChange,value:string): void {
+    this.edit.category.type = value;
+  }  
 
 }

@@ -1,0 +1,38 @@
+<mdc-dialog  
+  (accept)="askSave()"
+  (decline)="askDecline()"
+  >
+  <mdc-dialog-surface class="mdc-dialog-min-width(640)">
+    <mdc-dialog-title>
+      <span i18n>{{menu?.group||'Create'}}<b>/</b> {{menu?.name[$i18n.locale]||'Navigation'}}</span>
+    </mdc-dialog-title>
+  <mdc-dialog-content *ngIf="menu">
+      <form [formGroup]="form" (submit)="askSave()" >
+          <!-- CHECK -->
+          <div>
+            <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="menu.weight" formControlName="weight">
+            </mdc-text-field>                
+            <mdc-text-field i18n-label label="Groupe" type="text" [ngModel]="menu.group" formControlName="group">
+            </mdc-text-field>                
+            <mdc-form-field class="align-end">
+              <mdc-checkbox [ngModel]="menu.active" formControlName="active" ></mdc-checkbox>
+              <span i18n>Actif</span>
+            </mdc-form-field>
+        </div>
+
+        <div>                      
+          <mdc-text-field style="flex:1" i18n-label label="Nom" type="text" [ngModel]="menu.name[$i18n.locale]" formControlName="name" >
+          </mdc-text-field>
+          <mdc-text-field style="flex:1" i18n-label label="lien" type="text" [ngModel]="menu.url" formControlName="url" >
+          </mdc-text-field>
+        </div>
+      </form>
+      
+  </mdc-dialog-content>
+  <mdc-dialog-actions>
+    <button mdcDialogButton (click)="askDelete()" [disabled]="menu?.active" class="align-start">Delete</button>
+    <button mdcDialogButton mdcDialogAction="close">Decline</button> <!-- TODO add !form.valid|| -->
+    <button mdcDialogButton (click)="askSave()" >Accept</button>
+  </mdc-dialog-actions>
+  </mdc-dialog-surface>
+</mdc-dialog>

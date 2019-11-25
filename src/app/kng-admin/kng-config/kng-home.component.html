@@ -1,7 +1,7 @@
 <div class="container">
   <mdc-list  avatar="true"  interactive="false">
     <mdc-list-item (click)="onConfigSave()">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">save</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">save</mdc-icon>
       <mdc-list-item-text i18n>Sauver vos modifications
         <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
       </mdc-list-item-text>
@@ -12,21 +12,21 @@
       
     <!-- SITE About -->
     <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Titre about du site" type="text" [(ngModel)]="config?.shared.home.about.t[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Header about du site" type="text" [(ngModel)]="config?.shared.home.about.h[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config large">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-textarea i18n-label label="Paragraphe about du site" kng-autosize rows="4" [(ngModel)]="config?.shared.home.about.p[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
@@ -52,14 +52,14 @@
 
     <!-- SITE Products Selection -->
     <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Titre de la sélection" type="text" [(ngModel)]="config?.shared.home.selection.t[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Header de la sélection" type="text" [(ngModel)]="config?.shared.home.selection.h[$i18n.locale]">
         </mdc-text-field>
@@ -69,21 +69,21 @@
   
     <!-- SITE Footer -->
     <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Footer (T)" type="text" [(ngModel)]="config?.shared.home.footer.t[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>      
     <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-text-field fullwidth i18n-label label="Footer (H) " type="text" [(ngModel)]="config?.shared.home.footer.h[$i18n.locale]">
         </mdc-text-field>
       </mdc-list-item-text>
     </mdc-list-item>
     <mdc-list-item class="config large">
-      <mdc-icon mdcListItemGraphic [fontSize]="30">folder_special</mdc-icon>
+      <mdc-icon mdcListItemGraphic class="size-large">folder_special</mdc-icon>
       <mdc-list-item-text>
         <mdc-textarea i18n-label label="Footer (P)" kng-autosize rows="4" [(ngModel)]="config?.shared.home.footer.p[$i18n.locale]"></mdc-textarea>
       </mdc-list-item-text>
