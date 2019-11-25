@@ -34,7 +34,6 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   
   constructor(
-    private $fb: FormBuilder,
     private $i18n:i18n,
     private $loader: LoaderService,
     private $category: CategoryService,
@@ -61,17 +60,6 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   ngOnInit() {
     //
     // init formBuilder
-    this.edit.form=this.$fb.group({
-      'weight':['', [Validators.required]],
-      'active':['', []],
-      'home': ['', []],
-      'color':['', []],
-      'image': ['', [Validators.required]],
-      'group': ['', []],
-      'name': ['', [Validators.required]],
-      'description': ['', [Validators.required]],
-      'type': ['', [Validators.required]]
-    });
     
     this.$navigation.isAdminLayout=true;
     this.loadCategories()
@@ -100,8 +88,8 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     // copy data 
 
     // FIXME radio button is not working
-    delete this.edit.form.value.type;
-    Object.assign(this.edit.category,this.edit.form.value)
+      delete value.type;
+    Object.assign(this.edit.category,value)
     let editor=(this.edit.create)?
       this.$category.create(this.edit.category):
       this.$category.save(this.edit.category.slug,this.edit.category);
@@ -158,20 +146,16 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     this.edit.create=false;
    
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data:this.edit
+      data:this.edit.category
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      switch (result) {
-        case 'accept':
+        if (result === 'delete') {
+        this.onDelete();
+      } else if (typeof result === 'object') {
             this.onSave(result);
-            break;
-        case 'delete':
-            this.onDelete();
-            break;
-        default:
+      } else{
             this.onDecline();
-            break;
       }
     });
 
@@ -183,10 +167,14 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     this.edit.category.usedBy=[];
     this.edit.create=true;
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data:this.edit
+      data:this.edit.category
     });
-    dialogRef.afterClosed().subscribe(value => {
-      this.onSave(value);
+    dialogRef.afterClosed().subscribe(result => {
+      if (typeof result === 'object') {
+            this.onSave(result);
+      } else{
+            this.onDecline();
+      }
   })
   }
 
@@ -234,13 +222,15 @@ export class KngCategoryDlgComponent {
     public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
     public $fb: FormBuilder,
     public $i18n:i18n,
-    @Inject(MDC_DIALOG_DATA) public data:any
+    @Inject(MDC_DIALOG_DATA) public category:any
     ) { 
-      this.edit=data;
-      
+      this.category = category;
     }
 
-    edit:any;
+    //
+    // edit.category
+    // edit.id
+    //category:any;
 
   //
   // init formBuilder
@@ -275,7 +265,7 @@ export class KngCategoryDlgComponent {
 
    // FIXME radio button is not working
    onTypeChange(evt: MdcRadioChange,value:string): void {
-    this.edit.category.type = value;
+    this.category.type = value;
   }  
 
 }
