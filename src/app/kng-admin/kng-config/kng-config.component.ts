@@ -1,8 +1,8 @@
-import { Component, OnInit,OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit,OnDestroy, Inject } from '@angular/core';
 
 import { KngNavigationStateService, i18n, KngUtils } from '../../common';
 
-import { MdcSnackbar, MdcDialogComponent } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -17,7 +17,8 @@ import {
 
 import { forkJoin ,  concat } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-//import { mergeMap, filter } from 'rxjs/operators';
+// import { ConsoleReporter } from 'jasmine';
+// import { mergeMap, filter } from 'rxjs/operators';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class KngConfigComponent implements OnInit,OnDestroy {
   
 
   constructor(
-    public http:HttpClient,
+    public $dlg: MdcDialog,
     public $fb: FormBuilder,
     public $i18n: i18n,
     public $config: ConfigService,
@@ -248,6 +249,50 @@ export class KngPageContentComponent  {
 
 
 @Component({
+  templateUrl: './kng-navigation-dlg.component.html',
+  styleUrls: ['./kng-config-dlg.component.scss']
+})
+export class KngNavigationDlgComponent {
+  constructor(
+    public $dlgRef: MdcDialogRef<KngNavigationDlgComponent>,
+    public $fb: FormBuilder,
+    public $i18n:i18n,
+    @Inject(MDC_DIALOG_DATA) public data:any
+    ) { 
+      this.menu=data;
+    }
+
+    menu:any;
+
+  //
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required]],
+    'active':['', []],
+    'group': ['', [Validators.required]],
+    'name': ['', [Validators.required]],
+    'url': ['', [Validators.required]]
+  });    
+
+  askSave(){
+    if (this.form.invalid) {
+      return;
+    }
+   
+    this.$dlgRef.close(this.form.value);
+
+  }
+
+  askDelete() {
+    this.$dlgRef.close('delete');
+  }
+
+  askDecline() {
+    this.$dlgRef.close('decline');
+  }
+}
+
+@Component({
   selector: 'kng-navigation',
   templateUrl: './kng-navigation.component.html',
   styleUrls: ['./kng-config.component.scss']
@@ -259,8 +304,7 @@ export class KngNavigationComponent extends KngConfigComponent {
     menu:any;
     form: any;
   }
-  
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
+
   
   assign(value){
     let lang=this.$i18n.locale;
@@ -278,16 +322,6 @@ export class KngNavigationComponent extends KngConfigComponent {
       form:null,
       menu:null
     };
-    
-    //
-    // init formBuilder
-    this.edit.form=this.$fb.group({
-      'weight':['', [Validators.required]],
-      'active':['', []],
-      'group': ['', [Validators.required]],
-      'name': ['', [Validators.required]],
-      'url': ['', [Validators.required]]
-    });    
   }
 
   ngOnInit(){
@@ -304,7 +338,6 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
       this.$snack.open(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.dialogRef.close();        
       this.buildMenu();
     },
     (err)=>this.$snack.open(err.error,"OK"),
@@ -315,17 +348,16 @@ export class KngNavigationComponent extends KngConfigComponent {
 
   onDecline(){
     this.edit.menu=null;
-    this.dlgEdit.dialogRef.close();    
   }
 
 
-  onSave($event){
-    let toSave=-1;
+  onSave(value){
+     let toSave=-1;
     this.isLoading=true;
 
     //
     // save specific menu
-    this.assign(this.edit.form.value);
+    this.assign(value);
     //
     // create this menu
     if(!this.edit.menu._id){
@@ -344,7 +376,6 @@ export class KngNavigationComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.menu=null;
       this.$snack.open(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.dialogRef.close();      
       this.buildMenu();
     },
     (err)=>this.$snack.open(err.error,"OK"),
@@ -353,16 +384,133 @@ export class KngNavigationComponent extends KngConfigComponent {
   }
   onMenuCreate(){
     this.edit.menu={name:{fr:'',en:null,de:null}};
-    this.dlgEdit.dialogRef.opened();    
-    
+    const dialogRef = this.$dlg.open(KngNavigationDlgComponent, {
+      data:this.edit.menu
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      this.onSave(value);
+    });
   }
 
   onMenuSelect($event,menu){
     this.edit.menu=menu;
-    this.dlgEdit.dialogRef.opened();    
-  }  
-  
+    const dialogRef = this.$dlg.open(KngNavigationDlgComponent, {
+      data:this.edit.menu
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // on delete
+      if (result === 'delete') {
+        return this.onDelete($event);
+      }
+      // on Save
+      if (typeof result === 'object') {
+        return this.onSave(result);
+      }
+      // on close
+      this.onDecline();
+    });
+
+  } 
+
 }
+
+@Component({
+  templateUrl: './kng-deposit-dlg.component.html',
+  styleUrls: ['./kng-config-dlg.component.scss'],
+  
+})
+export class KngDepositDlgComponent{
+
+  pubMap:string;
+  STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
+
+  constructor(
+    public $http:HttpClient,
+    public $dlgRef: MdcDialogRef<KngDepositDlgComponent>,
+    public $fb: FormBuilder,
+    public $i18n:i18n,
+    @Inject(MDC_DIALOG_DATA) public data:any
+  ) { 
+   
+      this.address= data.edit ? data.edit.address : null;
+      this.idx = data.edit ? data.edit.idx : null;
+      this.pubMap = data.pubMap;
+  }
+
+  address:any;
+  idx: any;
+
+  //
+  // init formBuilder
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required,Validators.min(0)]],
+    'active':['', []],
+    'name': ['', [Validators.required]],
+    'streetAddress': ['', [Validators.required,Validators.minLength(4)]],
+    'floor': ['', [Validators.required,Validators.minLength(1)]],
+    'postalCode': ['', [Validators.required,Validators.minLength(4)]],
+    'region': ['', [Validators.required]],
+    'note': ['', [Validators.required]],
+    'fees': ['', [Validators.required,Validators.min(0)]]
+  });
+
+  ngOnInit(){    
+    this.updateMap();
+  }
+
+  askSave(){
+    if (this.form.invalid) {
+      return;
+    }
+   
+    this.$dlgRef.close(this.form.value);
+
+  }
+
+  askDelete() {
+    this.$dlgRef.close('delete');
+  }
+
+  askDecline() {
+    this.$dlgRef.close('decline');
+  }
+
+  getStaticMap(address:UserAddress){
+    return KngUtils.getStaticMap(address,this.pubMap);    
+  }
+
+
+  updateMap(){
+    let lastlen=0,newlen;
+    //
+     //console.log(value.streetAddres);
+    this.form.valueChanges.subscribe(value => {
+      newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
+      if(Math.abs(lastlen-newlen)<2||
+        !value.name||
+        !value.streetAddress||
+        !value.postalCode||
+        !value.region){
+        return;
+      }
+      lastlen=newlen;
+      console.log('form add change',value)
+      // get geo only if last value changed more than 3 chars
+      KngUtils.getGeoCode(this.$http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((result)=>{
+        console.log('form geo change',result.geo.location)
+        if(!result.geo.location){return;}
+        this.address.geo={
+          lat:result.geo.location.lat,
+          lng:result.geo.location.lng
+        }
+      });        
+    });
+
+  }
+
+}
+
 
 
 @Component({
@@ -373,7 +521,6 @@ export class KngNavigationComponent extends KngConfigComponent {
 export class KngDepositComponent extends KngConfigComponent {
 
   pubMap:string;
-  STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
   //
   // edit content
   edit:{
@@ -382,7 +529,6 @@ export class KngDepositComponent extends KngConfigComponent {
     form: any;
   }
   
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
   
   assign(value){
     let lang=this.$i18n.locale;
@@ -397,11 +543,8 @@ export class KngDepositComponent extends KngConfigComponent {
     this.edit.address.note=value.note;    
     this.edit.address.active=value.active;    
   }
-  
-  ngOnInit(){
-    super.ngOnInit();
-    this.pubMap=this.config.shared.keys.pubMap;
 
+  ngConstruct(){
     //
     // init edit struct
     this.edit={
@@ -409,50 +552,18 @@ export class KngDepositComponent extends KngConfigComponent {
       form:null,
       address:null
     };
-    
-    //
-    // init formBuilder
-    this.edit.form=this.$fb.group({
-      'weight':['', [Validators.required,Validators.min(0)]],
-      'active':['', []],
-      'name': ['', [Validators.required]],
-      'streetAddress': ['', [Validators.required,Validators.minLength(4)]],
-      'floor': ['', [Validators.required,Validators.minLength(1)]],
-      'postalCode': ['', [Validators.required,Validators.minLength(4)]],
-      'region': ['', [Validators.required]],
-      'note': ['', [Validators.required]],
-      'fees': ['', [Validators.required,Validators.min(0)]]
-    });    
-
-    this.updateMap();
+  }
+  
+  ngOnInit(){
+    super.ngOnInit();
+    this.pubMap=this.config.shared.keys.pubMap;
   }
 
-  updateMap(){
-    let lastlen=0,newlen;
-    //
-    //
-    this.edit.form.valueChanges.subscribe(value => {
-      newlen=[value.streetAddress,value.postalCode,value.region].join(',').length;
-      if(Math.abs(lastlen-newlen)<2||
-        !value.name||
-        !value.streetAddress||
-        !value.postalCode||
-        !value.region){
-        return;
-      }
-      lastlen=newlen;
-      // get geo only if last value changed more than 3 chars
-      KngUtils.getGeoCode(this.http,value.streetAddress,value.postalCode,value.region,this.pubMap).subscribe((geo)=>{
-        if(!geo.location){return;}
-        this.edit.address.geo={
-          lat:geo.location.lat,
-          lng:geo.location.lng
-        }
-      });        
-    });
-
+  getStaticMap(address:UserAddress){
+    return KngUtils.getStaticMap(address,this.pubMap);    
   }
-  onDelete($event,){
+
+  onDelete($event){
     if(this.edit.idx==null){
       // FIXME place the string in our i18n service
       return window.alert('Impossible de supprimer cet élément');
@@ -461,28 +572,21 @@ export class KngDepositComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
       this.$snack.open(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.dialogRef.close();        
     },
     (err)=>this.$snack.open(err.error,"OK"));  
     return false;
   }
 
-
-  getStaticMap(address:UserAddress){
-    return KngUtils.getStaticMap(address,this.pubMap);    
-  }
-  
   onDecline(){
     this.edit.idx=null;
     this.edit.address=null;
-    this.dlgEdit.dialogRef.close();    
   }
 
 
   //
   // save specific address
-  onSave($event){
-    this.assign(this.edit.form.value);
+  onSave(value){
+    this.assign(value);
     if(this.edit.idx==null){
       this.config.shared.deposits=this.config.shared.deposits||[];
       this.edit.idx=this.config.shared.deposits.push({})-1;
@@ -492,23 +596,47 @@ export class KngDepositComponent extends KngConfigComponent {
     this.$config.save(this.config).subscribe(()=>{
       this.edit.address=null;
       this.$snack.open(this.$i18n.label().save_ok,"OK");
-      this.dlgEdit.dialogRef.close();      
     },
     (err)=>this.$snack.open(err.error,"OK"));  
     return false;
   }
   onAddressCreate(){
     this.edit.idx=null;
-    this.edit.address={};
+    this.edit.address= {};
     this.edit.address.fees=0;
-    this.dlgEdit.dialogRef.opened();    
-    
-  }
+    const dialogRef = this.$dlg.open(KngDepositDlgComponent, {
+      data:this.edit
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'close') {
+        this.onDecline();
+      } else if (typeof result === 'object') {
+            this.onSave(result);
+      }
+    });
+}
 
   onAddressSelect($event,address,i){
     this.edit.idx=i;
     this.edit.address=address;
-    this.dlgEdit.dialogRef.opened();    
-  }  
-  
+    this.edit.address=address;
+    const dialogRef = this.$dlg.open(KngDepositDlgComponent, {
+      data:{
+        pubMap:this.pubMap,
+        edit:this.edit
+      }      
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // on delete
+      if (result === 'delete') {
+        return this.onDelete($event);
+      }
+      // on Save
+      if (typeof result === 'object') {
+        return this.onSave(result);
+      }
+      // on close
+      this.onDecline();
+    });
+}
 }

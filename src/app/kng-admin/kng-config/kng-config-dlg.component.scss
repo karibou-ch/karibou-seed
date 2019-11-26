@@ -1,0 +1,54 @@
+mdc-dialog{
+
+  &.loading{
+    filter: brightness(80%);
+  }
+
+  .double{
+    flex:2;
+  }
+
+  mdc-dialog-surface{
+    background-color: white;
+    max-width: 865px;
+  }
+    
+  mdc-dialog-content{
+      
+    form{
+      .geomap{
+        height: 180px;
+        width: 180px;
+        position: absolute;
+        right: 15px;
+        top: 15px;  
+        border:1px solid #ddd;
+        background: white;
+        border-radius: 5px;      
+        background-size: contain;
+      }
+  
+      display: flex;
+      flex-flow: column wrap;
+      justify-content:flex-start; /*halign*/
+      background: transparent;
+      width: 100%;
+
+      .ng-invalid .mdc-floating-label{
+        color: red!important;
+      }
+
+      >div{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content:flex-start;
+
+        &.between{
+          justify-content:space-between;
+        }
+
+      }
+
+    }
+  }
+}

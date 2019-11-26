@@ -6,12 +6,16 @@ import { SharedModule } from '../shared/shared.module';
 import { KngDocumentModule,  } from '../kng-document/kng-document.module';
 import { KngEditDocumentComponent } from '../kng-document/kng-document.component';
 
+
 //
 // exported components and directives
-import { KngCategoriesComponent } from './kng-category/';
+import { KngCategoriesComponent, KngCategoryDlgComponent } from './kng-category/';
+
 
 import { KngConfigComponent, 
-         KngNavigationComponent, 
+         KngNavigationComponent,
+         KngNavigationDlgComponent, 
+         KngDepositDlgComponent,
          KngWelcomeCfgComponent,
          KngHomeComponent,
          KngShopComponent,
@@ -40,6 +44,7 @@ const routes: Routes = [
 
 ];
 
+
 //
 // 
 const routing: ModuleWithProviders = RouterModule.forChild(routes);
@@ -54,8 +59,14 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     SharedModule,
     routing
   ],
+  entryComponents:[
+    KngNavigationDlgComponent,
+    KngDepositDlgComponent,
+    KngCategoryDlgComponent
+    
+  ],
   declarations: [
-    KngCategoriesComponent,
+    KngCategoriesComponent,    
     KngConfigComponent, 
     KngDepositComponent,
     KngPageContentComponent,
@@ -63,6 +74,10 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     KngShopComponent, 
     KngWelcomeCfgComponent, 
     KngInformationCfgComponent,
-    KngNavigationComponent]
+    KngNavigationComponent,
+    KngNavigationDlgComponent,
+    KngDepositDlgComponent,
+    KngCategoryDlgComponent   
+  ]
 })
 export class AdminModule { }
