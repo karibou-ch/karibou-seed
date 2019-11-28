@@ -71,7 +71,7 @@ export class UserPasswordComponent {
       email:this.user.email.address
     }
     let locale=this.$i18n.locale;
-    this.$user.newpassword(this.user.id,change).subscribe(
+    this.$user.newpassword(this.user.id,change).subscribe( // FIXME to proofread return value, ther is no error when the two password aren't similar
       ()=>this.$snack.open(
         this.$i18n.label().modify_ok,
         this.$i18n.label().thanks,this.$i18n.snackOpt
