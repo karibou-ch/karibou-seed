@@ -1,4 +1,7 @@
 <!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
 <div class="page-container page-edit ">
   <button [routerLink]="['../']" class="close">
       <mdc-icon class="size-large">close</mdc-icon>
@@ -24,6 +27,7 @@
               <label i18n>Publié</label>
           </mdc-form-field>        
           <mdc-select placeholder="Type" floatLabel="false" [ngModel]="document.type" formControlName="type"   >
+            <option [value]="null"></option>
             <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
           </mdc-select>
 

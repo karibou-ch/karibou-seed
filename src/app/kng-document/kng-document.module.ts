@@ -15,7 +15,7 @@ import { KngDocumentLoaderService } from './kng-document-loader.service';
 //
 // define routes module
 const routes: Routes = [
-  { path: 'create', component: KngEditDocumentComponent, data:{create:true}, resolve:{ loader:LoaderResolve } },
+  { path: 'create', component: KngEditDocumentComponent, data:{create:true}, resolve:{ loader:KngDocumentLoaderService } },
   { path: 'category/:category', component: KngDocumentComponent,resolve:{ loader:LoaderResolve } },  
   { path: ':slug/edit', component: KngEditDocumentComponent, data:{edit:true}, resolve:{ loader:KngDocumentLoaderService } },
   { path: ':slug', component: KngDocumentComponent,resolve:{ loader:KngDocumentLoaderService } }

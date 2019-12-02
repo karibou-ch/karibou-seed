@@ -128,11 +128,13 @@ export class KngDocumentComponent implements OnInit {
   encapsulation: ViewEncapsulation.None
 })
 export class KngEditDocumentComponent extends KngDocumentComponent{
+
   edit:{
     form: FormGroup;
     create:boolean;
     TTS:number;
     lastupdate:number;
+    
   }
 
   ngOnInit(){        
@@ -210,9 +212,15 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
   }
 
   onSave(closeAfter:boolean=false,displaySnack:boolean=true){
+    console.log('onSave');
+    console.log(this.edit.form);
     if(!this.edit.form.valid){
       return;
     }
+    console.log('if(!this.edit.form.valid)');
+
+    this.isReady=false;
+
     // sync    
     this.document.style=this.edit.form.value.style;
     this.document.type=this.edit.form.value.type;
@@ -226,6 +234,7 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
     this.document.content[this.locale]=this.edit.form.value.body;
 
     if(this.create){
+      console.log('this.create');
       this.$document.create(this.document).subscribe(
         (doc)=>this.onResult(doc,closeAfter,displaySnack),
         (err)=>this.onResult(err.error,closeAfter,displaySnack)
@@ -237,6 +246,7 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
       )
         
     }
+    
   }
 
   onDialogOpen(dialog){
@@ -254,6 +264,8 @@ export class KngEditDocumentComponent extends KngDocumentComponent{
 
   onResult(result:Document|string,closeAfter:boolean,displaySnack:boolean){
     this.create=false;
+    this.isReady=true;
+
     this.edit.lastupdate=Date.now();
     if(displaySnack){
       this.$snack.open(this.$i18n[this.locale].save_ok);
