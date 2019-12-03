@@ -72,20 +72,16 @@
           <mdc-text-field i18n-label label="Titre"  type="text" [ngModel]="document.title[locale]" formControlName="title">
           </mdc-text-field>                
         </h1>
-        <h2>
-          <mdc-textarea i18n-label label="En tête" formControlName="header"
-                        kng-autosize rows="3" outline="false"
-                        [ngModel]="document.header[locale]">
-          </mdc-textarea>                  
-        </h2>
-
-        <section>
-            <mdc-textarea i18n-label label="Que souhaitez vous écrire?" 
-                          kng-autosize rows="4" formControlName="body"
-                          [ngModel]="document.content[locale]">
-            </mdc-textarea>                              
-        </section>
-
+        <mdc-textarea i18n-label label="En tête" formControlName="header"
+                      kng-autosize rows="3" outline="false"
+                      [ngModel]="document.header[locale]">
+        </mdc-textarea>                    
+        <br />   
+        <mdc-textarea i18n-label label="Que souhaitez vous écrire?" 
+                      kng-autosize rows="4" formControlName="body"
+                      [ngModel]="document.content[locale]">
+        </mdc-textarea>                              
+       
       </form>
 
       <div class="flex-row">
