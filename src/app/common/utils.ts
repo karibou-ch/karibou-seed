@@ -2,9 +2,6 @@ import { UserAddress, Utils } from "kng2-core";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-//
-// protect multiple call of get geoloc
-let ON_GEOLOC=false;
 
 export class KngUtils {
   static STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
@@ -38,10 +35,8 @@ export class KngUtils {
     region=region||'Suisse';
     const fulladdress=[street,postal,region].join(',');
     const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + fulladdress + "&sensor=false&key="+key;
-    ON_GEOLOC=true;
     return http.get(url, { withCredentials: false }).pipe(
       map((geo:any) =>{ 
-        ON_GEOLOC=false;
         let result:any={};
         if(!geo||!geo.results.length || !geo.results[0].geometry){
           return result;
