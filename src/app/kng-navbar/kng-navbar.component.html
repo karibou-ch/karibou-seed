@@ -1,5 +1,5 @@
 <!-- NAVIGATION  -->
-<mdc-drawer drawer="modal" #navigation (click)="navigation.close()">
+<mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open">
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
     <img [src]="config.shared.home.siteName.image" />
   </mdc-drawer-header>
@@ -69,11 +69,11 @@
     <mdc-top-app-bar-row >
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
-        <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="home">menu</mdc-icon>
+        <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="home">menu</mdc-icon>
         <mdc-top-app-bar-title class="home" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="shipping hide-sm" (click)="navigation.open()">
+        <mdc-top-app-bar-title class="shipping hide-sm" (click)="navigation.open = !navigation.open">
             <i class="material-icons">directions_bike</i> » {{currentShippingDay|date:'EEEE d MMMM':'':locale}}  &nbsp;<i class="material-icons " [hidden]="!noshippingMsg">info</i>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
@@ -92,7 +92,7 @@
     <mdc-top-app-bar-row class="navigation">
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
-          <!-- <mdc-icon mdcAppBarNavIcon (click)="navigation.open()" class="show-sm">menu</mdc-icon> -->
+          <!-- <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="show-sm">menu</mdc-icon> -->
       </mdc-top-app-bar-section>
 
       <!-- APPBAR-SECTION-MIDDLE -->

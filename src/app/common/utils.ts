@@ -2,6 +2,7 @@ import { UserAddress, Utils } from "kng2-core";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+
 export class KngUtils {
   static STATIC_MAP:string="https://maps.googleapis.com/maps/api/staticmap?";
 
@@ -32,8 +33,8 @@ export class KngUtils {
     // check if needed encodeURIComponent(str)
     postal=postal||'';
     region=region||'Suisse';
-    let fulladdress=[street,postal,region].join(',');
-    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + fulladdress + "&sensor=false&key="+key;
+    const fulladdress=[street,postal,region].join(',');
+    const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + fulladdress + "&sensor=false&key="+key;
     return http.get(url, { withCredentials: false }).pipe(
       map((geo:any) =>{ 
         let result:any={};

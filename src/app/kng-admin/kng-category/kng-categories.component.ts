@@ -1,4 +1,4 @@
-import { Component, OnDestroy,OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy,OnInit, Inject } from '@angular/core';
 import {
   CategoryService,
   Category,
@@ -6,7 +6,7 @@ import {
 }  from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../../common';
-import { MdcSnackbar, MdcDialogComponent, MdcRadioChange } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -32,16 +32,15 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
 
   errors:any;
 
-  @ViewChild('dlgEdit') dlgEdit: MdcDialogComponent;
-
+  
   constructor(
-    private $fb: FormBuilder,
     private $i18n:i18n,
     private $loader: LoaderService,
     private $category: CategoryService,
     private $route:ActivatedRoute,
     private $snack:MdcSnackbar,
-    private $navigation:KngNavigationStateService
+    private $navigation:KngNavigationStateService,
+    public $dlg: MdcDialog,
   ){
     
     let loader=this.$route.snapshot.data.loader;
@@ -61,17 +60,6 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   ngOnInit() {
     //
     // init formBuilder
-    this.edit.form=this.$fb.group({
-      'weight':['', [Validators.required]],
-      'active':['', []],
-      'home': ['', []],
-      'color':['', []],
-      'image': ['', [Validators.required]],
-      'group': ['', []],
-      'name': ['', [Validators.required]],
-      'description': ['', [Validators.required]],
-      'type': ['', [Validators.required]]
-    });
     
     this.$navigation.isAdminLayout=true;
     this.loadCategories()
@@ -95,14 +83,13 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     });
   }
 
-  onSave(){
-    //console.log('---------------',this.edit.form.value)
+  onSave(value : any){
     //
     // copy data 
 
     // FIXME radio button is not working
-    delete this.edit.form.value.type;
-    Object.assign(this.edit.category,this.edit.form.value)
+      delete value.type;
+    Object.assign(this.edit.category,value)
     let editor=(this.edit.create)?
       this.$category.create(this.edit.category):
       this.$category.save(this.edit.category.slug,this.edit.category);
@@ -116,17 +103,13 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         this.edit.create=false;
         // FIXME, verify IF name != old.name =>  update SLUG
         // this.categories.find()
-        this.$snack.show(this.$i18n.label().save_ok,"OK")
+        this.$snack.open(this.$i18n.label().save_ok,"OK")
       },
-      (err)=>this.$snack.show(err.error,"OK")
+      (err)=>this.$snack.open(err.error,"OK")
     );
   }
 
-  // FIXME radio button is not working
-  onTypeChange(evt: MdcRadioChange,value:string): void {
-    this.edit.category.type = value;
-  }  
-
+ 
   onDecline(){
     this.edit.category=null;
   }
@@ -136,13 +119,13 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     let pwd=window.prompt(this.$i18n.label().user_confirm_password,"CONFIRMER AVEC LE PASSWORD");
     // FIXME, server should always respond an JSON (simple string like "OK" hang)
     let onOk=()=>{
-      this.$snack.show(this.$i18n.label().delete_ok,"OK");
+      this.$snack.open(this.$i18n.label().delete_ok,"OK");
       position=this.categories.findIndex(elem=>elem.slug==this.edit.category.slug);
       if(position>-1){
         this.categories.splice(position, 1);
       }
       
-      this.dlgEdit.close();
+      // this.$dlg.close(); FIXME ici on ferme la fenêtre mais pas dans kng_config
       this.edit.create=false;
       this.edit.category=null;
     }
@@ -153,7 +136,7 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
         if(err.status==200){
           return onOk();
         }
-        this.$snack.show(err.error,"OK")
+        this.$snack.open(err.error,"OK")
       }
     );
   }
@@ -161,20 +144,47 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
   onCategorySelect($event,category){
     this.edit.category=category;
     this.edit.create=false;
-    this.dlgEdit.show();
+   
+    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
+      data:this.edit.category
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // on delete
+      if (result === 'delete') {
+        return this.onDelete();
+      }
+      // on Save
+      if (typeof result === 'object') {
+        return this.onSave(result);
+      }
+      // on close
+      this.onDecline();
+    });
+
+   
   }
 
   onCategoryCreate(){
     this.edit.category=new Category();
     this.edit.category.usedBy=[];
     this.edit.create=true;
-    this.dlgEdit.show();
+    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
+      data:this.edit.category
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (typeof result === 'object') {
+            this.onSave(result);
+      } else{
+            this.onDecline();
+      }
+  })
   }
 
   onDialogOpen(dialog){
     dialog.done(dlg=>{
       if(dlg.state()=='rejected'){
-        this.$snack.show(this.$i18n.label().img_max_sz,"OK")
+        this.$snack.open(this.$i18n.label().img_max_sz,"OK")
       }
     })
   }
@@ -201,5 +211,64 @@ export class KngCategoriesComponent implements OnInit,OnDestroy {
     return g1.toLowerCase().localeCompare(g2.toLowerCase());
   }
 
+
+}
+
+
+
+@Component({
+  templateUrl: './kng-category-dlg.component.html',
+  styleUrls: ['./kng-categories.component.scss']
+})
+export class KngCategoryDlgComponent {
+  constructor(
+    public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
+    public $fb: FormBuilder,
+    public $i18n:i18n,
+    @Inject(MDC_DIALOG_DATA) public category:any
+    ) { 
+      this.category = category;
+    }
+
+    //
+    // edit.category
+    // edit.id
+    //category:any;
+
+  //
+  // init formBuilder
+  form=this.$fb.group({
+    'weight':['', [Validators.required]],
+      'active':['', []],
+      'home': ['', []],
+      'color':['', []],
+      'image': ['', [Validators.required]],
+      'group': ['', []],
+      'name': ['', [Validators.required]],
+      'description': ['', [Validators.required]],
+      'type': ['', [Validators.required]]
+  });    
+
+  askSave(){
+    if (this.form.invalid) {
+      return;
+    }
+   
+    this.$dlgRef.close(this.form.value);
+
+  }
+
+  askDelete() {
+    this.$dlgRef.close('delete');
+  }
+
+  askDecline() {
+    this.$dlgRef.close();
+  }
+
+   // FIXME radio button is not working
+   onTypeChange(evt: MdcRadioChange,value:string): void {
+    this.category.type = value;
+  }  
 
 }

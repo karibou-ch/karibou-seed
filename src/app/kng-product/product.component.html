@@ -5,22 +5,22 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close">
-        <mdc-icon [fontSize]="40">navigate_before</mdc-icon>
+        <mdc-icon class="size-large">navigate_before</mdc-icon>
       </button>
 
       <mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
       [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
    
    
-       <mdc-card-primary-action mdc-ripple >
+       <mdc-card-primary-action>
          <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
            <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
            <button class="action-add right " (click)="addToCart($event,product)">
-            <mdc-icon [fontSize]="26">add</mdc-icon>
+            <mdc-icon class="size-medium">add</mdc-icon>
           </button>
           <button class="action-remove " (click)="removeToCart($event,product)">
-            <mdc-icon [fontSize]="26">remove</mdc-icon>
+            <mdc-icon class="size-medium">remove</mdc-icon>
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
               
@@ -146,31 +146,31 @@
           <li>
             <div>Lun.</div>
             <div class="indicator">
-              <mdc-icon [fontSize]="15">{{getAvailability(product,1)}}</mdc-icon>
+              <mdc-icon class="size-small">{{getAvailability(product,1)}}</mdc-icon>
             </div>
           </li>
           <li>
             <div>Mar.</div>
             <div class="indicator">
-              <mdc-icon [fontSize]="15">{{getAvailability(product,2)}}</mdc-icon>
+              <mdc-icon class="size-small">{{getAvailability(product,2)}}</mdc-icon>
             </div>
           </li>
           <li>
             <div>Mer.</div>
             <div class="indicator">
-              <mdc-icon [fontSize]="15">{{getAvailability(product,3)}}</mdc-icon>
+              <mdc-icon class="size-small">{{getAvailability(product,3)}}</mdc-icon>
             </div>
           </li>
           <li>
             <div>Jeu.</div>
             <div class="indicator">
-              <mdc-icon [fontSize]="15">{{getAvailability(product,4)}}</mdc-icon>
+              <mdc-icon class="size-small">{{getAvailability(product,4)}}</mdc-icon>
             </div>
           </li>
           <li>
             <div>Ven.</div>
             <div class="indicator">
-              <mdc-icon [fontSize]="15">{{getAvailability(product,5)}}</mdc-icon>
+              <mdc-icon class="size-small">{{getAvailability(product,5)}}</mdc-icon>
             </div>
           </li>
         </ul>

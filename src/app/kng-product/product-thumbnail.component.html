@@ -17,7 +17,7 @@
 
 
 
-		<mdc-card-primary-action mdc-ripple [routerLink]="['/store',store,'home','products',product.sku,product.title]">
+		<mdc-card-primary-action [routerLink]="['/store',store,'home','products',product.sku,product.title]">
 			<mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
 				<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
 
@@ -43,10 +43,10 @@
 			</mdc-card-media>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
-				<mdc-icon [fontSize]="26">add</mdc-icon>
+				<mdc-icon class="size-medium">add</mdc-icon>
 			</button>
 			<button class="action-remove " (click)="removeToCart($event,product)">
-				<mdc-icon [fontSize]="26">remove</mdc-icon>
+				<mdc-icon class="size-medium">remove</mdc-icon>
 			</button>
 			<div class="info-quantity">{{cartItem?.quantity}}</div>
 			<div class="info-score"><i class="material-icons">star</i><!--{{product.stats.score.toFixed(2)}}--></div>

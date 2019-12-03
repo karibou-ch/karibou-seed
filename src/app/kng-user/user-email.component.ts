@@ -84,12 +84,12 @@ export class UserEmailComponent {
     update.phoneNumbers[0].number=this.$profile.value.phone;
 
     let locale=this.$i18n.locale;
-    this.$user.save(update).subscribe(
-      ()=>this.$snack.show(
+    this.$user.save(update).subscribe(  // FIXME ok, force usage of password here
+      ()=>this.$snack.open(
         this.$i18n.label().modify_ok,
         this.$i18n.label().thanks,this.$i18n.snackOpt
       ),
-      err=>this.$snack.show(err.error)
+      err=>this.$snack.open(err.error)
     );
   }
 }
