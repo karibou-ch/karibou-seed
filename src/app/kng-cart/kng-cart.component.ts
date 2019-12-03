@@ -276,7 +276,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
           this.$cart.setError(order.errors);
           this.hasOrderError=true;
           this.$snack.open(
-            "Votre commande doit être corrigée ",
+            this.$i18n.label().cart_corrected,
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
@@ -291,7 +291,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
           'amount':order.getSubTotal()
         });
 
-        this.$snack.open("Votre commande est enregistrée, vous serez livré le "+order.shipping.when.toDateString());
+        this.$snack.open(this.$i18n.label().cart_save_deliver+ order.shipping.when.toDateString());
         this.$router.navigate(['/store',this.store,'me','orders']);
         this.items=[];
         this.$cart.empty();
