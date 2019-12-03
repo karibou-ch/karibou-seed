@@ -1,4 +1,7 @@
 <!-- ngStyle="{'background-image': 'url(' + document?.photo.header + ')'}" -->
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
 <div class="page-container page-edit ">
   <button [routerLink]="['../']" class="close">
       <mdc-icon class="size-large">close</mdc-icon>
@@ -23,7 +26,8 @@
               <mdc-switch [ngModel]="document.published" formControlName="published"></mdc-switch>
               <label i18n>Publié</label>
           </mdc-form-field>        
-          <mdc-select placeholder="Type" floatingLabel="false" [ngModel]="document.type" formControlName="type"   >
+          <mdc-select placeholder="Type" floatLabel="false" [ngModel]="document.type" formControlName="type"   >
+            <option [value]="null"></option>
             <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
           </mdc-select>
 
@@ -68,20 +72,16 @@
           <mdc-text-field i18n-label label="Titre"  type="text" [ngModel]="document.title[locale]" formControlName="title">
           </mdc-text-field>                
         </h1>
-        <h2>
-          <mdc-textarea i18n-label label="En tête" formControlName="header"
-                        kng-autosize rows="3" outline="false"
-                        [ngModel]="document.header[locale]">
-          </mdc-textarea>                  
-        </h2>
-
-        <section>
-            <mdc-textarea i18n-label label="Que souhaitez vous écrire?" 
-                          kng-autosize rows="4" formControlName="body"
-                          [ngModel]="document.content[locale]">
-            </mdc-textarea>                              
-        </section>
-
+        <mdc-textarea i18n-label label="En tête" formControlName="header"
+                      kng-autosize rows="3" outline="false"
+                      [ngModel]="document.header[locale]">
+        </mdc-textarea>                    
+        <br />   
+        <mdc-textarea i18n-label label="Que souhaitez vous écrire?" 
+                      kng-autosize rows="4" formControlName="body"
+                      [ngModel]="document.content[locale]">
+        </mdc-textarea>                              
+       
       </form>
 
       <div class="flex-row">

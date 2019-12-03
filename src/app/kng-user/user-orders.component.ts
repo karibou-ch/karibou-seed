@@ -98,17 +98,17 @@ export class UserOrdersComponent implements OnInit {
   addToCard(item:OrderItem){
     this.$products.get(item.sku).subscribe(product=>{
       this.$cart.add(CartItem.fromProduct(product));
-    },error=>this.$snack.show(error.error));
+    },error=>this.$snack.open(error.error));
   }
 
   cancel(order:Order){
     this.$order.cancelWithReason(order,EnumCancelReason.customer).subscribe(result=>{
-      this.$snack.show(
+      this.$snack.open(
         this.$i18n.label().delete_ok,
         this.$i18n.label().thanks,this.$i18n.snackOpt
       );
       Object.assign(order,result);
-    },error=>this.$snack.show(error.error))
+    },error=>this.$snack.open(error.error))
   }
 
   getLimitedOrders(){
@@ -206,7 +206,7 @@ export class UserOrdersComponent implements OnInit {
   }
 
   onError(error: any){
-    this.$snack.show(error);
+    this.$snack.open(error);
   }
 
   onFeedback(){

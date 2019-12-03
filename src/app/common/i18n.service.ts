@@ -13,7 +13,7 @@ import { MdcSnackbarConfig } from '@angular-mdc/web';
 export class i18n  {
 
   public snackOpt:MdcSnackbarConfig={
-    timeout:5000
+    timeoutMs:5000
   }
 
 
@@ -26,6 +26,8 @@ export class i18n  {
     action_error_reload:"Zut, un problème est survenu lors du chargement de la page. Réessayez?",    
     cart_address_add: "Ajouter ou modifier vos adresses",
     cart_payment_add: "Ajouter ou modifier vos méthodes de paiements",
+    cart_save_deliver:"Votre commande est enregistrée, vous serez livré le ",
+    cart_corrected:"Votre commande doit être corrigée",
     home_feedback_title:"Comment était votre dernière commande?",
     nav_account:"Compte",
     nav_i18n:"Changer de langue (BETA)",
@@ -75,6 +77,9 @@ export class i18n  {
     home_feedback_title:"How was your last order ?",
     cart_address_add: "Add or modify your shipping address",
     cart_payment_add: "Add or modify payment methods",
+    cart_payment_not_available:"This payment method is not more available",
+    cart_save_deliver:"Your order is registered, you will be delivered on ",
+    cart_corrected:"Your order must be corrected",
     nav_account:"Account",
     nav_i18n:"Choose language (BETA)",
     nav_login:"Sign in",
@@ -83,7 +88,6 @@ export class i18n  {
     nav_shipping2:"When",
     nav_contactus:"Contact-us!",
     nav_installapp:"Install karibou.ch",
-    cart_payment_not_available:"This payment method is not more available",
     e404:"We couldn't find this page :-(",
     eServer:"Ooops, there is an issue in our matrix :-(",
     eSession:"<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page",

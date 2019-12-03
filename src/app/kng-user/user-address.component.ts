@@ -173,15 +173,17 @@ export class AddressComponent {
         this.geo=(result.geo||{}).location;
         //
         // autofill region and location
-        result.components.forEach(comp=>{
-          if(this.locations.indexOf(comp)>-1){
-            this.$address.patchValue({postalCode:comp});
-          }
-          if(this.regions.indexOf(comp)>-1){
-            this.$address.patchValue({region:comp});
-          }
-        });        
-      }
+        setTimeout(()=>{
+          result.components.forEach(comp=>{
+            if(this.locations.indexOf(comp)>-1 && (this.$address.value.postalCode!=comp)){
+              this.$address.patchValue({postalCode:comp});
+            }
+            if(this.regions.indexOf(comp)>-1 && (this.$address.value.region!=comp)){
+              this.$address.patchValue({region:comp});
+            }
+          });  
+        },700);
+       }
     )
   }
 

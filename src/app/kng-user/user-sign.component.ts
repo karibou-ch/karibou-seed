@@ -208,7 +208,7 @@ export class UserSignComponent {
       if(this.askAction==='logout'){
         this.$user.logout().subscribe(
           ok=>this.signoutOk=true,
-          err=>this.$snack.show(err.error)
+          err=>this.$snack.open(err.error)
         )
       }
       
@@ -262,7 +262,7 @@ export class UserSignComponent {
 
   onUpdateAddress($result){
     let msg=($result.error)? ($result.error.message||$result.error):'OK';
-    this.$snack.show(msg,this.$i18n.label().thanks,this.$i18n.snackOpt);
+    this.$snack.open(msg,this.$i18n.label().thanks,this.$i18n.snackOpt);
     this.onBack();
   }
 
@@ -274,16 +274,16 @@ export class UserSignComponent {
       return;
     }
     let msg=($result.error)? ($result.error.message||$result.error):'Ok';
-    this.$snack.show(msg,this.$i18n.label().thanks,this.$i18n.snackOpt);
+    this.$snack.open(msg,this.$i18n.label().thanks,this.$i18n.snackOpt);
     this.onBack();
   }
 
   onRecover(){
     this.$user.recover(this.recover.value.email).subscribe(
       ok=>{
-        this.$snack.show(this.$i18n.label().user_recover_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
+        this.$snack.open(this.$i18n.label().user_recover_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
       },err=>{
-        this.$snack.show(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt);
+        this.$snack.open(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt);
       }
     );
   }
@@ -297,11 +297,11 @@ export class UserSignComponent {
     }).subscribe(
     (user:User) => {
       if(!user.isAuthenticated()){
-        return this.$snack.show(this.$i18n.label().user_login_ko,this.$i18n.label().thanks,this.$i18n.snackOpt);        
+        return this.$snack.open(this.$i18n.label().user_login_ko,this.$i18n.label().thanks,this.$i18n.snackOpt);        
       }
-      this.$snack.show(this.$i18n.label().user_login_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
+      this.$snack.open(this.$i18n.label().user_login_ok,this.$i18n.label().thanks,this.$i18n.snackOpt);
       this.onBack();      
-    },(err)=>this.$snack.show(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt));    
+    },(err)=>this.$snack.open(err.error,this.$i18n.label().thanks,this.$i18n.snackOpt));    
   }
 
   onSignup(){
@@ -317,14 +317,14 @@ export class UserSignComponent {
     };    
     this.$user.register(user).subscribe(
       (user)=>{
-        this.$snack.show(this.$i18n.label().user_register_ok,this.$i18n.label().thanks,{
-          timeout:9000, multiline:true
+        this.$snack.open(this.$i18n.label().user_register_ok,this.$i18n.label().thanks,{
+          timeoutMs:9000
         });        
         this.onBack();        
       },
       (err)=>{
-        this.$snack.show(err.error,this.$i18n.label().thanks,{
-          timeout:9000, multiline:true
+        this.$snack.open(err.error,this.$i18n.label().thanks,{
+          timeoutMs:9000
         })
       }
     )
