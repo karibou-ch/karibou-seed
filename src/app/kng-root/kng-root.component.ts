@@ -9,34 +9,34 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class KngRootComponent implements OnInit {
 
-  config:any;
+  config: any;
 
-  constructor( 
-    public $i18n:i18n,
-    private $navigation:KngNavigationStateService,
+  constructor(
+    public $i18n: i18n,
+    private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
-  ) { 
-    let loader=this.$route.snapshot.data.loader;
-    this.config=loader[0];      
+  ) {
+    const loader = this.$route.snapshot.data.loader;
+    this.config = loader[0];
   }
 
   ngOnInit() {
     //
-    // 
-    this.$route.params.subscribe(params=>{
-      this.$navigation.store=this.store=params['store'];
-    });    
+    //
+    this.$route.params.subscribe(params => {
+      this.$navigation.store = this.store = params['store'];
+    });
   }
 
-  isAppReady(){
+  isAppReady() {
     return this.$navigation.store !== undefined;
   }
 
-  set store(name){
-    this.$navigation.store=name;
+  set store(name) {
+    this.$navigation.store = name;
   }
 
-  get store(){
+  get store() {
     return this.$navigation.store;
   }
 
