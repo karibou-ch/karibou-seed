@@ -15,10 +15,10 @@ import { KngDocumentLoaderService } from './kng-document-loader.service';
 //
 // define routes module
 const routes: Routes = [
-  { path: 'create', component: KngEditDocumentComponent, data:{create:true}, resolve:{ loader:KngDocumentLoaderService } },
-  { path: 'category/:category', component: KngDocumentComponent,resolve:{ loader:LoaderResolve } },  
-  { path: ':slug/edit', component: KngEditDocumentComponent, data:{edit:true}, resolve:{ loader:KngDocumentLoaderService } },
-  { path: ':slug', component: KngDocumentComponent,resolve:{ loader:KngDocumentLoaderService } }
+  { path: 'create', component: KngEditDocumentComponent, data: {create: true}, resolve: { loader: KngDocumentLoaderService } },
+  { path: 'category/:category', component: KngDocumentComponent, resolve: { loader: LoaderResolve } },
+  { path: ':slug/edit', component: KngEditDocumentComponent, data: {edit: true}, resolve: { loader: KngDocumentLoaderService } },
+  { path: ':slug', component: KngDocumentComponent, resolve: { loader: KngDocumentLoaderService } }
 //  { path: '', component: KngDocumentComponent,resolve:{ loader:LoaderResolve }, data:{ cards:true }}
 ];
 
@@ -36,7 +36,7 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     KngDocumentMdcModule,
     routing
   ],
-  exports:[
+  exports: [
     KngDocumentComponent,
     KngEditDocumentComponent
   ],
@@ -45,14 +45,14 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     KngEditDocumentComponent
   ]
 })
-export class KngDocumentModule { 
-  public static forRoot(options?:any): ModuleWithProviders {
+export class KngDocumentModule {
+  public static forRoot(options?: any): ModuleWithProviders {
     return {
       ngModule: KngDocumentModule,
       providers: [
         KngDocumentLoaderService
       ]
-    }        
+    };
   }
 
 }

@@ -18,6 +18,8 @@ export class KngDocumentLoaderService implements Resolve<any> {
     if(!route.params.slug){
       return combineLatest(this.$loader.ready(),of(null));
     }
+    // TOCHECK
+    // combineLatest is deprecated: Pass arguments in a single array instead `combineLatest([a, b, c])` (deprecation)tslint(1)
     return combineLatest(
       this.$loader.ready(),
       this.$document.get(route.params['slug'])
