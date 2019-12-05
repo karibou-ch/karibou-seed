@@ -47,9 +47,10 @@ export class UserPasswordComponent {
       'password':   ['',[Validators.required,Validators.minLength(6)]],
       'confirm':  ['', [Validators.required,Validators.minLength(6)]]
     },{
-      Validators:KngInputValidator.MatchPasswordAndConfirm
+      validator:KngInputValidator.MatchPasswordAndConfirm
     });
     //[ngModelOptions]="{updateOn: 'blur'}"
+
   }
 
   get locale(){
