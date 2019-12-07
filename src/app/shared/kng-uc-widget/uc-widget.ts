@@ -13,17 +13,18 @@ import {
 import { Utils } from 'kng2-core';
 
 
-//import uploadcare from 'uploadcare-widget';
-//import * as uploadcare from "uploadcare-widget";
+// import uploadcare from 'uploadcare-widget';
+// import * as uploadcare from "uploadcare-widget";
 
-const CDNJS_UPLOADCARE="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js";
-const APP_VERSION='3.x';
+const CDNJS_UPLOADCARE = 'https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js';
+const APP_VERSION = '3.x';
 
 @Component({
   selector: 'ngx-uploadcare-widget',
   template: '',
 })
 export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
+  // TOCHECK
   @Output('on-upload-complete') onUploadComplete = new EventEmitter<any>();
   @Output('on-change') onChange = new EventEmitter<any>();
   @Output('on-progress') onProgress = new EventEmitter<any>();
@@ -54,9 +55,9 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   private _doNotStore: boolean;
   private _reinitRequired = false;
   private _isClearValue = false;
-  private _validators=[];
+  private _validators = [];
 
-  private uploadcare:any;
+  private uploadcare: any;
 
   constructor(renderer: Renderer2, element: ElementRef) {
     this.element = element;
@@ -65,11 +66,11 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
     //
     // use dynamic loader
     // https://github.com/ded/script.js/blob/master/src/script.js#L70
-    this.uploadcare=Utils.script(CDNJS_UPLOADCARE,"uploadcare").toPromise();
+    this.uploadcare = Utils.script(CDNJS_UPLOADCARE, 'uploadcare').toPromise();
 
-    this.uploadcare.then((uploadcare:any)=>{
-      uploadcare=window['uploadcare'];
-      uploadcare.start({ integration: `Angular/${VERSION.full}; Ngx-Uploadcare-Widget/${APP_VERSION}` });      
+    this.uploadcare.then((uploadcare: any) => {
+      uploadcare = window['uploadcare'];
+      uploadcare.start({ integration: `Angular/${VERSION.full}; Ngx-Uploadcare-Widget/${APP_VERSION}` });
     });
   }
 
@@ -203,14 +204,14 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   get doNotStore() { return this._doNotStore; }
 
   @Input('validator')
-  set validator(validator){
+  set validator(validator) {
     this._validators.push(validator);
     this.setReinitFlag(false);
   }
 
   ngAfterViewInit() {
-    this.init().then(widget=>{
-      this.widget=widget;
+    this.init().then(widget => {
+      this.widget = widget;
     });
   }
 
@@ -284,20 +285,20 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
       this.clearUploads();
     }
     this.initInputElement();
-    return this.uploadcare.then((uploadcare:any)=>{
-      uploadcare=window['uploadcare'];
+    return this.uploadcare.then((uploadcare: any) => {
+      uploadcare = window['uploadcare'];
       const widget = uploadcare.Widget(this.inputElement);
 
-      widget.onDialogOpen((dialog)=>{
+      widget.onDialogOpen((dialog) => {
         this.onDialogOpen.emit(dialog);
       });
-  
+
       widget.onUploadComplete((fileInfo) => {
         this.onUploadComplete.emit(fileInfo);
         this._value = fileInfo.uuid;
       });
       widget.onChange((selectionPromise) => {
-        if(!selectionPromise){
+        if (!selectionPromise) {
           return;
         }
         this.onChange.emit(selectionPromise);
@@ -312,11 +313,11 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
               this.onProgress.emit(progress);
             });
         }
-      });      
+      });
 
       //
       // bind validators
-      this._validators.forEach(validator=>{
+      this._validators.forEach(validator => {
         widget.validators.push(validator);
       });
 
@@ -327,16 +328,16 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   }
 
   private destroy() {
-    this.uploadcare.then(uploadcare=>{
-      uploadcare=window['uploadcare'];
+    this.uploadcare.then(uploadcare => {
+      uploadcare = window['uploadcare'];
 
       const $ = uploadcare.jQuery;
       $(this.widget.inputElement.nextSibling).remove();
       $(this.widget.inputElement).clone().appendTo($(this.element.nativeElement));
       $(this.widget.inputElement).remove();
-      //this.renderer.destroyNode(this.inputElement);
+      // this.renderer.destroyNode(this.inputElement);
       this.renderer.removeChild(this.element.nativeElement, this.element.nativeElement.children[0]);
-      delete this.widget;;  
-    })
+      delete this.widget;
+    });
   }
 }

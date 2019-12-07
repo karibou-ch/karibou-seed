@@ -11,7 +11,7 @@ import { SharedModule } from '../shared/shared.module';
 //
 // define routes module
 const routes: Routes = [
-  { path: ':urlpath', component: KngShopsComponent, resolve:{ loader:LoaderResolve } }  
+  { path: ':urlpath', component: KngShopsComponent, resolve: { loader: LoaderResolve } }
 ];
 
 const routing: ModuleWithProviders = RouterModule.forChild(routes);

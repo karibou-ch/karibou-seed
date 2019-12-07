@@ -13,35 +13,35 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class UserPasswordComponent {
 
-  @Output() updated:EventEmitter<User>=new EventEmitter<User>();
+  @Output() updated: EventEmitter<User> = new EventEmitter<User>();
 
-  @Input() user:User;
-  @Input() set config(config:Config){
+  @Input() user: User;
+  @Input() set config(config: Config) {
     this.main(config);
   }
 
-  
-  $password:FormGroup;
-  isLoading:boolean;
-  
+
+  $password: FormGroup;
+  isLoading: boolean;
+
   constructor(
-    public  $i18n:i18n,
+    public  $i18n: i18n,
     private $fb: FormBuilder,
-    private $user:UserService,
-    private $route:ActivatedRoute,
-    private $snack:MdcSnackbar,
-  ){
+    private $user: UserService,
+    private $route: ActivatedRoute,
+    private $snack: MdcSnackbar,
+  ) {
 
     //
     // initialize loader
-    let loader=this.$route.snapshot.data.loader;
+    const loader = this.$route.snapshot.data.loader;
     //
     // system ready
     this.user   = loader[1];
     this.config = loader[0];
-    
-    this.isLoading=false;
-    //[ngModelOptions]="{updateOn: 'blur'}"
+
+    this.isLoading = false;
+    // [ngModelOptions]="{updateOn: 'blur'}"
     this.$password = this.$fb.group({
       'previous':   ['', [Validators.required,Validators.minLength(6)]],
       'password':   ['',[Validators.required,Validators.minLength(6)]],
@@ -50,34 +50,33 @@ export class UserPasswordComponent {
       validator:KngInputValidator.MatchPasswordAndConfirm
     });
     //[ngModelOptions]="{updateOn: 'blur'}"
-
   }
 
-  get locale(){
+  get locale() {
     return this.$i18n.locale;
   }
 
   //
   // entry poiont
-  main(config:Config){
+  main(config: Config) {
   }
 
 
-  onChange(){
+  onChange() {
     //
     // let update password
-    let change={
-      current:this.$password.value.previous,
-      new:this.$password.value.password,
-      email:this.user.email.address
-    }
-    let locale=this.$i18n.locale;
-    this.$user.newpassword(this.user.id,change).subscribe( // FIXME to proofread return value, ther is no error when the two password aren't similar
-      ()=>this.$snack.open(
+    const change = {
+      current: this.$password.value.previous,
+      new: this.$password.value.password,
+      email: this.user.email.address
+    };
+    const locale = this.$i18n.locale;
+    this.$user.newpassword(this.user.id, change).subscribe( // FIXME to proofread return value, ther is no error when the two password aren't similar
+      () => this.$snack.open(
         this.$i18n.label().modify_ok,
-        this.$i18n.label().thanks,this.$i18n.snackOpt
+        this.$i18n.label().thanks, this.$i18n.snackOpt
       ),
-      err=>this.$snack.open(err.error)
+      err => this.$snack.open(err.error)
     );
   }
 }
