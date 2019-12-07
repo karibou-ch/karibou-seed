@@ -43,13 +43,13 @@ export class UserPasswordComponent {
     this.isLoading = false;
     // [ngModelOptions]="{updateOn: 'blur'}"
     this.$password = this.$fb.group({
-      'previous':   ['', [Validators.required, Validators.minLength(6)]],
-      'password':   ['', [Validators.required, Validators.minLength(6)]],
-      'confirm':  ['', [Validators.required, Validators.minLength(6)]]
-    }, {
-      Validators: KngInputValidator.MatchPasswordAndConfirm
+      'previous':   ['', [Validators.required,Validators.minLength(6)]],
+      'password':   ['',[Validators.required,Validators.minLength(6)]],
+      'confirm':  ['', [Validators.required,Validators.minLength(6)]]
+    },{
+      validator:KngInputValidator.MatchPasswordAndConfirm
     });
-    // [ngModelOptions]="{updateOn: 'blur'}"
+    //[ngModelOptions]="{updateOn: 'blur'}"
   }
 
   get locale() {
