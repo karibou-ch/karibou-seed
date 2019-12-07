@@ -1,11 +1,11 @@
-import { Component, 
-         OnInit, 
-         ViewChild, 
-         ElementRef, 
+import { Component,
+         OnInit,
+         ViewChild,
+         ElementRef,
          ViewEncapsulation,
          ChangeDetectionStrategy,
          ChangeDetectorRef,
-         NgZone, 
+         NgZone,
          HostListener} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -26,23 +26,23 @@ import { MdcChipSet } from '@angular-mdc/web';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent implements OnInit {
 
-  @ViewChild('subcategory', { static: false }) subcategory:MdcChipSet;
+  @ViewChild('subcategory', { static: false }) subcategory: MdcChipSet;
   @ViewChild('dialog', { static: false }) dialog: ElementRef;
   scrollCallback;
-  currentPage:number=10;
-  bgStyle: string='/-/resize/200x/';
+  currentPage = 10;
+  bgStyle = '/-/resize/200x/';
 
-  isReady: boolean = false;
+  isReady = false;
   config: any;
   products: Product[] = [];
-  cache:{
+  cache: {
     products: Product[];
-  }
-  
+  };
+
   password: string;
   user: User;
   category: {
@@ -51,58 +51,59 @@ export class ProductListComponent implements OnInit {
     current: Category;
     similar: Category[];
   };
-  vendors:Shop[];
+  vendors: Shop[];
 
-  filterVendor:string;
-  filterChild:string;
+  filterVendor: string;
+  filterChild: string;
   childSub;
-  relative:string="./";
+  relative = './';
 
-  options:{
-    available:boolean;
-    status:boolean;
-    when:Date|boolean;
-    reload?:number;
-  }={
-    available:true,
-    status:true,
-    when:true
-  };  
+  options: {
+    available: boolean;
+    status: boolean;
+    when: Date|boolean;
+    reload?: number;
+  } = {
+    available: true,
+    status: true,
+    when: true
+  };
 
   constructor(
-    private $cart:CartService,
+    private $cart: CartService,
     private $product: ProductService,
     private $router: Router,
     private $route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {
-    this.cache={
-      products:[]
-    }
+    this.cache = {
+      products: []
+    };
 
     this.category = {
       slug: null,
       categories: [],
       current: null,
       similar: []
-    }
-    this.vendors=[];
+    };
+    this.vendors = [];
 
-    let loader = this.$route.snapshot.parent.data.loader;
+    const loader = this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
     this.user = loader[1];
     this.category.categories = loader[2];
-    this.scrollCallback=this.getNextPage.bind(this);
+    this.scrollCallback = this.getNextPage.bind(this);
 
   }
 
+  // TOCHECK
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-    if(this.childSub){
+    if (this.childSub) {
       this.childSub.unsubscribe();
     }
-    
+
   }
 
   ngOnInit() {
@@ -115,8 +116,8 @@ export class ProductListComponent implements OnInit {
       return;
     }
     this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
-    this.category.current.child = this.category.current.child.sort((a,b)=>{
-      return a.weight-b.weight; 
+    this.category.current.child = this.category.current.child.sort((a, b) => {
+      return a.weight - b.weight;
     });
 
 
@@ -124,11 +125,11 @@ export class ProductListComponent implements OnInit {
       .filter(cat => cat.group === this.category.current.group && cat.slug !== this.category.slug)
       .sort(cat => cat.weight);
 
-    this.bgStyle = 'url(' + this.category.current.cover+')';
+    this.bgStyle = 'url(' + this.category.current.cover + ')';
 
     this.loadProducts();
     //
-    // DIALOG INIT HACK 
+    // DIALOG INIT HACK
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.dialog.nativeElement.classList.remove('fadeout');
@@ -136,117 +137,118 @@ export class ProductListComponent implements OnInit {
 
   @HostListener('document:keyup.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    this.onClose(this.dialog);    
+    this.onClose(this.dialog);
   }
 
-  getChildCategory(category:Category){
+  getChildCategory(category: Category) {
     return category.child;
   }
 
-  getDialog(){
+  getDialog() {
     return this.dialog;
   }
 
 
-  getNextPage(){
-    this.currentPage+=10;
+  getNextPage() {
+    this.currentPage += 10;
     this.cdr.markForCheck();
     // console.log('--', this.currentPage)
-    return timer(1).pipe(map(ctx=>this.currentPage));
-  }  
+    return timer(1).pipe(map(ctx => this.currentPage));
+  }
 
-  getProducts(){
+  getProducts() {
     return this.cache.products;
   }
 
-  getVendorsClosed(){
-    let available=this.getProducts().map(product=>product.vendor.urlpath);
-    return this.vendors.filter(vendor=>available.indexOf(vendor.urlpath)==-1);
+  getVendorsClosed() {
+    const available = this.getProducts().map(product => product.vendor.urlpath);
+    return this.vendors.filter(vendor => available.indexOf(vendor.urlpath) === -1);
   }
-  getVendors(){
-    let available=this.getProducts().map(product=>product.vendor.urlpath);
-    return this.vendors.filter(vendor=>available.indexOf(vendor.urlpath)!=-1);
+  getVendors() {
+    const available = this.getProducts().map(product => product.vendor.urlpath);
+    return this.vendors.filter(vendor => available.indexOf(vendor.urlpath) !== -1);
   }
-  getVisibility(j){
-    return (this.currentPage>j);
+  getVisibility(j) {
+    return (this.currentPage > j);
   }
 
 
   loadProducts() {
 
-    this.options.when=this.$cart.getCurrentShippingDay();
+    this.options.when = this.$cart.getCurrentShippingDay();
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
       //
       // select first child category
-      //this.subcategory.chips.filter(elem=>true)[0].selected=true;
+      // this.subcategory.chips.filter(elem=>true)[0].selected=true;
 
       //
-      // update child only after products 
+      // update child only after products
       // TODO     .pipe(takeWhile(() => !this.destroyed))
 
-      this.childSub=this.$route.params.subscribe(param=>{
-        if(param['child']){
-          this.relative='../';
+      this.childSub = this.$route.params.subscribe(param => {
+        if (param['child']) {
+          this.relative = '../';
           this.toggleChild(param['child']);
-        }
-        else if(this.category.current.child[0]){
-          this.relative='./';
-          this.toggleChild(this.category.current.child[0].name)    
+        } else if (this.category.current.child[0]) {
+          this.relative = './';
+          this.toggleChild(this.category.current.child[0].name);
         }
       });
-  
+
 
       //
       // set vendors after toggle of child category
-      this.setVendors(this.products);  
+      this.setVendors(this.products);
       this.cdr.markForCheck();
     });
   }
 
-  setProducts(){
-    return this.cache.products=this.products.filter(product=>{
-      let vendor=!this.filterVendor||product.vendor.urlpath==this.filterVendor;
-      let cat=!this.filterChild||product.belong.name==this.filterChild;
-      return cat&&vendor;
+  setProducts() {
+    return this.cache.products = this.products.filter(product => {
+      const vendor = !this.filterVendor || product.vendor.urlpath === this.filterVendor;
+      const cat = !this.filterChild || product.belong.name === this.filterChild;
+      return cat && vendor;
     });
   }
 
-  setVendors(products:Product[]){
-    let map={};
-    products.forEach(product=>map[product.vendor.urlpath]=product.vendor);
-    this.vendors=Object.keys(map).map(key=>map[key]);
+  setVendors(products: Product[]) {
+    // TOCHECK
+    // Shadowed name: 'map' (no-shadowed-variable)
+    const map = {};
+    products.forEach(product => map[product.vendor.urlpath] = product.vendor);
+    this.vendors = Object.keys(map).map(key => map[key]);
     this.setProducts();
   }
 
-  toggleVendor(vendor:Shop){
-    if(this.filterVendor==vendor.urlpath){
-      return this.filterVendor=null;
+  toggleVendor(vendor: Shop) {
+    if (this.filterVendor === vendor.urlpath) {
+      return this.filterVendor = null;
     }
-    this.filterVendor=vendor.urlpath;
+    this.filterVendor = vendor.urlpath;
     this.setProducts();
   }
 
-  toggleChild(child:string){
-    if(this.filterChild==child){
-      this.subcategory.chips.forEach((elem:any)=>elem.selected=false);
-      this.filterChild=null;
+  toggleChild(child: string) {
+    if (this.filterChild === child) {
+      this.subcategory.chips.forEach((elem: any) => elem.selected = false);
+      this.filterChild = null;
       this.setProducts();
       return;
     }
-    this.subcategory.chips.forEach((elem:any)=>elem.selected=(elem.chipText.elementRef.nativeElement.innerText==child));    
-    this.filterChild=child;
+    this.subcategory.chips.forEach((elem: any) => elem.selected = (elem.chipText.elementRef.nativeElement.innerText === child));
+    this.filterChild = child;
     this.setProducts();
   }
 
 
   onClose(closedialog) {
-    this.dialog.nativeElement.classList.add('fadeout')
+    this.dialog.nativeElement.classList.add('fadeout');
     setTimeout(() => {
-      this.$router.navigate(['../../'],{relativeTo: this.$route})
-      //this.$location.back()
-    }, 200)
+      this.$router.navigate(['../../'], {relativeTo: this.$route});
+      // this.$location.back()
+    }, 200);
   }
 
 
@@ -254,16 +256,16 @@ export class ProductListComponent implements OnInit {
   // sort products by:
   //  - belong.weight
   //  - stats.score
-  sortProducts(a,b){
+  sortProducts(a, b) {
     // sort : HighScore => LowScore
-    let score=b.stats.score-a.stats.score;
-    if(!a.belong||!a.belong){
+    const score = b.stats.score - a.stats.score;
+    if (!a.belong || !a.belong) {
       return score;
     }
 
-    // sort : LowWeight => HighWeight 
-    let belong=a.belong.weight-b.belong.weight;
-    if(belong!=0){
+    // sort : LowWeight => HighWeight
+    const belong = a.belong.weight - b.belong.weight;
+    if (belong !== 0) {
       return belong;
     }
     return score;

@@ -11,13 +11,13 @@ export class KngPageNotFoundComponent implements OnInit {
 
 
   constructor(
-    public $i18n:i18n,
-    public $user:UserService
-  ) { 
-    
+    public $i18n: i18n,
+    public $user: UserService
+  ) {
+
   }
 
-  ngOnInit(){
+  ngOnInit() {
 
   }
 

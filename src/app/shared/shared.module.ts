@@ -49,6 +49,7 @@ import { appRoutes } from './shared.routes';
   ],
   exports:[
     RouterModule,
+    KngCommonModule,
     KngControlMessagesComponent,
     KngFeedbackComponent,
     KngHomeComponent,

@@ -50,8 +50,8 @@ export class GlobalErrorHandler implements ErrorHandler {
      try{
       console.log('origin',window.location.origin)
       if(window.location.origin.indexOf('karibou.ch')==-1){
-        console.log('LOCALHOST ERROR----',error.originalError || error);
-        return;
+        console.debug('LOCALHOST ERROR----',error.originalError || error);
+        return ;
       } 
       console.log('ERROR----',error.originalError || error);
       console.log('ERROR----',(error.originalError || error).message);

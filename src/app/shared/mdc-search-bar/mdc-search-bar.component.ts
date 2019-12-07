@@ -1,6 +1,6 @@
-import { 
+import {
   Component,
-  ElementRef, 
+  ElementRef,
   HostBinding,
   HostListener,
   OnInit,
@@ -34,38 +34,39 @@ export class MdcSearchBarComponent implements OnInit {
   searchIcon: any;
 
 
-  @HostBinding('class') isHostClass='mat-search--desktop  mat-toolbar--open-search primary';
-  @HostBinding('style.z-index') isOpen='auto';
+  @HostBinding('class') isHostClass = 'mat-search--desktop  mat-toolbar--open-search primary';
+  @HostBinding('style.z-index') isOpen = 'auto';
 
   //
   // bind submit search form
   @HostListener('submit', ['$event']) onClick($event: Event) {
-    console.log('----------- onsubmit',$event)
+    console.log('----------- onsubmit', $event);
   }
 
-  
+
   ngOnInit() {
     // bind open search
-    document.querySelector(".mat-toolbar--open-search").addEventListener('click',this.onSearch.bind(this))
+    document.querySelector('.mat-toolbar--open-search').addEventListener('click', this.onSearch.bind(this));
 
     // bind exit search
-    document.querySelector(".mat-toolbar--exit-search").addEventListener('click',this.onExitSearch.bind(this))
+    document.querySelector('.mat-toolbar--exit-search').addEventListener('click', this.onExitSearch.bind(this));
 
-    this.searchIcon=document.querySelector('.mat-toolbar--open-search');
+    this.searchIcon = document.querySelector('.mat-toolbar--open-search');
   }
 
+  // TOCHECK
   ngAfterViewInit(): void {
   }
 
   //
   // on search
-  onSearch(){
-    this.isOpen='1';
+  onSearch() {
+    this.isOpen = '1';
     //
     // document.querySelector('.mat-toolbar--search').style = "visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - 300 - 20) + "px;";
-    this.search.nativeElement.style="visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + "px;"
+    this.search.nativeElement.style = 'visibility: visible; overflow: hidden; --mat-toolbar--search-location: ' + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + 'px;';
     // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
-    this.searchContainer.nativeElement.style="animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
+    this.searchContainer.nativeElement.style = 'animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);';
     // document.querySelector('.mat-toolbar--search-text').focus();
     this.searchText.nativeElement.focus();
 
@@ -75,23 +76,23 @@ export class MdcSearchBarComponent implements OnInit {
     //   setTimeout(function() {
     //     document.querySelector('.mat-toolbar__row--tab-bar').style.cssText += "display: none";
     //   }, 300);
-    // }    
+    // }
   }
 
   //
   // .mat-toolbar--exit-search
-  onExitSearch(){
-    this.isOpen='auto';
-    
-    // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
-    this.searchContainer.nativeElement.style="animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
-    // document.querySelector('.mat-toolbar--search-text').value = '';
-    this.searchText.nativeElement.value="";
-    setTimeout(()=>{
-      // setTimeout(function() {document.querySelector('.mat-toolbar--search').style = "visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - searchIcon.offsetLeft - 20) + "px;";}, 500);
-      this.search.nativeElement.style="visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + "px;"
+  onExitSearch() {
+    this.isOpen = 'auto';
 
-    },700);
+    // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
+    this.searchContainer.nativeElement.style = 'animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);';
+    // document.querySelector('.mat-toolbar--search-text').value = '';
+    this.searchText.nativeElement.value = '';
+    setTimeout(() => {
+      // setTimeout(function() {document.querySelector('.mat-toolbar--search').style = "visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - searchIcon.offsetLeft - 20) + "px;";}, 500);
+      this.search.nativeElement.style = 'visibility: hidden; --mat-toolbar--search-location: ' + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + 'px;';
+
+    }, 700);
 		// if(document.querySelector('.mat-toolbar__row--tab-bar')){
 		// 	document.querySelector('.mat-toolbar__row--tab-bar').style = "display: block;";
 		// 	setTimeout(function() {
@@ -104,9 +105,9 @@ export class MdcSearchBarComponent implements OnInit {
 
   //
   // .clear-search-query
-  onClearSearchQuery(){
-    this.searchText.nativeElement.value="";
-    this.searchText.nativeElement.focus();    
+  onClearSearchQuery() {
+    this.searchText.nativeElement.value = '';
+    this.searchText.nativeElement.focus();
   }
 
 

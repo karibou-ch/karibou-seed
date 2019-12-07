@@ -13,23 +13,23 @@ import { KngCommonModule } from '../common/common.module';
 //
 // define routes module
 const routes: Routes = [
-  { 
-    path: '', 
-    pathMatch: 'full', 
-    component: KngCartComponent, 
-    resolve:{ loader:LoaderResolve } 
+  {
+    path: '',
+    pathMatch: 'full',
+    component: KngCartComponent,
+    resolve: { loader: LoaderResolve }
   }
 ];
 
 //
-// 
+//
 const routing: ModuleWithProviders = RouterModule.forChild(routes);
 
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     CartMdcModule,
     KngCommonModule,

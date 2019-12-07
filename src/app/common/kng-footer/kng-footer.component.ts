@@ -10,60 +10,60 @@ import { i18n, KngNavigationStateService } from '..';
 })
 export class KngFooterComponent implements OnInit {
 
-  @Output() updated:EventEmitter<User>=new EventEmitter<User>();
+  @Output() updated: EventEmitter<User> = new EventEmitter<User>();
 
-  @Input() user:User;
-  @Input() set config(config:Config){
+  @Input() user: User;
+  @Input() set config(config: Config) {
     this.main(config);
   }
 
-  content:any;
-  store:string;
-    
+  content: any;
+  store: string;
+
   constructor(
-    private $i18n:i18n,
-    private $user:UserService,
-    private $navigation:KngNavigationStateService,
-    private $route:ActivatedRoute,
-  ){
+    private $i18n: i18n,
+    private $user: UserService,
+    private $navigation: KngNavigationStateService,
+    private $route: ActivatedRoute,
+  ) {
 
     //
     // initialize loader
-    let loader=this.$route.snapshot.data.loader;
+    const loader = this.$route.snapshot.data.loader;
     //
     // system ready
     this.user   = loader[1];
     this.config = loader[0];
-    this.content= this.config&&this.config.shared;
-  }    
-
-  ngOnInit() {
-    this.store=this.$navigation.store;
+    this.content = this.config && this.config.shared;
   }
 
-  get locale(){
+  ngOnInit() {
+    this.store = this.$navigation.store;
+  }
+
+  get locale() {
     return this.$i18n.locale;
   }
 
-  getFooter(key){
-    if(!this.content||!this.content.home.footer[key]){
+  getFooter(key) {
+    if (!this.content || !this.content.home.footer[key]) {
       return;
     }
     return this.content.home.footer[key][this.locale];
   }
-  
 
-  getMenuItems(group:string){
+
+  getMenuItems(group: string) {
     return this.$navigation.getMenuItems(group);
   }
 
-  main(config:Config){
-    this.content=config.shared;
+  main(config: Config) {
+    this.content = config.shared;
     // Use one uniq central point for updateConfig
     // this.$navigation.updateConfig(config);
   }
 
 
-  
-  
+
+
 }

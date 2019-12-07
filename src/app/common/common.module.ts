@@ -29,7 +29,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     RouterModule,
     CommonMdcModule
   ],
-  exports:[
+  exports: [
     CommonMdcModule,
     RouterModule,
     KngFooterComponent,
@@ -42,8 +42,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     KngLazyLoadDirective,
   ],
 })
-export class KngCommonModule { 
-  public static forRoot(options?:any): ModuleWithProviders {
+export class KngCommonModule {
+  public static forRoot(options?: any): ModuleWithProviders {
     return {
       ngModule: KngCommonModule,
       providers: [
@@ -54,6 +54,6 @@ export class KngCommonModule {
         IsAuthenticatedGard,
         IsWelcomeGard
       ]
-    }        
+    };
   }
 }

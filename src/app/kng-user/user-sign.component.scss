@@ -22,14 +22,16 @@
       top: 10px;
       right: 10px;
       z-index: 4;
+      .size-large {
+        font-size: 50px!important;
+      }
       @media (max-width: 426px) {
         top: 5px;
         right: 5px;
       }
     }
     
-    
-
+  
 
     kng-control-messages{
       color:#999;
