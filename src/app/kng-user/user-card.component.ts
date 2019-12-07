@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { User, 
-         UserCard, 
-         UserService, 
+import { User,
+         UserCard,
+         UserService,
          Config} from 'kng2-core';
 
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -9,10 +9,10 @@ import { StripeService, Elements, ElementsOptions, TokenResult } from 'ngx-strip
 import { i18n } from '../common';
 
 
-export interface PaymentEvent{
-  deleted?:UserCard[];
-  card?:UserCard;
-  error?:Error|any;
+export interface PaymentEvent {
+  deleted?: UserCard[];
+  card?: UserCard;
+  error?: Error|any;
 }
 
 // stripe
@@ -29,31 +29,31 @@ export interface PaymentEvent{
 })
 export class CardComponent {
 
-  i18n:any={
-    fr:{
-      title_header:"Vos méthodes de paiement",
-      title_edit:"Sélectionner une méthode pour l'éditer",
-      action_add:"Ajouter une méthode de paiement",
-      action_create_ok:"Votre méthode de paiement a été enregistrée",
+  i18n: any = {
+    fr: {
+      title_header: 'Vos méthodes de paiement',
+      title_edit: 'Sélectionner une méthode pour l\'éditer',
+      action_add: 'Ajouter une méthode de paiement',
+      action_create_ok: 'Votre méthode de paiement a été enregistrée',
     },
-    en:{
-      title_header:"Your payment methods",
-      title_edit:"Select payment method you want to edit",
-      action_add:"Add a new payment method",
-      action_create_ok:"Your payment method has been saved",
+    en: {
+      title_header: 'Your payment methods',
+      title_edit: 'Select payment method you want to edit',
+      action_add: 'Add a new payment method',
+      action_create_ok: 'Your payment method has been saved',
     }
-  }
+  };
 
-  defaultUser:User=new User();
-  isValid:boolean;
+  defaultUser: User = new User();
+  isValid: boolean;
 
   //
-  // payment 
-  stripe:FormGroup;
+  // payment
+  stripe: FormGroup;
   elements: Elements;
-  selected:UserCard;
-  card:any;
-  isLoading:boolean;
+  selected: UserCard;
+  card: any;
+  isLoading: boolean;
 
   // optional parameters
   elementsOptions: ElementsOptions = {
@@ -62,88 +62,89 @@ export class CardComponent {
 
   //
   // TODO shared this issuer assets
-  issuer={
-    wallet:{
-      img:'/assets/img/payment/wallet.jpg',
-      label:'Votre compte privé'
+  issuer = {
+    wallet: {
+      img: '/assets/img/payment/wallet.jpg',
+      label: 'Votre compte privé'
     },
-    invoice:{
-      img:'/assets/img/payment/invoice.jpg',
-      label:'Facture en ligne'
+    invoice: {
+      img: '/assets/img/payment/invoice.jpg',
+      label: 'Facture en ligne'
     },
-    mastercard:{
-      img:'/assets/img/payment/mc.jpg',
-      label:'Mastercard'
+    mastercard: {
+      img: '/assets/img/payment/mc.jpg',
+      label: 'Mastercard'
     },
-    visa:{
-      img:'/assets/img/payment/visa.jpg',
-      label:'VISA'
+    visa: {
+      img: '/assets/img/payment/visa.jpg',
+      label: 'VISA'
     },
-    'american express':{
-      img:'/assets/img/payment/ae.jpg',
-      label:'American Express'
+    'american express': {
+      img: '/assets/img/payment/ae.jpg',
+      label: 'American Express'
     },
-    btc:{
-      img:'/assets/img/payment/btc.jpg',
-      label:'Bitcoin'
+    btc: {
+      img: '/assets/img/payment/btc.jpg',
+      label: 'Bitcoin'
     },
-    bch:{
-      img:'/assets/img/payment/bch.jpg',
-      label:'Bitcoin Cash'
+    bch: {
+      img: '/assets/img/payment/bch.jpg',
+      label: 'Bitcoin Cash'
     },
-    lumen:{
-      img:'/assets/img/payment/xlm.jpg',
-      label:'Lumen'
+    lumen: {
+      img: '/assets/img/payment/xlm.jpg',
+      label: 'Lumen'
     }
-  }
-  
-  @Output('updated') updated:EventEmitter<PaymentEvent>=new EventEmitter<PaymentEvent>();
+  };
 
-  @Input('user') user:User;
-  @Input('config') set config(config:Config){
+   // TOCHECK
+  @Output('updated') updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
+
+  @Input('user') user: User;
+  @Input('config') set config(config: Config) {
     this.main(config);
   }
 
   constructor(
-    public  $i18n:i18n,
+    public  $i18n: i18n,
     private $fb: FormBuilder,
     private $stripe: StripeService,
-    private $user:UserService
-  ){
+    private $user: UserService
+  ) {
     //
     // payment method
     this.stripe = this.$fb.group({
       'name': ['', [Validators.required]]
-    });    
-    
-    this.isLoading=false;
+    });
+
+    this.isLoading = false;
   }
 
-  get locale(){
-    let locale=this.$i18n.locale;
-    switch(locale){
+  get locale() {
+    const locale = this.$i18n.locale;
+    switch (locale) {
       case 'fr':
-      this.elementsOptions.locale='fr';
+      this.elementsOptions.locale = 'fr';
       break;
-      default:  
-      this.elementsOptions.locale='en';
+      default:
+      this.elementsOptions.locale = 'en';
     }
     return locale;
   }
   //
   // entry point
-  main(config:Config){
-    let locale=this.locale;
+  main(config: Config) {
+    const locale = this.locale;
     //
     // set the stripe key
     this.$stripe.setKey(config.shared.keys.pubStripe);
 
-    if(this.user.isAuthenticated()){
-      this.$user.checkPaymentMethod(this.user).subscribe(user=>{
-        this.user=user;
+    if (this.user.isAuthenticated()) {
+      this.$user.checkPaymentMethod(this.user).subscribe(user => {
+        this.user = user;
       });
     }
-    
+
     this.$stripe.elements(this.elementsOptions).subscribe(elements => {
       this.elements = elements;
       // Only mount the element the first time
@@ -151,7 +152,7 @@ export class CardComponent {
         return;
       }
       this.card = this.elements.create('card', {
-        hidePostalCode:true,
+        hidePostalCode: true,
         style: {
           base: {
             iconColor: '#444',
@@ -168,48 +169,48 @@ export class CardComponent {
       });
 
 
-      setTimeout(()=>{
-        this.card.addEventListener('change', (event)=> {
-          //event.brand=> "mastercard"
-          //event.complete=> true|false
-          //event.elementType=> "card"
-          //event.empty=> false
-          //event.error=> undefined
-          //event.value=> {postalCode: ""}                    
-          this.isValid=event.complete;
+      setTimeout(() => {
+        this.card.addEventListener('change', (event) => {
+          // event.brand=> "mastercard"
+          // event.complete=> true|false
+          // event.elementType=> "card"
+          // event.empty=> false
+          // event.error=> undefined
+          // event.value=> {postalCode: ""}
+          this.isValid = event.complete;
         });
-        
+
         this.card.mount('#card-element');
-      },100)      
-    });    
-  
+      }, 100);
+    });
+
   }
 
-  isSelectedPayment(payment){
-    return this.selected&&this.selected.alias==payment.alias;
+  isSelectedPayment(payment) {
+    return this.selected && this.selected.alias === payment.alias;
   }
 
-  onDelete(payment:UserCard){
-    this.isLoading=true;
-    this.$user.deletePaymentMethod(payment.alias,this.user.id).subscribe(
-      user=>{
-        this.onEmit(<PaymentEvent>({deleted:user.payments}));
+  onDelete(payment: UserCard) {
+    this.isLoading = true;
+    this.$user.deletePaymentMethod(payment.alias, this.user.id).subscribe(
+      user => {
+        this.onEmit(<PaymentEvent>({deleted: user.payments}));
       },
-      err=>this.onEmit(<PaymentEvent>({error:new Error(err.error)}))
-    )  
+      err => this.onEmit(<PaymentEvent>({error: new Error(err.error)}))
+    );
   }
 
-  onEmit(result:PaymentEvent){
-    this.isLoading=false;
-    this.updated.emit(result);    
+  onEmit(result: PaymentEvent) {
+    this.isLoading = false;
+    this.updated.emit(result);
   }
 
   onPayment() {
-    this.isLoading=true;
+    this.isLoading = true;
     const name = this.stripe.get('name').value;
     this.$stripe
       .createToken(this.card, { name })
-      .subscribe((result:TokenResult) => {
+      .subscribe((result: TokenResult) => {
         // id: string;
         // object: 'token';
         // bank_account?: {
@@ -258,33 +259,33 @@ export class CardComponent {
         // client_ip: string;
         // livemode: boolean;
         // type: 'card' | 'bank_account';
-        // used: boolean;        
+        // used: boolean;
         if (result.token) {
           // Use the token to create a charge or a customer
           // https://stripe.com/docs/charges
-          let card:UserCard=new UserCard({
-            id:result.token.id,
-            name:result.token.card.name,
-            issuer:result.token.card.brand.toLowerCase(),
-            number:'xxxx-xxxx-xxxx-'+result.token.card.last4,
-            expiry:result.token.card.exp_month+'/'+result.token.card.exp_year            
+          const card: UserCard = new UserCard({
+            id: result.token.id,
+            name: result.token.card.name,
+            issuer: result.token.card.brand.toLowerCase(),
+            number: 'xxxx-xxxx-xxxx-' + result.token.card.last4,
+            expiry: result.token.card.exp_month + '/' + result.token.card.exp_year
           });
-          
-          this.$user.addPaymentMethod(card,this.user.id).subscribe(
-            user=>this.onEmit(<PaymentEvent>({card:card})),
-            err=>this.onEmit(<PaymentEvent>({error:new Error(err.error)}))
-          )
-            
+
+          this.$user.addPaymentMethod(card, this.user.id).subscribe(
+            user => this.onEmit(<PaymentEvent>({card: card})),
+            err => this.onEmit(<PaymentEvent>({error: new Error(err.error)}))
+          );
+
         } else if (result.error) {
           //
           // Error creating the token
-          this.onEmit(<PaymentEvent>{error:result.error})
+          this.onEmit(<PaymentEvent>{error: result.error});
         }
       });
-  }  
-    
-  setPaymentMethod(payment){
-    this.selected=payment;
+  }
+
+  setPaymentMethod(payment) {
+    this.selected = payment;
   }
 
 }

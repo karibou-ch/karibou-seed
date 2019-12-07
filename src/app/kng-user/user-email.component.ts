@@ -13,30 +13,30 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class UserEmailComponent {
 
-  @Output() updated:EventEmitter<User>=new EventEmitter<User>();
+  @Output() updated: EventEmitter<User> = new EventEmitter<User>();
 
-  @Input() user:User;
-  @Input() set config(config:Config){
+  @Input() user: User;
+  @Input() set config(config: Config) {
     this.main(config);
   }
 
-  
-  $profile:FormGroup;
-  isLoading:boolean;
-  phone:string;
-  locale:string;
-  
+
+  $profile: FormGroup;
+  isLoading: boolean;
+  phone: string;
+  locale: string;
+
   constructor(
-    public  $i18n:i18n,
+    public  $i18n: i18n,
     private $fb: FormBuilder,
-    private $user:UserService,
-    private $route:ActivatedRoute,
-    private $snack:MdcSnackbar
-  ){
+    private $user: UserService,
+    private $route: ActivatedRoute,
+    private $snack: MdcSnackbar
+  ) {
 
     //
     // initialize loader
-    let loader=this.$route.snapshot.data.loader;
+    const loader = this.$route.snapshot.data.loader;
     //
     // system ready
     this.user   = loader[1];
@@ -44,52 +44,54 @@ export class UserEmailComponent {
 
     //
     // in case of missing phone
-    if(!this.user.phoneNumbers||!this.user.phoneNumbers.length){
-      this.user.phoneNumbers=[{what:'mobile',number:''}];
+    if (!this.user.phoneNumbers || !this.user.phoneNumbers.length) {
+      this.user.phoneNumbers = [{what: 'mobile', number: ''}];
     }
     this.phone  = this.user.phoneNumbers[0].number;
-    
-    this.isLoading=false;
-    //[ngModelOptions]="{updateOn: 'blur'}"
+
+    this.isLoading = false;
+    // [ngModelOptions]="{updateOn: 'blur'}"
     this.$profile = this.$fb.group({
-      'name':['', [Validators.required,Validators.minLength(2)]],
-      'forname':['', [Validators.required,Validators.minLength(2)]],
-      'phone':['', [Validators.required,Validators.minLength(9)]],
-      'email':   ['', [Validators.required,KngInputValidator.emailValidator]],
-      'password':   ['',[Validators.required,Validators.minLength(6)]]
-    },{
-      Validators:KngInputValidator.MatchPasswordAndConfirm
+      'name': ['', [Validators.required, Validators.minLength(2)]],
+      'forname': ['', [Validators.required, Validators.minLength(2)]],
+      'phone': ['', [Validators.required, Validators.minLength(9)]],
+      'email':   ['', [Validators.required, KngInputValidator.emailValidator]],
+      'password':   ['', [Validators.required, Validators.minLength(6)]]
+    }, {
+      Validators: KngInputValidator.MatchPasswordAndConfirm
     });
-    //[ngModelOptions]="{updateOn: 'blur'}"
+    // [ngModelOptions]="{updateOn: 'blur'}"
   }
 
-  ngOnInit(){
-    this.locale=this.$i18n.locale;
+  // TOCHECK
+  // Implement life cycle hook interface OnInit for method ngOnInit in class UserEmailComponent
+  ngOnInit() {
+    this.locale = this.$i18n.locale;
   }
 
 
   //
   // entry poiont
-  main(config:Config){
+  main(config: Config) {
   }
 
 
-  onChange(){
+  onChange() {
     //
     // let update password
-    let update=new User(this.user);
-    update.name.familyName=this.$profile.value.name;
-    update.name.givenName=this.$profile.value.forname;
-    update.email.address=this.$profile.value.email;
-    update.phoneNumbers[0].number=this.$profile.value.phone;
+    const update = new User(this.user);
+    update.name.familyName = this.$profile.value.name;
+    update.name.givenName = this.$profile.value.forname;
+    update.email.address = this.$profile.value.email;
+    update.phoneNumbers[0].number = this.$profile.value.phone;
 
-    let locale=this.$i18n.locale;
-    this.$user.save(update).subscribe(
-      ()=>this.$snack.show(
+    const locale = this.$i18n.locale;
+    this.$user.save(update).subscribe(  // FIXME ok, force usage of password here
+      () => this.$snack.open(
         this.$i18n.label().modify_ok,
-        this.$i18n.label().thanks,this.$i18n.snackOpt
+        this.$i18n.label().thanks, this.$i18n.snackOpt
       ),
-      err=>this.$snack.show(err.error)
+      err => this.$snack.open(err.error)
     );
   }
 }

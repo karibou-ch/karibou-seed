@@ -1,6 +1,6 @@
 <div>
   <div [hidden]="!getUser().addresses.length">
-    <h2 mdc-typography-title i18n [hidden]="!user.addresses.length" i18n>
+    <h2 MdcHeadline1 i18n [hidden]="!user.addresses.length" i18n>
       {{i18n[locale].list_title}} 
     </h2>
     <p class="help-block" i18n>
@@ -30,13 +30,13 @@
   </div>
 
   <!-- <div [hidden]="!small" *ngIf="idx">
-    <h2 mdc-typography-title>{{getUser().addresses[idx]}}</h2>
+    <h2 MdcHeadline1>{{getUser().addresses[idx]}}</h2>
     <div [ngStyle]="{'background-image': 'url(' + getStaticMap(getUser().addresses[idx]) + ')'}"></div>
   </div> -->
 
 
   <div [hidden]="small">
-    <h2 mdc-typography-title>{{i18n[locale].list_add}}</h2>
+    <h2 MdcHeadline1>{{i18n[locale].list_add}}</h2>
     <form [formGroup]="$address" (submit)="onSave()">
 
         <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
@@ -91,7 +91,6 @@
         <button mdc-button 
                 [primary]="true"
                 [unelevated]="true" 
-                [icon]="true"  
                 [disabled]="!$address.valid||isLoading" 
                 class="align-right">
           <mdc-icon>account_circle</mdc-icon>              

@@ -1,14 +1,14 @@
-import { Component, 
-         OnInit, 
-         OnDestroy, 
-         ViewEncapsulation, 
-         HostListener, 
-         ViewChildren, 
-         ElementRef, 
-         QueryList, 
+import { Component,
+         OnInit,
+         OnDestroy,
+         ViewEncapsulation,
+         HostListener,
+         ViewChildren,
+         ElementRef,
+         QueryList,
          ChangeDetectionStrategy
         } from '@angular/core';
-import { timer } from  'rxjs';
+import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -20,7 +20,7 @@ import {
   LoaderService,
   User,
   CartAction
-}  from 'kng2-core';
+} from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../common';
 import { MetricsService, EnumMetrics } from '../common/metrics.service';
@@ -31,31 +31,31 @@ import { MetricsService, EnumMetrics } from '../common/metrics.service';
   templateUrl: './kng-home.component.html',
   styleUrls: ['./kng-home.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  //changeDetection:ChangeDetectionStrategy.OnPush
+  // changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
 
   @ViewChildren('section') sections: QueryList<ElementRef>;
-    
-  isReady: boolean = false;
+
+  isReady = false;
   config: Config;
-  categories:Category[];
-  cached:any={};
-  group:any={};
-  home:Product[]=[];
-  user:User;
+  categories: Category[];
+  cached: any = {};
+  group: any = {};
+  home: Product[] = [];
+  user: User;
   subscription;
 
   //
   // infinite scroll callback
   scrollCallback;
-  scrollPosition:number;
-  scrollDirection:number;
-  currentPage:number=3;
-  visibility:any={};
+  scrollPosition: number;
+  scrollDirection: number;
+  currentPage = 3;
+  visibility: any = {};
 
   //
-  //gradient of background image 
+  // gradient of background image
   bgGradient = `linear-gradient(
     rgba(50, 50, 50, 0.1),
     rgba(50, 50, 50, 0.7)
@@ -64,69 +64,69 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   //
   // products for home
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
-  options:{
-    discount:boolean;
-    home:boolean;
-    maxcat:number;
-    popular:boolean;
-    available:boolean;
-    status:boolean;
-    when:Date|boolean;
-    reload?:number;
-  }={
-    discount:true,
-    home:true,
-    maxcat:14,
-    popular:true,
-    available:true,
-    status:true,
-    when:true
+  options: {
+    discount: boolean;
+    home: boolean;
+    maxcat: number;
+    popular: boolean;
+    available: boolean;
+    status: boolean;
+    when: Date|boolean;
+    reload?: number;
+  } = {
+    discount: true,
+    home: true,
+    maxcat: 14,
+    popular: true,
+    available: true,
+    status: true,
+    when: true
   };
 
 
   constructor(
-    public $cart:CartService,
-    public $i18n:i18n,
+    public $cart: CartService,
+    public $i18n: i18n,
     private $loader: LoaderService,
-    private $metric:MetricsService,
+    private $metric: MetricsService,
     private $product: ProductService,
     private $route: ActivatedRoute
-  ) { 
+  ) {
     // bind infinite scroll callback function
-    this.scrollCallback=this.getNextPage.bind(this);
-    let loader=this.$route.snapshot.parent.data['loader']||this.$route.snapshot.data['loader'];
+    this.scrollCallback = this.getNextPage.bind(this);
+    const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.isReady = false;
     this.config = loader[0];
-    this.user=loader[1];
-    this.categories=loader[2]||[];
-    this.currentPage=1000;
+    this.user = loader[1];
+    this.categories = loader[2] || [];
+    this.currentPage = 1000;
     // this.options.maxcat=(window.innerWidth<426)?6:12
-    
+
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  ngOnInit() {        
-    setTimeout(()=>{
+  ngOnInit() {
+    setTimeout(() => {
       this.detectVisibility(0);
-    },800);
+    }, 800);
 
     //
     // FIXME avoid double home load
-    let loaded=false;
-    
-    this.subscription=this.$loader.update().subscribe(emit=>{
+    let loaded = false;
+
+    this.subscription = this.$loader.update().subscribe(emit => {
 
       // emit signal for config
-      if(emit.config){
+      if (emit.config) {
       }
 
       // emit signal for user
-      if(emit.user){
+      if (emit.user) {
         // force reload product list (avoid cache between anonymous and user transition)
-        this.options.reload=emit.user.isAuthenticated()?1:0;
+        this.options.reload = emit.user.isAuthenticated() ? 1 : 0;
       }
 
       // emit signal for CartAction[state]
@@ -139,116 +139,116 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       // CART_SAVE_ERROR= 7,
       // CART_ADDRESS   = 8,
       // CART_PAYMENT   = 9,
-      // CART_SHPPING   =10,      
-      if(emit.state){
-        if(CartAction.CART_SHPPING==emit.state.action){
-          this.options.when=this.$cart.getCurrentShippingDay();
+      // CART_SHPPING   =10,
+      if (emit.state) {
+        if (CartAction.CART_SHPPING === emit.state.action) {
+          this.options.when = this.$cart.getCurrentShippingDay();
           this.productsGroupByCategory();
         }
         //
         // FIXME issue 2x CART_LOADED !!
-        if(([CartAction.CART_LOADED].indexOf(emit.state.action)>-1||!Object.keys(this.group).length)
-          && !loaded){
+        if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !Object.keys(this.group).length)
+          && !loaded) {
           this.productsGroupByCategory();
-          loaded=true;
+          loaded = true;
         }
       }
-      console.log(this.constructor.name,'------------',emit,this.sections)      
-    });    
+      console.log(this.constructor.name, '------------', emit, this.sections);
+    });
   }
 
-  get locale(){
+  get locale() {
     return this.$i18n.locale;
   }
 
-  add(product:Product){
+  add(product: Product) {
     this.$cart.add(product);
   }
 
-  doDirectionUp(){
-    
-  }
-
-  doDirectionDown(){
+  doDirectionUp() {
 
   }
 
-  getNextPage(){
+  doDirectionDown() {
+
+  }
+
+  getNextPage() {
     //
-    // next page must be async loaded 
-    return timer(10).pipe(map(ctx=>this.currentPage++));
+    // next page must be async loaded
+    return timer(10).pipe(map(ctx => this.currentPage++));
   }
 
-  getCategories(){
-    if(this.cached.categories && this.currentPage===this.cached.currentPage){
+  getCategories() {
+    if (this.cached.categories && this.currentPage === this.cached.currentPage) {
       return this.cached.categories;
     }
-    if(!this.isReady){
+    if (!this.isReady) {
       return [];
     }
-    this.cached.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
-      return c.active&&(c.type==='Category');
-    }).slice(0,this.currentPage);
-    this.cached.currentPage=this.currentPage;
-    this.cached.categories.forEach(cat=>this.visibility[cat.slug]=false);
+    this.cached.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
+      return c.active && (c.type === 'Category');
+    }).slice(0, this.currentPage);
+    this.cached.currentPage = this.currentPage;
+    this.cached.categories.forEach(cat => this.visibility[cat.slug] = false);
 
     return this.cached.categories;
-  }  
+  }
 
-  getHeaderStyle(){
-    //{'background-image': 'url(' + getStaticMap(edit.address) + ')'}
-    if(!this.hasBackgroundCover()){
+  getHeaderStyle() {
+    // {'background-image': 'url(' + getStaticMap(edit.address) + ')'}
+    if (!this.hasBackgroundCover()) {
       return {};
     }
 
-    let bgStyle = 'url(' + this.config.shared.home.about.image + ')';
-    return {'background-image':this.bgGradient+bgStyle};
+    const bgStyle = 'url(' + this.config.shared.home.about.image + ')';
+    return {'background-image': this.bgGradient + bgStyle};
   }
 
 
-  getAboutContent(elem:string){
+  getAboutContent(elem: string) {
     return this.config.shared.home.about[elem][this.$i18n.locale];
   }
 
-  hasBackgroundCover(){
+  hasBackgroundCover() {
     return (!!this.config.shared.home.about.image);
   }
 
-  hasAboutContent(elem:string){
-    let content=this.getAboutContent(elem);
-    return content!=''&&content!=null&&content!=undefined;
+  hasAboutContent(elem: string) {
+    const content = this.getAboutContent(elem);
+    return content !== '' && content != null && content !== undefined;
   }
 
   productsGroupByCategory() {
-    //FIXME inner size    
-    let maxcat=(window.innerWidth<426)?6:8;
-    let divider=(window.innerWidth<426)?2:4;
-    this.group={};
+    // FIXME inner size
+    const maxcat = (window.innerWidth < 426) ? 6 : 8;
+    const divider = (window.innerWidth < 426) ? 2 : 4;
+    this.group = {};
 
     this.$product.select(this.options).subscribe((products: Product[]) => {
-      products.forEach((product:Product)=>{
-        if(product.attributes.home){
+      products.forEach((product: Product) => {
+        if (product.attributes.home) {
           this.home.push(product);
           return;
         }
 
-        if(!product.categories){
-          return console.log('DEBUG----',product.sku,product.title);
+        if (!product.categories) {
+          return console.log('DEBUG----', product.sku, product.title);
         }
-        if(!this.group[product.categories.name]){
-          this.group[product.categories.name]=[];
+        if (!this.group[product.categories.name]) {
+          this.group[product.categories.name] = [];
         }
         this.group[product.categories.name].push(product);
       });
-      this.home=this.home.slice(0,10);
-      Object.keys(this.group).forEach(cat=>{
-        this.group[cat]=this.group[cat].sort((a,b)=>{
-          return b.stats.score-a.stats.score;
-        }).slice(0,maxcat);
-        if(this.group[cat].length%divider==0){
-          this.group[cat].pop()
+      this.home = this.home.slice(0, 10);
+      Object.keys(this.group).forEach(cat => {
+        this.group[cat] = this.group[cat].sort((a, b) => {
+          return b.stats.score - a.stats.score;
+        }).slice(0, maxcat);
+        if (this.group[cat].length % divider === 0) {
+          this.group[cat].pop();
         }
-      })
+      });
       this.isReady = true;
     });
 
@@ -261,12 +261,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   scrollHasNextSection(currentIndex: number) {
-    return true;//currentIndex < this.images.length - 1;
+    return true; // currentIndex < this.images.length - 1;
   }
 
   private findNextSection(slug: string): HTMLElement {
     const sectionNativeEls = this.getSectionsNativeElements();
-    const nextIndex = sectionNativeEls.findIndex(el=>el.className==slug);
+    const nextIndex = sectionNativeEls.findIndex(el => el.className === slug);
 
     // console.log('----',slug,nextIndex,this.sections.toArray()[nextIndex])
     return sectionNativeEls[nextIndex];
@@ -278,45 +278,45 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   scrollElIntoView(el: HTMLElement) {
-    if(!el){
+    if (!el) {
       return;
     }
 
     //
-    //type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
+    // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
     el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
-  }  
-
-  sortByWeight(a:Category,b:Category){
-    return a.weight-b.weight;
   }
-  
+
+  sortByWeight(a: Category, b: Category) {
+    return a.weight - b.weight;
+  }
+
   //
-  // detect if current container is visible 
+  // detect if current container is visible
   // on the screen (based on scroll position)
-  detectVisibility(scrollPosition:number){
+  detectVisibility(scrollPosition: number) {
     // safe test
-    if(!this.sections){
+    if (!this.sections) {
       return;
     }
-    this.sections.forEach(container=>{
-      let scrollTop = container.nativeElement.offsetTop;
-      let height = container.nativeElement.clientHeight;
+    this.sections.forEach(container => {
+      const scrollTop = container.nativeElement.offsetTop;
+      const height = container.nativeElement.clientHeight;
 
       //
       // container.nativeElement.className visible!
-      if(scrollPosition>=scrollTop&& 
-         scrollPosition<(scrollTop+height)){
-          this.visibility[container.nativeElement.className]=true;
+      if (scrollPosition >= scrollTop &&
+         scrollPosition < (scrollTop + height)) {
+          this.visibility[container.nativeElement.className] = true;
       }
-      if((scrollPosition+window.innerHeight)>=scrollTop&&
-         (scrollPosition+window.innerHeight)<(scrollTop+height)){
-          this.visibility[container.nativeElement.className]=true;
+      if ((scrollPosition + window.innerHeight) >= scrollTop &&
+         (scrollPosition + window.innerHeight) < (scrollTop + height)) {
+          this.visibility[container.nativeElement.className] = true;
       }
-      if((scrollPosition+window.innerHeight)>=scrollTop&&
-         (scrollPosition+window.innerHeight)>(scrollTop+height)){
-          this.visibility[container.nativeElement.className]=true;
-      }  
+      if ((scrollPosition + window.innerHeight) >= scrollTop &&
+         (scrollPosition + window.innerHeight) > (scrollTop + height)) {
+          this.visibility[container.nativeElement.className] = true;
+      }
       // console.log('---',this.visibility[container.nativeElement.className])
     });
     // console.log('-- detectVisibility',scrollPosition)
@@ -329,9 +329,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   @HostListener('window:scroll', ['$event'])
   windowScroll() {
     const scrollPosition = window.pageYOffset;
-    // 
+    //
     // avoid CPU usage
-    if(Math.abs(this.scrollPosition-scrollPosition)<6){
+    if (Math.abs(this.scrollPosition - scrollPosition) < 6) {
       return;
     }
     // console.log('-- pageYOffset',window.pageYOffset);
@@ -341,25 +341,25 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.detectVisibility(scrollPosition);
 
     if (scrollPosition > this.scrollPosition) {
-      if(this.scrollDirection<0){
+      if (this.scrollDirection < 0) {
         this.scrollDirection--;
-      }else{
-        this.scrollDirection=-6;
+      } else {
+        this.scrollDirection = -6;
       }
     } else {
-      if(this.scrollDirection>0){
+      if (this.scrollDirection > 0) {
         this.scrollDirection++;
-      }else{
-        this.scrollDirection=1;
+      } else {
+        this.scrollDirection = 1;
       }
     }
 
-    if(this.scrollDirection>20){
+    if (this.scrollDirection > 20) {
       this.doDirectionUp();
     }
-    if(this.scrollDirection<-20){
+    if (this.scrollDirection < -20) {
       this.doDirectionDown();
     }
-    this.scrollPosition = scrollPosition;      
+    this.scrollPosition = scrollPosition;
   }
 }

@@ -38,7 +38,7 @@ import {
     MdcRadioModule,
     MdcRippleModule,
     MdcSnackbarModule,
-    MdcTextFieldModule,    
+    MdcTextFieldModule,
     MdcTabBarModule
   ],
   declarations: []

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { i18n } from '../common';
-import { Config, 
-         LoaderService, 
-         UserService, 
+import { Config,
+         LoaderService,
+         UserService,
          User } from 'kng2-core';
 import { Location } from '@angular/common';
 
@@ -18,52 +18,52 @@ import { debounce } from 'rxjs/operators';
 })
 export class UserProfileComponent implements OnInit {
 
-  config:Config;
-  user:User;
-  isReady:boolean;
+  config: Config;
+  user: User;
+  isReady: boolean;
 
-  i18n:any={
-    fr:{
-      profile_title:"Membre depuis le",
-      profile_order:"Commandes",
-      profile_reminder:"Alarme",
-      profile_account:"Compte",
-      profile_password:"mot-de-passe",
+  i18n: any = {
+    fr: {
+      profile_title: 'Membre depuis le',
+      profile_order: 'Commandes',
+      profile_reminder: 'Alarme',
+      profile_account: 'Compte',
+      profile_password: 'mot-de-passe',
     },
-    en:{
-      profile_title:"Member since",
-      profile_order:"Orders",
-      profile_reminder:"Reminder",
-      profile_account:"Account",
-      profile_password:"Security"
+    en: {
+      profile_title: 'Member since',
+      profile_order: 'Orders',
+      profile_reminder: 'Reminder',
+      profile_account: 'Account',
+      profile_password: 'Security'
     }
-  }
+  };
 
   constructor(
     public  $i18n: i18n,
     private $loader: LoaderService,
     private $user: UserService,
-    private $route:ActivatedRoute,
-    private $router:Router,
-    private $location:Location,
-    
-  ) { 
+    private $route: ActivatedRoute,
+    private $router: Router,
+    private $location: Location,
+
+  ) {
     //
     // initialize loader
-    let loader=this.$route.snapshot.data.loader;
+    const loader = this.$route.snapshot.data.loader;
     //
     // system ready
-    this.isReady= true;
+    this.isReady = true;
     this.user   = loader[1];
     this.config = loader[0];
   }
 
-  doLogout(){
+  doLogout() {
     this.$user.logout().pipe(debounce(() => timer(300)))
-      .subscribe(()=>this.$router.navigate(['../'],{relativeTo: this.$route}))
+      .subscribe(() => this.$router.navigate(['../'], {relativeTo: this.$route}));
   }
 
-  get locale(){
+  get locale() {
     return this.$i18n.locale;
   }
 
