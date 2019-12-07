@@ -83,6 +83,13 @@
           mdcAppBarActionItem>
           <mdc-icon>shopping_cart</mdc-icon> <span class="cart-items-count label"></span>
         </a> -->
+        <a class="label" [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
+          <mdc-icon class="hide" >account_box</mdc-icon><div i18n>{{$i18n.label().nav_account}}</div>
+        </a>
+        <a class="label" [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
+          <mdc-icon class="hide" >account_circle</mdc-icon><div i18n>{{$i18n.label().nav_login2}}</div>
+        </a>
+
         <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
           routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
           <span [innerHTML]="menu.name[locale]"></span>
@@ -104,12 +111,12 @@
             <mdc-tab *ngFor="let menu of primary;let idx=index;" [routerLink]="'.'+menu.url"  routerLinkActive #rla="routerLinkActive">
               <span [innerHTML]="menu.name[locale]"></span>
             </mdc-tab>
-            <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
+            <!-- <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
               <mdc-icon class="hide">account_box</mdc-icon><span i18n>{{$i18n.label().nav_account}}</span>
             </mdc-tab>
             <mdc-tab [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
               <mdc-icon class="hide">account_circle</mdc-icon><span i18n>{{$i18n.label().nav_login2}}</span>
-            </mdc-tab>
+            </mdc-tab> -->
           </mdc-tab-scroller>
         </mdc-tab-bar>
       </mdc-top-app-bar-section>
