@@ -1,14 +1,14 @@
-import { Component, ElementRef, OnInit, OnDestroy, Input, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CartService, 
+import { CartService,
          CartAction,
-         Config, 
+         Config,
          ConfigMenu,
-         ConfigService, 
-         LoaderService, 
-         User, 
+         ConfigService,
+         LoaderService,
+         User,
          UserService,
-         Category, 
+         Category,
          Shop } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -24,7 +24,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './kng-navbar.component.html',
   styleUrls: ['./kng-navbar.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KngNavbarComponent implements OnInit, OnDestroy {
 
@@ -33,79 +33,80 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   // howto
   // 1. https://stackoverflow.com/questions/38209713/how-to-make-a-responsive-nav-bar-using-angular-material-2
 
-  config:Config;
-  user:User;
-  categories:Category[];
-  shops:Shop[];
+  config: Config;
+  user: User;
+  categories: Category[];
+  shops: Shop[];
+  private route$: any;
 
   //
   // content
-  store:string;
-  primary:ConfigMenu[];
-  currentTab:number;
-  topmenu:ConfigMenu[];
-  image:string;
-  title:string;
-  subtitle:string;
-  content:any;
-  cgAccepted:boolean;
-  noshippingMsg:string;  
-  cardItemsSz:number=0;
-  cartItemCountElem:any;
-  currentShippingDay:Date;
-  isFixed: boolean = true;
-  beforeinstallprompt:any;
+  currentTab: number;
+  store: string;
+  primary: ConfigMenu[];
+  topmenu: ConfigMenu[];
+  image: string;
+  title: string;
+  subtitle: string;
+  content: any;
+  cgAccepted: boolean;
+  noshippingMsg: string;
+  cardItemsSz = 0;
+  cartItemCountElem: any;
+  currentShippingDay: Date;
+  isFixed = true;
+  beforeinstallprompt: any;
   subscription;
-  //@ViewChild('navigation') navigation: any;
-  //@ViewChild('toolbar') toolbar:MdcToolbar;
-  //@ViewChild('profile') profile:MdcMenu;
-  //@ViewChild('bottombar') bottombar: MdcAppBar;
-  @ViewChild('section') section:MdcTopAppBarSection;
-  @ViewChild('shipping') shipping:MdcMenu;
+  // @ViewChild('navigation') navigation: any;
+  // @ViewChild('toolbar') toolbar:MdcToolbar;
+  // @ViewChild('profile') profile:MdcMenu;
+  // @ViewChild('bottombar') bottombar: MdcAppBar;
+  @ViewChild('section') section: MdcTopAppBarSection;
+  @ViewChild('shipping') shipping: MdcMenu;
   constructor(
-    public  $cart:CartService,
-    private $config:ConfigService,
-    public  $i18n:i18n,
-    private $loader:LoaderService,
+    public  $cart: CartService,
+    private $config: ConfigService,
+    public  $i18n: i18n,
     private $route: ActivatedRoute,
-    private $user:UserService,
-    public  $navigation:KngNavigationStateService,
-    private $snack:MdcSnackbar,
+    private $user: UserService,
+    public  $navigation: KngNavigationStateService,
+    private $snack: MdcSnackbar,
     private cdr: ChangeDetectorRef,
   ) {
-    let loader=this.$route.snapshot.data.loader;
-    if(loader[0].length){
-      loader=loader[0];  
+
+    let loader = this.$route.snapshot.data.loader;
+    if (loader[0].length) {
+      loader = loader[0];
     }
-    
-    this.config=<Config>loader[0];
-    this.user=<User>loader[1];
-    this.noshippingMsg=this.getNoShippingMessage();
+
+    this.config = <Config>loader[0];
+    this.user = <User>loader[1];
+    this.noshippingMsg = this.getNoShippingMessage();
 
     //
     // not mandatory
-    this.categories=<Category[]>loader[2]||[];
-    this.shops=<Shop[]>loader[3]||[];
+    this.categories = <Category[]>loader[2] || [];
+    this.shops = <Shop[]>loader[3] || [];
 
     // console.log('')
-    this.primary=[];
-    this.topmenu=[];
+    this.primary = [];
+    this.topmenu = [];
 
     //
     // PWA Adding an Install button
     window.addEventListener('beforeinstallprompt', event => {
       event.preventDefault();
       this.beforeinstallprompt = event;
-    });    
+    });
   }
- 
+
 
   ngOnDestroy() {
-    //this.route$.unsubscribe();
+    // this.route$.unsubscribe();
     // this.$cart.unsubscribe();
     // this.$user.unsubscribe();
     this.subscription.unsubscribe();
-  }  
+  }
 
   ngOnInit() {
     //
@@ -135,30 +136,30 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     //
     // init cart here because navbar is loaded on all pages
-    this.$cart.setContext(this.config,this.user,this.shops);
+    this.$cart.setContext(this.config, this.user, this.shops);
 
-    this.currentShippingDay=this.$cart.getCurrentShippingDay();
+    this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
 
-    this.subscription=merge(
-      this.$user.user$.pipe(map(user=>({user:user}))),
-      this.$config.config$.pipe(map(config=>({config:config}))),
-      this.$cart.cart$.pipe(map(state=>({state:state})))
-    ).subscribe((emit:any)=>{
+    this.subscription = merge(
+      this.$user.user$.pipe(map(user => ({user: user}))),
+      this.$config.config$.pipe(map(config => ({config: config}))),
+      this.$cart.cart$.pipe(map(state => ({state: state})))
+    ).subscribe((emit: any) => {
 
       //
-      // update user 
-      if(emit.user){
-        Object.assign(this.user, emit.user);        
+      // update user
+      if (emit.user) {
+        Object.assign(this.user, emit.user);
         this.$navigation.updateUser(this.user);
-        this.$cart.setContext(this.config,this.user);
+        this.$cart.setContext(this.config, this.user);
         this.cdr.markForCheck();
       }
       //
       // update config
-      if(emit.config){
+      if (emit.config) {
         Object.assign(this.config, emit.config);
-        this.$navigation.updateConfig(this.config);            
+        this.$navigation.updateConfig(this.config);
       }
       //
       // update cart
@@ -169,7 +170,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         setTimeout(()=>{
           //
           // top bar
-          (<Element>(document.querySelector('.cart-items-count')||{})).innerHTML='('+this.cardItemsSz+' fr)';
+          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '(' + this.cardItemsSz + ' fr)';
           //
           // tab bar
           this.cartItemCountElem=this.cartItemCountElem||this.section.elementRef.nativeElement.querySelector('.cart-items-count');
@@ -180,79 +181,80 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       
         //
         // update shipping date
-        if(!emit.state.item){
+        if (!emit.state.item) {
           return;
         }
 
-        if(emit.state.action==CartAction.ITEM_MAX){
-          return this.$snack.show(
+        if (emit.state.action === CartAction.ITEM_MAX) {
+          return this.$snack.open(
             this.$i18n.label()[CartAction[emit.state.action]],
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
         }
 
-        this.$snack.show(
-          this.$i18n.label()[CartAction[emit.state.action]]+emit.state.item.quantity+'x '+emit.state.item.title+' ('+emit.state.item.part+')',
+        this.$snack.open(
+          // tslint:disable-next-line: max-line-length
+          this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
           this.$i18n.label().thanks,
           this.$i18n.snackOpt
         );
       }
     });
-    
 
-  } 
 
-  doSetCurrentShippingDay($event:any,current:Date,idx:number){
+  }
+
+  doSetCurrentShippingDay($event: any, current: Date, idx: number) {
     this.$cart.setShippingDay(current);
-    this.currentShippingDay=this.$cart.getCurrentShippingDay();
+    this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
     //
     // FIXME when using dropdown for shipping
-    //this.shipping.setSelectedIndex(idx);    
+    // this.shipping.setSelectedIndex(idx);
     this.cdr.markForCheck();
   }
 
-  getTagline(key){
-    if(!this.config||!this.config.shared.home.tagLine[key]){
+  getTagline(key) {
+    if (!this.config || !this.config.shared.home.tagLine[key]) {
       return '';
     }
     return this.config.shared.home.tagLine[key][this.locale];
   }
 
-  getRouterLink(url){
-    return ['/store',this.store].concat(url.split('/').filter(item=>item!==''));
+  getRouterLink(url) {
+    return ['/store', this.store].concat(url.split('/').filter(item => item !== ''));
   }
 
-  get locale(){
+  get locale() {
     return this.$i18n.locale;
   }
 
-  getShippingWeek(){
+  getShippingWeek() {
     return this.config.getShippingWeek();
   }
 
-  getShippingDays(){
+  getShippingDays() {
     // return this.config.potentialShippingWeek();
     return this.config.getShippingDays();
   }
-  getNoShippingMessage(){    
-    let noshipping=this.config.noShippingMessage().find(shipping=>!!shipping.message);
-    return noshipping&&noshipping.message;
+  getNoShippingMessage() {
+    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
+    return noshipping && noshipping.message;
   }
-  
+
   // Install PWA app if available!
-  installApp(){
+  installApp() {
     this.beforeinstallprompt.prompt();
   }
 
-  isAppReady(){
-    return this.$navigation.store !== undefined;    
+  isAppReady() {
+    return this.$navigation.store !== undefined;
   }
 
 
-  onLang($event,lang){
-    this.$i18n.locale=lang;
+  onLang($event, lang) {
+    this.$i18n.locale = lang;
     // console.log('---- changed locale')
   }
 }

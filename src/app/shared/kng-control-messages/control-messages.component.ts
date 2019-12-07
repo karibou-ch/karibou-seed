@@ -5,22 +5,22 @@ import { i18n } from '../../common/i18n.service';
 
 @Component({
   selector: 'kng-control-messages',
-  template: `<div *ngIf="errorMessage !== null">{{errorMessage}}</div>`,  
+  template: `<div *ngIf="errorMessage !== null">{{errorMessage}}</div>`,
   encapsulation: ViewEncapsulation.None
 })
 export class KngControlMessagesComponent {
 
   @Input() control: FormControl;
   constructor(
-    private $i18n:i18n
-  ) { 
+    private $i18n: i18n
+  ) {
 
   }
 
   get errorMessage() {
-    for (let propertyName in this.control.errors) {
+    for (const propertyName in this.control.errors) {
       if (this.control.errors.hasOwnProperty(propertyName) && this.control.touched) {
-        return KngInputValidator.getValidatorErrorMessage(this.$i18n,propertyName, this.control.errors[propertyName]);
+        return KngInputValidator.getValidatorErrorMessage(this.$i18n, propertyName, this.control.errors[propertyName]);
       }
     }
 

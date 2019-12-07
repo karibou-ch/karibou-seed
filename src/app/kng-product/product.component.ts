@@ -1,16 +1,14 @@
-import { Component, 
-         ChangeDetectionStrategy,
-         ElementRef, 
-         HostListener, 
-         OnInit, 
-         OnDestroy, 
-         Input,          
-         ViewChild, 
+import { Component,
+         ElementRef,
+         OnInit,
+         OnDestroy,
+         Input,
+         ViewChild,
          ChangeDetectorRef,
          ViewEncapsulation} from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
-//import { MdcDialogComponent, } from '@angular-mdc/web';
+// import { MdcDialogComponent, } from '@angular-mdc/web';
 
 import {
   Category,
@@ -24,7 +22,7 @@ import {
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
-import { timer } from  'rxjs';
+import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
@@ -36,54 +34,53 @@ import { map } from 'rxjs/operators';
 })
 export class ProductComponent implements OnInit, OnDestroy {
 
+  static WEEK_1: number = 86400 * 7;
+
   @Input() sku: number;
   @Input() config: any;
-  @Input() categories:Category[];
+  @Input() categories: Category[];
   @Input() user: User = new User();
 
   @ViewChild('dialog') dialog: ElementRef;
-
-
-  static WEEK_1:number=86400*7;
-  static :number=86400*14;
+  static: number = 86400 * 14;
 
   isReady: boolean;
-  isDialog: boolean = false;
+  isDialog = false;
   product: Product = new Product();
   products: Product[];
-  category:Category;
-  thumbnail: boolean = false;
-  bgStyle: string='/-/resize/200x/';
-  photosz:string;
+  category: Category;
+  thumbnail = false;
+  bgStyle = '/-/resize/200x/';
+  photosz: string;
   cartItem: CartItem;
 
   // FIXME store resolution
-  store:string='geneva';
+  store = 'geneva';
 
-  isHighlighted:boolean;
-  WaitText: boolean = false;
+  isHighlighted: boolean;
+  WaitText = false;
   rootProductPath: string;
 
   //
-  // scroll 
-  currentPage:number=1;
+  // scroll
+  currentPage = 1;
   scrollCallback;
 
   //
   // variant
-  openVariant:boolean;
+  openVariant: boolean;
 
 
   //
   // products for home
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
-  options:any={
+  options: any = {
     // discount:true,
-    popular:true,
-    maxcat:40,
-    available:true,
-    when:true,
-    windowtime:200
+    popular: true,
+    maxcat: 40,
+    available: true,
+    when: true,
+    windowtime: 200
   };
 
   constructor(
@@ -111,49 +108,49 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
 
-  addToCart($event,product: Product,variant?:string) {
+  addToCart($event, product: Product, variant?: string) {
     $event.stopPropagation();
     //
-    // FIXME should not be possible  
-    if(!product.variants){
-      console.log('DEBUG variation hang',variant,product);
+    // FIXME should not be possible
+    if (!product.variants) {
+      console.log('DEBUG variation hang', variant, product);
     }
 
-    if(product.variants.length&&!variant){
-      this.openVariant=true;
+    if (product.variants.length && !variant) {
+      this.openVariant = true;
       return;
     }
 
-    this.openVariant=false;
+    this.openVariant = false;
 
 
-    this.$cart.add(product,variant);
+    this.$cart.add(product, variant);
     this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
 
-  hasLabel(product:Product, label:string){
+  hasLabel(product: Product, label: string) {
     switch (label) {
       case 'grta':
       case 'bioconversion':
       case 'biodynamics':
       return product.details[label];
       case 'bio':
-      return product.details.bio&&
-            !product.details.bioconvertion&&
+      return product.details.bio &&
+            !product.details.bioconvertion &&
             !product.details.biodynamics;
       case 'natural':
-      return product.details.natural&&
-            !product.details.bio&&
-            !product.details.bioconvertion&&
+      return product.details.natural &&
+            !product.details.bio &&
+            !product.details.bioconvertion &&
             !product.details.biodynamics;
-    
+
       default:
       return false;
     }
   }
 
-  removeToCart($event,product:Product){
+  removeToCart($event, product: Product) {
     $event.stopPropagation();
     this.$cart.remove(product);
     this.cartItem = this.$cart.findBySku(product.sku);
@@ -164,27 +161,27 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (!product.vendor.available || !product.vendor.available.weekdays) {
       return 'radio_button_unchecked';
     }
-    return (product.vendor.available.weekdays.indexOf(pos) == -1) ?
+    return (product.vendor.available.weekdays.indexOf(pos) === -1) ?
       'radio_button_unchecked' : 'radio_button_checked';
   }
 
-  getNextPage(){
-    return timer(10).pipe(map(ctx=>this.currentPage+=4));
+  getNextPage() {
+    return timer(10).pipe(map(ctx => this.currentPage += 4));
   }
-  
-  getDialog(){
+
+  getDialog() {
     return this.dialog;
   }
-  
-  getProducts(){    
-    if(!this.product||
-       !this.product.belong||
-       !this.product.belong.name){
+
+  getProducts() {
+    if (!this.product ||
+       !this.product.belong ||
+       !this.product.belong.name) {
       return this.products;
     }
-    return this.products.filter(p=>p.belong.name==this.product.belong.name)
+    return this.products.filter(p => p.belong.name === this.product.belong.name);
   }
-  
+
   hasFavorite(product) {
     return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
   }
@@ -196,28 +193,28 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.isReady = true;
 
       //
-      // product action belongs to a shop or a category 
+      // product action belongs to a shop or a category
       this.rootProductPath = (this.$route.snapshot.params['shop']) ?
         '/shop/' + this.$route.snapshot.params['shop'] : '';
 
       //
-      // when display wider 
-      if(!this.sku){
-  
+      // when display wider
+      if (!this.sku) {
+
         this.isDialog = true;
-        this.photosz='/-/resize/600x/'
-        //this.sku = this.$route.snapshot.params['sku'];
-        this.$route.params.subscribe(params=>{
+        this.photosz = '/-/resize/600x/';
+        // this.sku = this.$route.snapshot.params['sku'];
+        this.$route.params.subscribe(params => {
           this.sku = params.sku;
           this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
         });
-    
+
         //
-        // DIALOG INIT HACK 
+        // DIALOG INIT HACK
         document.body.classList.add('mdc-dialog-scroll-lock');
         document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
-      }else{
+      } else {
         this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
       }
 
@@ -225,14 +222,14 @@ export class ProductComponent implements OnInit, OnDestroy {
 
       //
       // simple animation
-      // capture escape only for dialog instance 
+      // capture escape only for dialog instance
       if (this.dialog) {
         this.dialog.nativeElement.classList.remove('fadeout');
         //
         // capture event escape
-        let escape=(e) => {
-          if(e.key=='Escape'){
-            this.onClose(this.dialog);    
+        const escape = (e) => {
+          if (e.key === 'Escape') {
+            this.onClose(this.dialog);
             document.removeEventListener('keyup', escape);
           }
         };
@@ -242,55 +239,58 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
   }
 
+  // TOCHECK
+  // Implement life cycle hook interface AfterViewInit for method ngAfterViewInit in class ProductComponent
+  // (https://angular.io/styleguide#style-09-01) (use-life-cycle-interface)t
   ngAfterViewInit() {
     // if(!this.isDialog){
     //   this.cdr.detach();
     // }
-  }  
+  }
 
-  loadProduct(product){    
-    this.isReady=true;
+  loadProduct(product) {
+    this.isReady = true;
     this.product = product;
     //
     // get cart value
     this.cartItem = this.$cart.findBySku(product.sku);
     //
     // updated product is hilighted for 2 weeks
-    this.isHighlighted=(Date.now()-product.updated.getTime())<ProductComponent.WEEK_1;
+    this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;
     this.updateBackground();
 
     // FIXME categories can contains shops
     // get category
-    //this.category=this.categories.find(c=>this.product.categories._id==c._id);
+    // this.category=this.categories.find(c=>this.product.categories._id==c._id);
 
     // FIXME, should load on rx.pipe
-    // load category 
-    let params={
-      available:true,
-      when:true,
-      shopname:[product.vendor.urlpath]
+    // load category
+    const params = {
+      available: true,
+      when: true,
+      shopname: [product.vendor.urlpath]
     };
-    if(this.isDialog ){
-      this.$product.select(params).subscribe((products)=>{
+    if (this.isDialog ) {
+      this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
         // this.products.forEach(prod=>{
         //   console.log(prod.belong.name, prod.stats.score)
         // })
-        
+
       });
 
-      setTimeout(()=>{
-        if(this.dialog&&this.dialog.nativeElement){
-          this.dialog.nativeElement.scrollTop=0;
+      setTimeout(() => {
+        if (this.dialog && this.dialog.nativeElement) {
+          this.dialog.nativeElement.scrollTop = 0;
           // this.dialog.nativeElement.scrollTo(0,0)
-        };
-      },100)
+        }
+      }, 100);
     }
   }
 
 
   updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url +this.photosz+')';
+    this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
   }
 
   ngOnDestroy() {
@@ -305,19 +305,21 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
-    //FIXME fadeout brakes window
-    //this.dialog.nativeElement.classList.add('fadeout')
+    // FIXME fadeout brakes window
+    // this.dialog.nativeElement.classList.add('fadeout')
     setTimeout(() => {
-      if(this.$navigation.hasHistory()){
+      if (this.$navigation.hasHistory()) {
         return this.$navigation.back();
       }
-      this.$router.navigate(['../../'],{relativeTo: this.$route})
-    }, 200)
+      this.$router.navigate(['../../'], {relativeTo: this.$route});
+    }, 200);
   }
 
+  // TOCHECK
+  // 'product' is declared but its value is never read.
   save(product: Product) {
     this.$product.save(product).subscribe(
-      (product)=>{
+      (product) => {
       }
     );
 
@@ -327,16 +329,16 @@ export class ProductComponent implements OnInit, OnDestroy {
   // sort products by:
   //  - belong.weight
   //  - stats.score
-  sortProducts(a,b){
+  sortProducts(a, b) {
     // sort : HighScore => LowScore
-    let score=b.stats.score-a.stats.score;
-    if(!a.belong||!a.belong){
+    const score = b.stats.score - a.stats.score;
+    if (!a.belong || !a.belong) {
       return score;
     }
 
-    // sort : LowWeight => HighWeight 
-    let belong=a.belong.weight-b.belong.weight;
-    if(belong!=0){
+    // sort : LowWeight => HighWeight
+    const belong = a.belong.weight - b.belong.weight;
+    if (belong !== 0) {
       return belong;
     }
     return score;
@@ -350,10 +352,10 @@ export class ProductComponent implements OnInit, OnDestroy {
 })
 export class ProductThumbnailComponent extends ProductComponent {
 
-  hidden:boolean=true;
-  @Input() large:boolean;
-  @Input('visibility') set visibility(value:boolean){
-    this.hidden=(!value);
+  hidden = true;
+  @Input() large: boolean;
+  @Input('visibility') set visibility(value: boolean) {
+    this.hidden = (!value);
   }
 
   bgGradient = `linear-gradient(
@@ -364,7 +366,7 @@ export class ProductThumbnailComponent extends ProductComponent {
   updateBackground() {
     this.bgStyle = 'url(' + this.product.photo.url + '/-/resize/250x/)';
     if (this.cartItem) {
-      this.bgStyle=this.bgGradient+this.bgStyle;
+      this.bgStyle = this.bgGradient + this.bgStyle;
     }
   }
 

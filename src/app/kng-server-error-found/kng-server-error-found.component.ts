@@ -10,16 +10,16 @@ import { i18n } from '../common';
 export class KngServerErrorFoundComponent implements OnInit {
 
   constructor(
-    public $i18n:i18n,
-    public $user:UserService
-  ) { 
-    
+    public $i18n: i18n,
+    public $user: UserService
+  ) {
+
   }
 
   ngOnInit() {
-    this.$user.me().subscribe(()=>{      
+    this.$user.me().subscribe(() => {
       // window.location.href='/';
-    })
+    });
   }
 
 }
