@@ -96,8 +96,7 @@ export class ProductListComponent implements OnInit {
 
   }
 
-  // TOCHECK
-  ngOnDestroy() {
+   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     if (this.childSub) {
@@ -214,9 +213,6 @@ export class ProductListComponent implements OnInit {
   }
 
   setVendors(products: Product[]) {
-    // TOCHECK
-    // Shadowed name: 'map' (no-shadowed-variable)
-    const map = {};
     products.forEach(product => map[product.vendor.urlpath] = product.vendor);
     this.vendors = Object.keys(map).map(key => map[key]);
     this.setProducts();

@@ -41,29 +41,29 @@ export class GlobalErrorHandler implements ErrorHandler {
   constructor() { }
   handleError(error) {
      // IMPORTANT: Rethrow the error otherwise it gets swallowed
-     if(error.rejection&&error.rejection.status==0){
+     if (error.rejection && error.rejection.status === 0) {
        console.log('--- Network error');
-       window.location.href='/oops';
+       window.location.href = '/oops';
        throw error;
      }
      //
      // USING SENTRY AS DEBUG
-     try{
-      console.log('origin',window.location.origin)
-      if(window.location.origin.indexOf('karibou.ch')==-1){
-        console.debug('LOCALHOST ERROR----',error.originalError || error);
+     try {
+      console.log('origin', window.location.origin);
+      if (window.location.origin.indexOf('karibou.ch') === -1) {
+        console.debug('LOCALHOST ERROR----', error.originalError || error);
         return ;
-      } 
-      console.log('ERROR----',error.originalError || error);
-      console.log('ERROR----',(error.originalError || error).message);
-      (<any>window).Sentry&&(<any>window).Sentry.captureException(error.originalError || error);
-      (<any>window)['_kmq']&&(<any>window)['_kmq'].push(['record', EnumMetrics[EnumMetrics.metric_error], {error:error.message}]);
-     }catch(e){
+      }
+      console.log('ERROR----', error.originalError || error);
+      console.log('ERROR----', (error.originalError || error).message);
+      (<any>window).Sentry && (<any>window).Sentry.captureException(error.originalError || error);
+      (<any>window)['_kmq'] && (<any>window)['_kmq'].push(['record', EnumMetrics[EnumMetrics.metric_error], {error: error.message}]);
+     } catch (e) {
 
      }
 
      throw error;
-  } 
+  }
 }
 
 
@@ -72,26 +72,25 @@ export class GlobalErrorHandler implements ErrorHandler {
     AppComponent,
     KngNavbarComponent,
     KngRootComponent,
-    KngWelcomeComponent,    
+    KngWelcomeComponent,
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent
   ],
-  exports:[
+  exports: [
   ],
   imports: [
     BrowserModule,
-    HttpModule,
     HttpClientModule,
     Kng2CoreModule.forRoot({
-      API_SERVER:environment.API_SERVER,
-      loader:[
-        "categories",
-        "shops"
+      API_SERVER: environment.API_SERVER,
+      loader: [
+        'categories',
+        'shops'
       ]
     }),
     KngCommonModule.forRoot(),
-    RouterModule.forRoot(appRoutes,{ enableTracing: false }),
+    RouterModule.forRoot(appRoutes, { enableTracing: false }),
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

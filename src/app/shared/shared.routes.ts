@@ -7,14 +7,14 @@ import { KngNavbarComponent } from '../kng-navbar';
 
 
 // export const appRoutes: Routes = [
-//   { 
-//     path:'', 
+//   {
+//     path:'',
 //     pathMatch:'prefix',
 //     resolve:{ loader:LoaderResolve },
 //     children:[
 //       { path: 'me', loadChildren: '../kng-user/user.module#UserModule' },
 //       { path: 'shops', loadChildren: '../kng-shops/kng-shops.module#ShopsModule' },
-//       { path: 'content', loadChildren: '../kng-document/kng-document.module#KngDocumentModule' },      
+//       { path: 'content', loadChildren: '../kng-document/kng-document.module#KngDocumentModule' },
 //       { path: 'admin', loadChildren: '../kng-admin/admin.module#AdminModule'  },
 //       { path: 'cart',loadChildren: '../kng-cart/kng-cart.module#KngCartModule'   },
 //       { path:'home',component:KngHomeComponent,resolve:{ loader:LoaderResolve },children:[
@@ -31,17 +31,17 @@ import { KngNavbarComponent } from '../kng-navbar';
 export const appRoutes: Routes = [
   { path: 'me', loadChildren: '../kng-user/user.module#UserModule' },
   { path: 'shops', loadChildren: '../kng-shops/kng-shops.module#ShopsModule' },
-  { path: 'content', loadChildren: '../kng-document/kng-document.module#KngDocumentModule' },      
+  { path: 'content', loadChildren: '../kng-document/kng-document.module#KngDocumentModule' },
   { path: 'admin', loadChildren: '../kng-admin/admin.module#AdminModule'  },
   { path: 'cart',  loadChildren: '../kng-cart/kng-cart.module#KngCartModule'   },
-  { path: 'home', component:KngHomeComponent,resolve:{ loader:LoaderResolve },children:[
+  { path: 'home', component: KngHomeComponent, resolve: { loader: LoaderResolve }, children: [
     { path: 'products/:sku/:title', component: ProductComponent},
     { path: 'products/:sku', component: ProductComponent},
     { path: 'products', pathMatch: 'full', redirectTo: '/store/geneva/home'  },
     { path: 'category/:category/:child', component: ProductListComponent},
     { path: 'category/:category', component: ProductListComponent},
-    { path: 'category', pathMatch:'full', redirectTo:'' },
-    { path: '', pathMatch:'full', redirectTo:''}
+    { path: 'category', pathMatch: 'full', redirectTo: '' },
+    { path: '', pathMatch: 'full', redirectTo: ''}
   ]},
   // { path:'',pathMatch:'full', redirectTo:'home' },
 ];

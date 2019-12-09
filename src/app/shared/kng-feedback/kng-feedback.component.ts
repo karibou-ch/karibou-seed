@@ -135,12 +135,10 @@ export class KngFeedbackComponent implements OnInit {
     return !this.isOpen(order);
   }
 
-// TOCHECK
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
-// TOCHECK
   ngOnChanges() {
 
   }
