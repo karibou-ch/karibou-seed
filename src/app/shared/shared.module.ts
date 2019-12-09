@@ -19,10 +19,10 @@ import { RouterModule } from '@angular/router';
 import { KngCommonModule } from '../common/common.module';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 
-import { ProductSwipeComponent, 
-         ProductListComponent, 
-         ProductThumbnailComponent, 
-         ProductComponent, 
+import { ProductSwipeComponent,
+         ProductListComponent,
+         ProductThumbnailComponent,
+         ProductComponent,
          ProductTinyComponent} from '../kng-product';
 import { CommonModule } from '@angular/common';
 import { Kng2CoreModule } from 'kng2-core';
@@ -47,7 +47,7 @@ import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
     KngCommonModule,
     RouterModule.forChild(appRoutes),
   ],
-  exports:[
+  exports: [
     RouterModule,
     KngCommonModule,
     KngControlMessagesComponent,
@@ -82,12 +82,12 @@ import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
     KngFeedbackComponent,
   ],
 })
-export class SharedModule { 
-  public static forRoot(options?:any): ModuleWithProviders {
+export class SharedModule {
+  public static forRoot(options?: any): ModuleWithProviders {
     return {
       ngModule: SharedModule,
       providers: [
       ]
-    }        
+    };
   }
 }

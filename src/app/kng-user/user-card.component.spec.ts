@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// TOCHECK ERROR
-import { CardComponent } from './card.component';
+import { CardComponent } from './user-card.component';
 
 describe('CardComponent', () => {
   let component: CardComponent;
