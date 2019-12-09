@@ -97,7 +97,6 @@ export class CardComponent {
     }
   };
 
-   // TOCHECK
   @Output() updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
 
   @Input() user: User;

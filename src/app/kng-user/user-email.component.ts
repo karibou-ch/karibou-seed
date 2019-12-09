@@ -63,8 +63,6 @@ export class UserEmailComponent {
     // [ngModelOptions]="{updateOn: 'blur'}"
   }
 
-  // TOCHECK
-  // Implement life cycle hook interface OnInit for method ngOnInit in class UserEmailComponent
   ngOnInit() {
     this.locale = this.$i18n.locale;
   }

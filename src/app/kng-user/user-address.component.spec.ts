@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// TOCHECK ERROR
 import { AddressComponent } from './user-address.component';
 
 describe('AddressComponent', () => {
