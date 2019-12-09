@@ -64,11 +64,9 @@ export class ProductSwipeComponent implements OnInit {
     return this.config.shared.home.selection[elem][this.$i18n.locale];
   }
 
-  // TOCHECK
   ngOnDestroy() {
   }
 
-  // TOCHECK
   ngAfterViewInit() {
     try {
       document.querySelector('kng-product-swipe > div > div.content').scrollLeft = 70;

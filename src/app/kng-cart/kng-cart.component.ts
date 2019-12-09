@@ -375,7 +375,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
       const amount = vendor.amount;
       const discountMagnitude = Math.floor(amount / vendor.discount.threshold);
       vendor.discount.needed = vendor.discount.threshold - amount % (vendor.discount.threshold | 0) + amount;
-      // TOCHECK vendor.discount.threshold | 0
       vendor.discount.total = discountMagnitude * vendor.discount.amount;
 
     });

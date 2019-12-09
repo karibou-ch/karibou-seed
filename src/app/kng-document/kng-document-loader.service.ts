@@ -15,14 +15,14 @@ export class KngDocumentLoaderService implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot) {
-    if(!route.params.slug){
-      return combineLatest(this.$loader.ready(),of(null));
+    if (!route.params.slug) {
+      return combineLatest([this.$loader.ready(), of(null)]);
     }
     // TOCHECK
     // combineLatest is deprecated: Pass arguments in a single array instead `combineLatest([a, b, c])` (deprecation)tslint(1)
-    return combineLatest(
+    return combineLatest([
       this.$loader.ready(),
       this.$document.get(route.params['slug'])
-    ).toPromise();
+    ]).toPromise();
   }
 }

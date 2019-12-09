@@ -239,9 +239,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
   }
 
-  // TOCHECK
-  // Implement life cycle hook interface AfterViewInit for method ngAfterViewInit in class ProductComponent
-  // (https://angular.io/styleguide#style-09-01) (use-life-cycle-interface)t
   ngAfterViewInit() {
     // if(!this.isDialog){
     //   this.cdr.detach();
@@ -315,8 +312,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
-  // TOCHECK
-  // 'product' is declared but its value is never read.
   save(product: Product) {
     this.$product.save(product).subscribe(
       (product) => {
