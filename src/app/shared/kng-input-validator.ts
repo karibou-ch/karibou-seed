@@ -1,20 +1,20 @@
-import { AbstractControl } from "@angular/forms";
-import { i18n } from "../common/i18n.service";
+import { AbstractControl } from '@angular/forms';
+import { i18n } from '../common/i18n.service';
 
 /**
- * 
+ *
  */
 export class KngInputValidator {
 
-  static getValidatorErrorMessage($i18n:i18n,validatorName: string, validatorValue?: any) {
+  static getValidatorErrorMessage($i18n: i18n, validatorName: string, validatorValue?: any) {
     //
     // TODO/FIXME use runtime $i18n translation service  here
-    let config = {
+    const config = {
       'required': 'Required',
       'invalidCreditCard': 'Is invalid credit card number',
       'invalidEmailAddress': 'Invalid email address',
       'invalidPassword': 'Password must be at least 6 characters',
-      'MatchPassword':'Password dont match',
+      'MatchPassword': 'Password dont match',
       'minlength': `Minimum length ${validatorValue.requiredLength}`
     };
 
@@ -51,12 +51,12 @@ export class KngInputValidator {
   }
 
   static MatchPasswordAndConfirm(AC: AbstractControl) {
-    let password = AC.get('password').value;
-    let confirm = AC.get('confirm').value; 
-     if(password != confirm) {
-         AC.get('confirm').setErrors( {MatchPassword: true} )
+    const password = AC.get('password').value;
+    const confirm = AC.get('confirm').value;
+     if (password !== confirm) {
+         AC.get('confirm').setErrors( {MatchPassword: true} );
      } else {
-         return null
+         return null;
      }
- }  
+ }
 }

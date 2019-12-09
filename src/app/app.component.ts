@@ -10,32 +10,32 @@ import { MetricsService } from './common/metrics.service';
 export class AppComponent {
 
   // RAVEN_JS="https://cdnjs.cloudflare.com/ajax/libs/raven.js/3.26.2/angular,console,require/raven.min.js";
-  SENTRY_JS="https://browser.sentry-cdn.com/4.4.2/bundle.min.js";
-  //POLYFILL_SCROLL="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/15.2.0/smooth-scroll.polyfills.min.js";
+  SENTRY_JS = 'https://browser.sentry-cdn.com/4.4.2/bundle.min.js';
+  // POLYFILL_SCROLL="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/15.2.0/smooth-scroll.polyfills.min.js";
 
   constructor(
     // private swUpdate:SwUpdate
-    private $mterics:MetricsService
-  ){
+    private $mterics: MetricsService
+  ) {
 
     //
-    // install error backend 
-    Utils.script(this.SENTRY_JS,'Sentry').subscribe((Sentry:any)=>{
+    // install error backend
+    Utils.script(this.SENTRY_JS, 'Sentry').subscribe((Sentry: any) => {
       Sentry.init({
         dsn: 'https://9457c6b1c4e343b8b1aa7e74642147e0@sentry.io/1360987',
-        release:'v2'    
-      });      
+        release: 'v2'
+      });
     });
 
     // if(!window.scrollTo){
     //   Utils.script(this.POLYFILL_SCROLL,'scrollTo').subscribe((Sentry:any)=>{
-    //   });  
+    //   });
     // }
 
     //
     // init metric/funnel service
     this.$mterics.init();
-    
+
 
     // if(this.swUpdate.isEnabled){
     //   this.swUpdate.available.subscribe(next=>{

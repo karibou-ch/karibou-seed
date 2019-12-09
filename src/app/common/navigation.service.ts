@@ -5,7 +5,6 @@ import { Location } from '@angular/common';
 
 import { Config, Category } from 'kng2-core';
 
-import { interval } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 // import { i18n } from './i18n.service';
 

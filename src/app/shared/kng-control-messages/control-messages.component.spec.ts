@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 // TOCHECK
-import { KngControlMessagesComponent } from './kng-control-messages.component';
+import { KngControlMessagesComponent } from './control-messages.component';
 
 describe('KngControlMessagesComponent', () => {
   let component: KngControlMessagesComponent;

@@ -43,13 +43,13 @@ export class UserPasswordComponent {
     this.isLoading = false;
     // [ngModelOptions]="{updateOn: 'blur'}"
     this.$password = this.$fb.group({
-      'previous':   ['', [Validators.required,Validators.minLength(6)]],
-      'password':   ['',[Validators.required,Validators.minLength(6)]],
-      'confirm':  ['', [Validators.required,Validators.minLength(6)]]
-    },{
-      validator:KngInputValidator.MatchPasswordAndConfirm
+      'previous':   ['', [Validators.required, Validators.minLength(6)]],
+      'password':   ['', [Validators.required, Validators.minLength(6)]],
+      'confirm':  ['', [Validators.required, Validators.minLength(6)]]
+    }, {
+      validator: KngInputValidator.MatchPasswordAndConfirm
     });
-    //[ngModelOptions]="{updateOn: 'blur'}"
+    // [ngModelOptions]="{updateOn: 'blur'}"
   }
 
   get locale() {
@@ -71,7 +71,8 @@ export class UserPasswordComponent {
       email: this.user.email.address
     };
     const locale = this.$i18n.locale;
-    this.$user.newpassword(this.user.id, change).subscribe( // FIXME to proofread return value, ther is no error when the two password aren't similar
+    this.$user.newpassword(this.user.id, change).subscribe(
+      // FIXME to proofread return value, ther is no error when the two password aren't similar
       () => this.$snack.open(
         this.$i18n.label().modify_ok,
         this.$i18n.label().thanks, this.$i18n.snackOpt

@@ -19,23 +19,23 @@ export class KngTextfieldAutosizeDirective implements AfterContentChecked {
   public onClick() {
     this.resize();
   }
-  
+
   public ngAfterContentChecked() {
-   //this.resize();
+   // this.resize();
   }
 
-  public resize() {    
+  public resize() {
 
     //
     // init child control
-    this.textarea=this.textarea||this.element.nativeElement.querySelector('textarea');
-    const style = this.textarea.style||{};
+    this.textarea = this.textarea || this.element.nativeElement.querySelector('textarea');
+    const style = this.textarea.style || {};
     const height = this.textarea.scrollHeight;
 
-    if((this.lastHeight+50)>height){
+    if ((this.lastHeight + 50) > height) {
       return;
     }
-    this.lastHeight=height;
+    this.lastHeight = height;
     style.overflow = 'hidden';
     style.height = 'auto';
 
