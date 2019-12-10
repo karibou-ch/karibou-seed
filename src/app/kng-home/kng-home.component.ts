@@ -219,6 +219,17 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return content !== '' && content != null && content !== undefined;
   }
 
+  mountOverlay(overlay) {
+    if(overlay) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');  
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
+
   productsGroupByCategory() {
     // FIXME inner size
     const maxcat = (window.innerWidth < 426) ? 6 : 8;
@@ -276,21 +287,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.sections.toArray().map(el => el.nativeElement);
   }
 
-
-  scrollElIntoView(el: HTMLElement) {
-    if (!el) {
-      return;
-    }
-
-    //
-    // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
-    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
-  }
-
-  sortByWeight(a: Category, b: Category) {
-    return a.weight - b.weight;
-  }
-
   //
   // detect if current container is visible
   // on the screen (based on scroll position)
@@ -319,6 +315,30 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       }
     });
 
+  }
+
+  //
+  // detect child overlay 
+  @HostListener('window:popstate', ['$event'])
+  onPopState($event) {
+    setTimeout(() => {
+      const overlay = document.querySelector('.product-dialog');
+      this.mountOverlay(!!overlay);
+    }, 400);
+  }
+
+  scrollElIntoView(el: HTMLElement) {
+    if (!el) {
+      return;
+    }
+
+    //
+    // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
+    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
+  }
+
+  sortByWeight(a: Category, b: Category) {
+    return a.weight - b.weight;
   }
 
   //

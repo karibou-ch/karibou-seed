@@ -92,7 +92,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngCommonModule.forRoot(),
     RouterModule.forRoot(appRoutes, { 
       enableTracing: false,
-      scrollPositionRestoration: 'enabled'
+      scrollPositionRestoration: 'disabled'
     }),
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

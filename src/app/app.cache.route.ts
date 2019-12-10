@@ -11,6 +11,7 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
     // console.log('--DEBUG route before',this.getPath(before), ' current',this.getPath(curr), (this.getPath(before) === 'products/:sku/:title' && this.getPath(curr) === 'category/:category') );
 
     if (this.getPath(before) === 'products/:sku/:title' && this.getPath(curr) === 'category/:category') {
+
       this.allowRetriveCache['category/:category'] = true;
     } else {
       this.allowRetriveCache['category/:category'] = false;

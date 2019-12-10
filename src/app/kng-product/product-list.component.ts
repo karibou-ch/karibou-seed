@@ -34,7 +34,6 @@ export class ProductListComponent implements OnInit {
   @ViewChild('subcategory') subcategory: MdcChipSet;
   @ViewChild('dialog') dialog: ElementRef;
 
-  
   scrollCallback;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';
@@ -97,12 +96,11 @@ export class ProductListComponent implements OnInit {
     this.user = loader[1];
     this.category.categories = loader[2];
     this.scrollCallback = this.getNextPage.bind(this);
-
+    ProductListComponent.SCROLL_CACHE = 0;
   }
 
-   ngOnDestroy() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  ngOnDestroy() {
+    this.clean();
     if (this.childSub) {
       this.childSub.unsubscribe();
     }
@@ -139,13 +137,21 @@ export class ProductListComponent implements OnInit {
 
   }
 
+  //
+  // FIXME: when using cache route component
+  // -> ngOnInit and ngOnDestroy are never called 
   ngAfterViewChecked() {
     if(this.dialog.nativeElement.scrollTop === ProductListComponent.SCROLL_CACHE) {
       return;
     }
-    console.log('--DEBUG restore scroll',ProductListComponent.SCROLL_CACHE)
     this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
   }
+
+  clean() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  }
+
 
   @HostListener('document:keyup.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -257,8 +263,8 @@ export class ProductListComponent implements OnInit {
   onClose(closedialog) {
     this.dialog.nativeElement.classList.add('fadeout');
     setTimeout(() => {
+      this.clean();
       this.$router.navigate(['../../'], {relativeTo: this.$route});
-      // this.$location.back()
     }, 200);
   }
 
