@@ -29,9 +29,12 @@ import { MdcChipSet, MdcChip } from '@angular-mdc/web';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent implements OnInit {
+  static SCROLL_CACHE = 0;
 
   @ViewChild('subcategory') subcategory: MdcChipSet;
   @ViewChild('dialog') dialog: ElementRef;
+
+  
   scrollCallback;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';
@@ -57,6 +60,7 @@ export class ProductListComponent implements OnInit {
   filterChild: string;
   childSub;
   relative = './';
+  oldScrollTop: number;
 
   options: {
     available: boolean;
@@ -102,12 +106,12 @@ export class ProductListComponent implements OnInit {
     if (this.childSub) {
       this.childSub.unsubscribe();
     }
-
   }
 
   ngOnInit() {
     this.isReady = true;
     this.category.slug = this.$route.snapshot.params['category'];
+
 
     //
     // this should not happends
@@ -132,6 +136,15 @@ export class ProductListComponent implements OnInit {
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.dialog.nativeElement.classList.remove('fadeout');
+
+  }
+
+  ngAfterViewChecked() {
+    if(this.dialog.nativeElement.scrollTop === ProductListComponent.SCROLL_CACHE) {
+      return;
+    }
+    console.log('--DEBUG restore scroll',ProductListComponent.SCROLL_CACHE)
+    this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
   }
 
   @HostListener('document:keyup.escape', ['$event'])
@@ -201,6 +214,7 @@ export class ProductListComponent implements OnInit {
       // set vendors after toggle of child category
       this.setVendors(this.products);
       this.cdr.markForCheck();
+      // this.restoreScroll();
     });
   }
 
@@ -246,6 +260,12 @@ export class ProductListComponent implements OnInit {
       this.$router.navigate(['../../'], {relativeTo: this.$route});
       // this.$location.back()
     }, 200);
+  }
+
+  //
+  // detect scrall motion and hide component
+  onScroll($event) {
+    ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
 

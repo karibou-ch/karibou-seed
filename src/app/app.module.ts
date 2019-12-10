@@ -26,7 +26,7 @@ import { environment } from '../environments/environment';
 
 //
 // routing
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouteReuseStrategy } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { KngWelcomeComponent } from './kng-welcome/kng-welcome.component';
 import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.component';
@@ -34,6 +34,7 @@ import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-serve
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { EnumMetrics } from './common/metrics.service';
+import { CacheRouteReuseStrategy } from './app.cache.route';
 // import { ServiceWorkerModule } from '@angular/service-worker';
 
 @Injectable()
@@ -57,7 +58,6 @@ export class GlobalErrorHandler implements ErrorHandler {
       console.log('ERROR----', error.originalError || error);
       console.log('ERROR----', (error.originalError || error).message);
       (<any>window).Sentry && (<any>window).Sentry.captureException(error.originalError || error);
-      (<any>window)['_kmq'] && (<any>window)['_kmq'].push(['record', EnumMetrics[EnumMetrics.metric_error], {error: error.message}]);
      } catch (e) {
 
      }
@@ -90,14 +90,17 @@ export class GlobalErrorHandler implements ErrorHandler {
       ]
     }),
     KngCommonModule.forRoot(),
-    RouterModule.forRoot(appRoutes, { enableTracing: false }),
+    RouterModule.forRoot(appRoutes, { 
+      enableTracing: false,
+      scrollPositionRestoration: 'enabled'
+    }),
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
-    { provide: ErrorHandler, useClass: GlobalErrorHandler}
+    { provide: ErrorHandler, useClass: GlobalErrorHandler},
+    { provide: RouteReuseStrategy, useClass: CacheRouteReuseStrategy }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
-

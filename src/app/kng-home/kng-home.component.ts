@@ -317,10 +317,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
          (scrollPosition + window.innerHeight) > (scrollTop + height)) {
           this.visibility[container.nativeElement.className] = true;
       }
-      // console.log('---',this.visibility[container.nativeElement.className])
     });
-    // console.log('-- detectVisibility',scrollPosition)
-    // console.log('-- detectVisibility',this.visibility)
 
   }
 
@@ -334,9 +331,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (Math.abs(this.scrollPosition - scrollPosition) < 6) {
       return;
     }
-    // console.log('-- pageYOffset',window.pageYOffset);
-    // console.log('-- screenTop',window.screenTop);
-    // console.log('-- screenY',window.screenY);
 
     this.detectVisibility(scrollPosition);
 
