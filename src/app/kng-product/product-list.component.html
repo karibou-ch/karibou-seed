@@ -64,7 +64,6 @@
       <!-- VENDORS-->
       <div class="vendor" >
         <div class="owner" 
-            (click)="toggleVendor(vendor)"            
             *ngFor="let vendor of getVendors()">
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>

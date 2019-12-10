@@ -19,7 +19,7 @@ import {
 } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MdcChipSet } from '@angular-mdc/web';
+import { MdcChipSet, MdcChip } from '@angular-mdc/web';
 
 @Component({
   selector: 'kng-product-list',
@@ -228,12 +228,13 @@ export class ProductListComponent implements OnInit {
 
   toggleChild(child: string) {
     if (this.filterChild === child) {
-      this.subcategory.chips.forEach((elem: any) => elem.selected = false);
+      this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
       this.filterChild = null;
       this.setProducts();
       return;
     }
-    this.subcategory.chips.forEach((elem: any) => elem.selected = (elem.chipText.elementRef.nativeElement.innerText === child));
+
+    this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = (elem.value === child));
     this.filterChild = child;
     this.setProducts();
   }
