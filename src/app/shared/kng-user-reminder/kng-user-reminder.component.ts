@@ -16,25 +16,25 @@ export class KngUserReminderComponent implements OnInit {
 
   locale: string;
   show: boolean;
-
-
   //
   // i18n
 
   i18n: any = {
     fr: {
-      title: 'Nous pouvons vous envoyer un mail de rappel afin de vous aider dans l\'organisation de vos courses',
-      super: 'Pratique!',
-      title_time: 'A quelle heure souhaitez vous recevoir la notification',
-      title_day: 'A quelles moments souhaitez vous recevoir la notification?'
+      title: 'Nous pouvons vous envoyer un mail de rappel selon votre préférence de livraison',
+      super: 'Pratique! ',
+      footer: 'Préparez votre commande depuis votre téléphone, et avant la livraison, nous vous envoyons une notification par mail pour finaliser votre commande',
     },
     en: {
-      title: 'We can send you a reminder email to help you organize your shopping',
-      super: 'Awesome!',
-      title_time: 'At what time do you want to receive notification?',
-      title_day: 'Which days?'
+      title: 'We can send you a reminder email according to your delivery preference',
+      super: 'Awesome! ',
+      footer: 'Prepare your order from your phone, and before delivery, we send you a notification by email to finalize your order',
     }
   };
+
+  selectedNotification: any;
+  time: any = 10; // hour to send notification
+
 
   times = [
     {value: '8', label: '8h00'},
@@ -44,14 +44,15 @@ export class KngUserReminderComponent implements OnInit {
     {value: '16', label: '16h00'},
     {value: '20', label: '20h00'}
   ];
+
   weekdays = [
-    {value: '1', label: 'Lundi'},
-    {value: '2', label: 'Mardi'},
-    {value: '3', label: 'Mercredi'},
-    {value: '4', label: 'Jeudi'},
-    {value: '5', label: 'Vendredi'},
-    {value: '6', label: 'Samedi'},
-    {value: '0', label: 'Dimanche'}
+//    {value: '1', label: 'Lundi'},
+    {value: '2', label: 'Mardi', icon: 'alarm'},
+    // {value: '3', label: 'Mercredi'},
+    // {value: '4', label: 'Jeudi'},
+     {value: '5', label: 'Vendredi', icon: 'alarm'},
+    // {value: '6', label: 'Samedi'},
+     {value: '0', label: 'Sans notification'}
   ];
 
 
@@ -62,44 +63,30 @@ export class KngUserReminderComponent implements OnInit {
     private $snack: MdcSnackbar
   ) {
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
+    this.selectedNotification = this.weekdays[this.weekdays.length - 1];
+
     if (loader.length) {
       this.user = this.user || loader[1];
+      this.selectedNotification = this.user.reminder.weekdays[0];
     }
-  }
+   }
 
-  doUpdate(event, day: number, time) {
-    // FIXME change envent called 2x!
-    // console.log('MdcCheckboxChange',event.type)
-    if (!event.type) {
-      return;
-    }
+  doUpdate(event) {
+    let day = event.value.value;
 
     if (day) {
       day = day | 0;
-      let pos = this.user.reminder.weekdays.indexOf(day);
-      if (pos === -1) {
-        this.user.reminder.weekdays.push(day);
-      } else {
-        do {
-          this.user.reminder.weekdays.splice(pos, 1);
-          pos = this.user.reminder.weekdays.indexOf(day);
-        }while (pos > -1);
-
-      }
-    }
-    if (time) {
-      time = time | 0;
-      this.user.reminder.time = time;
+      this.user.reminder.weekdays = [];
+      this.user.reminder.weekdays.push(event.value.value);
+      this.user.reminder.time = this.time;
     }
     this.user.reminder.active = !!(this.user.reminder.weekdays.length);
+    this.selectedNotification = this.weekdays[this.weekdays.length - 1];
+    this.save();
   }
 
   ngOnInit() {
     this.locale = this.$i18n.locale;
-  }
-
-  isChecked(day: number) {
-    return (this.user.reminder.weekdays || []).indexOf((day|0)) > -1;
   }
 
 
