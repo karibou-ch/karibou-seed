@@ -66,7 +66,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
   options: {
     discount: boolean;
-    home: boolean;
+    home?: boolean;
     maxcat: number;
     popular: boolean;
     available: boolean;
@@ -75,7 +75,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     reload?: number;
   } = {
     discount: true,
-    home: true,
+    //home: true,
     maxcat: 14,
     popular: true,
     available: true,
@@ -238,7 +238,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     this.$product.select(this.options).subscribe((products: Product[]) => {
       products.forEach((product: Product) => {
-        if (product.attributes.home) {
+        if (product.attributes.discount) {
           this.home.push(product);
           return;
         }
