@@ -170,7 +170,6 @@ export class ProductListComponent implements OnInit {
   getNextPage() {
     this.currentPage += 10;
     this.cdr.markForCheck();
-    // console.log('--', this.currentPage)
     return timer(1).pipe(map(ctx => this.currentPage));
   }
 
