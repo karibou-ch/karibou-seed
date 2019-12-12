@@ -138,7 +138,7 @@ export class ProductListComponent implements OnInit {
 
   //
   // FIXME: when using cache route component
-  // -> ngOnInit and ngOnDestroy are never called 
+  // -> ngOnInit and ngOnDestroy are never called when app.cache.route is activated
   ngAfterViewChecked() {
     const diff = Math.abs(this.dialog.nativeElement.scrollTop - ProductListComponent.SCROLL_CACHE);
     if(diff < 100) {
