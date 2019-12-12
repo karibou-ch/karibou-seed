@@ -59,7 +59,6 @@ export class ProductListComponent implements OnInit {
   filterChild: string;
   childSub;
   relative = './';
-  oldScrollTop: number;
 
   options: {
     available: boolean;
