@@ -1,0 +1,6 @@
+{
+    "path": "src/app", 
+    "ignore": [
+        "ng-star"
+    ]
+}
