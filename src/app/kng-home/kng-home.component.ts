@@ -66,7 +66,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
   options: {
     discount: boolean;
-    home: boolean;
+    home?: boolean;
     maxcat: number;
     popular: boolean;
     available: boolean;
@@ -75,7 +75,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     reload?: number;
   } = {
     discount: true,
-    home: true,
+    //home: true,
     maxcat: 14,
     popular: true,
     available: true,
@@ -219,6 +219,17 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return content !== '' && content != null && content !== undefined;
   }
 
+  mountOverlay(overlay) {
+    if(overlay) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');  
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
+
   productsGroupByCategory() {
     // FIXME inner size
     const maxcat = (window.innerWidth < 426) ? 6 : 8;
@@ -227,7 +238,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     this.$product.select(this.options).subscribe((products: Product[]) => {
       products.forEach((product: Product) => {
-        if (product.attributes.home) {
+        if (product.attributes.discount) {
           this.home.push(product);
           return;
         }
@@ -276,21 +287,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.sections.toArray().map(el => el.nativeElement);
   }
 
-
-  scrollElIntoView(el: HTMLElement) {
-    if (!el) {
-      return;
-    }
-
-    //
-    // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
-    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
-  }
-
-  sortByWeight(a: Category, b: Category) {
-    return a.weight - b.weight;
-  }
-
   //
   // detect if current container is visible
   // on the screen (based on scroll position)
@@ -317,11 +313,32 @@ export class KngHomeComponent implements OnInit, OnDestroy {
          (scrollPosition + window.innerHeight) > (scrollTop + height)) {
           this.visibility[container.nativeElement.className] = true;
       }
-      // console.log('---',this.visibility[container.nativeElement.className])
     });
-    // console.log('-- detectVisibility',scrollPosition)
-    // console.log('-- detectVisibility',this.visibility)
 
+  }
+
+  //
+  // detect child overlay 
+  @HostListener('window:popstate', ['$event'])
+  onPopState($event) {
+    setTimeout(() => {
+      const overlay = document.querySelector('.product-dialog');
+      this.mountOverlay(!!overlay);
+    }, 400);
+  }
+
+  scrollElIntoView(el: HTMLElement) {
+    if (!el) {
+      return;
+    }
+
+    //
+    // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
+    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
+  }
+
+  sortByWeight(a: Category, b: Category) {
+    return a.weight - b.weight;
   }
 
   //
@@ -334,9 +351,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (Math.abs(this.scrollPosition - scrollPosition) < 6) {
       return;
     }
-    // console.log('-- pageYOffset',window.pageYOffset);
-    // console.log('-- screenTop',window.screenTop);
-    // console.log('-- screenY',window.screenY);
 
     this.detectVisibility(scrollPosition);
 
