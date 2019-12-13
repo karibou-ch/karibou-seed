@@ -12,6 +12,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class KngUserReminderComponent implements OnInit {
 
+  @Input() hideTitle:boolean;
   @Input() user: User;
 
   locale: string;
@@ -21,14 +22,15 @@ export class KngUserReminderComponent implements OnInit {
 
   i18n: any = {
     fr: {
-      title: 'Nous pouvons vous envoyer un mail de rappel selon votre préférence de livraison',
+      title: `Psst: C'est facile de préparez votre commande depuis votre téléphone!`,
       super: 'Pratique! ',
-      footer: 'Préparez votre commande depuis votre téléphone, et avant la livraison, nous vous envoyons une notification par mail pour finaliser votre commande',
+      info: `Vous avez peut être une préférence pour la livraison ? Avant la livraison,
+             nous vous envoyons une notification par mail pour finaliser votre commande.`,
     },
     en: {
-      title: 'We can send you a reminder email according to your delivery preference',
+      title: `Psst: It's easy to prepare your order with your phone!`,
       super: 'Awesome! ',
-      footer: 'Prepare your order from your phone, and before delivery, we send you a notification by email to finalize your order',
+      info: `Do you have a delivery preference? Before delivery, we send you a notification by email to finalize your order`,
     }
   };
 

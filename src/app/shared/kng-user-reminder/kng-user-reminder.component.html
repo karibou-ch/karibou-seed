@@ -1,5 +1,5 @@
 
-<div class="title">
+<div class="reminder-title" [hidden]="hideTitle">
     {{i18n[locale].title}}
 </div>
 <div class="content">
@@ -9,8 +9,8 @@
       <mdc-chip-text>{{ day.label }}</mdc-chip-text>
     </mdc-chip>
   </mdc-chip-set>
-<div class="footer" mdcBody1 i18n>
+<div class="info" mdcBody1 i18n>
   <b>{{i18n[locale].super}}</b>
-  {{i18n[locale].footer}}
+  {{i18n[locale].info}}
 </div>
   
