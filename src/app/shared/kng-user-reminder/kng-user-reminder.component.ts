@@ -75,7 +75,6 @@ export class KngUserReminderComponent implements OnInit {
     }
 
     if (day) {
-      // TOCHECK Forbidden bitwise operation (no-bitwise)
       day = day | 0;
       let pos = this.user.reminder.weekdays.indexOf(day);
       if (pos === -1) {
@@ -89,7 +88,6 @@ export class KngUserReminderComponent implements OnInit {
       }
     }
     if (time) {
-       // TOCHECK Forbidden bitwise operation (no-bitwise)
       time = time | 0;
       this.user.reminder.time = time;
     }
@@ -101,7 +99,7 @@ export class KngUserReminderComponent implements OnInit {
   }
 
   isChecked(day: number) {
-    return (this.user.reminder.weekdays || []).indexOf(day | 0) > -1;
+    return (this.user.reminder.weekdays || []).indexOf((day|0)) > -1;
   }
 
 
@@ -110,11 +108,7 @@ export class KngUserReminderComponent implements OnInit {
       user => {
         this.$snack.open(this.$i18n.label().save_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
       },
-      // TOCHECK
-      // Parameter 'err' implicitly has an 'any' type, but a better type may be inferred from usage.ts(7044)
-      // Shadowed name: 'err' (no-shadowed-variable)tslint(1)
-
-      err => (err) => this.$snack.open(err.error, this.$i18n.label().thanks, this.$i18n.snackOpt)
+      (hang) => this.$snack.open(hang.error, this.$i18n.label().thanks, this.$i18n.snackOpt)
     );
   }
 }

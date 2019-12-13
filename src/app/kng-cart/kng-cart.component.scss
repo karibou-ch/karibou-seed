@@ -47,7 +47,6 @@
       color: $mdc-theme-primary;
       color: var(--mdc-theme-text-primary-on-primary, rgba(0, 0, 0, 0.87));
       font-size: 1.875rem;
-      -font-size: 0.875rem;
       text-transform: uppercase;    
       margin-top: 40px;
       text-align:center;
@@ -334,8 +333,6 @@
       margin: 0;
       margin-top:auto;
       font-size: smaller;
-      .note{
-      }
       .type{
         font-weight: bold;
       }

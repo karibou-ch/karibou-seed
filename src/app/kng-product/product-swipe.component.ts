@@ -36,8 +36,9 @@ export class ProductSwipeComponent implements OnInit {
     this.load();
   }
 
+  hideIfEmpty: boolean;
   options = {
-    home: true,
+    discount: true,
     available: true,
     status: true,
     when: true
@@ -47,14 +48,15 @@ export class ProductSwipeComponent implements OnInit {
     private $i18n: i18n,
     private $product: ProductService,
     private $route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef
   ) {
 
     const loader  = this.$route.snapshot.data.loader ||
                   this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
-    this.limit  = 6;
+    this.limit  = 8;
     this.products = [];
+    this.hideIfEmpty = false;
   }
 
   getSelectedContent(elem: string) {
@@ -64,11 +66,9 @@ export class ProductSwipeComponent implements OnInit {
     return this.config.shared.home.selection[elem][this.$i18n.locale];
   }
 
-  // TOCHECK
   ngOnDestroy() {
   }
 
-  // TOCHECK
   ngAfterViewInit() {
     try {
       document.querySelector('kng-product-swipe > div > div.content').scrollLeft = 70;
@@ -76,15 +76,18 @@ export class ProductSwipeComponent implements OnInit {
   }
 
   ngOnInit() {
-    // if(!this.products||!this.products.length){
-    //   this.load();
-    // }
+    if(!this.products ||
+       !this.products.length) {
+      this.load();
+    }
   }
 
 
   load() {
     this.$product.select(this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortByDate);
+      this.hideIfEmpty = (this.products.length <= 2);
+      this.$cdr.markForCheck();
     });
   }
 

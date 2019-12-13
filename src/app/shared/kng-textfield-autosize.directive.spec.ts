@@ -2,7 +2,7 @@ import { KngTextfieldAutosizeDirective } from './kng-textfield-autosize.directiv
 
 describe('KngTextfieldAutosizeDirective', () => {
   it('should create an instance', () => {
-    const directive = new KngTextfieldAutosizeDirective();
+    const directive = new KngTextfieldAutosizeDirective(null);
     expect(directive).toBeTruthy();
   });
 });

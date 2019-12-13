@@ -227,7 +227,6 @@ export class UserSignComponent {
   }
 
 
-// TOCHECK
   ngOnInit() {
     if (this.askAction === 'payment') {
     }
@@ -316,8 +315,7 @@ export class UserSignComponent {
       phoneNumbers: [{number: this.signup.value.phone, what: 'mobile'}]
     };
     this.$user.register(user).subscribe(
-      // TOCHECK i remove variable inside  (user) => {
-      () => {
+      (user) => {
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {
           timeoutMs: 9000
         });

@@ -143,16 +143,13 @@ div{
   .stripe-component input:-webkit-autofill {
     -webkit-text-fill-color: #e39f48;
     transition: background-color 100000000s;
-    -webkit-animation: 1ms void-animation-out;
   }
   
   .stripe-component .StripeElement--webkit-autofill {
     background: transparent !important;
   }
   
-  .stripe-component input, .stripe-component button {
-    -webkit-animation: 1ms void-animation-out;
-  }
+
   
   .stripe-component button {
     display: block;
