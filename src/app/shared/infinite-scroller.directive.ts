@@ -1,8 +1,8 @@
 import { Directive, AfterViewInit, ElementRef, Input, OnDestroy, Renderer } from '@angular/core';
 
-import { Observable ,  Subscription ,  fromEvent } from 'rxjs';
+import { Observable, Subscription, fromEvent } from 'rxjs';
 import { exhaustMap, filter, map, pairwise, startWith } from 'rxjs/operators';
- 
+
 interface ScrollPosition {
   sH: number;
   sT: number;
@@ -51,7 +51,7 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
   @Input()
   infiniteScrollContainer;
 
-  constructor(private renderer : Renderer,private elm: ElementRef) { 
+  constructor(private renderer: Renderer, private elm: ElementRef) {
 
   }
 
@@ -61,7 +61,7 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
     this.requestCallbackOnScroll();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     //clean only if needed!
     //this.requestOnScroll$.unsubscribe()
   }
@@ -70,25 +70,25 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
     //
     // read documentation about renderer
     // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
-    let elem=this.elm.nativeElement;
-    if(this.infiniteScrollContainer){
+    let elem = this.elm.nativeElement;
+    if (this.infiniteScrollContainer) {
       //TODO get ElementRef from HTMLDivElement ??;
       //TODO get scroll from ElementRef
       //TODO scroll with rxjs6 https://www.bennadel.com/blog/3446-monitoring-document-and-element-scroll-percentages-using-rxjs-in-angular-6-0-2.htm
       // console.log('---container',this.infiniteScrollContainer,fromEvent(this.infiniteScrollContainer, 'scroll'));
-      if(this.infiniteScrollContainer instanceof  ElementRef){
-        elem=this.infiniteScrollContainer.nativeElement;
-      }else{
-        elem=document.querySelector(this.infiniteScrollContainer);
+      if (this.infiniteScrollContainer instanceof ElementRef) {
+        elem = this.infiniteScrollContainer.nativeElement;
+      } else {
+        elem = document.querySelector(this.infiniteScrollContainer);
       }
-      elem=elem||window;
+      elem = elem || window;
     }
     this.scrollEvent$ = fromEvent(elem, 'scroll');
   }
 
   private streamScrollEvents() {
     this.userScrolledDown$ = this.scrollEvent$.pipe(
-      map((e: any)=>e.target.scrollingElement||e.target),
+      map((e: any) => e.target.scrollingElement || e.target),
       map((target: any): ScrollPosition => ({
         sH: target.scrollHeight,
         sT: target.scrollTop,
@@ -106,7 +106,7 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
     if (this.immediateCallback) {
       this.requestOnScroll$ = this.requestOnScroll$.pipe(
         startWith([DEFAULT_SCROLL_POSITION, DEFAULT_SCROLL_POSITION])
-      );        
+      );
     }
 
     this.requestOnScroll$.pipe(

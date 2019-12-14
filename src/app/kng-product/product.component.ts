@@ -1,11 +1,13 @@
-import { Component,
-         ElementRef,
-         OnInit,
-         OnDestroy,
-         Input,
-         ViewChild,
-         ChangeDetectorRef,
-         ViewEncapsulation} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  OnDestroy,
+  Input,
+  ViewChild,
+  ChangeDetectorRef,
+  ViewEncapsulation
+} from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 // import { MdcDialogComponent, } from '@angular-mdc/web';
@@ -17,8 +19,7 @@ import {
   Product,
   LoaderService,
   User,
-  CartItem,
-  Shop
+  CartItem
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
@@ -85,26 +86,25 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   constructor(
     private $cart: CartService,
-    public  $i18n:i18n,
-    private $navigation:KngNavigationStateService,
-    private $loader:LoaderService,
+    public $i18n: i18n,
+    private $navigation: KngNavigationStateService,
+    private $loader: LoaderService,
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $router: Router,
     private cdr: ChangeDetectorRef,
-    private el:ElementRef
+    private el: ElementRef
   ) {
 
-    let loader=this.$route.snapshot.data.loader||this.$route.parent.snapshot.data.loader;
-    if(loader&&loader.length){
-      this.config=loader[0];      
-      this.user=loader[1];    
-      this.categories=loader[2];      
+    const loader = this.$route.snapshot.data.loader || this.$route.parent.snapshot.data.loader;
+    if (loader && loader.length) {
+      this.config = loader[0];
+      this.user = loader[1];
+      this.categories = loader[2];
     }
 
-    this.products=[];
-    this.scrollCallback=this.getNextPage.bind(this);
-
+    this.products = [];
+    this.scrollCallback = this.getNextPage.bind(this);
   }
 
 
@@ -134,19 +134,19 @@ export class ProductComponent implements OnInit, OnDestroy {
       case 'grta':
       case 'bioconversion':
       case 'biodynamics':
-      return product.details[label];
+        return product.details[label];
       case 'bio':
-      return product.details.bio &&
-            !product.details.bioconvertion &&
-            !product.details.biodynamics;
+        return product.details.bio &&
+          !product.details.bioconvertion &&
+          !product.details.biodynamics;
       case 'natural':
-      return product.details.natural &&
-            !product.details.bio &&
-            !product.details.bioconvertion &&
-            !product.details.biodynamics;
+        return product.details.natural &&
+          !product.details.bio &&
+          !product.details.bioconvertion &&
+          !product.details.biodynamics;
 
       default:
-      return false;
+        return false;
     }
   }
 
@@ -175,8 +175,8 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   getProducts() {
     if (!this.product ||
-       !this.product.belong ||
-       !this.product.belong.name) {
+      !this.product.belong ||
+      !this.product.belong.name) {
       return this.products;
     }
     return this.products.filter(p => p.belong.name === this.product.belong.name);
@@ -186,63 +186,64 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
   }
 
+  ngOnDestroy() {
+    if (this.isDialog) {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
   //
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
   ngOnInit() {
-      this.isReady = true;
+    this.isReady = true;
+
+    //
+    // product action belongs to a shop or a category
+    this.rootProductPath = (this.$route.snapshot.params['shop']) ?
+      '/shop/' + this.$route.snapshot.params['shop'] : '';
+
+    //
+    // when display wider
+    if (!this.sku) {
+
+      this.isDialog = true;
+      this.photosz = '/-/resize/600x/';
+      // this.sku = this.$route.snapshot.params['sku'];
+      this.$route.params.subscribe(params => {
+        this.sku = params.sku;
+        this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
+      });
 
       //
-      // product action belongs to a shop or a category
-      this.rootProductPath = (this.$route.snapshot.params['shop']) ?
-        '/shop/' + this.$route.snapshot.params['shop'] : '';
+      // DIALOG INIT HACK
+      document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
+    } else {
+      this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
+    }
+
+
+
+    //
+    // simple animation
+    // capture escape only for dialog instance
+    if (this.dialog) {
+      this.dialog.nativeElement.classList.remove('fadeout');
       //
-      // when display wider
-      if (!this.sku) {
-
-        this.isDialog = true;
-        this.photosz = '/-/resize/600x/';
-        // this.sku = this.$route.snapshot.params['sku'];
-        this.$route.params.subscribe(params => {
-          this.sku = params.sku;
-          this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
-        });
-
-        //
-        // DIALOG INIT HACK
-        document.body.classList.add('mdc-dialog-scroll-lock');
-        document.documentElement.classList.add('mdc-dialog-scroll-lock');
-
-      } else {
-        this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
-      }
+      // capture event escape
+      const escape = (e) => {
+        if (e.key === 'Escape') {
+          this.onClose(this.dialog);
+          document.removeEventListener('keyup', escape);
+        }
+      };
+      document.addEventListener('keyup', escape);
 
 
-
-      //
-      // simple animation
-      // capture escape only for dialog instance
-      if (this.dialog) {
-        this.dialog.nativeElement.classList.remove('fadeout');
-        //
-        // capture event escape
-        const escape = (e) => {
-          if (e.key === 'Escape') {
-            this.onClose(this.dialog);
-            document.removeEventListener('keyup', escape);
-          }
-        };
-        document.addEventListener('keyup', escape);
-
-
-      }
-  }
-
-  ngAfterViewInit() {
-    // if(!this.isDialog){
-    //   this.cdr.detach();
-    // }
+    }
   }
 
   loadProduct(product) {
@@ -267,21 +268,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       when: true,
       shopname: [product.vendor.urlpath]
     };
-    if (this.isDialog ) {
+    if (this.isDialog) {
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
-        // this.products.forEach(prod=>{
-        //   console.log(prod.belong.name, prod.stats.score)
-        // })
-
       });
-
-      setTimeout(() => {
-        if (this.dialog && this.dialog.nativeElement) {
-          this.dialog.nativeElement.scrollTop = 0;
-          // this.dialog.nativeElement.scrollTo(0,0)
-        }
-      }, 100);
     }
   }
 
@@ -290,12 +280,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
   }
 
-  ngOnDestroy() {
-    if (this.isDialog) {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-    }
-  }
 
   onEdit(product: Product) {
 
@@ -308,7 +292,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       if (this.$navigation.hasHistory()) {
         return this.$navigation.back();
       }
-      this.$router.navigate(['../../'], {relativeTo: this.$route});
+      this.$router.navigate(['../../'], { relativeTo: this.$route });
     }, 200);
   }
 

@@ -1,4 +1,4 @@
-<div class="product-dialog fadeout" #dialog>
+<div class="product-dialog fadeout" #dialog (scroll)="onScroll($event)">
   <div class="product-backdrop"></div>
   <div class="product-dialog__surface">
     <div class="category-wide" >
@@ -64,7 +64,6 @@
       <!-- VENDORS-->
       <div class="vendor" >
         <div class="owner" 
-            (click)="toggleVendor(vendor)"            
             *ngFor="let vendor of getVendors()">
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>
