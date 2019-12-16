@@ -48,13 +48,9 @@ export class KngUserReminderComponent implements OnInit {
   ];
 
   weekdays = [
-//    {value: '1', label: 'Lundi'},
     {value: '2', label: 'Mardi', icon: 'alarm'},
-    // {value: '3', label: 'Mercredi'},
-    // {value: '4', label: 'Jeudi'},
-     {value: '5', label: 'Vendredi', icon: 'alarm'},
-    // {value: '6', label: 'Samedi'},
-     {value: '0', label: 'Sans notification'}
+    {value: '5', label: 'Vendredi', icon: 'alarm'},
+    {value: '-1', label: 'Sans notification'}
   ];
 
 
@@ -79,7 +75,9 @@ export class KngUserReminderComponent implements OnInit {
     if (day) {
       day = day | 0;
       this.user.reminder.weekdays = [];
-      this.user.reminder.weekdays.push(event.value.value);
+      if (event.value.value > 0) {
+        this.user.reminder.weekdays.push(event.value.value);
+        }
       this.user.reminder.time = this.time;
     }
     this.user.reminder.active = !!(this.user.reminder.weekdays.length);
