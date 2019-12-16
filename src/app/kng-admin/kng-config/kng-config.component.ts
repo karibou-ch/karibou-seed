@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 
 import { KngNavigationStateService, i18n, KngUtils } from '../../common';
 
-import { MdcSnackbar, MdcDialogComponent, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog, MdcDialogConfig } from '@angular-mdc/web';
+import { MdcSnackbar, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -32,6 +32,7 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   menus: any[];
   groups: string[];
   isLoading: boolean;
+  isReady = false;
 
 
 
@@ -47,6 +48,7 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   ) {
     this.$navigation.isAdminLayout = true;
     this.isLoading = false;
+    this.isReady = true;
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
     this.config.shared.maintenance.reason = this.config.shared.maintenance.reason || {};
@@ -145,12 +147,14 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   }
 
   onConfigSave() {
+    this.isReady = false;
     this.isLoading = true;
     this.$config.save(this.config).subscribe(
       () => {
         this.formatDates();
+        this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
-      }, (err) => this.$snack.open(err.error, 'OK'),
+        }, (err) => this.$snack.open(err.error, 'OK'),
       () => this.isLoading = false
     );
   }
@@ -354,6 +358,7 @@ export class KngNavigationComponent extends KngConfigComponent {
   onSave(value) {
      let toSave = -1;
     this.isLoading = true;
+    this.isReady = false;
 
     //
     // save specific menu
@@ -375,6 +380,7 @@ export class KngNavigationComponent extends KngConfigComponent {
 
     this.$config.save(this.config).subscribe(() => {
       this.edit.menu = null;
+      this.isReady = true;
       this.$snack.open(this.$i18n.label().save_ok, 'OK');
       this.buildMenu();
     },
@@ -483,9 +489,8 @@ export class KngDepositDlgComponent {
 
   updateMap() {
     let lastlen = 0, newlen;
-    //
-     // console.log(value.streetAddres);
-    this.form.valueChanges.subscribe(value => {
+
+     this.form.valueChanges.subscribe(value => {
       newlen = [value.streetAddress, value.postalCode, value.region].join(',').length;
       if (Math.abs(lastlen - newlen) < 2 ||
         !value.name ||
@@ -495,10 +500,8 @@ export class KngDepositDlgComponent {
         return;
       }
       lastlen = newlen;
-      console.log('form add change', value);
       // get geo only if last value changed more than 3 chars
       KngUtils.getGeoCode(this.$http, value.streetAddress, value.postalCode, value.region, this.pubMap).subscribe((result) => {
-        console.log('form geo change', result.geo.location);
         if (!result.geo.location) {return; }
         this.address.geo = {
           lat: result.geo.location.lat,
@@ -586,6 +589,7 @@ export class KngDepositComponent extends KngConfigComponent {
   //
   // save specific address
   onSave(value) {
+    this.isReady = false;
     this.assign(value);
     if (this.edit.idx == null) {
       this.config.shared.deposits = this.config.shared.deposits || [];
@@ -595,6 +599,7 @@ export class KngDepositComponent extends KngConfigComponent {
 
     this.$config.save(this.config).subscribe(() => {
       this.edit.address = null;
+      this.isReady = true;
       this.$snack.open(this.$i18n.label().save_ok, 'OK');
     },
     (err) => this.$snack.open(err.error, 'OK'));
