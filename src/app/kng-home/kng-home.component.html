@@ -67,7 +67,7 @@
             class="">
         </kng-product-thumbnail>
         <div class="category" 
-             [hidden]="!visibility[category.slug]"
+             [hidden]="!visibility[category.slug]||!options.showMore"
              [ngClass]="category.color" 
              [routerLink]="['category',category.slug]" >
           <div class="icon"><i class="material-icons">playlist_add</i></div>
