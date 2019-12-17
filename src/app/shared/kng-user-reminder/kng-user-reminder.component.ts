@@ -72,8 +72,7 @@ export class KngUserReminderComponent implements OnInit {
     let day = event.value.value;
 
     if (day && event.value.selected) {
-      console.log('event.value.selected', event.value.selected);
-      day = day | 0;
+       day = day | 0;
       this.user.reminder.weekdays = (day > -1) ? [day] : [];
       this.user.reminder.time = this.time;
     } else {
