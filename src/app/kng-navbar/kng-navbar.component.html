@@ -67,22 +67,22 @@
 
   <mdc-top-app-bar fixed="false" [dense]="$navigation.isMobile()">
     <mdc-top-app-bar-row >
-      <!-- APPBAR-SECTION-START -->
+      <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start">
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="home">menu</mdc-icon>
         <mdc-top-app-bar-title class="home" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
+
+      <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
         <mdc-top-app-bar-title class="shipping hide-sm" (click)="navigation.open = !navigation.open">
             <i class="material-icons">directions_bike</i> » {{currentShippingDay|date:'EEEE d MMMM':'':locale}}  &nbsp;<i class="material-icons " [hidden]="!noshippingMsg">info</i>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
-      <!-- APP BAR MENU ICON -->
-      <mdc-top-app-bar-section align="end">
-        <!-- <a [routerLink]="['/store',store,'cart']" style="width: auto;margin-right: 8px;" class="show-sm"
-          mdcAppBarActionItem>
-          <mdc-icon>shopping_cart</mdc-icon> <span class="cart-items-count label"></span>
-        </a> -->
+
+      <!-- APP RIGHT ACTIONS -->
+      <mdc-top-app-bar-section align="end">        
+        <!-- LOGIN / REGISTER -->
         <a class="label" [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
           <mdc-icon class="hide" >account_box</mdc-icon><div i18n>{{$i18n.label().nav_account}}</div>
         </a>
@@ -96,12 +96,11 @@
         </a>
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
-    <mdc-top-app-bar-row class="navigation">
+
+    <mdc-top-app-bar-row class="navigation">      
       <!-- APPBAR-SECTION-START -->
       <mdc-top-app-bar-section align="start">
-          <!-- <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="show-sm">menu</mdc-icon> -->
       </mdc-top-app-bar-section>
-
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-top-app-bar-section #section>
