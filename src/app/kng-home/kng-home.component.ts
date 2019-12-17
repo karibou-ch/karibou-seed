@@ -1,14 +1,15 @@
-import { Component,
-         OnInit,
-         OnDestroy,
-         ViewEncapsulation,
-         HostListener,
-         ViewChildren,
-         ElementRef,
-         QueryList,
-         ChangeDetectionStrategy
-        } from '@angular/core';
-import { timer } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewEncapsulation,
+  HostListener,
+  ViewChildren,
+  ElementRef,
+  QueryList,
+  ChangeDetectionStrategy
+} from '@angular/core';
+import { timer, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -21,10 +22,9 @@ import {
   User,
   CartAction,
   PhotoService
-}  from 'kng2-core';
+} from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../common';
-import { MetricsService, EnumMetrics } from '../common/metrics.service';
 
 
 @Component({
@@ -37,16 +37,16 @@ import { MetricsService, EnumMetrics } from '../common/metrics.service';
 export class KngHomeComponent implements OnInit, OnDestroy {
 
   @ViewChildren('section') sections: QueryList<ElementRef>;
-    
+
   isReady: boolean = false;
-  
+
   config: Config;
-  categories:Category[];
-  cached:any={};
-  group:any={};
-  home:Product[]=[];
-  target:string; // home, delicacy, cellar
-  user:User;
+  categories: Category[];
+  cached: any = {};
+  group: any = {};
+  home: Product[] = [];
+  target: string; // home, selection, wellness, cellar
+  user: User;
   subscription;
 
   //
@@ -66,33 +66,60 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   //
   // target
-  categoryFilter={
-    home:['marché'],
-    delicacy:['finefood','autres','delicacy'],
-    cellar:['boissons']
+  categoryFilter = {
+    home: ['marché'],
+    selection: ['marché','boissons', 'delicacy'],
+    wellness: ['finefood', 'autres', 'delicacy'],
+    delicacy: ['marché','boissons', 'delicacy'],
+    cellar: ['boissons']
+  };
+
+
+  //
+  // page content by target
+  pageOptions: any = {
+    home: {
+      maxcat: 14,
+      discount: true,
+      popular: true,
+      showMore: true
+    },
+    cellar:{
+      maxcat: 14,
+      popular: true,
+      showMore: true
+    },
+    delicacy: {
+      home: true,
+      discount: false,
+      popular: false,
+      showMore: false
+    },
+    wellness: {
+      popular: true,
+      showMore: true
+    }
   };
 
   //
   // products for home
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
   options: {
-    discount: boolean;
+    discount?: boolean;
     home?: boolean;
-    maxcat: number;
-    popular: boolean;
+    popular?: boolean;
+    maxcat?: number;
     available: boolean;
     status: boolean;
-    when: Date|boolean;
+    when: Date | boolean;
     reload?: number;
+    showMore: boolean;
   } = {
-    discount: true,
-    //home: true,
-    maxcat: 14,
-    popular: true,
-    available: true,
-    status: true,
-    when: true
-  };
+      showMore: true,
+      available: true,
+      status: true,
+      when: true
+    };
 
 
   constructor(
@@ -102,28 +129,25 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $photo: PhotoService
-  ) { 
+  ) {
     // bind infinite scroll callback function
     this.scrollCallback = this.getNextPage.bind(this);
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.isReady = false;
     this.config = loader[0];
-    this.user=loader[1];
-    this.categories=loader[2]||[];
-    this.currentPage=1000;
+    this.user = loader[1];
+    this.categories = loader[2] || [];
+    this.currentPage = 1000;
 
-    // 
+    //
     // default home target (home, delicacy, cellar)
-    this.target=this.$route.snapshot.data.target||'home';
-    // this.target=this.$route.snapshot.params.home||'home';
+    this.target = this.$route.snapshot.params.target || this.$route.snapshot.data.target || 'home';
 
-    // this.options.maxcat=(window.innerWidth<426)?6:12
-    this.$photo.shops({active:true,random:1}).subscribe((shops:any)=>{
+    this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
       //
       // deploy random shop picture for outside javascript
-      window['kngRandomShop']=shops[0].photo.fg;
-    })
-    
+      window['kngRandomShop'] = shops[0].photo.fg;
+    });
   }
 
   ngOnDestroy() {
@@ -132,9 +156,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
-      window.scroll(0,0);
+      window.scroll(0, 0);
       this.detectVisibility(0);
-    },500);
+    }, 500);
 
     //
     // FIXME avoid double home load
@@ -209,11 +233,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (!this.isReady) {
       return [];
     }
-    this.cached.categories=this.categories.sort(this.sortByWeight).filter((c,i)=> {
-      return c.active && (c.type==='Category') && (this.categoryFilter[this.target].indexOf(c.group.toLocaleLowerCase())>-1);
-    }).slice(0,this.currentPage);
-    this.cached.currentPage=this.currentPage;
-    this.cached.categories.forEach(cat=>this.visibility[cat.slug]=false);
+    this.cached.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
+      return (c.active) &&
+             (c.type === 'Category') &&
+             (this.categoryFilter[this.target].indexOf(c.group.toLocaleLowerCase()) > -1) &&
+             (this.group[c.name]) && (this.group[c.name].length);
+    }).slice(0, this.currentPage);
+    this.cached.currentPage = this.currentPage;
+    this.cached.categories.forEach(cat => this.visibility[cat.slug] = false);
 
     return this.cached.categories;
   }
@@ -225,7 +252,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
 
     const bgStyle = 'url(' + this.config.shared.home.about.image + ')';
-    return {'background-image': this.bgGradient + bgStyle};
+    return { 'background-image': this.bgGradient + bgStyle };
   }
 
 
@@ -243,9 +270,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   mountOverlay(overlay) {
-    if(overlay) {
+    if (overlay) {
       document.body.classList.add('mdc-dialog-scroll-lock');
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');  
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
     } else {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
@@ -254,12 +281,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   productsGroupByCategory() {
+    const options = Object.assign({}, this.options, this.pageOptions[this.target]);
+    this.options.showMore = options.showMore;
     // FIXME inner size
     const maxcat = (window.innerWidth < 426) ? 6 : 8;
     const divider = (window.innerWidth < 426) ? 2 : 4;
     this.group = {};
 
-    this.$product.select(this.options).subscribe((products: Product[]) => {
+    this.$product.select(options).subscribe((products: Product[]) => {
       products.forEach((product: Product) => {
         if (product.attributes.discount) {
           this.home.push(product);
@@ -325,16 +354,16 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       //
       // container.nativeElement.className visible!
       if (scrollPosition >= scrollTop &&
-         scrollPosition < (scrollTop + height)) {
-          this.visibility[container.nativeElement.className] = true;
+        scrollPosition < (scrollTop + height)) {
+        this.visibility[container.nativeElement.className] = true;
       }
       if ((scrollPosition + window.innerHeight) >= scrollTop &&
-         (scrollPosition + window.innerHeight) < (scrollTop + height)) {
-          this.visibility[container.nativeElement.className] = true;
+        (scrollPosition + window.innerHeight) < (scrollTop + height)) {
+        this.visibility[container.nativeElement.className] = true;
       }
       if ((scrollPosition + window.innerHeight) >= scrollTop &&
-         (scrollPosition + window.innerHeight) > (scrollTop + height)) {
-          this.visibility[container.nativeElement.className] = true;
+        (scrollPosition + window.innerHeight) > (scrollTop + height)) {
+        this.visibility[container.nativeElement.className] = true;
       }
     });
   }
