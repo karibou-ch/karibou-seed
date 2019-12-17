@@ -185,6 +185,11 @@ div.navbar{
     }
 
     .mdc-tab{
+      &.mdc-tab--active{
+        >div{
+          font-weight: bold;
+        }
+      }
       color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       @media screen and (max-width: 600px){
@@ -195,7 +200,7 @@ div.navbar{
     .mdc-tab-indicator > span{
       background: $mdc-theme-primary-text;
       background: var(--mdc-theme-primary-text);
-      height: 3px;
+      height: 4px;
     }
     
   }

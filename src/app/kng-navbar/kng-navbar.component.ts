@@ -129,7 +129,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
     if(this.$route.snapshot.children.length){
-      let target=this.$route.snapshot.children[0].data.target;
+      let target=this.$route.snapshot.children[0].params.target || this.$route.snapshot.children[0].data.target;
       this.currentTab=this.primary.findIndex(el=>el.url.indexOf(target)>-1);
       if(this.currentTab==-1) this.currentTab=this.primary.length;
     }
