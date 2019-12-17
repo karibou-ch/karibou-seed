@@ -12,7 +12,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class KngUserReminderComponent implements OnInit {
 
-  @Input() hideTitle:boolean;
+  @Input() hideTitle: boolean;
   @Input() user: User;
 
   locale: string;
@@ -62,23 +62,23 @@ export class KngUserReminderComponent implements OnInit {
   ) {
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.selectedNotification = this.weekdays[this.weekdays.length - 1];
-
     if (loader.length) {
       this.user = this.user || loader[1];
-      this.selectedNotification = this.user.reminder.weekdays[0];
+      this.selectedNotification = this.user.reminder.weekdays[0] > -1 ? this.user.reminder.weekdays[0] : -1;
     }
    }
 
   doUpdate(event) {
     let day = event.value.value;
 
-    if (day) {
+    if (day && event.value.selected) {
+      console.log('event.value.selected', event.value.selected);
       day = day | 0;
-      this.user.reminder.weekdays = [];
-      if (event.value.value > 0) {
-        this.user.reminder.weekdays.push(event.value.value);
-        }
+      this.user.reminder.weekdays = (day > -1) ? [day] : [];
       this.user.reminder.time = this.time;
+    } else {
+      this.user.reminder.weekdays = [];
+      this.user.reminder.time = null;
     }
     this.user.reminder.active = !!(this.user.reminder.weekdays.length);
     this.selectedNotification = this.weekdays[this.weekdays.length - 1];
