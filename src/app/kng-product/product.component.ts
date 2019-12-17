@@ -10,14 +10,12 @@ import {
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
-// import { MdcDialogComponent, } from '@angular-mdc/web';
 
 import {
   Category,
   CartService,
   ProductService,
   Product,
-  LoaderService,
   User,
   CartItem
 } from 'kng2-core';
@@ -88,12 +86,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $cart: CartService,
     public $i18n: i18n,
     private $navigation: KngNavigationStateService,
-    private $loader: LoaderService,
     private $product: ProductService,
     private $route: ActivatedRoute,
-    private $router: Router,
-    private cdr: ChangeDetectorRef,
-    private el: ElementRef
+    private $router: Router
   ) {
 
     const loader = this.$route.snapshot.data.loader || this.$route.parent.snapshot.data.loader;
@@ -260,9 +255,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     // FIXME categories can contains shops
     // get category
     // this.category=this.categories.find(c=>this.product.categories._id==c._id);
-
-    // FIXME, should load on rx.pipe
-    // load category
     const params = {
       available: true,
       when: true,
