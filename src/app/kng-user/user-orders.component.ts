@@ -102,6 +102,12 @@ export class UserOrdersComponent implements OnInit {
     }, error => this.$snack.open(error.error));
   }
 
+  addAllToCard(items: OrderItem[]) {
+    items.forEach(item => {
+      this.addToCard(item);
+    });
+  }
+
   cancel(order: Order) {
     this.$order.cancelWithReason(order, EnumCancelReason.customer).subscribe(result => {
       this.$snack.open(
