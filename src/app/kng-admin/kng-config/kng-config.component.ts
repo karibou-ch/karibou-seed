@@ -119,7 +119,9 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     dialog.done(dlg => {
       if (dlg.state() === 'rejected') {
         this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
+        return;
       }
+      this.onConfigSave();
     });
   }
 
@@ -135,7 +137,6 @@ export class KngConfigComponent implements OnInit, OnDestroy {
       return;
     }
     this.config.shared.home[key].image = info.cdnUrl;
-    this.onConfigSave();
   }
 
   onClear(key: string) {
