@@ -141,7 +141,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     //
     // default home target (home, delicacy, cellar)
-    this.target = this.$route.snapshot.params.target || this.$route.snapshot.data.target || 'home';
+    this.target = this.$route.snapshot.params.departement || this.$route.snapshot.data.departement || 'home';
 
     this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
       //
@@ -156,6 +156,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
+      //
+      // spec: scrollTop; You need to scrollTop when Switching from tab A to tab B
       window.scroll(0, 0);
       this.detectVisibility(0);
     }, 500);

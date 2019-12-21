@@ -55,6 +55,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   // FIXME store resolution
   store = 'geneva';
+  departement = 'home';
 
   isHighlighted: boolean;
   WaitText = false;
@@ -90,6 +91,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $route: ActivatedRoute,
     private $router: Router
   ) {
+
+    //
+    // open product from departement
+    this.departement = this.$route.snapshot.data.departement || this.$route.parent.snapshot.data.departement || 'home';
 
     const loader = this.$route.snapshot.data.loader || this.$route.parent.snapshot.data.loader;
     if (loader && loader.length) {
@@ -194,6 +199,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isReady = true;
 
+
     //
     // product action belongs to a shop or a category
     this.rootProductPath = (this.$route.snapshot.params['shop']) ?
@@ -209,6 +215,11 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.$route.params.subscribe(params => {
         this.sku = params.sku;
         this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
+
+        //
+        // spec: scrollTop; when open nested product we should scrollTop
+        try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
+
       });
 
       //

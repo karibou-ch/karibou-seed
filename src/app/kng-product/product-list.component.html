@@ -10,34 +10,6 @@
 
       <h3 mdcHeadline5 class="title" [innerHtml]="category.current.name"></h3>
       <h6 mdcSubtitle1 class="subtitle" [innerHtml]="category.current.description"></h6>
-      
-      <!-- <mdc-card class="category-card card-skeleton hide" [outlined]="false">   
-       <mdc-card-primary-action>
-         <div class="product-card__primary">
-           <span class="product-card__subtitle">{{category.current.name}}</span>
-           <div>{{category.current.description}}</div>
-
-         </div>
-       </mdc-card-primary-action>
-     </mdc-card> -->
-   
-
-      <!-- ADMIN OR OWNER ACTIONS -->
-      <!-- <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
-        <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
-        <div role="group" aria-label="Justified button group">
-          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=0;save(product);"
-            [disabled]="WaitText">0</button>
-          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=10;save(product);"
-            [disabled]="WaitText">10</button>
-          <button mdc-button [secondary]="true" role="button" (click)="product.pricing.stock=40;save(product);"
-            [disabled]="WaitText">40</button>
-        </div>
-      </div> -->
-
-
-
-
 
       <div class="breaker small"></div>
 
@@ -67,13 +39,6 @@
             *ngFor="let vendor of getVendors()">
             <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>
-  
-      <!-- <div class="vendor" >
-        <div class="owner" 
-            *ngFor="let vendor of getVendorsClosed()">
-            <img [src]="vendor.photo.owner" ></div>
-      </div> -->
-
     </div>
 
     <!-- FURTHER -->

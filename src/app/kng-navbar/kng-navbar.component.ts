@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CartService,
-         CartAction,
-         Config,
-         ConfigMenu,
-         ConfigService,
-         LoaderService,
-         User,
-         UserService,
-         Category,
-         Shop } from 'kng2-core';
+import {
+  CartService,
+  CartAction,
+  Config,
+  ConfigMenu,
+  ConfigService,
+  LoaderService,
+  User,
+  UserService,
+  Category,
+  Shop
+} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
@@ -64,12 +66,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   @ViewChild('section') section: MdcTopAppBarSection;
   @ViewChild('shipping') shipping: MdcMenu;
   constructor(
-    public  $cart: CartService,
+    public $cart: CartService,
     private $config: ConfigService,
-    public  $i18n: i18n,
+    public $i18n: i18n,
     private $route: ActivatedRoute,
     private $user: UserService,
-    public  $navigation: KngNavigationStateService,
+    public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
     private cdr: ChangeDetectorRef,
   ) {
@@ -120,18 +122,18 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // home.about|footer|shop|siteName|tagLine
     //  - p,h,image
     //    - fr,en
-    this.image=this.config.shared.home.tagLine.image;
-    this.title=this.config.shared.home.siteName[this.locale];
-    this.primary=this.config.shared.menu.filter(menu=>menu.group==='primary'&&menu.active);
-    this.topmenu=this.config.shared.menu.filter(menu=>menu.group==='topmenu'&&menu.active);
-    this.store=this.$navigation.store;
-    this.content=this.$navigation.dispatch(this.$route.snapshot.url,this.$route.snapshot.params);
+    this.image = this.config.shared.home.tagLine.image;
+    this.title = this.config.shared.home.siteName[this.locale];
+    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active);
+    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active);
+    this.store = this.$navigation.store;
+    this.content = this.$navigation.dispatch(this.$route.snapshot.url, this.$route.snapshot.params);
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
-    if(this.$route.snapshot.children.length){
-      let target=this.$route.snapshot.children[0].params.target || this.$route.snapshot.children[0].data.target;
-      this.currentTab=this.primary.findIndex(el=>el.url.indexOf(target)>-1);
-      if(this.currentTab==-1) this.currentTab=this.primary.length;
+    if (this.$route.snapshot.children.length) {
+      const departement = this.$route.snapshot.children[0].params.departement || this.$route.snapshot.children[0].data.departement;
+      this.currentTab = this.primary.findIndex(el => el.url.indexOf(departement) > -1);
+      if (this.currentTab == -1) this.currentTab = this.primary.length;
     }
 
     //
@@ -142,9 +144,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
 
     this.subscription = merge(
-      this.$user.user$.pipe(map(user => ({user: user}))),
-      this.$config.config$.pipe(map(config => ({config: config}))),
-      this.$cart.cart$.pipe(map(state => ({state: state})))
+      this.$user.user$.pipe(map(user => ({ user: user }))),
+      this.$config.config$.pipe(map(config => ({ config: config }))),
+      this.$cart.cart$.pipe(map(state => ({ state: state })))
     ).subscribe((emit: any) => {
 
       //
@@ -163,22 +165,22 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       }
       //
       // update cart
-      if(emit.state){
-        this.cardItemsSz=this.$cart.subTotal();
+      if (emit.state) {
+        this.cardItemsSz = this.$cart.subTotal();
         //
         // FIXME hugly DOM manipulation for : CART ITEMS COUNT
-        setTimeout(()=>{
+        setTimeout(() => {
           //
           // top bar
           (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '(' + this.cardItemsSz + ' fr)';
           //
           // tab bar
-          this.cartItemCountElem=this.cartItemCountElem||this.section.elementRef.nativeElement.querySelector('.cart-items-count');
-          if(this.cartItemCountElem){
-            this.cartItemCountElem.innerHTML='('+this.cardItemsSz+' fr)';
-          }  
-        },100);
-      
+          this.cartItemCountElem = this.cartItemCountElem || this.section.elementRef.nativeElement.querySelector('.cart-items-count');
+          if (this.cartItemCountElem) {
+            this.cartItemCountElem.innerHTML = '(' + this.cardItemsSz + ' fr)';
+          }
+        }, 100);
+
         //
         // update shipping date
         if (!emit.state.item) {
