@@ -103,6 +103,7 @@ export class UserOrdersComponent implements OnInit {
   }
 
   addAllToCard(items: OrderItem[]) {
+    this.$cart.empty();
     items.forEach(item => {
       this.addToCard(item);
     });
