@@ -26,7 +26,7 @@ export class UserProfileComponent implements OnInit {
     fr: {
       profile_title: 'Membre depuis le',
       profile_order: 'Commandes',
-      profile_reminder: 'Alarme',
+      profile_reminder: 'Notification',
       profile_account: 'Compte',
       profile_password: 'mot-de-passe',
     },

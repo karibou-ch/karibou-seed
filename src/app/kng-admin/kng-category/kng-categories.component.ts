@@ -105,6 +105,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
 
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
+    this.isReady = true;
 
     //
     // init edit struct
@@ -138,12 +139,12 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
 
   loadCategories() {
     this.$category.select({stats: true}).subscribe((categories: Category[]) => {
-      this.isReady = true;
       this.categories = categories.sort(this.sortByGroupAndWeight.bind(this));
     });
   }
 
   onSave(value: any) {
+    this.isReady = false;
     //
     // copy data
 
@@ -163,6 +164,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
         this.edit.create = false;
         // FIXME, verify IF name != old.name =>  update SLUG
         // this.categories.find()
+        this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
       },
       (err) => this.$snack.open(err.error, 'OK')

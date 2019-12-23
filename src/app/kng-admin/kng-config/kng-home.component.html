@@ -1,4 +1,7 @@
-<div class="container">
+<div class="page-saving" [hidden]="isReady">
+    <h1>Saving</h1>
+  </div>
+  <div class="container">
   <mdc-list  avatar="true"  interactive="false">
     <mdc-list-item (click)="onConfigSave()">
       <mdc-icon mdcListItemGraphic class="size-large">save</mdc-icon>

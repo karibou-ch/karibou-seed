@@ -212,12 +212,11 @@ export class KngEditDocumentComponent extends KngDocumentComponent {
   }
 
   onSave(closeAfter: boolean= false, displaySnack: boolean= true) {
-    console.log('onSave');
-    console.log(this.edit.form);
+
     if (!this.edit.form.valid) {
       return;
     }
-    console.log('if(!this.edit.form.valid)');
+
 
     this.isReady = false;
 
