@@ -35,12 +35,14 @@ export class UserOrdersComponent implements OnInit {
     fr: {
       title_no_order: 'Vous n\'avez pas encore de commandes',
       title_last_order: 'Mes dernières commandes et feedbacks',
-      title_cancel_order: 'Annuler la commande en attente'
+      title_cancel_order: 'Annuler la commande en attente',
+      title_add_all_to_cart: 'Tout ajouter dans le panier'
     },
     en: {
       title_no_order: 'You have no orders yet',
       title_last_order: 'My previous orders and feedbacks',
-      title_cancel_order: 'Cancel the pending order'
+      title_cancel_order: 'Cancel the pending order',
+      title_add_all_to_cart: 'Add all to cart'
     }
   };
 
@@ -102,9 +104,9 @@ export class UserOrdersComponent implements OnInit {
     }, error => this.$snack.open(error.error));
   }
 
-  addAllToCard(items: OrderItem[]) {
+  addAllToCart(order: Order) {
     this.$cart.empty();
-    items.forEach(item => {
+    order.items.forEach(item => {
       this.addToCard(item);
     });
   }

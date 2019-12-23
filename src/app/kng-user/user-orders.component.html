@@ -40,11 +40,12 @@
                   (click)="cancel(order)" i18n>
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
-            </ul>
-            <button mdc-button unelevated="true"  (click)='addAllToCard(order.items)'>
-                <mdc-icon>add_shopping_cart</mdc-icon>
-                <span i18n>Tout Ajouter</span>
-              </button>       
+              <li [hidden]="isPending(order)">
+                <a href="javascript:;" class="text-secondary smaller "                    
+                (click)="addAllToCart(order)" i18n>
+                <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+              </li>
+            </ul>  
         </mdc-list-item-secondary>                           
       </mdc-list-item-text>  
       <div class="hide-sm" mdcListItemMeta>
