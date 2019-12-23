@@ -40,14 +40,19 @@
                   (click)="cancel(order)" i18n>
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
-            </ul>
+              <li [hidden]="isPending(order)">
+                <a href="javascript:;" class="text-secondary smaller "                    
+                (click)="addAllToCart(order)" i18n>
+                <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+              </li>
+            </ul>  
         </mdc-list-item-secondary>                           
       </mdc-list-item-text>  
       <div class="hide-sm" mdcListItemMeta>
         <div>{{order.shipping.when|date:'EEE d MMM y'}}</div>
         <div class="align-right bold">{{order.getTotalPrice()|currency:'CHF'}}</div>
-      </div>                    
-    </mdc-list-item>
+      </div>        
+    </mdc-list-item>   
     <mdc-list-divider></mdc-list-divider>
   </mdc-list>
   <div class="more-orders" [hidden]="orders.length<4||orders.length<=limitTo">
