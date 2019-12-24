@@ -103,3 +103,21 @@ mdc-dialog{
   }
 
 }
+
+.page-saving{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(25, 25, 25, 0.78);
+  width: 100vw;
+  height: 100vh;
+  z-index: 4;
+  h1{
+    color: white;
+    text-align: center;
+    padding-top: 25%;
+  }
+
+}
