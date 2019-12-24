@@ -86,7 +86,6 @@ export class KngDocumentComponent implements OnInit {
     return this.document.title[this.locale] && this.document.type && this.document.signature;
   }
 
-  // TOCHECK
   ngOnDestroy() {
     document.body.style.overflowY = 'auto';
   }
@@ -138,9 +137,6 @@ export class KngEditDocumentComponent extends KngDocumentComponent {
 
   };
 
-  // TOCHECK
-  // Implement life cycle hook interface OnInit for method ngOnInit in class KngEditDocumentComponent
-  //  (https://angular.io/styleguide#style-09-01) (use-life-cycle-interface)tslint(1)
   ngOnInit() {
     super.ngOnInit();
     this.document.signature = this.user.display();
@@ -216,12 +212,11 @@ export class KngEditDocumentComponent extends KngDocumentComponent {
   }
 
   onSave(closeAfter: boolean= false, displaySnack: boolean= true) {
-    console.log('onSave');
-    console.log(this.edit.form);
+
     if (!this.edit.form.valid) {
       return;
     }
-    console.log('if(!this.edit.form.valid)');
+
 
     this.isReady = false;
 

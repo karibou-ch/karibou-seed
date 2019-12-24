@@ -19,7 +19,7 @@ import {
 } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MdcChipSet } from '@angular-mdc/web';
+import { MdcChipSet, MdcChip } from '@angular-mdc/web';
 
 @Component({
   selector: 'kng-product-list',
@@ -29,9 +29,16 @@ import { MdcChipSet } from '@angular-mdc/web';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent implements OnInit {
+  static SCROLL_CACHE = 0;
 
+<<<<<<< HEAD
   @ViewChild('subcategory', { static: false }) subcategory: MdcChipSet;
   @ViewChild('dialog', { static: false }) dialog: ElementRef;
+=======
+  @ViewChild('subcategory') subcategory: MdcChipSet;
+  @ViewChild('dialog') dialog: ElementRef;
+
+>>>>>>> master
   scrollCallback;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';
@@ -93,22 +100,20 @@ export class ProductListComponent implements OnInit {
     this.user = loader[1];
     this.category.categories = loader[2];
     this.scrollCallback = this.getNextPage.bind(this);
-
+    ProductListComponent.SCROLL_CACHE = 0;
   }
 
-  // TOCHECK
   ngOnDestroy() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    this.clean();
     if (this.childSub) {
       this.childSub.unsubscribe();
     }
-
   }
 
   ngOnInit() {
     this.isReady = true;
     this.category.slug = this.$route.snapshot.params['category'];
+
 
     //
     // this should not happends
@@ -133,7 +138,25 @@ export class ProductListComponent implements OnInit {
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.dialog.nativeElement.classList.remove('fadeout');
+
   }
+
+  //
+  // FIXME: when using cache route component
+  // -> ngOnInit and ngOnDestroy are never called when app.cache.route is activated
+  ngAfterViewChecked() {
+    const diff = Math.abs(this.dialog.nativeElement.scrollTop - ProductListComponent.SCROLL_CACHE);
+    if(diff < 100) {
+      return;
+    }
+    this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
+  }
+
+  clean() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  }
+
 
   @HostListener('document:keyup.escape', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -152,7 +175,6 @@ export class ProductListComponent implements OnInit {
   getNextPage() {
     this.currentPage += 10;
     this.cdr.markForCheck();
-    // console.log('--', this.currentPage)
     return timer(1).pipe(map(ctx => this.currentPage));
   }
 
@@ -202,6 +224,7 @@ export class ProductListComponent implements OnInit {
       // set vendors after toggle of child category
       this.setVendors(this.products);
       this.cdr.markForCheck();
+      // this.restoreScroll();
     });
   }
 
@@ -214,9 +237,6 @@ export class ProductListComponent implements OnInit {
   }
 
   setVendors(products: Product[]) {
-    // TOCHECK
-    // Shadowed name: 'map' (no-shadowed-variable)
-    const map = {};
     products.forEach(product => map[product.vendor.urlpath] = product.vendor);
     this.vendors = Object.keys(map).map(key => map[key]);
     this.setProducts();
@@ -232,12 +252,13 @@ export class ProductListComponent implements OnInit {
 
   toggleChild(child: string) {
     if (this.filterChild === child) {
-      this.subcategory.chips.forEach((elem: any) => elem.selected = false);
+      this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
       this.filterChild = null;
       this.setProducts();
       return;
     }
-    this.subcategory.chips.forEach((elem: any) => elem.selected = (elem.chipText.elementRef.nativeElement.innerText === child));
+
+    this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = (elem.value === child));
     this.filterChild = child;
     this.setProducts();
   }
@@ -246,9 +267,15 @@ export class ProductListComponent implements OnInit {
   onClose(closedialog) {
     this.dialog.nativeElement.classList.add('fadeout');
     setTimeout(() => {
+      this.clean();
       this.$router.navigate(['../../'], {relativeTo: this.$route});
-      // this.$location.back()
     }, 200);
+  }
+
+  //
+  // detect scrall motion and hide component
+  onScroll($event) {
+    ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
 

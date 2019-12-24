@@ -54,7 +54,6 @@ export class MdcSearchBarComponent implements OnInit {
     this.searchIcon = document.querySelector('.mat-toolbar--open-search');
   }
 
-  // TOCHECK
   ngAfterViewInit(): void {
   }
 

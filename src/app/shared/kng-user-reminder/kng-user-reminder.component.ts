@@ -12,29 +12,31 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class KngUserReminderComponent implements OnInit {
 
+  @Input() hideTitle: boolean;
   @Input() user: User;
 
   locale: string;
   show: boolean;
-
-
   //
   // i18n
 
   i18n: any = {
     fr: {
-      title: 'Nous pouvons vous envoyer un mail de rappel afin de vous aider dans l\'organisation de vos courses',
-      super: 'Pratique!',
-      title_time: 'A quelle heure souhaitez vous recevoir la notification',
-      title_day: 'A quelles moments souhaitez vous recevoir la notification?'
+      title: `Psst: C'est facile de préparez votre commande depuis votre téléphone!`,
+      super: 'Pratique! ',
+      info: `Vous avez peut être une préférence pour la livraison ? Avant la livraison,
+             nous vous envoyons une notification par mail pour finaliser votre commande.`,
     },
     en: {
-      title: 'We can send you a reminder email to help you organize your shopping',
-      super: 'Awesome!',
-      title_time: 'At what time do you want to receive notification?',
-      title_day: 'Which days?'
+      title: `Psst: It's easy to prepare your order with your phone!`,
+      super: 'Awesome! ',
+      info: `Do you have a delivery preference? Before delivery, we send you a notification by email to finalize your order`,
     }
   };
+
+  selectedNotification: any;
+  time: any = 10; // hour to send notification
+
 
   times = [
     {value: '8', label: '8h00'},
@@ -44,14 +46,11 @@ export class KngUserReminderComponent implements OnInit {
     {value: '16', label: '16h00'},
     {value: '20', label: '20h00'}
   ];
+
   weekdays = [
-    {value: '1', label: 'Lundi'},
-    {value: '2', label: 'Mardi'},
-    {value: '3', label: 'Mercredi'},
-    {value: '4', label: 'Jeudi'},
-    {value: '5', label: 'Vendredi'},
-    {value: '6', label: 'Samedi'},
-    {value: '0', label: 'Dimanche'}
+    {value: '2', label: 'Mardi', icon: 'alarm'},
+    {value: '5', label: 'Vendredi', icon: 'alarm'},
+    {value: '-1', label: 'Sans notification'}
   ];
 
 
@@ -62,9 +61,12 @@ export class KngUserReminderComponent implements OnInit {
     private $snack: MdcSnackbar
   ) {
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
+    this.selectedNotification = this.weekdays[this.weekdays.length - 1];
     if (loader.length) {
       this.user = this.user || loader[1];
+      this.selectedNotification = this.user.reminder.weekdays[0] > -1 ? this.user.reminder.weekdays[0] : -1;
     }
+<<<<<<< HEAD
   }
 
   doUpdate(event, day: number, time?) {
@@ -92,16 +94,28 @@ export class KngUserReminderComponent implements OnInit {
        // TOCHECK Forbidden bitwise operation (no-bitwise)
       time = time | 0;
       this.user.reminder.time = time;
+=======
+   }
+
+  doUpdate(event) {
+    let day = event.value.value;
+
+    if (day && event.value.selected) {
+       day = day | 0;
+      this.user.reminder.weekdays = (day > -1) ? [day] : [];
+      this.user.reminder.time = this.time;
+    } else {
+      this.user.reminder.weekdays = [];
+      this.user.reminder.time = null;
+>>>>>>> master
     }
     this.user.reminder.active = !!(this.user.reminder.weekdays.length);
+    this.selectedNotification = this.weekdays[this.weekdays.length - 1];
+    this.save();
   }
 
   ngOnInit() {
     this.locale = this.$i18n.locale;
-  }
-
-  isChecked(day: number) {
-    return (this.user.reminder.weekdays || []).indexOf(day | 0) > -1;
   }
 
 
@@ -110,11 +124,7 @@ export class KngUserReminderComponent implements OnInit {
       user => {
         this.$snack.open(this.$i18n.label().save_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
       },
-      // TOCHECK
-      // Parameter 'err' implicitly has an 'any' type, but a better type may be inferred from usage.ts(7044)
-      // Shadowed name: 'err' (no-shadowed-variable)tslint(1)
-
-      err => (err) => this.$snack.open(err.error, this.$i18n.label().thanks, this.$i18n.snackOpt)
+      (hang) => this.$snack.open(hang.error, this.$i18n.label().thanks, this.$i18n.snackOpt)
     );
   }
 }

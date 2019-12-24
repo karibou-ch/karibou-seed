@@ -55,7 +55,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     });
   }
 
-    // TOCHECK
   ngAfterContentChecked() {
   }
 
@@ -123,8 +122,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
         this.findGetNull = !products.length;
         this.products = products.sort(this.sortByScore);
-        // TOCHECK
-        // unused expression, expected an assignment or function call (no-unused-expression)
         blur && this.search.nativeElement.blur();
         this.cdr.markForCheck();
       });

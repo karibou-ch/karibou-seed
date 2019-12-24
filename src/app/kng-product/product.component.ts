@@ -17,8 +17,7 @@ import {
   Product,
   LoaderService,
   User,
-  CartItem,
-  Shop
+  CartItem
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
@@ -38,12 +37,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $cart: CartService,
     public  $i18n: i18n,
     private $navigation: KngNavigationStateService,
-    private $loader: LoaderService,
     private $product: ProductService,
     private $route: ActivatedRoute,
-    private $router: Router,
-    private cdr: ChangeDetectorRef,
-    private el: ElementRef
+    private $router: Router
   ) {
 
     const loader = this.$route.parent.snapshot.data.loader || this.$route.snapshot.data.loader;
@@ -52,7 +48,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.user = loader[1];
       this.categories = loader[2];
     }
-
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
 
@@ -189,6 +184,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
   }
 
+  ngOnDestroy() {
+    if (this.isDialog) {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
   //
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
@@ -242,15 +244,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
   }
 
-  // TOCHECK
-  // Implement life cycle hook interface AfterViewInit for method ngAfterViewInit in class ProductComponent
-  // (https://angular.io/styleguide#style-09-01) (use-life-cycle-interface)t
-  ngAfterViewInit() {
-    // if(!this.isDialog){
-    //   this.cdr.detach();
-    // }
-  }
-
   loadProduct(product) {
     this.isReady = true;
     this.product = product;
@@ -276,18 +269,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (this.isDialog ) {
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
-        // this.products.forEach(prod=>{
-        //   console.log(prod.belong.name, prod.stats.score)
-        // })
-
       });
-
-      setTimeout(() => {
-        if (this.dialog && this.dialog.nativeElement) {
-          this.dialog.nativeElement.scrollTop = 0;
-          // this.dialog.nativeElement.scrollTo(0,0)
-        }
-      }, 100);
     }
   }
 
@@ -296,12 +278,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
   }
 
-  ngOnDestroy() {
-    if (this.isDialog) {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-    }
-  }
 
   onEdit(product: Product) {
 
@@ -318,8 +294,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
-  // TOCHECK
-  // 'product' is declared but its value is never read.
   save(product: Product) {
     this.$product.save(product).subscribe(
       (product) => {

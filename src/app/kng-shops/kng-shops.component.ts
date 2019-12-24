@@ -68,8 +68,6 @@ export class KngShopsComponent implements OnInit {
   }
 
 
-  // tslint:disable-next-line: use-life-cycle-interface
-  // TOCHECK
   ngOnDestroy() {
     //
     // class shop would change the mdc-content behavior
@@ -88,10 +86,10 @@ export class KngShopsComponent implements OnInit {
 
     // TOCHECK
     // combineLatest is deprecated: Pass arguments in a single array instead `combineLatest([a, b, c])` (deprecation)tslint(1)
-    combineLatest(
+    combineLatest([
       this.$shop.get(this.urlpath),
       this.$product.select(options)
-    ).subscribe(([vendor, products]: [Shop, Product[]]) => {
+    ]).subscribe(([vendor, products]: [Shop, Product[]]) => {
       document.body.classList.add('shop');
       Object.assign(this.vendor, vendor);
       this.products = products.sort((a, b) => {

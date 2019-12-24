@@ -2,6 +2,7 @@
   "name": "karibou-seed",
   "version": "2.2.0",
   "scripts": {
+    "unused-css": "ngx-unused-css",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -22,11 +23,22 @@
     "@angular/router": "~8.2.7",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.7",
+<<<<<<< HEAD
     "kng2-core": "file:../kng2-core/dist/kng2-core",
     "ngx-stripe": "^7.4.4",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
+=======
+    "kng2-core": "^2.57.0",
+    "material-components-web": "^2.3.1",
+    "ngx-stripe": "^7.2.0",
+    "rxjs": "^6.3.3",
+    "showdown": "^1.9.0",
+    "tslib": "^1.9.0",
+    "uploadcare-widget": "^3.6.1",
+    "zone.js": "~0.8.26"
+>>>>>>> master
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.5",
@@ -44,6 +56,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "ngx-unused-css": "^1.2.1",
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",

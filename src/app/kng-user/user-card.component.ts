@@ -97,10 +97,9 @@ export class CardComponent {
     }
   };
 
-   // TOCHECK
-  @Output('updated') updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
+  @Output() updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
 
-  @Input('user') user: User;
+  @Input() user: User;
   @Input('config') set config(config: Config) {
     this.main(config);
   }

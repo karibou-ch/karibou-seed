@@ -29,7 +29,7 @@
     "max-classes-per-file": false,
     "max-line-length": [
       true,
-      140
+      200
     ],
     "member-access": false,
     "member-ordering": [
@@ -43,7 +43,12 @@
         ]
       }
     ],
+<<<<<<< HEAD
     "no-consecutive-blank-lines": false,
+=======
+    "no-arg": true,
+    "no-bitwise": false,
+>>>>>>> master
     "no-console": [
       true,
       "debug",
@@ -58,7 +63,13 @@
       "ignore-params"
     ],
     "no-non-null-assertion": true,
+<<<<<<< HEAD
     "no-redundant-jsdoc": true,
+=======
+    "no-shadowed-variable": false,
+    "no-string-literal": false,
+    "no-string-throw": true,
+>>>>>>> master
     "no-switch-case-fall-through": true,
     "no-use-before-declare": true,
     "no-var-requires": false,
@@ -80,6 +91,7 @@
     "no-output-native": true,
     "no-output-on-prefix": true,
     "no-output-rename": true,
+<<<<<<< HEAD
     "no-outputs-metadata-property": true,
     "template-banana-in-box": true,
     "template-no-negated-async": true,
@@ -90,3 +102,11 @@
     "codelyzer"
   ]
 }
+=======
+    "use-life-cycle-interface": false,
+    "use-pipe-transform-interface": true,
+    "component-class-suffix": true,
+    "directive-class-suffix": true
+  }
+}
+>>>>>>> master
