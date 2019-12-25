@@ -66,35 +66,6 @@ export class KngUserReminderComponent implements OnInit {
       this.user = this.user || loader[1];
       this.selectedNotification = this.user.reminder.weekdays[0] > -1 ? this.user.reminder.weekdays[0] : -1;
     }
-<<<<<<< HEAD
-  }
-
-  doUpdate(event, day: number, time?) {
-    // FIXME change envent called 2x!
-    // console.log('MdcCheckboxChange',event.type)
-    if (!event.type) {
-      return;
-    }
-
-    if (day) {
-      // TOCHECK Forbidden bitwise operation (no-bitwise)
-      day = day | 0;
-      let pos = this.user.reminder.weekdays.indexOf(day);
-      if (pos === -1) {
-        this.user.reminder.weekdays.push(day);
-      } else {
-        do {
-          this.user.reminder.weekdays.splice(pos, 1);
-          pos = this.user.reminder.weekdays.indexOf(day);
-        }while (pos > -1);
-
-      }
-    }
-    if (time) {
-       // TOCHECK Forbidden bitwise operation (no-bitwise)
-      time = time | 0;
-      this.user.reminder.time = time;
-=======
    }
 
   doUpdate(event) {
@@ -107,7 +78,6 @@ export class KngUserReminderComponent implements OnInit {
     } else {
       this.user.reminder.weekdays = [];
       this.user.reminder.time = null;
->>>>>>> master
     }
     this.user.reminder.active = !!(this.user.reminder.weekdays.length);
     this.selectedNotification = this.weekdays[this.weekdays.length - 1];

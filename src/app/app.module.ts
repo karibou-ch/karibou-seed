@@ -76,13 +76,9 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent
   ],
-<<<<<<< HEAD
   exports:[
     Kng2CoreModule,
     KngCommonModule
-=======
-  exports: [
->>>>>>> master
   ],
   imports: [
     BrowserModule,

@@ -22,15 +22,23 @@ export class KngCategoryDlgComponent {
     public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
     public $fb: FormBuilder,
     public $i18n: i18n,
+    private $snack: MdcSnackbar,
     @Inject(MDC_DIALOG_DATA) public category: any
     ) {
       this.category = category;
+      
     }
 
     //
     // edit.category
     // edit.id
     // category:any;
+    edit: {
+      category: Category;
+      form: any;
+      create: boolean;
+      pubUpcare: string;
+    };
 
   //
   // init formBuilder
@@ -66,6 +74,21 @@ export class KngCategoryDlgComponent {
    // FIXME radio button is not working
    onTypeChange(evt: MdcRadioChange, value: string): void {
     this.category.type = value;
+  }
+
+  onDialogOpen(dialog) {
+    dialog.done(dlg => {
+      if (dlg.state() === 'rejected') {
+        this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
+      }
+    });
+  }
+
+  onUpload(info: any) {
+    if (this.edit.category.cover === info.cdnUrl) {
+      return;
+    }
+    this.edit.category.cover = info.cdnUrl; // .replace('https:','');
   }
 
 }
@@ -243,20 +266,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   });
   }
 
-  onDialogOpen(dialog) {
-    dialog.done(dlg => {
-      if (dlg.state() === 'rejected') {
-        this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
-      }
-    });
-  }
-
-  onUpload(info: any) {
-    if (this.edit.category.cover === info.cdnUrl) {
-      return;
-    }
-    this.edit.category.cover = info.cdnUrl; // .replace('https:','');
-  }
+  
 
   ucValidator(info) {
     if (info.size !== null && info.size > 150 * 1024) {
