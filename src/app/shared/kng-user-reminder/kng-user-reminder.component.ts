@@ -88,7 +88,6 @@ export class KngUserReminderComponent implements OnInit {
     this.locale = this.$i18n.locale;
   }
 
-
   save() {
     this.$user.save(this.user).subscribe(
       user => {
