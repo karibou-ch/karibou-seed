@@ -26,7 +26,6 @@ export class KngCategoryDlgComponent {
     @Inject(MDC_DIALOG_DATA) public category: any
     ) {
       this.category = category;
-      
     }
 
     //
@@ -53,6 +52,12 @@ export class KngCategoryDlgComponent {
       'description': ['', [Validators.required]],
       'type': ['', [Validators.required]]
   });
+
+  ucValidator(info) {
+    if (info.size !== null && info.size > 150 * 1024) {
+    throw new Error('fileMaximumSize');
+  }
+  }
 
   askSave() {
     if (this.form.invalid) {
@@ -266,13 +271,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   });
   }
 
-  
 
-  ucValidator(info) {
-    if (info.size !== null && info.size > 150 * 1024) {
-    throw new Error('fileMaximumSize');
-  }
-}
 
   sortByGroupAndWeight(c1, c2) {
     const g1 = c1.group || '';
