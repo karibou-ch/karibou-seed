@@ -2,6 +2,10 @@ import { UserAddress, Utils } from 'kng2-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+//
+// FIXME use environnement server in service only!
+import { environment } from '../../environments/environment';
+
 
 export class KngUtils {
   static STATIC_MAP = 'https://maps.googleapis.com/maps/api/staticmap?';
@@ -29,12 +33,15 @@ export class KngUtils {
     return KngUtils.STATIC_MAP + Utils.encodeQuery(params);
   }
 
-  static getGeoCode(http, street: string, postal: string, region: string, key: string): Observable<any> {
+  //
+  // FIXME add Quota for google API
+  // --> https://console.cloud.google.com/google/maps-apis/apis/geocoding-backend.googleapis.com/quotas?project=karibou-api
+  static getGeoCode(http, street: string, postal: string, region: string): Observable<any> {
     // check if needed encodeURIComponent(str)
     postal = postal || '';
     region = region || 'Suisse';
     const fulladdress = [street, postal, region].join(',');
-    const url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + fulladdress + '&sensor=false&key=' + key;
+    const url = environment.API_SERVER + '/v1/geocode?address=' + fulladdress + '&sensor=false';
     return http.get(url, { withCredentials: false }).pipe(
       map((geo: any) => {
         const result: any = {};
