@@ -39,9 +39,9 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   @Output() selected: EventEmitter<string> = new EventEmitter<string>();
 
-  @ViewChild('search', { static: false }) search: ElementRef;
-  @ViewChild('stats', { static: false }) stats: ElementRef;
-  
+  @ViewChild('search', { static: true }) search: ElementRef;
+  @ViewChild('stats', { static: true }) stats: ElementRef;
+
   constructor(
     public  $i18n: i18n,
     private $cart: CartService,

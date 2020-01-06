@@ -236,7 +236,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     this.edit.create = false;
 
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: this.edit
+      data: this.edit.category
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -260,7 +260,8 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     this.edit.category.usedBy = [];
     this.edit.create = true;
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: this.edit.category
+      data: {category : this.edit.category,
+      pubUpcare: this.edit.pubUpcare }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (typeof result === 'object') {
