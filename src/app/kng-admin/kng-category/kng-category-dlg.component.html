@@ -5,17 +5,17 @@
  
     <mdc-dialog-surface>
       <mdc-dialog-title>  <!--  TOFIX anciennement  mdc dialog header title -->
-          <span i18n>{{category?.type}}<b>/</b> {{category?.name}}</span>
+          <span i18n>{{category?.type}}<b>/</b> {{edit.category?.name}}</span>
       </mdc-dialog-title>
-      <mdc-dialog-content *ngIf="category">
+      <mdc-dialog-content *ngIf="edit.category">
           <form [formGroup]="form" (submit)="askSave()">
               <!-- IMAGE  -->
               <div class="image" >
-                  <img [src]="category.cover" *ngIf="category.cover" />
+                  <img [src]="edit.category.cover" *ngIf="edit.category.cover" />
                   <mdc-form-field>
                       <ngx-uploadcare-widget
                         images-only="true"
-                        [value]="category.cover"
+                        [value]="edit.category.cover"
                         [validator]="ucValidator"
                         (on-upload-complete)="onUpload($event)"
                         (on-dialog-open)="onDialogOpen($event)"
@@ -28,19 +28,19 @@
               <div>
 
                 <mdc-form-field>
-                    <mdc-checkbox [ngModel]="category.active" formControlName="active"></mdc-checkbox>
+                    <mdc-checkbox [ngModel]="edit.category.active" formControlName="active"></mdc-checkbox>
                     <span i18n>Actif</span>
                 </mdc-form-field>
 
                 <mdc-form-field>
-                    <mdc-checkbox [ngModel]="category.home" formControlName="home"></mdc-checkbox>
+                    <mdc-checkbox [ngModel]="edit.category.home" formControlName="home"></mdc-checkbox>
                     <span i18n>Page d'acceuil</span>
                 </mdc-form-field>
 
                 <!-- TYPE -->
                 <div class="align-end">
                   <!-- FIXME upgrade mdc angular 6 -->
-                  <mdc-radio-group formControlName="type" [(ngModel)]="category.type">
+                  <mdc-radio-group formControlName="type" [(ngModel)]="edit.category.type">
                     <mdc-form-field>
                       <mdc-radio class="radio-primary" value="Category"  (change)="onTypeChange($event,'Category')" ></mdc-radio>
                       <label>Category</label>
@@ -54,29 +54,29 @@
             </div>
             <div class="-between">
               <!-- GROUP -->
-              <mdc-text-field i18n-label label="Group" type="text" [ngModel]="category.group" formControlName="group" style="width: 80px">
+              <mdc-text-field i18n-label label="Group" type="text" [ngModel]="edit.category.group" formControlName="group" style="width: 80px">
               </mdc-text-field>
 
               <!-- WEIGHT -->
-              <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="category.weight" formControlName="weight" style="width: 80px">
+              <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="edit.category.weight" formControlName="weight" style="width: 80px">
               </mdc-text-field>
 
               <!-- ICON -->
-              <mdc-text-field i18n-label label="Icon" type="text" [ngModel]="category.image" formControlName="image" style="width: 80px">
+              <mdc-text-field i18n-label label="Icon" type="text" [ngModel]="edit.category.image" formControlName="image" style="width: 80px">
               </mdc-text-field>
 
               <!-- COLOR -->
-              <mdc-text-field i18n-label label="Color" type="text" [ngModel]="category.color" formControlName="color" style="width: 110px">
+              <mdc-text-field i18n-label label="Color" type="text" [ngModel]="edit.category.color" formControlName="color" style="width: 110px">
               </mdc-text-field>
       
             </div>
 
             <div>                      
               <!-- NAME/DESC -->
-              <mdc-text-field fullwidth i18n-label label="Nom" type="text" [ngModel]="category.name" formControlName="name" >
+              <mdc-text-field fullwidth i18n-label label="Nom" type="text" [ngModel]="edit.category.name" formControlName="name" >
               </mdc-text-field>
 
-              <mdc-text-field fullwidth class="double" i18n-label label="Description" type="text" [ngModel]="category.description" formControlName="description" >
+              <mdc-text-field fullwidth class="double" i18n-label label="Description" type="text" [ngModel]="edit.category.description" formControlName="description" >
               </mdc-text-field>
             </div>
 
@@ -92,13 +92,13 @@
                     </mdc-list-item-text>
                     <mdc-list-item-meta>
                       <mdc-form-field>
-                          <button mdc-button (click)="category.child.splice(idx,1)"><mdc-icon >delete</mdc-icon></button>
+                          <button mdc-button (click)="edit.category.child.splice(idx,1)"><mdc-icon >delete</mdc-icon></button>
                       </mdc-form-field>
                     </mdc-list-item-meta>
                 </mdc-list-item>
                 <mdc-list-divider></mdc-list-divider>
               
-                <mdc-list-item  (click)="category.child.push({name:'',weight:0})">
+                <mdc-list-item  (click)="edit.category.child.push({name:'',weight:0})">
                     <mdc-list-item-graphic>
                       <mdc-icon class="size-large">playlist_add</mdc-icon>
                     </mdc-list-item-graphic>
@@ -116,7 +116,7 @@
           
       </mdc-dialog-content>
       <mdc-dialog-actions>
-        <button mdcDialogButton [disabled]="category?.usedBy?.length!=0" (click)="askDelete()" class="align-start">Delete</button>
+        <button mdcDialogButton [disabled]="edit.category?.usedBy?.length!=0" (click)="askDelete()" class="align-start">Delete</button>
         <button mdcDialogButton mdcDialogAction="close">Decline</button>      
         <button mdcDialogButton mdcDialogAction="accept" (click)="askSave()" [disabled]="!form.valid">Accept</button>
       </mdc-dialog-actions>
