@@ -236,7 +236,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     this.edit.create = false;
 
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: this.edit.category
+      data: this.edit
     });
 
     dialogRef.afterClosed().subscribe(result => {
