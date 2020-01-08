@@ -22,13 +22,11 @@ export class MdcSearchBarComponent implements OnInit {
   //
   // @ContentChild vs @ViewChild
   // https://stackoverflow.com/a/34327754/680373
-  @ViewChild('form', { static: false }) form: ElementRef;
+ 
+  @ViewChild('search', { static: true }) search: ElementRef;
+  @ViewChild('searchContainer', { static: true }) searchContainer: ElementRef;
+  @ViewChild('searchText', { static: true }) searchText: ElementRef;
 
-  @ViewChild('search', { static: false }) search: ElementRef;
-  @ViewChild('searchContainer', { static: false }) searchContainer: ElementRef;
-  @ViewChild('searchText', { static: false }) searchText: ElementRef;
-  @ViewChild('searchTabbar', { static: false }) searchTabbar: ElementRef;
-  
   //
   // Element doesnt access offsetLeft
   searchIcon: any;
