@@ -502,7 +502,7 @@ export class KngDepositDlgComponent {
       }
       lastlen = newlen;
       // get geo only if last value changed more than 3 chars
-      KngUtils.getGeoCode(this.$http, value.streetAddress, value.postalCode, value.region, this.pubMap).subscribe((result) => {
+      KngUtils.getGeoCode(this.$http, value.streetAddress, value.postalCode, value.region).subscribe((result) => {
         if (!result.geo.location) {return; }
         this.address.geo = {
           lat: result.geo.location.lat,

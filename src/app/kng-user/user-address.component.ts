@@ -170,8 +170,7 @@ export class AddressComponent {
     KngUtils.getGeoCode(this.$http,
                         this.$address.value.street,
                         this.$address.value.postalCode,
-                        this.$address.value.region,
-                        this.pubkeyMap).subscribe(
+                        this.$address.value.region).subscribe(
       (result) => {
         this.geo = (result.geo || {}).location;
         //

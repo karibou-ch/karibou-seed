@@ -8,11 +8,17 @@
   
   <section [hidden]="!items.length">
     <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
-    <h3 class="primary-text" i18n>
+    <h3 class="primary-text" i18n *ngIf="!noshippingMsg; else noShipping">
       {{i18n[locale].cart_nextshipping}} 
       <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
       <br/> {{shippingTime}}
     </h3>
+    <ng-template #noShipping>
+      <h3 class="primary-text">
+        <i class="material-icons">info</i> {{noshippingMsg[$i18n.locale]}} 
+      </h3>
+    </ng-template>
+
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>{{i18n[locale].cart_error}}</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
