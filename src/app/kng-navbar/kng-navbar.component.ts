@@ -56,6 +56,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   isFixed = true;
   beforeinstallprompt: any;
   subscription;
+
   @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
     public  $cart: CartService,
