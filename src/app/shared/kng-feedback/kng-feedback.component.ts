@@ -65,7 +65,7 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   constructor(
-    private $i18n: i18n,
+    public  $i18n: i18n,
     private $snack: MdcSnackbar,
     private $order: OrderService,
     private $user: UserService,

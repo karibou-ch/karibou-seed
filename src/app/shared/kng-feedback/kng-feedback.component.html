@@ -89,13 +89,10 @@
           <mdc-list-item-text>
             {{item.quantity}}x {{item.title}} ({{item.part}})
             <!-- ORDER FEEDBACK -->
-            <mdc-textarea i18n-label label="Description du problème" fullwidth [ngModelOptions]="{standalone: true}"
-            [hidden]="!selected[item.sku]"
-            kng-autosize rows="2" 
-            [(ngModel)]="item.note">
-            </mdc-textarea>                              
-
             <mdc-list-item-secondary >
+              <mdc-textarea i18n-label label="Description du problème" fullwidth 
+                  [ngModelOptions]="{standalone: true}" [hidden]="!selected[item.sku]" rows="2" [(ngModel)]="item.note" kng-autosize>
+              </mdc-textarea>                              
             </mdc-list-item-secondary>
           </mdc-list-item-text>                        
           <mdc-checkbox mdcListItemMeta [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]"></mdc-checkbox>        

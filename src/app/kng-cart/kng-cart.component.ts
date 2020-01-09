@@ -44,7 +44,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
   noshippingMsg: string;
   subscription;
   shippingTime;
-  shippingNote: string;
+  shippingNote:string;
+  showInfoAmount:boolean;
 
   //
   // generating dynamic background image url

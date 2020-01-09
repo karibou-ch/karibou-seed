@@ -82,7 +82,7 @@
 
       <!-- DESCRIPTION -->
       <div class="description">
-        <div kng-markdown removeRoot="true" [data]="product.details.description"></div>
+        <div removeRoot="true" [kng-markdown]="product.details.description"></div>
         <div [hidden]="!product.details?.origin" class="light">{{product.details.origin}}</div>
       </div>
 
@@ -130,7 +130,7 @@
           alt="160x160" class="thumbnail-owner photo-owner">
 
         <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;
-        <span kng-markdown [data]="product.vendor.description"></span> 
+        <span [kng-markdown]="product.vendor.description"></span> 
       </div>
 
       <!-- AVAILABLE -->

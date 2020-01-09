@@ -120,7 +120,7 @@ export class UserSignComponent {
 
 
   constructor(
-    private $i18n: i18n,
+    public  $i18n: i18n,
     private $user: UserService,
     private $route: ActivatedRoute,
     private $router: Router,
@@ -265,7 +265,7 @@ export class UserSignComponent {
     this.onBack();
   }
 
-  onUpdatePayment($result, other) {
+  onUpdatePayment($result,other?){
     //
     // delete payment method
     if ($result.deleted) {

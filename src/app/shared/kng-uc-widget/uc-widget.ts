@@ -333,6 +333,7 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
 
       const $ = uploadcare.jQuery;
       $(this.widget.inputElement.nextSibling).remove();
+      // FIXME nextSibling can be undefined
       $(this.widget.inputElement).clone().appendTo($(this.element.nativeElement));
       $(this.widget.inputElement).remove();
       // this.renderer.destroyNode(this.inputElement);

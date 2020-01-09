@@ -6,22 +6,22 @@
 
 //
 // manage browser version
-var golbalVersion = (function(){
-  var ua= navigator.userAgent, tem, 
-  M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-  if(/trident/i.test(M[1])){
-      tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
-      return 'IE '+(tem[1] || '');
-  }
-  if(M[1]=== 'Chrome'){
-      tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
-      if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-  }
-  M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
-  if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
-  M[0]=M[0].toLowerCase();
-  return M;
-})();
+// var golbalVersion = (function(){
+//   var ua= navigator.userAgent, tem, 
+//   M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+//   if(/trident/i.test(M[1])){
+//       tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+//       return 'IE '+(tem[1] || '');
+//   }
+//   if(M[1]=== 'Chrome'){
+//       tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
+//       if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+//   }
+//   M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+//   if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+//   M[0]=M[0].toLowerCase();
+//   return M;
+// })();
 
 
 
@@ -33,22 +33,22 @@ var golbalVersion = (function(){
 // edge<15
 (function(){
 
-  var block=document.getElementById('must-upgrade');
-  var version=document.getElementById('version-upgrade');
-  var shouldUpgrade={
-    "safari":9,
-    "firefox":50,  
-    "chrome":49,  
-    "edge":15,  
-    "ie":12,  
-  };
-  var downloadLink={
-    "safari":"https://www.google.com/intl/fr/chrome/",
-    "firefox":"https://www.mozilla.org/fr/firefox/new/",
-    "chrome":"https://www.google.com/intl/fr/chrome/",
-    "edge":"https://www.google.com/intl/fr/chrome/",
-    "ie":"https://www.google.com/intl/fr/chrome/"
-  }
+  // var block=document.getElementById('must-upgrade');
+  // var version=document.getElementById('version-upgrade');
+  // var shouldUpgrade={
+  //   "safari":9,
+  //   "firefox":50,  
+  //   "chrome":49,  
+  //   "edge":15,  
+  //   "ie":12,  
+  // };
+  // var downloadLink={
+  //   "safari":"https://www.google.com/intl/fr/chrome/",
+  //   "firefox":"https://www.mozilla.org/fr/firefox/new/",
+  //   "chrome":"https://www.google.com/intl/fr/chrome/",
+  //   "edge":"https://www.google.com/intl/fr/chrome/",
+  //   "ie":"https://www.google.com/intl/fr/chrome/"
+  // }
 
   // 
   // please upgrade
