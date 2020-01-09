@@ -22,15 +22,20 @@ export class KngCategoryDlgComponent {
     public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
     public $fb: FormBuilder,
     public $i18n: i18n,
-    @Inject(MDC_DIALOG_DATA) public category: any
-    ) {
-      this.category = category;
-    }
+    private $snack: MdcSnackbar,
+    @Inject(MDC_DIALOG_DATA) public data: any
+  ) {
+    this.category = data.category;
+    this.pubUpcare = data.pubUpcare;
 
-    //
-    // edit.category
-    // edit.id
-    // category:any;
+  }
+
+  //
+  // edit.category
+  // edit.id
+  // category:any;
+  category: Category;
+  pubUpcare: string;
 
   //
   // init formBuilder
@@ -45,6 +50,12 @@ export class KngCategoryDlgComponent {
       'description': ['', [Validators.required]],
       'type': ['', [Validators.required]]
   });
+
+  ucValidator(info) {
+    if (info.size !== null && info.size > 150 * 1024) {
+    throw new Error('fileMaximumSize');
+  }
+  }
 
   askSave() {
     if (this.form.invalid) {
@@ -66,6 +77,21 @@ export class KngCategoryDlgComponent {
    // FIXME radio button is not working
    onTypeChange(evt: MdcRadioChange, value: string): void {
     this.category.type = value;
+  }
+
+  onDialogOpen(dialog) {
+    dialog.done(dlg => {
+      if (dlg.state() === 'rejected') {
+        this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
+      }
+    });
+  }
+
+  onUpload(info: any) {
+    if (this.category.cover === info.cdnUrl) {
+      return;
+    }
+    this.category.cover = info.cdnUrl; // .replace('https:','');
   }
 
 }
@@ -167,7 +193,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
       },
-      (err) => this.$snack.open(err.error, 'OK')
+      (err) => {this.$snack.open(err.error, 'OK');this.isReady = true;}
     );
   }
 
@@ -208,7 +234,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     this.edit.create = false;
 
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: this.edit.category
+      data: {category : this.edit.category, pubUpcare : this.edit.pubUpcare}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -232,7 +258,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     this.edit.category.usedBy = [];
     this.edit.create = true;
     const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: this.edit.category
+      data: {category : this.edit.category, pubUpcare : this.edit.pubUpcare}
     });
     dialogRef.afterClosed().subscribe(result => {
       if (typeof result === 'object') {
@@ -243,26 +269,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   });
   }
 
-  onDialogOpen(dialog) {
-    dialog.done(dlg => {
-      if (dlg.state() === 'rejected') {
-        this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
-      }
-    });
-  }
 
-  onUpload(info: any) {
-    if (this.edit.category.cover === info.cdnUrl) {
-      return;
-    }
-    this.edit.category.cover = info.cdnUrl; // .replace('https:','');
-  }
-
-  ucValidator(info) {
-    if (info.size !== null && info.size > 150 * 1024) {
-    throw new Error('fileMaximumSize');
-  }
-}
 
   sortByGroupAndWeight(c1, c2) {
     const g1 = c1.group || '';

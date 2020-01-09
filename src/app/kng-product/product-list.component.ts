@@ -31,9 +31,8 @@ import { MdcChipSet, MdcChip } from '@angular-mdc/web';
 export class ProductListComponent implements OnInit {
   static SCROLL_CACHE = 0;
 
-  @ViewChild('subcategory') subcategory: MdcChipSet;
-  @ViewChild('dialog') dialog: ElementRef;
-
+  @ViewChild('subcategory', { static: true }) subcategory: MdcChipSet;
+  @ViewChild('dialog', { static: true }) dialog: ElementRef;
   scrollCallback;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';

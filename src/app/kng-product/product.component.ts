@@ -54,15 +54,17 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
 
-  static WEEK_1: number = 86400 * 7;
 
   @Input() sku: number;
   @Input() config: any;
   @Input() categories: Category[];
   @Input() user: User = new User();
 
-  @ViewChild('dialog') dialog: ElementRef;
-  static: number = 86400 * 14;
+  @ViewChild('dialog', { static: true }) dialog: ElementRef;
+
+
+  static WEEK_1:number=86400*7;
+  static :number=86400*14;
 
   isReady: boolean;
   isDialog = false;

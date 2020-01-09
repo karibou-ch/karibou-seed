@@ -56,12 +56,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   isFixed = true;
   beforeinstallprompt: any;
   subscription;
-  // @ViewChild('navigation') navigation: any;
-  // @ViewChild('toolbar') toolbar:MdcToolbar;
-  // @ViewChild('profile') profile:MdcMenu;
-  // @ViewChild('bottombar') bottombar: MdcAppBar;
-  @ViewChild('section') section: MdcTopAppBarSection;
-  @ViewChild('shipping') shipping: MdcMenu;
+
+  @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
     public  $cart: CartService,
     private $config: ConfigService,
@@ -208,7 +204,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     //
     // FIXME when using dropdown for shipping
-    // this.shipping.setSelectedIndex(idx);
     this.cdr.markForCheck();
   }
 
