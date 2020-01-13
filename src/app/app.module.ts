@@ -34,6 +34,7 @@ import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-foun
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { EnumMetrics } from './common/metrics.service';
 import { CacheRouteReuseStrategy } from './app.cache.route';
+import { ServiceWorkerModule } from '@angular/service-worker';
 // import { ServiceWorkerModule } from '@angular/service-worker';
 
 @Injectable()
@@ -95,6 +96,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
