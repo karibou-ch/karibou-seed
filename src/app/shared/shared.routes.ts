@@ -38,6 +38,7 @@ export const childrenRoute: Route[] = [
   { path: '', pathMatch: 'full', redirectTo: '' }
 ];
 
+// TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
   { path: 'admin', loadChildren: '../kng-admin/admin.module#AdminModule' },
   { path: 'cart', loadChildren: '../kng-cart/kng-cart.module#KngCartModule' },
@@ -47,7 +48,7 @@ export const appRoutes: Routes = [
   // FIXME path construction is ugly
   { path: 'home', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: 'cellar', component: KngHomeComponent, data: { departement: 'cellar' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'delicacy', component: KngHomeComponent, data: { departement: 'delicacy' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
+  { path: 'selection', component: KngHomeComponent, data: { departement: 'selection' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: 'wellness', component: KngHomeComponent, data: { departement: 'wellness' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: '', pathMatch: 'full', redirectTo: '' },
 ];

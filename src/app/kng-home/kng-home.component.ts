@@ -65,17 +65,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   ),`;
 
   //
-  // target
-  categoryFilter = {
-    home: ['marché'],
-    selection: ['marché','boissons', 'delicacy'],
-    wellness: ['finefood', 'autres', 'delicacy'],
-    delicacy: ['marché','boissons', 'delicacy'],
-    cellar: ['boissons']
-  };
-
-
-  //
   // page content by target
   pageOptions: any = {
     home: {
@@ -89,13 +78,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       popular: true,
       showMore: true
     },
-    delicacy: {
+    selection: {
       home: true,
       discount: false,
       popular: false,
       showMore: false
     },
     wellness: {
+      maxcat: 14,
+      discount: true,
       popular: true,
       showMore: true
     }
@@ -139,15 +130,16 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.categories = loader[2] || [];
     this.currentPage = 1000;
 
+
     //
     // default home target (home, delicacy, cellar)
-    this.target = this.$route.snapshot.params.departement || this.$route.snapshot.data.departement || 'home';
+    this.target = this.$route.snapshot.url[0].path;
 
-    this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
-      //
-      // deploy random shop picture for outside javascript
-      window['kngRandomShop'] = shops[0].photo.fg;
-    });
+    // this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
+    //   //
+    //   // deploy random shop picture for outside javascript
+    //   this.homePhoto = shops[0].photo.fg;
+    // });
   }
 
   ngOnDestroy() {
@@ -202,7 +194,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
           loaded = true;
         }
       }
-      console.log(this.constructor.name, '------------', emit, this.sections);
     });
   }
 
@@ -235,10 +226,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (!this.isReady) {
       return [];
     }
+    // TODO needs dynamic DEPARTEMENT feature
     this.cached.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
       return (c.active) &&
              (c.type === 'Category') &&
-             (this.categoryFilter[this.target].indexOf(c.group.toLocaleLowerCase()) > -1) &&
+             (c.group.toLocaleLowerCase() === this.target || this.target === 'selection' ) &&
              (this.group[c.name]) && (this.group[c.name].length);
     }).slice(0, this.currentPage);
     this.cached.currentPage = this.currentPage;

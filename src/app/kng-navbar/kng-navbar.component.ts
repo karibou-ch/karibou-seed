@@ -126,10 +126,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.content = this.$navigation.dispatch(this.$route.snapshot.url, this.$route.snapshot.params);
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
+    // TODO needs dynamic DEPARTEMENT feature
     if (this.$route.snapshot.children.length) {
-      const departement = this.$route.snapshot.children[0].params.departement || this.$route.snapshot.children[0].data.departement;
+      const departement = this.$route.snapshot.children[0].url[0].path;
       this.currentTab = this.primary.findIndex(el => el.url.indexOf(departement) > -1);
-      if (this.currentTab == -1) this.currentTab = this.primary.length;
+      //if (this.currentTab == -1) this.currentTab = this.primary.length;
     }
 
     //
