@@ -62,7 +62,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     public  $cart: CartService,
     private $config: ConfigService,
     public  $i18n: i18n,
-    private $loader: LoaderService,
     private $route: ActivatedRoute,
     private $user: UserService,
     public  $navigation: KngNavigationStateService,
@@ -205,6 +204,20 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     //
     // FIXME when using dropdown for shipping
     this.cdr.markForCheck();
+  }
+
+  detectIOS() {
+    // Detects if device is on iOS 
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test( userAgent );
+    };
+
+    // Detects if device is in standalone mode
+    const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
+    if (isIos() && !isInStandaloneMode() && Math.random() > .3) {
+      //this.$snack(...)
+    }
   }
 
   getTagline(key) {
