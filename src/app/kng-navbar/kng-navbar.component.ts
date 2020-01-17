@@ -168,12 +168,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           //
           // top bar
-          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '(' + this.cardItemsSz + ' fr)';
+          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
           //
           // tab bar
           this.cartItemCountElem = this.cartItemCountElem || this.section.elementRef.nativeElement.querySelector('.cart-items-count');
           if (this.cartItemCountElem) {
-            this.cartItemCountElem.innerHTML = '(' + this.cardItemsSz + ' fr)';
+            this.cartItemCountElem.innerHTML = '' + this.cardItemsSz + ' fr';
           }
         }, 100);
 

@@ -65,12 +65,13 @@
 <!-- MAIN LAYOUT -->
 <div [hidden]="!isAppReady()" class="navbar">
 
-  <mdc-top-app-bar fixed="false" [dense]="$navigation.isMobile()">
+  <!-- [dense]="$navigation.isMobile()" -->
+  <mdc-top-app-bar fixed="false" >
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start">
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="home">menu</mdc-icon>
-        <mdc-top-app-bar-title class="home" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
+        <mdc-top-app-bar-title class="home hide-sm" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
@@ -82,17 +83,22 @@
 
       <!-- APP RIGHT ACTIONS -->
       <mdc-top-app-bar-section align="end">        
-        <!-- LOGIN / REGISTER -->
-        <a class="label" [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon class="hide" >account_box</mdc-icon><div i18n>{{$i18n.label().nav_account}}</div>
-        </a>
-        <a class="label" [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon class="hide" >account_circle</mdc-icon><div i18n>{{$i18n.label().nav_login2}}</div>
+        <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
+          <div i18n> <span class="cart-items-count"></span></div>
+          <mdc-icon mdcTopAppBarActionItem >shopping_cart</mdc-icon>        
         </a>
 
-        <a *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
+        <!-- LOGIN / REGISTER -->
+        <a class="label" [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
+          <mdc-icon mdcTopAppBarActionItem >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
+        </a>
+        <a class="label" [routerLink]="['./me/login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
+          <mdc-icon mdcTopAppBarActionItem >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
+        </a>
+
+        <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
           routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
-          <span [innerHTML]="menu.name[locale]"></span>
+          <span  mdcTopAppBarActionItem [innerHTML]="menu.name[locale]"></span>
         </a>
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
@@ -125,16 +131,6 @@
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
-
-  <!-- <div class="mdc-category">
-    <ul>
-      <li *ngFor="let category of categories" 
-          [hidden]="!category.active||category.type!='Category'" >
-        <i [class]="category.image"></i>
-        &nbsp;{{category.name}}
-      </li>                
-    </ul>  
-  </div> -->
 
   <!-- CONTENT APP -->
   <div class="mdc-content">

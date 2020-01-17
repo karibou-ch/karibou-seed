@@ -158,6 +158,7 @@ div.navbar{
   }
 
   .mdc-top-app-bar{
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     z-index: 2;
 
     //
@@ -172,13 +173,25 @@ div.navbar{
       outline: 0px;
       cursor: pointer;
     }
+
+    .shopping-cart {
+      div{
+        transform: translateY(-7px) translateX(18px);
+        display: inline-block;
+        text-transform: none;
+        span{
+          color: gold;          
+        }
+      }
+    }
     
     .shipping{
       letter-spacing: -0.5px;
       text-transform: capitalize;
       text-align: center;
       margin: auto;
-      transform: translateX(-50px);    
+      transform: translateX(40px);    
+      font-weight: 200;
       i{
         transform: translateY(4px);
       }  
@@ -187,8 +200,14 @@ div.navbar{
     .mdc-tab{
       &.mdc-tab--active{
         >div{
-          font-weight: bold;
+          font-weight: bold;          
         }
+        mdc-tab-indicator{
+          >span{
+            background-color: var(--mdc-theme-karibou-pink)!important;
+          }          
+        }
+
       }
       color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
