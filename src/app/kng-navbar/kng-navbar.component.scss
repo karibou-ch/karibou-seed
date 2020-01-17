@@ -185,17 +185,19 @@ div.navbar{
       }
     }
     
-    .shipping{
+    .shipping {
       letter-spacing: -0.5px;
       text-transform: capitalize;
-      text-align: center;
-      margin: auto;
-      transform: translateX(40px);    
+      margin-left: calc( 50% - 130px );
       font-weight: 200;
+      position: absolute;
+      width: 270px;
+      left: 0;      
       i{
         transform: translateY(4px);
       }  
     }
+
 
     .mdc-tab{
       &.mdc-tab--active{
