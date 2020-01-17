@@ -1,10 +1,6 @@
-import { UserAddress, Utils } from 'kng2-core';
+import { UserAddress, Utils, config } from 'kng2-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-//
-// FIXME use environnement server in service only!
-import { environment } from '../../environments/environment';
 
 
 export class KngUtils {
@@ -41,7 +37,7 @@ export class KngUtils {
     postal = postal || '';
     region = region || 'Suisse';
     const fulladdress = [street, postal, region].join(',');
-    const url = environment.API_SERVER + '/v1/geocode?address=' + fulladdress + '&sensor=false';
+    const url = config.API_SERVER + '/v1/geocode?address=' + fulladdress + '&sensor=false';
     return http.get(url, { withCredentials: false }).pipe(
       map((geo: any) => {
         const result: any = {};
