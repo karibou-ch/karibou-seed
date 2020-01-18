@@ -41,7 +41,7 @@
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
 
-  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()">
+  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
 
   <!-- INFORMATION -->
   <div class="home-header" *ngIf="i==2 && target=='home'"
@@ -63,7 +63,7 @@
         <kng-product-thumbnail 
             [visibility]="visibility[category.slug]"
             [sku]="product.sku"
-            *ngFor="let product of group[category.name];let j=index"
+            *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index"
             class="">
         </kng-product-thumbnail>
         <div class="category" 

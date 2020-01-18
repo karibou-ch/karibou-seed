@@ -291,4 +291,14 @@ export class ProductListComponent implements OnInit {
     }
     return score;
   }
+
+
+  trackerCategories(index, category: Category) {
+    return category.slug;
+  }
+
+  trackerProducts(index, product: Product) {
+    return product.sku;
+  }
+
 }

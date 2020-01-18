@@ -321,6 +321,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return true; // currentIndex < this.images.length - 1;
   }
 
+  trackerCategories(index, category: Category) {
+    return category.slug;
+  }
+
+  trackerProducts(index, product: Product) {
+    return product.sku;
+  }
+
+
   private findNextSection(slug: string): HTMLElement {
     const sectionNativeEls = this.getSectionsNativeElements();
     const nextIndex = sectionNativeEls.findIndex(el => el.className === slug);

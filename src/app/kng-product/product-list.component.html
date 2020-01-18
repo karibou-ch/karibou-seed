@@ -15,17 +15,12 @@
 
       <!-- CATEGORY -->
       <div class="certified ">
-        <!-- <div class="label label-product" 
-            (click)="toggleChild(child.name)"            
-            [class.selected]="filterChild==child.name"
-            *ngFor="let child of category.current.child;let j=index" >{{child.name}}</div> -->
-
         <!-- TODO BUILD PERSISTENT SUB CAT [routerLink]="['./',child.name]"-->
         <!-- TODO [selected]="filterChild==child.name"-->
         <mdc-chip-set choice #subcategory>
           <mdc-chip [routerLink]="[relative,child.name]"                     
                     [id]="'child'+j"                    
-                    *ngFor="let child of getChildCategory(category.current);let j=index">
+                    *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
             <mdc-chip-text>{{child.name}}</mdc-chip-text>
           </mdc-chip>
         </mdc-chip-set>
@@ -54,7 +49,7 @@
              [scrollCallback]="scrollCallback" 
              class="kng-layout-card">
           <kng-product-thumbnail             
-              *ngFor="let product of getProducts();let j=index" 
+              *ngFor="let product of getProducts();trackBy:trackerProducts;let j=index" 
               [sku]="product.sku" 
               [visibility]="getVisibility(j)"
               class="">
