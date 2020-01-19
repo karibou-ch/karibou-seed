@@ -66,7 +66,7 @@
 <div [hidden]="!isAppReady()" class="navbar">
 
   <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar fixed="false" >
+  <mdc-top-app-bar fixed="false"  [dense]="$navigation.isMobile()">
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start">
