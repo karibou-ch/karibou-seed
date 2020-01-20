@@ -133,7 +133,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     //
     // default home target (home, delicacy, cellar)
-    this.target = this.$route.snapshot.url[0].path;
+    this.target = this.$route.snapshot.url.length && this.$route.snapshot.url[0].path || 'home';
 
     // this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
     //   //
