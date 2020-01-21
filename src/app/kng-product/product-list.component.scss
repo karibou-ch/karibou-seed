@@ -292,13 +292,13 @@
   .kng-layout-card{
     display: flex!important;
     justify-content: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
     kng-product-thumbnail{
       flex: 1 0 130px;
-      width: 137px;
+      min-width: 137px;
       margin: 8px;
       margin-bottom: 0;
       max-width: 163px;

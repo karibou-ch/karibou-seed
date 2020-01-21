@@ -68,13 +68,16 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // page content by target
   pageOptions: any = {
     home: {
-      maxcat: 14,
+      maxcat: 10,
+      home: false,
       discount: true,
       popular: true,
       showMore: true
     },
-    cellar:{
-      maxcat: 14,
+    cellar: {
+      maxcat: 10,
+      home: false,
+      discount: false,
       popular: true,
       showMore: true
     },
@@ -85,8 +88,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       showMore: false
     },
     wellness: {
-      maxcat: 14,
-      discount: true,
+      maxcat: 10,
+      home: false,
+      discount: false,
       popular: true,
       showMore: true
     }
