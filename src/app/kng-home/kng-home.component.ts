@@ -69,28 +69,21 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   pageOptions: any = {
     home: {
       maxcat: 10,
-      home: false,
       discount: true,
       popular: true,
       showMore: true
     },
     cellar: {
       maxcat: 10,
-      home: false,
-      discount: false,
       popular: true,
       showMore: true
     },
     selection: {
       home: true,
-      discount: false,
-      popular: false,
       showMore: false
     },
     wellness: {
       maxcat: 10,
-      home: false,
-      discount: false,
       popular: true,
       showMore: true
     }
