@@ -13,12 +13,8 @@ import { KngCommonModule } from '../common/common.module';
 //
 // define routes module
 const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    component: KngCartComponent,
-    resolve: { loader: LoaderResolve }
-  }
+  { path: ':name', component: KngCartComponent, resolve: { loader: LoaderResolve } },
+  { path: '', pathMatch: 'full', redirectTo: 'default' }
 ];
 
 //
@@ -30,11 +26,15 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     ReactiveFormsModule,
     CartMdcModule,
     KngCommonModule,
     SharedModule,
     routing
+  ],
+  exports: [
+    RouterModule
   ],
   declarations: [
     KngCartComponent

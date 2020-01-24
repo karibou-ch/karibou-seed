@@ -4,10 +4,10 @@
 </kng-feedback>
 
 <!-- SELECTION -->
-<kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
+<kng-product-swipe *ngIf="home.length>2 && target == 'home'" [products]="home"></kng-product-swipe>
 
 <!-- INFORMATION -->
-<div class="home-header">
+<div class="home-header" [hidden]="target!='home'">
   <div class="maintenance" *ngIf="config.shared.maintenance.active" 
       [innerHtml]="config.shared.maintenance.reason[locale]">    
   </div>
@@ -19,7 +19,7 @@
 
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
 <kng-ui-bottom-actions [exited]="scrollDirection<-5" 
-                       [categories]="categories"
+                       [categories]="getCategories()"
                        (selected)="scrollNextSectionIntoView($event)">  
 </kng-ui-bottom-actions>
 
@@ -41,10 +41,10 @@
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
 
-  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()">
+  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
 
   <!-- INFORMATION -->
-  <div class="home-header" *ngIf="i==2"
+  <div class="home-header" *ngIf="i==2 && target=='home'"
        [class.cover]="hasBackgroundCover()" 
        [ngStyle]="getHeaderStyle()">
     <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">
@@ -63,11 +63,11 @@
         <kng-product-thumbnail 
             [visibility]="visibility[category.slug]"
             [sku]="product.sku"
-            *ngFor="let product of group[category.name];let j=index"
+            *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index"
             class="">
         </kng-product-thumbnail>
         <div class="category" 
-             [hidden]="!visibility[category.slug]"
+             [hidden]="!visibility[category.slug]||!options.showMore"
              [ngClass]="category.color" 
              [routerLink]="['category',category.slug]" >
           <div class="icon"><i class="material-icons">playlist_add</i></div>

@@ -21,8 +21,8 @@
   width: 100vw;
   height: 100vh;
   visibility:visible;
-  transition: opacity .5s ease-in-out;
-  opacity: 1;
+  -transition: opacity .5s ease-in-out;
+  -opacity: 1;
   z-index: 2;
   background: white;
 
@@ -515,7 +515,7 @@
       margin: 8px;
       margin-top: 4px;
       margin-bottom: auto;
-      max-width: 300px;
+      max-width: 163px;
 
       @media (max-width: 426px) {
         flex: 1 0;

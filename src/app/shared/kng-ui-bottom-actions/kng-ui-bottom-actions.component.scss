@@ -4,7 +4,6 @@ kng-ui-bottom-actions{
   z-index: 2;
 
   position: fixed;
-  -top:calc( 100% - 70px );
   left: 0;
   right: 0;
   bottom: 0;
@@ -12,7 +11,7 @@ kng-ui-bottom-actions{
 
   &.show{
     top: 0;
-    background: rgba(255, 255, 255, 1);
+    background: #eee;
     bottom: 0;
     height: 100vh;  
     transform: none;  
@@ -31,7 +30,7 @@ kng-ui-bottom-actions{
     max-height: calc( 100% - 70px);
     height: 100%;
     padding-top: 10px;
-    background-color: white;
+    background-color: #eee;
     // &::-webkit-scrollbar { 
     //   display: none; 
     // }
@@ -92,38 +91,49 @@ kng-ui-bottom-actions{
       }    
   
     }
+
+    //
+    // categories content
     ul{
       &.col{
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: initial;
         padding-left: 1px;
-        align-content: space-evenly;
+        align-content: flex-start;
 
         @media (max-width:426px) {
-          align-content: space-between;
           li{
             font-size: 14px;
+            min-height: 100px!important;
             i.fa{
               width: 50px!important;
               height: 50px!important;
+              margin-bottom: 15px;
   
             }
           }
         }
         li{
           text-align: center;
-          max-width: calc( 31% - 20px );
-          flex:1 1 30%;
+          max-width: calc( 33% - 12px );
+          flex:1 1 33%;
           padding-left: 0px;
+          border-right: 1px solid #eee;
+          border-top: 1px solid #eee;
+          background-color: #fff;
+          min-height: 130px;
+          border-radius: 8px;
+          margin-bottom: 8px;                 
           i.fa{
             width: 70px;
             height: 70px;
             display: block;
             text-align: center;
             margin: auto;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            opacity: .3;
           }          
         }        
       }
@@ -140,7 +150,7 @@ kng-ui-bottom-actions{
         padding-left: 5px;
         cursor: pointer;
         font-weight: 500;
-        color: #555;
+        color: #000;
         letter-spacing: -0.5px;        
         mdc-icon{
           transform: translateY(6px);
@@ -157,7 +167,7 @@ kng-ui-bottom-actions{
     display:flex;
     flex-flow: column;  
     align-items: flex-end;
-
+    background:transparent;
     position: fixed;
     bottom:0;
     width: 100vw;
@@ -167,7 +177,7 @@ kng-ui-bottom-actions{
       display: flex;
       flex-flow: row;
       margin: 0;
-      width: 100vw;      
+      -width: 100vw;      
       justify-content:flex-end;
       z-index: 1;
     }

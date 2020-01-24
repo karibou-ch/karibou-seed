@@ -19,6 +19,7 @@
       </h3>
     </ng-template>
 
+    
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>{{i18n[locale].cart_error}}</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
@@ -59,10 +60,18 @@
     </mdc-list-item>
     <mdc-list-item class="border-top">
       <mdc-list-item-meta>
+        <div class="info" i18n>{{i18n[locale].cart_info_service_k}} ({{currentGatewayFees()}} %)</div>
+        <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
+      </mdc-list-item-meta>
+    </mdc-list-item>
+
+    <mdc-list-item class="slim-item">
+      <mdc-list-item-meta>
         <div class="info" i18n>{{i18n[locale].cart_info_subtotal}}</div>
         <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>      
+
     <mdc-list-item class="slim-item">
       <mdc-list-item-meta>
         <div class="info" i18n>{{i18n[locale].cart_discount_info}}</div>
@@ -220,7 +229,7 @@
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
           <div class="info" i18n>{{i18n[locale].cart_info_subtotal}} ({{$cart.getItems().length}})</div>
-          <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
+          <div class="price" >{{$cart.subTotal()+currentGatewayAmount()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>      
       
@@ -231,12 +240,13 @@
         </mdc-list-item-meta>
       </mdc-list-item>
 
-      <mdc-list-item >
+      <!-- FIXME add payment fees here -->
+      <!-- <mdc-list-item >
         <mdc-list-item-meta>
           <div class="info" i18n>{{i18n[locale].cart_info_payment}} ({{currentGatewayLabel()}}/{{currentGatewayFees()}} %)</div>
           <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
         </mdc-list-item-meta>
-      </mdc-list-item>
+      </mdc-list-item> -->
         
       <mdc-list-item  [hidden]="$cart.totalDiscount()==0">
         <mdc-list-item-meta>

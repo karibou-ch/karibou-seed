@@ -17,6 +17,7 @@ body{
 @import 'kng-card-skeleton.scss';
 
 :root {
+  --mdc-theme-karibou-pink: #da1c5c;
   --mdc-theme-primary: #{$mdc-theme-primary};
   --mdc-theme-primary-light: #{$mdc-theme-primary-light};
   --mdc-theme-primary-dark: #{$mdc-theme-primary-dark};

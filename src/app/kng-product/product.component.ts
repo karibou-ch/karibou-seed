@@ -1,21 +1,21 @@
-import { Component,
-         ElementRef,
-         OnInit,
-         OnDestroy,
-         Input,
-         ViewChild,
-         ChangeDetectorRef,
-         ViewEncapsulation} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  OnDestroy,
+  Input,
+  ViewChild,
+  ChangeDetectorRef,
+  ViewEncapsulation
+} from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
-// import { MdcDialogComponent, } from '@angular-mdc/web';
 
 import {
   Category,
   CartService,
   ProductService,
   Product,
-  LoaderService,
   User,
   CartItem
 } from 'kng2-core';
@@ -32,28 +32,7 @@ import { map } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None
 })
 export class ProductComponent implements OnInit, OnDestroy {
-
-  constructor(
-    private $cart: CartService,
-    public  $i18n: i18n,
-    private $navigation: KngNavigationStateService,
-    private $product: ProductService,
-    private $route: ActivatedRoute,
-    private $router: Router
-  ) {
-
-    const loader = this.$route.parent.snapshot.data.loader || this.$route.snapshot.data.loader;
-    if (loader && loader.length) {
-      this.config = loader[0];
-      this.user = loader[1];
-      this.categories = loader[2];
-    }
-    this.products = [];
-    this.scrollCallback = this.getNextPage.bind(this);
-
-  }
-
-
+  static WEEK_1: number = 86400 * 7;
 
   @Input() sku: number;
   @Input() config: any;
@@ -61,10 +40,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   @Input() user: User = new User();
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
-
-
-  static WEEK_1:number=86400*7;
-  static :number=86400*14;
 
   isReady: boolean;
   isDialog = false;
@@ -78,6 +53,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   // FIXME store resolution
   store = 'geneva';
+  departement = 'home';
 
   isHighlighted: boolean;
   WaitText = false;
@@ -104,6 +80,30 @@ export class ProductComponent implements OnInit, OnDestroy {
     when: true,
     windowtime: 200
   };
+
+  constructor(
+    private $cart: CartService,
+    public $i18n: i18n,
+    private $navigation: KngNavigationStateService,
+    private $product: ProductService,
+    private $route: ActivatedRoute,
+    private $router: Router
+  ) {
+
+    //
+    // open product from departement
+    this.departement = this.$route.snapshot.data.departement || this.$route.parent.snapshot.data.departement || 'home';
+
+    const loader = this.$route.snapshot.data.loader || this.$route.parent.snapshot.data.loader;
+    if (loader && loader.length) {
+      this.config = loader[0];
+      this.user = loader[1];
+      this.categories = loader[2];
+    }
+
+    this.products = [];
+    this.scrollCallback = this.getNextPage.bind(this);
+  }
 
 
   addToCart($event, product: Product, variant?: string) {
@@ -132,19 +132,19 @@ export class ProductComponent implements OnInit, OnDestroy {
       case 'grta':
       case 'bioconversion':
       case 'biodynamics':
-      return product.details[label];
+        return product.details[label];
       case 'bio':
-      return product.details.bio &&
-            !product.details.bioconvertion &&
-            !product.details.biodynamics;
+        return product.details.bio &&
+          !product.details.bioconvertion &&
+          !product.details.biodynamics;
       case 'natural':
-      return product.details.natural &&
-            !product.details.bio &&
-            !product.details.bioconvertion &&
-            !product.details.biodynamics;
+        return product.details.natural &&
+          !product.details.bio &&
+          !product.details.bioconvertion &&
+          !product.details.biodynamics;
 
       default:
-      return false;
+        return false;
     }
   }
 
@@ -173,8 +173,8 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   getProducts() {
     if (!this.product ||
-       !this.product.belong ||
-       !this.product.belong.name) {
+      !this.product.belong ||
+      !this.product.belong.name) {
       return this.products;
     }
     return this.products.filter(p => p.belong.name === this.product.belong.name);
@@ -195,53 +195,59 @@ export class ProductComponent implements OnInit, OnDestroy {
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
   ngOnInit() {
-      this.isReady = true;
+    this.isReady = true;
 
-      //
-      // product action belongs to a shop or a category
-      this.rootProductPath = (this.$route.snapshot.params['shop']) ?
-        '/shop/' + this.$route.snapshot.params['shop'] : '';
 
-      //
-      // when display wider
-      if (!this.sku) {
+    //
+    // product action belongs to a shop or a category
+    this.rootProductPath = (this.$route.snapshot.params['shop']) ?
+      '/shop/' + this.$route.snapshot.params['shop'] : '';
 
-        this.isDialog = true;
-        this.photosz = '/-/resize/600x/';
-        // this.sku = this.$route.snapshot.params['sku'];
-        this.$route.params.subscribe(params => {
-          this.sku = params.sku;
-          this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
-        });
+    //
+    // when display wider
+    if (!this.sku) {
+
+      this.isDialog = true;
+      this.photosz = '/-/resize/600x/';
+      // this.sku = this.$route.snapshot.params['sku'];
+      this.$route.params.subscribe(params => {
+        this.sku = params.sku;
+        this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
 
         //
-        // DIALOG INIT HACK
-        document.body.classList.add('mdc-dialog-scroll-lock');
-        document.documentElement.classList.add('mdc-dialog-scroll-lock');
+        // spec: scrollTop; when open nested product we should scrollTop
+        try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
 
-      } else {
-        this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
-      }
-
-
+      });
 
       //
-      // simple animation
-      // capture escape only for dialog instance
-      if (this.dialog) {
-        this.dialog.nativeElement.classList.remove('fadeout');
-        //
-        // capture event escape
-        const escape = (e) => {
-          if (e.key === 'Escape') {
-            this.onClose(this.dialog);
-            document.removeEventListener('keyup', escape);
-          }
-        };
-        document.addEventListener('keyup', escape);
+      // DIALOG INIT HACK
+      document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+
+    } else {
+      this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
+    }
 
 
-      }
+
+    //
+    // simple animation
+    // capture escape only for dialog instance
+    if (this.dialog) {
+      this.dialog.nativeElement.classList.remove('fadeout');
+      //
+      // capture event escape
+      const escape = (e) => {
+        if (e.key === 'Escape') {
+          this.onClose(this.dialog);
+          document.removeEventListener('keyup', escape);
+        }
+      };
+      document.addEventListener('keyup', escape);
+
+
+    }
   }
 
   loadProduct(product) {
@@ -258,15 +264,12 @@ export class ProductComponent implements OnInit, OnDestroy {
     // FIXME categories can contains shops
     // get category
     // this.category=this.categories.find(c=>this.product.categories._id==c._id);
-
-    // FIXME, should load on rx.pipe
-    // load category
     const params = {
       available: true,
       when: true,
       shopname: [product.vendor.urlpath]
     };
-    if (this.isDialog ) {
+    if (this.isDialog) {
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
       });
@@ -290,7 +293,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       if (this.$navigation.hasHistory()) {
         return this.$navigation.back();
       }
-      this.$router.navigate(['../../'], {relativeTo: this.$route});
+      this.$router.navigate(['../../'], { relativeTo: this.$route });
     }, 200);
   }
 

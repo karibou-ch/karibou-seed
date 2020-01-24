@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CartService,
-         CartAction,
-         Config,
-         ConfigMenu,
-         ConfigService,
-         LoaderService,
-         User,
-         UserService,
-         Category,
-         Shop } from 'kng2-core';
+import {
+  CartService,
+  CartAction,
+  Config,
+  ConfigMenu,
+  ConfigService,
+  LoaderService,
+  User,
+  UserService,
+  Category,
+  Shop
+} from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
@@ -41,6 +43,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   //
   // content
+  currentTab: number;
   store: string;
   primary: ConfigMenu[];
   topmenu: ConfigMenu[];
@@ -59,13 +62,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
-    public  $cart: CartService,
+    public $cart: CartService,
     private $config: ConfigService,
-    public  $i18n: i18n,
-    private $loader: LoaderService,
+    public $i18n: i18n,
     private $route: ActivatedRoute,
     private $user: UserService,
-    public  $navigation: KngNavigationStateService,
+    public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
     private cdr: ChangeDetectorRef,
   ) {
@@ -122,6 +124,16 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active);
     this.store = this.$navigation.store;
     this.content = this.$navigation.dispatch(this.$route.snapshot.url, this.$route.snapshot.params);
+
+    // FIXME mdc-tab activation is BUGGY, this is an alternate version
+    // TODO needs dynamic DEPARTEMENT feature
+    if (this.$route.snapshot.children.length &&
+        this.$route.snapshot.children[0].url.length) {
+      const departement = this.$route.snapshot.children[0].url[0].path;
+      this.currentTab = this.primary.findIndex(el => el.url.indexOf(departement) > -1);
+      //if (this.currentTab == -1) this.currentTab = this.primary.length;
+    }
+
     //
     // init cart here because navbar is loaded on all pages
     this.$cart.setContext(this.config, this.user, this.shops);
@@ -130,9 +142,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
 
     this.subscription = merge(
-      this.$user.user$.pipe(map(user => ({user: user}))),
-      this.$config.config$.pipe(map(config => ({config: config}))),
-      this.$cart.cart$.pipe(map(state => ({state: state})))
+      this.$user.user$.pipe(map(user => ({ user: user }))),
+      this.$config.config$.pipe(map(config => ({ config: config }))),
+      this.$cart.cart$.pipe(map(state => ({ state: state })))
     ).subscribe((emit: any) => {
 
       //
@@ -152,23 +164,18 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //
       // update cart
       if (emit.state) {
-        // this.cardItemsSz=this.$cart.getItems().reduce((sum,item)=>{
-        //   return sum+item.quantity;
-        // },0);
         this.cardItemsSz = this.$cart.subTotal();
         //
         // FIXME hugly DOM manipulation for : CART ITEMS COUNT
-        // Panier <span class="cart-items-count" [hidden]="!cardItemsSz">{{cardItemsSz}}</span>
         setTimeout(() => {
           //
           // top bar
-          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '(' + this.cardItemsSz + ' fr)';
+          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
           //
           // tab bar
           this.cartItemCountElem = this.cartItemCountElem || this.section.elementRef.nativeElement.querySelector('.cart-items-count');
           if (this.cartItemCountElem) {
-            this.cartItemCountElem.style.visibility = (this.cardItemsSz > 0) ? 'visible' : 'hidden';
-            this.cartItemCountElem.innerHTML = '(' + this.cardItemsSz + ' fr)';
+            this.cartItemCountElem.innerHTML = '' + this.cardItemsSz + ' fr';
           }
         }, 100);
 
