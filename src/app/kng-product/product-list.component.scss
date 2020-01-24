@@ -11,8 +11,8 @@
   width: 100vw;
   height: 100vh;
   visibility:visible;
-  transition: opacity .5s ease-in-out;
-  opacity: 1;
+  -transition: opacity .5s ease-in-out;
+  -opacity: 1;
   z-index: 2;
   background: white;
 
@@ -292,16 +292,16 @@
   .kng-layout-card{
     display: flex!important;
     justify-content: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
     kng-product-thumbnail{
       flex: 1 0 130px;
-      width: 137px;
+      min-width: 137px;
       margin: 8px;
       margin-bottom: 0;
-      max-width: 300px;
+      max-width: 163px;
       @media (max-width: 426px) {
         flex: 1 0;
         min-width: 29vw;

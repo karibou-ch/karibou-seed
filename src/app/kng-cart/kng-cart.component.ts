@@ -15,7 +15,6 @@ import { CartService,
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
-import { FormBuilder } from '@angular/forms';
 import { MetricsService, EnumMetrics } from '../common/metrics.service';
 
 @Component({
@@ -193,7 +192,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
     this.subscription = this.$loader.update().subscribe(emit => {
-      console.log('------------DEBUG', emit);
       // emit signal for config
       if (emit.config) {
 

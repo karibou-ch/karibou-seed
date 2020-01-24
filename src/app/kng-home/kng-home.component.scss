@@ -3,7 +3,7 @@
 //
 // BOX INFO
 div.home-header{
-  display: flex!important;
+  display: flex;
   flex-flow: column;
   flex-wrap: wrap;
   font-size: 1.2em;
@@ -244,10 +244,10 @@ div.product-container{
     div.category,
     kng-product-thumbnail{
       flex: 1 0 137px;
-      width: 137px;
+      min-width: 137px;
       margin: 8px;
       margin-bottom: 0;
-      max-width: 300px;
+      max-width: 163px;
       @media (max-width: 426px) {
         flex: 1 0;
         min-width: 29vw;

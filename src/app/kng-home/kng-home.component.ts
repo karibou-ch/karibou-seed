@@ -1,14 +1,15 @@
-import { Component,
-         OnInit,
-         OnDestroy,
-         ViewEncapsulation,
-         HostListener,
-         ViewChildren,
-         ElementRef,
-         QueryList,
-         ChangeDetectionStrategy
-        } from '@angular/core';
-import { timer } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewEncapsulation,
+  HostListener,
+  ViewChildren,
+  ElementRef,
+  QueryList,
+  ChangeDetectionStrategy
+} from '@angular/core';
+import { timer, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
@@ -19,11 +20,11 @@ import {
   Product,
   LoaderService,
   User,
-  CartAction
+  CartAction,
+  PhotoService
 } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { i18n } from '../common';
-import { MetricsService, EnumMetrics } from '../common/metrics.service';
 
 
 @Component({
@@ -37,12 +38,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   @ViewChildren('section') sections: QueryList<ElementRef>;
 
-  isReady = false;
+  isReady: boolean = false;
+
   config: Config;
   categories: Category[];
   cached: any = {};
   group: any = {};
   home: Product[] = [];
+  target: string; // home, selection, wellness, cellar
   user: User;
   subscription;
 
@@ -62,35 +65,58 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   ),`;
 
   //
+  // page content by target
+  pageOptions: any = {
+    home: {
+      maxcat: 10,
+      discount: true,
+      popular: true,
+      showMore: true
+    },
+    cellar: {
+      maxcat: 10,
+      popular: true,
+      showMore: true
+    },
+    selection: {
+      home: true,
+      showMore: false
+    },
+    wellness: {
+      maxcat: 10,
+      popular: true,
+      showMore: true
+    }
+  };
+
+  //
   // products for home
   // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
   options: {
-    discount: boolean;
+    discount?: boolean;
     home?: boolean;
-    maxcat: number;
-    popular: boolean;
+    popular?: boolean;
+    maxcat?: number;
     available: boolean;
     status: boolean;
-    when: Date|boolean;
+    when: Date | boolean;
     reload?: number;
+    showMore: boolean;
   } = {
-    discount: true,
-    //home: true,
-    maxcat: 14,
-    popular: true,
-    available: true,
-    status: true,
-    when: true
-  };
+      showMore: true,
+      available: true,
+      status: true,
+      when: true
+    };
 
 
   constructor(
     public $cart: CartService,
     public $i18n: i18n,
     private $loader: LoaderService,
-    private $metric: MetricsService,
     private $product: ProductService,
-    private $route: ActivatedRoute
+    private $route: ActivatedRoute,
+    private $photo: PhotoService
   ) {
     // bind infinite scroll callback function
     this.scrollCallback = this.getNextPage.bind(this);
@@ -100,8 +126,17 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.user = loader[1];
     this.categories = loader[2] || [];
     this.currentPage = 1000;
-    // this.options.maxcat=(window.innerWidth<426)?6:12
 
+
+    //
+    // default home target (home, delicacy, cellar)
+    this.target = this.$route.snapshot.url.length && this.$route.snapshot.url[0].path || 'home';
+
+    // this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
+    //   //
+    //   // deploy random shop picture for outside javascript
+    //   this.homePhoto = shops[0].photo.fg;
+    // });
   }
 
   ngOnDestroy() {
@@ -110,8 +145,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
+      //
+      // spec: scrollTop; You need to scrollTop when Switching from tab A to tab B
+      window.scroll(0, 0);
       this.detectVisibility(0);
-    }, 800);
+    }, 500);
 
     //
     // FIXME avoid double home load
@@ -153,7 +191,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
           loaded = true;
         }
       }
-      console.log(this.constructor.name, '------------', emit, this.sections);
     });
   }
 
@@ -186,8 +223,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (!this.isReady) {
       return [];
     }
+    // TODO needs dynamic DEPARTEMENT feature
     this.cached.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
-      return c.active && (c.type === 'Category');
+      return (c.active) &&
+             (c.type === 'Category') &&
+             (c.group.toLocaleLowerCase() === this.target || this.target === 'selection' ) &&
+             (this.group[c.name]) && (this.group[c.name].length);
     }).slice(0, this.currentPage);
     this.cached.currentPage = this.currentPage;
     this.cached.categories.forEach(cat => this.visibility[cat.slug] = false);
@@ -202,7 +243,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
 
     const bgStyle = 'url(' + this.config.shared.home.about.image + ')';
-    return {'background-image': this.bgGradient + bgStyle};
+    return { 'background-image': this.bgGradient + bgStyle };
   }
 
 
@@ -220,9 +261,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   mountOverlay(overlay) {
-    if(overlay) {
+    if (overlay) {
       document.body.classList.add('mdc-dialog-scroll-lock');
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');  
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
     } else {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
@@ -231,12 +272,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   productsGroupByCategory() {
+    const options = Object.assign({}, this.options, this.pageOptions[this.target]);
+    this.options.showMore = options.showMore;
     // FIXME inner size
     const maxcat = (window.innerWidth < 426) ? 6 : 8;
     const divider = (window.innerWidth < 426) ? 2 : 4;
     this.group = {};
 
-    this.$product.select(this.options).subscribe((products: Product[]) => {
+    this.$product.select(options).subscribe((products: Product[]) => {
       products.forEach((product: Product) => {
         if (product.attributes.discount) {
           this.home.push(product);
@@ -275,6 +318,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return true; // currentIndex < this.images.length - 1;
   }
 
+  trackerCategories(index, category: Category) {
+    return category.slug;
+  }
+
+  trackerProducts(index, product: Product) {
+    return product.sku;
+  }
+
+
   private findNextSection(slug: string): HTMLElement {
     const sectionNativeEls = this.getSectionsNativeElements();
     const nextIndex = sectionNativeEls.findIndex(el => el.className === slug);
@@ -302,19 +354,18 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       //
       // container.nativeElement.className visible!
       if (scrollPosition >= scrollTop &&
-         scrollPosition < (scrollTop + height)) {
-          this.visibility[container.nativeElement.className] = true;
+        scrollPosition < (scrollTop + height)) {
+        this.visibility[container.nativeElement.className] = true;
       }
       if ((scrollPosition + window.innerHeight) >= scrollTop &&
-         (scrollPosition + window.innerHeight) < (scrollTop + height)) {
-          this.visibility[container.nativeElement.className] = true;
+        (scrollPosition + window.innerHeight) < (scrollTop + height)) {
+        this.visibility[container.nativeElement.className] = true;
       }
       if ((scrollPosition + window.innerHeight) >= scrollTop &&
-         (scrollPosition + window.innerHeight) > (scrollTop + height)) {
-          this.visibility[container.nativeElement.className] = true;
+        (scrollPosition + window.innerHeight) > (scrollTop + height)) {
+        this.visibility[container.nativeElement.className] = true;
       }
     });
-
   }
 
   //
