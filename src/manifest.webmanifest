@@ -1,11 +1,11 @@
 {
-  "name": "karibou-seed",
-  "short_name": "karibou-seed",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "name": "karibou.ch votre marché en ligne",
+  "short_name": "karibou.ch",
+  "theme_color": "#fff",
+  "background_color": "#423f3b",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",

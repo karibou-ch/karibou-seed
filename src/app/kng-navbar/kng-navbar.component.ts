@@ -107,6 +107,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    
     //
     // karibou.ch context is ready
     // this.$i18n.init(this.config.shared.i18n);
@@ -146,6 +147,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.$config.config$.pipe(map(config => ({ config: config }))),
       this.$cart.cart$.pipe(map(state => ({ state: state })))
     ).subscribe((emit: any) => {
+
+      this.detectIOS();
 
       //
       // update user
@@ -212,6 +215,26 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     //
     // FIXME when using dropdown for shipping
     this.cdr.markForCheck();
+  }
+
+  detectIOS() {
+    window.addEventListener('beforeinstallprompt', (deferredPrompt) => {
+      // (<any>deferredPrompt).prompt();
+      console.log('PWA browser prompt', deferredPrompt);
+    });
+
+    // Detects if device is on iOS
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test( userAgent );
+    };
+
+    // Detects if device is in standalone mode
+    const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
+    if (isIos() && !isInStandaloneMode() && Math.random() > .3) {
+      //this.$snack(...)
+      console.log('PWA fake prompt');
+    }
   }
 
   getTagline(key) {
