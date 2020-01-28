@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 
 import {
-  PhotoService
+  PhotoService, Config
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -40,12 +40,13 @@ export class KngWelcomeComponent implements OnInit {
     {title: 'Meyrin', name: 'meyrin', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Eglise_Saint-Julien_%28Meyrin%29_01.jpg/1200px-Eglise_Saint-Julien_%28Meyrin%29_01.jpg'},
   ];
 
-  config: any;
+  config: Config;
 
   constructor(
     public $i18n: i18n,
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
+    private $router: Router,
     private $photo: PhotoService
   ) {
     const loader = this.$route.snapshot.data.loader;
@@ -95,6 +96,24 @@ export class KngWelcomeComponent implements OnInit {
   isAppReady() {
     return this.$navigation.store !== undefined;
   }
+
+  //
+  // capture Clic on child innerHtml
+  @HostListener('click', ['$event'])
+  onClick($event): void {
+    const target = $event.target as HTMLElement;
+    const href = target.getAttribute('href');
+    //
+    // verify if it's a routerLink
+    if(href && href.length > 2 && href.indexOf('http') === -1) {
+      $event.stopPropagation();
+      $event.preventDefault();
+      this.$router.navigateByUrl(href);
+      return;
+    }
+
+  }
+
 
   set store(name) {
     this.$navigation.store = name;
