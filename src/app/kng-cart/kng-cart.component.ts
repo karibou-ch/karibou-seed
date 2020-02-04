@@ -186,11 +186,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store = this.$navigation.store;
 
-    //
-    // compute available discount and delta to get one
-    this.computeDiscount();
-
-
     this.subscription = this.$loader.update().subscribe(emit => {
       // emit signal for config
       if (emit.config) {
@@ -209,6 +204,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       if (current.note && !this.shippingNote) {
         this.shippingNote = current.note;
       }
+
+      //
+      // compute available discount and delta to get one
+      this.computeDiscount();
 
     }, error => {
       console.log('loader-update', error);
