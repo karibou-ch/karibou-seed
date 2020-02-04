@@ -144,12 +144,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      //
-      // spec: scrollTop; You need to scrollTop when Switching from tab A to tab B
-      window.scroll(0, 0);
-      this.detectVisibility(0);
-    }, 500);
+    window.scroll(0, 0);
 
     //
     // FIXME avoid double home load
@@ -304,6 +299,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
       });
       this.isReady = true;
+      setTimeout(() => {
+        this.detectVisibility(0);
+      }, 100);
     });
 
   }

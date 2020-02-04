@@ -53,6 +53,8 @@ export class KngNavigationStateService  {
           this.timestamp = Date.now();
       });
 
+      this.currentStore = 'geneva';
+
     // interval(5000).pipe(
     //   tap(()=>{
     //     console.log('check',this.timestamp,this.TTL,(this.timestamp+this.TTL)>Date.now())
