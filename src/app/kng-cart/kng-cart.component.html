@@ -58,12 +58,12 @@
         </div>
       </mdc-list-item-meta>
     </mdc-list-item>
-    <mdc-list-item class="border-top">
+    <!-- <mdc-list-item class="border-top">
       <mdc-list-item-meta>
         <div class="info" i18n>{{i18n[locale].cart_info_service_k}} ({{currentGatewayFees()}} %)</div>
         <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
       </mdc-list-item-meta>
-    </mdc-list-item>
+    </mdc-list-item> -->
 
     <mdc-list-item class="slim-item">
       <mdc-list-item-meta>
@@ -241,12 +241,12 @@
       </mdc-list-item>
 
       <!-- FIXME add payment fees here -->
-      <!-- <mdc-list-item >
+      <mdc-list-item >
         <mdc-list-item-meta>
           <div class="info" i18n>{{i18n[locale].cart_info_payment}} ({{currentGatewayLabel()}}/{{currentGatewayFees()}} %)</div>
           <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
         </mdc-list-item-meta>
-      </mdc-list-item> -->
+      </mdc-list-item>
         
       <mdc-list-item  [hidden]="$cart.totalDiscount()==0">
         <mdc-list-item-meta>
