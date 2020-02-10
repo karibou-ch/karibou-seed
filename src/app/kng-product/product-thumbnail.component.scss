@@ -207,6 +207,12 @@
     bottom: 10px;
     font-size: large;
     font-weight: 500;
+    .discount {
+      margin-right: 5px;
+      text-decoration: line-through;
+      color: #999;
+      font-size: small;      
+    }
   }
 
   .part{

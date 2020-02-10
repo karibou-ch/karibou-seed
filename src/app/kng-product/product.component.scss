@@ -76,11 +76,12 @@
       color: #777;
       position: fixed;
       top: 30px;
-      left: calc(( 100vw - 860px ) / 2 );;      
+      left: calc(( 100vw - 860px ) / 2 );
+      border-radius: 20px;
       z-index: 1;
       @media (max-width: 769px) {
         top: 2px;
-        left: -9px;
+        left: -2px;
         padding: 3px;
         background: rgba(255, 255, 255, 0.3);
         text-shadow: 0px 2px 0px #333;
@@ -304,6 +305,12 @@
       .red{
         color: red!important;
       }
+      .discount {
+        margin-right: 5px;
+        text-decoration: line-through;
+        color: #999;
+        font-size: small;      
+      }  
     }
   
     .part{
@@ -348,17 +355,18 @@
   .quick-stock{
     width: 100%;
     margin-top: 10px;
-    background: #efefef;
+    background: #ddd;
     opacity: .5;
     button{
       margin-right: 10px;
     }
     >p,
-    >div{
+    >div,
+    >h4{
       display: flex;
       flex-flow: row wrap;
-      -justify-content:space-around;
-      padding: 10px 25px;        
+      
+      padding: 5px 10px;        
 
     }
   }

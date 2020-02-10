@@ -24,11 +24,6 @@
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
               
-          <div [hidden]="!user.isAdmin()" class="image-links">
-              <a target="_blank" href="{{product.photo.url}}">fullwidth</a>&nbsp;
-              <a target="_blank" href="{{product.photo.url}}-/resize/300x/">300x(resize)</a>&nbsp;
-              <a target="_blank" href="{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
-          </div>
           
           <!-- VARIANTS -->          
           <div *ngIf="openVariant" class="product-variants">
@@ -47,7 +42,7 @@
              {{product.pricing.part}}
            </div>
            <div class="price ">
-             <span [hidden]="product.attributes.discount" class=" ">
+             <span [class.discount]="product.attributes.discount" class=" ">
                Fr {{product.pricing.price| number:'1.2-2'}}
              </span>
              <span [hidden]="!product.attributes.discount">
@@ -57,28 +52,6 @@
          </div>
        </mdc-card-primary-action>
      </mdc-card>
-
-      <!-- ADMIN OR OWNER ACTIONS -->
-      <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
-        <p>Modifié la quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</p>
-        <div role="group" aria-label="Justified button group">
-          <button mdc-button primary role="button" (click)="product.pricing.stock=0;save(product);"
-            [disabled]="WaitText">0</button>
-          <button mdc-button primary role="button" (click)="product.pricing.stock=10;save(product);"
-            [disabled]="WaitText">10</button>
-          <button mdc-button primary role="button" (click)="product.pricing.stock=40;save(product);"
-            [disabled]="WaitText">40</button>
-          <button mdc-button primary role="button" 
-                  [hidden]="!user.isAdmin()"
-                 (click)="product.attributes.boost=!product.attributes.boost;save(product);"
-            [disabled]="WaitText">BOOST ({{product.attributes.boost}})</button>
-          <button mdc-button primary role="button" 
-                  [hidden]="!user.isAdmin()"
-                 (click)="product.attributes.home=!product.attributes.home;save(product);"
-            [disabled]="WaitText">HOME ({{product.attributes.home}})</button>
-
-        </div>
-      </div>
 
       <!-- DESCRIPTION -->
       <div class="description">
@@ -119,6 +92,40 @@
       </div>
 
       <div class="breaker"></div>
+
+      <!-- ADMIN OR OWNER ACTIONS -->
+      <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
+        <h4>Fonctions Admin</h4>
+        <div>Quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</div>
+        <div>
+        <button mdc-button primary role="button" (click)="product.pricing.stock=0;save(product);"
+          [disabled]="WaitText">0</button>
+        <button mdc-button primary role="button" (click)="product.pricing.stock=10;save(product);"
+          [disabled]="WaitText">10</button>
+        <button mdc-button primary role="button" (click)="product.pricing.stock=40;save(product);"
+          [disabled]="WaitText">40</button>
+        </div>
+
+        <hr/>
+        <div>Photos formats bruts</div>
+        <div>
+          <a target="_blank" href="{{product.photo.url}}">fullwidth</a>&nbsp;
+          <a target="_blank" href="{{product.photo.url}}-/resize/300x/">300x(resize)</a>&nbsp;
+          <a target="_blank" href="{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
+        </div>
+        <hr/>
+        <div [hidden]="!user.isAdmin()">Position du produit</div>
+        <div [hidden]="!user.isAdmin()">
+          <button mdc-button primary role="button"                   
+                  (click)="product.attributes.boost=!product.attributes.boost;save(product);"
+            [disabled]="WaitText">BOOST ({{product.attributes.boost}})</button>
+          <button mdc-button primary role="button" 
+                  (click)="product.attributes.home=!product.attributes.home;save(product);"
+            [disabled]="WaitText">HOME ({{product.attributes.home}})</button>
+        </div>
+        <hr/>
+
+      </div>
 
       <!-- VENDOR-->
       <div class="vendor" *ngIf="product.vendor.photo">
