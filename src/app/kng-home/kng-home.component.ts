@@ -278,6 +278,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       products.forEach((product: Product) => {
         if (product.attributes.discount) {
           this.home.push(product);
+          // console.log('--- discount', product.title);
           return;
         }
 

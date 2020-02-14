@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order, OrderService, User, OrderItem, Category, ProductService,
-          EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService } from 'kng2-core';
+          EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService, Product } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 import { flatMap } from 'rxjs/operators';
 import { i18n } from '../common';
+import { forkJoin } from 'rxjs';
 
 interface ScoredItem {
   score: number;
@@ -105,10 +106,17 @@ export class UserOrdersComponent implements OnInit {
   }
 
   addAllToCart(order: Order) {
-    this.$cart.empty();
-    order.items.forEach(item => {
-      this.addToCard(item);
+    // WARNING: empty is async, you cant use /cart before empty has finished
+    // this.$cart.empty().subscribe(() => {
+    // });
+
+    //
+    // FIXME, replace load N products in N calls BY N products in one call
+    forkJoin(order.items.map(item => this.$products.get(item.sku))).subscribe((products) => {
+      const items = products.map(product => CartItem.fromProduct(product));
+      this.$cart.addAll(items);
     });
+
   }
 
   cancel(order: Order) {
