@@ -167,6 +167,9 @@ div.navbar{
       color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       text-decoration:none;
+      &.gold{
+        color: gold;
+      }
     }
         
     .home{
