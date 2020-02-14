@@ -85,8 +85,8 @@
         </a>
 
         <!-- LOGIN / REGISTER -->
-        <a class="label gold" [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon mdcTopAppBarActionItem >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
+        <a class="label " [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
+          <mdc-icon mdcTopAppBarActionItem class="gold" >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
         </a>
         <a class="label" [routerLink]="['./me/login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
           <mdc-icon mdcTopAppBarActionItem >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
