@@ -11,7 +11,9 @@ import { CartService,
          UserCard,
          UserService,
          OrderService,
-         Shop} from 'kng2-core';
+         Shop,
+         CartState,
+         CartAction} from 'kng2-core';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
@@ -187,6 +189,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.store = this.$navigation.store;
 
     this.subscription = this.$loader.update().subscribe(emit => {
+      console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
       // emit signal for config
       if (emit.config) {
 
@@ -212,6 +215,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
     }, error => {
       console.log('loader-update', error);
     });
+
+    //
+    // load cart from server to limit Cart Sync Issue
+    this.$cart.load();
+
     //
     // on open page => force scroll to top
     setTimeout(() => {
@@ -219,6 +227,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
     }, 100);
 
     this.checkPaymentMethod();
+
+    //
+    // set default address
+    if (this.user && this.user.addresses.length === 1) {
+      this.setShippingAddress(this.user.addresses[0]);
+    }
+
   }
 
   add(item: CartItem, variant?: string) {
@@ -334,7 +349,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
       return;
     }
     this.$user.checkPaymentMethod(this.user).subscribe(user => {
-      // this.user=user;
+      //
+      // set default payment
+      const defaultPayment = this.user.payments.filter(payment => payment.isValid());
+      const currentPayment = this.$cart.getCurrentPaymentMethod();
+      if (!currentPayment && defaultPayment.length === 1) {
+        this.setPaymentMethod(defaultPayment[0]);
+      }
+
     }, error => {
       if (error.status === 401) {
         this.$user.logout().subscribe();

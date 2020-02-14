@@ -16,8 +16,8 @@ import {
 import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
 
-import { merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { merge, timer } from 'rxjs';
+import { map, debounceTime } from 'rxjs/operators';
 
 
 
@@ -57,7 +57,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   cartItemCountElem: any;
   currentShippingDay: Date;
   isFixed = true;
-  beforeinstallprompt: any;
+  displayIosInstall: boolean;
   subscription;
 
   @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
@@ -69,7 +69,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $user: UserService,
     public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
-    private cdr: ChangeDetectorRef,
+    private $cdr: ChangeDetectorRef,
   ) {
 
     let loader = this.$route.snapshot.data.loader;
@@ -89,13 +89,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // console.log('')
     this.primary = [];
     this.topmenu = [];
-
-    //
-    // PWA Adding an Install button
-    window.addEventListener('beforeinstallprompt', event => {
-      event.preventDefault();
-      this.beforeinstallprompt = event;
-    });
   }
 
 
@@ -145,7 +138,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.subscription = merge(
       this.$user.user$.pipe(map(user => ({ user: user }))),
       this.$config.config$.pipe(map(config => ({ config: config }))),
-      this.$cart.cart$.pipe(map(state => ({ state: state })))
+      this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state: state })))
     ).subscribe((emit: any) => {
 
       this.detectIOS();
@@ -156,7 +149,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         Object.assign(this.user, emit.user);
         this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config, this.user);
-        this.cdr.markForCheck();
+        this.$cdr.markForCheck();
       }
       //
       // update config
@@ -168,9 +161,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       // update cart
       if (emit.state) {
         this.cardItemsSz = this.$cart.subTotal();
-        //
-        // FIXME hugly DOM manipulation for : CART ITEMS COUNT
-        setTimeout(() => {
+        timer(100).subscribe(() => {
           //
           // top bar
           (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
@@ -180,7 +171,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           if (this.cartItemCountElem) {
             this.cartItemCountElem.innerHTML = '' + this.cardItemsSz + ' fr';
           }
-        }, 100);
+        });
 
         //
         // update shipping date
@@ -214,7 +205,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     //
     // FIXME when using dropdown for shipping
-    this.cdr.markForCheck();
+    this.$cdr.markForCheck();
   }
 
   detectIOS() {
@@ -226,14 +217,19 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // Detects if device is on iOS
     const isIos = () => {
       const userAgent = window.navigator.userAgent.toLowerCase();
-      return /iphone|ipad|ipod/.test( userAgent );
+      return /iphone|ipad|ipod/.test( userAgent ) ;
     };
 
     // Detects if device is in standalone mode
     const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
     if (isIos() && !isInStandaloneMode() && Math.random() > .3) {
-      //this.$snack(...)
-      console.log('PWA fake prompt');
+      this.displayIosInstall =  true;
+      timer(15000).subscribe(() => {
+        this.displayIosInstall =  false;
+        this.$cdr.markForCheck();
+      });
+      this.$cdr.markForCheck();
+
     }
   }
 
@@ -263,11 +259,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   getNoShippingMessage() {
     const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
     return noshipping && noshipping.message;
-  }
-
-  // Install PWA app if available!
-  installApp() {
-    this.beforeinstallprompt.prompt();
   }
 
   isAppReady() {
