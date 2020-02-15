@@ -189,7 +189,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.store = this.$navigation.store;
 
     this.subscription = this.$loader.update().subscribe(emit => {
-      console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
+      if (emit.state) {
+        console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
+      }
       // emit signal for config
       if (emit.config) {
 
