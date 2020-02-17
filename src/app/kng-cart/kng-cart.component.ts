@@ -66,7 +66,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_payment: 'Méthode de paiement',
       cart_info_discount: 'Rabais',
       cart_remove: 'enlever',
-      cart_discount_info: 'Rabais livraison',
+      cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais à partir de ',
       cart_signin: 'Finaliser la commande',
