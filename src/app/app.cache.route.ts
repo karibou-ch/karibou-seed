@@ -53,7 +53,8 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
     // when changing departement
     // clear Caches
     if (['home', 'cellar', 'selection', 'wellness'].indexOf(path) > -1) {
-      if (Object.values(this.allowCache).some(value => value) && !this.allowCache[path]) {
+      const allowCacheValues = Object.keys(this.allowCache).map(key => this.allowCache[key]);
+      if (allowCacheValues.some(value => value) && !this.allowCache[path]) {
         Object.keys(this.allowCache).forEach(key => this.allowCache[key] = false);
         this.storedRouteHandles.clear();
       }
