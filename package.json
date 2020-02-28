@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "3.3.0",
+  "version": "3.3.2",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -23,6 +23,7 @@
     "@angular/pwa": "^0.803.22",
     "@angular/router": "~8.2.7",
     "@angular/service-worker": "~8.2.7",
+    "@sentry/browser": "^5.12.5",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.7",
     "kng2-core": "^2.60.7",

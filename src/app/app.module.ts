@@ -32,10 +32,16 @@ import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.
 import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
-import { EnumMetrics } from './common/metrics.service';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule } from '@angular/service-worker';
-// import { ServiceWorkerModule } from '@angular/service-worker';
+
+import * as Sentry from '@sentry/browser';
+
+
+Sentry.init({
+  dsn: 'https://9457c6b1c4e343b8b1aa7e74642147e0@sentry.io/1360987',
+  release: 'v2'
+});
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -52,12 +58,15 @@ export class GlobalErrorHandler implements ErrorHandler {
      try {
       console.log('origin', window.location.origin);
       if (window.location.origin.indexOf('karibou.ch') === -1) {
-        console.debug('LOCALHOST ERROR----', error.originalError || error);
-        return ;
+        // console.debug('LOCALHOST ERROR----', error.originalError || error);
+        throw error;
       }
-      console.log('ERROR----', error.originalError || error);
-      console.log('ERROR----', (error.originalError || error).message);
-      (<any>window).Sentry && (<any>window).Sentry.captureException(error.originalError || error);
+
+      if (!Sentry) {
+        return;
+      }
+
+      Sentry.captureException(error.originalError || error);
      } catch (e) {
 
      }
@@ -96,8 +105,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
