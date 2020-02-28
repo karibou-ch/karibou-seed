@@ -292,10 +292,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       });
       this.home = this.home.slice(0, 10);
       Object.keys(this.group).forEach(cat => {
+        console.log('--- DEBUG cat',cat, this.group[cat].length);
         this.group[cat] = this.group[cat].sort((a, b) => {
           return b.stats.score - a.stats.score;
         }).slice(0, maxcat);
-        if (this.group[cat].length % divider === 0) {
+        if (this.group[cat].length % divider === 0 && options.showMore) {
           this.group[cat].pop();
         }
       });
