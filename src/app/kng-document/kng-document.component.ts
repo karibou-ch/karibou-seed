@@ -233,7 +233,6 @@ export class KngEditDocumentComponent extends KngDocumentComponent {
     this.document.content[this.locale] = this.edit.form.value.body;
 
     if (this.create) {
-      console.log('this.create');
       this.$document.create(this.document).subscribe(
         (doc) => this.onResult(doc, closeAfter, displaySnack),
         (err) => this.onResult(err.error, closeAfter, displaySnack)

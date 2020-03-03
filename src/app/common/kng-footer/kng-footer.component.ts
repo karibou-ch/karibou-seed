@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User, Config, UserService } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '..';
+//import { version } from '../../../../package.json';
 
 @Component({
   selector: 'kng-footer',
