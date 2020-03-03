@@ -99,9 +99,12 @@ export class UserOrdersComponent implements OnInit {
 
   }
 
+  //
+  // WARNING always add to card from an OrderItem (vs CartItem) 
   addToCard(item: OrderItem) {
+    const variant = (item.variant) ? item.variant.title : null;
     this.$products.get(item.sku).subscribe(product => {
-      this.$cart.add(CartItem.fromProduct(product));
+      this.$cart.add(CartItem.fromProduct(product, variant));
     }, error => this.$snack.open(error.error));
   }
 
@@ -113,7 +116,10 @@ export class UserOrdersComponent implements OnInit {
     //
     // FIXME, replace load N products in N calls BY N products in one call
     forkJoin(order.items.map(item => this.$products.get(item.sku))).subscribe((products) => {
-      const items = products.map(product => CartItem.fromProduct(product));
+      const items = products.map((product,i) => {
+        const variant = order.items[i].variant.title;
+        return CartItem.fromProduct(product, variant);
+      });
       this.$cart.addAll(items);
     });
 
