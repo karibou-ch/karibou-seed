@@ -64,8 +64,7 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.auto.ts"
                 }
-              ],
-              "serviceWorker": true
+              ]
             },
             "production": {
               "fileReplacements": [
@@ -95,7 +94,7 @@
                   "maximumError": "10kb"
                 }
               ],
-              "serviceWorker": true,
+              "serviceWorker": false,
               "ngswConfigPath": "ngsw-config.json"
             },
             "devel": {
