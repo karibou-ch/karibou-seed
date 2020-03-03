@@ -141,7 +141,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state: state })))
     ).subscribe((emit: any) => {
 
-      this.detectIOS();
 
       //
       // update user
@@ -154,6 +153,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //
       // update config
       if (emit.config) {
+        this.detectIOS();
         Object.assign(this.config, emit.config);
         this.$navigation.updateConfig(this.config);
       }
@@ -222,9 +222,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     // Detects if device is in standalone mode
     const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
-    if (isIos() && !isInStandaloneMode() && Math.random() > .3) {
+    if (isIos() && !isInStandaloneMode() && Math.random() > .8) {
       this.displayIosInstall =  true;
-      timer(15000).subscribe(() => {
+      timer(10000).subscribe(() => {
         this.displayIosInstall =  false;
         this.$cdr.markForCheck();
       });
