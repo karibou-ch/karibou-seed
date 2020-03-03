@@ -23,7 +23,7 @@ import { i18n } from '../common';
   templateUrl: './product-swipe.component.html',
   styleUrls: ['./product-swipe.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductSwipeComponent implements OnInit {
 
