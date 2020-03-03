@@ -176,7 +176,7 @@ export class AddressComponent {
         //
         // autofill region and location
         setTimeout(() => {
-          result.components.forEach(comp => {
+          (result.components || []).forEach(comp => {
             if (this.locations.indexOf(comp) > -1 && (this.$address.value.postalCode !== comp)) {
               this.$address.patchValue({postalCode: comp});
             }
