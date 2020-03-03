@@ -39,7 +39,6 @@ export class i18n  {
     nav_contactus: 'Contactez-nous!',
     nav_installapp: 'Installer karibou.ch',
     e404: 'Cette page n\'existe pas :-(',
-    eServer: 'Il y a un problème :-(',
     eSession: '<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page',
     img_max_sz: 'Attention, la taille maximum d\'une image est limitée à 150kb',
     user_confirmation_mail: 'Merci, une confirmation a été envoyée à votre adresse email',
@@ -91,7 +90,6 @@ export class i18n  {
     nav_contactus: 'Contact-us!',
     nav_installapp: 'Install karibou.ch',
     e404: 'We couldn\'t find this page :-(',
-    eServer: 'Ooops, there is an issue in our matrix :-(',
     eSession: '<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page',
     img_max_sz: 'Warning, the maximum image size is 150kb',
     user_confirmation_mail: 'Thanks, we just sent an email confirmation ',
@@ -169,7 +167,8 @@ export class i18n  {
     if (!elem) { return ''; }
     return elem[this.currentLocale];
   }
-localeSwitch() {
+
+  localeSwitch() {
     this.locale = (this.locale === 'fr') ? 'en' : 'fr';
   }
 

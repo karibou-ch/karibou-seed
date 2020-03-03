@@ -33,45 +33,54 @@ import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-serve
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
-import { ServiceWorkerModule } from '@angular/service-worker';
+//import { ServiceWorkerModule } from '@angular/service-worker';
 
+// Sentry bundle size
+// https://github.com/getsentry/sentry-javascript/issues/1552
 import * as Sentry from '@sentry/browser';
+import { version } from '../../package.json';
 
 
+//
+// FIXME use chunk js module to load Sentry (50kb) only on demand
+window['Sentry'] = window['Sentry'] || Sentry;
 Sentry.init({
   dsn: 'https://9457c6b1c4e343b8b1aa7e74642147e0@sentry.io/1360987',
-  release: 'v2'
+  release: version
 });
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   constructor() { }
   handleError(error) {
-     // IMPORTANT: Rethrow the error otherwise it gets swallowed
-     if (error.rejection && error.rejection.status === 0) {
-       console.log('--- Network error');
-       window.location.href = '/oops';
-       throw error;
-     }
-     //
-     // USING SENTRY AS DEBUG
-     try {
-      console.log('origin', window.location.origin);
-      if (window.location.origin.indexOf('karibou.ch') === -1) {
-        // console.debug('LOCALHOST ERROR----', error.originalError || error);
-        throw error;
-      }
+    //
+    // Page after new build deploy to load new chunks everything works fine,
+    // all we need to either show a popup message to user and ask him to reload
+    // page or we programmatically force app to reload if chunks failed error occurs.
+    // https://medium.com/@kamrankhatti/angular-lazy-routes-loading-chunk-failed-42b16c22a377
+    const chunkFailedMessage = /Loading chunk [\d]+ failed/;
 
-      if (!Sentry) {
-        return;
-      }
+    if (chunkFailedMessage.test(error.message)) {
+      window.location.reload();
+    }
 
-      Sentry.captureException(error.originalError || error);
-     } catch (e) {
+    //
+    // IMPORTANT: Rethrow the error otherwise it gets swallowed
+    if (error.statusText === 'Unknown Error' ||
+        error.rejection && error.rejection.status === 0) {
+      console.log('--- Network error');
+      window.location.href = '/oops';
+      throw error;
+    }
+    if (!environment.production ||
+        window.location.origin.indexOf('karibou.ch') === -1) {
+      throw error;
+    }
 
-     }
-
-     throw error;
+    //
+    // USING SENTRY AS DEBUG
+    Sentry.captureException(error.originalError || error);
+    throw error;
   }
 }
 
@@ -101,11 +110,11 @@ export class GlobalErrorHandler implements ErrorHandler {
       ]
     }),
     KngCommonModule.forRoot(),
-    RouterModule.forRoot(appRoutes, { 
+    RouterModule.forRoot(appRoutes, {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    //ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

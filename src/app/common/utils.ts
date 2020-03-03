@@ -70,6 +70,23 @@ export class KngUtils {
     }
   }
 
+  static trackError(msg: string) {
+    const Sentry = window['Sentry'];
+    if (!Sentry) {
+      return;
+    }
+
+    if (!Sentry ||
+        window.location.origin.indexOf('karibou.ch') === -1) {
+        return;
+    }
+
+    //
+    // publish sentry event only on production
+    Sentry.captureException(new Error(msg));
+
+  }
+
 }
 
 
