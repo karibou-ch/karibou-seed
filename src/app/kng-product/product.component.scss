@@ -25,6 +25,9 @@
   -opacity: 1;
   z-index: 2;
   background: white;
+  @media (min-width: 1025px) {
+    background-color: rgba(0, 0, 0, 0.57);
+  }
 
   &.fadeout{
     opacity: 0;
@@ -36,17 +39,6 @@
   @media (min-width: 1025px) {
     padding: 5px;
     .product-backdrop{
-      background-color: rgba(0, 0, 0, 0.87);
-      background-color: var(--mdc-theme-text-primary-on-light, rgba(0, 0, 0, 0.87));
-      position: fixed;
-      top: 0;
-      left: 0;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      opacity: 0.8;
-      z-index: -1;  
     }
   
   }
