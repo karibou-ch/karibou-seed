@@ -118,7 +118,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       // Should reload the page
       const label_error = this.$i18n.label().action_error_reload;
       if (confirm(label_error)) {
-        window.location.reload();
+        window.location.reload(true);
       }
     }
 
