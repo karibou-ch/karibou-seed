@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "3.3.8",
+  "version": "3.3.9",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -13,7 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular-mdc/web": "^3.2.1",
-    "@angular/animations": "~8.2.7",
+    "@angular/animations": "^8.2.5",
     "@angular/common": "~8.2.7",
     "@angular/compiler": "~8.2.7",
     "@angular/core": "~8.2.7",
