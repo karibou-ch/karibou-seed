@@ -35,19 +35,6 @@ import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 //import { ServiceWorkerModule } from '@angular/service-worker';
 
-// Sentry bundle size
-// https://github.com/getsentry/sentry-javascript/issues/1552
-import * as Sentry from '@sentry/browser';
-import { version } from '../../package.json';
-
-
-//
-// FIXME use chunk js module to load Sentry (50kb) only on demand
-window['Sentry'] = window['Sentry'] || Sentry;
-Sentry.init({
-  dsn: 'https://9457c6b1c4e343b8b1aa7e74642147e0@sentry.io/1360987',
-  release: version
-});
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -61,25 +48,33 @@ export class GlobalErrorHandler implements ErrorHandler {
     const chunkFailedMessage = /Loading chunk [\d]+ failed/;
 
     if (chunkFailedMessage.test(error.message)) {
-      window.location.reload();
+      window.location.reload(true);
     }
 
     //
-    // IMPORTANT: Rethrow the error otherwise it gets swallowed
-    if (error.statusText === 'Unknown Error' ||
-        error.rejection && error.rejection.status === 0) {
-      console.log('--- Network error');
-      window.location.href = '/oops';
-      throw error;
-    }
-    if (!environment.production ||
-        window.location.origin.indexOf('karibou.ch') === -1) {
-      throw error;
-    }
+    // LAZY LOADIN SENTRY
+    import('./sentry/sentry.module').then(m => {
+      const Sentry = window['Sentry'];
+      //
+      // IMPORTANT: Rethrow the error otherwise it gets swallowed
+      if (error.statusText === 'Unknown Error' ||
+          error.rejection && error.rejection.status === 0) {
+        console.log('--- Network error');
+        window.location.href = '/oops';
+        return m.SentryModule;
+      }
+      if (!environment.production ||
+          window.location.origin.indexOf('karibou.ch') === -1) {
+        return m.SentryModule;
+      }
 
-    //
-    // USING SENTRY AS DEBUG
-    Sentry.captureException(error.originalError || error);
+      //
+      // POST ERROR
+      Sentry.captureException(error.originalError || error);
+
+      return m.SentryModule;
+    });
+
     throw error;
   }
 }
