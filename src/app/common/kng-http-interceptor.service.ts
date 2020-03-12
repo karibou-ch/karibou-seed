@@ -61,7 +61,7 @@ export class KngHttpInterceptorService {
             this.CONFIRM_RUNNING = true;
             setTimeout(() => {
               if (confirm(label_error)) {
-                window.location.reload();
+                window.location.reload(true);
               }
               this.CONFIRM_RUNNING = false;
             }, 1000);
