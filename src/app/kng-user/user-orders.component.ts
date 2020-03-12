@@ -117,7 +117,7 @@ export class UserOrdersComponent implements OnInit {
     // FIXME, replace load N products in N calls BY N products in one call
     forkJoin(order.items.map(item => this.$products.get(item.sku))).subscribe((products) => {
       const items = products.map((product,i) => {
-        const variant = order.items[i].variant.title;
+        const variant = (order.items[i].variant) ? order.items[i].variant.title : null;
         return CartItem.fromProduct(product, variant);
       });
       this.$cart.addAll(items);
