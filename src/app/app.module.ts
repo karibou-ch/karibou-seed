@@ -32,36 +32,50 @@ import { KngValidateMailComponent } from './kng-validate-mail/kng-validate-mail.
 import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
-import { EnumMetrics } from './common/metrics.service';
 import { CacheRouteReuseStrategy } from './app.cache.route';
-// import { ServiceWorkerModule } from '@angular/service-worker';
+//import { ServiceWorkerModule } from '@angular/service-worker';
+
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   constructor() { }
   handleError(error) {
-     // IMPORTANT: Rethrow the error otherwise it gets swallowed
-     if (error.rejection && error.rejection.status === 0) {
-       console.log('--- Network error');
-       window.location.href = '/oops';
-       throw error;
-     }
-     //
-     // USING SENTRY AS DEBUG
-     try {
-      console.log('origin', window.location.origin);
-      if (window.location.origin.indexOf('karibou.ch') === -1) {
-        console.debug('LOCALHOST ERROR----', error.originalError || error);
-        return ;
+    //
+    // Page after new build deploy to load new chunks everything works fine,
+    // all we need to either show a popup message to user and ask him to reload
+    // page or we programmatically force app to reload if chunks failed error occurs.
+    // https://medium.com/@kamrankhatti/angular-lazy-routes-loading-chunk-failed-42b16c22a377
+    const chunkFailedMessage = /Loading chunk [\d]+ failed/;
+
+    if (chunkFailedMessage.test(error.message)) {
+      window.location.reload(true);
+    }
+
+    //
+    // LAZY LOADIN SENTRY
+    import('./sentry/sentry.module').then(m => {
+      const Sentry = window['Sentry'];
+      //
+      // IMPORTANT: Rethrow the error otherwise it gets swallowed
+      if (error.statusText === 'Unknown Error' ||
+          error.rejection && error.rejection.status === 0) {
+        console.log('--- Network error');
+        window.location.href = '/oops';
+        return m.SentryModule;
       }
-      console.log('ERROR----', error.originalError || error);
-      console.log('ERROR----', (error.originalError || error).message);
-      (<any>window).Sentry && (<any>window).Sentry.captureException(error.originalError || error);
-     } catch (e) {
+      if (!environment.production ||
+          window.location.origin.indexOf('karibou.ch') === -1) {
+        return m.SentryModule;
+      }
 
-     }
+      //
+      // POST ERROR
+      Sentry.captureException(error.originalError || error);
 
-     throw error;
+      return m.SentryModule;
+    });
+
+    throw error;
   }
 }
 
@@ -91,11 +105,11 @@ export class GlobalErrorHandler implements ErrorHandler {
       ]
     }),
     KngCommonModule.forRoot(),
-    RouterModule.forRoot(appRoutes, { 
+    RouterModule.forRoot(appRoutes, {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
-    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    //ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

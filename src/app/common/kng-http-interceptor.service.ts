@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserService } from 'kng2-core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, debounceTime } from 'rxjs/operators';
 import { i18n } from './i18n.service';
 import { MetricsService, EnumMetrics } from './metrics.service';
 
@@ -18,6 +18,7 @@ export class ErrorState {
 })
 export class KngHttpInterceptorService {
 
+  CONFIRM_RUNNING: boolean;
   error$: Subject<ErrorState>;
 
   constructor(
@@ -26,6 +27,7 @@ export class KngHttpInterceptorService {
     public $user: UserService
   ) {
     this.error$ = new Subject();
+    this.CONFIRM_RUNNING = false;
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -55,11 +57,16 @@ export class KngHttpInterceptorService {
           console.log('ERROR(0)', err.message, 'ERROR:', err);
           this.error$.next({message: err.message, status: err.status, url: err.url} as ErrorState );
 
-          setTimeout(() => {
-            if (confirm(label_error)) {
-              window.location.reload();
-            }
-          }, 1000);
+          if (!this.CONFIRM_RUNNING) {
+            this.CONFIRM_RUNNING = true;
+            setTimeout(() => {
+              if (confirm(label_error)) {
+                window.location.reload(true);
+              }
+              this.CONFIRM_RUNNING = false;
+            }, 1000);
+          }
+
           this.$metric.event(EnumMetrics.metric_error, err);
 
         }

@@ -61,7 +61,7 @@ export class KngNavigationStateService  {
     //     if((this.timestamp+this.TTL)>Date.now()){
     //       return;
     //     }
-    //     window.location.reload();
+    //     window.location.reload(true);
     //   })
     // ).subscribe()
   }

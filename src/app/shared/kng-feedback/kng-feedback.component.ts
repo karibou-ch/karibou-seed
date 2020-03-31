@@ -8,7 +8,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
   templateUrl: './kng-feedback.component.html',
   styleUrls: ['./kng-feedback.component.scss'],
 //  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+// changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KngFeedbackComponent implements OnInit {
 
@@ -60,6 +60,7 @@ export class KngFeedbackComponent implements OnInit {
   @Input() user: User;
   @Input() forceload: boolean;
 
+
   get locale() {
     return this.$i18n.locale;
   }
@@ -69,7 +70,7 @@ export class KngFeedbackComponent implements OnInit {
     private $snack: MdcSnackbar,
     private $order: OrderService,
     private $user: UserService,
-    private cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef
   ) {
   }
 
@@ -166,7 +167,7 @@ export class KngFeedbackComponent implements OnInit {
       this.order = this.orders[0];
       this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
       this.score = this.order.score;
-      this.cdr.markForCheck();
+      this.$cdr.markForCheck();
     });
   }
 
@@ -217,7 +218,7 @@ export class KngFeedbackComponent implements OnInit {
         this.$snack.open('Message envoyé merci!');
         this.order.score = this.score;
         this.onBack();
-        this.cdr.markForCheck();
+        this.$cdr.markForCheck();
       }, http => {
         this.$snack.open(http.error);
       }

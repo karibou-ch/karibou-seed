@@ -24,6 +24,7 @@ export class i18n  {
     action_cancel: 'Annuler',
     action_lang_switch: 'switch into English',
     action_error_reload: 'Zut, un problème est survenu lors du chargement de la page. Réessayez?',
+    action_install_ios: 'Installez Karibou.ch dans votre appareil.<br/> Appuyez sur l\'icône de Partage, puis sélectionnez<br/><b>Ajouter à l\'écran d\'accueil.</b>',
     cart_address_add: 'Ajouter ou modifier vos adresses',
     cart_payment_add: 'Ajouter ou modifier vos méthodes de paiements',
     cart_save_deliver: 'Votre commande est enregistrée, vous serez livré le ',
@@ -38,7 +39,6 @@ export class i18n  {
     nav_contactus: 'Contactez-nous!',
     nav_installapp: 'Installer karibou.ch',
     e404: 'Cette page n\'existe pas :-(',
-    eServer: 'Il y a un problème :-(',
     eSession: '<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page',
     img_max_sz: 'Attention, la taille maximum d\'une image est limitée à 150kb',
     user_confirmation_mail: 'Merci, une confirmation a été envoyée à votre adresse email',
@@ -74,6 +74,7 @@ export class i18n  {
     action_cancel: 'Cancel',
     action_lang_switch: 'basculer en français',
     action_error_reload: 'Ooops, there was a problem loading, try again?',
+    action_install_ios: 'Install this app on your device.<br/> Tap the share icon and then<br/><b>Add to homescreen.</b>',
     home_feedback_title: 'How was your last order ?',
     cart_address_add: 'Add or modify your shipping address',
     cart_payment_add: 'Add or modify payment methods',
@@ -89,7 +90,6 @@ export class i18n  {
     nav_contactus: 'Contact-us!',
     nav_installapp: 'Install karibou.ch',
     e404: 'We couldn\'t find this page :-(',
-    eServer: 'Ooops, there is an issue in our matrix :-(',
     eSession: '<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page',
     img_max_sz: 'Warning, the maximum image size is 150kb',
     user_confirmation_mail: 'Thanks, we just sent an email confirmation ',
@@ -167,7 +167,8 @@ export class i18n  {
     if (!elem) { return ''; }
     return elem[this.currentLocale];
   }
-localeSwitch() {
+
+  localeSwitch() {
     this.locale = (this.locale === 'fr') ? 'en' : 'fr';
   }
 

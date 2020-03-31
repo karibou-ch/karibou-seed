@@ -33,13 +33,6 @@ export class KngWelcomeComponent implements OnInit {
     }
   };
 
-
-  stores = [
-    {title: 'Genève', name: 'geneve', image: 'http://www.davidfraga.ch/blog/wp-content/uploads/cathedraleStPierre_vignette.jpg'},
-    {title: 'Fribourg', name: 'fribourg', image: 'https://img.myswitzerland.com/mys/n64489/images/buehne/st0034724_fribourg.jpg'},
-    {title: 'Meyrin', name: 'meyrin', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Eglise_Saint-Julien_%28Meyrin%29_01.jpg/1200px-Eglise_Saint-Julien_%28Meyrin%29_01.jpg'},
-  ];
-
   config: Config;
 
   constructor(

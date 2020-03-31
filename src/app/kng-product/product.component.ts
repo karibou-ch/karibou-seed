@@ -17,9 +17,9 @@ import {
   ProductService,
   Product,
   User,
-  CartItem
+  CartItem,
 } from 'kng2-core';
-import { i18n, KngNavigationStateService } from '../common';
+import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -111,10 +111,24 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // FIXME should not be possible
     if (!product.variants) {
-      console.log('DEBUG variation hang', variant, product);
+      console.log('DEBUG variation hang', variant, JSON.stringify(product));
+      KngUtils.trackError('Error variation not available: ' + variant);
+
+      //
+      // Should reload the page
+      const label_error = this.$i18n.label().action_error_reload;
+      if (confirm(label_error)) {
+        window.location.reload(true);
+      }
     }
 
-    if (product.variants.length && !variant) {
+    //
+    // check if item is already on cart
+    // Open variant UI
+    const isOnCart = this.$cart.getItems().find(it => it.sku === product.sku);
+    if (!isOnCart &&
+        product.variants.length
+        && !variant) {
       this.openVariant = true;
       return;
     }

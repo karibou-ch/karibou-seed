@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "3.0.2",
+  "version": "3.3.9",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -13,7 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular-mdc/web": "^3.2.1",
-    "@angular/animations": "~8.2.7",
+    "@angular/animations": "^8.2.5",
     "@angular/common": "~8.2.7",
     "@angular/compiler": "~8.2.7",
     "@angular/core": "~8.2.7",
@@ -21,17 +21,18 @@
     "@angular/platform-browser": "~8.2.7",
     "@angular/platform-browser-dynamic": "~8.2.7",
     "@angular/router": "~8.2.7",
+    "@sentry/browser": "^5.12.5",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.7",
-    "kng2-core": "^2.59.0",
+    "kng2-core": "^2.60.9",
     "ngx-stripe": "^7.4.4",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.803.5",
-    "@angular/cli": "~8.3.5",
+    "@angular-devkit/build-angular": "~0.803.25",
+    "@angular/cli": "~8.3.25",
     "@angular/compiler-cli": "~8.2.7",
     "@angular/language-service": "~8.2.7",
     "@types/jasmine": "~3.3.8",

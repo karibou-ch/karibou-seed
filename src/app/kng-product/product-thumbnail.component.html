@@ -60,7 +60,8 @@
 					{{product.pricing.part}}
 				</div>
 				<div class="price ">
-					<span [hidden]="product.attributes.discount" >
+
+					<span [class.discount]="product.attributes.discount" >
 						Fr {{product.pricing.price| number:'1.2-2'}}
 					</span>
 					<span [hidden]="!product.attributes.discount">

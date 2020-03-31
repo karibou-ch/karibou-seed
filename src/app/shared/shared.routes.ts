@@ -3,7 +3,6 @@ import { LoaderResolve } from 'kng2-core';
 
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { ProductListComponent, ProductComponent } from '../kng-product';
-import { KngNavbarComponent } from '../kng-navbar';
 
 
 // export const appRoutes: Routes = [

@@ -1,5 +1,8 @@
 <div class="root">
   <div class="error">404</div>
+  <p>{{i18n[locale].title_migration}}</p>
+  <p [innerHtml]="i18n[locale].title_salutation"></p>
+  <br/>
   
   <div class="console">
     <pre>
@@ -9,7 +12,8 @@
 | . \ (_| | |  | | |_) | (_) | |_| |
 |_|\_\__,_|_|  |_|_.__/ \___/ \__,_|.ch  
     </pre>
-    <p><b>$></b>{{$i18n.label().eServer}}</p>
-    <p><b>$></b><a href="/">reload [Yes]</a>|[No]</p>
+    <p><b>$></b>VERSION: {{APP_VERSION}}</p>
+    <p><b>$></b>{{i18n[locale].title_intro}}</p>
+    <p><b>$></b><a href="/">{{i18n[locale].title_reload}}</a></p>
   </div>
 </div>

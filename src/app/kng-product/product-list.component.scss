@@ -15,6 +15,9 @@
   -opacity: 1;
   z-index: 2;
   background: white;
+  @media (min-width: 1025px) {
+    background-color: rgba(0, 0, 0, 0.57);
+  }
 
   &.fadeout{
     opacity: 0;
@@ -25,18 +28,7 @@
 
   @media (min-width: 1025px) {
     padding: 5px;
-    .product-backdrop{
-      background-color: rgba(0, 0, 0, 0.87);
-      background-color: var(--mdc-theme-text-primary-on-light, rgba(0, 0, 0, 0.87));
-      position: fixed;
-      top: 0;
-      left: 0;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      opacity: 0.8;
-      z-index: -1;  
+    .product-backdrop {      
     }
   
   }
@@ -301,14 +293,14 @@
       min-width: 137px;
       margin: 8px;
       margin-bottom: 0;
-      max-width: 163px;
+      max-width: 160px;
       @media (max-width: 426px) {
         flex: 1 0;
         min-width: 29vw;
         margin: 4px 4px 0;
         flex: 0 0 49%;
         min-width: 40vw;
-        margin: 4px 0px 0;
+        margin: 4px 4px 0;
 
       }
     }
