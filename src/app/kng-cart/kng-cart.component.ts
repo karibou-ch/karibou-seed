@@ -46,8 +46,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
   noshippingMsg: string;
   subscription;
   shippingTime;
-  shippingNote:string;
-  showInfoAmount:boolean;
+  shippingNote: string;
+  showInfoAmount: boolean;
+  showInfoFees: boolean;
+  amountReserved: number;
+  currentRanks: any;
+  currentLimit: number;
 
   //
   // generating dynamic background image url
@@ -65,6 +69,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_shipping: 'Livraison',
       cart_info_payment: 'Méthode de paiement',
       cart_info_discount: 'Rabais',
+      cart_info_limit: 'En raison de la situation actuelle, nos créneaux de livraison sont tous occupés.  Toutefois, vous pouvez préparer votre panier et valider votre commande (dans 24h) lorsque de nouvelles fenêtres de livraison seront disponibles. Merci beaucoup pour votre compréhension.',
+      cart_info_service_k: 'Nous n\'avons pas activé (pour l\'instant) la majoration maximum de <span class="gray ">5%</span> sur le prix des produits. <a class="more">A propos de notre commission</a>',
+      cart_info_service_k_plus: 'Notre prix sur le produit doit être 5% plus élevé que celui du détaillant de votre région. C\'est ce dont nous avons besoin pour payer notre équipe <span class="pink">🤗</span></span>',
       cart_remove: 'enlever',
       cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
@@ -87,6 +94,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_shipping: 'Shipping',
       cart_info_payment: 'Payment method',
       cart_info_discount: 'Discount',
+      cart_info_limit: 'Due to the current situation, our delivery slots are all full. However, you can prepare your basket and confirm your order (in about 24h) when new delivery windows become available. Thank you very much for your understanding.',
+      cart_info_service_k: 'Our <span class="gray ">5%</span> fees on products are currently not applied. <span  class="more">About our fees</span>',
+      cart_info_service_k_plus: 'Our price on product is 5% higher compared to the retailer in your local area. This is the minimum we can charge to pay our team <span class="pink">🤗</span>',
       cart_remove: 'remove',
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
@@ -155,7 +165,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // initialize loader
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
-    this.noshippingMsg = this.getNoShippingMessage();
 
     //
     // FIXME currently only one shipping time!
@@ -167,16 +176,31 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.items = [];
     this.vendorAmount = {};
 
+    // FIXME remove hardcoded reserved value 0.11!
+    this.amountReserved = 1.11;
 
+    // FIMXE remove repeated code limit
+    this.currentRanks = this.config.shared.order.currentRanks || {};
+    this.currentLimit = this.config.shared.order.currentLimit || 1000;
   }
 
   get locale() {
     return this.$i18n.locale;
   }
 
+  // FIXME remove repeated code
   getNoShippingMessage() {
+    const currentShippingDay = this.$cart.getCurrentShippingDay();
+
+    //
+    // check window delivery
+    if (currentShippingDay &&
+      this.currentRanks[currentShippingDay.getDay()] > this.currentLimit) {
+      return this.$i18n[this.locale].nav_no_shipping_long;
+    }
+
     const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
-    return noshipping && noshipping.message;
+    return noshipping && noshipping.message[this.locale];
   }
 
 
@@ -213,6 +237,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       //
       // compute available discount and delta to get one
       this.computeDiscount();
+      this.noshippingMsg = this.getNoShippingMessage();
 
     }, error => {
       console.log('loader-update', error);
@@ -447,6 +472,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   goBack(): void {
     this.$router.navigate(['../home'], { relativeTo: this.$route });
+  }
+
+
+  isDayAvailable() {
+    const day = this.$cart.getCurrentShippingDay();
+    return (this.currentRanks[day.getDay()] <= this.currentLimit);
   }
 
   isCartDeposit() {

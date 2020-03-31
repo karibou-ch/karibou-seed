@@ -272,9 +272,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // FIXME inner size
     const maxcat = (window.innerWidth < 426) ? 6 : 8;
     const divider = (window.innerWidth < 426) ? 2 : 4;
-    this.group = {};
-
     this.$product.select(options).subscribe((products: Product[]) => {
+      this.home = [];
+      this.group = {};
       products.forEach((product: Product) => {
         if (product.attributes.discount) {
           this.home.push(product);

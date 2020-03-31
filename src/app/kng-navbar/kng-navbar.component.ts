@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   CartService,
@@ -14,11 +14,67 @@ import {
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
-import { MdcSnackbar, MdcMenu, MdcTopAppBarSection } from '@angular-mdc/web';
+import { MdcSnackbar, MdcMenu, MdcTopAppBarSection, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
 
 import { merge, timer } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
+import { formatDate } from '@angular/common';
 
+//
+// Popup available shipping dates
+@Component({
+  templateUrl: 'kng-navbar.calendar.component.html',
+  styleUrls: ['./kng-navbar.calendar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class KngCalendarForm {
+
+  i18n: any = {};
+  config: Config;
+  currentShippingDay: Date;
+  labelTime: string;
+  currentRanks: any;
+  currentLimit: number;
+  noshippingMsg: string;
+
+  constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
+    @Inject(MDC_DIALOG_DATA) public data: any) {
+      this.i18n = data.i18n;
+      this.config = data.config;
+      this.noshippingMsg = data.noshippingMsg;
+      this.currentShippingDay = data.currentShippingDay;
+      this.labelTime = this.config.shared.order.shippingtimes[16] || 'loading...';
+      this.currentRanks = this.config.shared.order.currentRanks || {};
+      this.currentLimit = this.config.shared.order.currentLimit || 1000;
+      console.log('------',this.noshippingMsg)
+  }
+  get locale() {
+    return this.i18n.locale;
+  }
+
+  doSetCurrentShippingDay($event, day: Date, idx: number) {
+    if (!this.isDayAvailable(day)) {
+      return;
+    }
+    this.dialogRef.close(day);
+  }
+
+  isDayAvailable(day: Date) {
+    return (this.currentRanks[day.getDay()] <= this.currentLimit);
+  }
+
+  getShippingText(day: Date) {
+    if(!this.isDayAvailable(day)) {
+      return this.i18n.label().nav_shipping_off;
+    }
+    return this.labelTime;
+  }
+
+  getShippingDays() {
+    return this.config.getShippingDays();
+  }
+
+}
 
 
 @Component({
@@ -60,6 +116,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   displayIosInstall: boolean;
   subscription;
 
+  //
+  // FIXME remove code repeat
+  currentRanks: any;
+  currentLimit: number;
+
   @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
     public $cart: CartService,
@@ -68,6 +129,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $route: ActivatedRoute,
     private $user: UserService,
     public $navigation: KngNavigationStateService,
+    private $dialog: MdcDialog,
     private $snack: MdcSnackbar,
     private $cdr: ChangeDetectorRef,
   ) {
@@ -79,7 +141,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
-    this.noshippingMsg = this.getNoShippingMessage();
 
     //
     // not mandatory
@@ -89,6 +150,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // console.log('')
     this.primary = [];
     this.topmenu = [];
+
+    // FIXME remove code repeat
+    this.currentRanks = this.config.shared.order.currentRanks || {};
+    this.currentLimit = this.config.shared.order.currentLimit || 1000;
+    this.noshippingMsg = this.getNoShippingMessage();
+
   }
 
 
@@ -199,15 +266,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   }
 
-  doSetCurrentShippingDay($event: any, current: Date, idx: number) {
-    this.$cart.setShippingDay(current);
-    this.currentShippingDay = this.$cart.getCurrentShippingDay();
-
-    //
-    // FIXME when using dropdown for shipping
-    this.$cdr.markForCheck();
-  }
-
   detectIOS() {
     window.addEventListener('beforeinstallprompt', (deferredPrompt) => {
       // (<any>deferredPrompt).prompt();
@@ -248,17 +306,30 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.$i18n.locale;
   }
 
-  getShippingWeek() {
-    return this.config.getShippingWeek();
+  gtShippingDateFormat() {
+    //
+    // check window delivery
+    if (this.currentShippingDay &&
+      this.currentRanks[this.currentShippingDay.getDay()] > this.currentLimit) {
+    return this.$i18n[this.locale].nav_no_shipping;
+    }
+    return formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
   }
 
-  getShippingDays() {
-    // return this.config.potentialShippingWeek();
-    return this.config.getShippingDays();
-  }
-  getNoShippingMessage() {
+  getNoShippingMessage(label?: string) {
+    label = label || 'nav_no_shipping';
+    //
+    // check window delivery
+    if (this.currentShippingDay &&
+        this.currentRanks[this.currentShippingDay.getDay()] > this.currentLimit) {
+      return this.$i18n[this.locale][label];
+    }
+
+
+    //
+    // check manager message
     const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
-    return noshipping && noshipping.message;
+    return noshipping && noshipping.message[this.locale];
   }
 
   isAppReady() {
@@ -269,5 +340,27 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   onLang($event, lang) {
     this.$i18n.locale = lang;
     // console.log('---- changed locale')
+  }
+
+  openCalendar(){
+    const dialogRef = this.$dialog.open(KngCalendarForm,{
+      data: {
+        i18n: this.$i18n,
+        config: this.config,
+        currentShippingDay: this.currentShippingDay,
+        noshippingMsg: this.getNoShippingMessage('nav_no_shipping_long')
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((current: any) => {
+      if (current === 'close') {
+        return;
+      }
+      this.$cart.setShippingDay(current);
+      this.currentShippingDay = this.$cart.getCurrentShippingDay();
+      //
+      // FIXME when using dropdown for shipping
+      this.$cdr.markForCheck();
+    });
   }
 }

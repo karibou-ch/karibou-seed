@@ -186,9 +186,10 @@ div.navbar{
     }
     
     .shipping {
+      cursor: pointer;
       letter-spacing: -0.5px;
       text-transform: capitalize;
-      margin-left: calc( 50% - 130px );
+      margin-left: calc( 50% - 150px );
       font-weight: 200;
       position: absolute;
       width: 270px;

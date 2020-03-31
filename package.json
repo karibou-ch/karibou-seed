@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "3.3.9",
+  "version": "3.3.15",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -20,11 +20,13 @@
     "@angular/forms": "~8.2.7",
     "@angular/platform-browser": "~8.2.7",
     "@angular/platform-browser-dynamic": "~8.2.7",
+    "@angular/pwa": "^0.900.6",
     "@angular/router": "~8.2.7",
+    "@angular/service-worker": "^9.0.6",
     "@sentry/browser": "^5.12.5",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.7",
-    "kng2-core": "^2.60.9",
+    "kng2-core": "^2.60.18",
     "ngx-stripe": "^7.4.4",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",

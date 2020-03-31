@@ -17,7 +17,7 @@ import { KngCommonModule } from './common/common.module';
 //
 // App components
 import { AppComponent } from './app.component';
-import { KngNavbarComponent } from './kng-navbar';
+import { KngNavbarComponent, KngCalendarForm } from './kng-navbar';
 
 //
 // environnement
@@ -83,6 +83,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 @NgModule({
   declarations: [
     AppComponent,
+    KngCalendarForm,
     KngNavbarComponent,
     KngRootComponent,
     KngWelcomeComponent,
@@ -90,7 +91,11 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent
   ],
-  exports:[
+  // List of components that aren't used in templates directly
+  entryComponents:[
+    KngCalendarForm
+  ],
+  exports: [
     Kng2CoreModule,
     KngCommonModule
   ],
