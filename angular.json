@@ -33,9 +33,11 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src","src/styles", "src/app/styles/"
+                "src",
+                "src/styles",
+                "src/app/styles/"
               ]
-            },            
+            },
             "scripts": [
               "src/preload.js"
             ]
@@ -211,6 +213,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "karibou-seed"
+    }
+  },
+  "defaultProject": "karibou-seed",
+  "cli": {
+    "analytics": false
+  }
 }

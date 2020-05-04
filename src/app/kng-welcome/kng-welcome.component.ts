@@ -45,7 +45,8 @@ export class KngWelcomeComponent implements OnInit {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
     this.$photo.shops({active: true, random: 40}).subscribe((photos: any) => {
-      this.photos = photos.map(shop => shop.photo.fg);
+      // remove underconstruction shops with missing photos //
+      this.photos = photos.filter(s => s.photo).map(shop => shop.photo.fg);
     });
   }
 

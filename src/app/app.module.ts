@@ -47,8 +47,10 @@ export class GlobalErrorHandler implements ErrorHandler {
     // https://medium.com/@kamrankhatti/angular-lazy-routes-loading-chunk-failed-42b16c22a377
     const chunkFailedMessage = /Loading chunk [\d]+ failed/;
 
+    //
+    // Reload App is enough
     if (chunkFailedMessage.test(error.message)) {
-      window.location.reload(true);
+      return window.location.reload(true);
     }
 
     //

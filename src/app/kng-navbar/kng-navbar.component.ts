@@ -33,8 +33,10 @@ export class KngCalendarForm {
   config: Config;
   currentShippingDay: Date;
   labelTime: string;
+  isPremium: boolean;
   currentRanks: any;
   currentLimit: number;
+  premiumLimit: number;
   noshippingMsg: string;
 
   constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
@@ -43,10 +45,12 @@ export class KngCalendarForm {
       this.config = data.config;
       this.noshippingMsg = data.noshippingMsg;
       this.currentShippingDay = data.currentShippingDay;
+      this.isPremium = data.isPremium;
+      // FIXME remove hardcoded shippingtimes[16]
       this.labelTime = this.config.shared.order.shippingtimes[16] || 'loading...';
       this.currentRanks = this.config.shared.order.currentRanks || {};
       this.currentLimit = this.config.shared.order.currentLimit || 1000;
-      console.log('------',this.noshippingMsg)
+      this.premiumLimit =  this.config.shared.order.premiumLimit || 0;
   }
   get locale() {
     return this.i18n.locale;
@@ -60,7 +64,8 @@ export class KngCalendarForm {
   }
 
   isDayAvailable(day: Date) {
-    return (this.currentRanks[day.getDay()] <= this.currentLimit);
+    const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
+    return (this.currentRanks[day.getDay()] <= maxLimit);
   }
 
   getShippingText(day: Date) {
@@ -120,6 +125,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   // FIXME remove code repeat
   currentRanks: any;
   currentLimit: number;
+  premiumLimit: number;
 
   @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
@@ -154,6 +160,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // FIXME remove code repeat
     this.currentRanks = this.config.shared.order.currentRanks || {};
     this.currentLimit = this.config.shared.order.currentLimit || 1000;
+    this.premiumLimit = this.config.shared.order.premiumLimit || 0;
     this.noshippingMsg = this.getNoShippingMessage();
 
   }
@@ -216,6 +223,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config, this.user);
         this.$cdr.markForCheck();
+        this.currentShippingDay = this.$cart.getCurrentShippingDay();
       }
       //
       // update config
@@ -309,9 +317,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   gtShippingDateFormat() {
     //
     // check window delivery
-    if (this.currentShippingDay &&
-      this.currentRanks[this.currentShippingDay.getDay()] > this.currentLimit) {
-    return this.$i18n[this.locale].nav_no_shipping;
+    if (!this.isDayAvailable(this.currentShippingDay)) {
+      return this.$i18n[this.locale].nav_no_shipping;
     }
     return formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
   }
@@ -320,8 +327,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     label = label || 'nav_no_shipping';
     //
     // check window delivery
-    if (this.currentShippingDay &&
-        this.currentRanks[this.currentShippingDay.getDay()] > this.currentLimit) {
+    if (!this.isDayAvailable(this.currentShippingDay)) {
       return this.$i18n[this.locale][label];
     }
 
@@ -336,6 +342,16 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.$navigation.store !== undefined;
   }
 
+  isDayAvailable(day: Date) {
+    if(!day){
+      return false;
+    }
+
+    const maxLimit = this.user.isPremium() ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
+    return (this.currentRanks[day.getDay()] <= maxLimit);
+  }
+
+
 
   onLang($event, lang) {
     this.$i18n.locale = lang;
@@ -347,6 +363,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       data: {
         i18n: this.$i18n,
         config: this.config,
+        isPremium: this.user.isPremium(),
         currentShippingDay: this.currentShippingDay,
         noshippingMsg: this.getNoShippingMessage('nav_no_shipping_long')
       }
