@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService, Config } from 'kng2-core';
+import { i18n } from '../common';
 
 @Component({
   selector: 'app-kng-validate-mail',
@@ -15,7 +16,23 @@ export class KngValidateMailComponent implements OnInit {
   error: any;
   config: Config;
 
+  i18n: any = {
+    fr: {
+      title1: 'Merci d\'avoir validé votre adresse email!',
+      title2: 'Vous pouvez fermer cette fenêtre et poursuivre vos achats.',
+      warning: 'Oh oh! La validation a déjà été effectuée',
+      contact: 'En cas de doute, contactez nous!</a>'
+    },
+    en: {
+      title1: 'Thank you! Your Email has been confirmed.',
+      title2: 'You can close this window and continue shopping.',
+      warning: 'Oh oh! La validation a déjà été effectuée',
+      contact: 'En cas de doute, contactez nous!'
+    }
+  };
+
   constructor(
+    private $i18n:i18n,
     private $route: ActivatedRoute,
     private $user: UserService
   ) {
@@ -23,6 +40,11 @@ export class KngValidateMailComponent implements OnInit {
     this.email = this.$route.snapshot.params['mail'];
     this.config = this.$route.snapshot.data.loader[0];
   }
+
+  get locale() {
+    return this.$i18n.locale;
+  }
+
 
   //
   // testing

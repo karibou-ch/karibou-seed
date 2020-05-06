@@ -15,7 +15,7 @@
     </h3>
     <ng-template #noShipping>
       <h3 class="primary-text">
-        <i class="material-icons">info</i> {{noshippingMsg[$i18n.locale]}} 
+        {{noshippingMsg}} 
       </h3>
     </ng-template>
 
@@ -58,12 +58,24 @@
         </div>
       </mdc-list-item-meta>
     </mdc-list-item>
-    <!-- <mdc-list-item class="border-top">
-      <mdc-list-item-meta>
-        <div class="info" i18n>{{i18n[locale].cart_info_service_k}} ({{currentGatewayFees()}} %)</div>
-        <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>
+
+    <!-- KARIBOU SERVICE -->
+    <mdc-list-item class="border-top">
+      <mdc-list-item-graphic hidden>
+        <div class="avatar"
+              [ngStyle]="{'background-image': 'url(/assets/img/k-puce-v2.png)'}">  
+        </div>
+      </mdc-list-item-graphic>
+  
+      <mdc-list-item-meta (click)="showInfoFees=!showInfoFees">
+        <div class="info"><span [innerHtml]="i18n[locale].cart_info_service_k"></span> &nbsp;</div>
+        <div class="price" >{{currentServiceFees()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
-    </mdc-list-item> -->
+    </mdc-list-item>
+
+    <mdc-list-item class="border-top" [hidden]="!showInfoFees">
+      <div class="amount-info" [innerHtml]="i18n[locale].cart_info_service_k_plus"></div>
+    </mdc-list-item>
 
     <mdc-list-item class="slim-item">
       <mdc-list-item-meta>
@@ -81,6 +93,10 @@
 
   </mdc-list>
 
+  <!-- No more window for delivery -->
+  <div class="border-top" [hidden]="isDayAvailable()">    
+    <div class="amount-info" [innerHtml]="i18n[locale].cart_info_limit"></div>
+  </div>
 
 
   <!-- NOT LOGGED -->
@@ -100,7 +116,7 @@
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- ADDRESS IFF isAuth()-->
-  <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()">      
+  <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()">      
     <div class="cart-flow" [class.flow-done]="currentShipping().name!=null" >1</div>
     <section  [innerHtml]="config?.shared.checkout.address[$i18n.locale]"></section>
 
@@ -174,7 +190,7 @@
   </div>
 
   <!-- PAYMENT-->
-  <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()">      
+  <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable()">      
     <div class="cart-flow" [class.flow-done]="currentGatewayLabel()!='Aucun'">2</div>
     <section  [innerHtml]="config?.shared.checkout.payment[$i18n.locale]"></section>
 
@@ -218,7 +234,7 @@
   </div>
   
   <!-- RESUME -->
-  <div class="order-resume" *ngIf="isOrderReady()">
+  <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable()">
     <div class="cart-flow flow-done">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
@@ -264,7 +280,7 @@
     </mdc-list>       
     <div class="amount-info" [hidden]="!showInfoAmount">
       {{i18n[locale].cart_amount_1}} 
-      <b >{{$cart.total()*1.10|currency:'CHF'}}</b>
+      <b >{{$cart.total()*amountReserved|currency:'CHF'}}</b>
       {{i18n[locale].cart_amount_2}}
     </div>
 
@@ -302,7 +318,7 @@
     </div>
 
     <div class="block-warning" *ngIf="noshippingMsg">
-        <i class="material-icons">info</i> {{noshippingMsg[$i18n.locale]}} 
+        <i class="material-icons">info</i> {{noshippingMsg}} 
     </div>
   
       

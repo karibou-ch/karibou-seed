@@ -3,6 +3,11 @@
 //
 // innerHtml CASE
 :host ::ng-deep{
+  .more{
+    color: cornflowerblue;
+    border-bottom: 1px dotted cornflowerblue;
+  }
+
   .order-address,
   .order-resume{
     section {
@@ -19,7 +24,7 @@
       }  
       p.block-info{
         color: #aaa;
-      }
+      }    
     }
   }
 }
@@ -94,11 +99,21 @@
     }
   }
 
+
+  .amount-info{
+    padding: 20px;
+    background: #eee;    
+    background-color: antiquewhite;  
+  }
+
+
+
   .cart-flow{
-    color: $mdc-theme-primary;
-    color: var(--mdc-theme-primary);
+    color: $mdc-theme-primary-text;
+    color: var(--mdc-theme-primary-text);
     background: $mdc-theme-primary-text;
     background: var(--mdc-theme-primary-text);
+    background-color: var(--mdc-theme-karibou-pink);
     width: 30px;
     height: 30px;
     position: absolute;
@@ -176,6 +191,7 @@
       height: 34px;  
     }
     
+
     @media (max-width:426px) {
       padding-left: 5px;      
     }
@@ -240,6 +256,7 @@
         }
     
       } 
+
       div.info i{
         transform: translateY(5px);
         color: #ffa506;
@@ -457,11 +474,6 @@
       .block-info{
         padding: 30px;
       }
-    }
-
-    .amount-info{
-      padding: 20px;
-      background: #eee;      
     }
 
     .checkout-msg{

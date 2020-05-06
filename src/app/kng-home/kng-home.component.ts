@@ -182,6 +182,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         // FIXME issue 2x CART_LOADED !!
         if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !Object.keys(this.group).length)
           && !loaded) {
+          this.options.when = this.$cart.getCurrentShippingDay();
           this.productsGroupByCategory();
           loaded = true;
         }
@@ -267,30 +268,37 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   productsGroupByCategory() {
-    const options = Object.assign({}, this.options, this.pageOptions[this.target]);
+    const options = Object.assign({}, this.options, this.pageOptions[this.target], {group: this.target});
     this.options.showMore = options.showMore;
+    // FIXME remove hardcoded constraint
+    if(this.target === 'selection') {
+      delete options.group;
+    }
+
     // FIXME inner size
     const maxcat = (window.innerWidth < 426) ? 6 : 8;
     const divider = (window.innerWidth < 426) ? 2 : 4;
-    this.group = {};
-
     this.$product.select(options).subscribe((products: Product[]) => {
+      this.home = [];
+      this.group = {};
       products.forEach((product: Product) => {
         if (product.attributes.discount) {
           this.home.push(product);
-          // console.log('--- discount', product.title);
-          return;
+          //
+          // when discount display randomly product on category
+          if (Math.random() > .7) {
+            return;
+          }
         }
 
-        if (!product.categories) {
-          return console.log('DEBUG----', product.sku, product.title);
-        }
+        //
+        // group by category
         if (!this.group[product.categories.name]) {
           this.group[product.categories.name] = [];
         }
         this.group[product.categories.name].push(product);
       });
-      this.home = this.home.slice(0, 10);
+      this.home = this.home.slice(0, 14);
       Object.keys(this.group).forEach(cat => {
         // console.log('--- DEBUG cat',cat, this.group[cat].length);
         this.group[cat] = this.group[cat].sort((a, b) => {

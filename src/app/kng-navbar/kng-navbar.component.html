@@ -13,26 +13,6 @@
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
           <!--<mdc-icon mdcListItemGraphic class="">account_circle</mdc-icon>--><span i18n>{{$i18n.label().nav_login}}</span>
         </mdc-list-item>
-
-        <mdc-list-divider></mdc-list-divider>
-        <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_shipping}}</h3>
-        <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_shipping2}}</h3>
-        <mdc-list-item *ngIf="noshippingMsg"><b>{{noshippingMsg[locale]}}</b></mdc-list-item>
-        <mdc-list-item *ngFor="let day of getShippingDays();let idx=index" [selected]="day.equalsDate(currentShippingDay)"
-          (click)="doSetCurrentShippingDay($event,day,idx)">
-          <mdc-icon mdcListItemGraphic>radio_button_checked</mdc-icon>
-          {{day|date:'EEEE d MMMM':'':locale}}&nbsp;
-          <!-- <mdc-icon mdc-list-item-meta>info</mdc-icon>                 -->
-        </mdc-list-item>
-        <mdc-list-divider></mdc-list-divider>
-        <h3 mdcListGroupSubheader i18n>Contactez-nous!</h3>
-        <mdc-list-item>
-          <mdc-icon mdcListItemGraphic>phone</mdc-icon><a href="tel:{{config.shared.home.phone}}">{{config.shared.home.phone}}</a>
-        </mdc-list-item>
-        <mdc-list-item>
-          <mdc-icon mdcListItemGraphic>email</mdc-icon><a href="mailto:{{config.shared.home.email}}">{{config.shared.home.email}}</a>
-        </mdc-list-item>
-        <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_i18n}}</h3>
         <mdc-list-item>
           <mdc-icon mdcListItemGraphic>language</mdc-icon>
@@ -72,8 +52,10 @@
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="shipping hide-sm" (click)="navigation.open = !navigation.open">
-            <i class="material-icons">directions_bike</i> » {{currentShippingDay|date:'EEEE d MMMM':'':locale}}  &nbsp;<i class="material-icons " [hidden]="!noshippingMsg">info</i>
+        <mdc-top-app-bar-title class="shipping -hide-sm" (click)="openCalendar()">
+            <i class="material-icons gold">directions_bike</i> 
+            » {{gtShippingDateFormat()}} 
+            <i class="material-icons">keyboard_arrow_down</i>              
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 

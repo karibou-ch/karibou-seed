@@ -17,7 +17,7 @@ import { KngCommonModule } from './common/common.module';
 //
 // App components
 import { AppComponent } from './app.component';
-import { KngNavbarComponent } from './kng-navbar';
+import { KngNavbarComponent, KngCalendarForm } from './kng-navbar';
 
 //
 // environnement
@@ -47,8 +47,10 @@ export class GlobalErrorHandler implements ErrorHandler {
     // https://medium.com/@kamrankhatti/angular-lazy-routes-loading-chunk-failed-42b16c22a377
     const chunkFailedMessage = /Loading chunk [\d]+ failed/;
 
+    //
+    // Reload App is enough
     if (chunkFailedMessage.test(error.message)) {
-      window.location.reload(true);
+      return window.location.reload(true);
     }
 
     //
@@ -83,6 +85,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 @NgModule({
   declarations: [
     AppComponent,
+    KngCalendarForm,
     KngNavbarComponent,
     KngRootComponent,
     KngWelcomeComponent,
@@ -90,7 +93,11 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent
   ],
-  exports:[
+  // List of components that aren't used in templates directly
+  entryComponents:[
+    KngCalendarForm
+  ],
+  exports: [
     Kng2CoreModule,
     KngCommonModule
   ],

@@ -67,7 +67,7 @@
         <mdc-icon class="stars" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</mdc-icon>      
       </div>
       <button (click)="saveEvaluate()">{{$i18n.label().action_save}} </button>    
-      <button (click)="openIssue()" class="issue" [hidden]="score>=3">{{i18n[locale].title_issue_question}}</button>    
+      <button (click)="openIssue()" class="issue">{{i18n[locale].title_issue_question}}</button>    
   </div>
 </div>
 

@@ -24,6 +24,11 @@ div.user-container{
     h1{
       margin-bottom: 4px;
       font-weight: 400!important;
+      .pink.large{
+        font-size: 36px;
+        transform: translateY(8px);
+        margin-top: -8px;
+      }
     }
     div.title,h3{
       color: rgba(0, 0, 0, 0.76);
