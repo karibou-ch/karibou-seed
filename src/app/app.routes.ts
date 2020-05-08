@@ -7,6 +7,7 @@ import { IsWelcomeGard } from './common';
 import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-server-error-found.component';
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
+import { KngNavigationStoreResolve } from './common/navigation.store.service';
 
 
 
@@ -19,7 +20,7 @@ export const appRoutes: Routes = [
   {
     path: 'store/:store',
     component: KngRootComponent,
-    resolve: { loader: LoaderResolve },
+    resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
     loadChildren: './shared/shared.module#SharedModule'
     // children:[{path:'', loadChildren: './shared/shared.module#SharedModule'}]
   },

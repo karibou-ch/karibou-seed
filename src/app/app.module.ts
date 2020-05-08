@@ -107,8 +107,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     Kng2CoreModule.forRoot({
       API_SERVER: environment.API_SERVER,
       loader: [
-        'categories',
-        'shops'
+        'categories'
       ]
     }),
     KngCommonModule.forRoot(),
