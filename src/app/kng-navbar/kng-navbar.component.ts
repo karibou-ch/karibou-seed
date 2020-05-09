@@ -47,10 +47,13 @@ export class KngCalendarForm {
       this.currentShippingDay = data.currentShippingDay;
       this.isPremium = data.isPremium;
       // FIXME remove hardcoded shippingtimes[16]
-      this.labelTime = this.config.shared.order.shippingtimes[16] || 'loading...';
-      this.currentRanks = this.config.shared.order.currentRanks || {};
-      this.currentLimit = this.config.shared.order.currentLimit || 1000;
-      this.premiumLimit =  this.config.shared.order.premiumLimit || 0;
+      const hub = this.config.shared.hub.slug;
+      if (hub) {
+        this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
+        this.currentRanks = this.config.shared.currentRanks[hub] || {};
+        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;  
+      }
   }
   get locale() {
     return this.i18n.locale;
@@ -109,8 +112,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   primary: ConfigMenu[];
   topmenu: ConfigMenu[];
   image: string;
-  title: string;
-  subtitle: string;
+  hubTitle: string;
+  hubImage: string;
   content: any;
   cgAccepted: boolean;
   noshippingMsg: string;
@@ -158,9 +161,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.topmenu = [];
 
     // FIXME remove code repeat
-    this.currentRanks = this.config.shared.order.currentRanks || {};
-    this.currentLimit = this.config.shared.order.currentLimit || 1000;
-    this.premiumLimit = this.config.shared.order.premiumLimit || 0;
+    const hub = this.config.shared.hub.slug;
+    if (hub) {
+      this.currentRanks = this.config.shared.currentRanks[hub] || {};
+      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+    }
+
     this.noshippingMsg = this.getNoShippingMessage();
 
   }
@@ -174,24 +181,16 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    
-    //
-    // karibou.ch context is ready
-    // this.$i18n.init(this.config.shared.i18n);
-    this.$navigation.updateUser(this.user);
-    this.$navigation.updateConfig(this.config);
-    this.$navigation.updateCategory(this.categories);
 
-    //
-    // home.about|footer|shop|siteName|tagLine
-    //  - p,h,image
-    //    - fr,en
-    this.image = this.config.shared.home.tagLine.image;
-    this.title = this.config.shared.home.siteName[this.locale];
+    // K. image
+    this.image = this.config.shared.tagLine.image;
+    // HUB title
+    this.hubTitle = this.config.shared.hub.siteName[this.locale];
+    this.hubImage = this.config.shared.hub.siteName.image;
+
     this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active);
     this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active);
     this.store = this.$navigation.store;
-    this.content = this.$navigation.dispatch(this.$route.snapshot.url, this.$route.snapshot.params);
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
     // TODO needs dynamic DEPARTEMENT feature
@@ -220,7 +219,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       // update user
       if (emit.user) {
         Object.assign(this.user, emit.user);
-        this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config, this.user);
         this.$cdr.markForCheck();
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
@@ -300,10 +298,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   getTagline(key) {
-    if (!this.config || !this.config.shared.home.tagLine[key]) {
+    if (!this.config || !this.config.shared.tagLine[key]) {
       return '';
     }
-    return this.config.shared.home.tagLine[key][this.locale];
+    return this.config.shared.tagLine[key][this.locale];
   }
 
   getRouterLink(url) {

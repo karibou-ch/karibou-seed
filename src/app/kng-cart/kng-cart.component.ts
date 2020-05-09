@@ -181,8 +181,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     //
     // FIXME currently only one shipping time!
-    this.shippingTime = Object.keys(this.config.shared.order.shippingtimes)[0];
-    this.shippingTime = this.config.shared.order.shippingtimes[this.shippingTime];
+    this.shippingTime = Object.keys(this.config.shared.hub.shippingtimes)[0];
+    this.shippingTime = this.config.shared.hub.shippingtimes[this.shippingTime];
 
     this.user = loader[1];
     this.shops = loader[3];
@@ -193,9 +193,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.amountReserved = 1.11;
 
     // FIMXE remove repeated code limit
-    this.currentRanks = this.config.shared.order.currentRanks || {};
-    this.currentLimit = this.config.shared.order.currentLimit || 1000;
-    this.premiumLimit = this.config.shared.order.premiumLimit || 0;
+    const hub = this.config.shared.hub.slug;
+    if (hub) {
+      this.currentRanks = this.config.shared.currentRanks[hub] || {};
+      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+    }
+
   }
 
   get locale() {
@@ -542,7 +546,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //
     // update shipping time
     const time = (this.isCartDeposit() ? 16 : 14);
-    this.shippingTime = this.config.shared.order.shippingtimes[time];
+    this.shippingTime = this.config.shared.hub.shippingtimes[time];
   }
 
   setPaymentMethod(payment: UserCard) {
