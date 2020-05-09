@@ -5,6 +5,7 @@
   </button>
   <div class="sign" >
     <div class="logo" 
+         [ngStyle]="getWelcomeLogo()"
          [class.small]="askAction=='signup'"
          [routerLink]="'/store/geneva/home'" 
          [hidden]="askAction=='payment'||askAction=='address'"></div>

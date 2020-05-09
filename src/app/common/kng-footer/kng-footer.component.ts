@@ -48,10 +48,10 @@ export class KngFooterComponent implements OnInit {
   }
 
   getFooter(key) {
-    if (!this.content || !this.content.home.footer[key]) {
+    if (!this.content || !this.content.footer[key]) {
       return;
     }
-    return this.content.home.footer[key][this.locale];
+    return this.content.footer[key][this.locale];
   }
 
 

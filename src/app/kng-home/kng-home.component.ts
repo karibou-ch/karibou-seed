@@ -9,9 +9,9 @@ import {
   QueryList,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { timer, Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import {
   CartService,
   Category,
@@ -23,8 +23,7 @@ import {
   CartAction,
   PhotoService
 } from 'kng2-core';
-import { ActivatedRoute } from '@angular/router';
-import { i18n } from '../common';
+import { i18n, KngNavigationStateService } from '../common';
 
 
 @Component({
@@ -114,6 +113,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     public $cart: CartService,
     public $i18n: i18n,
     private $loader: LoaderService,
+    private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $photo: PhotoService
@@ -232,23 +232,25 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.cached.categories;
   }
 
+
+
   getHeaderStyle() {
     // {'background-image': 'url(' + getStaticMap(edit.address) + ')'}
     if (!this.hasBackgroundCover()) {
       return {};
     }
 
-    const bgStyle = 'url(' + this.config.shared.home.about.image + ')';
+    const bgStyle = 'url(' + this.config.shared.hub.about.image + ')';
     return { 'background-image': this.bgGradient + bgStyle };
   }
 
 
   getAboutContent(elem: string) {
-    return this.config.shared.home.about[elem][this.$i18n.locale];
+    return this.config.shared.hub.home.howto[elem][this.$i18n.locale];
   }
 
   hasBackgroundCover() {
-    return (!!this.config.shared.home.about.image);
+    return (!!this.config.shared.hub.home.howto.image);
   }
 
   hasAboutContent(elem: string) {
@@ -273,6 +275,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // FIXME remove hardcoded constraint
     if(this.target === 'selection') {
       delete options.group;
+    }
+
+    const hub = this.$navigation.store;
+    if (hub) {
+      options.hub = hub;
     }
 
     // FIXME inner size

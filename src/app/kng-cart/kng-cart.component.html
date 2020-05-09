@@ -7,7 +7,7 @@
   </section>
   
   <section [hidden]="!items.length">
-    <h2 i18n>{{config?.shared.checkout.title[$i18n.locale]}}</h2>
+    <h2 i18n>{{config?.shared.hub.checkout.title[$i18n.locale]}}</h2>
     <h3 class="primary-text" i18n *ngIf="!noshippingMsg; else noShipping">
       {{i18n[locale].cart_nextshipping}} 
       <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
@@ -118,7 +118,7 @@
   <!-- ADDRESS IFF isAuth()-->
   <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()">      
     <div class="cart-flow" [class.flow-done]="currentShipping().name!=null" >1</div>
-    <section  [innerHtml]="config?.shared.checkout.address[$i18n.locale]"></section>
+    <section  [innerHtml]="config?.shared.hub.checkout.address[$i18n.locale]"></section>
 
     <!-- USER ADDRESS -->
     <mdc-card  *ngFor="let address of user.addresses" class="address-card"
@@ -192,7 +192,7 @@
   <!-- PAYMENT-->
   <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable()">      
     <div class="cart-flow" [class.flow-done]="currentGatewayLabel()!='Aucun'">2</div>
-    <section  [innerHtml]="config?.shared.checkout.payment[$i18n.locale]"></section>
+    <section  [innerHtml]="config?.shared.hub.checkout.payment[$i18n.locale]"></section>
 
 
     <!-- FIXME hide wallet method -->
@@ -237,7 +237,7 @@
   <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable()">
     <div class="cart-flow flow-done">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
-         [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
+         [innerHtml]="config?.shared.hub.checkout.resume[$i18n.locale]">
    </section>  
 
     <!-- TAX & SHIPPING -->
@@ -313,8 +313,8 @@
 
 
     <!-- CHECKOUT  MSG -->
-    <div class="checkout-msg" *ngIf="config.shared.checkout.active">
-      <div [innerHtml]="config.shared.checkout.message[$i18n.locale]"></div>
+    <div class="checkout-msg" *ngIf="config.shared.hub.checkout.active">
+      <div [innerHtml]="config.shared.hub.checkout.message[$i18n.locale]"></div>
     </div>
 
     <div class="block-warning" *ngIf="noshippingMsg">

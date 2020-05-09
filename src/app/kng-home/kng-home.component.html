@@ -8,12 +8,12 @@
 
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="target!='home'">
-  <div class="maintenance" *ngIf="config.shared.maintenance.active" 
-      [innerHtml]="config.shared.maintenance.reason[locale]">    
+  <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
+      [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
   </div>
 
-  <div class="info" *ngIf="config.shared.header.active" 
-      [innerHtml]="config.shared.header.message[locale]">
+  <div class="info" *ngIf="config.shared.hub.header.active" 
+      [innerHtml]="config.shared.hub.header.message[locale]">
   </div>
 </div>
 

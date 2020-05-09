@@ -147,13 +147,10 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     //
     // init formBuilder
-
-    this.$navigation.isAdminLayout = true;
     this.loadCategories();
   }
 
   ngOnDestroy() {
-    this.$navigation.isAdminLayout = false;
   }
 
 

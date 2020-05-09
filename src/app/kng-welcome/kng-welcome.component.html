@@ -5,7 +5,7 @@
 <ng-template #loadingTpl>...</ng-template> -->
 <div class="container top">
   <div class="welcome">
-    <div class="logo"></div>
+    <div class="logo" [ngStyle]="getWelcomeLogo()"></div>
     <!-- WELCOME -->
     <div class="inner" >
       <h1>{{getTagline('t')}}</h1>
@@ -29,11 +29,11 @@
 </div>
 
 <div class="container middle">
-  <div class="how-it-works" kng-editor-key="home.howto.p" [innerHTML]="$i18n.lang(config?.shared.home.howto.p)">
+  <div class="how-it-works" [innerHTML]="getAbout('p')">
               
   </div>
   <div class="favorite-products" [ngStyle]="getWelcomeImage()">
-    <div class="elem" [innerHTML]="$i18n.lang(config?.shared.home.howto.h)"></div>
+    <div class="elem" [innerHTML]="getAbout('h')"></div>
     <!-- <div class="elem"></div> -->
   </div>
 </div>

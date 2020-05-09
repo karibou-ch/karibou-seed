@@ -1,7 +1,7 @@
 <!-- NAVIGATION  -->
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open">
+  <img [src]="hubImage" />
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
-    <img [src]="config.shared.home.siteName.image" />
   </mdc-drawer-header>
   <mdc-drawer-content>
 
@@ -24,7 +24,7 @@
       </mdc-list>
     </mdc-list-group>
     <!-- ADMIN -->
-    <mdc-list-group class="admin" [hidden]="!$navigation.isAdmin">
+    <mdc-list-group class="admin" [hidden]="!user.isAdmin()">
       <mdc-list>
         <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader>Administration</h3>
@@ -47,7 +47,7 @@
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start">
         <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="home">menu</mdc-icon>
-        <mdc-top-app-bar-title class="home hide-sm" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
+        <mdc-top-app-bar-title class="home hide-sm" [routerLink]="['/store',store,'home']">{{hubTitle}}</mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->

@@ -232,6 +232,31 @@ export class UserSignComponent {
     }
   }
 
+  getTagline(key) {
+    if (!this.config || !this.config.shared.tagLine[key]) {
+      return;
+    }
+    return this.config.shared.tagLine[key][this.$i18n.locale];
+  }
+
+  getHUBLogo(){
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.siteName) ?
+          this.config.shared.hub.siteName.image : '/assets/img/k-brand-lg.png';
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': bgStyle};
+
+  }
+
+  getWelcomeLogo() {
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.tagLine) ?
+          this.config.shared.hub.tagLine.image : '/assets/img/k-brand-lg.png';
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': bgStyle};
+
+  }
+
   // @HostListener('document:click')
   onBack() {
     const referrer = this.$route.snapshot.queryParams['referrer'];
