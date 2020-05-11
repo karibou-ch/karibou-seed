@@ -488,7 +488,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   getDepositAddress() {
-    return this.config.shared.deposits;
+    return this.config.shared.hub.deposits;
   }
 
 

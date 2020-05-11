@@ -306,7 +306,7 @@
     margin: 8px;    
     box-shadow: inherit;
     // FIXME Safari 10.1 CSS FIX
-    height: 210px;
+    min-height: 210px;
       
     .card__media {
       background-repeat: no-repeat;

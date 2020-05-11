@@ -148,7 +148,7 @@
     </mdc-card>
       
     <!-- ADDRESS DEPOSIT -->
-    <mdc-card *ngFor="let address of getDepositAddress()" 
+    <mdc-card *ngFor="let address of getDepositAddress()" class="collect"
               [outlined]="false"	
               [hidden]="!address.active"
               (click)="setShippingAddress(address)"
@@ -167,7 +167,7 @@
           </span>
         </div>
         <div class="card__secondary">
-          <div class="type">{{i18n[locale].cart_collect}} {{address.note}}</div>
+          <div class="type">{{address.note}}</div>
         </div>
       </mdc-card-primary-action>                      
     </mdc-card>      
