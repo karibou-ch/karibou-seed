@@ -46,7 +46,6 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     public $snack: MdcSnackbar,
     public $navigation: KngNavigationStateService
   ) {
-    this.$navigation.isAdminLayout = true;
     this.isLoading = false;
     this.isReady = true;
     const loader = this.$route.snapshot.data.loader;
@@ -69,7 +68,6 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   ngOnInit() {
     //
     // set navigation layout
-    this.$navigation.isAdminLayout = true;
     this.formatDates();
     this.buildMenu();
   }
@@ -110,7 +108,6 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.$navigation.isAdminLayout = false;
     this.isLoading = false;
   }
 
@@ -224,7 +221,6 @@ export class KngPageContentComponent  {
   }
 
   ngOnInit() {
-    this.$navigation.isAdminLayout = true;
     //
     // set navigation layout
     // let categories=this.getCategories().map(type=>{
@@ -242,8 +238,6 @@ export class KngPageContentComponent  {
   ngOnDestroy() {
     //
     // set navigation layout
-    this.$navigation.isAdminLayout = false;
-
   }
 
   getCategories() {
