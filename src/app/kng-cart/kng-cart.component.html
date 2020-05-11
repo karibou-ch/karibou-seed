@@ -69,7 +69,7 @@
   
       <mdc-list-item-meta (click)="showInfoFees=!showInfoFees">
         <div class="info"><span [innerHtml]="i18n[locale].cart_info_service_k"></span> &nbsp;</div>
-        <div class="price" >{{currentServiceFees()|currency:'CHF'}}</div>
+        <div class="price gray" >{{currentServiceFees()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>
 
@@ -248,6 +248,7 @@
           <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>      
+
       
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
