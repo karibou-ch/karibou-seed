@@ -312,12 +312,6 @@
     
     </div>
 
-
-    <!-- CHECKOUT  MSG -->
-    <div class="checkout-msg" *ngIf="config.shared.hub.checkout.active">
-      <div [innerHtml]="config.shared.hub.checkout.message[$i18n.locale]"></div>
-    </div>
-
     <div class="block-warning" *ngIf="noshippingMsg">
         <i class="material-icons">info</i> {{noshippingMsg}} 
     </div>
@@ -331,5 +325,11 @@
            [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{i18n[locale].cart_cg}}</a></label>  
     </div>
     <button primary mdc-button unelevated="true" [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{i18n[locale].cart_order}}</button>    
+
+    <!-- CHECKOUT  MSG -->
+    <div class="checkout-msg" *ngIf="config.shared.hub.checkout.active">
+      <div [innerHtml]="config.shared.hub.checkout.message[$i18n.locale]"></div>
+    </div>
+
   </div>
 </div>
