@@ -329,7 +329,6 @@
   .availability,
   .certified,
   .description{
-    -border-top: dotted 2px #ddd;
     display: relative;
     width: 95%;
     max-width: 600px;
@@ -341,6 +340,10 @@
     }
     .light{
       color: #aaa;
+    }
+
+    img{
+      max-width: 100%;
     }
   }
 
