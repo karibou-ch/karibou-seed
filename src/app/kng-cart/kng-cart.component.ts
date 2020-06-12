@@ -315,6 +315,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       (this.isCartDeposit() ? 16 : 14)
     );
 
+    const hub = this.config.shared.hub.slug;
+
     //
     // update shipping note
     shipping.note = this.shippingNote || shipping.note;
@@ -323,6 +325,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.isRunning = true;
 
     this.$order.create(
+      hub,
       shipping,
       this.items.map(item => item.toDEPRECATED()),
       this.$cart.getCurrentPaymentMethod()
