@@ -38,6 +38,7 @@ export class KngCalendarForm {
   currentLimit: number;
   premiumLimit: number;
   noshippingMsg: string;
+  showHUBs: boolean;
 
   constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
     @Inject(MDC_DIALOG_DATA) public data: any) {
@@ -57,6 +58,10 @@ export class KngCalendarForm {
   }
   get locale() {
     return this.i18n.locale;
+  }
+
+  toggleStore() {
+    this.showHUBs = !this.showHUBs;
   }
 
   doSetCurrentShippingDay($event, day: Date, idx: number) {
@@ -217,7 +222,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
       //
       // update user
-      if (emit.user) {
+      if (emit.user && this.user.id !== emit.user.id) {
         Object.assign(this.user, emit.user);
         this.$cart.setContext(this.config, this.user);
         this.$cdr.markForCheck();
@@ -318,7 +323,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     if (!this.isDayAvailable(this.currentShippingDay)) {
       return this.$i18n[this.locale].nav_no_shipping;
     }
-    return formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
+    const title = formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
+    return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
   getNoShippingMessage(label?: string) {

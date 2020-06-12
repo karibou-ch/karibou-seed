@@ -4,7 +4,14 @@ mdc-drawer{
   a{
     color: #0a072b;
   }
+  img.logo{
+    padding: 10px;
+    max-height: 80px;
+    margin: auto;
+  }
+
   mdc-drawer-header{
+    outline: 0;
     img{
       padding: 15% 35%;
       width: 30%;
@@ -161,6 +168,10 @@ div.navbar{
     box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     z-index: 2;
 
+    img.icon{
+      max-width: 30px;
+      margin-left: -3px;
+    }
     //
     // override firefox *:any-link{
     a{
@@ -169,22 +180,25 @@ div.navbar{
       text-decoration:none;
     }
         
+    /** top-left navigation */
     .home{
       outline: 0px;
       cursor: pointer;
-    }
+      font-size: 1.1rem;
+      line-height: 19px;
+      i{
+        transform: translateY(6px);
+      }  
+      i.subtitle{
+        transform: translateY(2px);
+      }  
 
-    .shopping-cart {
-      div{
-        transform: translateY(-7px) translateX(18px);
-        display: inline-block;
-        text-transform: none;
-        span{
-          color: gold;          
-        }
+      div {
+        font-size: 13px;
       }
     }
-    
+
+    /** top-center navigation */
     .shipping {
       cursor: pointer;
       letter-spacing: -0.5px;
@@ -198,6 +212,23 @@ div.navbar{
         transform: translateY(4px);
       }  
     }
+
+    /** top-right navigation */
+    .actions {
+      min-width: 180px;      
+    }
+
+    .shopping-cart {
+      div{
+        transform: translateY(-7px) translateX(18px);
+        display: inline-block;
+        text-transform: none;
+        span{
+          color: gold;          
+        }
+      }
+    }
+    
 
 
     .mdc-tab{

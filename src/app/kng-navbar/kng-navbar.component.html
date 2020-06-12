@@ -1,6 +1,6 @@
 <!-- NAVIGATION  -->
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open">
-  <img [src]="hubImage" />
+  <img class="logo" [src]="hubImage" />
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
   </mdc-drawer-header>
   <mdc-drawer-content>
@@ -45,22 +45,23 @@
   <mdc-top-app-bar fixed="false"  [dense]="$navigation.isMobile()">
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
-      <mdc-top-app-bar-section align="start">
-        <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="home">menu</mdc-icon>
-        <mdc-top-app-bar-title class="home hide-sm" [routerLink]="['/store',store,'home']">{{hubTitle}}</mdc-top-app-bar-title>
+      <mdc-top-app-bar-section align="start" >
+        <img class="icon" src="/assets/img/k-puce-dark.png" (click)="navigation.open = ! navigation.open" />
+        <mdc-top-app-bar-title class="home -hide-sm" [routerLink]="['/store',store,'home']" (click)="openCalendar()">
+          {{hubTitle}} <i class="material-icons">keyboard_arrow_down</i>
+          <div> <i class="material-icons subtitle small">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}</div>
+        </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="shipping -hide-sm" (click)="openCalendar()">
-            <i class="material-icons gold">directions_bike</i> 
-            » {{gtShippingDateFormat()}} 
-            <i class="material-icons">keyboard_arrow_down</i>              
+        <mdc-top-app-bar-title class="shipping hide" (click)="openCalendar()">
+            {{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i>              
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
-      <mdc-top-app-bar-section align="end">        
+      <mdc-top-app-bar-section align="end" class="actions">        
         <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
           <div i18n> <span class="cart-items-count"></span></div>
           <mdc-icon mdcTopAppBarActionItem >shopping_cart</mdc-icon>        

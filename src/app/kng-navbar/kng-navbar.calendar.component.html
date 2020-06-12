@@ -13,10 +13,21 @@
           <div class="calendar_plan">
             <div class="cl_plan">
               <div class="cl_title">{{i18n.label().nav_shipping}}</div>
+              <div class="cl_HUB">
+                {{config.shared.hub.name}}                
+                <!-- <button  (click)="toggleStore()">
+                  <mdc-icon class="white">arrow_drop_down</mdc-icon>
+                </button>           -->
+      
+              </div>
               <div class="cl_copy">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
             </div>
+            <div class="cl_store" (click)="toggleStore()">
+              Choisir un autre marcher <i class="material-icons">arrow_drop_down</i>
+            </div>
           </div>
-          <div class="calendar_events">
+
+          <div class="calendar_events" [hidden]="showHUBs">
             <p class="ce_title">{{i18n.label().nav_shipping2}}</p>
             <div class="event_item" 
                 [class.disabled]="!isDayAvailable(day)"
