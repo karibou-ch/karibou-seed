@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  API_SERVER: 'http://api.karibou.evaletolab.ch'
+  production: false,
+  API_SERVER: 'https://karibou.ch/api'
 };

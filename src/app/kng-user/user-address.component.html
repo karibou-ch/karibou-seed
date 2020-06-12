@@ -51,7 +51,7 @@
           <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
         </mdc-select> -->
           
-        <mdc-text-field fullwidth i18n-label [label]="i18n[locale].address_floor"  type="text" formControlName="floor" class="width-25">
+        <mdc-text-field fullwidth i18n-label [label]="i18n[locale].address_floor"  type="text" formControlName="floor" class="width-25 floor">
         </mdc-text-field>
   
         <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_phone"  type="text" formControlName="phone" >

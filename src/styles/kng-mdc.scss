@@ -49,11 +49,18 @@ mdc-list{
   mdc-floating-label{
     color: red!important;
   }
-  border-bottom: 1px dotted #ffa400 !important; /* red */
   input,
   .mdc-text-field__input{
-    border-bottom-color: #ffa400 !important; /* red */
+    border-bottom-color: red !important; /* red */
+    border-width: 2px;
   }  
+
+  input,
+  .mdc-text-field__input::placeholder{
+    color: red;
+  }
+
+  
 }
 
 
