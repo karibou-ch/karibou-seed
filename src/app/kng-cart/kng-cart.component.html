@@ -23,7 +23,7 @@
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>{{i18n[locale].cart_error}}</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
-    <mdc-list-item *ngFor="let item of items" (click)="onSelect($event,item)">
+    <mdc-list-item *ngFor="let item of sortedItems()" (click)="onSelect($event,item)">
       <mdc-list-item-graphic>
         <div class="avatar"
               [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}">
@@ -117,125 +117,112 @@
 
   <!-- ADDRESS IFF isAuth()-->
   <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()">      
-    <div class="cart-flow" [class.flow-done]="currentShipping().name!=null" >1</div>
+    <div class="cart-flow" [class.flow-done]="currentShipping().name==null" >1</div>
     <section  [innerHtml]="config?.shared.checkout.address[$i18n.locale]"></section>
-
-    <!-- USER ADDRESS -->
-    <mdc-card  *ngFor="let address of user.addresses" class="address-card"
-              [outlined]="false"	
-              [class.selected]="isSelectedAddress(address)"              
-              (click)="setShippingAddress(address)">
-      <mdc-card-primary-action >
-        <mdc-card-media class="card__media" 
-          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"
-          [square]="true">
-          <span>Fr {{computeShippingByAddress(address)|number:'1.2-2'}}</span>          
-        </mdc-card-media>
-        <div class="card__primary">
-          <span class="card__subtitle" >
-              <span class="text-capitalize"><strong>{{address.name}}</strong></span><br/>
-              {{address.streetAdress}}
-          </span>
-        </div>
-        <div class="card__secondary">
-          <div class="note"></div>
-          <div class="type">livraison</div>
-          <div class="price">
-            
-          </div>
-        </div>
-      </mdc-card-primary-action>                      
-    </mdc-card>
       
-    <!-- ADDRESS DEPOSIT -->
-    <mdc-card *ngFor="let address of getDepositAddress()" 
-              [outlined]="false"	
-              [hidden]="!address.active"
-              (click)="setShippingAddress(address)"
-              [class.selected]="isSelectedAddress(address)">
-      <mdc-card-primary-action>
-          <mdc-card-media class="card__media" 
-          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"
-          [square]="true">
-          <span>Fr {{address.fees|number:'1.2-2'}}</span>
-          
-        </mdc-card-media>
-        <div class="card__primary">
-          <span class="card__subtitle" >
-              <span class="text-capitalize"><strong>{{address.name}}</strong></span><br/>
-              {{address.streetAdress}}
-          </span>
-        </div>
-        <div class="card__secondary">
-          <div class="type">{{i18n[locale].cart_collect}} {{address.note}}</div>
-        </div>
-      </mdc-card-primary-action>                      
-    </mdc-card>      
+    <!-- USER ADDRESS -->
+    <mdc-list  twoLine avatar singleSelection interactive>
+      <mdc-list-item *ngFor="let address of user.addresses" 
+                    [selected]="isSelectedAddress(address)"              
+                    (click)="setShippingAddress(address)">
+        <mdc-list-item-graphic>
+          <div class="avatar"
+          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"></div>
+        </mdc-list-item-graphic>
+        <mdc-list-item-text [secondaryText]="address.streetAdress" >
+          <strong class="text-capitalize">{{address.name}}</strong> {{address.note}}
+        </mdc-list-item-text>                  
+        <mdc-list-item-meta>
+          <span [class.bold]="isSelectedAddress(address)">
+          Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</span>
+        </mdc-list-item-meta>        
+      </mdc-list-item>
 
-    <!-- NEW ADDRESS -->
-    <mdc-card [outlined]="false"	
-                [routerLink]="['/store/'+store+'/me/login-or-address']" >
-      <mdc-card-primary-action>
-        <mdc-card-media class="card__media kng-address" [square]="true">
-          
-        </mdc-card-media>
-        <div class="card__primary">
-          <span class="card__subtitle" i18n>
-            {{$i18n[locale].cart_address_add}} 
-          </span>
-        </div>
-      </mdc-card-primary-action>                      
-    </mdc-card>      
+      <!-- SEPARATOR -->
+      <mdc-list-divider inset></mdc-list-divider>      
+
+      <!-- ADDRESS DEPOSIT -->
+      <mdc-list-item *ngFor="let address of getDepositAddress()" 
+                      [hidden]="!address.active"
+                      (click)="setShippingAddress(address)"
+                      [selected]="isSelectedAddress(address)">
+        <mdc-list-item-graphic>
+          <div class="avatar"
+          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"></div>
+        </mdc-list-item-graphic>
+        <mdc-list-item-text [secondaryText]="address.streetAdress">
+          <strong>{{address.name}}</strong> 
+        </mdc-list-item-text>                  
+        <mdc-list-item-meta>
+          <span [class.bold]="isSelectedAddress(address)">
+            Fr {{address.fees|number:'1.2-2'}}</span>
+        </mdc-list-item-meta>        
+      </mdc-list-item>
+      <!-- SEPARATOR -->
+      <mdc-list-divider inset></mdc-list-divider>
+
+      <!-- NEW ADDRESS -->
+      <mdc-list-item [routerLink]="['/store/'+store+'/me/login-or-address']" >
+        <mdc-list-item-graphic class="kng-address">
+          &nbsp;
+        </mdc-list-item-graphic>
+        <mdc-list-item-text secondaryText="Nous déposons vos sacs devant votre porte si vous êtes absent">
+          {{$i18n[locale].cart_address_add}} 
+        </mdc-list-item-text>
+        <mdc-list-item-meta class="icon">
+          <mdc-icon class="primary">note_add</mdc-icon>
+        </mdc-list-item-meta>
+        
+      </mdc-list-item>
+    </mdc-list>    
           
   </div>
 
   <!-- PAYMENT-->
   <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable()">      
-    <div class="cart-flow" [class.flow-done]="currentGatewayLabel()!='Aucun'">2</div>
+    <div class="cart-flow" [class.flow-done]="currentGatewayLabel()=='Aucun'">2</div>
     <section  [innerHtml]="config?.shared.checkout.payment[$i18n.locale]"></section>
 
 
     <!-- FIXME hide wallet method -->
     <!--               [hidden]="payment.issuer=='wallet'"-->
-    <mdc-card *ngFor="let payment of user.payments" 
-              [outlined]="false"	
-              [hidden]="payment.issuer=='wallet'"
-              (click)="setPaymentMethod(payment)"
-              [class.selected]="isSelectedPayment(payment)">
-      <mdc-card-primary-action>                
-        <mdc-card-media class="card__media" 
-          [ngStyle]="{'background-image': bgGradient + 'url(' + issuer[payment.issuer].img + ')'}"
-          [square]="true">          
-        </mdc-card-media>
-        <div class="card__secondary payment" [class.invalid]="!payment.isValid()" >
-          {{payment.expiryToDate()|date:'MM/y'}}<br/>
-          <span>{{issuer[payment.issuer].label}}</span>          
-        </div>              
-      </mdc-card-primary-action>
-    </mdc-card>
+    <mdc-list  twoLine avatar singleSelection interactive>
+      <mdc-list-item *ngFor="let payment of user.payments" 
+                      [hidden]="payment.issuer=='wallet'"
+                      (click)="setPaymentMethod(payment)"
+                      [class.selected]="isSelectedPayment(payment)">
+        <mdc-list-item-graphic>
+          <div class="avatar"
+          [ngStyle]="{'background-image': bgGradient + 'url(' + issuer[payment.issuer].img + ')'}"></div>
+        </mdc-list-item-graphic>
+        <mdc-list-item-text [secondaryText]="payment.expiryToDate()|date:'MM/y'">
+          {{issuer[payment.issuer].label}}
+        </mdc-list-item-text>                  
 
-    <!-- <button [routerLink]="['/store/'+store+'/me/login-or-payment']" 
-            class="action"
-             mdcHeadline2>Modifier vos méthodes de paiements</button> -->
-
-    <mdc-card [outlined]="false"	
-                [routerLink]="['/store/'+store+'/me/login-or-payment']" >
-      <mdc-card-primary-action>
-        <mdc-card-media class="card__media kng-payment" [square]="true">
-          
-        </mdc-card-media>
-        <div class="card__primary">
-          <span class="card__subtitle" i18n>
-            {{$i18n[locale].cart_payment_add}} 
-          </span>
-        </div>
-      </mdc-card-primary-action>                      
-    </mdc-card>                  
+        <!-- <mdc-checkbox mdcListItemMeta [checked]="isSelectedPayment(payment)"></mdc-checkbox> -->
+      </mdc-list-item>
+      <!-- SEPARATOR -->
+      <mdc-list-divider inset></mdc-list-divider>
+      <!-- ADD PAYMENT -->
+      <mdc-list-item [routerLink]="['/store/'+store+'/me/login-or-payment']" >
+        <mdc-list-item-graphic class="kng-payment">
+          &nbsp;
+        </mdc-list-item-graphic>
+        <mdc-list-item-text secondaryText="visa, mastercard, american express">
+          {{$i18n[locale].cart_payment_add}} 
+        </mdc-list-item-text>
+        <mdc-list-item-meta class="icon">
+          <mdc-icon class="gray">note_add</mdc-icon>
+        </mdc-list-item-meta>
+        
+      </mdc-list-item>
+    </mdc-list>    
+ 
   </div>
   
   <!-- RESUME -->
   <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable()">
-    <div class="cart-flow flow-done">3</div>
+    <div class="cart-flow ">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.checkout.resume[$i18n.locale]">
    </section>  
@@ -265,7 +252,7 @@
       </mdc-list-item>
 
       <!-- FIXME add payment fees here -->
-      <mdc-list-item >
+      <mdc-list-item hidden>
         <mdc-list-item-meta>
           <div class="info" i18n>{{i18n[locale].cart_info_payment}} ({{currentGatewayLabel()}}/{{currentGatewayFees()}} %)</div>
           <div class="price" >{{currentGatewayAmount()|currency:'CHF'}} </div>

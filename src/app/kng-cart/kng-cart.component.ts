@@ -557,6 +557,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$metric.event(EnumMetrics.metric_order_payment);
   }
 
+  sortedItems() {
+    return this.items.sort((a,b) => {
+      return a.category.slug.localeCompare(b.category.slug);
+    });
+  }
 
   remove(item: CartItem, variant?: string) {
     this.$cart.remove(item, variant);
