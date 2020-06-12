@@ -72,11 +72,14 @@ div{
       align-self: flex-end;
       margin-bottom: 8px;        
     }
+
+
     
-    .mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--outlined):not(.mdc-text-field--textarea) .mdc-text-field__input {
-      border-bottom-color: red!important;
-      border-bottom-width: 3px;      
-    } 
+    .mdc-text-field.floor .mdc-text-field__input{
+      border-bottom-color: red !important; /* red */
+      
+    }
+
     
     
   }  
