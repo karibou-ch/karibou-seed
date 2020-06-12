@@ -278,7 +278,8 @@ export class UserSignComponent {
   }
 
   onRecover() {
-    this.$user.recover(this.recover.value.email).subscribe(
+    const email = this.recover.value.email.toLocaleLowerCase();
+    this.$user.recover(email).subscribe(
       ok => {
         this.$snack.open(this.$i18n.label().user_recover_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
       }, err => {
