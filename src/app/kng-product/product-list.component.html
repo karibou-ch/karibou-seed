@@ -32,7 +32,7 @@
       <div class="vendor" >
         <div class="owner" 
             *ngFor="let vendor of getVendors()">
-            <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
+            <img [routerLink]="['/store',store,'shops',vendor.urlpath]" [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
       </div>
     </div>
 
