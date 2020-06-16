@@ -8,39 +8,37 @@
       </div>
 
       <!-- Calendar-->
-      <ng-template #shippingTemplate>
-        <div class="calendar light">
-          <div class="calendar_plan">
-            <div class="cl_plan">
-              <div class="cl_title">{{i18n.label().nav_shipping}}</div>
-              <div class="cl_HUB">
-                {{config.shared.hub.name}}                
-                <!-- <button  (click)="toggleStore()">
-                  <mdc-icon class="white">arrow_drop_down</mdc-icon>
-                </button>           -->
-      
-              </div>
-              <div class="cl_copy">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
+      <div class="calendar light">
+        <div class="calendar_plan">
+          <div class="cl_plan">
+            <div class="cl_title">{{i18n.label().nav_shipping}}</div>
+            <div class="cl_HUB">
+              {{config.shared.hub.name}}                
+              <!-- <button  (click)="toggleStore()">
+                <mdc-icon class="white">arrow_drop_down</mdc-icon>
+              </button>           -->
+    
             </div>
-            <div class="cl_store" (click)="toggleStore()">
-              Choisir un autre marcher <i class="material-icons">arrow_drop_down</i>
-            </div>
+            <div class="cl_copy">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
           </div>
+          <div class="cl_store" (click)="toggleStore()">
+            {{i18n.label().nav_store}} <i class="material-icons">arrow_drop_down</i>
+          </div>
+        </div>
 
-          <div class="calendar_events" [hidden]="showHUBs">
-            <p class="ce_title">{{i18n.label().nav_shipping2}}</p>
-            <div class="event_item" 
-                [class.disabled]="!isDayAvailable(day)"
-                *ngFor="let day of getShippingDays();let idx=index"                
-                (click)="doSetCurrentShippingDay($event,day,idx)">
-              <div class="ei_Dot" [class.dot_active]="day.equalsDate(currentShippingDay)"></div>
-              <div class="ei_Title">{{day|date:'EEEE d MMMM':'':locale}}</div>
-              <div class="ei_Copy">{{getShippingText(day)}}</div>
-  
-            </div>            
-          </div>
-        </div>  
-      </ng-template>
+        <div class="calendar_events" [hidden]="showHUBs">
+          <p class="ce_title">{{i18n.label().nav_shipping2}}</p>
+          <div class="event_item" 
+              [class.disabled]="!isDayAvailable(day)"
+              *ngFor="let day of getShippingDays();let idx=index"                
+              (click)="doSetCurrentShippingDay($event,day,idx)">
+            <div class="ei_Dot" [class.dot_active]="day.equalsDate(currentShippingDay)"></div>
+            <div class="ei_Title">{{day|date:'EEEE d MMMM':'':locale}}</div>
+            <div class="ei_Copy">{{getShippingText(day)}}</div>
+
+          </div>            
+        </div>
+      </div>  
 
       </mdc-dialog-content>
     </mdc-dialog-surface>

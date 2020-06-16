@@ -1,8 +1,14 @@
 $off_white:#fafafa;
 $light_grey:#A39D9E;
 
+.mdc-dialog__surface{
+  @media screen and (min-width:600px){
+    min-width: 600px;
+  }
+
+}
 .mdc-dialog__content{
-  min-width: 500px;
+  min-width: 600px;
   @media screen and (max-width:426px){
     min-width: 300px;
   }
