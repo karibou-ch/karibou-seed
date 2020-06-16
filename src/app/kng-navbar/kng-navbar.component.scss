@@ -170,7 +170,7 @@ div.navbar{
 
     img.icon{
       max-width: 24px;
-      margin-left: -1px;
+      margin-left: 2px;
       margin-top: 4px;
     }
     //
@@ -186,16 +186,19 @@ div.navbar{
       outline: 0px;
       cursor: pointer;
       font-size: 1.0rem;
+      font-weight: 600;
       line-height: 19px;
       i{
         transform: translateY(6px);
+        font-size: 22px;
       }  
       i.subtitle{
         transform: translateY(2px);
       }  
 
       div {
-        font-size: 12px;
+        font-size: 11px;
+        font-weight: 400;
       }
     }
 
