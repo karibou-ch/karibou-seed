@@ -29,7 +29,8 @@ import { formatDate } from '@angular/common';
 })
 export class KngCalendarForm {
 
-  i18n: any = {};
+  i18n: any = {
+  };
   config: Config;
   currentShippingDay: Date;
   labelTime: string;
@@ -47,6 +48,7 @@ export class KngCalendarForm {
       this.noshippingMsg = data.noshippingMsg;
       this.currentShippingDay = data.currentShippingDay;
       this.isPremium = data.isPremium;
+
       // FIXME remove hardcoded shippingtimes[16]
       const hub = this.config.shared.hub.slug;
       if (hub) {
@@ -84,7 +86,7 @@ export class KngCalendarForm {
   }
 
   getShippingDays() {
-    return this.config.getShippingDays();
+    return this.config.shared.shippingweek;
   }
 
 }
@@ -155,6 +157,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
+
 
     //
     // not mandatory

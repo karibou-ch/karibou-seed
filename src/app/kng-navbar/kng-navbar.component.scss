@@ -169,8 +169,9 @@ div.navbar{
     z-index: 2;
 
     img.icon{
-      max-width: 30px;
-      margin-left: -3px;
+      max-width: 24px;
+      margin-left: -1px;
+      margin-top: 4px;
     }
     //
     // override firefox *:any-link{
@@ -184,7 +185,7 @@ div.navbar{
     .home{
       outline: 0px;
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1.0rem;
       line-height: 19px;
       i{
         transform: translateY(6px);
@@ -194,7 +195,7 @@ div.navbar{
       }  
 
       div {
-        font-size: 13px;
+        font-size: 12px;
       }
     }
 

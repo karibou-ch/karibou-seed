@@ -46,10 +46,10 @@
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
-        <img class="icon" src="/assets/img/k-puce-dark.png" (click)="navigation.open = ! navigation.open" />
+        <img class="icon" src="/assets/img/k-puce-light.png" (click)="navigation.open = ! navigation.open" />
         <mdc-top-app-bar-title class="home -hide-sm" [routerLink]="['/store',store,'home']" (click)="openCalendar()">
           {{hubTitle}} <i class="material-icons">keyboard_arrow_down</i>
-          <div> <i class="material-icons subtitle small">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}</div>
+          <div> <i class="material-icons subtitle small hide">directions_bike</i>{{gtShippingDateFormat()}}</div>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
