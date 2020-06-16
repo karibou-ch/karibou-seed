@@ -218,7 +218,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
       //
       // update user
-      if (emit.user) {
+      if (emit.user && this.user.id !== emit.user.id) {
         Object.assign(this.user, emit.user);
         this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config, this.user);

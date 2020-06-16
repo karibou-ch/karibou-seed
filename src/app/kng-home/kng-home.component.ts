@@ -68,13 +68,18 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // page content by target
   pageOptions: any = {
     home: {
-      maxcat: 10,
+      maxcat: 12,
       discount: true,
       popular: true,
       showMore: true
     },
+    grocery: {
+      maxcat: 12,
+      popular: true,
+      showMore: true
+    },
     cellar: {
-      maxcat: 10,
+      maxcat: 12,
       popular: true,
       showMore: true
     },
@@ -83,7 +88,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       showMore: false
     },
     wellness: {
-      maxcat: 10,
+      maxcat: 12,
       popular: true,
       showMore: true
     }
@@ -276,7 +281,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
 
     // FIXME inner size
-    const maxcat = (window.innerWidth < 426) ? 6 : 8;
+    const maxcat = (window.innerWidth < 426) ? 8 : 12;
     const divider = (window.innerWidth < 426) ? 2 : 4;
     this.$product.select(options).subscribe((products: Product[]) => {
       this.home = [];
