@@ -9,6 +9,7 @@
 
 <ng-template #loadingTpl>
 	<mdc-card class="product-card card-skeleton" [outlined]="false" 
+						[class.selected]="selected"
 						[class.large]="large"
 						[class.incart]="cartItem&&cartItem?.quantity"
 	 [class.noavailable]="!product.isAvailableForOrder()" 
@@ -60,13 +61,14 @@
 					{{product.pricing.part}}
 				</div>
 				<div class="price ">
-
 					<span [class.discount]="product.attributes.discount" >
 						Fr {{product.pricing.price| number:'1.2-2'}}
 					</span>
+
 					<span [hidden]="!product.attributes.discount">
-						<span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+						<span class="red">{{product.pricing.discount| number:'1.2-2'}}</span>
 					</span>
+
 				</div>
 			</div>
 		</mdc-card-primary-action>

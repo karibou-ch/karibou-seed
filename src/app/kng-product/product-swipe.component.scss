@@ -59,14 +59,14 @@ kng-product-swipe{
       
         kng-product-thumbnail,
         .selected-card {
-          width: 230px;
-          flex: 1 0 230px;
+          width: 150px;
+          flex: 1 0 150px;
           margin: 0 6px;
           box-shadow: 0px 0px 20px #ddd;
 
           @media (max-width:425px) {
-            width: 180px;
-            flex: 1 0 180px;
+            width: 150px;
+            flex: 1 0 150px;
           }
           
           mdc-card{
