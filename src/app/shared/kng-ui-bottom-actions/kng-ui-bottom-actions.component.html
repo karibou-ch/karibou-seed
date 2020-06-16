@@ -1,5 +1,9 @@
 <div class="bottom-actions" >
   <div class="fabs">
+    <mdc-chip (click)="doPreferred()" class="bookmark" [hidden]="!show">
+      <mdc-chip-icon leading>bookmark</mdc-chip-icon>
+      <mdc-chip-text>{{i18n[locale].bookmark}}</mdc-chip-text>
+    </mdc-chip>
     
     <button mdc-fab  extended label="MENU"
       (click)="doToggle()"
@@ -24,6 +28,7 @@
 </div>  
 
 <div class="results" [hidden]="!show">
+  <!-- CATS -->
   <ul class="col">
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
@@ -35,6 +40,7 @@
     </li>                
   </ul>
 
+  <!-- PRODUCTS -->
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!products.length">
       <mdc-list-item *ngFor="let product of products">
         <mdc-list-item-graphic [routerLink]="['/store',store,'home','products',product.sku]">

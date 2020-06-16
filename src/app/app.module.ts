@@ -33,6 +33,7 @@ import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-serve
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
+import { ServiceWorkerModule } from '@angular/service-worker';
 //import { ServiceWorkerModule } from '@angular/service-worker';
 
 
@@ -115,7 +116,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
-    //ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

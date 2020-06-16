@@ -22,9 +22,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   i18n: any = {
     fr: {
+      bookmark: 'Sugestions',
       search_placeholder: 'Recherche',
     },
     en: {
+      bookmark: 'Proposals',
       search_placeholder: 'Search',
     }
   };
@@ -128,6 +130,22 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     }
   }
 
+  doPreferred() {
+    const options = {
+      discount: true,
+      popular: true,
+      status: true,
+      available: true,
+      when : this.$cart.getCurrentShippingDay()
+    };
+    this.$products.select(options).subscribe((products: Product[]) => {
+      this.findGetNull = !products.length;
+      this.products = products.sort(this.sortByScore);
+      this.cdr.markForCheck();
+    });
+
+  }
+
   doToggle() {
     this.show = !this.show;
     if (this.show) {
@@ -148,6 +166,15 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
     } catch (e) {}
 
+  }
+
+  sortByCatAndScore(a: Product, b) {
+    const cat = (a.categories.weight - b.categories.weight);
+    if ( cat !== 0 ) {
+      return cat;
+    }
+
+    return b.stats.score - a.stats.score;
   }
 
   sortByScore(a, b) {

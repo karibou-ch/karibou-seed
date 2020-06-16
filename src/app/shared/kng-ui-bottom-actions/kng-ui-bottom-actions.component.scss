@@ -11,7 +11,7 @@ kng-ui-bottom-actions{
 
   &.show{
     top: 0;
-    background: #eee;
+    background: rgba(0, 0, 0, 0.65);
     bottom: 0;
     height: 100vh;  
     transform: none;  
@@ -27,10 +27,9 @@ kng-ui-bottom-actions{
     justify-content: flex-end;
 
     overflow-y: auto;
-    max-height: calc( 100% - 70px);
+    max-height: calc( 100% - 90px);
     height: 100%;
     padding-top: 10px;
-    background-color: #eee;
     // &::-webkit-scrollbar { 
     //   display: none; 
     // }
@@ -50,7 +49,8 @@ kng-ui-bottom-actions{
     // search content
     mdc-list{
       background: white;
-      width: 100%;
+      width: auto;
+      max-width: 100vw;
       height: 100%;
       margin: auto;
 
@@ -79,8 +79,9 @@ kng-ui-bottom-actions{
         mdc-list-item-graphic{
           width: 56px!important;
           .avatar{
-            width: 56px;
-            height: 56px;
+            min-width: 66px;
+            width: 66px;
+            height: 66px;
             border-radius: 5px;
             background-repeat: no-repeat;
             background-size: cover;
@@ -117,6 +118,8 @@ kng-ui-bottom-actions{
         }
         li{
           text-align: center;
+          font-weight: 400;
+          letter-spacing: .3px;
           max-width: calc( 33% - 12px );
           flex:1 1 33%;
           padding-left: 0px;
@@ -134,6 +137,7 @@ kng-ui-bottom-actions{
             margin: auto;
             margin-bottom: 30px;
             opacity: .3;
+            -filter: saturate(2878%) hue-rotate(346deg) brightness(104%);
           }          
         }        
       }
@@ -168,10 +172,23 @@ kng-ui-bottom-actions{
     flex-flow: column;  
     align-items: flex-end;
     background:transparent;
+    background: linear-gradient( rgba(0, 0, 0, 0.0) 30%, rgba(66, 63, 59,.3) 99%);
     position: fixed;
     bottom:0;
     width: 100vw;
     z-index: 1;
+
+    .bookmark {      
+      position: absolute;
+      left: calc(( 100vw - 750px ) / 2 );
+      top: 10px;
+      mdc-chip-icon {
+        color: var(--mdc-theme-karibou-pink);
+      }      
+      @media (max-width: 426px) {
+        left: 15px;
+      }
+    }
 
     .fabs{
       display: flex;
