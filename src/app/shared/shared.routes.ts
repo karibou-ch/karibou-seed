@@ -30,7 +30,7 @@ import { ProductListComponent, ProductComponent } from '../kng-product';
 export const childrenRoute: Route[] = [
   { path: 'products/:sku/:title', component: ProductComponent },
   { path: 'products/:sku', component: ProductComponent },
-  { path: 'products', pathMatch: 'full', redirectTo: '/store/geneva/home' },
+  { path: 'products', pathMatch: 'full', component: ProductComponent, data: { redirect: true } },
   { path: 'category/:category/:child', component: ProductListComponent },
   { path: 'category/:category', component: ProductListComponent },
   { path: 'category', pathMatch: 'full', redirectTo: '' },

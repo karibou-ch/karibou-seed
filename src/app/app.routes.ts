@@ -11,7 +11,9 @@ import { KngNavigationStoreResolve } from './common/navigation.store.service';
 
 
 
+// FIXME redirect routes based on unknown store name
 export const appRoutes: Routes = [
+  { path: 'me', loadChildren: './kng-user/user.module#UserModule' },
   {
     path: 'validate/:uid/:mail',
     component: KngValidateMailComponent,

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User, UserService, Config } from 'kng2-core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { KngInputValidator } from '../shared';
-import { i18n } from '../common';
+import { i18n, KngNavigationStateService } from '../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 @Component({
@@ -31,6 +31,7 @@ export class UserEmailComponent {
     private $fb: FormBuilder,
     private $user: UserService,
     private $route: ActivatedRoute,
+    private $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar
   ) {
 
@@ -67,6 +68,9 @@ export class UserEmailComponent {
     this.locale = this.$i18n.locale;
   }
 
+  get store() {
+    return this.$navigation.store;
+  }
 
   //
   // entry poiont

@@ -34,7 +34,7 @@ import { map } from 'rxjs/operators';
 export class ProductComponent implements OnInit, OnDestroy {
   static WEEK_1: number = 86400 * 7;
 
-  @Input() sku: number;  
+  @Input() sku: number;
   @Input() config: any;
   @Input() categories: Category[];
   @Input() selected: boolean;
@@ -42,6 +42,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
 
+  isRedirect: boolean;
   isReady: boolean;
   isDialog = false;
   product: Product = new Product();
@@ -52,8 +53,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   photosz: string;
   cartItem: CartItem;
 
-  // FIXME store resolution
-  store = 'geneva';
   departement = 'home';
 
   isHighlighted: boolean;
@@ -92,6 +91,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   ) {
 
     //
+    // redirect rules
+    this.isRedirect = this.$route.snapshot.data.redirect;
+    if (this.isRedirect) {
+      this.$router.navigate(['/store', this.store, 'home']);
+    }
+
+    //
     // open product from departement
     this.departement = this.$route.snapshot.data.departement || this.$route.parent.snapshot.data.departement || 'home';
 
@@ -104,8 +110,83 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
+
   }
 
+  //
+  // this component is shared with thumbnail, tiny, and wider product display
+  // on init with should now which one is loaded
+  ngOnInit() {
+    if (this.isRedirect) {
+      return;
+    }
+
+    this.isReady = true;
+
+
+    //
+    // product action belongs to a shop or a category
+    this.rootProductPath = (this.$route.snapshot.params['shop']) ?
+      '/shop/' + this.$route.snapshot.params['shop'] : '';
+
+    //
+    // when display wider
+    if (!this.sku) {
+
+      this.isDialog = true;
+      this.photosz = '/-/resize/600x/';
+      // this.sku = this.$route.snapshot.params['sku'];
+      this.$route.params.subscribe(params => {
+        this.sku = params.sku;
+        this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
+
+        //
+        // spec: scrollTop; when open nested product we should scrollTop
+        try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
+
+      });
+
+      //
+      // DIALOG INIT HACK
+      document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+
+    } else {
+      this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
+    }
+
+
+
+    //
+    // simple animation
+    // capture escape only for dialog instance
+    if (this.dialog) {
+      this.dialog.nativeElement.classList.remove('fadeout');
+      //
+      // capture event escape
+      const escape = (e) => {
+        if (e.key === 'Escape') {
+          this.onClose(this.dialog);
+          document.removeEventListener('keyup', escape);
+        }
+      };
+      document.addEventListener('keyup', escape);
+
+
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.isDialog) {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
+
+  get store() {
+    return this.$navigation.store;
+  }
 
   addToCart($event, product: Product, variant?: string) {
     $event.stopPropagation();
@@ -163,11 +244,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeToCart($event, product: Product) {
-    $event.stopPropagation();
-    this.$cart.remove(product);
-    this.cartItem = this.$cart.findBySku(product.sku);
-    this.updateBackground();
+  hasFavorite(product) {
+    return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
   }
 
   getAvailability(product: Product, pos: number) {
@@ -193,76 +271,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       return this.products;
     }
     return this.products.filter(p => p.belong.name === this.product.belong.name);
-  }
-
-  hasFavorite(product) {
-    return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
-  }
-
-  ngOnDestroy() {
-    if (this.isDialog) {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-    }
-  }
-
-  //
-  // this component is shared with thumbnail, tiny, and wider product display
-  // on init with should now which one is loaded
-  ngOnInit() {
-    this.isReady = true;
-
-
-    //
-    // product action belongs to a shop or a category
-    this.rootProductPath = (this.$route.snapshot.params['shop']) ?
-      '/shop/' + this.$route.snapshot.params['shop'] : '';
-
-    //
-    // when display wider
-    if (!this.sku) {
-
-      this.isDialog = true;
-      this.photosz = '/-/resize/600x/';
-      // this.sku = this.$route.snapshot.params['sku'];
-      this.$route.params.subscribe(params => {
-        this.sku = params.sku;
-        this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
-
-        //
-        // spec: scrollTop; when open nested product we should scrollTop
-        try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
-
-      });
-
-      //
-      // DIALOG INIT HACK
-      document.body.classList.add('mdc-dialog-scroll-lock');
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');
-
-    } else {
-      this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
-    }
-
-
-
-    //
-    // simple animation
-    // capture escape only for dialog instance
-    if (this.dialog) {
-      this.dialog.nativeElement.classList.remove('fadeout');
-      //
-      // capture event escape
-      const escape = (e) => {
-        if (e.key === 'Escape') {
-          this.onClose(this.dialog);
-          document.removeEventListener('keyup', escape);
-        }
-      };
-      document.addEventListener('keyup', escape);
-
-
-    }
   }
 
   loadProduct(product) {
@@ -291,12 +299,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
-  }
-
-
   onEdit(product: Product) {
 
   }
@@ -310,6 +312,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });
     }, 200);
+  }
+
+  removeToCart($event, product: Product) {
+    $event.stopPropagation();
+    this.$cart.remove(product);
+    this.cartItem = this.$cart.findBySku(product.sku);
+    this.updateBackground();
   }
 
   save(product: Product) {
@@ -337,6 +346,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       return belong;
     }
     return score;
+  }
+
+  updateBackground() {
+    this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
   }
 }
 

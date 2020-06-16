@@ -77,8 +77,10 @@ export class KngNavigationStateService  {
     this.$shops.query({hub:store}).subscribe();
   }
 
+  //
+  // FIXME default store is currently Geneva. What should be the exit plan ?
   get store() {
-    return this.currentStore;
+    return this.currentStore || 'geneva';
   }
 
   isMobile(): boolean {
