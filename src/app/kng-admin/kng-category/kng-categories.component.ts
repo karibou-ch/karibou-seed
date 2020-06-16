@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   CategoryService,
   Category,
@@ -15,7 +15,8 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   templateUrl: './kng-category-dlg.component.html',
-  styleUrls: ['./kng-categories.component.scss']
+  styleUrls: ['./kng-categories.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KngCategoryDlgComponent {
   constructor(

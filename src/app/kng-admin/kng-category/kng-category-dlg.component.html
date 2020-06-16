@@ -113,12 +113,11 @@
               {{form.value|json}}
             </div> -->
           </form>
-          
       </mdc-dialog-content>
       <mdc-dialog-actions>
         <button mdcDialogButton [disabled]="category?.usedBy?.length!=0" (click)="askDelete()" class="align-start">Delete</button>
         <button mdcDialogButton mdcDialogAction="close">Decline</button>      
-        <button mdcDialogButton mdcDialogAction="accept" (click)="askSave()" [disabled]="!form.valid">Accept</button>
+        <button mdcDialogButton mdcDialogAction="accept" (click)="askSave()" [disabled]="!form?.valid">Accept</button>
       </mdc-dialog-actions>
     </mdc-dialog-surface> 
  
