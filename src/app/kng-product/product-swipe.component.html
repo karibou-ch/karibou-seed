@@ -11,6 +11,7 @@
   <div class="content" >
       <div class="mdc-layout-grid">
         <kng-product-thumbnail 
+          [selected]="true"
           [visibility]="true"
           [sku]="section.sku"
           *ngFor="let section of products;let j=index"
