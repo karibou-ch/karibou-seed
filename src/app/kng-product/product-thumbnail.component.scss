@@ -21,7 +21,21 @@
   display: block!important;
 }
 
+
 .product-card{
+  &.selected{
+    height: 13rem;    
+    .media {
+      height: 9rem;
+    }
+
+    @media (max-width:425px) {
+      height: 13rem;    
+      .media {
+        height: 9rem;
+      }
+    }  
+  }
   &.large{
     height: 16rem;
     .media{
@@ -48,7 +62,6 @@
  
   @media (max-width:425px) {
     height: 11rem;    
-    height: 13rem;    
   }
 
   .mdc-card__primary{
@@ -177,7 +190,7 @@
     height: 9rem;
     background-color:#ddd;
     @media (max-width: 426px) {
-      height: 9rem;
+      height: 7rem;
     }
 
     background-repeat: no-repeat;
@@ -204,7 +217,7 @@
   .price{
     position: absolute;
     right: 5px;
-    bottom: 10px;
+    bottom: 9px;
     font-size: large;
     font-weight: 500;
     .discount {
@@ -212,6 +225,7 @@
       text-decoration: line-through;
       color: #999;
       font-size: small;      
+      background: white;
     }
   }
 

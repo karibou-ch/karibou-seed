@@ -34,9 +34,10 @@ import { map } from 'rxjs/operators';
 export class ProductComponent implements OnInit, OnDestroy {
   static WEEK_1: number = 86400 * 7;
 
-  @Input() sku: number;
+  @Input() sku: number;  
   @Input() config: any;
   @Input() categories: Category[];
+  @Input() selected: boolean;
   @Input() user: User = new User();
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
