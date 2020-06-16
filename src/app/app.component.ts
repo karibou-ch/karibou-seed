@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { SwUpdate } from '@angular/service-worker';
+
 import { MetricsService } from './common/metrics.service';
+import { i18n } from './common';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +12,18 @@ import { MetricsService } from './common/metrics.service';
 export class AppComponent {
 
   // SENTRY_JS = 'https://browser.sentry-cdn.com/5.12.5/bundle.min.js';
+  i18n: any = {
+    fr: {
+      reload: 'Une nouvelle version est disponible. Recharger la page maintenant'
+    },
+    en: {
+      reload: 'A new version is available. Reload the page now'
+    }
+  };
 
   constructor(
-    // private swUpdate:SwUpdate
+    private $i18n: i18n,
+    private $update: SwUpdate,
     private $mterics: MetricsService
   ) {
     //
@@ -28,14 +40,12 @@ export class AppComponent {
     //     release: version
     //   });
     // });
-
-    // if(this.swUpdate.isEnabled){
-    //   this.swUpdate.available.subscribe(next=>{
-    //     if(confirm("Une nouvelle version est disponible. Recharger la page?")){
-    //       window.location.reload();
-    //     }
-    //   });
-    // }
+    this.$update.available.subscribe(event => {
+      const local = this.$i18n.locale;
+      if (confirm(this.i18n[local].reload)) {
+        this.$update.activateUpdate().then(() => document.location.reload(true));
+      }
+    });
 
   }
 }

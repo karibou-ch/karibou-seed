@@ -22,11 +22,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   i18n: any = {
     fr: {
-      bookmark: 'Épinglés',
+      bookmark: 'Sugestions',
       search_placeholder: 'Recherche',
     },
     en: {
-      bookmark: 'Bookmark',
+      bookmark: 'Proposals',
       search_placeholder: 'Search',
     }
   };

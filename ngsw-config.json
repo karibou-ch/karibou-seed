@@ -1,23 +1,10 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
-  "dataGroups":
-  [
-    {
-      "name": "api",
-      "urls": ["/v1/","api.karibou"],
-      "cacheConfig": {
-        "maxSize": 0,
-        "maxAge": "0u",
-        "strategy": "freshness"
-      }
-    }
-  ],  
   "assetGroups": [
     {
       "name": "Karibou.ch",
       "installMode": "lazy",
-      "updateMode": "lazy",
       "resources": {
         "files": [
           "/favicon.ico",
@@ -27,6 +14,38 @@
           "/*.js"
         ]
       }
-    }  
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    },
+    {     
+      "name":"externals",     
+      "installMode":"prefetch",     
+      "updateMode":"prefetch",     
+      "resources": {         
+        "urls":[             
+          "https://fonts.googleapis.com/**",
+          "https://cdnjs.cloudflare.com/**"
+        ]     
+      } 
+    },    
+    {    
+      "name": "images",    
+      "installMode": "prefetch",    
+      "updateMode": "prefetch",    
+      "resources": {      
+        "urls": [        
+          "https://ucarecdn.com/**",
+          "https://use.fontawesome.com/**"
+        ]    
+      }
+    }    
   ]
 }

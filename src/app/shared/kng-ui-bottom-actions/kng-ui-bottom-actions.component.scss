@@ -27,7 +27,7 @@ kng-ui-bottom-actions{
     justify-content: flex-end;
 
     overflow-y: auto;
-    max-height: calc( 100% - 110px);
+    max-height: calc( 100% - 90px);
     height: 100%;
     padding-top: 10px;
     // &::-webkit-scrollbar { 
@@ -172,6 +172,7 @@ kng-ui-bottom-actions{
     flex-flow: column;  
     align-items: flex-end;
     background:transparent;
+    background: linear-gradient( rgba(0, 0, 0, 0.0) 30%, rgba(66, 63, 59,.3) 99%);
     position: fixed;
     bottom:0;
     width: 100vw;
