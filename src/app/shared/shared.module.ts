@@ -83,7 +83,7 @@ import { appRoutes } from './shared.routes';
   ],
 })
 export class SharedModule {
-  public static forRoot(options?: any): ModuleWithProviders {
+  public static forRoot(options?: any): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       providers: [

@@ -43,7 +43,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
   ],
 })
 export class KngCommonModule {
-  public static forRoot(options?: any): ModuleWithProviders {
+  public static forRoot(options?: any): ModuleWithProviders<KngCommonModule> {
     return {
       ngModule: KngCommonModule,
       providers: [

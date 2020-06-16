@@ -20,8 +20,7 @@ export const appRoutes: Routes = [
     path: 'store/:store',
     component: KngRootComponent,
     resolve: { loader: LoaderResolve },
-    loadChildren: './shared/shared.module#SharedModule'
-    // children:[{path:'', loadChildren: './shared/shared.module#SharedModule'}]
+    loadChildren: () => import('./shared/shared.module').then( m => m.SharedModule)
   },
   { path: 'products/:sku/:title', pathMatch: 'full', redirectTo: '/store/geneva/home/products/:sku/:title' },
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/geneva/home/products/:sku' },
