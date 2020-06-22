@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-spacing
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
 from '@angular/core';
-import { Category, ProductService, Product, CartService } from 'kng2-core';
+import { Category, ProductService, Product, CartService, Config } from 'kng2-core';
 import { i18n } from '../../common';
 
 @Component({
@@ -13,6 +13,7 @@ import { i18n } from '../../common';
 })
 export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
+  @Input() config: Config;
   @Input() categories: Category[];
   @Input() exited: boolean;
   store = 'geneva';
@@ -48,7 +49,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     public  $i18n: i18n,
     private $cart: CartService,
     private $products: ProductService,
-    private cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -84,7 +85,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.stats.nativeElement.innerText = '';
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
-    this.cdr.markForCheck();
+    this.$cdr.markForCheck();
   }
 
   doGoCategory(slug) {
@@ -111,7 +112,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.show = true;
       this.findGetNull = false;
       margin = (this.search.nativeElement.value || '').length * margin;
-
+      // FIXME search should be multihub 
       this.$products.search(value).subscribe(products => {
         //
         // async clear?
@@ -125,23 +126,28 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
         this.findGetNull = !products.length;
         this.products = products.sort(this.sortByScore);
         blur && this.search.nativeElement.blur();
-        this.cdr.markForCheck();
+        this.$cdr.markForCheck();
       });
     }
   }
 
   doPreferred() {
-    const options = {
+    const options: any = {
       discount: true,
       popular: true,
       status: true,
       available: true,
       when : this.$cart.getCurrentShippingDay()
     };
+    //
+    // case of multihub
+    if (this.config && this.config.shared.hub) {
+      options.hub = this.config.shared.hub.slug;
+    }
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
       this.products = products.sort(this.sortByScore);
-      this.cdr.markForCheck();
+      this.$cdr.markForCheck();
     });
 
   }
