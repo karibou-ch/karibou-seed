@@ -46,6 +46,7 @@ export const appRoutes: Routes = [
   { path: 'shops', loadChildren: '../kng-shops/kng-shops.module#ShopsModule' },
   // FIXME path construction is ugly
   { path: 'home', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
+  { path: 'grocery', component: KngHomeComponent, data: { departement: 'grocery' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: 'cellar', component: KngHomeComponent, data: { departement: 'cellar' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: 'selection', component: KngHomeComponent, data: { departement: 'selection' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: 'wellness', component: KngHomeComponent, data: { departement: 'wellness' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
