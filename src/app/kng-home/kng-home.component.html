@@ -20,6 +20,7 @@
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
 <kng-ui-bottom-actions [exited]="scrollDirection<-5" 
                        [categories]="getCategories()"
+                       [config]="config"
                        (selected)="scrollNextSectionIntoView($event)">  
 </kng-ui-bottom-actions>
 
