@@ -188,8 +188,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     //    - fr,en
     this.image = this.config.shared.home.tagLine.image;
     this.title = this.config.shared.home.siteName[this.locale];
-    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active);
-    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active);
+    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
+    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
     this.store = this.$navigation.store;
     this.content = this.$navigation.dispatch(this.$route.snapshot.url, this.$route.snapshot.params);
 
