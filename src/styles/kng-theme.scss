@@ -329,6 +329,7 @@ body{
 .icon-pasta, .fa-pasta,
 .icon-vegetable, .fa-vegetable,
 .icon-wine, .fa-wine,
+.icon-wine-lg, .fa-wine-lg,
 .icon-beer, .fa-beer,
 .icon-wine, .fa-wine-white
 {
@@ -413,6 +414,10 @@ body{
 
 .icon-wine, .fa-wine{
   background-image: url(/assets/img/icon-wine.svg)
+}
+
+.icon-wine-lg, .fa-wine-lg{
+  background-image: url(/assets/img/icon-wine-lg.svg)
 }
 
 .icon-wine, .fa-wine-white{
