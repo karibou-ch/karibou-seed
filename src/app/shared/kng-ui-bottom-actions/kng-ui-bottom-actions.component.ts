@@ -16,6 +16,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Input() config: Config;
   @Input() categories: Category[];
   @Input() exited: boolean;
+  @Input() group: string;
+
   store = 'geneva';
   show: boolean;
   findGetNull: boolean;
@@ -144,6 +146,12 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     if (this.config && this.config.shared.hub) {
       options.hub = this.config.shared.hub.slug;
     }
+    //
+    // filter by group of categories
+    if (this.group) {
+      options.group = this.group;
+    }
+
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
       this.products = products.sort(this.sortByScore);

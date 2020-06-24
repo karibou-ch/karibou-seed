@@ -196,8 +196,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.hubTitle = this.config.shared.hub.siteName[this.locale];
     this.hubImage = this.config.shared.hub.siteName.image;
 
-    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active);
-    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active);
+    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
+    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
+
     this.store = this.$navigation.store;
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version

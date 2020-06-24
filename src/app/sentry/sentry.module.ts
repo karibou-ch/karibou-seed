@@ -11,7 +11,7 @@ import { version } from '../../../package.json';
 // FIXME use chunk js module to load Sentry (50kb) only on demand
 window['Sentry'] = window['Sentry'] || Sentry;
 Sentry.init({
-  dsn: 'https://9457c6b1c4e343b8b1aa7e74642147e0@sentry.io/1360987',
+  dsn: 'https://9457c6b1c4e343b8b1aa7e74642147e0@o9343.ingest.sentry.io/1360987',
   release: version
 });
 
