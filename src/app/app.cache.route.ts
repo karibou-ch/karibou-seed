@@ -14,6 +14,7 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
 
   allowCache = {
     'home': false,
+    'grocery': false,
     'cellar': false,
     'wellness': false,
     'selection': false
@@ -52,7 +53,7 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
     //
     // when changing departement
     // clear Caches
-    if (['home', 'cellar', 'selection', 'wellness'].indexOf(path) > -1) {
+    if (['home', 'cellar', 'grocery', 'selection', 'wellness'].indexOf(path) > -1) {
       const allowCacheValues = Object.keys(this.allowCache).map(key => this.allowCache[key]);
       if (allowCacheValues.some(value => value) && !this.allowCache[path]) {
         Object.keys(this.allowCache).forEach(key => this.allowCache[key] = false);
