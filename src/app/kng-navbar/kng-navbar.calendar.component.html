@@ -10,24 +10,49 @@
       <!-- Calendar-->
       <div class="calendar light">
         <div class="calendar_plan">
-          <div class="cl_plan">
-            <div class="cl_title">{{i18n.label().nav_shipping}}</div>
-            <div class="cl_HUB">
-              {{config.shared.hub.name}}                
-              <!-- <button  (click)="toggleStore()">
-                <mdc-icon class="white">arrow_drop_down</mdc-icon>
-              </button>           -->
-    
+          <div class="cl_plan"
+               [ngStyle]="{'background-image': 'url(' + config.shared.hub.siteName.image + ')'}">
+            <div class="cl_HUB">                  
             </div>
-            <div class="cl_copy">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
           </div>
-          <div class="cl_store" (click)="toggleStore()">
-            {{i18n.label().nav_store}} <i class="material-icons">arrow_drop_down</i>
+          <div class="cl_plan_title">
+            {{config.shared.hub.name}}
           </div>
         </div>
 
+        <div class="cl_menu" (click)="toggleStore($event)">
+          <div class="cl_store " [class.selected]="!showHUBs" id="shipping">
+            {{i18n.label().nav_shipping2}}
+          </div>
+          <div class="cl_store" [class.selected]="showHUBs" id="hubs">
+            {{i18n.label().nav_store}} 
+          </div>
+        </div>
+
+
+        <div class="shops_events" [hidden]="!showHUBs">
+
+          <div class="selection">
+            <div class="cl_title">Information</div>
+            <div class="cl_copy">La Halle de Rive, lieu incontournable et nom mythique de la gastronomie, synonyme de cuisine gourmande et terroir à Genève.
+            </div>
+          </div>        
+
+          <div class="event_item" 
+              [class.disabled]="false"
+              *ngFor="let hub of config.shared.hubs;let idx=index">
+            <div class="ei_Dot" [class.dot_active]="false"></div>
+            <div class="ei_Title">{{hub.name}}</div>
+          </div>            
+
+        </div>
+
         <div class="calendar_events" [hidden]="showHUBs">
-          <p class="ce_title">{{i18n.label().nav_shipping2}}</p>
+          <div class="selection">
+            <div class="cl_title">{{i18n.label().nav_shipping}}</div>
+            <div class="cl_copy">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
+          </div>        
+  
           <div class="event_item" 
               [class.disabled]="!isDayAvailable(day)"
               *ngFor="let day of getShippingDays();let idx=index"                

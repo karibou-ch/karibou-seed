@@ -62,8 +62,8 @@ export class KngCalendarForm {
     return this.i18n.locale;
   }
 
-  toggleStore() {
-    this.showHUBs = !this.showHUBs;
+  toggleStore($event) {
+    this.showHUBs = ($event.target.id === 'hubs');
   }
 
   doSetCurrentShippingDay($event, day: Date, idx: number) {

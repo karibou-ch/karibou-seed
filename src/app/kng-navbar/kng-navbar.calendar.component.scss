@@ -39,62 +39,104 @@ $light_grey:#A39D9E;
   margin:20px 0 20px;
 }
 .cl_plan{
-  height: 80px;
   background-color: var(--mdc-theme-primary);
   box-shadow: 0px 0px 52px -18px rgba(0, 0, 0, 0.75);
-  padding:30px 20px;
-  color:var(--mdc-theme-primary-text);
+  padding: 30px;
+  color: #fff;
+  margin: auto;
+  width: 100px;
+  border-radius: 50%;
+  height: 100px;
+  display: flex;  
 
-  color:#fff;
+  background-color: rgba(45, 43, 40, 0.32);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.cl_plan_title{
+  font-size: 1.9rem;
+  text-align: center;
+  margin: 10px;  
+  color: var(--mdc-theme-primary);
+  font-weight: 600;
 }
 
 .cl_HUB{
-  padding-bottom: 10px;
-  margin-top: -10px;
-  font-size: 26px;  
-  button {
-    cursor: pointer;
-    border: 1px solid rgba(238, 238, 238, 0.45);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: transparent;
-    outline: 0;
-    padding: 0;
-    padding-top: 2px;
-    margin-left: 10px;
-  }
-}
-.cl_store{
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 200;
-  margin-left: 1px;
-  color: #423f3b;
-  border-bottom: 1px solid #eee;
-  display: inline-block;  
-  i{
-    font-size: x-large;
-    font-weight: 400;
-    transform: translateY(8px);
-  }
 }
 
-.cl_title{
-  font-size: 0.9rem;
-  margin-top: -20px;
-  margin-bottom: 20px;
-  
+.cl_menu{
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding-top: 8px;
+  text-align: center;
+
+  .cl_store{
+    &.selected{
+      border-bottom: 3px solid var(--mdc-theme-karibou-pink);
+      color: var(--mdc-theme-primary);
+    }
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: #aaa;
+    display: inline-block;
+    margin: auto 4px;
+    padding: 8px 2px;
+    border-bottom: 3px solid transparent;
+    i{
+      font-size: x-large;
+      font-weight: 400;
+      transform: translateY(8px);
+    }
+  }  
 }
-.cl_copy{
-  font-size:20px;
-  margin: 5px 0;
-  display: inline-block;
-  text-transform: capitalize;
+
+.shops_events{
+  color:$light_grey;
+  min-height: 300px;
+  .selection {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin: 20px 0;
+    .cl_title{
+      font-size: 0.9rem;  
+    }
+    .cl_copy{
+      margin: 5px 0;
+      display: inline-block;
+      color: #2d2b28;
+      font-weight: 500;  
+    }
+    
+  }  
+
 }
+
 
 .calendar_events{
   color:$light_grey;
+  min-height: 300px;
+  .selection {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin: 20px 0;
+    .cl_title{
+      font-size: 0.9rem;  
+    }
+    .cl_copy{
+      font-size: 24px;
+      margin: 5px 0;
+      display: inline-block;
+      text-transform: capitalize;
+      color: #2d2b28;
+      font-weight: 700;  
+    }
+    
+  }  
 }
 .ce_title{
   font-size:14px;

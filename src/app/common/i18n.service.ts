@@ -38,7 +38,7 @@ export class i18n  {
     nav_no_shipping: 'Complet',
     nav_no_shipping_long: 'La livraison ne peut être planifiée',
     nav_shipping: 'Prochaine livraison',
-    nav_shipping2: 'Choisir une date de livraison',
+    nav_shipping2: 'Options de livraison',
     nav_shipping_off: 'Cette journée n\'est plus disponible',
     nav_store: 'Choisir un autre marcher',
     nav_contactus: 'Contactez-nous!',
