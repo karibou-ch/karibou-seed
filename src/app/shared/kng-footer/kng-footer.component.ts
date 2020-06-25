@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User, Config, UserService } from 'kng2-core';
-import { i18n, KngNavigationStateService } from '..';
+import { User, Config } from 'kng2-core';
+import { i18n } from '..';
+import { KngNavigationStateService } from '../navigation.service';
 
 @Component({
   selector: 'kng-footer',
@@ -10,58 +11,51 @@ import { i18n, KngNavigationStateService } from '..';
 })
 export class KngFooterComponent implements OnInit {
 
-  @Output() updated:EventEmitter<User>=new EventEmitter<User>();
+  @Output() updated: EventEmitter<User> = new EventEmitter<User>();
 
-  @Input() user:User;
-  @Input() set config(config:Config){
+  @Input() user: User;
+  @Input() set config(config: Config) {
     this.main(config);
   }
 
-  locale:string;
-  content:any;
-  store:string;
-    
+  locale: string;
+  content: any;
+  store: string;
+
   constructor(
-    private $i18n:i18n,
-    private $user:UserService,
-    private $navigation:KngNavigationStateService,
-    private $route:ActivatedRoute,
-  ){
+    private $i18n: i18n,
+    private $navigation: KngNavigationStateService
+  ) {
     // init current locale
-    this.locale=this.$i18n.locale;
+    this.locale = this.$i18n.locale;
 
-    //
-    // initialize loader
-    let loader=this.$route.snapshot.data.loader;
-    //
-    // system ready
-    this.user   = loader[1];
-    this.config = loader[0];
-    this.content= this.config&&this.config.shared;
-  }    
-
-  ngOnInit() {
-    this.store=this.$navigation.store;
   }
 
-  getFooter(key){
-    if(!this.content||!this.content.home.footer[key]){
+  ngOnInit() {
+    this.store = 'geneva';
+  }
+
+  getFooter(key) {
+    if (!this.content || !this.content.home.footer[key]) {
       return;
     }
     return this.content.home.footer[key][this.locale];
   }
-  
 
-  getMenuItems(group:string){
+
+  getMenuItems(group: string) {
     return this.$navigation.getMenuItems(group);
   }
 
-  main(config:Config){
-    this.content=config.shared;
+  main(config: Config) {
+    if (!config) {
+      return;
+    }
     this.$navigation.updateConfig(config);
+    this.content = config.shared;
   }
 
 
-  
-  
+
+
 }

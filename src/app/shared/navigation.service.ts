@@ -14,7 +14,6 @@ export class KngNavigationStateService  {
     image:string;    
   }
 
-  private categories:Category[];
   private config:Config;
   private menu:any;
   private currentStore:string;
@@ -39,9 +38,6 @@ export class KngNavigationStateService  {
     // this.$i18n.locale=locale;
   }
 
-  updateCategory(categories:Category[]){
-    this.categories=categories;
-  }
 
   updateConfig(config:Config){
     this.config=config;

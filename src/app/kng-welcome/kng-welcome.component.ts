@@ -10,6 +10,7 @@ import {
 
 import { KngNavigationStateService } from '../shared/navigation.service';
 import { i18n } from '../shared';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'kng-welcome',
   templateUrl: './kng-welcome.component.html',
@@ -68,14 +69,14 @@ export class KngWelcomeComponent implements OnInit {
 
   constructor( 
     public $i18n:i18n,
-    private $loader: LoaderService,
-    private $navigation:KngNavigationStateService,
     private $route: ActivatedRoute,
-    private $router: Router,    
-  ) { 
-    let loader=this.$route.snapshot.data.loader;
-    this.config=loader[0];      
-    
+    private $router: Router,
+    private $http: HttpClient
+  ) {     
+    this.$http.get('/assets/config.json').subscribe(config => {
+      this.config = {shared:config};
+    });
+
   }
 
   getTagline(key){
@@ -89,22 +90,18 @@ export class KngWelcomeComponent implements OnInit {
   ngOnInit() {
     //
     // 
-    this.$route.params.subscribe(params=>{
-      this.$navigation.store=this.store=params['store'];
-    });    
   }
 
   isAppReady(){
-    return this.$navigation.store !== undefined;
+    return true;
   }
 
   set store(name){
-    this.$navigation.store=name;
     // this.$router.navigate(['/store/'+name]);
   }
 
   get store(){
-    return this.$navigation.store;
+    return 'geneva';
   }
 
 }

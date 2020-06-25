@@ -1,99 +1,80 @@
-<!-- 
-<ng-container *ngIf="!(loading$ | async); else loadingTpl">
 
-  <input placeholder="Search Product.." [formControl]="search">
-
-  <app-product *ngFor="let product of (products$ | async)" [product]="product"></app-product>
-
-</ng-container>
-
-<ng-template #loadingTpl>...</ng-template> -->
-
-<ng-container *ngIf="!isAppReady(); else loadingTpl">
-  <div class="container top">
-    <div class="welcome">
-      <div class="logo"></div>
-      <!-- WELCOME -->
-      <div class="inner" [hidden]="askAction">
-        <h1>{{getTagline('t')}}</h1>
-        <h2 [hidden]="!getTagline('h')" 
-          [innerHtml]="getTagline('h')">
-        </h2>
-        <div [hidden]="!getTagline('p')" 
-             [innerHtml]="getTagline('p')">
-        </div>
+<div class="container top" *ngIf="config">
+  <div class="welcome">
+    <div class="logo"></div>
+    <!-- WELCOME -->
+    <div class="inner" [hidden]="askAction">
+      <h1>{{getTagline('t')}}</h1>
+      <h2 [hidden]="!getTagline('h')" 
+        [innerHtml]="getTagline('h')">
+      </h2>
+      <div [hidden]="!getTagline('p')" 
+            [innerHtml]="getTagline('p')">
       </div>
+    </div>
 
-      <!-- LOGIN -->
-      <!-- <div class="inner" *ngIf="askAction=='login'">
-          <h1 i18n>Bienvenue!</h1>
-          <p i18n>Log in with your email and password.</p>
-          <form>
-              <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%" type="email">
-                <mdc-icon trailing>person</mdc-icon>
-              </mdc-text-field>
-              <mdc-text-field [box]="true" label="Votre secret" style="width:100%" type="password">
-                  <mdc-icon trailing>vpn_key</mdc-icon>
-                </mdc-text-field>
-                
-              <button mdc-button [unelevated]="true" [secondary]="true">
-                <mdc-icon>account_circle</mdc-icon>              
-                <span i18n>Login</span>
-              </button>            
-          </form>
-          <div class="signup-vs-login" ><a class="link" (click)="askAction='recover'" i18n>J'ai oublié mon mot de passe</a></div>
-        </div> -->
-        
-      <!-- RECOVER -->
-      <!-- <div class="inner" *ngIf="askAction=='recover'">
+    <!-- LOGIN -->
+    <!-- <div class="inner" *ngIf="askAction=='login'">
         <h1 i18n>Bienvenue!</h1>
         <p i18n>Log in with your email and password.</p>
         <form>
-            <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%">
-              <mdc-icon trailing>email</mdc-icon>
+            <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%" type="email">
+              <mdc-icon trailing>person</mdc-icon>
             </mdc-text-field>
+            <mdc-text-field [box]="true" label="Votre secret" style="width:100%" type="password">
+                <mdc-icon trailing>vpn_key</mdc-icon>
+              </mdc-text-field>
+              
             <button mdc-button [unelevated]="true" [secondary]="true">
               <mdc-icon>account_circle</mdc-icon>              
-              <span i18n>Envoyer</span>
+              <span i18n>Login</span>
             </button>            
         </form>
+        <div class="signup-vs-login" ><a class="link" (click)="askAction='recover'" i18n>J'ai oublié mon mot de passe</a></div>
       </div> -->
-
-      <a [hidden]="true" href="https://www.facebook.com/sharer/sharer.php?u=boulangerie-bretzel.ch">
-        <div class="spread"></div>  
-      </a>
       
-    </div>
+    <!-- RECOVER -->
+    <!-- <div class="inner" *ngIf="askAction=='recover'">
+      <h1 i18n>Bienvenue!</h1>
+      <p i18n>Log in with your email and password.</p>
+      <form>
+          <mdc-text-field [box]="true" i18n-label label="Votre email" style="width:100%">
+            <mdc-icon trailing>email</mdc-icon>
+          </mdc-text-field>
+          <button mdc-button [unelevated]="true" [secondary]="true">
+            <mdc-icon>account_circle</mdc-icon>              
+            <span i18n>Envoyer</span>
+          </button>            
+      </form>
+    </div> -->
 
+    <a [hidden]="true" href="https://www.facebook.com/sharer/sharer.php?u=boulangerie-bretzel.ch">
+      <div class="spread"></div>  
+    </a>
+    
   </div>
 
-  <div class="container middle">
-    <div class="how-it-works" kng-editor-key="home.howto.p" [innerHTML]="$i18n.lang(config?.shared.home.howto.p)">
-                
-    </div>
-    <div class="favorite-products" >
-      <div class="elem"></div>
-      <div class="elem"></div>
-    </div>
+</div>
+
+<div class="container middle" *ngIf="config">
+  <div class="how-it-works" kng-editor-key="home.howto.p" [innerHTML]="$i18n.lang(config?.shared.home.howto.p)">
+              
   </div>
-  <div class="container separator"></div>
+  <div class="favorite-products" >
+    <div class="elem"></div>
+    <div class="elem"></div>
+  </div>
+</div>
+<div class="container separator"></div>
 
-  <kng-footer [config]="config" ></kng-footer>
-  <div class="background-grid">
-    <div class="items-list-wrap">
-      <ul class="items-list" >
-        <li class="has-details item" *ngFor="let photo of photos"  
-          [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
-      </ul>        
-    </div>
-  </div>  
-</ng-container>
-
-<ng-template #loadingTpl>
-  <kng-navbar style="height:100%">
-    <router-outlet ></router-outlet>
-  </kng-navbar>  
-</ng-template>
-
+<kng-footer [config]="config" ></kng-footer>
+<div class="background-grid">
+  <div class="items-list-wrap">
+    <ul class="items-list" >
+      <li class="has-details item" *ngFor="let photo of photos"  
+        [ngStyle]="{'background-image': 'url(' + photo + '-/preview/300x300/)'}"></li>
+    </ul>        
+  </div>
+</div>  
 
     

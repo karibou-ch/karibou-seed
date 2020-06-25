@@ -1,0 +1,681 @@
+{
+  "i18n": {
+    "locales": [
+      "en",
+      "fr"
+    ],
+    "defaultLocale": "fr"
+  },
+  "shopsLimit": 1,
+  "generalFees": 0.2,
+  "system": {
+    "password": {
+      "len": 6
+    },
+    "post": {
+      "limitMS": 500
+    }
+  },
+  "document": {
+    "types": [
+      "recipe",
+      "post",
+      "bundle",
+      "selection",
+      "page"
+    ]
+  },
+  "category": {
+    "types": [
+      "Category",
+      "Catalog"
+    ]
+  },
+  "shipping": {
+    "average": 115,
+    "discountA": 145,
+    "discountB": 180,
+    "price": {
+      "hypercenter": 11.9,
+      "periphery": 14.9,
+      "other": 19.9,
+      "collect": 3.9
+    },
+    "priceA": 0,
+    "priceB": 0,
+    "periphery": [
+      "1212",
+      "1213",
+      "1218",
+      "1219",
+      "1223",
+      "1224",
+      "1225",
+      "1226",
+      "1228",
+      "1231",
+      "1232",
+      "1233",
+      "1234",
+      "1253",
+      "1255",
+      "1256",
+      "1257",
+      "1258"
+    ],
+    "other": [],
+    "collect": []
+  },
+  "issue": {
+    "ttl": 365,
+    "code": [
+      "issue_no_issue",
+      "issue_logistic",
+      "issue_missing_client_id",
+      "issue_missing_product",
+      "issue_wrong_product_quality",
+      "issue_wrong_packing"
+    ]
+  },
+  "marketplace": {
+    "list": [
+      {
+        "name": "Marché de Plainpalais le mardi",
+        "lat": 46.19838,
+        "lng": 6.14083,
+        "d": 2
+      },
+      {
+        "name": "Marché de Plainpalais le vendredi",
+        "lat": 46.19838,
+        "lng": 6.14083,
+        "d": 5
+      },
+      {
+        "name": "Marché de Plainpalais le dimanche",
+        "lat": 46.19838,
+        "lng": 6.14083,
+        "d": 0
+      },
+      {
+        "name": "Marché de Rive le jeudi",
+        "lat": 46.20195,
+        "lng": 6.15491,
+        "d": 4
+      },
+      {
+        "name": "Marché de Rive le samedi",
+        "lat": 46.20195,
+        "lng": 6.15491,
+        "d": 6
+      },
+      {
+        "name": "Halle de Rive",
+        "lat": 46.202077,
+        "lng": 6.15477
+      }
+    ]
+  },
+  "user": {
+    "location": {
+      "list": [
+        "1205"
+      ]
+    },
+    "region": {
+      "list": [
+        "Genève",
+        "Carouge,GE"
+      ]
+    }
+  },
+  "region": {
+    "list": [
+      "Aire-la-Ville,GE",
+      "Anières,GE",
+      "Avully,GE",
+      "Avusy,GE",
+      "Bardonnex,GE",
+      "Bellevue,GE",
+      "Bernex,GE",
+      "Carouge,GE",
+      "Cartigny,GE",
+      "Céligny,GE",
+      "Chancy,GE",
+      "Chêne-Bougeries,GE",
+      "Chêne-Bourg,GE",
+      "Choulex,GE",
+      "Collex-Bossy,GE",
+      "Collonge-Bellerive,GE",
+      "Cologny,GE",
+      "Confignon,GE",
+      "Corsier,GE",
+      "Dardagny,GE",
+      "Genève",
+      "Genthod,GE",
+      "Grand-Saconnex,GE",
+      "Gy,GE",
+      "Hermance,GE",
+      "Jussy,GE",
+      "Laconnex,GE",
+      "Lancy,GE",
+      "Meinier,GE",
+      "Meyrin,GE",
+      "Onex,GE",
+      "Perly-Certoux,GE",
+      "Plan-les-Ouates,GE",
+      "Pregny-Chambésy,GE",
+      "Presinge,GE",
+      "Puplinge,GE",
+      "Russin,GE",
+      "Satigny,GE",
+      "Soral,GE",
+      "Thônex,GE",
+      "Troinex,GE",
+      "Vandoeuvres,GE",
+      "Vernier,GE",
+      "Versoix,GE",
+      "Veyrier,GE",
+      "Tannay,VD",
+      "Reignier, France"
+    ]
+  },
+  "product": {
+    "location": [
+      "Appenzell Rhodes-Extérieures",
+      "Appenzell Rhodes-Intérieures",
+      "Argovie",
+      "Bâle-Campagne",
+      "Bâle-Ville",
+      "Berne",
+      "Fribourg",
+      "Genève",
+      "Glaris",
+      "Grisons",
+      "Jura",
+      "Lucerne",
+      "Neuchâtel",
+      "Nidwald",
+      "Obwald",
+      "Saint-Gall",
+      "Schaffhouse",
+      "Schwyz",
+      "Soleure",
+      "Tessin",
+      "Thurgovie",
+      "Uri",
+      "Valais",
+      "Vaud",
+      "Zoug",
+      "Zurich"
+    ]
+  },
+  "order": {
+    "financialstatus": [
+      "pending",
+      "authorized",
+      "partially_paid",
+      "invoice",
+      "paid",
+      "partially_refunded",
+      "manually_refunded",
+      "refunded",
+      "voided"
+    ],
+    "cancelreason": [
+      "customer",
+      "fraud",
+      "inventory",
+      "system",
+      "timeout",
+      "other"
+    ],
+    "status": [
+      "failure",
+      "created",
+      "reserved",
+      "partial",
+      "fulfilled"
+    ],
+    "gateway": [
+      {
+        "label": "postfinance card",
+        "fees": 0
+      },
+      {
+        "label": "american express",
+        "fees": 0.01
+      },
+      {
+        "label": "visa",
+        "fees": 0
+      },
+      {
+        "label": "mastercard",
+        "fees": 0
+      },
+      {
+        "label": "wallet",
+        "fees": 0
+      },
+      {
+        "label": "invoice",
+        "fees": 0
+      },
+      {
+        "label": "paypal",
+        "fees": 0.034
+      },
+      {
+        "label": "bitcoin",
+        "fees": 0
+      }
+    ],
+    "openInvoice": 0,
+    "timeoutAndNotPaid": 60,
+    "timelimit": 8,
+    "uncapturedTimeLimit": 6,
+    "timelimitH": 6,
+    "shippingmode": [
+      "grouped",
+      "none"
+    ],
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "shippingtimes": {
+      "16": "7:00 à 15:00"
+    }
+  },
+  "keys": {
+    "pubStripe": "pk_live_1IL9VM01k1iTRTNCfIVLMyOy",
+    "pubUpcare": "8f58c480386fac0279dc",
+    "pubGithub": "",
+    "pubMap": "AIzaSyAxFBNbe50-8F4K07uRx1OlGahEAV-XLt0",
+    "pubDisqus": ""
+  },
+  "menu": [
+    {
+      "url": "/",
+      "active": true,
+      "_id": "5afae3f886c5243003b30084",
+      "group": "admin",
+      "weight": 1,
+      "name": {
+        "fr": "Boulangerie",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "url": "/admin/welcome",
+      "active": true,
+      "_id": "5afaa042f4fc707b16a9671c",
+      "group": "admin",
+      "weight": 2,
+      "name": {
+        "fr": "Welcome Content",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "url": "/admin/home",
+      "active": true,
+      "_id": "5afaa054f4fc707b16a9671d",
+      "group": "admin",
+      "weight": 2,
+      "name": {
+        "fr": "Home Content",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "active": true,
+      "url": "/admin/page",
+      "_id": "5a994075eb89c80180cad4ea",
+      "group": "admin",
+      "weight": 3,
+      "name": {
+        "fr": "Site Pages",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "active": true,
+      "url": "/admin/information",
+      "_id": "5b05681886c5243003b300b6",
+      "group": "admin",
+      "weight": 3,
+      "name": {
+        "fr": "Informations",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "url": "/admin/deposit",
+      "active": true,
+      "_id": "5af318ece0ed6357a23b75e5",
+      "group": "admin",
+      "weight": 4,
+      "name": {
+        "fr": "Addresses for Collect",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "url": "/admin/config",
+      "active": true,
+      "_id": "56e29a9dd6de9a6f4630d93c",
+      "group": "admin",
+      "weight": 4,
+      "name": {
+        "fr": "Site Config"
+      }
+    },
+    {
+      "_id": "56e2813ad6de9a6f4630d932",
+      "active": true,
+      "url": "/admin/category",
+      "group": "admin",
+      "weight": 4,
+      "name": {
+        "fr": "Catégorie"
+      }
+    },
+    {
+      "url": "/admin/navigation",
+      "active": true,
+      "_id": "56e7cb3450a67c4d75f839c3",
+      "group": "admin",
+      "weight": 5,
+      "name": {
+        "fr": "Site Navigation"
+      }
+    },
+    {
+      "url": "/content/qui-sommes-nous",
+      "active": true,
+      "_id": "56fb9034adc4552b0fbb0227",
+      "group": "bretzel",
+      "weight": 4,
+      "name": {
+        "fr": "A propos"
+      }
+    },
+    {
+      "active": false,
+      "url": "/content/comment-ca-marche",
+      "_id": "56e9498af667bd1e5985cbd0",
+      "group": "bretzel",
+      "weight": 5,
+      "name": {
+        "fr": "Comment ça marche?"
+      }
+    },
+    {
+      "url": "/content/faq-clients",
+      "active": false,
+      "_id": "56df2a02152ce80e199b5157",
+      "group": "bretzel",
+      "weight": 6,
+      "name": {
+        "fr": "FAQ clients"
+      }
+    },
+    {
+      "url": "/content/conditions-generales-de-vente",
+      "active": true,
+      "_id": "56e9498af667bd1e5985cbd1",
+      "group": "bretzel",
+      "weight": 7,
+      "name": {
+        "fr": "CG de vente"
+      }
+    },
+    {
+      "url": "/content/la-charte",
+      "active": false,
+      "_id": "56dfeadc152ce80e199b5159",
+      "group": "howto",
+      "weight": 6,
+      "name": {
+        "fr": "Notre charte"
+      }
+    },
+    {
+      "active": true,
+      "url": "mailto:hello@boulangerie-bretzel.ch",
+      "_id": "56e015f35c13809a37dd2791",
+      "group": "links",
+      "weight": 5,
+      "name": {
+        "fr": "<i class=\"fas fa-envelope-square \"></i><span>&nbsp;Contactez nous!</span>"
+      }
+    },
+    {
+      "url": "https://www.facebook.com/LeonhardBretzel/",
+      "active": true,
+      "_id": "56e013e48b36cd185003627a",
+      "group": "links",
+      "weight": 6,
+      "name": {
+        "fr": "<i class=\"fab fa-facebook-square \"></i><span>&nbsp;Facebook Page</span>"
+      }
+    },
+    {
+      "url": "/",
+      "active": true,
+      "_id": "5af6bf17f4fc707b16a96716",
+      "group": "primary",
+      "weight": 1,
+      "name": {
+        "fr": "Boulangerie",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "url": "/cart",
+      "active": true,
+      "_id": "5af6bf3df4fc707b16a96717",
+      "group": "primary",
+      "weight": 2,
+      "name": {
+        "fr": "Panier <span class=\"cart-items-count\"></span>",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "active": false,
+      "url": "./bretzel/me/orders",
+      "_id": "5b3cac7d751d5c3c1cea8292",
+      "group": "primary",
+      "weight": 3,
+      "name": {
+        "fr": "Votre compte",
+        "en": null,
+        "de": null
+      }
+    },
+    {
+      "url": "/content/qui-sommes-nous",
+      "active": true,
+      "_id": "56df2a02152ce80e199b5158",
+      "group": "topmenu",
+      "weight": 5,
+      "name": {
+        "fr": "<i class=\"material-icons\">info</i>"
+      }
+    }
+  ],
+  "deposits": [
+    {
+      "name": "Chez Bretzel",
+      "streetAdress": "11 chemin du 23 Août",
+      "floor": "rez",
+      "region": "Genève",
+      "postalCode": "1205",
+      "note": "à partir de 7h00",
+      "weight": 1,
+      "fees": 0,
+      "active": true,
+      "_id": "5ed63c86c7024841d24d5ccb",
+      "geo": {
+        "lat": 46.2022848,
+        "lng": 6.134382
+      }
+    },
+    {
+      "name": "Chez Floriano",
+      "streetAdress": "34 route de chêne",
+      "floor": "3ème",
+      "region": "Genève",
+      "postalCode": "1205",
+      "note": "à partir de 10h00",
+      "weight": 2,
+      "fees": 3,
+      "active": false,
+      "_id": "5ed63c86c7024841d24d5cca",
+      "geo": {
+        "lat": 46.1997124,
+        "lng": 6.1692579
+      }
+    }
+  ],
+  "noshipping": [],
+  "home": {
+    "email": "hello@boulangerie-bretzel.ch",
+    "phone": "0223407879",
+    "views": [],
+    "footer": {
+      "p": {
+        "fr": "<a href=\"https://karibou.ch/store/geneva/shops/boulangerie-leonhard-bretzel\"><img height=\"48px\" src=\"/assets/img/k-puce-v2.png\" />\n</a>",
+        "en": null,
+        "de": null
+      },
+      "h": {
+        "fr": "Ouvert du lundi au dimanche <br> Réservation en ligne tous les jours jusqu'à 22h"
+      },
+      "t": {
+        "fr": "<b>La boulangerie Bretzel</b><br> 11 chemin du 23 Août",
+        "en": null,
+        "de": null
+      }
+    },
+    "tagLine": {
+      "image": "https://ucarecdn.com/36d9a2b7-b8b1-4f4d-8419-d7f23725027e/",
+      "p": {
+        "fr": "\n<div class=\"text-center small\">\n<br/>\n<a href=\"https://karibou.ch/store/geneva/shops/boulangerie-leonhard-bretzel\" class=\"text-center enter primary-bg \"\n>Réservez votre pain en ligne!</a>\n</div>"
+      },
+      "h": {
+        "fr": ""
+      },
+      "t": {
+        "fr": "Bienvenue chez Leonhard Bretzel, artisan boulanger à la Jonction!",
+        "en": null,
+        "de": null
+      }
+    },
+    "about": {
+      "image": null,
+      "p": {
+        "fr": "\n<div class=\"text-center\">\n<b>Psst: Café offert pour chaque réservation </b>\n</div> \n\n<!-- \n<div class=\"text-center\">\n<b>Psst: Café offert pour chaque réservation </b>\n</div> \n\n<div class=\"fact text-uppercase \">\n  Boissons chaudes-froides smoothies\n<div> <i class=\"material-icons lime\">done</i></div>\n</div>\n<div class=\"fact text-uppercase \">\n  Sandwiches et tartines sur mesure\n<div> <i class=\"material-icons lime\">done</i></div>\n</div>\n<div class=\"fact text-uppercase \">\n  Fermentation lente et cuisson au feu de bois\n<div> <i class=\"material-icons lime\">done</i></div>\n</div>\n<div class=\"fact text-uppercase \">\n  farine Tournerêve biologique Genevoise\n<div> <i class=\"material-icons lime\">done</i></div>\n</div>\n-->"
+      },
+      "t": {
+        "fr": "Réservez nos pains et produits de boulangerie artisanaux "
+      },
+      "h": {
+        "fr": ""
+      }
+    },
+    "howto": {
+      "image": "https://ucarecdn.com/f4c4ba5d-bd5c-44d4-8af0-45283e0a3fe5/",
+      "p": {
+        "fr": "<div class=\"why\">\n  <div class=\"image\"><img height=\"140px\" src=\"https://ucarecdn.com/1d7a39cf-b951-47d6-b46e-fbfee1a6bc83/pain.jpg\" class=\"image-radius\"/></div>\n  <h3>Le pain artisanal confectionné à la main ça existe encore!</h3>\n  <p>\nLes meilleures recettes artisanales, des farines locales, une fermentation longue, la cuisson au feu de bois!\n</p>\n</div>\n<div class=\"why\">\n  <div class=\"image\"><img height=\"140px\" src=\"https://ucarecdn.com/3aeb43df-b59b-43a7-83b2-47cbb9388589/b.jpg\" class=\"image-radius\"/></div>\n  <h3>Votre nouvelle boulangerie dans l'écoquartier de la Jonction </h3>\n<p>\nL'artisan boulanger Leonhard Bretzel a ouvert ses portes dans le nouvel écoquartier de la Jonction.\n</p>\n</div>\n\n"
+      },
+      "t": {
+        "fr": "Le boulanger peut on vous aider ",
+        "en": null,
+        "de": null
+      },
+      "h": {
+        "fr": "Peut on vous quand il est la?",
+        "en": null,
+        "de": null
+      }
+    },
+    "shop": {
+      "p": {
+        "fr": "Nous vous connectons aux meilleures fermes, épiceries et artisans, ils vous offrent des produits de grande valeur, aux saveurs délicieuses et sans majorer les prix! **Nous livrons à votre porte** <i class=\"fa fa-rocket grayx\"></i>"
+      },
+      "h": {
+        "fr": "la place de marché qui réinvente notre relation avec l’alimentation <i class=\"fa fa-heart pink\"></i>"
+      },
+      "t": {
+        "fr": null,
+        "en": null,
+        "de": null
+      }
+    },
+    "siteName": {
+      "fr": "La boulangerie Bretzel",
+      "image": "https://ucarecdn.com/dffd7a90-f2ae-4e70-8c41-7522179da86e/"
+    },
+    "mail": {
+      "signature": "--\nMeilleures salutations,\nLeonhard Bretzel",
+      "subject": "boulangerie bretzel"
+    }
+  },
+  "messages": [],
+  "checkout": {
+    "active": false,
+    "message": {
+      "fr": "Evènnement: La fête de la bière au Pain ... Bretzel! Le jeudi 35 Juillet 2018! Viendez nombreux"
+    },
+    "payment": {
+      "fr": "<h2 i18n>Sélectionnez le mode de paiement </h2>     \n<p class=\"block-info\" >\nSeules les cartes de crédits sont disponibles pour le paiement en ligne.\n </p>"
+    },
+    "address": {
+      "fr": "<h2>Venez chercher votre commande à la boulangerie </h2>     \n<p class=\"block-info\" >\nLa livraison à domicile sera bientôt disponible (merci pour votre patience)!\n</p>"
+    }
+  },
+  "header": {
+    "active": false,
+    "message": {
+      "fr": "<div class=\"container-fluid\" >\n  <h4 class=\"article-group-title  text-center no-border\" > Info placée en haut! <i class=\"fa fa-heart-o green-1\"></i> </h4>\n  <document-card-off category=\"selection\"  limit=4  class=\"nopadding container-fluid\" />\n</div>"
+    }
+  },
+  "welcome": {
+    "active": false,
+    "message": {
+      "fr": "<div class=\" container-fluid text-center\">\n  <b>Info placée  <i class=\"fa fa-rocket pink\"></i><i class=\"fa fa-bolt pink\"></i></b><br/> \n\n</div>"
+    }
+  },
+  "maintenance": {
+    "active": false,
+    "reason": {
+      "fr": "<span class=\"\">\n  <b>Nouvelle version de panier-local.ch ! <i class=\"fa fa-rocket green\"></i></b>\n</span>"
+    }
+  },
+  "cid": "main",
+  "shippingweek": [
+    "2020-06-26T04:00:00.000Z",
+    "2020-06-27T04:00:00.000Z",
+    "2020-06-28T04:00:00.000Z",
+    "2020-06-29T04:00:00.000Z",
+    "2020-06-30T04:00:00.000Z",
+    "2020-07-01T04:00:00.000Z"
+  ]
+}

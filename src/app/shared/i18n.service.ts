@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Config, ConfigService, CartAction } from 'kng2-core';
+import { Config, ConfigService } from 'kng2-core';
 
 /**
  * 
@@ -34,15 +34,8 @@ export class i18n  {
   currentLocale:string='fr';
 
   constructor(
-    private $config:ConfigService
   ) { 
     this.currentLocale='fr';
-    this.$config.subscribe((config:Config)=>{
-      this.config=config;
-      // TODO configure locale switch/setup
-      // this.config.shared.i18n [defaultLocale:string, locales:[]]
-    });
-    //this.currentLocale=this.$config.locale;
   }
 
   label(){
@@ -56,7 +49,6 @@ export class i18n  {
 
 
   set locale(lang:string){
-    this.$config.locale=lang;
     this.currentLocale=lang;
   }
 
