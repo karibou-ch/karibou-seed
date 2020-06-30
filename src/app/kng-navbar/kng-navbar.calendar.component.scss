@@ -39,13 +39,13 @@ $light_grey:#A39D9E;
   margin:20px 0 20px;
 }
 .cl_plan{
-  background-color: var(--mdc-theme-primary);
-  box-shadow: 0px 0px 52px -18px rgba(0, 0, 0, 0.75);
-  padding: 30px;
+  -background-color: var(--mdc-theme-primary);
+  -box-shadow: 0px 0px 52px -18px rgba(0, 0, 0, 0.75);
+  padding: 35px;
   color: #fff;
   margin: auto;
   width: 100px;
-  border-radius: 50%;
+  border-radius: 10px;
   height: 100px;
   display: flex;  
 

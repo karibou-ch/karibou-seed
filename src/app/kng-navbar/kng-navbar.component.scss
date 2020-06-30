@@ -185,9 +185,12 @@ div.navbar{
     .home{
       outline: 0px;
       cursor: pointer;
-      font-size: 1.0rem;
       font-weight: 600;
-      line-height: 19px;
+      @media (max-width: 767px) {
+        font-size: 1.0rem;
+        line-height: 19px;
+      }
+  
       i{
         transform: translateY(6px);
         font-size: 22px;

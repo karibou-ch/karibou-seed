@@ -47,17 +47,19 @@
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
         <img class="icon" src="/assets/img/k-puce-light.png" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="home -hide-sm" [routerLink]="['/store',store,'home']" (click)="openCalendar()">
+        <mdc-top-app-bar-title class="home"  (click)="openCalendar()">
           {{hubTitle}} <i class="material-icons">keyboard_arrow_down</i>
-          <div> <i class="material-icons subtitle small hide">directions_bike</i>{{gtShippingDateFormat()}}</div>
+          <div class="show-sm"> <i class="material-icons subtitle small hide">directions_bike</i>{{gtShippingDateFormat()}}</div>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="shipping hide" (click)="openCalendar()">
-            {{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i>              
+        <mdc-top-app-bar-title class="home hide-sm"  (click)="openCalendar()">
+          <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
+          <i class="material-icons">keyboard_arrow_down</i>
         </mdc-top-app-bar-title>
+
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
