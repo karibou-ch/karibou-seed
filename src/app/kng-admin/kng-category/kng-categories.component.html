@@ -1,7 +1,14 @@
-  <div class="page-saving" [hidden]="isReady">
-    <h1>Saving</h1>
-  </div>
-  <div class="container">
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
+<div class="container">
+  <h3 i18n>Catégories</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
+
+  <!-- HUB Lang -->
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  
   <mdc-list twoLine avatar="true" border>
     <mdc-list-item  (click)="onCategoryCreate()">
         <mdc-icon mdcListItemGraphic>save</mdc-icon>

@@ -18,7 +18,8 @@ import {
   MdcRippleModule,
   MdcSnackbarModule,
   MdcTabBarModule,
-  MdcTextFieldModule
+  MdcTextFieldModule,
+  MDCDataTableModule
 } from '@angular-mdc/web';
 
 
@@ -39,7 +40,8 @@ import {
     MdcRippleModule,
     MdcSnackbarModule,
     MdcTextFieldModule,
-    MdcTabBarModule
+    MdcTabBarModule,
+    MDCDataTableModule
   ],
   declarations: []
 })

@@ -3,6 +3,7 @@ import {
   CategoryService,
   Category,
   LoaderService,
+  Hub,
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../../common';
@@ -106,7 +107,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   isReady = false;
   config: any;
   categories: Category[] = [];
-
+  currenHub: Hub;
   //
   // edit content
   edit: {
@@ -133,6 +134,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
     this.isReady = true;
+    this.currenHub = this.config.shared.hub || {};
 
     //
     // init edit struct

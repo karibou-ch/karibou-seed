@@ -1,0 +1,107 @@
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
+<div class="container">
+  <h3 i18n>{{currentHub.name}}</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
+
+  <!-- HUB Lang -->
+  <kng-config-input clazz="config" format="hub"></kng-config-input>
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+
+  <!-- HUB Address -->
+  <h3 i18n>Configuration Adresse </h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Adresse rue" name="address.stree" format="text" 
+                    [address]="currentHub.address"
+                    [(ngModel)]="currentHub.address.streetAdress" (ngModelChange)="updateGeo($event)"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Adresse code postal" name="address.postalcode" format="text" 
+                    [address]="currentHub.address"
+                    [(ngModel)]="currentHub.address.postalCode" (ngModelChange)="updateGeo($event)"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Adresse région" name="address.region" format="text" 
+                    [(ngModel)]="currentHub.address.region"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Adresse téléphone" name="address.phone" format="text" 
+                    [(ngModel)]="currentHub.address.phone"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Geo" name="address.geo" format="geo" [config]="config"
+                    [(ngModel)]="currentHub.address"></kng-config-input>
+
+
+  <!-- HUB About -->
+  <h3 i18n>Configuration tagline</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre tagLine" name="tagLine.titre" format="text" 
+                    [(ngModel)]="currentHub.tagLine.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header tagLine" name="tagLine.h" format="text" 
+                    [(ngModel)]="currentHub.tagLine.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe tagLine" name="tagLine.p" format="area" 
+                    [(ngModel)]="currentHub.tagLine.p[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Image tagLine" name="tagLine.image" format="image" 
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="currentHub.tagLine.image"></kng-config-input>
+
+
+  <!-- HUB About -->
+  <h3 i18n>Configuration About</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text" 
+                    [(ngModel)]="currentHub.about.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header about" name="about.titre" format="text" 
+                    [(ngModel)]="currentHub.about.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe about" name="about.p" format="area" 
+                    [(ngModel)]="currentHub.about.p[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Image about" name="about.image" format="image" 
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="currentHub.about.image"></kng-config-input>
+
+
+  <!-- HUB Checkout -->
+  <h3 i18n>Configuration Checkout</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Checkout title" name="checkout.titre" format="area" 
+                    [(ngModel)]="currentHub.checkout.title[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Checkout address" name="checkout.address" format="area" 
+                    [(ngModel)]="currentHub.checkout.address[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Checkout payment" name="checkout.payment" format="area" 
+                    [(ngModel)]="currentHub.checkout.payment[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Checkout resume" name="checkout.resume" format="area" 
+                    [(ngModel)]="currentHub.checkout.resume[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Checkout message" name="checkout.message" format="area" 
+                    [(ngModel)]="currentHub.checkout.message[$i18n.locale]"
+                    [checked]="currentHub.checkout.active" [withCheck]="true"
+                    (checkChange)="currentHub.checkout.active=$event"></kng-config-input>
+
+
+  <!-- HUB Footer -->
+  <h3 i18n>Configuration Footer</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
+                    [(ngModel)]="currentHub.footer.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header footer" name="footer.titre" format="text" 
+                    [(ngModel)]="currentHub.footer.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area" 
+                    [(ngModel)]="currentHub.footer.p[$i18n.locale]"></kng-config-input>
+
+
+  <button raised mdc-button (click)="onHubSave()" class="primary">
+    <span mdcButtonLabel>Sauver vos modifications</span>
+    <mdc-icon>save</mdc-icon>
+  </button>    
+
+</div>
