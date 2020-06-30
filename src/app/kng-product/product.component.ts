@@ -84,6 +84,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   constructor(
     private $cart: CartService,
     public $i18n: i18n,
+    private $util: KngUtils,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
@@ -194,7 +195,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     // FIXME should not be possible
     if (!product.variants) {
       console.log('DEBUG variation hang', variant, JSON.stringify(product));
-      KngUtils.trackError('Error variation not available: ' + variant);
+      this.$util.trackError('Error variation not available: ' + variant);
 
       //
       // Should reload the page

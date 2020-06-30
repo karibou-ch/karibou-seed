@@ -40,8 +40,8 @@ export class AddressComponent {
       list_title: 'Vos adresses actives',
       list_select: 'Sélectionner une adresse pour l\'éditer',
       list_add: 'Ajouter une adresse de livraison ci-dessous',
-      address_street: 'Adresse',
-      address_floor: 'Étage',
+      address_street: 'Adresse*',
+      address_floor: 'Étage*',
       address_postalcode_title: 'Aujourd\'hui nous livrons uniquement les code postaux proposés.',
       address_postalcode: 'Code postal',
       address_region: 'Région',
@@ -50,8 +50,8 @@ export class AddressComponent {
       list_title: 'Your active shipping addresses',
       list_select: 'Select an address for edition',
       list_add: 'Below add a new shipping address',
-      address_street: 'Street, number',
-      address_floor: 'Floor',
+      address_street: 'Street, number*',
+      address_floor: 'Floor*',
       address_postalcode_title: 'Today we deliver only the postal codes below.',
       address_postalcode: 'Postal code',
       address_region: 'Region',
@@ -88,7 +88,8 @@ export class AddressComponent {
     public  $i18n: i18n,
     private $fb: FormBuilder,
     private $http: HttpClient,
-    private $user: UserService
+    private $user: UserService,
+    private $util: KngUtils
   ) {
     this.isLoading = false;
     this.$address = this.$fb.group({
@@ -127,7 +128,7 @@ export class AddressComponent {
     // console.log('--- load map',config.shared.keys.pubMap)
     // FIXME this line for universal app
     if (!window['google'] && config.shared.keys.pubMap) {
-      this.loadMap(config).subscribe(() => {
+      this.$util.loadMap(config).subscribe(() => {
         // DONE!
       });
     }
@@ -148,13 +149,8 @@ export class AddressComponent {
     return KngUtils.getStaticMap(address, this.pubkeyMap);
   }
 
-
   isSelectedAddress(address: UserAddress, idx: number) {
     return this.idx === idx;
-  }
-
-  loadMap(config: Config) {
-    return Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key=' + config.shared.keys.pubMap, 'maps');
   }
 
   onEmit(result: AddressEvent) {
@@ -162,13 +158,11 @@ export class AddressComponent {
     this.updated.emit(result);
   }
 
-
   onGeloc(event?: { index: number, value: any }) {
     if (!this.$address.value.street) {
          return;
     }
-    KngUtils.getGeoCode(this.$http,
-                        this.$address.value.street,
+    this.$util.getGeoCode(this.$address.value.street,
                         this.$address.value.postalCode,
                         this.$address.value.region).subscribe(
       (result) => {
