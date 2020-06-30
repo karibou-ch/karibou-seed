@@ -23,6 +23,7 @@ import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KngNavigationStoreResolve } from './navigation.store.service';
+import { KngUtils } from './utils';
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ export class KngCommonModule {
         i18n,
         KngNavigationStateService,
         KngNavigationStoreResolve,
+        KngUtils,
         IsAuthenticatedGard,
         IsWelcomeGard
       ]

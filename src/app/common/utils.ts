@@ -1,10 +1,50 @@
 import { UserAddress, Utils, config } from 'kng2-core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject, ReplaySubject, throwError } from 'rxjs';
+import { map, debounceTime, switchMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Config } from 'protractor';
 
 
+@Injectable()
 export class KngUtils {
   static STATIC_MAP = 'https://maps.googleapis.com/maps/api/staticmap?';
+
+  private _result$: Observable<any>;
+  private _geo$: ReplaySubject<any>;
+
+  constructor(
+    private $http: HttpClient
+  ) {
+    this._geo$ = new ReplaySubject<any>(1);
+    this._result$ = this._geo$.pipe(
+      // Limit multiple consumer call for google API
+      debounceTime(1000),
+      switchMap((address:any) => {
+        const postal = address.postalCode || '';
+        const region = address.region || 'Suisse';
+        const street = address.streetAdress;
+        const fulladdress = [street, postal, region].join(',');
+        const url = config.API_SERVER + '/v1/geocode?address=' + fulladdress + '&sensor=false';
+        return this.$http.get(url, { withCredentials: false }).pipe(
+          map((geo: any) => {
+            //
+            // return error message
+            if (geo.error_message){
+              throw(geo.error_message);
+            }
+            const result: any = { address: address};
+            if (!geo || !geo.results.length || !geo.results[0].geometry) {
+              return result;
+            }
+            result.geo = geo.results[0].geometry;
+            result.components = (geo.results[0].address_components || []).map(comp => comp.long_name);
+            return result;
+          })
+        );
+      })
+    );
+  }
 
   //
   // TODO share staticmap generator
@@ -29,48 +69,25 @@ export class KngUtils {
     return KngUtils.STATIC_MAP + Utils.encodeQuery(params);
   }
 
+  loadMap(config: Config) {
+    return Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key=' + config.shared.keys.pubMap, 'maps');
+  }
+
   //
   // FIXME add Quota for google API
   // --> https://console.cloud.google.com/google/maps-apis/apis/geocoding-backend.googleapis.com/quotas?project=karibou-api
-  static getGeoCode(http, street: string, postal: string, region: string): Observable<any> {
-    // check if needed encodeURIComponent(str)
-    postal = postal || '';
-    region = region || 'Suisse';
-    const fulladdress = [street, postal, region].join(',');
-    const url = config.API_SERVER + '/v1/geocode?address=' + fulladdress + '&sensor=false';
-    return http.get(url, { withCredentials: false }).pipe(
-      map((geo: any) => {
-        const result: any = {};
-        if (!geo || !geo.results.length || !geo.results[0].geometry) {
-          return result;
-        }
-
-        result.geo = geo.results[0].geometry;
-        result.components = (geo.results[0].address_components || []).map(comp => comp.long_name);
-        return result;
-      })
-    );
+  getGeoCode(street: string, postal: string, region: string): Observable<any> {
+    const address: any = {
+      streetAdress: street,
+      region: region,
+      postalCode: postal
+    };
+    this._geo$.next(address);
+    //return this._geo$.asObservable();
+    return this._result$;
   }
 
-  //
-  // example with Maps
-  // script='<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=YOURS"></script>';
-  static lazyload(script: string) {
-    const fragment = document.createRange().createContextualFragment(script);
-    document.body.appendChild(fragment);
-  }
-
-
-  static screen() {
-    if (window && window.matchMedia) {
-      return window.matchMedia('(max-width: 759px)').matches;
-    } else {
-      // likely IE 9
-      return false;
-    }
-  }
-
-  static trackError(msg: string) {
+  trackError(msg: string) {
     const Sentry = window['Sentry'];
     if (!Sentry) {
       return;
@@ -84,9 +101,7 @@ export class KngUtils {
     //
     // publish sentry event only on production
     Sentry.captureException(new Error(msg));
-
   }
-
 }
 
 
