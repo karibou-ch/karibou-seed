@@ -68,6 +68,10 @@ export class KngNavigationStateService  {
     });
   }
 
+  get HUBs() {
+    return this.config.shared.hubs || [];
+  }
+
   set store(store: string) {
     if (!store || this.currentStore === store) {
       return;
