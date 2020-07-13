@@ -29,8 +29,6 @@ import { formatDate } from '@angular/common';
 })
 export class KngCalendarForm {
 
-  i18n: any = {
-  };
   config: Config;
   currentShippingDay: Date;
   labelTime: string;
@@ -40,10 +38,11 @@ export class KngCalendarForm {
   premiumLimit: number;
   noshippingMsg: string;
   showHUBs: boolean;
+  lockedHUB: boolean;
 
   constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
+    private $i18n: i18n,
     @Inject(MDC_DIALOG_DATA) public data: any) {
-      this.i18n = data.i18n;
       this.config = data.config;
       this.noshippingMsg = data.noshippingMsg;
       this.currentShippingDay = data.currentShippingDay;
@@ -55,12 +54,24 @@ export class KngCalendarForm {
         this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
         this.currentRanks = this.config.shared.currentRanks[hub] || {};
         this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;  
+        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+        this.lockedHUB = this.config.shared.hub.domainOrigin;
       }
   }
-  get locale() {
-    return this.i18n.locale;
+
+  get i18n() {
+    return this.$i18n;
   }
+
+  get locale() {
+    return this.$i18n.locale;
+  }
+
+  onLang($event, lang) {
+    this.$i18n.locale = lang;
+  }
+
+
 
   toggleStore($event) {
     this.showHUBs = ($event.target.id === 'hubs');
@@ -190,6 +201,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    console.log('---- DEBUG', this.config.shared.hub);
     // K. image
     this.image = this.config.shared.tagLine.image;
     // HUB title
@@ -369,7 +381,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   openCalendar(){
     const dialogRef = this.$dialog.open(KngCalendarForm,{
       data: {
-        i18n: this.$i18n,
         config: this.config,
         isPremium: this.user.isPremium(),
         currentShippingDay: this.currentShippingDay,
