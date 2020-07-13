@@ -107,15 +107,17 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
     this.stats.nativeElement.innerText = '';
-
     //
     // on search open window
     if (tokens.some(len => len >= 3)) {
+      const options = {
+        when: this.$cart.getCurrentShippingDay(),
+        hub: this.config.shared.hub && this.config.shared.hub.slug
+      };
       this.show = true;
       this.findGetNull = false;
       margin = (this.search.nativeElement.value || '').length * margin;
-      // FIXME search should be multihub 
-      this.$products.search(value).subscribe(products => {
+      this.$products.search(value, options).subscribe(products => {
         //
         // async clear?
         this.stats.nativeElement.style.marginLeft = 35 + margin + 'px';
