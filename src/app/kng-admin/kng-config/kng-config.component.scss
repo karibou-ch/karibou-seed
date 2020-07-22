@@ -9,10 +9,39 @@
     padding-left: 20px;
   }
 
+  .menu-group{
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    text-transform: uppercase;
+    padding-top: 5px;    
+  }
+
   button.primary{
     width: 100%;
   }
+
+  .config-custom{
+    display: flex;
+    align-items: center;    
+    margin-bottom: 10px;
+  }
+
+  div.block{
+    background: #eee;
+    margin: 10px 0;
+    border-radius: 8px;
+    overflow: hidden;  
+    padding: 0 8px;
+    h3 mdc-icon{
+      transform: translateY(6px);      
+    }
+  }
+
+  mdc-select{
+    width: 100%;
+  }
 }
+
 .page-saving{
   position: fixed;
   top: 0;
@@ -28,6 +57,7 @@
     text-align: center;
     padding-top: 25%;
   }
-
 }
 
+/**
+ CODE MIRROR */

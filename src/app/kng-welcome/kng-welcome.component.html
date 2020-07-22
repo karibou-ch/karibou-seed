@@ -5,7 +5,7 @@
 <ng-template #loadingTpl>...</ng-template> -->
 <div class="container top">
   <div class="welcome">
-    <div class="logo" [ngStyle]="getWelcomeLogo()"></div>
+    <div class="logo" [ngStyle]="getTaglineImage()"></div>
     <!-- WELCOME -->
     <div class="inner" >
       <h1>{{getTagline('t')}}</h1>
@@ -32,7 +32,7 @@
   <div class="how-it-works" [innerHTML]="getAbout('p')">
               
   </div>
-  <div class="favorite-products" [ngStyle]="getWelcomeImage()">
+  <div class="favorite-products" [ngStyle]="getAboutImage()">
     <div class="elem" [innerHTML]="getAbout('h')"></div>
     <!-- <div class="elem"></div> -->
   </div>

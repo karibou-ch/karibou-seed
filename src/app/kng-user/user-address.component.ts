@@ -1,4 +1,4 @@
-import { Component, EventEmitter , Input, Output } from '@angular/core';
+import { Component, EventEmitter , Input, Output, OnDestroy } from '@angular/core';
 
 import { User,
          UserAddress,
@@ -8,6 +8,7 @@ import { User,
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { KngUtils, i18n } from '../common';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 
 export interface AddressEvent {
@@ -21,7 +22,7 @@ export interface AddressEvent {
   templateUrl: './user-address.component.html',
   styleUrls: ['./user-address.component.scss']
 })
-export class AddressComponent {
+export class AddressComponent implements OnDestroy{
 
   defaultUser: User = new User();
 
@@ -81,6 +82,7 @@ export class AddressComponent {
   idx: number;
   geo: any;
   isLoading: boolean;
+  collector$: Subscription;
 
   // utiliser l'api
   // https://tel.search.ch/api/help.fr.html
@@ -91,6 +93,7 @@ export class AddressComponent {
     private $user: UserService,
     private $util: KngUtils
   ) {
+    this.collector$ = new Subscription();
     this.isLoading = false;
     this.$address = this.$fb.group({
       'name':   ['', [Validators.required, Validators.minLength(3)]],
@@ -104,6 +107,9 @@ export class AddressComponent {
     // [ngModelOptions]="{updateOn: 'blur'}"
   }
 
+  ngOnDestroy() {
+    this.collector$.unsubscribe();
+  }
 
   get locale() {
     return this.$i18n.locale;
@@ -125,14 +131,33 @@ export class AddressComponent {
       });
     }
 
-    // console.log('--- load map',config.shared.keys.pubMap)
+    //
     // FIXME this line for universal app
     if (!window['google'] && config.shared.keys.pubMap) {
-      this.$util.loadMap(config).subscribe(() => {
+      const _m$ = this.$util.loadMap(config).subscribe(() => {
         // DONE!
       });
+      this.collector$.add(_m$);
     }
 
+    const _g$ = this.$util.getGeoCode().subscribe(
+      (result) => {
+        this.geo = (result.geo || {}).location;
+        //
+        // autofill region and location
+        setTimeout(() => {
+          (result.components || []).forEach(comp => {
+            if (this.locations.indexOf(comp) > -1 && (this.$address.value.postalCode !== comp)) {
+              this.$address.patchValue({postalCode: comp});
+            }
+            if (this.regions.indexOf(comp) > -1 && (this.$address.value.region !== comp)) {
+              this.$address.patchValue({region: comp});
+            }
+          });
+        }, 700);
+       }
+    );
+    this.collector$.add(_g$);
   }
 
   // validPassword(control: AbstractControl) {
@@ -162,25 +187,9 @@ export class AddressComponent {
     if (!this.$address.value.street) {
          return;
     }
-    this.$util.getGeoCode(this.$address.value.street,
+    this.$util.updateGeoCode(this.$address.value.street,
                         this.$address.value.postalCode,
-                        this.$address.value.region).subscribe(
-      (result) => {
-        this.geo = (result.geo || {}).location;
-        //
-        // autofill region and location
-        setTimeout(() => {
-          (result.components || []).forEach(comp => {
-            if (this.locations.indexOf(comp) > -1 && (this.$address.value.postalCode !== comp)) {
-              this.$address.patchValue({postalCode: comp});
-            }
-            if (this.regions.indexOf(comp) > -1 && (this.$address.value.region !== comp)) {
-              this.$address.patchValue({region: comp});
-            }
-          });
-        }, 700);
-       }
-    );
+                        this.$address.value.region);
   }
 
   onSave() {

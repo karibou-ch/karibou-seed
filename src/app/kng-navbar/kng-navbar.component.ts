@@ -129,7 +129,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   store: string;
   primary: ConfigMenu[];
   topmenu: ConfigMenu[];
-  image: string;
+  Kimage: string;
   hubTitle: string;
   hubImage: string;
   content: any;
@@ -201,9 +201,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('---- DEBUG', this.config.shared.hub);
     // K. image
-    this.image = this.config.shared.tagLine.image;
+    this.Kimage = this.config.shared.tagLine.image;
+
     // HUB title
     this.hubTitle = this.config.shared.hub.siteName[this.locale];
     this.hubImage = this.config.shared.hub.siteName.image;
@@ -322,7 +322,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     if (!this.config || !this.config.shared.tagLine[key]) {
       return '';
     }
-    return this.config.shared.tagLine[key][this.locale];
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name) ? hub.tagLine[key][this.$i18n.locale] : shared.tagLine[key][this.$i18n.locale];
+
   }
 
   getRouterLink(url) {

@@ -60,6 +60,7 @@ export class ProductListComponent implements OnInit {
   relative = './';
 
   options: {
+    hub?: string;
     available: boolean;
     status: boolean;
     when: Date|boolean;
@@ -191,6 +192,7 @@ export class ProductListComponent implements OnInit {
 
   loadProducts() {
 
+    this.options.hub = this.config.shared.hub && this.config.shared.hub.slug;
     this.options.when = this.$cart.getCurrentShippingDay();
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {

@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "3.4.00",
+  "version": "3.6.19",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -25,6 +25,7 @@
     "@angular/service-worker": "~8.2.7",
     "@sentry/browser": "^5.18.0",
     "classlist.js": "^1.1.20150312",
+    "codemirror": "^5.55.0",
     "core-js": "^2.5.7",
     "kng2-core": "file:../kng2-core/dist",
     "ngx-stripe": "^7.4.4",

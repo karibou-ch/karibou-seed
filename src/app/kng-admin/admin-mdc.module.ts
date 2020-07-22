@@ -19,7 +19,8 @@ import {
   MdcSnackbarModule,
   MdcTabBarModule,
   MdcTextFieldModule,
-  MDCDataTableModule
+  MDCDataTableModule,
+  MdcSelectModule
 } from '@angular-mdc/web';
 
 
@@ -41,7 +42,8 @@ import {
     MdcSnackbarModule,
     MdcTextFieldModule,
     MdcTabBarModule,
-    MDCDataTableModule
+    MDCDataTableModule,
+    MdcSelectModule
   ],
   declarations: []
 })

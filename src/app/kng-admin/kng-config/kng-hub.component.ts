@@ -5,13 +5,19 @@ import { KngNavigationStateService, i18n, KngUtils } from '../../common';
 import { MdcSnackbar, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
 import { FormBuilder} from '@angular/forms';
 
+// import { CodeMirror } from 'codemirror';
+
 import {
   LoaderService,
   ConfigService,
   Config,
   UserAddress,
   HubService,
-  Hub
+  Hub,
+  OrderService,
+  Order,
+  ShopService,
+  Shop
 } from 'kng2-core';
 
 import { ActivatedRoute } from '@angular/router';
@@ -163,12 +169,17 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class KngHUBComponent implements OnInit, OnDestroy {
 
+  private _codeMirror: any;
+
+
   config: Config;
   menus: any[];
   groups: string[];
   isLoading: boolean;
   isReady = false;
   currentHub: Hub;
+  edit = {};
+
 
 
 
@@ -179,6 +190,7 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     public $config: ConfigService,
     public $hub: HubService,
     public $loader: LoaderService,
+    public $shops: ShopService,
     public $route: ActivatedRoute,
     public $snack: MdcSnackbar,
     public $utils: KngUtils,
@@ -196,18 +208,49 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     //
     // HUB from DB
     this.$hub.get(this.currentHub.slug).subscribe(hub => {
-      this.currentHub = hub;
+      Object.assign(this.currentHub,hub);
     }, (err) => this.$snack.open(err.error, 'OK'));
-    // this.currentHub.maintenance.reason = this.currentHub.maintenance.reason || {};
-    // this.currentHub.header.message = this.currentHub.header.message || {};
-    // this.currentHub.checkout.address = this.currentHub.checkout.address || {};
-    // this.currentHub.checkout.payment = this.currentHub.checkout.payment || {};
-    // this.currentHub.checkout.message = this.currentHub.checkout.message || {};
 
+    this.currentHub.description = {fr: null, en: null, de: null};
   }
 
 
+  // get codeMirror(): any {
+  //   if (this._codeMirror) {
+  //     return this._codeMirror;
+  //   }
+
+  //   this._codeMirror = require('codemirror');
+  //   return this._codeMirror;
+  // }
+
+  addContent() {
+    this.currentHub.home.content.push({
+      t: { en: '', fr: '', de: ''},
+      h: { en: '', fr: '', de: ''},
+      p: { en: '', fr: '', de: ''}, image: null, target: ''
+    });
+  }
+
   ngOnInit() {
+    this.$utils.getGeoCode().subscribe(result => {
+      if(!result.geo) {
+        return;
+      }
+      this.currentHub.address = result.address;
+      this.currentHub.address.geo = result.geo || this.currentHub.address.geo;
+    });
+
+    //
+    // Hugly way to load codeMirror
+    // setTimeout(() => {
+    //   document.querySelectorAll('.run-codemirror textarea').forEach(text => {
+    //     this.codeMirror.fromTextArea(text, {
+    //       lineNumbers: true,
+    //       mode: 'htmlmixed'
+    //     });
+    //   })
+    // }, 200);
   }
 
   ngOnDestroy() {
@@ -238,6 +281,18 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     );
   }
 
+  onHubSaveManager() {
+    this.isReady = false;
+    this.isLoading = true;
+    this.$hub.saveManager(this.currentHub).subscribe(
+      () => {
+        this.isReady = true;
+        this.$snack.open(this.$i18n.label().save_ok, 'OK');
+        }, (err) => this.$snack.open(err.error, 'OK'),
+      () => this.isLoading = false
+    );
+  }
+
   updateGeo($event) {
     const street = this.currentHub.address.streetAdress;
     const postal = this.currentHub.address.postalCode;
@@ -250,17 +305,105 @@ export class KngHUBComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.$utils.getGeoCode(street, postal, region).subscribe(result => {
-      if(!result.geo) {
-        return;
-      }
-      this.currentHub.address = result.address;
-      this.currentHub.address.geo = result.geo || this.currentHub.address.geo;
-    },error => {
-      console.log('---- error',error);
-    })
+    this.$utils.updateGeoCode(street, postal, region);
   }
 
 }
 
 
+@Component({
+  selector: 'kng-hub',
+  templateUrl: './kng-hub-manager.component.html',
+  styleUrls: ['./kng-config.component.scss']
+})
+export class KngHUBManagerComponent extends KngHUBComponent {
+
+  mapVendors = {};
+  vendors: Shop[];
+  newUser: string;
+
+  ngOnInit(){
+    this.mapVendors = {};
+    this.vendors = [];
+    super.ngOnInit();
+
+    this.$shops.query({ status: true }).subscribe(vendors => {
+      this.vendors = vendors.sort((a, b) => a.name.localeCompare(b.name, 'fr', { numeric: true }))
+      this.vendors.forEach(vendor => this.mapVendors[vendor._id] = vendor.name);
+      // console.log('---- DB ', this.vendors[5]);
+      // console.log('---- DB ',  this.currentHub.vendors[0]);
+    });
+  }
+
+  addDate() {
+    const day = new Date();
+    this.currentHub.noshipping.push({reason: {
+      en: '', fr: '', de: ''
+    }, from: day, to: day});
+  }
+
+
+  getShopName(id) {
+    return this.mapVendors[id];
+  }
+
+  getAvailableVendors() {
+    return this.vendors.filter(vendor => {
+      const a = this.currentHub.vendors.indexOf(vendor._id) === -1;
+      //const b = vendor.status || vendor.created
+      return a;
+    });
+  }
+
+  //
+  // manager
+  delManager(idx: number) {
+    this.currentHub.manager.splice(idx, 1);
+  }
+
+  addManager() {
+    if (!this.currentHub.manager) {
+      this.currentHub.manager = [];
+    }
+
+    this.currentHub.manager.push(this.newUser);
+    this.newUser = null;
+  }
+
+  //
+  // logistic
+  addLogistic() {
+    if (!this.currentHub.logistic) {
+      this.currentHub.logistic = [];
+    }
+
+    this.currentHub.logistic.push(this.newUser);
+    this.newUser = null;
+  }
+
+  delLogistic(idx: number) {
+    this.currentHub.logistic.splice(idx, 1);
+  }
+
+  //
+  // vendors
+  delVendor(idx: number) {
+    this.currentHub.vendors.splice(idx, 1);
+  }
+
+
+  onAddVendor($event) {
+    this.currentHub.vendors.push($event.value);
+  }
+}
+
+
+
+
+@Component({
+  selector: 'kng-information',
+  templateUrl: './kng-hub-information.component.html',
+  styleUrls: ['./kng-config.component.scss']
+})
+export class KngInformationCfgComponent extends KngHUBComponent {
+}

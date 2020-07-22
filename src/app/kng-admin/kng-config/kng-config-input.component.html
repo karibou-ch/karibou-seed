@@ -31,12 +31,13 @@
   <ng-container  *ngSwitchCase="'text'">
     <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
     <div class="input">
-      <mdc-text-field fullwidth i18n-label [label]="label" type="text" [(ngModel)]="value" >
+      <mdc-text-field  i18n-label [label]="label" type="text" [(ngModel)]="value" >
       </mdc-text-field>
     </div>
     <div class="check" [hidden]="!withCheck">
           <mdc-checkbox [checked]="checked" (change)="onCheck($event)"></mdc-checkbox>
     </div>
+    <ng-content></ng-content>
   </ng-container>  
 
   <!-- AREA -->

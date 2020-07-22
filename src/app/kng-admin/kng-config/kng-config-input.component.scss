@@ -75,6 +75,11 @@ div.input{
   width: 100%;
   mdc-text-field{
     margin-top : -7px;
+    width: 60%;
+    background: transparent;
+    input {
+      transform: translateY(2px)!important;      
+    }
   }
 }
 
@@ -85,6 +90,7 @@ div.center{
 div.lang{
   margin-left: 30px;  
 }
+
 
 mdc-textarea{
   font-size: 14px;

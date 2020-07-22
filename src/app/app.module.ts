@@ -34,7 +34,6 @@ import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-foun
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule } from '@angular/service-worker';
-//import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 @Injectable()

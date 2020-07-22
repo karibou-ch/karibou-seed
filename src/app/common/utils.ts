@@ -1,9 +1,8 @@
-import { UserAddress, Utils, config } from 'kng2-core';
-import { Observable, Subject, ReplaySubject, throwError } from 'rxjs';
+import { UserAddress, Utils, Config, config } from 'kng2-core';
+import { Observable, ReplaySubject } from 'rxjs';
 import { map, debounceTime, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Config } from 'protractor';
 
 
 @Injectable()
@@ -76,7 +75,7 @@ export class KngUtils {
   //
   // FIXME add Quota for google API
   // --> https://console.cloud.google.com/google/maps-apis/apis/geocoding-backend.googleapis.com/quotas?project=karibou-api
-  getGeoCode(street: string, postal: string, region: string): Observable<any> {
+  updateGeoCode(street: string, postal: string, region: string): Observable<any> {
     const address: any = {
       streetAdress: street,
       region: region,
@@ -84,6 +83,11 @@ export class KngUtils {
     };
     this._geo$.next(address);
     //return this._geo$.asObservable();
+    return this._result$;
+  }
+
+
+  getGeoCode() {
     return this._result$;
   }
 

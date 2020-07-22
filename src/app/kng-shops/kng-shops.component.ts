@@ -91,6 +91,8 @@ export class KngShopsComponent implements OnInit {
       this.$product.select(options)
     ]).subscribe(([vendor, products]: [Shop, Product[]]) => {
       document.body.classList.add('shop');
+      document.title = vendor.name;
+
       Object.assign(this.vendor, vendor);
       this.products = products.sort((a, b) => {
         return b.stats.score - a.stats.score;

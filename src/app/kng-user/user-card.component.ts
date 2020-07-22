@@ -33,17 +33,18 @@ export class CardComponent {
     fr: {
       title_header: 'Vos méthodes de paiement',
       title_edit: 'Sélectionner une méthode pour l\'éditer',
-      action_add: 'Ajouter une méthode de paiement',
+      action_add: 'Ajouter ou modifier une méthode de paiement',
       action_create_ok: 'Votre méthode de paiement a été enregistrée',
     },
     en: {
       title_header: 'Your payment methods',
       title_edit: 'Select payment method you want to edit',
-      action_add: 'Add a new payment method',
+      action_add: 'Add or update a payment method',
       action_create_ok: 'Your payment method has been saved',
     }
   };
 
+  displayCardError: string;
   defaultUser: User = new User();
   isValid: boolean;
 
@@ -259,6 +260,7 @@ export class CardComponent {
         // livemode: boolean;
         // type: 'card' | 'bank_account';
         // used: boolean;
+        this.displayCardError = null;
         if (result.token) {
           // Use the token to create a charge or a customer
           // https://stripe.com/docs/charges
@@ -269,16 +271,23 @@ export class CardComponent {
             number: 'xxxx-xxxx-xxxx-' + result.token.card.last4,
             expiry: result.token.card.exp_month + '/' + result.token.card.exp_year
           });
-
-          this.$user.addPaymentMethod(card, this.user.id).subscribe(
-            user => this.onEmit(<PaymentEvent>({card: card})),
-            err => this.onEmit(<PaymentEvent>({error: new Error(err.error)}))
+          const force_replace = true;
+          this.$user.addPaymentMethod(card, this.user.id, force_replace).subscribe(
+            user => {
+              this.isLoading = false;
+              this.onEmit(<PaymentEvent>({card: card}))
+            },
+            err => {
+              this.displayCardError = err.error || err.message;
+              this.isLoading = false;
+            }
           );
 
         } else if (result.error) {
           //
           // Error creating the token
-          this.onEmit(<PaymentEvent>{error: result.error});
+          this.displayCardError = result.error.message;
+          //this.onEmit(<PaymentEvent>{error: result.error});
         }
       });
   }

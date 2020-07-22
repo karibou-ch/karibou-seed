@@ -3,19 +3,20 @@
     <h3>{{$i18n[locale].home_feedback_title}}</h3>
 </kng-feedback>
 
-<!-- SELECTION -->
-<kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
-
 <!-- INFORMATION -->
-<div class="home-header" [hidden]="target!='home'">
+<div class="home-header" [hidden]="!hasContent('p',target)" 
+    [class.cover]="hasBackgroundContent(target)" 
+    [ngStyle]="getContentStyle(target)">
+
   <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
       [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
   </div>
 
-  <div class="info" *ngIf="config.shared.hub.header.active" 
-      [innerHtml]="config.shared.hub.header.message[locale]">
-  </div>
+  <div class="welcome" [innerHtml]="getContent('p',target)"></div>
 </div>
+
+<!-- SELECTION -->
+<kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
 
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
 <kng-ui-bottom-actions [exited]="scrollDirection<-5" 
@@ -45,12 +46,9 @@
 
   <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
 
-  <!-- INFORMATION -->
-  <div class="home-header" *ngIf="i==2 && target=='home'"
-       [class.cover]="hasBackgroundCover()" 
-       [ngStyle]="getHeaderStyle()">
-    <div class="welcome" [hidden]="!hasAboutContent('p')" [innerHtml]="getAboutContent('p')">
-    </div>
+  <!-- INFORMATION FOR HOME ONLY-->
+  <div class="home-header" *ngIf="i==2 && target == 'home' && config.shared.hub.header.active">
+    <div class="welcome" [innerHtml]="config.shared.hub.header.message[locale]"></div>
   </div>
   
   

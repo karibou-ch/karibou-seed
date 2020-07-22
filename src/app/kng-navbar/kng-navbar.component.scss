@@ -183,6 +183,14 @@ div.navbar{
         
     /** top-left navigation */
     .home{
+      &.center {
+        margin-left: calc( 50% - 100px );
+        i{
+          transform: translateY(6px);
+          font-size: 22px;  
+        }
+      }
+      
       outline: 0px;
       cursor: pointer;
       font-weight: 600;
@@ -194,6 +202,9 @@ div.navbar{
       i{
         transform: translateY(6px);
         font-size: 22px;
+        transform: translateY(5px);
+        font-size: 16px;
+        line-height: 11px;        
       }  
       i.subtitle{
         transform: translateY(2px);
@@ -238,7 +249,7 @@ div.navbar{
     
 
 
-    .mdc-tab{
+    .mdc-tab{      
       &.mdc-tab--active{
         >div{
           font-weight: bold;          
@@ -252,6 +263,10 @@ div.navbar{
       }
       color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
+      
+      i.material-icons{
+        transform: translateY(6px);
+      }
       @media screen and (max-width: 600px){
         min-width: 72px;
         padding: 0 8px;

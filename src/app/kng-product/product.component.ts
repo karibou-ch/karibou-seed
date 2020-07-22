@@ -277,6 +277,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   loadProduct(product) {
     this.isReady = true;
     this.product = product;
+
     //
     // get cart value
     this.cartItem = this.$cart.findBySku(product.sku);
@@ -293,7 +294,16 @@ export class ProductComponent implements OnInit, OnDestroy {
       when: true,
       shopname: [product.vendor.urlpath]
     };
+
+    //
+    // specifics actions
     if (this.isDialog) {
+      //
+      // update window title
+      document.title = product.title;
+
+      //
+      // others products for this vendor
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
       });

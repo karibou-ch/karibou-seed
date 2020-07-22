@@ -19,7 +19,7 @@ export class KngFooterComponent implements OnInit {
   }
 
   VERSION: string = version;
-  content: any;
+  shared: any;
   store: string;
 
   constructor(
@@ -34,9 +34,14 @@ export class KngFooterComponent implements OnInit {
     const loader = this.$route.snapshot.data.loader;
     //
     // system ready
-    this.user   = loader[1];
-    this.config = loader[0];
-    this.content = this.config && this.config.shared;
+    if (loader[1].constructor.name === 'Document') {
+      this.user   = loader[0][1];
+      this.config = loader[0][0];
+    } else {
+      this.user   = loader[1];
+      this.config = loader[0];
+    }
+    this.shared = this.config && this.config.shared;
   }
 
   ngOnInit() {
@@ -48,19 +53,28 @@ export class KngFooterComponent implements OnInit {
   }
 
   getFooter(key) {
-    if (!this.content || !this.content.footer[key]) {
+    if (!this.shared || !this.shared.footer[key]) {
       return;
     }
-    return this.content.footer[key][this.locale];
+    const hub = this.shared.hub;
+
+    return (hub && hub.name) ? hub.footer[key][this.locale] : this.shared.footer[key][this.locale];
   }
 
+  getKFooter(key) {
+    if (!this.shared || !this.shared.footer[key]) {
+      return;
+    }
+
+    return this.shared.footer[key][this.locale];
+  }
 
   getMenuItems(group: string) {
     return this.$navigation.getMenuItems(group);
   }
 
   main(config: Config) {
-    this.content = config.shared;
+    this.shared = config.shared;
     // FIXME Use one uniq central point for updateConfig
     this.$navigation.updateConfig(config);
     this.store = this.$navigation.store;

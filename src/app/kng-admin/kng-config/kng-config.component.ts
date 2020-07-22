@@ -127,6 +127,9 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   }
 
   ngConstruct() {
+    this.$config.get(this.currenHub.slug).subscribe(config => {
+      this.config = config;
+    });
 
   }
 
@@ -151,6 +154,10 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     // get menu groups names
     this.groups = this.menus.map(menu => menu.group)
     .filter((item, i, ar) => ar.indexOf(item) === i);
+  }
+
+  getMenuByGroup(group: string) {
+    return this.menus.filter(menu => menu.group === group);
   }
 
   findMenuItem(item) {
@@ -213,14 +220,6 @@ export class KngConfigComponent implements OnInit, OnDestroy {
 
 }
 
-
-@Component({
-  selector: 'kng-information',
-  templateUrl: './kng-information.component.html',
-  styleUrls: ['./kng-config.component.scss']
-})
-export class KngInformationCfgComponent extends KngConfigComponent {
-}
 
 @Component({
   selector: 'kng-welcome',

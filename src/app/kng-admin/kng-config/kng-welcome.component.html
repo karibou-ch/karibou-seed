@@ -18,6 +18,8 @@
                     (checkChange)="config?.shared.welcome.active=$event"></kng-config-input>
 
   <!-- SITE TAGLINE -->
+  <h3 i18n>Tagline <span class="gray">(welcome top)</span></h3>
+  <hr class="dashed"/>
   <kng-config-input clazz="config" label="Titre tagline" name="tagline-t" format="text"
                     [(ngModel)]="config?.shared.tagLine.t[$i18n.locale]"></kng-config-input>
 
@@ -32,6 +34,35 @@
                     [config]="config"
                     (imageChange)="onDialogOpen($event)"
                     [(ngModel)]="config.shared.tagLine.image"></kng-config-input>
+
+  <!-- SITE About -->
+  <h3 i18n>About <span class="gray">(welcome middle)</span></h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text" 
+                    [(ngModel)]="config?.shared.about.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header about" name="about.titre" format="text" 
+                    [(ngModel)]="config?.shared.about.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe about" name="about.p" format="area" 
+                    [(ngModel)]="config?.shared.about.p[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Image about" name="about.image" format="image" 
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="config?.shared.about.image"></kng-config-input>
+
+
+  <!-- SITE Footer -->
+  <h3 i18n>Footer <span class="gray">(welcome bottom)</span></h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
+                    [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header footer" name="footer.titre" format="text" 
+                    [(ngModel)]="config?.shared.footer.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area" 
+                    [(ngModel)]="config?.shared.footer.p[$i18n.locale]"></kng-config-input>
 
   <button raised mdc-button (click)="onConfigSave()" class="primary">
     <span mdcButtonLabel>Sauver vos modifications</span>

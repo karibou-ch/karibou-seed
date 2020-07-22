@@ -90,7 +90,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_error: 'Vous devez corriger votre panier!',
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de',
       cart_amount_2: 'pour permettre des modifications de commande (prix au poids, ou ajout de produits).',
-      cart_nextshipping: 'Prochaine livraison',
+      cart_nextshipping: 'Livraison',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_order: 'Commander maintenant',
@@ -241,7 +241,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for user
       if (emit.user) {
         this.user = emit.user;
-        this.checkPaymentMethod();
+        this.checkPaymentMethod(true);
       }
       // emit signal for cart
       if (emit.state) {
@@ -396,7 +396,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return this.$cart.totalFees();
   }
 
-  checkPaymentMethod() {
+  checkPaymentMethod(force?:boolean) {
     if (!this.user.isAuthenticated()) {
       return;
     }
@@ -405,7 +405,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // set default payment
       const defaultPayment = this.user.payments.filter(payment => payment.isValid());
       const currentPayment = this.$cart.getCurrentPaymentMethod();
-      if (!currentPayment && defaultPayment.length === 1) {
+      if (!currentPayment && defaultPayment.length === 1 || force) {
         this.setPaymentMethod(defaultPayment[0]);
       }
 

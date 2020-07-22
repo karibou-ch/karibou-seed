@@ -1,10 +1,10 @@
 import { Component, Inject} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Config, UserAddress, User, Hub, HubService } from 'kng2-core';
+import { Config, UserAddress, User, Hub, HubService, DepositAddress } from 'kng2-core';
 import { i18n, KngUtils } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
 import { MDC_DIALOG_DATA, MdcDialogRef, MdcSnackbar } from '@angular-mdc/web';
-import { KngConfigComponent } from './kng-config.component';
+import { KngHUBComponent } from './kng-hub.component';
 
 @Component({
   templateUrl: './kng-deposit-dlg.component.html',
@@ -52,6 +52,18 @@ export class KngDepositDlgComponent {
 
   ngOnInit() {
     this.updateMap();
+
+    this.$util.getGeoCode().subscribe((result) => {
+      if (!result.geo.location) {return; }
+      this.address.geo = {
+        lat: result.geo.location.lat,
+        lng: result.geo.location.lng
+      };
+    },status => {
+      this.$snackbar.open(status.message || status, undefined, {
+        dismiss: true
+      });
+    });
   }
 
   askSave() {
@@ -90,17 +102,7 @@ export class KngDepositDlgComponent {
       }
       lastlen = newlen;
       // get geo only if last value changed more than 3 chars
-      this.$util.getGeoCode(value.streetAddress, value.postalCode, value.region).subscribe((result) => {
-        if (!result.geo.location) {return; }
-        this.address.geo = {
-          lat: result.geo.location.lat,
-          lng: result.geo.location.lng
-        };
-      },status => {
-        this.$snackbar.open(status.message || status, undefined, {
-          dismiss: true
-        });
-      });
+      this.$util.updateGeoCode(value.streetAddress, value.postalCode, value.region)
     });
 
   }
@@ -114,7 +116,7 @@ export class KngDepositDlgComponent {
   templateUrl: './kng-deposit.component.html',
   styleUrls: ['./kng-config.component.scss']
 })
-export class KngDepositComponent extends KngConfigComponent {
+export class KngDepositComponent extends KngHUBComponent {
 
   currentHub: Hub;
   pubMap: string;
@@ -170,8 +172,8 @@ export class KngDepositComponent extends KngConfigComponent {
       // FIXME place the string in our i18n service
       return window.alert('Impossible de supprimer cet élément');
     }
-    this.config.shared.deposits.splice(this.edit.idx, 1);
-    this.$config.save(this.config).subscribe(() => {
+    this.currentHub.deposits.splice(this.edit.idx, 1);
+    this.$hub.saveManager(this.currentHub).subscribe(() => {
       this.edit.address = null;
       this.$snack.open(this.$i18n.label().save_ok, 'OK');
     },
@@ -188,15 +190,15 @@ export class KngDepositComponent extends KngConfigComponent {
   //
   // save specific address
   onSave(value) {
-    this.isReady = false;
+    this.isReady = false;    
     this.assign(value);
     if (this.edit.idx == null) {
-      this.config.shared.deposits = this.config.shared.deposits || [];
-      this.edit.idx = this.config.shared.deposits.push({}) - 1;
+      this.currentHub.deposits = this.currentHub.deposits || [];
+      this.edit.idx = this.currentHub.deposits.push(<DepositAddress>{}) - 1;
     }
-    Object.assign(this.config.shared.deposits[this.edit.idx], this.edit.address);
+    Object.assign(this.currentHub.deposits[this.edit.idx], this.edit.address);
 
-    this.$config.save(this.config).subscribe(() => {
+    this.$hub.saveManager(this.currentHub).subscribe(() => {
       this.edit.address = null;
       this.isReady = true;
       this.$snack.open(this.$i18n.label().save_ok, 'OK');

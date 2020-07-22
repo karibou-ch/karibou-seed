@@ -162,6 +162,14 @@
       <mdc-list-divider inset></mdc-list-divider>
 
       <!-- NEW ADDRESS -->
+      <div class="profile-action"  >
+        <button [routerLink]="['/store/'+store+'/me/login-or-address']">
+          <mdc-icon class="pink">payment</mdc-icon>
+          {{$i18n[locale].cart_address_add}} 
+        </button>
+      </div>
+
+      <!--
       <mdc-list-item [routerLink]="['/store/'+store+'/me/login-or-address']" >
         <mdc-list-item-graphic class="kng-address">
           &nbsp;
@@ -171,9 +179,8 @@
         </mdc-list-item-text>
         <mdc-list-item-meta class="icon">
           <mdc-icon class="primary">note_add</mdc-icon>
-        </mdc-list-item-meta>
-        
-      </mdc-list-item>
+        </mdc-list-item-meta>        
+      </mdc-list-item> -->
     </mdc-list>    
           
   </div>
@@ -204,6 +211,13 @@
       <!-- SEPARATOR -->
       <mdc-list-divider inset></mdc-list-divider>
       <!-- ADD PAYMENT -->
+      <div class="profile-action"  >
+        <button [routerLink]="['/store/'+store+'/me/login-or-payment']">
+          <mdc-icon class="pink">map</mdc-icon>
+          {{$i18n[locale].cart_payment_add}} 
+        </button>
+      </div>
+      <!-- 
       <mdc-list-item [routerLink]="['/store/'+store+'/me/login-or-payment']" >
         <mdc-list-item-graphic class="kng-payment">
           &nbsp;
@@ -216,6 +230,7 @@
         </mdc-list-item-meta>
         
       </mdc-list-item>
+      -->
     </mdc-list>    
  
   </div>

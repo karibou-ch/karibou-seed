@@ -239,28 +239,49 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
 
-  getHeaderStyle() {
+  //
+  // HUB information
+  getContentStyle(target: string) {
+    target = (target || this.target).toLowerCase();
+    const content = this.config.shared.hub.home.content.find(c => c.target === target);
     // {'background-image': 'url(' + getStaticMap(edit.address) + ')'}
-    if (!this.hasBackgroundCover()) {
+    if (!content || !content.image) {
       return {};
     }
 
-    const bgStyle = 'url(' + this.config.shared.hub.about.image + ')';
+    const bgStyle = 'url(' + content.image + ')';
     return { 'background-image': this.bgGradient + bgStyle };
   }
 
 
-  getAboutContent(elem: string) {
-    return this.config.shared.hub.home.howto[elem][this.$i18n.locale];
+  //
+  // HUB information
+  getContent(elem: string, target: string) {
+    target = (target || this.target).toLowerCase();
+    try {
+      const content = this.config.shared.hub.home.content.find(c => c.target === target);
+      return content[elem][this.$i18n.locale];
+    } catch (err) {
+      return '';
+    }
   }
 
-  hasBackgroundCover() {
-    return (!!this.config.shared.hub.home.howto.image);
+  hasBackgroundContent(target: string) {
+    target = (target || this.target).toLowerCase();
+    const content = this.config.shared.hub.home.content.find(c => c.target === target);
+    return (content && !!content.image);
   }
 
-  hasAboutContent(elem: string) {
-    const content = this.getAboutContent(elem);
-    return content !== '' && content != null && content !== undefined;
+  hasContent(elem: string, target: string) {
+    target = (target || this.target).toLowerCase();
+    try {
+      const content = this.config.shared.hub.home.content.find(c => c.target === target);
+      const value = content[elem][this.$i18n.locale];
+      return value !== '' && (!!value);
+    } catch (err) {
+      return false;
+    }
+
   }
 
   mountOverlay(overlay) {
