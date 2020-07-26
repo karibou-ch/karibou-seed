@@ -208,7 +208,8 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     //
     // HUB from DB
     this.$hub.get(this.currentHub.slug).subscribe(hub => {
-      Object.assign(this.currentHub,hub);
+      this.initHub(hub);
+      Object.assign(this.currentHub, hub);
     }, (err) => this.$snack.open(err.error, 'OK'));
 
     this.currentHub.description = {fr: null, en: null, de: null};
@@ -230,6 +231,22 @@ export class KngHUBComponent implements OnInit, OnDestroy {
       h: { en: '', fr: '', de: ''},
       p: { en: '', fr: '', de: ''}, image: null, target: ''
     });
+  }
+
+
+  initHub(hub) {
+    const format = (d: Date) => {
+      d = new Date(d);
+      const month = ('0' + (d.getMonth() + 1)).slice(-2);
+      const day = ('0' + d.getDate()).slice(-2);
+      // return day+'-'+month+'-'+d.getFullYear();
+      return d.getFullYear() + '-' + month + '-' + day;
+    };
+    (hub.noshipping || []).forEach(noshipping => {
+      noshipping.from = format(<Date>noshipping.from);
+      noshipping.to = format(<Date>noshipping.to);
+    });
+
   }
 
   ngOnInit() {
@@ -288,8 +305,11 @@ export class KngHUBComponent implements OnInit, OnDestroy {
       () => {
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
-        }, (err) => this.$snack.open(err.error, 'OK'),
-      () => this.isLoading = false
+        }, (err) => {
+          this.isLoading = false;
+          this.isReady = true;
+          this.$snack.open(err.error, 'OK');
+        }
     );
   }
 

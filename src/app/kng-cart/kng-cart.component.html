@@ -98,6 +98,9 @@
     <div class="amount-info" [innerHtml]="i18n[locale].cart_info_limit"></div>
   </div>
 
+  <div class="block-warning" *ngIf="noshippingMsg">
+    <i class="material-icons">info</i> {{noshippingMsg}} 
+</div>
 
   <!-- NOT LOGGED -->
   <div class="order-login" [hidden]="user.isAuthenticated()||!items.length">
@@ -116,7 +119,7 @@
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- ADDRESS IFF isAuth()-->
-  <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()">      
+  <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()||!isOpen()">      
     <div class="cart-flow" [class.flow-done]="currentShipping().name==null" >1</div>
     <section  [innerHtml]="config?.shared.hub.checkout.address[$i18n.locale]"></section>
       
@@ -186,7 +189,7 @@
   </div>
 
   <!-- PAYMENT-->
-  <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable()">      
+  <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable() && isOpen()">      
     <div class="cart-flow" [class.flow-done]="currentGatewayLabel()=='Aucun'">2</div>
     <section  [innerHtml]="config?.shared.hub.checkout.payment[$i18n.locale]"></section>
 
@@ -236,7 +239,7 @@
   </div>
   
   <!-- RESUME -->
-  <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable()">
+  <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable() && isOpen()">
     <div class="cart-flow ">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.hub.checkout.resume[$i18n.locale]">
@@ -314,10 +317,6 @@
     
     </div>
 
-    <div class="block-warning" *ngIf="noshippingMsg">
-        <i class="material-icons">info</i> {{noshippingMsg}} 
-    </div>
-  
       
     <!-- ORDER FINAL ACTION -->
     <div>

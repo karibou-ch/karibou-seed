@@ -13,11 +13,13 @@ import { CartService,
          OrderService,
          Shop,
          CartState,
-         CartAction} from 'kng2-core';
+         CartAction,
+         Order} from 'kng2-core';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { MetricsService, EnumMetrics } from '../common/metrics.service';
+
 
 @Component({
   selector: 'kng-cart',
@@ -74,7 +76,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Toutefois, vous pouvez préparer votre panier et valider votre commande
        lorsque de nouvelles fenêtres de livraison seront disponibles.
        Merci beaucoup pour votre compréhension.
-       <p>Nous livrons du mardi au samedi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
+       <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
       cart_info_service_k: `La majoration des produits est de <span class=" ">4%</span>
         <a class="more small">[notre commission]</a>`,
@@ -105,7 +107,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_limit: `Due to the current situation, our delivery slots are all full.
        However, you can prepare your basket and confirm your order when
        new delivery windows become available. Thank you very much for your understanding.
-       <p>We do deliver every day from Tuesday to Saturday and we schedule orders for 6 days in advance only.
+       <p>We do deliver every day from Tuesday to Friday and we schedule orders for 6 days in advance only.
        Every morning you will see the next delivery window.</p>`,
       cart_info_service_k: 'Your contribution for our service is  <span class="gray ">4%</span> <a class="more small">[about our fees]</a>',
       cart_info_service_k_plus: `Our pricing policy is transparent. Price of the product is set by the retailer.
@@ -507,6 +509,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return (this.currentRanks[day.getDay()] <= maxLimit);
   }
 
+  isOpen() {
+    const next = Order.nextShippingDay(this.user);
+
+    if (!next) {
+      return null;
+    }
+  }
+
   isCartDeposit() {
     const current = this.$cart.getCurrentShippingAddress();
     // deposit address contains fees
@@ -553,6 +563,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   setPaymentMethod(payment: UserCard) {
+    if (!payment) {
+      return;
+    }
+
     if (!payment.isValid()) {
       this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
       return;

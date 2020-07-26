@@ -10,7 +10,8 @@ import {
   User,
   UserService,
   Category,
-  Shop
+  Shop,
+  Order
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -342,6 +343,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     if (!this.isDayAvailable(this.currentShippingDay)) {
       return this.$i18n[this.locale].nav_no_shipping;
     }
+    if(!this.isOpen()) {
+      return this.$i18n[this.locale].nav_closed;
+    }
     const title = formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
     return title.charAt(0).toUpperCase() + title.slice(1);
   }
@@ -374,6 +378,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return (this.currentRanks[day.getDay()] <= maxLimit);
   }
 
+  isOpen() {
+    const next = Order.nextShippingDay(this.user);
+
+    return !!next;
+  }
 
 
   onLang($event, lang) {

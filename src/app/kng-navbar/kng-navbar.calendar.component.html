@@ -55,8 +55,8 @@
           <div class="calendar_events" [hidden]="showHUBs">
             <div class="selection">
               <div class="cl_title">{{i18n.label().nav_shipping}}</div>
-              <div class="cl_copy" [hidden]="noshippingMsg">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
-              <div class="cl_copy" [hidden]="!noshippingMsg">
+              <div class="cl_copy" [hidden]="!getShippingDays().length">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
+              <div class="cl_copy" [hidden]="!noshippingMsg || getShippingDays().length">
                 <i class="material-icons pink">info</i>
                 <b>{{noshippingMsg}}</b>
               </div>

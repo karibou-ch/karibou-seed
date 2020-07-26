@@ -115,8 +115,12 @@
     font-size: 1.275rem;
     color: #f00;
     text-shadow: 1px 1px 0 white;
-    margin-top: -10px;
     text-align: center;    
+
+    margin: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid pink;    
     .material-icons{
       transform: translateY(4px);
     }
