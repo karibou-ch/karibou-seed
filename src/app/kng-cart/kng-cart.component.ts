@@ -512,9 +512,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   isOpen() {
     const next = Order.nextShippingDay(this.user);
 
-    if (!next) {
-      return null;
-    }
+    return !!next;
   }
 
   isCartDeposit() {
