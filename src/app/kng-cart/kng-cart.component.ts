@@ -95,7 +95,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_nextshipping: 'Livraison',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
-      cart_order: 'Commander maintenant',
+      cart_order: 'Commander pour',
     },
     en: {
       cart_collect: 'collect',
@@ -124,7 +124,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_nextshipping: 'Next delivery',
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
-      cart_order: 'Order now !',
+      cart_order: 'Order now  for ',
     }
   };
 
@@ -201,6 +201,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
     }
+
+    const cartId = this.$route.snapshot.paramMap.get('name');
 
   }
 

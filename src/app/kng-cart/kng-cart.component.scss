@@ -84,7 +84,6 @@
       font-size: 1.275rem;
       color: #aaa;
       text-shadow:1px 1px 0 white;
-      margin-top: -10px;
       text-align: center;
     }
   
@@ -551,7 +550,7 @@
     }
 
     button{
-      flex:0 0 50%;
+      flex:0 0 70%;
       max-width: wi;
       font-size: 20px;
       margin: 25px;
@@ -591,5 +590,9 @@
       max-width: 424px;
   
     }
+  }
+
+  div.order-final{
+    width: 100%;
   }
 }

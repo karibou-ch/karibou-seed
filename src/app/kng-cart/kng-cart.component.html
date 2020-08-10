@@ -319,13 +319,13 @@
 
       
     <!-- ORDER FINAL ACTION -->
-    <div>
+    <div class="order-final">
       <mdc-checkbox [(ngModel)]="cgAccepted" style="transform:translateY(9px)"></mdc-checkbox>
       <label i18n class="link">        
         <a href="javascript:;" class="link"
            [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{i18n[locale].cart_cg}}</a></label>  
     </div>
-    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{i18n[locale].cart_order}}</button>    
+    <button primary mdc-button unelevated="true" [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{i18n[locale].cart_order}} {{$cart.getCurrentShippingDay()|date:'EEEE':'':$i18n.locale}}</button>    
 
     <!-- CHECKOUT  MSG -->
     <div class="checkout-msg" *ngIf="config.shared.hub.checkout.active">
