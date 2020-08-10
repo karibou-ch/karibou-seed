@@ -31,12 +31,14 @@ export class CardComponent {
 
   i18n: any = {
     fr: {
+      stripe_issue: 'Votre banque à indiqué le problème suivant',
       title_header: 'Vos méthodes de paiement',
       title_edit: 'Sélectionner une méthode pour l\'éditer',
       action_add: 'Ajouter ou modifier une méthode de paiement',
       action_create_ok: 'Votre méthode de paiement a été enregistrée',
     },
     en: {
+      stripe_issue: 'Your bank indicate the following issue',
       title_header: 'Your payment methods',
       title_edit: 'Select payment method you want to edit',
       action_add: 'Add or update a payment method',
@@ -140,8 +142,10 @@ export class CardComponent {
     this.$stripe.setKey(config.shared.keys.pubStripe);
 
     if (this.user.isAuthenticated()) {
+      // console.log('--- DB USER PAYMENTS 1',this.user.payments);
       this.$user.checkPaymentMethod(this.user).subscribe(user => {
         this.user = user;
+        // console.log('--- DB USER PAYMENTS 2',this.user.payments);
       });
     }
 
@@ -206,10 +210,31 @@ export class CardComponent {
   }
 
   onPayment() {
-    this.isLoading = true;
     const name = this.stripe.get('name').value;
+    let address_zip;
+    let address_city;
+    let address_country = 'CH';
+    //
+    // COLLECT USER DATA FOR STRIPE
+    // - card.address_zip
+    // - card.address_city
+    if (this.user.addresses && this.user.addresses.length) {
+      const names = name.split(' ');
+      const address = this.user.addresses.find(add => {
+        return names.some(name => (add.name.indexOf(name) > -1));
+      }) || this.user.addresses[0];
+
+
+      if (address){
+        address_zip = address.postalCode;
+        address_city = address.region;
+      }
+
+    }
+
+    this.isLoading = true;
     this.$stripe
-      .createToken(this.card, { name })
+      .createToken(this.card, { name, address_zip, address_city, address_country })
       .subscribe((result: TokenResult) => {
         // id: string;
         // object: 'token';
@@ -287,6 +312,7 @@ export class CardComponent {
           //
           // Error creating the token
           this.displayCardError = result.error.message;
+          this.isLoading = false;
           //this.onEmit(<PaymentEvent>{error: result.error});
         }
       });

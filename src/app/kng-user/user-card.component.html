@@ -45,6 +45,7 @@
     </button>
 
     <div [hidden]="!displayCardError" class="stripe-error">
+      <h4>{{i18n[locale].stripe_issue}}</h4>
       {{displayCardError}}
     </div>
   </form>      
