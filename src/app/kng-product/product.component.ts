@@ -249,6 +249,12 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
   }
 
+  hasVariation(product) {
+    return (product.pricing &&
+            product.pricing.part &&
+            product.pricing.part[0] === '~');
+  }
+
   getAvailability(product: Product, pos: number) {
     if (!product.vendor.available || !product.vendor.available.weekdays) {
       return 'radio_button_unchecked';
