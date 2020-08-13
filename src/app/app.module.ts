@@ -1,6 +1,6 @@
 import { LOCALE_ID, NgModule, Injectable, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 
 
 import { registerLocaleData } from '@angular/common';
@@ -40,6 +40,44 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   constructor() { }
+
+  extractError(error) {
+    // Try to unwrap zone.js error.
+    // https://github.com/angular/angular/blob/master/packages/core/src/util/errors.ts
+    if (error && error.ngOriginalError) {
+      error = error.ngOriginalError;
+    }
+
+    // We can handle messages and Error objects directly.
+    if (typeof error === "string" || error instanceof Error) {
+      return error;
+    }
+
+    // If it's http module error, extract as much information from it as we can.
+    if (error instanceof HttpErrorResponse) {
+      // The `error` property of http exception can be either an `Error` object, which we can use directly...
+      if (error.error instanceof Error) {
+        return error.error;
+      }
+
+      // ... or an`ErrorEvent`, which can provide us with the message but no stack...
+      if (error.error instanceof ErrorEvent) {
+        return error.error.message;
+      }
+
+      // ...or the request body itself, which we can use as a message instead.
+      if (typeof error.error === "string") {
+        return `Server returned code ${error.status} with body "${error.error}"`;
+      }
+
+      // If we don't have any detailed information, fallback to the request message itself.
+      return error.message;
+    }
+
+    // Skip if there's no error, and let user decide what to do with it.
+    return null;
+  }
+
   handleError(error) {
     //
     // Page after new build deploy to load new chunks everything works fine,
@@ -58,14 +96,16 @@ export class GlobalErrorHandler implements ErrorHandler {
     // LAZY LOADIN SENTRY
     import('./sentry/sentry.module').then(m => {
       const Sentry = window['Sentry'];
+      const extractedError = this.extractError(error) || "Handled unknown error";
       //
       // IMPORTANT: Rethrow the error otherwise it gets swallowed
-      if (error.statusText === 'Unknown Error' ||
-          error.rejection && error.rejection.status === 0) {
-        console.log('--- Network error');
-        window.location.href = '/oops';
-        return m.SentryModule;
-      }
+      // if (error.statusText === 'Unknown Error' ||
+      //     error.rejection && error.rejection.status === 0) {
+      //   console.log('--- Network error');
+      //   window.location.href = '/oops';
+      //   return m.SentryModule;
+      // }
+
       if (!environment.production ||
           window.location.origin.indexOf('karibou.ch') === -1) {
         return m.SentryModule;
@@ -73,7 +113,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 
       //
       // POST ERROR
-      Sentry.captureException(error.originalError || error);
+      Sentry.captureException(extractedError);
 
       return m.SentryModule;
     });
