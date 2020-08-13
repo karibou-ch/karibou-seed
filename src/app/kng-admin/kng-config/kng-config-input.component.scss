@@ -1,0 +1,126 @@
+
+
+div.input-row-geo,
+div.input-row-image{
+  background-color: #eee;
+  padding: 10px 15px;
+
+  margin: 20px auto;
+  border: 1px solid #ddd;
+
+  div.label{
+    font-weight: 500;
+    width: 50%;
+  }
+
+  ngx-uploadcare-widget,
+  button {
+    padding: 10px 5px;
+  }
+
+  img{
+    height: 48px;
+    margin: auto;
+    margin-right: 30px;
+    border-radius: 4px;
+    background: white;    
+  }
+
+  .image {
+    margin-right: 0;
+    margin-left: auto;    
+    display: flex;
+    align-items: center;    
+  }
+}
+
+div.input-row-lang{
+  background-color: #eee;
+  padding: 10px 15px;
+
+  margin: 20px auto;
+  border: 1px solid #ddd;  
+}
+
+div.input-row-geo{
+  .label{
+    margin-left: 30px;
+  }
+  img{
+    height: 168px;
+    margin: auto;
+    margin-right: 30px;
+    border-radius: 4px;
+    background: white;    
+  }
+
+}
+
+div.input-row-hub,
+div.input-row-geo,
+div.input-row-lang,
+div.input-row-text,
+div.input-row-area,
+div.input-row-image{
+  &.large{
+
+  }
+
+  padding: 10px 15px;
+  display: flex;  
+  align-items: center;    
+}
+
+div.input{
+  width: 100%;
+  mdc-text-field{
+    margin-top : -7px;
+    width: 60%;
+    background: transparent;
+    input {
+      transform: translateY(2px)!important;      
+    }
+  }
+}
+
+div.center{
+  margin: auto;
+}
+
+div.lang{
+  margin-left: 30px;  
+}
+
+
+mdc-textarea{
+  font-size: 14px;
+  width: 98%;
+  border-color: #ddd;  
+}
+
+.mdc-chip--selected {
+  background-color: var(--mdc-theme-primary)!important;
+  color: var(--mdc-theme-primary-text)!important;
+}
+
+:host{
+  width: 100%;
+  display: block;
+  &:nth-child(odd) {
+    background-color: #eee;
+  }  
+}
+
+:host /deep/  textarea{
+  font-size: 14px!important;
+}
+
+:host /deep/ .uploadcare--widget__text {
+  font-size: 11px;
+  padding: 0;
+  ;
+}
+
+:host /deep/ .uploadcare--widget {
+  margin-top: -20px;
+}

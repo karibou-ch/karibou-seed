@@ -21,8 +21,6 @@ export class KngRootComponent implements OnInit {
   }
 
   ngOnInit() {
-    //
-    //
     this.$route.params.subscribe(params => {
       this.$navigation.store = this.store = params['store'];
     });

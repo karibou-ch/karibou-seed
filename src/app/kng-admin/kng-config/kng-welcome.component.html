@@ -1,99 +1,72 @@
- <div class="page-saving" [hidden]="isReady">
-    <h1>Saving</h1>
-  </div>
-  <div class="container">
-  <mdc-list  avatar="true"  interactive="false">
-    <mdc-list-item (click)="onConfigSave()">
-      <mdc-icon mdcListItemGraphic>save</mdc-icon>
-      <mdc-list-item-text i18n>Sauver vos modifications
-        <mdc-list-item-secondary >Cliquer ici</mdc-list-item-secondary>
-      </mdc-list-item-text>
-      <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
+<div class="container">
 
-    <!-- SITE TAGLINE -->
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Titre tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.t[$i18n.locale]">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon class="size-large">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Header tagline du site" type="text" [(ngModel)]="config?.shared.home.tagLine.h[$i18n.locale]">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon class="size-large">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-textarea i18n-label label="Paragraphe tagline du site" rows="4" kng-autosize [(ngModel)]="config?.shared.home.tagLine.p[$i18n.locale]"></mdc-textarea>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <!-- TAGLINE IMAGE -->
-    <mdc-list-item class="config">
-      <mdc-list-item-text>
-        <button mdc-button outlined="true"  dense="true" class="align-right"
-          (click)="onClear('tagLine')">remove image</button>   
-        <div class="images" style="float: right;">
-          <ngx-uploadcare-widget images-only="true" 
-            [value]="config.shared.home.tagLine.image" 
-            [validator]="ucValidator"
-            (on-upload-complete)="onUpload($event,'tagLine')"
-            (on-dialog-open)="onDialogOpen($event)"
-            [public-key]="config.shared.keys.pubUpcare">
-          </ngx-uploadcare-widget>
-        </div>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
-    <!-- SITE Howto -->
-    <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon class="size-large">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Titre howto du site" type="text" [(ngModel)]="config?.shared.home.howto.t[$i18n.locale]">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-list-item-graphic>
-        <mdc-icon class="size-large">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Header howto du site" type="text" [(ngModel)]="config?.shared.home.howto.h[$i18n.locale]">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config large">
-      <mdc-list-item-graphic>
-        <mdc-icon class="size-large">folder_special</mdc-icon>
-      </mdc-list-item-graphic>
-      <mdc-list-item-text>
-        <mdc-textarea i18n-label label="Paragraphe howto du site" kng-autosize rows="4" [(ngModel)]="config?.shared.home.howto.p[$i18n.locale]"></mdc-textarea>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <!-- HOWTO IMAGE -->
-    <mdc-list-item class="config">
-      <mdc-list-item-text>
-        <button mdc-button outlined="true"  dense="true" class="align-right"
-          (click)="onClear('howto')">remove image</button>   
-        <div class="images" style="float: right;">
-          <ngx-uploadcare-widget images-only="true" [value]="config.shared.home.howto.image" (on-upload-complete)="onUpload($event,'howto')"
-            [public-key]="config.shared.keys.pubUpcare">
-          </ngx-uploadcare-widget>
-        </div>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
+  <h3 i18n>Configuration du Welcome</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
-  </mdc-list>
+  <!-- SITE Lang -->
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+
+
+  <!-- WELCOME/MSG -->
+  <kng-config-input clazz="config" label="Message de Welcome" name="welcome" format="area" [withCheck]="true"
+                    [(ngModel)]="config?.shared.welcome.message[$i18n.locale]"
+                    [checked]="config?.shared.welcome.active"
+                    (checkChange)="config?.shared.welcome.active=$event"></kng-config-input>
+
+  <!-- SITE TAGLINE -->
+  <h3 i18n>Tagline <span class="gray">(welcome top)</span></h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre tagline" name="tagline-t" format="text"
+                    [(ngModel)]="config?.shared.tagLine.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header tagline" name="tagline-h" format="text"
+                    [(ngModel)]="config?.shared.tagLine.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe tagline" name="tagline-p" format="area"
+                    [(ngModel)]="config?.shared.tagLine.p[$i18n.locale]"></kng-config-input>
+
+  <!-- SITE TAGLINE IMAGE -->
+  <kng-config-input clazz="config" label="Image tagline" name="tagline-p" format="image"
+                    [config]="config"
+                    (imageChange)="onDialogOpen($event)"
+                    [(ngModel)]="config.shared.tagLine.image"></kng-config-input>
+
+  <!-- SITE About -->
+  <h3 i18n>About <span class="gray">(welcome middle)</span></h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text" 
+                    [(ngModel)]="config?.shared.about.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header about" name="about.titre" format="text" 
+                    [(ngModel)]="config?.shared.about.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe about" name="about.p" format="area" 
+                    [(ngModel)]="config?.shared.about.p[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Image about" name="about.image" format="image" 
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="config?.shared.about.image"></kng-config-input>
+
+
+  <!-- SITE Footer -->
+  <h3 i18n>Footer <span class="gray">(welcome bottom)</span></h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
+                    [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header footer" name="footer.titre" format="text" 
+                    [(ngModel)]="config?.shared.footer.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area" 
+                    [(ngModel)]="config?.shared.footer.p[$i18n.locale]"></kng-config-input>
+
+  <button raised mdc-button (click)="onConfigSave()" class="primary">
+    <span mdcButtonLabel>Sauver vos modifications</span>
+    <mdc-icon>save</mdc-icon>
+  </button>    
+                
 </div>

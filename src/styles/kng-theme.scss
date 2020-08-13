@@ -47,6 +47,9 @@ body{
   margin-left: auto;
 }
 
+.float-right{     
+  float: right;
+}
 
 .ribbon{
   width: 12.1em;
@@ -158,6 +161,10 @@ body{
 }
 
 .breaker {
+  &.ridge{
+    border-bottom: 1px ridge #aaa;
+    border-style: ridge;    
+  }
   &:before{
     content: "• • •";
     width: 100%;
@@ -313,6 +320,9 @@ body{
 
 //
 // icons
+.icon-link-solid,
+.icon-facebook-solid,
+.icon-phone-solid,
 .icon-alcool, .fa-alcool,
 .icon-bread, .fa-bread,
 .icon-caterer, .fa-caterer,
@@ -350,6 +360,26 @@ body{
 .icon-alcool, .fa-alcool{
   background-image: url(/assets/img/icon-alcool.svg);
 }
+
+
+.icon-link-solid, .fa-link-solid{
+  background-image: url(/assets/img/external-link-alt-solid.svg);
+  opacity: .5;
+  width: 19px;
+}
+
+.icon-facebook-solid, .fa-facebook-solid{
+  background-image: url(/assets/img/icon-facebook-square-brands.svg);
+  opacity: .5;
+  width: 19px;
+}
+
+.icon-phone-solid, .fa-phone-solid{
+  background-image: url(/assets/img/icon-phone-square-solid.svg);
+  opacity: .5;
+  width: 19px;
+}
+
 
 .icon-bread, .fa-bread{
   background-image: url(/assets/img/icon-bread.svg)

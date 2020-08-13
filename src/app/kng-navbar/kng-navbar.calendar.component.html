@@ -2,32 +2,84 @@
   <mdc-dialog-container>
     <mdc-dialog-surface>
       <mdc-dialog-content>
-      <!-- info -->
-      <div *ngIf="noshippingMsg">
-        <b>{{noshippingMsg}}</b>
-      </div>
+        <!-- brand -->
+        <div class="k-brand">
+          <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp;{{i18n[locale].karibou_project}}
+        </div>
 
-      <!-- Calendar-->
-      <div class="calendar light">
-        <div class="calendar_plan">
-          <div class="cl_plan">
-            <div class="cl_title">{{i18n.label().nav_shipping}}</div>
-            <div class="cl_copy">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
+        <!-- HUB CARD-->
+        <div class="calendar ">
+          <div class="calendar_plan" [class.store]="showHUBs">
+            <div class="cl_plan" [ngStyle]="{'background-image': 'url(' + config.shared.hub.siteName.image + ')'}">
+              <div class="cl_HUB">
+              </div>
+            </div>
+            <!-- <div class="cl_plan_title">
+              {{config.shared.hub.name}}
+            </div>
+            <div class="cl_desc">
+              {{config.shared.hub.description[locale]}}
+            </div> -->
+            <div class="cl_links">
+              <a href="mailto:{{config.shared.hub.mail.address}}"><i class="material-icons">email</i></a>
+              <a [href]="config.shared.hub.address.url" target="_blank"><i class="icon-link-solid"></i></a>
+              <a href="tel:{{config.shared.hub.address.phone}}"><i class="icon-phone-solid"></i>
+                {{config.shared.hub.address.phone}}</a>
+            </div>
+          </div>
+
+          <!-- DISPLAY MENU -->
+          <div class="cl_menu" (click)="toggleStore($event)" *ngIf="!lockedHUB">
+            <div class="cl_store " [class.selected]="!showHUBs" id="shipping">
+              {{i18n.label().nav_shipping2}}
+            </div>
+            <div class="cl_store" [class.selected]="showHUBs" id="hubs">
+              {{i18n.label().nav_store}}
+            </div>
+          </div>
+
+
+          <!-- DISPLAY HUBs -->
+          <div class="hubs" [hidden]="!showHUBs">
+            <div class="hub" [class.disabled]="false" *ngFor="let hub of config.shared.hubs;let idx=index">
+              <div class="hub_Logo"><img [src]="hub.logo" /></div>
+              <div class="hub_Title">{{hub.name}}</div>
+              <div class="hub_Desc">{{hub.description[locale]}}</div>
+              <div class="hub_Link">
+                <div class="action"><a [href]="'../store/' + hub.slug + '/home'">{{i18n.label().nav_store_change}}</a></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DISPLAY AVAILABLE DATES -->
+          <div class="calendar_events" [hidden]="showHUBs">
+            <div class="selection">
+              <div class="cl_title">{{i18n.label().nav_shipping}}</div>
+              <div class="cl_copy" [hidden]="!getShippingDays().length">{{currentShippingDay|date:'EEEE d MMMM':'':locale}}</div>
+              <div class="cl_copy" [hidden]="!noshippingMsg || getShippingDays().length">
+                <i class="material-icons pink">info</i>
+                <b>{{noshippingMsg}}</b>
+              </div>
+
+            </div>
+
+            <div class="container">
+              <div class="event_item" [class.disabled]="!isDayAvailable(day)"
+                [class.selected]="day.equalsDate(currentShippingDay)" *ngFor="let day of getShippingDays();let idx=index"
+                (click)="doSetCurrentShippingDay($event,day,idx)">
+                <div class="ei_Title">{{day|date:'EEEE d MMMM':'':locale}}</div>
+                <div class="ei_Copy">{{getShippingText(day)}}</div>
+              </div>
+            </div>
+
+            <div class="cl_lang">
+              {{i18n.label().nav_i18n}}
+              <mdc-radio class="radio-primary" value="en" [checked]="i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>En
+              <mdc-radio class="radio-primary" value="fr" [checked]="i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>Fr
+            </div>
+    
           </div>
         </div>
-        <div class="calendar_events">
-          <p class="ce_title">{{i18n.label().nav_shipping2}}</p>
-          <div class="event_item" 
-              [class.disabled]="!isDayAvailable(day)"
-              *ngFor="let day of getShippingDays();let idx=index"                
-              (click)="doSetCurrentShippingDay($event,day,idx)">
-            <div class="ei_Dot" [class.dot_active]="day.equalsDate(currentShippingDay)"></div>
-            <div class="ei_Title">{{day|date:'EEEE d MMMM':'':locale}}</div>
-            <div class="ei_Copy">{{getShippingText(day)}}</div>
-
-          </div>            
-        </div>
-      </div>  
 
       </mdc-dialog-content>
     </mdc-dialog-surface>

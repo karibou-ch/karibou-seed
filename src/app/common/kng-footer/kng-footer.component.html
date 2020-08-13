@@ -5,9 +5,9 @@
       <div class="elem right"><span [innerHtml]="getFooter('h')"></span></div>
     </div>
     <div class="line ">
-      <div class="elem" [hidden]="!getMenuItems('bretzel').length">
+      <div class="elem" [hidden]="!getMenuItems('about').length">
         <ul>
-          <li *ngFor="let elem of getMenuItems('bretzel')"><a [href]="'/store/'+store+elem.url" [innerHtml]="elem.name[locale]"></a></li>
+          <li *ngFor="let elem of getMenuItems('about')"><a [href]="'/store/'+store+elem.url" [innerHtml]="elem.name[locale]"></a></li>
         </ul>
       </div>
       <div class="elem" [hidden]="!getMenuItems('links').length">

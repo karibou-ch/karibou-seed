@@ -9,82 +9,39 @@
     padding-left: 20px;
   }
 
+  .menu-group{
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    text-transform: uppercase;
+    padding-top: 5px;    
+  }
 
-  mdc-list{
-    mdc-icon{
-      .size-small {
-        font-size: 15px;
-      }
-      .size-medium {
-        font-size: 26px;
-      }
-      .size-large {
-        font-size: 40px;
-      }
-    }
-    
-    mdc-list-item.config{
-      &.large{
-        min-height: 200px;
-        height: 100%;
-      }
-      &.row-form{
-        display: flex;
-        flex-flow: row wrap;
-        button,
-        mdc-text-field{
-          &.large{
-            flex:2;
-          }
-          &.small{
-            flex: 0 0 50px;
-            margin-top: 12px;
-          }
-          flex:1;
-          margin: 4px;
-        }
-      }
+  button.primary{
+    width: 100%;
+  }
 
-      mdc-list-item-text{
-        width: 100%;
-        button{
-          margin-top: -22px;
-        }
-        mdc-textarea, mdc-text-field{
-          font-size: 90%;
-          width: 98%;
-          border-color: #ddd;
-        }
-      }
-    }
-    mdc-list-item{
-      .map{
-        width: 44px;
-        height: 43px;
-        background-size: cover;
-        border-radius: 8px;        
-      }
-      background: white;
-      &.disabled{
-        opacity: 0.4;
-      }
-      mdc-form-field{
-        align-self: start;
-        margin-top: auto;
-        margin-bottom: 12px;    
-      }
-    
-      mdc-list-item-graphic{
-        img{
-          width: 38px!important;
-          height: 38px;
-          border-radius:8px;
-        }
-      }  
-  
+  .config-custom{
+    display: flex;
+    align-items: center;    
+    margin-bottom: 10px;
+  }
+
+  div.block{
+    background: #eee;
+    margin: 10px 0;
+    border-radius: 8px;
+    overflow: hidden;  
+    padding: 0 8px;
+    h3 mdc-icon{
+      transform: translateY(6px);      
     }
   }
+
+  mdc-select{
+    width: 100%;
+  }
 }
+
 .page-saving{
   position: fixed;
   top: 0;
@@ -100,6 +57,7 @@
     text-align: center;
     padding-top: 25%;
   }
-
 }
 
+/**
+ CODE MIRROR */

@@ -7,7 +7,8 @@ import {
   ElementRef,
   EventEmitter,
   Renderer2,
-  VERSION
+  VERSION,
+  NgZone
 } from '@angular/core';
 
 import { Utils } from 'kng2-core';
@@ -31,9 +32,7 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   @Output('on-dialog-open') onDialogOpen = new EventEmitter<any>();
 
 
-  private element: ElementRef;
   private inputElement: Node;
-  private renderer: Renderer2;
   private widget: any;
   private _publicKey = 'demopublickey';
   private _multiple: boolean;
@@ -59,9 +58,10 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
 
   private uploadcare: any;
 
-  constructor(renderer: Renderer2, element: ElementRef) {
-    this.element = element;
-    this.renderer = renderer;
+  constructor(
+    private  renderer: Renderer2,
+    private element: ElementRef,
+    private $zone: NgZone) {
 
     //
     // use dynamic loader
@@ -182,7 +182,7 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   @Input('value')
   set value(value: string) {
     this._value = value;
-    if (this.widget && this.widget.value) {
+    if (value && this.widget && this.widget.value) {
       this.setReinitFlag(false);
       this.widget.value(value);
     }
@@ -212,6 +212,9 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   ngAfterViewInit() {
     this.init().then(widget => {
       this.widget = widget;
+      if(this._value) {
+        this.widget.value(this._value);
+      }
     });
   }
 
@@ -328,17 +331,21 @@ export class UcWidgetComponent implements AfterViewInit, AfterViewChecked {
   }
 
   private destroy() {
-    this.uploadcare.then(uploadcare => {
-      uploadcare = window['uploadcare'];
+    this.init().then(widget => {
+      this.widget = widget;
+      const uploadcare = window['uploadcare'];
 
       const $ = uploadcare.jQuery;
-      $(this.widget.inputElement.nextSibling).remove();
-      // FIXME nextSibling can be undefined
-      $(this.widget.inputElement).clone().appendTo($(this.element.nativeElement));
-      $(this.widget.inputElement).remove();
+      if(this.widget.inputElement) {
+        $(this.widget.inputElement.nextSibling).remove();
+        // FIXME nextSibling can be undefined
+        $(this.widget.inputElement).clone().appendTo($(this.element.nativeElement));
+        $(this.widget.inputElement).remove();  
+      }
       // this.renderer.destroyNode(this.inputElement);
       this.renderer.removeChild(this.element.nativeElement, this.element.nativeElement.children[0]);
       delete this.widget;
+
     });
   }
 }

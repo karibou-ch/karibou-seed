@@ -24,6 +24,12 @@
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
               
+          <div class="info-portion part" [hidden]="!hasVariation(product)">
+            <div class="">
+              Fr {{product.pricing.part|basepriceex:product.pricing.price}} 
+            </div> 
+            <!-- <div class="" hidden>{{product.pricing.part|portion}}</div> -->
+          </div>
           
           <!-- VARIANTS -->          
           <div *ngIf="openVariant" class="product-variants">

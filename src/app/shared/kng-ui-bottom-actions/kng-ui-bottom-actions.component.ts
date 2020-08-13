@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-spacing
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
 from '@angular/core';
-import { Category, ProductService, Product, CartService } from 'kng2-core';
+import { Category, ProductService, Product, CartService, Config } from 'kng2-core';
 import { i18n } from '../../common';
 
 @Component({
@@ -13,6 +13,7 @@ import { i18n } from '../../common';
 })
 export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
+  @Input() config: Config;
   @Input() categories: Category[];
   @Input() exited: boolean;
   @Input() group: string;
@@ -50,7 +51,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     public  $i18n: i18n,
     private $cart: CartService,
     private $products: ProductService,
-    private cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -86,7 +87,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.stats.nativeElement.innerText = '';
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
-    this.cdr.markForCheck();
+    this.$cdr.markForCheck();
   }
 
   doGoCategory(slug) {
@@ -106,15 +107,17 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
     this.stats.nativeElement.innerText = '';
-
     //
     // on search open window
     if (tokens.some(len => len >= 3)) {
+      const options = {
+        when: this.$cart.getCurrentShippingDay(),
+        hub: this.config.shared.hub && this.config.shared.hub.slug
+      };
       this.show = true;
       this.findGetNull = false;
       margin = (this.search.nativeElement.value || '').length * margin;
-
-      this.$products.search(value).subscribe(products => {
+      this.$products.search(value, options).subscribe(products => {
         //
         // async clear?
         this.stats.nativeElement.style.marginLeft = 35 + margin + 'px';
@@ -127,7 +130,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
         this.findGetNull = !products.length;
         this.products = products.sort(this.sortByScore);
         blur && this.search.nativeElement.blur();
-        this.cdr.markForCheck();
+        this.$cdr.markForCheck();
       });
     }
   }
@@ -140,13 +143,21 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       available: true,
       when : this.$cart.getCurrentShippingDay()
     };
+    //
+    // case of multihub
+    if (this.config && this.config.shared.hub) {
+      options.hub = this.config.shared.hub.slug;
+    }
+    //
+    // filter by group of categories
     if (this.group) {
       options.group = this.group;
     }
+
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
       this.products = products.sort(this.sortByScore);
-      this.cdr.markForCheck();
+      this.$cdr.markForCheck();
     });
 
   }

@@ -1,0 +1,98 @@
+<div [ngClass]="clazz + ' input-row-'+format" [ngSwitch]="format">
+
+  <!--- MENU -->
+  <ng-container  *ngSwitchCase="'menu'">
+    <div class="menu">
+      <mdc-chip-set choice [value]="adminMenu">
+        <mdc-chip [routerLink]="'../..'+menu.url"                     
+                  *ngFor="let menu of menuElements" [value]="menu.url">
+          <mdc-chip-text>{{menu.name[locale]}}</mdc-chip-text>
+        </mdc-chip>
+      </mdc-chip-set>
+    </div>
+  </ng-container>  
+
+  <!--- HUB -->
+  <ng-container  *ngSwitchCase="'hub'">
+    <mdc-icon>language</mdc-icon> 
+    <div class="lang">Changer de HUB</div>   
+    <div class="menu">
+      <mdc-chip-set choice  [value]="store">
+        <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+        <mdc-chip (click)="changeHub(hub)" 
+                  *ngFor="let hub of HUBs" [value]="hub.slug">
+          <mdc-chip-text>{{hub.name}}</mdc-chip-text>
+        </mdc-chip>
+      </mdc-chip-set>
+    </div>
+  </ng-container>  
+
+  <!--- TEXT -->
+  <ng-container  *ngSwitchCase="'text'">
+    <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+    <div class="input">
+      <mdc-text-field  i18n-label [label]="label" type="text" [(ngModel)]="value" >
+      </mdc-text-field>
+    </div>
+    <div class="check" [hidden]="!withCheck">
+          <mdc-checkbox [checked]="checked" (change)="onCheck($event)"></mdc-checkbox>
+    </div>
+    <ng-content></ng-content>
+  </ng-container>  
+
+  <!-- AREA -->
+  <ng-container  *ngSwitchCase="'area'">
+    <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+    <div class="input">
+      <mdc-textarea i18n-label 
+                    [label]="label" 
+                    kng-autosize 
+                    rows="6" 
+                    [(ngModel)]="value" ></mdc-textarea>
+    </div>
+    <div class="check" [hidden]="!withCheck">
+      <mdc-checkbox [checked]="checked" (change)="onCheck($event)"></mdc-checkbox>
+    </div>
+  </ng-container>
+
+
+  <!-- IMAGE -->
+  <ng-container  *ngSwitchCase="'image'">
+    <div class="label">{{label}}</div>
+    <div class="image ">
+      <img [src]="value" [hidden]="!value" />
+      <button mdc-button outlined="true" class="align-right" [hidden]="!value" (click)="value=null">
+        <mdc-icon>delete</mdc-icon>
+      </button>   
+      <ngx-uploadcare-widget images-only="true" 
+        [value]="value" 
+        [validator]="ucValidator"
+        (on-upload-complete)="onUpload($event)"
+        (on-dialog-open)="onDialogOpen($event)"
+        [public-key]="config.shared.keys.pubUpcare">
+      </ngx-uploadcare-widget>
+    </div>
+  </ng-container>
+
+  <!-- LANG -->
+  <ng-container *ngSwitchCase="'lang'">
+    <mdc-icon>language</mdc-icon> 
+    <div class="lang">Changer de langue</div>   
+    <div class="center">
+      <mdc-radio class="radio-primary" value="en" [checked]="i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>
+      <label>En</label>
+      <mdc-radio class="radio-primary" value="fr" [checked]="i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>
+      <label>Fr</label>
+    </div>
+  </ng-container>
+
+  <!--- GEO -->
+  <ng-container  *ngSwitchCase="'geo'">
+    <mdc-icon>map</mdc-icon> 
+    <div class="label">{{label}}</div>
+    <div class="image ">
+      <img [src]="getStaticMap()"  />
+    </div>
+  </ng-container>
+
+</div>

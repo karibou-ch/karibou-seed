@@ -10,7 +10,8 @@ import {
   User,
   UserService,
   Category,
-  Shop
+  Shop,
+  Order
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -29,7 +30,6 @@ import { formatDate } from '@angular/common';
 })
 export class KngCalendarForm {
 
-  i18n: any = {};
   config: Config;
   currentShippingDay: Date;
   labelTime: string;
@@ -38,22 +38,44 @@ export class KngCalendarForm {
   currentLimit: number;
   premiumLimit: number;
   noshippingMsg: string;
+  showHUBs: boolean;
+  lockedHUB: boolean;
 
   constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
+    private $i18n: i18n,
     @Inject(MDC_DIALOG_DATA) public data: any) {
-      this.i18n = data.i18n;
       this.config = data.config;
       this.noshippingMsg = data.noshippingMsg;
       this.currentShippingDay = data.currentShippingDay;
       this.isPremium = data.isPremium;
+
       // FIXME remove hardcoded shippingtimes[16]
-      this.labelTime = this.config.shared.order.shippingtimes[16] || 'loading...';
-      this.currentRanks = this.config.shared.order.currentRanks || {};
-      this.currentLimit = this.config.shared.order.currentLimit || 1000;
-      this.premiumLimit =  this.config.shared.order.premiumLimit || 0;
+      const hub = this.config.shared.hub.slug;
+      if (hub) {
+        this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
+        this.currentRanks = this.config.shared.currentRanks[hub] || {};
+        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+        this.lockedHUB = this.config.shared.hub.domainOrigin;
+      }
   }
+
+  get i18n() {
+    return this.$i18n;
+  }
+
   get locale() {
-    return this.i18n.locale;
+    return this.$i18n.locale;
+  }
+
+  onLang($event, lang) {
+    this.$i18n.locale = lang;
+  }
+
+
+
+  toggleStore($event) {
+    this.showHUBs = ($event.target.id === 'hubs');
   }
 
   doSetCurrentShippingDay($event, day: Date, idx: number) {
@@ -76,7 +98,7 @@ export class KngCalendarForm {
   }
 
   getShippingDays() {
-    return this.config.getShippingDays();
+    return this.config.shared.shippingweek;
   }
 
 }
@@ -108,9 +130,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   store: string;
   primary: ConfigMenu[];
   topmenu: ConfigMenu[];
-  image: string;
-  title: string;
-  subtitle: string;
+  Kimage: string;
+  hubTitle: string;
+  hubImage: string;
   content: any;
   cgAccepted: boolean;
   noshippingMsg: string;
@@ -148,6 +170,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
 
+
     //
     // not mandatory
     this.categories = <Category[]>loader[2] || [];
@@ -158,9 +181,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.topmenu = [];
 
     // FIXME remove code repeat
-    this.currentRanks = this.config.shared.order.currentRanks || {};
-    this.currentLimit = this.config.shared.order.currentLimit || 1000;
-    this.premiumLimit = this.config.shared.order.premiumLimit || 0;
+    const hub = this.config.shared.hub.slug;
+    if (hub) {
+      this.currentRanks = this.config.shared.currentRanks[hub] || {};
+      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+    }
+
     this.noshippingMsg = this.getNoShippingMessage();
 
   }
@@ -174,24 +201,18 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    
-    //
-    // karibou.ch context is ready
-    // this.$i18n.init(this.config.shared.i18n);
-    this.$navigation.updateUser(this.user);
-    this.$navigation.updateConfig(this.config);
-    this.$navigation.updateCategory(this.categories);
 
-    //
-    // home.about|footer|shop|siteName|tagLine
-    //  - p,h,image
-    //    - fr,en
-    this.image = this.config.shared.home.tagLine.image;
-    this.title = this.config.shared.home.siteName[this.locale];
+    // K. image
+    this.Kimage = this.config.shared.tagLine.image;
+
+    // HUB title
+    this.hubTitle = this.config.shared.hub.siteName[this.locale];
+    this.hubImage = this.config.shared.hub.siteName.image;
+
     this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
     this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
+
     this.store = this.$navigation.store;
-    this.content = this.$navigation.dispatch(this.$route.snapshot.url, this.$route.snapshot.params);
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
     // TODO needs dynamic DEPARTEMENT feature
@@ -220,7 +241,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       // update user
       if (emit.user && this.user.id !== emit.user.id) {
         Object.assign(this.user, emit.user);
-        this.$navigation.updateUser(this.user);
         this.$cart.setContext(this.config, this.user);
         this.$cdr.markForCheck();
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
@@ -300,10 +320,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   getTagline(key) {
-    if (!this.config || !this.config.shared.home.tagLine[key]) {
+    if (!this.config || !this.config.shared.tagLine[key]) {
       return '';
     }
-    return this.config.shared.home.tagLine[key][this.locale];
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name) ? hub.tagLine[key][this.$i18n.locale] : shared.tagLine[key][this.$i18n.locale];
+
   }
 
   getRouterLink(url) {
@@ -320,7 +343,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     if (!this.isDayAvailable(this.currentShippingDay)) {
       return this.$i18n[this.locale].nav_no_shipping;
     }
-    return formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
+    if(!this.isOpen()) {
+      return this.$i18n[this.locale].nav_closed;
+    }
+    const title = formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
+    return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
   getNoShippingMessage(label?: string) {
@@ -351,6 +378,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return (this.currentRanks[day.getDay()] <= maxLimit);
   }
 
+  isOpen() {
+    const next = Order.nextShippingDay(this.user);
+
+    return !!next;
+  }
 
 
   onLang($event, lang) {
@@ -361,7 +393,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   openCalendar(){
     const dialogRef = this.$dialog.open(KngCalendarForm,{
       data: {
-        i18n: this.$i18n,
         config: this.config,
         isPremium: this.user.isPremium(),
         currentShippingDay: this.currentShippingDay,
