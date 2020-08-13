@@ -73,6 +73,8 @@ export class KngDocumentComponent implements OnInit {
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
     this.isReady = true;
+    document.title = this.document.title[$i18n.locale];
+
   }
 
 

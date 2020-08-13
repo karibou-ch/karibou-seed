@@ -1,44 +1,59 @@
-  <div class="page-saving" [hidden]="isReady">
-    <h1>Saving</h1>
-  </div>
-  <div class="container">
-    <mdc-list  avatar="true"  [interactive]="false">
-      <mdc-list-item (click)="onAddressCreate()">
-          <mdc-icon mdcListItemGraphic>save</mdc-icon>
-          <mdc-list-item-text i18n>Ajouter une nouvelle adresse de collecte
-            <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
-          </mdc-list-item-text>        
-          <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
-      </mdc-list-item>
-      <mdc-list-divider></mdc-list-divider>
-      <mdc-list-item *ngFor="let address of config.shared.deposits; let i = index" 
-                      [class.disabled]="!address.active"
-                      (click)="onAddressSelect($event,address,i)">
-          <mdc-list-item-graphic>
-            <div class="map" [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}"></div>
-          </mdc-list-item-graphic>
-          <mdc-list-item-text>
-            <span>{{address.name}}</span><b>/</b><span>{{address.streetAdress}}</span>
-            <mdc-list-item-secondary>
-                {{address.postalCode}}/{{address.region}}<br/>
-                {{address.note}}
-            </mdc-list-item-secondary>              
-          </mdc-list-item-text>
-          <mdc-list-item-meta>
-              <mdc-form-field>
-                  <mdc-checkbox [checked]="address.active" [disabled]="true" ></mdc-checkbox>
-                  <span class="hide-md">Active</span>
-              </mdc-form-field>
-                
-              <mdc-chip>
-                <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
-                <mdc-chip-text>{{address.fees|currency:'CHF'}}</mdc-chip-text>
-              </mdc-chip>
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
+<div class="container">
+  <h3 i18n>{{currentHub.name}}</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
+
+  <!-- HUB selection -->
+  <h3 i18n>Changer de HUB </h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="hub"></kng-config-input>
+
+  <!-- HUB Lang -->
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+
+  <!-- HUB Address -->
+  <h3 i18n>Configuration Adresse de collecte</h3>
+  <hr class="dashed"/>
+  <mdc-list  avatar="true"  [interactive]="false">
+    <mdc-list-item (click)="onAddressCreate()">
+        <mdc-icon mdcListItemGraphic>save</mdc-icon>
+        <mdc-list-item-text i18n>Ajouter une nouvelle adresse de collecte
+          <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
+        </mdc-list-item-text>        
+        <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
+    </mdc-list-item>
+    <mdc-list-divider></mdc-list-divider>
+    <mdc-list-item *ngFor="let address of currentHub.deposits; let i = index" 
+                    [class.disabled]="!address.active"
+                    (click)="onAddressSelect($event,address,i)">
+        <mdc-list-item-graphic>
+          <div class="map" [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}"></div>
+        </mdc-list-item-graphic>
+        <mdc-list-item-text>
+          <span>{{address.name}}</span><b>/</b><span>{{address.streetAdress}}</span>
+          <mdc-list-item-secondary>
+              {{address.postalCode}}/{{address.region}}<br/>
+              {{address.note}}
+          </mdc-list-item-secondary>              
+        </mdc-list-item-text>
+        <mdc-list-item-meta>
+            <mdc-form-field>
+                <mdc-checkbox [checked]="address.active" [disabled]="true" ></mdc-checkbox>
+                <span class="hide-md">Active</span>
+            </mdc-form-field>
               
-          </mdc-list-item-meta>
-          <mdc-list-divider></mdc-list-divider>
-      </mdc-list-item>
-    </mdc-list>
-  </div>
+            <mdc-chip>
+              <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+              <mdc-chip-text>{{address.fees|currency:'CHF'}}</mdc-chip-text>
+            </mdc-chip>
+            
+        </mdc-list-item-meta>
+        <mdc-list-divider></mdc-list-divider>
+    </mdc-list-item>
+  </mdc-list>
+</div>
   
   

@@ -42,6 +42,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
 
+  isRedirect: boolean;
   isReady: boolean;
   isDialog = false;
   product: Product = new Product();
@@ -52,8 +53,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   photosz: string;
   cartItem: CartItem;
 
-  // FIXME store resolution
-  store = 'geneva';
   departement = 'home';
 
   isHighlighted: boolean;
@@ -85,11 +84,19 @@ export class ProductComponent implements OnInit, OnDestroy {
   constructor(
     private $cart: CartService,
     public $i18n: i18n,
+    private $util: KngUtils,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $router: Router
   ) {
+
+    //
+    // redirect rules
+    this.isRedirect = this.$route.snapshot.data.redirect;
+    if (this.isRedirect) {
+      this.$router.navigate(['/store', this.store, 'home']);
+    }
 
     //
     // open product from departement
@@ -104,112 +111,17 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
-  }
 
-
-  addToCart($event, product: Product, variant?: string) {
-    $event.stopPropagation();
-    //
-    // FIXME should not be possible
-    if (!product.variants) {
-      console.log('DEBUG variation hang', variant, JSON.stringify(product));
-      KngUtils.trackError('Error variation not available: ' + variant);
-
-      //
-      // Should reload the page
-      const label_error = this.$i18n.label().action_error_reload;
-      if (confirm(label_error)) {
-        window.location.reload(true);
-      }
-    }
-
-    //
-    // check if item is already on cart
-    // Open variant UI
-    const isOnCart = this.$cart.getItems().find(it => it.sku === product.sku);
-    if (!isOnCart &&
-        product.variants.length
-        && !variant) {
-      this.openVariant = true;
-      return;
-    }
-
-    this.openVariant = false;
-
-
-    this.$cart.add(product, variant);
-    this.cartItem = this.$cart.findBySku(product.sku);
-    this.updateBackground();
-  }
-
-  hasLabel(product: Product, label: string) {
-    switch (label) {
-      case 'grta':
-      case 'bioconversion':
-      case 'biodynamics':
-        return product.details[label];
-      case 'bio':
-        return product.details.bio &&
-          !product.details.bioconvertion &&
-          !product.details.biodynamics;
-      case 'natural':
-        return product.details.natural &&
-          !product.details.bio &&
-          !product.details.bioconvertion &&
-          !product.details.biodynamics;
-
-      default:
-        return false;
-    }
-  }
-
-  removeToCart($event, product: Product) {
-    $event.stopPropagation();
-    this.$cart.remove(product);
-    this.cartItem = this.$cart.findBySku(product.sku);
-    this.updateBackground();
-  }
-
-  getAvailability(product: Product, pos: number) {
-    if (!product.vendor.available || !product.vendor.available.weekdays) {
-      return 'radio_button_unchecked';
-    }
-    return (product.vendor.available.weekdays.indexOf(pos) === -1) ?
-      'radio_button_unchecked' : 'radio_button_checked';
-  }
-
-  getNextPage() {
-    return timer(10).pipe(map(ctx => this.currentPage += 4));
-  }
-
-  getDialog() {
-    return this.dialog;
-  }
-
-  getProducts() {
-    if (!this.product ||
-      !this.product.belong ||
-      !this.product.belong.name) {
-      return this.products;
-    }
-    return this.products.filter(p => p.belong.name === this.product.belong.name);
-  }
-
-  hasFavorite(product) {
-    return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
-  }
-
-  ngOnDestroy() {
-    if (this.isDialog) {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-    }
   }
 
   //
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
   ngOnInit() {
+    if (this.isRedirect) {
+      return;
+    }
+
     this.isReady = true;
 
 
@@ -265,9 +177,113 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngOnDestroy() {
+    if (this.isDialog) {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
+
+  get store() {
+    return this.$navigation.store;
+  }
+
+  addToCart($event, product: Product, variant?: string) {
+    $event.stopPropagation();
+    //
+    // FIXME should not be possible
+    if (!product.variants) {
+      console.log('DEBUG variation hang', variant, JSON.stringify(product));
+      this.$util.trackError('Error variation not available: ' + variant);
+
+      //
+      // Should reload the page
+      const label_error = this.$i18n.label().action_error_reload;
+      if (confirm(label_error)) {
+        window.location.reload(true);
+      }
+    }
+
+    //
+    // check if item is already on cart
+    // Open variant UI
+    const isOnCart = this.$cart.getItems().find(it => it.sku === product.sku);
+    if (!isOnCart &&
+        product.variants.length
+        && !variant) {
+      this.openVariant = true;
+      return;
+    }
+
+    this.openVariant = false;
+
+
+    this.$cart.add(product, variant);
+    this.cartItem = this.$cart.findBySku(product.sku);
+    this.updateBackground();
+  }
+
+  hasLabel(product: Product, label: string) {
+    switch (label) {
+      case 'grta':
+      case 'bioconversion':
+      case 'biodynamics':
+        return product.details[label];
+      case 'bio':
+        return product.details.bio &&
+          !product.details.bioconvertion &&
+          !product.details.biodynamics;
+      case 'natural':
+        return product.details.natural &&
+          !product.details.bio &&
+          !product.details.bioconvertion &&
+          !product.details.biodynamics;
+
+      default:
+        return false;
+    }
+  }
+
+  hasFavorite(product) {
+    return this.user.hasLike(product) ? 'favorite' : 'favorite_border';
+  }
+
+  hasVariation(product) {
+    return (product.pricing &&
+            product.pricing.part &&
+            product.pricing.part[0] === '~');
+  }
+
+  getAvailability(product: Product, pos: number) {
+    if (!product.vendor.available || !product.vendor.available.weekdays) {
+      return 'radio_button_unchecked';
+    }
+    return (product.vendor.available.weekdays.indexOf(pos) === -1) ?
+      'radio_button_unchecked' : 'radio_button_checked';
+  }
+
+  getNextPage() {
+    return timer(10).pipe(map(ctx => this.currentPage += 4));
+  }
+
+  getDialog() {
+    return this.dialog;
+  }
+
+  getProducts() {
+    if (!this.product ||
+      !this.product.belong ||
+      !this.product.belong.name) {
+      return this.products;
+    }
+    return this.products.filter(p => p.belong.name === this.product.belong.name);
+  }
+
   loadProduct(product) {
     this.isReady = true;
     this.product = product;
+
     //
     // get cart value
     this.cartItem = this.$cart.findBySku(product.sku);
@@ -284,18 +300,21 @@ export class ProductComponent implements OnInit, OnDestroy {
       when: true,
       shopname: [product.vendor.urlpath]
     };
+
+    //
+    // specifics actions
     if (this.isDialog) {
+      //
+      // update window title
+      document.title = product.title;
+
+      //
+      // others products for this vendor
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
       });
     }
   }
-
-
-  updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
-  }
-
 
   onEdit(product: Product) {
 
@@ -310,6 +329,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });
     }, 200);
+  }
+
+  removeToCart($event, product: Product) {
+    $event.stopPropagation();
+    this.$cart.remove(product);
+    this.cartItem = this.$cart.findBySku(product.sku);
+    this.updateBackground();
   }
 
   save(product: Product) {
@@ -337,6 +363,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       return belong;
     }
     return score;
+  }
+
+  updateBackground() {
+    this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
   }
 }
 

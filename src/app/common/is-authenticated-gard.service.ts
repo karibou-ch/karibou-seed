@@ -5,6 +5,14 @@ import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterSt
 import { KngNavigationStateService } from './navigation.service';
 import { catchError, map } from 'rxjs/operators';
 
+//
+// force lookup for store value because CanActivate parent is not called at this stage
+const paramLookup = (name) => {
+  const fragments = window.location.pathname.split('/');
+  const idx = fragments.findIndex(f => f === name);
+  return (idx === -1 ) ? 'geneva' : fragments[idx + 1];
+};
+
 
 @Injectable()
 export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
@@ -14,9 +22,6 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
     private $user: UserService
     ) {}
 
-  // this prevent user from entering dashboard component when not logged
-  // use Observable to prevent error when refreshing the page
-  // see issue : https://stackoverflow.com/questions/42677274/angular-2-route-guard-not-working-on-browser-refresh/42678548
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.$user.me().pipe(
       map(user => {
@@ -24,10 +29,8 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
         if (user.isAuthenticated()) {
           return true;
         }
-        // FIXME access this.$navigation.store bretzel
-        setTimeout(() => {
-          this.$router.navigate(['/store', 'geneva', 'me', 'login']);
-        }, 100);
+        const store = this.$navigation.store || paramLookup('store');
+        this.$router.navigate(['/store', store, 'me', 'login']);
         return false;
       })
     ).toPromise();
@@ -53,14 +56,11 @@ export class IsWelcomeGard implements CanActivate, CanActivateChild {
     return this.$user.me().pipe(
       catchError(err => of(new User()))
     ).toPromise().then(user => {
-      // console.log('------ IsWelcomeGard',user.isAuthenticated())
       if (!user.isAuthenticated()) {
         return true;
       }
-      // FIXME access this.$navigation.store
-      setTimeout(() => {
-        this.$router.navigate(['/store', 'geneva', 'home']);
-      }, 100);
+      const store = this.$navigation.store || paramLookup('store');
+      this.$router.navigate(['/store', store, 'home']);
       return false;
     });
   }

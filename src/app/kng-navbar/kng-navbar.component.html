@@ -1,7 +1,7 @@
 <!-- NAVIGATION  -->
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open">
+  <img class="logo" [src]="hubImage" [routerLink]="['/']" />
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
-    <img [src]="config.shared.home.siteName.image" />
   </mdc-drawer-header>
   <mdc-drawer-content>
 
@@ -24,7 +24,7 @@
       </mdc-list>
     </mdc-list-group>
     <!-- ADMIN -->
-    <mdc-list-group class="admin" [hidden]="!$navigation.isAdmin">
+    <mdc-list-group class="admin" [hidden]="!user.isAdmin()">
       <mdc-list>
         <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader>Administration</h3>
@@ -45,22 +45,25 @@
   <mdc-top-app-bar fixed="false"  [dense]="$navigation.isMobile()">
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
-      <mdc-top-app-bar-section align="start">
-        <mdc-icon mdcAppBarNavIcon (click)="navigation.open = !navigation.open" class="home">menu</mdc-icon>
-        <mdc-top-app-bar-title class="home hide-sm" [routerLink]="['/store',store,'home']">{{title}}</mdc-top-app-bar-title>
+      <mdc-top-app-bar-section align="start" >
+        <img class="icon" src="/assets/img/k-puce-light.png" (click)="navigation.open = ! navigation.open" />
+        <mdc-top-app-bar-title class="home"  (click)="openCalendar()">
+          {{hubTitle}} 
+          <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
+        </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="shipping" (click)="openCalendar()">
-            <i class="material-icons ">directions_bike</i> 
-            {{gtShippingDateFormat()}} 
-            <i class="material-icons">keyboard_arrow_down</i>              
+        <mdc-top-app-bar-title class="home center hide-sm"  (click)="openCalendar()">
+          <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
+          <i class="material-icons">keyboard_arrow_down</i>
         </mdc-top-app-bar-title>
+
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
-      <mdc-top-app-bar-section align="end">        
+      <mdc-top-app-bar-section align="end" class="actions">        
         <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
           <div i18n> <span class="cart-items-count"></span></div>
           <mdc-icon mdcTopAppBarActionItem >shopping_cart</mdc-icon>        

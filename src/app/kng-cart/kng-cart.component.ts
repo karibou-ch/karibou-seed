@@ -13,11 +13,13 @@ import { CartService,
          OrderService,
          Shop,
          CartState,
-         CartAction} from 'kng2-core';
+         CartAction,
+         Order} from 'kng2-core';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { MetricsService, EnumMetrics } from '../common/metrics.service';
+
 
 @Component({
   selector: 'kng-cart',
@@ -74,7 +76,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Toutefois, vous pouvez préparer votre panier et valider votre commande
        lorsque de nouvelles fenêtres de livraison seront disponibles.
        Merci beaucoup pour votre compréhension.
-       <p>Nous livrons du mardi au samedi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
+       <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
       cart_info_service_k: `La majoration des produits est de <span class=" ">4%</span>
         <a class="more small">[notre commission]</a>`,
@@ -90,10 +92,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_error: 'Vous devez corriger votre panier!',
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de',
       cart_amount_2: 'pour permettre des modifications de commande (prix au poids, ou ajout de produits).',
-      cart_nextshipping: 'Prochaine livraison',
+      cart_nextshipping: 'Livraison',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
-      cart_order: 'Commander maintenant',
+      cart_order: 'Commander pour',
     },
     en: {
       cart_collect: 'collect',
@@ -105,7 +107,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_limit: `Due to the current situation, our delivery slots are all full.
        However, you can prepare your basket and confirm your order when
        new delivery windows become available. Thank you very much for your understanding.
-       <p>We do deliver every day from Tuesday to Saturday and we schedule orders for 6 days in advance only.
+       <p>We do deliver every day from Tuesday to Friday and we schedule orders for 6 days in advance only.
        Every morning you will see the next delivery window.</p>`,
       cart_info_service_k: 'Your contribution for our service is  <span class="gray ">4%</span> <a class="more small">[about our fees]</a>',
       cart_info_service_k_plus: `Our pricing policy is transparent. Price of the product is set by the retailer.
@@ -122,7 +124,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_nextshipping: 'Next delivery',
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
-      cart_order: 'Order now !',
+      cart_order: 'Order now  for ',
     }
   };
 
@@ -181,8 +183,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     //
     // FIXME currently only one shipping time!
-    this.shippingTime = Object.keys(this.config.shared.order.shippingtimes)[0];
-    this.shippingTime = this.config.shared.order.shippingtimes[this.shippingTime];
+    this.shippingTime = Object.keys(this.config.shared.hub.shippingtimes)[0];
+    this.shippingTime = this.config.shared.hub.shippingtimes[this.shippingTime];
 
     this.user = loader[1];
     this.shops = loader[3];
@@ -193,9 +195,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.amountReserved = 1.11;
 
     // FIMXE remove repeated code limit
-    this.currentRanks = this.config.shared.order.currentRanks || {};
-    this.currentLimit = this.config.shared.order.currentLimit || 1000;
-    this.premiumLimit = this.config.shared.order.premiumLimit || 0;
+    const hub = this.config.shared.hub.slug;
+    if (hub) {
+      this.currentRanks = this.config.shared.currentRanks[hub] || {};
+      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+    }
+
+    const cartId = this.$route.snapshot.paramMap.get('name');
+
   }
 
   get locale() {
@@ -237,7 +245,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for user
       if (emit.user) {
         this.user = emit.user;
-        this.checkPaymentMethod();
+        this.checkPaymentMethod(true);
       }
       // emit signal for cart
       if (emit.state) {
@@ -311,6 +319,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       (this.isCartDeposit() ? 16 : 14)
     );
 
+    const hub = this.config.shared.hub.slug;
+
     //
     // update shipping note
     shipping.note = this.shippingNote || shipping.note;
@@ -319,6 +329,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.isRunning = true;
 
     this.$order.create(
+      hub,
       shipping,
       this.items.map(item => item.toDEPRECATED()),
       this.$cart.getCurrentPaymentMethod()
@@ -389,7 +400,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return this.$cart.totalFees();
   }
 
-  checkPaymentMethod() {
+  checkPaymentMethod(force?:boolean) {
     if (!this.user.isAuthenticated()) {
       return;
     }
@@ -398,7 +409,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // set default payment
       const defaultPayment = this.user.payments.filter(payment => payment.isValid());
       const currentPayment = this.$cart.getCurrentPaymentMethod();
-      if (!currentPayment && defaultPayment.length === 1) {
+      if (!currentPayment && defaultPayment.length === 1 || force) {
         this.setPaymentMethod(defaultPayment[0]);
       }
 
@@ -484,7 +495,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   getDepositAddress() {
-    return this.config.shared.deposits;
+    return this.config.shared.hub.deposits;
   }
 
 
@@ -498,6 +509,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
     const maxLimit = this.user.isPremium() ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
 
     return (this.currentRanks[day.getDay()] <= maxLimit);
+  }
+
+  isOpen() {
+    const next = Order.nextShippingDay(this.user);
+
+    return !!next;
   }
 
   isCartDeposit() {
@@ -542,10 +559,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //
     // update shipping time
     const time = (this.isCartDeposit() ? 16 : 14);
-    this.shippingTime = this.config.shared.order.shippingtimes[time];
+    this.shippingTime = this.config.shared.hub.shippingtimes[time];
   }
 
   setPaymentMethod(payment: UserCard) {
+    if (!payment) {
+      return;
+    }
+
     if (!payment.isValid()) {
       this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
       return;

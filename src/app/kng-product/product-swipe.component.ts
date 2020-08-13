@@ -60,10 +60,10 @@ export class ProductSwipeComponent implements OnInit {
   }
 
   getSelectedContent(elem: string) {
-    if (!this.config || !this.config.shared.home) {
+    if (!this.config || !this.config.shared.hub.home) {
       return '';
     }
-    return this.config.shared.home.selection[elem][this.$i18n.locale];
+    return this.config.shared.hub.home.selection[elem][this.$i18n.locale];
   }
 
   ngOnDestroy() {

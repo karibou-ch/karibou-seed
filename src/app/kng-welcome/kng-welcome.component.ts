@@ -18,6 +18,7 @@ export class KngWelcomeComponent implements OnInit {
 
   photos = [];
 
+  K_BRAND = '/assets/img/k-brand-lg.png';
   //
   // gradient of background image
   bgGradient = `linear-gradient(
@@ -44,6 +45,8 @@ export class KngWelcomeComponent implements OnInit {
   ) {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
+    // Object.assign(this.config, loader[0]);
+
     this.$photo.shops({active: true, random: 40}).subscribe((photos: any) => {
       // remove underconstruction shops with missing photos //
       this.photos = photos.filter(s => s.photo).map(shop => shop.photo.fg);
@@ -59,32 +62,49 @@ export class KngWelcomeComponent implements OnInit {
   }
 
 
-  doLangSwitch() {
-    this.$i18n.localeSwitch();
-  }
-  getTagline(key) {
-    if (!this.config || !this.config.shared.home.tagLine[key]) {
-      return;
-    }
-    return this.config.shared.home.tagLine[key][this.$i18n.locale];
-  }
-
-  getWelcomeImage() {
-    if (!this.config || !this.config.shared || !this.config.shared.home) {
-      return {};
-    }
-
-    const bgStyle = 'url(' + this.config.shared.home.howto.image + ')';
-    return {'background-image': this.bgGradient + bgStyle};
-  }
-
-
   ngOnInit() {
     //
     //
-    this.$route.params.subscribe(params => {
-      this.$navigation.store = this.store = params['store'];
-    });
+  }
+
+
+  doLangSwitch() {
+    this.$i18n.localeSwitch();
+  }
+
+  getAbout(key) {
+    if (!this.config || !this.config.shared.about[key]) {
+      return;
+    }
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name) ? hub.about[key][this.$i18n.locale] : shared.about[key][this.$i18n.locale];
+  }
+
+  getAboutImage() {
+    const defaultImg = (this.config && this.config.shared.hub && this.config.shared.hub.tagLine) ?
+          this.config.shared.hub.about.image : this.K_BRAND;
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': this.bgGradient + bgStyle};
+  }
+
+  getTagline(key) {
+    if (!this.config || !this.config.shared.tagLine[key]) {
+      return;
+    }
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name) ? hub.tagLine[key][this.$i18n.locale] : shared.tagLine[key][this.$i18n.locale];
+  }
+
+  getTaglineImage() {
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.tagLine) ?
+          this.config.shared.hub.tagLine.image : this.K_BRAND;
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': bgStyle};
+
   }
 
   isAppReady() {

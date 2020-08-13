@@ -1,4 +1,4 @@
-import { Component, EventEmitter , Input, Output } from '@angular/core';
+import { Component, EventEmitter , Input, Output, OnDestroy } from '@angular/core';
 
 import { User,
          UserAddress,
@@ -8,6 +8,7 @@ import { User,
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { KngUtils, i18n } from '../common';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 
 export interface AddressEvent {
@@ -21,7 +22,7 @@ export interface AddressEvent {
   templateUrl: './user-address.component.html',
   styleUrls: ['./user-address.component.scss']
 })
-export class AddressComponent {
+export class AddressComponent implements OnDestroy{
 
   defaultUser: User = new User();
 
@@ -40,8 +41,8 @@ export class AddressComponent {
       list_title: 'Vos adresses actives',
       list_select: 'Sélectionner une adresse pour l\'éditer',
       list_add: 'Ajouter une adresse de livraison ci-dessous',
-      address_street: 'Adresse',
-      address_floor: 'Étage',
+      address_street: 'Adresse*',
+      address_floor: 'Étage*',
       address_postalcode_title: 'Aujourd\'hui nous livrons uniquement les code postaux proposés.',
       address_postalcode: 'Code postal',
       address_region: 'Région',
@@ -50,8 +51,8 @@ export class AddressComponent {
       list_title: 'Your active shipping addresses',
       list_select: 'Select an address for edition',
       list_add: 'Below add a new shipping address',
-      address_street: 'Street, number',
-      address_floor: 'Floor',
+      address_street: 'Street, number*',
+      address_floor: 'Floor*',
       address_postalcode_title: 'Today we deliver only the postal codes below.',
       address_postalcode: 'Postal code',
       address_region: 'Region',
@@ -81,6 +82,7 @@ export class AddressComponent {
   idx: number;
   geo: any;
   isLoading: boolean;
+  collector$: Subscription;
 
   // utiliser l'api
   // https://tel.search.ch/api/help.fr.html
@@ -88,8 +90,10 @@ export class AddressComponent {
     public  $i18n: i18n,
     private $fb: FormBuilder,
     private $http: HttpClient,
-    private $user: UserService
+    private $user: UserService,
+    private $util: KngUtils
   ) {
+    this.collector$ = new Subscription();
     this.isLoading = false;
     this.$address = this.$fb.group({
       'name':   ['', [Validators.required, Validators.minLength(3)]],
@@ -103,6 +107,9 @@ export class AddressComponent {
     // [ngModelOptions]="{updateOn: 'blur'}"
   }
 
+  ngOnDestroy() {
+    this.collector$.unsubscribe();
+  }
 
   get locale() {
     return this.$i18n.locale;
@@ -124,53 +131,16 @@ export class AddressComponent {
       });
     }
 
-    // console.log('--- load map',config.shared.keys.pubMap)
+    //
     // FIXME this line for universal app
     if (!window['google'] && config.shared.keys.pubMap) {
-      this.loadMap(config).subscribe(() => {
+      const _m$ = this.$util.loadMap(config).subscribe(() => {
         // DONE!
       });
+      this.collector$.add(_m$);
     }
 
-  }
-
-  // validPassword(control: AbstractControl) {
-  //   return observableOf('12345678910' === control.value).pipe(
-  //     map(result => result ? { invalid: true } : null)
-  //   );
-  // }
-
-  getUser() {
-    return this.user || this.defaultUser;
-  }
-
-  getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address, this.pubkeyMap);
-  }
-
-
-  isSelectedAddress(address: UserAddress, idx: number) {
-    return this.idx === idx;
-  }
-
-  loadMap(config: Config) {
-    return Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key=' + config.shared.keys.pubMap, 'maps');
-  }
-
-  onEmit(result: AddressEvent) {
-    this.isLoading = false;
-    this.updated.emit(result);
-  }
-
-
-  onGeloc(event?: { index: number, value: any }) {
-    if (!this.$address.value.street) {
-         return;
-    }
-    KngUtils.getGeoCode(this.$http,
-                        this.$address.value.street,
-                        this.$address.value.postalCode,
-                        this.$address.value.region).subscribe(
+    const _g$ = this.$util.getGeoCode().subscribe(
       (result) => {
         this.geo = (result.geo || {}).location;
         //
@@ -187,6 +157,39 @@ export class AddressComponent {
         }, 700);
        }
     );
+    this.collector$.add(_g$);
+  }
+
+  // validPassword(control: AbstractControl) {
+  //   return observableOf('12345678910' === control.value).pipe(
+  //     map(result => result ? { invalid: true } : null)
+  //   );
+  // }
+
+  getUser() {
+    return this.user || this.defaultUser;
+  }
+
+  getStaticMap(address: UserAddress) {
+    return KngUtils.getStaticMap(address, this.pubkeyMap);
+  }
+
+  isSelectedAddress(address: UserAddress, idx: number) {
+    return this.idx === idx;
+  }
+
+  onEmit(result: AddressEvent) {
+    this.isLoading = false;
+    this.updated.emit(result);
+  }
+
+  onGeloc(event?: { index: number, value: any }) {
+    if (!this.$address.value.street) {
+         return;
+    }
+    this.$util.updateGeoCode(this.$address.value.street,
+                        this.$address.value.postalCode,
+                        this.$address.value.region);
   }
 
   onSave() {

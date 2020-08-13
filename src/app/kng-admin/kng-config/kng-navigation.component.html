@@ -2,15 +2,22 @@
     <h1>Saving</h1>
   </div>
   <div class="container">
-  <mdc-list avatar="true" border="true" >
-    <mdc-list-item (click)="onMenuCreate()">
-        <mdc-icon mdcListItemGraphic>save</mdc-icon>
-        <mdc-list-item-text i18n>Ajouter un nouveau menu
-          <mdc-list-item-secondary i18n>Cliquer ici pour ajouter</mdc-list-item-secondary>
-        </mdc-list-item-text>
-        <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>    
-    </mdc-list-item>
-    <mdc-list-item *ngFor="let menu of menus" 
+  <h3 i18n>Navigation</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
+
+  <!-- HUB Lang -->
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+
+  <button raised mdc-button (click)="onMenuCreate()" class="primary">
+    <span mdcButtonLabel>Ajouter un nouveau menu</span>
+    <mdc-icon class="pink">save</mdc-icon>
+  </button>    
+  
+  <mdc-list avatar="true" border="true"  *ngFor="let group of groups" >
+    <mdc-list-divider inset></mdc-list-divider>
+    <h3 class="menu-group">{{group}}</h3>
+    <mdc-list-item *ngFor="let menu of getMenuByGroup(group)" 
                     [class.disabled]="!menu.active"
                     (click)="onMenuSelect($event,menu)">
         <mdc-icon mdcListItemGraphic>folder</mdc-icon>

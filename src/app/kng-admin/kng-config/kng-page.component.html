@@ -4,6 +4,14 @@
 <router-outlet></router-outlet>
 
 <div class="container">
+
+  <h3 i18n>Pages</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
+
+  <!-- HUB Lang -->
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+
   <mdc-list [twoLine]="true" avatar="true" border="true" >
     <mdc-list-item [routerLink]="['./create']">
       <mdc-icon mdcListItemGraphic class="size-large">folder</mdc-icon>

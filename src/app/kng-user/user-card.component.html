@@ -43,5 +43,10 @@
     <button type="submit" [disabled]="isLoading||!isValid" i18n>
       {{$i18n[locale].action_save}}
     </button>
+
+    <div [hidden]="!displayCardError" class="stripe-error">
+      <h4>{{i18n[locale].stripe_issue}}</h4>
+      {{displayCardError}}
+    </div>
   </form>      
 </div>

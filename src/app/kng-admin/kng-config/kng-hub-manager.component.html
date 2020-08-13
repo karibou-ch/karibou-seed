@@ -1,0 +1,168 @@
+<div class="page-saving" [hidden]="isReady">
+  <h1>Saving</h1>
+</div>
+<div class="container">
+  <div class="block">
+    <h3>{{currentHub.name}}</h3>
+    <hr class="dashed"/>
+    <kng-config-input clazz="config" format="menu"></kng-config-input>
+  
+    <!-- HUB Lang -->
+    <kng-config-input clazz="config" format="hub"></kng-config-input>
+    <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>  
+  </div>
+
+  <!-- FERMETURE -->
+  <div class="block">
+    <h3>
+      <mdc-icon>directions_bike</mdc-icon>
+      Interrompre les dates de livraisons suivantes
+      <button class="float-right" mdc-button outlined primary  (click)="addDate()"><mdc-icon>add_alarm</mdc-icon></button>
+    </h3>
+    <hr class="dashed"/>
+    <div class="config-custom row-form" *ngFor="let noshipping of currentHub.noshipping;let idx=index;">
+      <mdc-text-field class="large" fullwidth  i18n-label label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
+      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
+      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
+      <button class="small" mdc-button outlined primary (click)="currentHub.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
+    </div>  
+  </div>
+
+  <!-- 
+  //
+  // Owner of the HUB
+  manager?: string[];
+  logistic?: string[]; -->
+
+  <!-- ADMINs-->
+  <div class="block">
+    <h3><mdc-icon>face</mdc-icon> Administrateurs</h3>
+    <hr class="dashed"/>
+    <div class="config-custom row-form">
+      <div class="menu">
+        <mdc-chip-set >
+          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+          <mdc-chip (click)="delManager(idx)" 
+                    *ngFor="let manager of currentHub.manager;let idx=index;" [value]="manager">
+            <mdc-chip-text>{{manager}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+      </div>  
+    </div>
+    <div class="config-custom row-form">
+      <mdc-text-field fullwidth  i18n-label label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
+      <button mdc-button outlined primary  (click)="addManager()"><mdc-icon>verified</mdc-icon></button>
+    </div>  
+  </div>
+
+  <!-- LOGISTIC -->
+  <div class="block">
+    <h3><mdc-icon>face</mdc-icon>Logistique</h3>
+    <hr class="dashed"/>
+    <div class="config-custom row-form">
+      <div class="menu">
+        <mdc-chip-set >
+          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+          <mdc-chip (click)="delLogistic(idx)" 
+                    *ngFor="let logistic of currentHub.logistic;let idx=index;" [value]="logistic">
+            <mdc-chip-text>{{logistic}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+      </div>  
+    </div>
+    <div class="config-custom row-form">
+      <mdc-text-field fullwidth  i18n-label label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
+      <button mdc-button outlined primary  (click)="addLogistic()"><mdc-icon>verified</mdc-icon></button>
+    </div>  
+  </div>
+
+
+  <!--   
+  // HUB dedicated configuration
+  // limit HUB orders 
+  currentLimit: number; -->
+
+  <!--   
+  //
+  // additional limit for premium users. max orders = (currentLimit + premiumLimit) 
+  premiumLimit: number; -->
+
+  <!--   
+  // HUB fees added to the product price
+  serviceFees: number; -->
+
+  <!-- 
+  // order is in timeout if payment status != 'paid' and created<15m (timeoutAndNotPaid)
+  timeoutAndNotPaid: number; -->
+
+  <!-- 
+  // for testing 50 hours is the time limit between order and delivery
+  // timelimit = monday 18:00 + timelimit = dayDest 9:00
+  timelimit: number; -->
+
+  <!-- 
+  //
+  // stripe uncaptured charges expire in 7 days
+  // https://support.stripe.com/questions/does-stripe-support-authorize-and-capture 
+  uncapturedTimeLimit: number; -->
+
+  <!-- 
+  // order date range between day1 to day2 max 11:00. Lapse time = timelimit 
+  timelimitH: number; -->
+
+  <!-- 
+  //
+  // Dimanche(0), Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi
+  weekdays: number[]; -->
+
+  <!--   
+  // FIXME use i18n for times labels
+  shippingtimes: {
+    type: any;
+    default: any;
+  }; -->
+
+
+  <!-- 
+  //
+  // constraint HuB to a list of categories and vendors
+  vendors: string[]; -->
+
+  <!-- VENDORS -->
+  <div class="block">
+    <h3><mdc-icon>supervisor_account</mdc-icon>Vendeurs</h3>
+    <hr class="dashed"/>
+    <div class="config-custom row-form">
+      <div class="menu">
+        <mdc-chip-set >
+          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+          <mdc-chip (click)="delVendor(idx)" 
+                    *ngFor="let vendor of currentHub.vendors;let idx=index;" [value]="vendor">
+            <mdc-chip-text>{{getShopName(vendor)}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+      </div>  
+    </div>
+    <div class="config-custom row-form">
+      <mdc-select required placeholder="Ajouter un vendeur" (valueChange)="onAddVendor($event)">
+        <mdc-icon mdcSelectIcon>note_add</mdc-icon>
+        <mdc-menu>
+          <mdc-list>
+            <mdc-list-item *ngFor="let vendor of getAvailableVendors()" [value]="vendor._id">
+              {{vendor.name}}
+            </mdc-list-item>
+          </mdc-list>
+        </mdc-menu>
+      </mdc-select>      
+      <!-- <mdc-text-field fullwidth  i18n-label label="Ajouter un vendeur" type="text" [(ngModel)]="newVendor" required></mdc-text-field>
+      <button mdc-button outlined primary  (click)="addVendor()"><mdc-icon>verified</mdc-icon></button> -->
+    </div>  
+  </div>
+
+
+  <button raised mdc-button (click)="onHubSaveManager()" class="primary">
+    <span mdcButtonLabel>Sauver vos modifications</span>
+    <mdc-icon>save</mdc-icon>
+  </button>    
+
+</div>

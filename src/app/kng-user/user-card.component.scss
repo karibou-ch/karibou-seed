@@ -50,9 +50,15 @@ div{
     color: red;
   }
 
+  .stripe-error {
+    color: red;
+    padding: 20px 10px;
+    font-weight: 600;    
+  }
 
   .stripe-component {
     background-color: #fff;
+    padding: 6px 10px;
   }
   
   .stripe-component * {

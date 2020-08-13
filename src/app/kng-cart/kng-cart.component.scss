@@ -84,7 +84,6 @@
       font-size: 1.275rem;
       color: #aaa;
       text-shadow:1px 1px 0 white;
-      margin-top: -10px;
       text-align: center;
     }
   
@@ -115,8 +114,12 @@
     font-size: 1.275rem;
     color: #f00;
     text-shadow: 1px 1px 0 white;
-    margin-top: -10px;
     text-align: center;    
+
+    margin: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid pink;    
     .material-icons{
       transform: translateY(4px);
     }
@@ -129,6 +132,24 @@
     background-color: antiquewhite;  
   }
 
+  .profile-action {
+    display: flex;
+    padding: 0px;
+    mdc-icon {
+      transform: translateY(7px);      
+    }
+    button {          
+      border: 1px dashed gold;
+      padding: 2px 15px;
+      border-radius: 23px;
+      margin-right: 0;
+      margin-left: auto;
+      font-size: .8rem;
+      vertical-align: bottom;
+      line-height: 30px;
+      background-color: transparent;
+    }
+  }
 
 
   .cart-flow{
@@ -140,7 +161,7 @@
     width: 30px;
     height: 30px;
     position: absolute;
-    left: -5px;
+    left: 1px;
     margin-top:-55px;
     border-radius: 50%;
     display: flex;
@@ -344,7 +365,7 @@
     margin: 8px;    
     box-shadow: inherit;
     // FIXME Safari 10.1 CSS FIX
-    height: 210px;
+    min-height: 210px;
       
     .card__media{
       background-repeat: no-repeat;
@@ -410,12 +431,13 @@
     margin-top: 40px;
     padding-top: 40px;
     border-top:1px solid #ddd;
-    width:100%;
+    width:auto;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     flex-direction:row;
     position: relative;
+    padding: 40px 4px 0;
 
     section{
       h1,h2,h3,
@@ -446,11 +468,13 @@
     padding-top: 40px;
     border-top:1px solid #ddd;
     text-align: center;
-    width:100%;
+    width:auto;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
     flex-direction:row;
+    padding: 40px 4px 0;
+
     h1,h2,h3{
       width:100%;
       padding: 0 10px;
@@ -526,7 +550,7 @@
     }
 
     button{
-      flex:0 0 50%;
+      flex:0 0 70%;
       max-width: wi;
       font-size: 20px;
       margin: 25px;
@@ -566,5 +590,9 @@
       max-width: 424px;
   
     }
+  }
+
+  div.order-final{
+    width: 100%;
   }
 }

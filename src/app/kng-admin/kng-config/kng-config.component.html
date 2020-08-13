@@ -1,158 +1,68 @@
  <div class="page-saving" [hidden]="isReady">
     <h1>Saving</h1>
   </div>
-  <div class="container">
-  <mdc-list  avatar="true"  interactive="false">
-    <mdc-list-item (click)="onConfigSave()">
-      <mdc-icon mdcListItemGraphic>save</mdc-icon>
-      <mdc-list-item-text i18n>Sauver vos modifications
-        <mdc-list-item-secondary>Cliquer ici </mdc-list-item-secondary>
-      </mdc-list-item-text>
-      <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
+  <div class="container">  
+  <h3 i18n>Configuration du système</h3>  
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
-    <!-- SITE Name -->
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Nom du site" type="text" [(ngModel)]="config?.shared.home.siteName[$i18n.locale]">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-list-item-text>
-        <button mdc-button outlined primary class="align-right"
-               (click)="onClear('siteName')">remove image</button>
-        <div class="images" style="float: right;">          
-          <ngx-uploadcare-widget images-only="true" 
-            [value]="config.shared.home.siteName.image" 
-            [validator]="ucValidator"
-            (on-upload-complete)="onUpload($event,'siteName')"
-            (on-dialog-open)="onDialogOpen($event)"
-            [public-key]="config.shared.keys.pubUpcare">
-          </ngx-uploadcare-widget>
-        </div>
-      </mdc-list-item-text>
-    </mdc-list-item>
+  <!-- SITE Lang -->
+  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
 
-    <!-- EMAIL -->
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Mail de contact" type="text" [(ngModel)]="config?.shared.home.email">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    
-    <!-- PHONE -->
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Téléphone de contact" type="text" [(ngModel)]="config?.shared.home.phone">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
+  <!-- EMAIL -->
+  <kng-config-input clazz="config" label="Mail de contact" name="mail" format="text" 
+                    [(ngModel)]="config?.shared.mail.address"
+                    [checked]="config?.shared.welcome.active" [withCheck]="true"
+                    (checkChange)="config?.shared.welcome.active=$event"></kng-config-input>
 
-    <!-- SUBJECT -->
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Sujet des mails" type="text" [(ngModel)]="config?.shared.home.mail.subject"></mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
+  
+  <!-- PHONE -->
+  <kng-config-input clazz="config" label="Téléphone de contact" name="phone" format="text" 
+                    [(ngModel)]="config?.shared.mail.phone"></kng-config-input>
 
-    <!-- SIGNATURE -->
-    <mdc-list-item class="config large">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-textarea i18n-label label="Signature des mails " kng-autosize rows="4" [(ngModel)]="config?.shared.home.mail.signature"></mdc-textarea>
-      </mdc-list-item-text>
-    </mdc-list-item>
+  <!-- SUBJECT -->
+  <kng-config-input clazz="config" label="Sujet des mails" name="mail.subject" format="text" 
+                    [(ngModel)]="config?.shared.mail.subject"></kng-config-input>
 
-    <!-- FERMETURE -->
-    <mdc-list-divider></mdc-list-divider>
-    <h3 i18n>Interrompre les dates de livraisons suivantes</h3>
-    <mdc-list-item class="config row-form" *ngFor="let noshipping of config?.shared.noshipping;let idx=index;">
-      <mdc-text-field class="large" fullwidth  i18n-label label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
-      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
-      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
-      <button class="small" mdc-button outlined primary (click)="config?.shared.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
-    </mdc-list-item>
-    <mdc-list-item >
-      <button mdc-button outlined primary  (click)="config?.shared.noshipping.push({reason:{}})"><mdc-icon>add_alarm</mdc-icon>Ajouter</button>
-    </mdc-list-item>
+  <!-- SIGNATURE -->
+  <kng-config-input clazz="config" label="Signature des mails" name="mail.signature" format="area" 
+                    [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
 
-  </mdc-list>
   
   <hr class="dashed"/>
   <h3 i18n>Configuration des clés publiques (API tiers)</h3>
-  <mdc-list  avatar="true" >
-    <!-- PUBKEYS -->
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Gateway public key (stripe)" type="text" [(ngModel)]="config?.shared.keys.pubStripe">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Uploadcare public key" type="text" [(ngModel)]="config?.shared.keys.pubUpcare">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
+  <kng-config-input clazz="config" label="Connect public key (stripe)" name="key.connect" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubConnect"></kng-config-input>
+  <kng-config-input clazz="config" label="Gateway public key (stripe)" name="key.api" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubStripe"></kng-config-input>
 
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Translate public key" type="text" [(ngModel)]="config?.shared.keys.pubTranslate">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
+  <kng-config-input clazz="config" label="Uploadcare public key" name="key.uc" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubUpcare"></kng-config-input>
 
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Github public key" type="text" [(ngModel)]="config?.shared.keys.pubGithub">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Map public key" type="text" [(ngModel)]="config?.shared.keys.pubMap">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Disqus public key" type="text" [(ngModel)]="config?.shared.keys.pubDisqus">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Chat public key" type="text" [(ngModel)]="config?.shared.keys.pubChat">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Google Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubGoogle">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-    <mdc-list-item class="config">
-      <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
-      <mdc-list-item-text>
-        <mdc-text-field fullwidth i18n-label label="Facebook Auth public key" type="text" [(ngModel)]="config?.shared.keys.pubFacebook">
-        </mdc-text-field>
-      </mdc-list-item-text>
-    </mdc-list-item>
-  </mdc-list>
+  <kng-config-input clazz="config" label="Translate public key" name="key.translate" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubTranslate"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Github public key" name="key.github" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubGithub"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Map public key" name="key.map" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubMap"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Chat public key" name="key.map" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubChat"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Discuss public key" name="key.map" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubDisqus"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Google Auth " name="key.ggauth" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubGoogle"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Facebook Auth " name="key.ggauth" format="text" 
+                    [(ngModel)]="config?.shared.keys.pubFacebook"></kng-config-input>
+
+  <button raised mdc-button (click)="onConfigSave()" class="primary">
+    <span mdcButtonLabel>Sauver vos modifications</span>
+    <mdc-icon>save</mdc-icon>
+  </button>    
+                                    
 </div>

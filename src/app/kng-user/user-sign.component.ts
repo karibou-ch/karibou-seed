@@ -15,6 +15,7 @@ import { Config, User, UserService } from 'kng2-core';
 })
 export class UserSignComponent {
 
+  K_BRAND = '/assets/img/k-brand-lg.png';
 
   issuer = {
     wallet: {
@@ -232,6 +233,31 @@ export class UserSignComponent {
     }
   }
 
+  getHubName() {
+    if (!this.config || !this.config.shared.hub) {
+      return '';
+    }
+    return this.config.shared.hub.name;
+  }
+
+  getTagline(key) {
+    if (!this.config || !this.config.shared.tagLine[key]) {
+      return;
+    }
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name) ? hub.tagLine[key][this.$i18n.locale] : shared.tagLine[key][this.$i18n.locale];
+  }
+
+  getTaglineLogo() {
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.tagLine) ?
+          this.config.shared.hub.tagLine.image : this.K_BRAND;
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': bgStyle};
+
+  }
+
   // @HostListener('document:click')
   onBack() {
     const referrer = this.$route.snapshot.queryParams['referrer'];
@@ -267,14 +293,13 @@ export class UserSignComponent {
 
   onUpdatePayment($result,other?){
     //
-    // delete payment method
-    if ($result.deleted) {
-      this.user.payments = $result.deleted;
-      return;
-    }
-    const msg = ($result.error) ? ($result.error.message || $result.error) : 'Ok';
-    this.$snack.open(msg, this.$i18n.label().thanks, this.$i18n.snackOpt);
-    this.onBack();
+    // force update of all payments method
+    this.$user.me().subscribe(user => {
+      this.user = user;
+      const msg = ($result.error) ? ($result.error.message || $result.error) : 'Ok';
+      this.$snack.open(msg, this.$i18n.label().thanks, this.$i18n.snackOpt);
+      this.onBack();
+    });
   }
 
   onRecover() {

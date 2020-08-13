@@ -1,10 +1,16 @@
 <div class="blured" [hidden]="isReady"></div>
 <div class="container top">
+
   <button (click)="onBack()" class="close">
       <mdc-icon class="size-large">close</mdc-icon>
   </button>
   <div class="sign" >
+  <div class="k-brand">
+    <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp; {{$i18n[locale].karibou_project}}
+  </div>  
+
     <div class="logo" 
+         [ngStyle]="getTaglineLogo()"
          [class.small]="askAction=='signup'"
          [routerLink]="'/store/geneva/home'" 
          [hidden]="askAction=='payment'||askAction=='address'"></div>

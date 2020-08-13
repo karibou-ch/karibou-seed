@@ -31,19 +31,22 @@ export class CardComponent {
 
   i18n: any = {
     fr: {
+      stripe_issue: 'Votre banque à indiqué le problème suivant',
       title_header: 'Vos méthodes de paiement',
       title_edit: 'Sélectionner une méthode pour l\'éditer',
-      action_add: 'Ajouter une méthode de paiement',
+      action_add: 'Ajouter ou modifier une méthode de paiement',
       action_create_ok: 'Votre méthode de paiement a été enregistrée',
     },
     en: {
+      stripe_issue: 'Your bank indicate the following issue',
       title_header: 'Your payment methods',
       title_edit: 'Select payment method you want to edit',
-      action_add: 'Add a new payment method',
+      action_add: 'Add or update a payment method',
       action_create_ok: 'Your payment method has been saved',
     }
   };
 
+  displayCardError: string;
   defaultUser: User = new User();
   isValid: boolean;
 
@@ -139,8 +142,10 @@ export class CardComponent {
     this.$stripe.setKey(config.shared.keys.pubStripe);
 
     if (this.user.isAuthenticated()) {
+      // console.log('--- DB USER PAYMENTS 1',this.user.payments);
       this.$user.checkPaymentMethod(this.user).subscribe(user => {
         this.user = user;
+        // console.log('--- DB USER PAYMENTS 2',this.user.payments);
       });
     }
 
@@ -205,10 +210,31 @@ export class CardComponent {
   }
 
   onPayment() {
-    this.isLoading = true;
     const name = this.stripe.get('name').value;
+    let address_zip;
+    let address_city;
+    let address_country = 'CH';
+    //
+    // COLLECT USER DATA FOR STRIPE
+    // - card.address_zip
+    // - card.address_city
+    if (this.user.addresses && this.user.addresses.length) {
+      const names = name.split(' ');
+      const address = this.user.addresses.find(add => {
+        return names.some(name => (add.name.indexOf(name) > -1));
+      }) || this.user.addresses[0];
+
+
+      if (address){
+        address_zip = address.postalCode;
+        address_city = address.region;
+      }
+
+    }
+
+    this.isLoading = true;
     this.$stripe
-      .createToken(this.card, { name })
+      .createToken(this.card, { name, address_zip, address_city, address_country })
       .subscribe((result: TokenResult) => {
         // id: string;
         // object: 'token';
@@ -259,6 +285,7 @@ export class CardComponent {
         // livemode: boolean;
         // type: 'card' | 'bank_account';
         // used: boolean;
+        this.displayCardError = null;
         if (result.token) {
           // Use the token to create a charge or a customer
           // https://stripe.com/docs/charges
@@ -269,16 +296,24 @@ export class CardComponent {
             number: 'xxxx-xxxx-xxxx-' + result.token.card.last4,
             expiry: result.token.card.exp_month + '/' + result.token.card.exp_year
           });
-
-          this.$user.addPaymentMethod(card, this.user.id).subscribe(
-            user => this.onEmit(<PaymentEvent>({card: card})),
-            err => this.onEmit(<PaymentEvent>({error: new Error(err.error)}))
+          const force_replace = true;
+          this.$user.addPaymentMethod(card, this.user.id, force_replace).subscribe(
+            user => {
+              this.isLoading = false;
+              this.onEmit(<PaymentEvent>({card: card}))
+            },
+            err => {
+              this.displayCardError = err.error || err.message;
+              this.isLoading = false;
+            }
           );
 
         } else if (result.error) {
           //
           // Error creating the token
-          this.onEmit(<PaymentEvent>{error: result.error});
+          this.displayCardError = result.error.message;
+          this.isLoading = false;
+          //this.onEmit(<PaymentEvent>{error: result.error});
         }
       });
   }
