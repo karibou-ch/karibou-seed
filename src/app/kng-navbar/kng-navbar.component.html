@@ -1,5 +1,14 @@
 <!-- NAVIGATION  -->
-<mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open">
+<div class="kng-drawer" [class.kng-drawer-open]="navigation.open" #navigation>
+  <button class="close" (click)="navigation.open=false">
+    <mdc-icon class="size-large">close</mdc-icon>
+  </button>
+  <h1>Hello</h1>
+  <h2>World</h2>
+
+</div>
+<!--- <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> -->
+<mdc-drawer hidden>
   <img class="logo" [src]="hubImage" [routerLink]="['/']" />
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
   </mdc-drawer-header>
