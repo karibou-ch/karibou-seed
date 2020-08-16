@@ -51,7 +51,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   constructor(
     public  $i18n: i18n,
     private $cart: CartService,
-    private $mettic: MetricsService,
+    private $metric: MetricsService,
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
   ) { }
