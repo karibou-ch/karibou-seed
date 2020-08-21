@@ -49,8 +49,8 @@ div.home-header{
   }
 
   .welcome{
-    margin-left: -40px;
-    margin-right: -40px;
+    -margin-left: -40px;
+    -margin-right: -40px;
     width: auto;
     @media screen and (max-width:1024px){
       margin-left: auto;
