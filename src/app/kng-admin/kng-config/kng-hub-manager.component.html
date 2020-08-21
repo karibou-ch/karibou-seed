@@ -130,7 +130,7 @@
 
   <!-- VENDORS -->
   <div class="block">
-    <h3><mdc-icon>supervisor_account</mdc-icon>Vendeurs</h3>
+    <h3><mdc-icon>supervisor_account</mdc-icon>Vendeurs : {{currentHub.name}}</h3>
     <hr class="dashed"/>
     <div class="config-custom row-form">
       <div class="menu">
@@ -143,7 +143,7 @@
         </mdc-chip-set>
       </div>  
     </div>
-    <div class="config-custom row-form">
+    <!-- <div class="config-custom row-form">
       <mdc-select required placeholder="Ajouter un vendeur" (valueChange)="onAddVendor($event)">
         <mdc-icon mdcSelectIcon>note_add</mdc-icon>
         <mdc-menu>
@@ -154,9 +154,21 @@
           </mdc-list>
         </mdc-menu>
       </mdc-select>      
-      <!-- <mdc-text-field fullwidth  i18n-label label="Ajouter un vendeur" type="text" [(ngModel)]="newVendor" required></mdc-text-field>
-      <button mdc-button outlined primary  (click)="addVendor()"><mdc-icon>verified</mdc-icon></button> -->
-    </div>  
+    </div>   -->
+    <h3><mdc-icon>supervisor_account</mdc-icon>Ajouter un vendeur</h3>
+    <div class="config-custom row-form">
+      <div class="menu">
+        <mdc-chip-set >
+          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+          <mdc-chip (click)="onAddVendor(vendor)" 
+                    *ngFor="let vendor of getAvailableVendors();let idx=index;" [value]="vendor._id">
+            <mdc-chip-text>{{vendor.name}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+  
+      </div>
+    </div>
+
   </div>
 
 

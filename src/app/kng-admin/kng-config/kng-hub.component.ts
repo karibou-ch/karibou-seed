@@ -413,7 +413,7 @@ export class KngHUBManagerComponent extends KngHUBComponent {
 
 
   onAddVendor($event) {
-    this.currentHub.vendors.push($event.value);
+    this.currentHub.vendors.push($event._id || $event.value);
   }
 }
 
