@@ -26,11 +26,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   i18n: any = {
     fr: {
-      bookmark: 'Sugestions',
+      bookmark: 'Favoris',
       search_placeholder: 'Recherche',
     },
     en: {
-      bookmark: 'Proposals',
+      bookmark: 'Favorites',
       search_placeholder: 'Search',
     }
   };
@@ -163,6 +163,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
       this.products = products.sort(this.sortByScore);
+      this.show = true;
       this.$cdr.markForCheck();
     });
 
