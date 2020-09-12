@@ -54,9 +54,10 @@ export class ProductListComponent implements OnInit {
   };
   vendors: Shop[];
 
-  filterVendor: string;
+  filterVendor: Shop;
   filterChild: string;
-  childSub;
+  childSub$;
+  childMap: any;
   relative = './';
 
   options: {
@@ -89,6 +90,7 @@ export class ProductListComponent implements OnInit {
       similar: []
     };
     this.vendors = [];
+    this.childMap = {};
 
     const loader = this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
@@ -100,8 +102,8 @@ export class ProductListComponent implements OnInit {
 
   ngOnDestroy() {
     this.clean();
-    if (this.childSub) {
-      this.childSub.unsubscribe();
+    if (this.childSub$) {
+      this.childSub$.unsubscribe();
     }
   }
 
@@ -158,8 +160,11 @@ export class ProductListComponent implements OnInit {
     this.onClose(this.dialog);
   }
 
+  //
+  // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    return category.child;
+    const child = category.child || [];
+    return child.filter(child => this.childMap[child.name]).sort((a,b) => a.weight - b.weight);
   }
 
   getDialog() {
@@ -197,6 +202,17 @@ export class ProductListComponent implements OnInit {
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
+
+      //
+      // count child categories
+      this.products.forEach(product => {
+        if (!this.childMap[product.belong.name]) {
+          this.childMap[product.belong.name] = 0;
+        }
+        this.childMap[product.belong.name]++;
+      });
+
+
       //
       // select first child category
       // this.subcategory.chips.filter(elem=>true)[0].selected=true;
@@ -205,7 +221,8 @@ export class ProductListComponent implements OnInit {
       // update child only after products
       // TODO     .pipe(takeWhile(() => !this.destroyed))
 
-      this.childSub = this.$route.params.subscribe(param => {
+      this.childSub$ = this.$route.params.subscribe(param => {
+        this.filterVendor = null;
         if (param['child']) {
           this.relative = '../';
           this.toggleChild(param['child']);
@@ -226,9 +243,8 @@ export class ProductListComponent implements OnInit {
 
   setProducts() {
     return this.cache.products = this.products.filter(product => {
-      const vendor = !this.filterVendor || product.vendor.urlpath === this.filterVendor;
       const cat = !this.filterChild || product.belong.name === this.filterChild;
-      return cat && vendor;
+      return cat;
     });
   }
 
@@ -239,11 +255,11 @@ export class ProductListComponent implements OnInit {
   }
 
   toggleVendor(vendor: Shop) {
-    if (this.filterVendor === vendor.urlpath) {
+    if (this.filterVendor &&
+        this.filterVendor.urlpath === vendor.urlpath) {
       return this.filterVendor = null;
     }
-    this.filterVendor = vendor.urlpath;
-    this.setProducts();
+    this.filterVendor = vendor;
   }
 
   toggleChild(child: string) {

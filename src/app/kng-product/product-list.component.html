@@ -31,9 +31,14 @@
       <!-- VENDORS-->
       <div class="vendor" >
         <div class="owner" 
+            (click)="toggleVendor(vendor)"
             *ngFor="let vendor of getVendors()">
-            <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
+            <img [src]="vendor.photo.owner" [class.selected]="filterVendor && filterVendor.urlpath==vendor.urlpath"></div>
       </div>
+      <div class="owner-title" [hidden]="!filterVendor">
+        {{filterVendor && filterVendor.name}}
+      </div>
+
     </div>
 
     <!-- FURTHER -->
@@ -52,6 +57,7 @@
               *ngFor="let product of getProducts();trackBy:trackerProducts;let j=index" 
               [sku]="product.sku" 
               [visibility]="getVisibility(j)"
+              [hidden]="filterVendor && product.vendor.urlpath !== filterVendor.urlpath"
               class="">
           </kng-product-thumbnail>
         </div>
