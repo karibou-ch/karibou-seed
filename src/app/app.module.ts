@@ -17,7 +17,7 @@ import { KngCommonModule } from './common/common.module';
 //
 // App components
 import { AppComponent } from './app.component';
-import { KngNavbarComponent, KngCalendarForm } from './kng-navbar';
+import { KngNavbarComponent } from './kng-navbar';
 
 //
 // environnement
@@ -34,6 +34,7 @@ import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-foun
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { KngNavMarketplaceComponent } from './kng-nav-marketplace/kng-nav-marketplace.component';
 
 
 @Injectable()
@@ -125,8 +126,8 @@ export class GlobalErrorHandler implements ErrorHandler {
 @NgModule({
   declarations: [
     AppComponent,
-    KngCalendarForm,
     KngNavbarComponent,
+    KngNavMarketplaceComponent,
     KngRootComponent,
     KngWelcomeComponent,
     KngValidateMailComponent,
@@ -135,7 +136,6 @@ export class GlobalErrorHandler implements ErrorHandler {
   ],
   // List of components that aren't used in templates directly
   entryComponents:[
-    KngCalendarForm
   ],
   exports: [
     Kng2CoreModule,
