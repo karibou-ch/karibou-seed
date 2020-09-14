@@ -29,8 +29,6 @@ import { Kng2CoreModule } from 'kng2-core';
 import { KngSharedMdcModule } from './shared.mdc.module';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { KngNavbarComponent } from '../kng-navbar';
-import { KngRootComponent } from '../kng-root/kng-root.component';
 import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
 import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 
@@ -79,7 +77,7 @@ import { appRoutes } from './shared.routes';
     ProductListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    KngFeedbackComponent,
+    KngFeedbackComponent
   ],
 })
 export class SharedModule {

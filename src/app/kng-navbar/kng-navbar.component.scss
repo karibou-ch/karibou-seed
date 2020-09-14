@@ -1,6 +1,11 @@
 @import "colors.scss";
 
+
 mdc-drawer{
+  &.mdc-drawer{
+    width: 380px!important;
+  }
+  
   a{
     color: #0a072b;
   }
@@ -51,7 +56,7 @@ mdc-drawer{
 
   .admin{
     mdc-list{
-      background: #555!important;
+      -background: #555!important;
     }
     mdc-list-item, 
     h3,
