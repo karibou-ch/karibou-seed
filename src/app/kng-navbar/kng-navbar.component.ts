@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CartService,
   CartAction,
   Config,
   ConfigMenu,
   ConfigService,
-  LoaderService,
   User,
   UserService,
   Category,
@@ -20,88 +19,6 @@ import { MdcSnackbar, MdcMenu, MdcTopAppBarSection, MdcDialogRef, MDC_DIALOG_DAT
 import { merge, timer } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-
-//
-// Popup available shipping dates
-@Component({
-  templateUrl: 'kng-navbar.calendar.component.html',
-  styleUrls: ['./kng-navbar.calendar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class KngCalendarForm {
-
-  config: Config;
-  currentShippingDay: Date;
-  labelTime: string;
-  isPremium: boolean;
-  currentRanks: any;
-  currentLimit: number;
-  premiumLimit: number;
-  noshippingMsg: string;
-  showHUBs: boolean;
-  lockedHUB: boolean;
-
-  constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
-    private $i18n: i18n,
-    @Inject(MDC_DIALOG_DATA) public data: any) {
-      this.config = data.config;
-      this.noshippingMsg = data.noshippingMsg;
-      this.currentShippingDay = data.currentShippingDay;
-      this.isPremium = data.isPremium;
-
-      // FIXME remove hardcoded shippingtimes[16]
-      const hub = this.config.shared.hub.slug;
-      if (hub) {
-        this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
-        this.currentRanks = this.config.shared.currentRanks[hub] || {};
-        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-        this.lockedHUB = this.config.shared.hub.domainOrigin;
-      }
-  }
-
-  get i18n() {
-    return this.$i18n;
-  }
-
-  get locale() {
-    return this.$i18n.locale;
-  }
-
-  onLang($event, lang) {
-    this.$i18n.locale = lang;
-  }
-
-
-
-  toggleStore($event) {
-    this.showHUBs = ($event.target.id === 'hubs');
-  }
-
-  doSetCurrentShippingDay($event, day: Date, idx: number) {
-    if (!this.isDayAvailable(day)) {
-      return;
-    }
-    this.dialogRef.close(day);
-  }
-
-  isDayAvailable(day: Date) {
-    const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return (this.currentRanks[day.getDay()] <= maxLimit);
-  }
-
-  getShippingText(day: Date) {
-    if(!this.isDayAvailable(day)) {
-      return this.i18n.label().nav_shipping_off;
-    }
-    return this.labelTime;
-  }
-
-  getShippingDays() {
-    return this.config.shared.shippingweek;
-  }
-
-}
 
 
 @Component({
@@ -155,9 +72,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $config: ConfigService,
     public $i18n: i18n,
     private $route: ActivatedRoute,
+    private $router: Router,
     private $user: UserService,
     public $navigation: KngNavigationStateService,
-    private $dialog: MdcDialog,
     private $snack: MdcSnackbar,
     private $cdr: ChangeDetectorRef,
   ) {
@@ -390,25 +307,21 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // console.log('---- changed locale')
   }
 
-  openCalendar(){
-    const dialogRef = this.$dialog.open(KngCalendarForm,{
-      data: {
-        config: this.config,
-        isPremium: this.user.isPremium(),
-        currentShippingDay: this.currentShippingDay,
-        noshippingMsg: this.getNoShippingMessage('nav_no_shipping_long')
-      }
-    });
+  setShippingDay(value: any) {
+    this.$cart.setShippingDay(value.day);
+    this.currentShippingDay = this.$cart.getCurrentShippingDay();
+    this.$cdr.markForCheck();
+  }
 
-    dialogRef.afterClosed().subscribe((current: any) => {
-      if (current === 'close') {
-        return;
+  openCalendar(marketplace: any, check?: boolean) {
+    // if not mobile then route to HOME
+    if (check) {
+      if (!this.$navigation.isMobile() ) {
+        return this.$router.navigate(['/']);
       }
-      this.$cart.setShippingDay(current);
-      this.currentShippingDay = this.$cart.getCurrentShippingDay();
-      //
-      // FIXME when using dropdown for shipping
-      this.$cdr.markForCheck();
-    });
+    }
+
+    marketplace.open = true;
+
   }
 }

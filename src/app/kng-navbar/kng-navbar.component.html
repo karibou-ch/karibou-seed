@@ -1,15 +1,12 @@
-<!-- NAVIGATION  -->
-<div class="kng-drawer" [class.kng-drawer-open]="navigation.open" #navigation>
-  <button class="close" (click)="navigation.open=false">
-    <mdc-icon class="size-large">close</mdc-icon>
-  </button>
-  <h1>Hello</h1>
-  <h2>World</h2>
 
-</div>
-<!--- <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> -->
-<mdc-drawer hidden>
-  <img class="logo" [src]="hubImage" [routerLink]="['/']" />
+<kng-nav-marketplace 
+  [config]="config" 
+  [currentShippingDay]="currentShippingDay"
+  [isPremium]="user?.isPremium()"
+  (updated)="setShippingDay($event)" #marketplace>
+</kng-nav-marketplace>
+<mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
+  <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
   </mdc-drawer-header>
   <mdc-drawer-content>
@@ -22,10 +19,9 @@
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
           <!--<mdc-icon mdcListItemGraphic class="">account_circle</mdc-icon>--><span i18n>{{$i18n.label().nav_login}}</span>
         </mdc-list-item>
-        <h3 mdcListGroupSubheader i18n>{{$i18n.label().nav_i18n}}</h3>
         <mdc-list-item>
-          <mdc-icon mdcListItemGraphic>language</mdc-icon>
-          <mdc-radio class="radio-primary" value="en" [checked]="$i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>En
+          {{$i18n.label().nav_i18n}}
+          <mdc-radio class="radio-primary align-right" value="en" [checked]="$i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>En
           <mdc-radio class="radio-primary" value="fr" [checked]="$i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>Fr
         </mdc-list-item>
 
@@ -33,14 +29,15 @@
       </mdc-list>
     </mdc-list-group>
     <!-- ADMIN -->
-    <mdc-list-group class="admin" [hidden]="!user.isAdmin()">
+    <mdc-list-group class="" [hidden]="!user.isAdmin()">
       <mdc-list>
         <mdc-list-divider></mdc-list-divider>
         <h3 mdcListGroupSubheader>Administration</h3>
         <h6 mdcListGroupSubheader>Config</h6>
         <mdc-list-item [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;"
           [routerLink]="getRouterLink(menu.url)">
-          <mdc-icon class="white" mdcListItemGraphic>radio_button_checked</mdc-icon>&nbsp;{{menu.name[locale]}}
+          <!-- <mdc-icon class="white" mdcListItemGraphic>radio_button_checked</mdc-icon>&nbsp;-->
+          {{menu.name[locale]}}
         </mdc-list-item>
       </mdc-list>
     </mdc-list-group>
@@ -56,7 +53,7 @@
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
         <img class="icon" src="/assets/img/k-puce-light.png" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="home"  (click)="openCalendar()">
+        <mdc-top-app-bar-title class="home"  (click)="openCalendar(marketplace,true)">
           {{hubTitle}} 
           <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
         </mdc-top-app-bar-title>
@@ -64,7 +61,7 @@
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="home center hide-sm"  (click)="openCalendar()">
+        <mdc-top-app-bar-title class="home center hide-sm"  (click)="openCalendar(marketplace)">
           <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
           <i class="material-icons">keyboard_arrow_down</i>
         </mdc-top-app-bar-title>
