@@ -1,0 +1,53 @@
+<!-- NAVIGATION  -->
+<div class="kng-drawer" [class.kng-drawer-open]="open" >
+  <!-- brand -->
+  <div class="k-brand">
+    <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp;{{i18n[locale].karibou_project}}
+  </div>
+
+  <button class="close" >
+    <mdc-icon class="size-large" (click)="open = false">close</mdc-icon>
+  </button>
+  <!-- HUB INFO -->
+  <div class="header">
+    <h1>{{currentHub.name}}</h1>
+    <h2>{{currentHub.description[locale]}}</h2>  
+    <div class="links">
+      <a href="mailto:{{currentHub.mail.address}}"><i class="material-icons fixed-position">email</i> 
+        <span class="hide-sm">{{currentHub.mail.address}}</span></a>
+      <a [href]="currentHub.address.url" target="_blank"><i class="icon-link-solid invert"></i>
+        <span class="hide-sm">{{currentHub.address.url}}</span></a>
+      <a href="tel:{{currentHub.address.phone}}"><i class="icon-phone-solid invert"></i>{{currentHub.address.phone}}</a>  
+    </div>  
+  </div>
+
+  <!-- CALENDAR-->
+  <div class="calendar_events">
+    <h2>{{i18n.label().nav_shipping}}</h2>
+    <div class="container">
+      <div class="element" [class.disabled]="!isDayAvailable(day)"
+        [class.selected]="day.equalsDate(currentShippingDay)" *ngFor="let day of getShippingDays();let idx=index"
+        (click)="doSetCurrentShippingDay($event,day,idx)">
+        <div class="ei_Title">{{day|date:'EEEE d MMMM':'':locale}}</div>
+        <div class="ei_Copy">{{getShippingText(day)}}</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MARKETPLACE -->
+  <div class="marketplace">
+    <h2>{{i18n.label().nav_store}}</h2>
+    <div class="container">
+      <div class=" hub disabled"  *ngFor="let hub of config.shared.hubs;let idx=index">
+        <div class="ei_Logo"><img [src]="hub.logo" /></div>
+        <div class="ei_Title">{{hub.name}}</div>
+        <div class="ei_Desc">{{hub.description[locale]}}</div>
+        <div class="ei_Link" hidden>
+          <div class="action"><a [href]="'../store/' + hub.slug + '/home'">{{i18n.label().nav_store_change}}</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
