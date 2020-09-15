@@ -228,7 +228,7 @@ export class ProductListComponent implements OnInit {
           this.toggleChild(param['child']);
         } else if (this.category.current.child[0]) {
           this.relative = './';
-          this.toggleChild(this.category.current.child[0].name);
+          this.toggleChild(this.getChildCategory(this.category.current)[0].name);
         }
       });
 
@@ -263,6 +263,7 @@ export class ProductListComponent implements OnInit {
   }
 
   toggleChild(child: string) {
+
     if (this.filterChild === child) {
       this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
       this.filterChild = null;
@@ -272,6 +273,7 @@ export class ProductListComponent implements OnInit {
 
     this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = (elem.value === child));
     this.filterChild = child;
+    console.log('--- toggle',child,this.filterChild, this.subcategory.chips);
     this.setProducts();
   }
 
