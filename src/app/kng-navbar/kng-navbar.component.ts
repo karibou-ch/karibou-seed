@@ -52,7 +52,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   hubImage: string;
   content: any;
   cgAccepted: boolean;
-  noshippingMsg: string;
   cardItemsSz = 0;
   cartItemCountElem: any;
   currentShippingDay: Date;
@@ -105,7 +104,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
     }
 
-    this.noshippingMsg = this.getNoShippingMessage();
 
   }
 
@@ -265,21 +263,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     }
     const title = formatDate(this.currentShippingDay, 'EEEE d ', this.locale);
     return title.charAt(0).toUpperCase() + title.slice(1);
-  }
-
-  getNoShippingMessage(label?: string) {
-    label = label || 'nav_no_shipping';
-    //
-    // check window delivery
-    if (!this.isDayAvailable(this.currentShippingDay)) {
-      return this.$i18n[this.locale][label];
-    }
-
-
-    //
-    // check manager message
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
-    return noshipping && noshipping.message[this.locale];
   }
 
   isAppReady() {

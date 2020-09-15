@@ -18,6 +18,7 @@ export class KngNavMarketplaceComponent implements OnInit {
 
   open: boolean;
   labelTime: string;
+  noshippingMsg: string;
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
@@ -32,15 +33,20 @@ export class KngNavMarketplaceComponent implements OnInit {
   }
 
   ngOnInit() {
-      // FIXME remove hardcoded shippingtimes[16]
-      this.currentHub = this.config.shared.hub;
-      if (this.currentHub && this.currentHub.slug) {
-        this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
-        this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
-        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-        this.lockedHUB = this.config.shared.hub.domainOrigin;
-      }
+
+    // FIXME remove hardcoded shippingtimes[16]
+    this.currentHub = this.config.shared.hub;
+    if (this.currentHub && this.currentHub.slug) {
+      this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
+      this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
+      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+      this.lockedHUB = this.config.shared.hub.domainOrigin;
+    }
+
+    //
+    // validate shipping state
+    this.noshippingMsg = this.getNoShippingMessage();
 
   }
 
@@ -50,6 +56,23 @@ export class KngNavMarketplaceComponent implements OnInit {
 
   get locale() {
     return this.$i18n.locale;
+  }
+
+  //
+  // label is 'nav_no_shipping' or 'nav_no_shipping_long'
+  getNoShippingMessage() {
+    // const label = long ?  'nav_no_shipping_long' : 'nav_no_shipping';
+    //
+    // check window delivery
+    if (!this.isDayAvailable(this.currentShippingDay)) {
+      return this.$i18n[this.locale]['nav_no_shipping_long'];
+    }
+
+
+    //
+    // check manager message
+    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
+    return noshipping && noshipping.message[this.locale];
   }
 
   onLang($event, lang) {
@@ -75,7 +98,7 @@ export class KngNavMarketplaceComponent implements OnInit {
   }
 
   getShippingText(day: Date) {
-    if(!this.isDayAvailable(day)) {
+    if (!this.isDayAvailable(day)) {
       return this.i18n.label().nav_shipping_off;
     }
     return this.labelTime;

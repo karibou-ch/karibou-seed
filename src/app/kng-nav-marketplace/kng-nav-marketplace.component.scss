@@ -41,6 +41,21 @@
     }
   }
   
+  .noshipping {
+    padding: 8px;
+    color: var(--mdc-theme-primary);
+    border-radius: 4px;
+    border: 1px solid var(--mdc-theme-karibou-pink);
+    margin: 20px;
+    width: fit-content;
+    background: pink;
+    opacity: .8;    
+    b{
+      vertical-align: super;
+      padding: 5px;      
+    }
+  }
+
   button.close{
     cursor: pointer;
     background: transparent;

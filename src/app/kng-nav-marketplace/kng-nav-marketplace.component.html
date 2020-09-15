@@ -24,6 +24,13 @@
   <!-- CALENDAR-->
   <div class="calendar_events">
     <h2>{{i18n.label().nav_shipping}}</h2>
+
+    <!-- NO SHIPPING -->
+    <div class="noshipping" [hidden]="!noshippingMsg || getShippingDays().length">
+      <i class="material-icons pink">info</i>
+      <b>Fermeture pour traveaux publiques</b>
+    </div>
+
     <div class="container">
       <div class="element" [class.disabled]="!isDayAvailable(day)"
         [class.selected]="day.equalsDate(currentShippingDay)" *ngFor="let day of getShippingDays();let idx=index"
