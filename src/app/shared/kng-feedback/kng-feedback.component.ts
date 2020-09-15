@@ -69,7 +69,6 @@ export class KngFeedbackComponent implements OnInit {
     public  $i18n: i18n,
     private $snack: MdcSnackbar,
     private $order: OrderService,
-    private $user: UserService,
     private $cdr: ChangeDetectorRef
   ) {
   }
@@ -159,7 +158,9 @@ export class KngFeedbackComponent implements OnInit {
     if (!this.user.id) {
       return;
     }
-    this.$order.findOrdersByUser(this.user, {limit: 4}).subscribe(orders => {
+
+    const hub = this.config ? this.config.shared.hub.slug : '';
+    this.$order.findOrdersByUser(this.user, {limit: 4, hub}).subscribe(orders => {
       if (!orders.length) {
         return;
       }

@@ -26,9 +26,9 @@
                     [selected]="selected?.oid==order.oid"
                     [class.autoHeight]="selected?.oid==order.oid"
                     (click)="selectedOrder(order)">
-      <mdc-icon class="hide-md" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                    
+      <mdc-icon class="hide-sm" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                    
       <mdc-list-item-text >        
-          <kng-feedback [user]="user" [orders]="[order]" boxed="true"></kng-feedback>     
+          <kng-feedback [config]="config" [user]="user" [orders]="[order]" boxed="true"></kng-feedback>     
           <mdc-list-item-secondary *ngIf="selected?.oid==order.oid">
             <ul>
               <li *ngFor="let item of order.items" [class.strike]="item.fulfillment.status=='failure'">
