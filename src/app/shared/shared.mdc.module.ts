@@ -9,7 +9,8 @@ import {
   MdcCheckboxModule,
   MdcLinearProgressModule,
   MdcFormFieldModule,
-  MdcDialogModule
+  MdcDialogModule,
+  MdcMenuModule
 } from '@angular-mdc/web';
 
 
@@ -19,6 +20,7 @@ import {
     MdcChipsModule,
     MdcDialogModule,
     MdcFormFieldModule,
+    MdcMenuModule,
     MdcTextFieldModule,
     MdcCheckboxModule,
     MdcLinearProgressModule
