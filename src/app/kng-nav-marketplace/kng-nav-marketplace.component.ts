@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { i18n } from '../common';
-import { Config, User } from 'kng2-core';
+import { Config } from 'kng2-core';
+import { version } from '../../../package.json';
 
 @Component({
   selector: 'kng-nav-marketplace',
   templateUrl: './kng-nav-marketplace.component.html',
   styleUrls: ['./kng-nav-marketplace.component.scss']
 })
-export class KngNavMarketplaceComponent implements OnInit {
+export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
+  private _open: boolean;
 
 
   @Input() config: Config;
@@ -16,7 +18,7 @@ export class KngNavMarketplaceComponent implements OnInit {
 
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
-  open: boolean;
+  VERSION = version;
   labelTime: string;
   noshippingMsg: string;
   currentRanks: any;
@@ -30,6 +32,9 @@ export class KngNavMarketplaceComponent implements OnInit {
     private $i18n: i18n,
   ) {
 
+  }
+
+  ngOnDestroy() {
   }
 
   ngOnInit() {
@@ -58,6 +63,19 @@ export class KngNavMarketplaceComponent implements OnInit {
     return this.$i18n.locale;
   }
 
+  set open(open: boolean) {
+    if(open) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+    }
+
+    this._open = open;
+  }
+
+  get open() {
+    return this._open;
+  }
   //
   // label is 'nav_no_shipping' or 'nav_no_shipping_long'
   getNoShippingMessage() {
@@ -88,6 +106,7 @@ export class KngNavMarketplaceComponent implements OnInit {
       return;
     }
     // this.dialogRef.close(day);
+
     this.open = false;
     this.updated.emit({day});
   }
