@@ -151,7 +151,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state: state })))
     ).subscribe((emit: any) => {
 
-
       //
       // update user
       if (emit.user && this.user.id !== emit.user.id) {

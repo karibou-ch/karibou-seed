@@ -143,6 +143,18 @@ div.navbar{
     
   }
   
+  .cart-users-count{
+    background: var(--mdc-theme-karibou-pink);
+    font-size: 10px;
+    padding: 5px 4px;
+    width: 5px;
+    height: 4px;
+    border-radius: 50%;
+    line-height: 8px;
+    position: absolute;
+    top: 10px;
+    transform: translateX(-19px);    
+  }
   .cart-items-count{    
     -color: #009200 !important;
     -color: #20714e!important;
