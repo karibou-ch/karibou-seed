@@ -5,9 +5,7 @@ import { NgModule } from '@angular/core';
 import {
   MdcButtonModule,
   MdcDrawerModule,
-  MdcDialogModule,
   MdcFabModule,
-  MdcFormFieldModule,
   MdcIconModule,
   MdcListModule,
   MdcMenuModule,
@@ -23,9 +21,7 @@ import {
   exports: [
     MdcButtonModule,
     MdcDrawerModule,
-    MdcDialogModule,
     MdcFabModule,
-    MdcFormFieldModule,
     MdcIconModule,
     MdcListModule,
     MdcMenuModule,

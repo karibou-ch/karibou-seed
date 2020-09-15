@@ -1,5 +1,4 @@
 @import "colors.scss";
-@import "~@angular-mdc/theme/material";
 
 .product-dialog{
   overflow-y: scroll;
@@ -244,7 +243,6 @@
     .mdc-chip-set--choice .mdc-chip.mdc-chip--selected {
       background-color: #{$mdc-theme-primary};
       background-color: var(--mdc-theme-primary);
-      color: #{$mdc-theme-surface};
       color: var(--mdc-theme-surface, #fff);
     }  
   
