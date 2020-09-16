@@ -52,7 +52,6 @@ export class IsWelcomeGard implements CanActivate, CanActivateChild {
     ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    console.log('guard welcome');
     return this.$user.me().pipe(
       catchError(err => of(new User()))
     ).toPromise().then(user => {
