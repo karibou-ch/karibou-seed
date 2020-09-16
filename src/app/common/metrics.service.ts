@@ -168,6 +168,10 @@ export class MetricsService {
 
 
   page(path: string) {
+    if (this.isAdmin) {
+      return;
+    }
+
     this.getHost('ga')('send', 'pageview', { page: path });
     this.getHost('fbq')('track', 'PageView');
   }
@@ -186,7 +190,7 @@ export class MetricsService {
     const ga = this.getHost('ga');
     const fbq = this.getHost('fbq');
 
-    if (!this.isEnable()) {
+    if (!this.isEnable() || this.isAdmin) {
       return;
     }
     const params: any = {};
