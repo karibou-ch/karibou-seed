@@ -97,7 +97,7 @@ export class KngShopsComponent implements OnInit {
 
       Object.assign(this.vendor, vendor);
 
-      if (vendor.photo.fg) {
+      if (vendor.photo && vendor.photo.fg) {
         this.ngStyleBck = {
           'background-image': this.bgGradient + 'url(' + vendor.photo.fg + '/-/resize/900x/fb.jpg)'
         };
