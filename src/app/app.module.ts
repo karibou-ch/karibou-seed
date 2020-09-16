@@ -88,9 +88,10 @@ export class GlobalErrorHandler implements ErrorHandler {
 
     //
     // Reload App is enough
-    if (chunkFailedMessage.test(error.message)) {
-      return window.location.reload(true);
-    }
+    // FIXME incompatible with PWA
+    // if (!!chunkFailedMessage.test(error.message)) {
+    //   return window.location.reload(true);
+    // }
 
     //
     // LAZY LOADIN SENTRY
