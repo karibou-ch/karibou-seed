@@ -265,15 +265,13 @@ export class ProductListComponent implements OnInit {
   toggleChild(child: string) {
 
     if (this.filterChild === child) {
-      this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
-      this.filterChild = null;
-      this.setProducts();
+      // this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
+      // this.filterChild = null;
+      // this.setProducts();
       return;
     }
 
-    this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = (elem.value === child));
     this.filterChild = child;
-    console.log('--- toggle',child,this.filterChild, this.subcategory.chips);
     this.setProducts();
   }
 

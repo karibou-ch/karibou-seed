@@ -22,6 +22,7 @@
         <mdc-chip-set choice #subcategory>
           <mdc-chip [routerLink]="[relative,child.name]"                     
                     [id]="'child'+j"                    
+                    [selected]="child.name == filterChild"
                     *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
             <mdc-chip-text>{{child.name}}</mdc-chip-text>
           </mdc-chip>
