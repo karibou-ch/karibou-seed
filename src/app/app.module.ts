@@ -33,13 +33,15 @@ import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-serve
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
 import { KngNavMarketplaceComponent } from './kng-nav-marketplace/kng-nav-marketplace.component';
 
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
-  constructor() { }
+  constructor(
+    private $update: SwUpdate
+  ) { }
 
   extractError(error) {
     // Try to unwrap zone.js error.
@@ -88,10 +90,10 @@ export class GlobalErrorHandler implements ErrorHandler {
 
     //
     // Reload App is enough
-    // FIXME incompatible with PWA
-    // if (!!chunkFailedMessage.test(error.message)) {
-    //   return window.location.reload(true);
-    // }
+    // For PWA, reload is not enough, activeUpdate is mandatory
+    if (!!chunkFailedMessage.test(error.message)) {
+      return this.$update.activateUpdate().then(() => document.location.reload(true));
+    }
 
     //
     // LAZY LOADIN SENTRY
@@ -156,7 +158,10 @@ export class GlobalErrorHandler implements ErrorHandler {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { 
+      enabled: environment.production,
+      registrationStrategy: 'registerWithDelay:2000'
+    })
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
