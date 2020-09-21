@@ -28,7 +28,19 @@
   <kng-config-input clazz="config" label="Signature des mails" name="mail.signature" format="area" 
                     [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
 
-  
+  <!-- HUB Footer -->
+  <h3 i18n>Footer <span class="gray">(welcome bottom)</span></h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
+                    [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Header footer" name="footer.h" format="text" 
+                    [(ngModel)]="config?.shared.footer.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area" 
+                    [(ngModel)]="config?.shared.footer.p[$i18n.locale]"></kng-config-input>
+
+                    
   <hr class="dashed"/>
   <h3 i18n>Configuration des clés publiques (API tiers)</h3>
   <kng-config-input clazz="config" label="Connect public key (stripe)" name="key.connect" format="text" 

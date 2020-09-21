@@ -76,12 +76,20 @@ div.home-header{
       .left-half{
         max-width: 29%;        
         img{
-          width: 100%;
+          width: 100%;          
         }
         @media (max-width:426px) {
           max-width:100%;
           overflow: hidden;
-          max-height: 230px;          
+          max-height: 230px;             
+          transform: rotate(180deg);
+          zoom: 1;
+          display: block;          
+          img {
+            transform: rotate(180deg) translateY(20%);
+            height: auto !important;
+            zoom: 1;            
+          }
         }
       }
       .left{

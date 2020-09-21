@@ -27,6 +27,7 @@ export class KngShopsComponent implements OnInit {
   vendor: Shop = new Shop();
   products: Product[];
   LIMITED_PRODUCTS = 35;
+  ngStyleBck: any;
 
 //
   // generating dynamic background image url
@@ -65,6 +66,7 @@ export class KngShopsComponent implements OnInit {
 
     this.urlpath = this.$route.snapshot.params.urlpath;
     this.products = [];
+    this.ngStyleBck = {};
   }
 
 
@@ -94,6 +96,13 @@ export class KngShopsComponent implements OnInit {
       document.title = vendor.name;
 
       Object.assign(this.vendor, vendor);
+
+      if (vendor.photo && vendor.photo.fg) {
+        this.ngStyleBck = {
+          'background-image': this.bgGradient + 'url(' + vendor.photo.fg + '/-/resize/900x/fb.jpg)'
+        };
+      }
+
       this.products = products.sort((a, b) => {
         return b.stats.score - a.stats.score;
       }).slice(0, this.LIMITED_PRODUCTS);

@@ -72,12 +72,14 @@
       <mdc-top-app-bar-section align="end" class="actions">        
         <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
           <div i18n> <span class="cart-items-count"></span></div>
-          <mdc-icon mdcTopAppBarActionItem >shopping_cart</mdc-icon>        
+          <mdc-icon mdcTopAppBarActionItem >shopping_cart</mdc-icon>          
         </a>
 
         <!-- LOGIN / REGISTER -->
         <a class="label " [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
           <mdc-icon mdcTopAppBarActionItem class="gold" >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
+          <!-- DISPLAY MULTI USER -->
+          <!-- <span class="cart-users-count">2</span> -->
         </a>
         <a class="label" [routerLink]="['./me/login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
           <mdc-icon mdcTopAppBarActionItem >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->

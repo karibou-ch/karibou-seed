@@ -42,16 +42,16 @@
   <kng-config-input clazz="config" label="Signature" name="mail.signature" format="area" 
                     [(ngModel)]="currentHub.mail.signature"></kng-config-input>
 
-  <!-- HUB Tagline -->
-  <h3 i18n>Site</h3>
+  <!-- HUB SiteName -->
+  <h3 i18n>Site Name </h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Site" name="site.titre" format="text" 
+  <kng-config-input clazz="config" label="Site Name" name="site.titre" format="text" 
                     [(ngModel)]="currentHub.siteName[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Site" name="site.desc" format="area" 
+  <kng-config-input clazz="config" label="Description" name="site.desc" format="area" 
                     [(ngModel)]="currentHub.description[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Image logo" name="site.logo" format="image" 
+  <kng-config-input clazz="config" label="Site Name Image" name="site.logo" format="image" 
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.siteName.image"></kng-config-input>
 

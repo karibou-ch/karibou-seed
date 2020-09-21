@@ -193,6 +193,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    //
+    // update title based on HUB instance
+    if (this.config.shared.hub && this.config.shared.hub.name) {
+      const site = this.config.shared.hub.siteName[this.locale];
+      const tag =  this.config.shared.hub.tagLine.t[this.locale];
+      document.title = site + ' - ' + tag;
+    }
   }
 
   get locale() {

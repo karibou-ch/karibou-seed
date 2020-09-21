@@ -8,10 +8,12 @@
         <mdc-icon class="size-large">navigate_before</mdc-icon>
       </button>
 
-      <h3 mdcHeadline5 class="title" [innerHtml]="category.current.name"></h3>
-      <h6 mdcSubtitle1 class="subtitle" [innerHtml]="category.current.description"></h6>
+      <h4 class="title" [innerHtml]="category.current.name"></h4>
 
-      <div class="breaker small"></div>
+      <!-- 
+        <h6 mdcSubtitle1 class="subtitle" [innerHtml]="category.current.description"></h6> 
+      -->
+      <div class="breaker small"></div> 
 
       <!-- CATEGORY -->
       <div class="certified ">
@@ -20,6 +22,7 @@
         <mdc-chip-set choice #subcategory>
           <mdc-chip [routerLink]="[relative,child.name]"                     
                     [id]="'child'+j"                    
+                    [selected]="child.name == filterChild"
                     *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
             <mdc-chip-text>{{child.name}}</mdc-chip-text>
           </mdc-chip>
