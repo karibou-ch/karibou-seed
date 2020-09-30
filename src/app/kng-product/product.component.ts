@@ -178,6 +178,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.scrollCallback = null;
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
@@ -321,11 +322,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
-    // FIXME fadeout brakes window
-    // this.dialog.nativeElement.classList.add('fadeout')
+    this.$navigation.back();
     setTimeout(() => {
-      if (this.$navigation.hasHistory()) {
-        return this.$navigation.back();
+      if (!this.scrollCallback) {
+        return;
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });
     }, 200);
