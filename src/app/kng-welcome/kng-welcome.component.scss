@@ -7,6 +7,28 @@
   @media (max-width: 426px) {
     display: none;
   }
+
+  &.large{
+    @media (min-width: 1441px) {
+      zoom: 1.1;
+    }
+    @media (min-width: 1900px) {
+      zoom: 1.15;
+    }
+    @media (min-width: 2500px) {
+      zoom: 1.25;
+    }
+  
+    .items-list-wrap{
+      animation: none !important;
+
+    }
+    li{
+      width: 382px!important;
+      height: 292px!important;
+  
+    }
+  }
   
   
   height: 110%;
