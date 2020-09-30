@@ -8,13 +8,13 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-	<mdc-card class="product-card card-skeleton" [outlined]="false" 
+	<mdc-card class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}" [outlined]="false" 
 						[class.selected]="selected"
 						[class.large]="large"
 						[class.incart]="cartItem&&cartItem?.quantity"
-	 [class.noavailable]="!product.isAvailableForOrder()" 
-	 [class.popular]="product.stats.score>0.25"
-	 [class.noinstock]="!product.pricing.stock">
+						[class.noavailable]="!product.isAvailableForOrder()" 
+						[class.popular]="product.stats.score>0.25"
+						[class.noinstock]="!product.pricing.stock">
 
 
 
@@ -50,7 +50,7 @@
 				<mdc-icon class="size-medium">remove</mdc-icon>
 			</button>
 			<div class="info-quantity">{{cartItem?.quantity}}</div>
-			<div class="info-score"><i class="material-icons">star</i><!--{{product.stats.score.toFixed(2)}}--></div>
+			<div class="info-score"><i class="material-icons">star</i></div>
 		
 			<!-- TITLE -->
 			<div class="product-card__primary">
