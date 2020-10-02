@@ -53,14 +53,20 @@ export class KngNavigationStateService  {
     return this.referrer !== this.$router.url;
   }
 
+  //
+  // FIXME, config.shared can be undefined
   updateConfig(config: Config) {
+    if (!config.shared) {
+      return;
+    }
     this.config = config;
     this.menu = {};
     this.cached = {};
 
     //
     // group menu
-    config.shared.menu.forEach(menu => {
+    const menus = config.shared.menu || [];
+    menus.forEach(menu => {
       if (!this.menu[menu.group]) {
         this.menu[menu.group] = [];
       }

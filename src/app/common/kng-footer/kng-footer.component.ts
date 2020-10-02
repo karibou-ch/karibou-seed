@@ -74,6 +74,10 @@ export class KngFooterComponent implements OnInit {
   }
 
   main(config: Config) {
+    if (!config.shared) {
+      return;
+    }
+
     this.shared = config.shared;
     // FIXME Use one uniq central point for updateConfig
     this.$navigation.updateConfig(config);
