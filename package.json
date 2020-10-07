@@ -1,11 +1,12 @@
 {
   "name": "karibou-seed",
-  "version": "3.7.11",
+  "version": "3.7.12",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "analyse": "source-map-explorer ./dist/*es2015*.js ./dist/*es2015*.js.map --html dist/stack.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
