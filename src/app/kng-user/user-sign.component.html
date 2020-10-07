@@ -38,8 +38,8 @@
           </button>            
       </form>
       <div class="signup-vs-login black" i18n><a class="link" (click)="askAction='signup'">{{i18n[locale].login_create_account}}</a></div>
+      <div class="signup-vs-login black" i18n><a class="link black" [routerLink]="['/store',getHubSlug(),'home']">{{i18n[locale].login_skip}}</a></div>
       <div class="signup-vs-login light" i18n><a class="link" (click)="askAction='recover'">{{i18n[locale].login_forgot_password}}</a></div>
-      <div class="signup-vs-login light" i18n><a class="link gray small" href="/store/geneva/home">{{i18n[locale].login_skip}}</a></div>
     </div>
       
     <!-- RECOVER -->

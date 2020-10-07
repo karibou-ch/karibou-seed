@@ -65,7 +65,7 @@ export class UserSignComponent {
       login_back_login: 'J\'ai déjà un compte',
       login_ok: 'Merci, vous êtes maintenant connecté',
       login_ko: 'L\'utilisateur ou le mot de passe est incorrect',
-      login_skip: 'Je ne souhaite pas m\'identifier, je veux visiter le marché',
+      login_skip: 'Je veux visiter le marché sans m\'identifier',
       signup_create: 'Créer votre compte',
       signup_phone: 'Le téléphone est essentiel pour pouvoir vous contacter lors d\'une commande',
       password_change_ok: 'Votre mot de passe à été modifié',
@@ -85,7 +85,7 @@ export class UserSignComponent {
       login_back_login: 'Already have an account? Sign in',
       login_ok: '1000 Thanks, you are now connected',
       login_ko: 'Username or password are not correct',
-      login_skip: 'I want to skip the identification to visit the food store',
+      login_skip: 'Visit the food store without identification',
       signup_create: 'Continue',
       signup_phone: 'The phone is mandatory to contact you when ordering',
 
@@ -233,11 +233,11 @@ export class UserSignComponent {
     }
   }
 
-  getHubName() {
+  getHubSlug() {
     if (!this.config || !this.config.shared.hub) {
-      return '';
+      return 'geneva';
     }
-    return this.config.shared.hub.name;
+    return this.config.shared.hub.slug;
   }
 
   getTagline(key) {
