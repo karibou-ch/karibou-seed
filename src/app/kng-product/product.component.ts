@@ -131,7 +131,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       '/shop/' + this.$route.snapshot.params['shop'] : '';
 
     //
-    // when display wider
+    // dialog display
     if (!this.sku) {
 
       this.isDialog = true;
