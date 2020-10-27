@@ -30,6 +30,7 @@ export const appRoutes: Routes = [
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/geneva/home/products/:sku' },
   { path: 'shop/:slug', pathMatch: 'full', redirectTo: '/store/geneva/shops/:slug' },
   { path: 'account/orders', pathMatch: 'full', redirectTo: '/store/geneva/me/orders' },
+  { path: 'account/reminder', pathMatch: 'full', redirectTo: '/store/geneva/me/reminder' },
   {
     path: '',
     pathMatch: 'full',
