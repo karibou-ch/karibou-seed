@@ -46,13 +46,15 @@
   <div class="marketplace">
     <h2>{{i18n.label().nav_store}}</h2>
     <div class="container">
-      <div class=" hub disabled"  *ngFor="let hub of config.shared.hubs;let idx=index">
-        <div class="ei_Logo"><img [src]="hub.logo" /></div>
+      <div class="hub"  *ngFor="let hub of config.shared.hubs;let idx=index">
+        <div class="ei_Logo" (click)="toggleStore(hub)" [class.selected]="hub.slug === currentHub.slug"><img [src]="hub.logo" /></div>
+
         <div class="ei_Title">{{hub.name}}</div>
         <div class="ei_Desc">{{hub.description[locale]}}</div>
-        <div class="ei_Link" hidden>
-          <div class="action"><a [href]="'../store/' + hub.slug + '/home'">{{i18n.label().nav_store_change}}</a></div>
+        <div class="ei_Link" [hidden]="hub.slug === currentHub.slug">
+          <div class="action"><a class="pink" (click)="toggleStore(hub)">{{i18n.label().nav_store_change}}</a></div>
         </div>
+
       </div>
 
     </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angu
 import { i18n } from '../common';
 import { Config } from 'kng2-core';
 import { version } from '../../../package.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kng-nav-marketplace',
@@ -30,6 +31,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   constructor(
     private $i18n: i18n,
+    private $router: Router,
   ) {
 
   }
@@ -97,8 +99,16 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     this.$i18n.locale = lang;
   }
 
-  toggleStore($event) {
-    this.showHUBs = ($event.target.id === 'hubs');
+  toggleStore(hub) {
+    //
+    // this HUB is running is own domain!!
+    if (this.currentHub.domainOrigin) {
+      // FIXME hardcoded link there
+      window.location.href = 'https://karibou.ch/store/' + hub.slug + '/home';
+    } else {
+      window.location.href = '/store/' + hub.slug + '/home';
+    }
+
   }
 
   doSetCurrentShippingDay($event, day: Date, idx: number) {

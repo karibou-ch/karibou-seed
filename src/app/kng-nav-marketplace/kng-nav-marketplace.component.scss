@@ -147,7 +147,11 @@
           height: 97px;
           width: 97px;
           border: 1px solid var(--mdc-theme-primary);
-          -cursor: pointer;
+          cursor: pointer;
+          &.selected{
+            border: 1px solid var(--mdc-theme-karibou-pink);
+            opacity: .3;
+          }
           img {
             max-width: 100%;
             margin: auto;
@@ -171,12 +175,14 @@
         }
 
         .ei_Link {
-          margin: auto;
-          margin-top: 10px;
+          -margin: auto;
+          margin-top: 5px;
           div.action{
-            border: 1px solid var(--mdc-theme-primary);
-            padding: 2px 8px;
+            cursor: pointer;
+            -border: 1px solid #ddd;
+            padding: 2px 0px;
             border-radius: 4px;
+            font-size: smaller;
             a {
               color: var(--mdc-theme-primary);
               text-decoration:none;
