@@ -42,7 +42,7 @@ export class i18n  {
     nav_shipping2: 'livraison',
     nav_shipping_off: 'Cette journée n\'est plus disponible',
     nav_store: 'Ou souhaitez vous faire vos courses',
-    nav_store_change: 'Faire ces courses',
+    nav_store_change: 'Faire ses courses',
     nav_contactus: 'Contactez-nous!',
     nav_installapp: 'Installer karibou.ch',
     e404: 'Cette page n\'existe pas :-(',
