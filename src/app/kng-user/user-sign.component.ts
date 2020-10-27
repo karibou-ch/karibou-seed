@@ -338,6 +338,7 @@ export class UserSignComponent {
       lastname: this.signup.value.name,
       password: this.signup.value.password,
       confirm: this.signup.value.confirm,
+      hub: this.getHubSlug(),
       phoneNumbers: [{number: this.signup.value.phone, what: 'mobile'}]
     };
     this.$user.register(user).subscribe(
