@@ -78,7 +78,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Merci beaucoup pour votre compréhension.
        <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
-      cart_info_service_k: `La majoration des produits est de <span class=" ">4%</span>
+      cart_info_service_k: `La majoration des produits est de <span class=" ">5%</span>
         <a class="more small">[notre commission]</a>`,
       cart_info_service_k_plus: `Notre politique des prix est transparente. Le prix du produit est fixé par le commerçant,
        la majoration nous permet de rétribuer notre équipe. <span class="pink">🤗</span></span>`,
@@ -109,7 +109,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
        new delivery windows become available. Thank you very much for your understanding.
        <p>We do deliver every day from Tuesday to Friday and we schedule orders for 6 days in advance only.
        Every morning you will see the next delivery window.</p>`,
-      cart_info_service_k: 'Your contribution for our service is  <span class="gray ">4%</span> <a class="more small">[about our fees]</a>',
+      cart_info_service_k: 'Your contribution for our service is  <span class="gray ">5%</span> <a class="more small">[about our fees]</a>',
       cart_info_service_k_plus: `Our pricing policy is transparent. Price of the product is set by the retailer.
        A fair fee allows us to remunerate our team <span class="pink">🤗</span>`,
       cart_remove: 'remove',

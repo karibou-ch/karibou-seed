@@ -16,8 +16,10 @@
     overflow: hidden;
 
     @media (min-width: 767px) {
-      margin: 20px auto;
+      margin: 10px auto;
       max-width: 900px;
+      overflow-y: auto;
+      zoom: 0.9;
     }
 
     .k-brand{
