@@ -19,6 +19,7 @@ import { CartService,
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { MetricsService, EnumMetrics } from '../common/metrics.service';
+import { StripeService } from 'ngx-stripe';
 
 
 @Component({
@@ -55,6 +56,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
+  requestIntent: string;
 
   //
   // generating dynamic background image url
@@ -173,6 +175,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     private $order: OrderService,
     private $route: ActivatedRoute,
     private $router: Router,
+    private $stripe: StripeService,
     public $snack: MdcSnackbar,
     private $user: UserService
   ) {
@@ -240,7 +243,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
       }
       // emit signal for config
       if (emit.config) {
-
+        //
+        // set the stripe key
+        if (this.config.shared && this.config.shared.keys) {
+          this.$stripe.setKey(this.config.shared.keys.pubStripe);
+        }
       }
       // emit signal for user
       if (emit.user) {
@@ -255,6 +262,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       if (current.note && !this.shippingNote) {
         this.shippingNote = current.note;
       }
+
+
 
       //
       // compute available discount and delta to get one
@@ -290,9 +299,55 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.computeDiscount();
   }
 
+  createPaymentConfirmation(order: Order) {
+    //
+    // Metric ORDER
+    this.$metric.event(EnumMetrics.metric_order_sent, {
+      'shipping': order.getShippingPrice(),
+      'amount': order.getSubTotal()
+    });
+
+    this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
+    this.$router.navigate(['/store', this.store, 'me', 'orders']);
+    this.items = [];
+    this.$cart.empty();
+  }
+
+  confirmPaymenIntent(intent: any) {
+    const intentOpt: any = {
+      payment_method: intent.source
+    };
+
+    this.$stripe.confirmCardPayment(intent.client_secret, intentOpt).subscribe((result) => {
+      if (result.error) {
+        //
+        // Show error to our customer (e.g., insufficient funds)
+        this.$snack.open(
+          result.error.message,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+        );
+        this.isRunning = false;
+        return;
+      }
+      // The payment has been processed!
+      if (['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+        const payment = this.$cart.getCurrentPaymentMethod();
+        payment.intent_id = result.paymentIntent.id;
+        this.$cart.setPaymentMethod(payment);
+
+
+        setTimeout(() => this.doOrder(), 10);
+        // Show a success message to your customer
+        // There's a risk of the customer closing the window before callback
+        // execution. Set up a webhook or plugin to listen for the
+        // payment_intent.succeeded event that handles any business critical
+        // post-payment actions.
+      }
+    });
+  }
 
   doOrder() {
-
     // //
     // // prepare shipping
     // var shipping=cart.config.address;
@@ -335,6 +390,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       this.$cart.getCurrentPaymentMethod()
     ).subscribe((order) => {
         this.isRunning = false;
+
         //
         // check order errors
         if (order.errors) {
@@ -350,21 +406,20 @@ export class KngCartComponent implements OnInit, OnDestroy {
         }
 
         //
-        // Metric ORDER
-        this.$metric.event(EnumMetrics.metric_order_sent, {
-          'shipping': order.getShippingPrice(),
-          'amount': order.getSubTotal()
-        });
-
-        this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
-        this.$router.navigate(['/store', this.store, 'me', 'orders']);
-        this.items = [];
-        this.$cart.empty();
+        // validate
+        this.createPaymentConfirmation(order);
       },
-      err => {
+      status => {
+
+        //
+        // SCA request payment confirmation
+        if (status.error.client_secret) {
+          return this.confirmPaymenIntent(status.error);
+        }
+
         this.isRunning = false;
         this.$snack.open(
-          err.error,
+          status.error,
           this.$i18n.label().thanks,
           this.$i18n.snackOpt
       );
