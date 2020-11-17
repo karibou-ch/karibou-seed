@@ -5,8 +5,9 @@ import { User,
          Config} from 'kng2-core';
 
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { StripeService, Elements, ElementsOptions, TokenResult } from 'ngx-stripe';
+import { StripeService } from 'ngx-stripe';
 import { i18n } from '../common';
+import { StripeCardElement, StripeCardElementOptions, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
 
 
 export interface PaymentEvent {
@@ -53,13 +54,14 @@ export class CardComponent {
   //
   // payment
   stripe: FormGroup;
-  elements: Elements;
+  elements: StripeElements;
   selected: UserCard;
-  card: any;
+  card: StripeCardElement;
+  paymentSecret: any;
   isLoading: boolean;
 
   // optional parameters
-  elementsOptions: ElementsOptions = {
+  elementsOptions: StripeElementsOptions = {
     locale: 'fr'
   };
 
@@ -143,26 +145,28 @@ export class CardComponent {
 
     if (this.user.isAuthenticated()) {
       // console.log('--- DB USER PAYMENTS 1',this.user.payments);
-      this.$user.checkPaymentMethod(this.user).subscribe(user => {
+      this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
         this.user = user;
-        // console.log('--- DB USER PAYMENTS 2',this.user.payments);
+        // console.log('--- DB USER PAYMENTS 2',user.context);
       });
     }
 
     this.$stripe.elements(this.elementsOptions).subscribe(elements => {
       this.elements = elements;
+
       // Only mount the element the first time
       if (this.card) {
         return;
       }
-      this.card = this.elements.create('card', {
+      const cardOptions: StripeCardElementOptions = {
+
         hidePostalCode: true,
         style: {
           base: {
             iconColor: '#444',
             color: '#31325F',
             lineHeight: '40px',
-            fontWeight: 300,
+            fontWeight: "300",
             fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
             fontSize: '18px',
             '::placeholder': {
@@ -170,17 +174,20 @@ export class CardComponent {
             }
           }
         }
-      });
+      };
+
+      this.card = this.elements.create("card", cardOptions);
 
 
       setTimeout(() => {
-        this.card.addEventListener('change', (event) => {
+        this.card.on('change', (event) => {
           // event.brand=> "mastercard"
           // event.complete=> true|false
           // event.elementType=> "card"
           // event.empty=> false
           // event.error=> undefined
           // event.value=> {postalCode: ""}
+          // console.log('--- DEBUG event',event);
           this.isValid = event.complete;
         });
 
@@ -198,9 +205,15 @@ export class CardComponent {
     this.isLoading = true;
     this.$user.deletePaymentMethod(payment.alias, this.user.id).subscribe(
       user => {
-        this.onEmit(<PaymentEvent>({deleted: user.payments}));
+        //
+        // do not exit on delete payment
+        // this.onEmit(<PaymentEvent>({deleted: user.payments}));
+        this.isLoading = false;
       },
-      err => this.onEmit(<PaymentEvent>({error: new Error(err.error)}))
+      result => {
+        this.displayCardError = result.message || result.error.message;
+        this.isLoading = false;
+      }
     );
   }
 
@@ -211,13 +224,13 @@ export class CardComponent {
 
   onPayment() {
     const name = this.stripe.get('name').value;
-    let address_zip;
-    let address_city;
-    let address_country = 'CH';
+    let postal_code;
+    let city;
+    let country = 'CH';
     //
     // COLLECT USER DATA FOR STRIPE
-    // - card.address_zip
-    // - card.address_city
+    // - card.postal_code
+    // - card.city
     if (this.user.addresses && this.user.addresses.length) {
       const names = name.split(' ');
       const address = this.user.addresses.find(add => {
@@ -226,81 +239,37 @@ export class CardComponent {
 
 
       if (address){
-        address_zip = address.postalCode;
-        address_city = address.region;
+        postal_code = address.postalCode;
+        city = address.region;
       }
 
     }
 
     this.isLoading = true;
-    this.$stripe
-      .createToken(this.card, { name, address_zip, address_city, address_country })
-      .subscribe((result: TokenResult) => {
-        // id: string;
-        // object: 'token';
-        // bank_account?: {
-        //   id: string;
-        //   country: string;
-        //   currency: string;
-        //   fingerprint: string;
-        //   object: 'bank_account';
-        //   account_holder_name: string;
-        //   account_holder_type: 'individual' | 'company';
-        //   bank_name: string;
-        //   last4: string;
-        //   routing_number: string;
-        //   status:
-        //     | 'new'
-        //     | 'validated'
-        //     | 'verified'
-        //     | 'verification_failded'
-        //     | 'errored';
-        // };
-        // card?: {
-        //   id: string;
-        //   country: string;
-        //   currency: string;
-        //   fingerprint: string;
-        //   object: 'card';
-        //   address_city: string;
-        //   address_country: string;
-        //   address_line1: string;
-        //   address_line1_check: FieldCheck;
-        //   address_line2: string;
-        //   address_state: string;
-        //   address_zip: string;
-        //   address_zip_check: FieldCheck;
-        //   brand: string;
-        //   cvc_check: FieldCheck;
-        //   dynamic_last4: string;
-        //   exp_month: number;
-        //   exp_year: number;
-        //   funding: 'credit' | 'debit' | 'prepaid' | 'unknown';
-        //   last4: string;
-        //   metadata: { [key: string]: any };
-        //   name: string;
-        //   tokenization_method: 'apple_pay' | 'android_pay';
-        // };
-        // client_ip: string;
-        // livemode: boolean;
-        // type: 'card' | 'bank_account';
-        // used: boolean;
+    const paymentMethod = {
+      type: 'card',
+      card: this.card,
+      billing_details: { name, address: { postal_code, city, country} }
+    };
+    const paymentSecret = this.user.context.intent;
+    this.$stripe.confirmCardSetup(paymentSecret.client_secret, { payment_method: paymentMethod}).subscribe((result: any) => {
+        // console.log('---- DEBUG intent', result);
+
         this.displayCardError = null;
-        if (result.token) {
+        const setupIntent = result.setupIntent;
+        if (setupIntent && setupIntent.payment_method) {
           // Use the token to create a charge or a customer
           // https://stripe.com/docs/charges
-          const card: UserCard = new UserCard({
-            id: result.token.id,
-            name: result.token.card.name,
-            issuer: result.token.card.brand.toLowerCase(),
-            number: 'xxxx-xxxx-xxxx-' + result.token.card.last4,
-            expiry: result.token.card.exp_month + '/' + result.token.card.exp_year
-          });
+          const card = {
+            id: setupIntent.payment_method,
+            name: name,
+            issuer: 'stripe',
+          } as UserCard;
           const force_replace = true;
           this.$user.addPaymentMethod(card, this.user.id, force_replace).subscribe(
             user => {
               this.isLoading = false;
-              this.onEmit(<PaymentEvent>({card: card}))
+              this.onEmit(<PaymentEvent>({card: card}));
             },
             err => {
               this.displayCardError = err.error || err.message;
@@ -312,8 +281,13 @@ export class CardComponent {
           //
           // Error creating the token
           this.displayCardError = result.error.message;
-          this.isLoading = false;
-          //this.onEmit(<PaymentEvent>{error: result.error});
+
+          //
+          // request a new payment intent
+          this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
+            this.isLoading = false;
+            this.user = user;
+          });
         }
       });
   }
