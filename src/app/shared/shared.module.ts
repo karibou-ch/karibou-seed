@@ -33,6 +33,7 @@ import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component
 import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 
 import { appRoutes } from './shared.routes';
+import { NgxStripeModule } from 'ngx-stripe';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import { appRoutes } from './shared.routes';
     Kng2CoreModule,
     KngSharedMdcModule,
     KngCommonModule,
+    NgxStripeModule.forRoot(),
     RouterModule.forChild(appRoutes),
   ],
   exports: [
