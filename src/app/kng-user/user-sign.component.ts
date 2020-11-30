@@ -235,7 +235,7 @@ export class UserSignComponent {
 
   getHubSlug() {
     if (!this.config || !this.config.shared.hub) {
-      return 'geneva';
+      return 'artamis';
     }
     return this.config.shared.hub.slug;
   }
@@ -273,6 +273,12 @@ export class UserSignComponent {
 
 
     if (document['referrer']) {
+      // const url = document['referrer'].split('/store');
+      // if (url.length === 2) {
+      //   return this.$router.navigateByUrl('/store' + url[1]);
+      // }
+
+      // return window.location.href = document['referrer'];
       return this.$location.back();
     }
 

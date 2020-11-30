@@ -2,7 +2,7 @@
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
 from '@angular/core';
 import { Category, ProductService, Product, CartService, Config } from 'kng2-core';
-import { i18n } from '../../common';
+import { i18n, KngNavigationStateService } from '../../common';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 
 @Component({
@@ -19,7 +19,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Input() exited: boolean;
   @Input() group: string;
 
-  store = 'geneva';
   show: boolean;
   findGetNull: boolean;
   products: Product[] = [];
@@ -51,6 +50,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   constructor(
     public  $i18n: i18n,
     private $cart: CartService,
+    private $navigation: KngNavigationStateService,
     private $metric: MetricsService,
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
@@ -68,6 +68,10 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  }
+
+  get store() {
+    return this.$navigation.store;
   }
 
   get locale() {
