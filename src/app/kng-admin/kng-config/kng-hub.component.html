@@ -43,6 +43,21 @@
                     [(ngModel)]="currentHub.mail.signature"></kng-config-input>
 
   <!-- HUB SiteName -->
+  <h3 i18n>Colors </h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text" 
+                    [(ngModel)]="currentHub.colors.primary"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Text Color" name="colors.text" format="text" 
+                    [(ngModel)]="currentHub.colors.primaryText"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Action Color" name="colors.action" format="text" 
+                    [(ngModel)]="currentHub.colors.action"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Action Text Color" name="colors.action-text" format="text" 
+                    [(ngModel)]="currentHub.colors.actionText"></kng-config-input>
+
+  <!-- HUB SiteName -->
   <h3 i18n>Site Name </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Site Name" name="site.titre" format="text" 
