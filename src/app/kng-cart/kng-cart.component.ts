@@ -56,6 +56,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
   currentLimit: number;
   premiumLimit: number;
 
+  selectPaymentIsDone: boolean;
+  selectAddressIsDone: boolean;
+
   //
   // generating dynamic background image url
   bgGradient = `linear-gradient(
@@ -78,11 +81,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Merci beaucoup pour votre compréhension.
        <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
-      cart_info_service_k: `La majoration des produits est de <span class=" ">5%</span>
-        <a class="more small">[notre commission]</a>`,
+      cart_info_service_k: `Le service karibou.ch est de <span class=" ">5%</span>
+        <a class="more small">[commission]</a>`,
       cart_info_service_k_plus: `Notre politique des prix est transparente. Le prix du produit est fixé par le commerçant,
        la majoration nous permet de rétribuer notre équipe. <span class="pink">🤗</span></span>`,
       cart_remove: 'enlever',
+      cart_modify: 'Modifier',
       cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais à partir de ',
@@ -113,6 +117,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_service_k_plus: `Our pricing policy is transparent. Price of the product is set by the retailer.
        A fair fee allows us to remunerate our team <span class="pink">🤗</span>`,
       cart_remove: 'remove',
+      cart_modify: 'Modify',
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
       cart_discount_title: 'rabais livraison à partir de ',
@@ -209,6 +214,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
   get locale() {
     return this.$i18n.locale;
   }
+
+  get hub() {
+    return this.config.shared.hub;
+  }
+
+  get hubLogo() {
+    return this.hub.siteName.image;
+  }
+
 
   // FIXME remove repeated code
   getNoShippingMessage() {
@@ -384,6 +398,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return this.$cart.getCurrentShippingFees();
   }
 
+  currentPaymentMethod() {
+    return this.$cart.getCurrentPaymentMethod();
+  }
+
   currentGatewayLabel() {
     return (this.$cart.getCurrentGateway().label);
   }
@@ -544,6 +562,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   setShippingAddress(address: UserAddress) {
+    this.selectAddressIsDone = !!address;
     this.$cart.setShippingAddress(address);
 
     //
@@ -563,6 +582,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   setPaymentMethod(payment: UserCard) {
+    this.selectPaymentIsDone = !!payment;
     if (!payment) {
       return;
     }
