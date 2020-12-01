@@ -193,9 +193,6 @@
     z-index: 1;
     cursor: pointer;   
     margin: 04px 0;             
-    // color:var(--mdc-theme-secondary);
-    // background: white;
-    // border:1px solid #ddd;    
 
     &.style1{
       flex:0 0 50%;
@@ -208,9 +205,6 @@
     }
   
     &.action{
-      // background-color: var(--mdc-theme-secondary);
-      // color: white;
-      // border-radius: 20px;
       padding: 5px;      
       width: 50%;        
     }

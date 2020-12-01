@@ -341,7 +341,8 @@ body{
 .icon-wine, .fa-wine,
 .icon-wine-lg, .fa-wine-lg,
 .icon-beer, .fa-beer,
-.icon-wine, .fa-wine-white
+.icon-wine, .fa-wine-white,
+.icon-gift, .fa-gift
 {
   width:24px;
   height: 24px;
@@ -454,3 +455,34 @@ body{
   background-image: url(/assets/img/icon-wine.svg)
 }
 
+.icon-gift, .fa-gift{
+  background-image: url(/assets/img/icon-gift-solid.svg)
+}
+
+
+//
+// animation
+
+@keyframes roll {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes wobble  {
+  0%  { -webkit-transform:  rotate(0deg); }
+  50%  { -webkit-transform:  rotate(0deg); }
+  90%  { -webkit-transform:  rotate(3deg); }
+  100%  { -webkit-transform:  rotate(0deg); }
+}
+
+.wobble { 
+  -webkit-animation: wobble 7s infinite; 
+}
+.rotate {
+  animation: roll 3s infinite;
+  transform: rotate(30deg); 
+}

@@ -420,8 +420,8 @@
       transform: translateX(-4px);
     }
     .mdc-chip--selected{
-      background-color: #{$mdc-theme-primary-light};
-      background-color: var(--mdc-theme-primary-light);
+      background-color: var(--mdc-theme-secondary);
+      color: var(--mdc-theme-secondary-text);
     }
     >div{
       font-size: smaller;

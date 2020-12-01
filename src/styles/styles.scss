@@ -17,7 +17,7 @@ body{
 @import 'kng-card-skeleton.scss';
 
 :root {
-  --mdc-theme-karibou-pink: #da1c5c;
+  --mdc-theme-karibou-pink: #{$mdc-theme-secondary};
   --mdc-theme-primary: #{$mdc-theme-primary};
   --mdc-theme-primary-light: #{$mdc-theme-primary-light};
   --mdc-theme-primary-dark: #{$mdc-theme-primary-dark};
@@ -33,11 +33,10 @@ body{
   --mdc-theme-background-container: #{$mdc-theme-background-container};
 
 
-  --mdc-theme-secondary: #f7f7f7;
-  --mdc-theme-secondary-light: #777;
-  --mdc-theme-secondary-dark: #ddd;
-  --mdc-theme-secondary-text: #777;  
-  --mdc-theme-on-secondary:#444;
+  --mdc-theme-secondary: #{$mdc-theme-secondary};
+  --mdc-theme-secondary-light: #{$mdc-theme-secondary-light};
+  --mdc-theme-secondary-dark: #{$mdc-theme-secondary-dark};
+  --mdc-theme-secondary-text: #{$mdc-theme-secondary-text};
 }
 
 

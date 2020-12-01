@@ -67,8 +67,8 @@ mdc-list{
 
 
 .mdc-fab{
-  color: var(--mdc-theme-primary-text)!important;    
-  background: var(--mdc-theme-karibou-pink)!important;    
+  color: var(--mdc-theme-secondary-text)!important;    
+  background: var(--mdc-theme-secondary)!important;    
   &.text-primary {
 //    @include mdc-fab-accessible($material-color-green-800);
     @include mdc-fab-accessible($mdc-theme-primary);

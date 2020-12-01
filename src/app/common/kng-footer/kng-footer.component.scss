@@ -19,8 +19,7 @@ div.footer{
 
 
   div.main{
-    color: $mdc-theme-secondary-text;
-    color: var(--mdc-theme-secondary-text);  
+    color: var(--mdc-theme-primary-on-background);  
     background: #d0d0d9;
     width: 100%;
     margin: auto;
@@ -38,7 +37,7 @@ div.footer{
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
-        border-bottom:5px dotted var(--mdc-theme-secondary-dark);      
+        border-bottom:5px dotted var(--mdc-theme-primary);      
       }
       .elem{
         flex:1 0 calc(33% - 40px);

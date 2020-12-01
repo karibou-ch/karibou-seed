@@ -46,7 +46,7 @@
     padding: 8px;
     color: var(--mdc-theme-primary);
     border-radius: 4px;
-    border: 1px solid var(--mdc-theme-karibou-pink);
+    border: 1px solid var(--mdc-theme-secondary);
     margin: 20px;
     width: fit-content;
     background: pink;
@@ -108,13 +108,13 @@
 
   .marketplace,
   .calendar_events{
-    color:var(--mdc-theme-primary-text);
+    color:var(--mdc-theme-text-primary-on-background);
     min-height: 220px;
     background: white;  
     margin: 0; 
     margin-top: 4px;
     h2{
-      color: var(--mdc-theme-primary);
+      color: var(--mdc-theme-text-primary-on-background);
       font-size: 1.2em;
       padding-left: 20px;
       padding-top: 20px;
@@ -135,7 +135,7 @@
         width: 100px;
         display: flex;
         flex-flow: column;    
-        color: var(--mdc-theme-primary);
+        color: var(--mdc-theme-text-primary-on-background);
 
         &.disabled {
           background-color: #eee;
@@ -146,11 +146,17 @@
           display: flex;
           height: 97px;
           width: 97px;
-          border: 1px solid var(--mdc-theme-karibou-pink);
+          border: 1px solid var(--mdc-theme-text-primary-on-background);
+          box-shadow: 0 2px 4px -1px rgba(0,0,0,.4), 
+          0 4px 8px 0 rgba(0,0,0,.14), 
+          0 1px 16px 0 rgba(0,0,0,.12);
+        
           cursor: pointer;
           &.selected{
-            border: 1px solid var(--mdc-theme-primary);
+            border: 1px solid var(--mdc-theme-text-primary-on-background);
             opacity: .3;
+            box-shadow:none;
+
           }
           img {
             max-width: 100%;
@@ -195,7 +201,7 @@
         margin: 6px 2px;
         margin-right: 25px;
         padding:9px;
-        border: 1px solid var(--mdc-theme-primary);
+        border: 1px solid var(--mdc-theme-text-primary-on-background);
         width: 80px;
         height: 80px;
         font-size: .9em;
@@ -209,16 +215,17 @@
       
         &.selected{
           background-color: var(--mdc-theme-primary);
+          border: 1px solid var(--mdc-theme-primary);
           .ei_Title{
-            color: var(--mdc-theme-primary-text);
+            color: var(--mdc-theme-text-primary-on-primary);
             font-weight: 600;
           }
           .ei_Copy{
-            color: var(--mdc-theme-primary-text);
+            color: var(--mdc-theme-text-primary-on-primary);
           }
         }
         .ei_Title{
-          color: var(--mdc-theme-primary);
+          color: var(--mdc-theme-text-primary-on-background);
         }        
 
         .ei_Copy{

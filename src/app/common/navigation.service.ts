@@ -69,12 +69,11 @@ export class KngNavigationStateService  {
     if (hub && hub.colors && hub.colors.primary) {
       try {
         const style = document.documentElement.style;
-        style.setProperty('--mdc-theme-karibou-pink', hub.colors.action);
-        style.setProperty('--mdc-theme-primary', hub.colors.primary);
-        style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText);
-        style.setProperty('--mdc-theme-secondary', hub.colors.action);
-        style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText);
-
+        if (hub.colors.primary) { style.setProperty('--mdc-theme-primary', hub.colors.primary); }
+        if (hub.colors.primaryText) { style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText); }
+        if (hub.colors.action) { style.setProperty('--mdc-theme-secondary', hub.colors.action); }
+        if (hub.colors.actionText) { style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText); }
+        if (hub.colors.action) { style.setProperty('--mdc-theme-karibou-pink', hub.colors.action); }
       } catch (err) {}
     }
 
@@ -100,7 +99,7 @@ export class KngNavigationStateService  {
     }
     this.currentStore = store;
     this.$config.get(store).subscribe();
-    this.$shops.query({hub:store}).subscribe();
+    this.$shops.query({hub: store}).subscribe();
   }
 
   //
