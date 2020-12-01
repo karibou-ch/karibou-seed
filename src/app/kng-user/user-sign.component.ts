@@ -179,6 +179,20 @@ export class UserSignComponent {
     this.updateState();
   }
 
+  //
+  // release data
+  ngOnDestroy() {
+    this.config = null;
+    // console.log('---DEBUG ngDestroy',this.config);
+
+  }
+
+  ngOnInit() {
+    if (this.askAction === 'payment') {
+    }
+  }
+
+
   get locale() {
     return this.$i18n.locale;
   }
@@ -228,11 +242,6 @@ export class UserSignComponent {
   }
 
 
-  ngOnInit() {
-    if (this.askAction === 'payment') {
-    }
-  }
-
   getHubSlug() {
     if (!this.config || !this.config.shared.hub) {
       return 'artamis';
@@ -271,7 +280,6 @@ export class UserSignComponent {
       return this.$router.navigate([this.mandatory.referrer]);
     }
 
-
     if (document['referrer']) {
       // const url = document['referrer'].split('/store');
       // if (url.length === 2) {
@@ -283,11 +291,18 @@ export class UserSignComponent {
     }
 
 
+      return window.location.href = document['referrer'];
+    }
 
     //
     // last case, HOME
-    return this.$location.back();
-    // this.$router.navigate(['/store',this.$nav.store]);
+    this.$location.back();
+    setTimeout(() => {
+      if (!this.config) {
+        return;
+      }
+      this.$router.navigate(['/store', this.$nav.store, 'home']);
+    }, 400);
   }
 
 
@@ -300,10 +315,13 @@ export class UserSignComponent {
   onUpdatePayment($result,other?){
     //
     // force update of all payments method
+    console.log('---- DEBUG onEmit 1', $result);
+
     this.$user.me().subscribe(user => {
       this.user = user;
       const msg = ($result.error) ? ($result.error.message || $result.error) : 'Ok';
       this.$snack.open(msg, this.$i18n.label().thanks, this.$i18n.snackOpt);
+      console.log('---- DEBUG onEmit 2');
       this.onBack();
     });
   }

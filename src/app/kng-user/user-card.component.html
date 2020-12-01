@@ -33,7 +33,10 @@
   </h2>
     
   
-  <form novalidate (ngSubmit)="onPayment()" [formGroup]="stripe" class="stripe-component">
+  <form novalidate 
+       (ngSubmit)="onPayment()" 
+       [formGroup]="stripe" 
+       class="stripe-component">
     <mdc-text-field i18n-label [label]="$i18n[locale].user_display_name" style="width:100%" type="text" 
                     [hidden]="!user.isReady()"
                     formControlName="name" [ngModel]="user.display()">
