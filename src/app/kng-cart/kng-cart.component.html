@@ -6,9 +6,10 @@
     <hr/>
   </section>
   
+  <!-- VOTRE PANIER -->
   <section [hidden]="!items.length">
-    <h2 i18n>{{config?.shared.hub.checkout.title[$i18n.locale]}}</h2>
-    <h3 class="primary-text" i18n *ngIf="!noshippingMsg; else noShipping">
+    <h3 i18n>{{config?.shared.hub.checkout.title[$i18n.locale]}}</h3>
+    <!-- <h3 class="primary-text" i18n *ngIf="!noshippingMsg; else noShipping">
       {{i18n[locale].cart_nextshipping}} 
       <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
       <br/> {{shippingTime}}
@@ -17,12 +18,34 @@
       <h3 class="primary-text">
         {{noshippingMsg}} 
       </h3>
-    </ng-template>
+    </ng-template> -->
 
     
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>{{i18n[locale].cart_error}}</h4>
   </section>
-  <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!items.length">
+  <mdc-list [twoLine]="true" avatar="true" [interactive]="false" >
+    <mdc-list-item>
+      <mdc-list-item-graphic>
+        <div class="avatar round"
+              [ngStyle]="{'background-image': 'url(' + hubLogo + ')'}">
+
+        </div>
+      </mdc-list-item-graphic>
+      <mdc-list-item-text >
+          <span class="title large">{{hub.name}} </span>
+          <mdc-list-item-secondary>
+            <span *ngIf="!noshippingMsg; else noShipping">
+              {{i18n[locale].cart_nextshipping}} 
+              <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
+              // {{shippingTime}}
+            </span>
+            <ng-template #noShipping>
+              <span>{{noshippingMsg}} </span>
+            </ng-template>            
+          </mdc-list-item-secondary>
+      </mdc-list-item-text>
+    </mdc-list-item>
+
     <mdc-list-item *ngFor="let item of sortedItems()" (click)="onSelect($event,item)">
       <mdc-list-item-graphic>
         <div class="avatar"
@@ -73,7 +96,7 @@
       </mdc-list-item-meta>
     </mdc-list-item>
 
-    <mdc-list-item class="border-top" [hidden]="!showInfoFees">
+    <mdc-list-item class="border-top auto-height" [hidden]="!showInfoFees">
       <div class="amount-info" [innerHtml]="i18n[locale].cart_info_service_k_plus"></div>
     </mdc-list-item>
 
@@ -119,12 +142,23 @@
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- ADDRESS IFF isAuth()-->
-  <div class="order-address" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()||!isOpen()">      
-    <div class="cart-flow" [class.flow-done]="currentShipping().name==null" >1</div>
-    <section  [innerHtml]="config?.shared.hub.checkout.address[$i18n.locale]"></section>
+  <div class="order-address" [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()||!isOpen()">      
+    <div class="cart-flow"  >1</div>
+    <section class="selected">
+      <p class="text-capitalize black block-info">
+        {{currentShipping().name}}, {{currentShipping().streetAdress}}
+      </p>
+      <div class="profile-action"  >
+        <button (click)="selectAddressIsDone = false;">
+          <mdc-icon class="pink">map</mdc-icon>
+          {{i18n[locale].cart_modify}} 
+        </button>
+      </div>      
+    </section>
+    <section  [innerHtml]="config?.shared.hub.checkout.address[$i18n.locale]" ></section>
       
     <!-- USER ADDRESS -->
-    <mdc-list  twoLine avatar singleSelection interactive>
+    <mdc-list  twoLine avatar singleSelection interactive >
       <mdc-list-item *ngFor="let address of user.addresses" 
                     [selected]="isSelectedAddress(address)"              
                     (click)="setShippingAddress(address)">
@@ -167,7 +201,7 @@
       <!-- NEW ADDRESS -->
       <div class="profile-action"  >
         <button [routerLink]="['/store/'+store+'/me/login-or-address']">
-          <mdc-icon class="pink">payment</mdc-icon>
+          <mdc-icon class="pink">map</mdc-icon>
           {{$i18n[locale].cart_address_add}} 
         </button>
       </div>
@@ -185,12 +219,23 @@
         </mdc-list-item-meta>        
       </mdc-list-item> -->
     </mdc-list>    
-          
   </div>
 
   <!-- PAYMENT-->
-  <div class="order-address" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable() && isOpen()">      
-    <div class="cart-flow" [class.flow-done]="currentGatewayLabel()=='Aucun'">2</div>
+  <div class="order-address" [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable() && isOpen()">      
+    <div class="cart-flow" >2</div>
+    <section class="selected">
+      <p class="black block-info">
+        {{currentPaymentMethod()?.issuer}} {{currentPaymentMethod()?.number}}
+      </p>
+      <div class="profile-action"  >
+        <button (click)="selectPaymentIsDone = false;">
+          <mdc-icon class="pink">payment</mdc-icon>
+          {{i18n[locale].cart_modify}} 
+        </button>
+      </div>
+
+    </section>
     <section  [innerHtml]="config?.shared.hub.checkout.payment[$i18n.locale]"></section>
 
 
@@ -216,7 +261,7 @@
       <!-- ADD PAYMENT -->
       <div class="profile-action"  >
         <button [routerLink]="['/store/'+store+'/me/login-or-payment']">
-          <mdc-icon class="pink">map</mdc-icon>
+          <mdc-icon class="pink">payment</mdc-icon>
           {{$i18n[locale].cart_payment_add}} 
         </button>
       </div>

@@ -2,8 +2,6 @@
 
 :host{
   padding-top: 50px;
-  background-color: $mdc-theme-secondary;
-  background-color: var(--mdc-theme-secondary, white);  
 }
 div.footer{
   margin-top: 0px;
@@ -18,8 +16,6 @@ div.footer{
   background-position-x: 40%;
   background-repeat: repeat-x;
   padding-top: 110px;
-  background-color: $mdc-theme-secondary;
-  background-color: var(--mdc-theme-secondary,white);      
 
 
   div.main{

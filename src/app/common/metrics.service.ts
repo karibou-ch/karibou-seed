@@ -24,7 +24,7 @@ export enum EnumMetrics {
 })
 export class MetricsService {
 
-  FB_PIXEL = '142141582812801';
+  FB_PIXEL = '1633129600094162';
 
 
   isAdmin: boolean;

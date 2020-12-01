@@ -5,13 +5,16 @@
     {
       "name": "Karibou.ch",
       "installMode": "lazy",
+
       "resources": {
         "files": [
+          "!/api/*",
           "/favicon.ico",
           "/index.html",
           "/manifest.webmanifest",
           "/*.css",
-          "/*.js"
+          "/*.js",
+          "!/**/*.map"
         ]
       }
     }, {

@@ -276,7 +276,7 @@
     }
   
     .media{
-      height: 400px;
+      height: 500px;
       background-color:#ddd;
   
       background-repeat: no-repeat;
@@ -287,7 +287,7 @@
       position: relative!important;
       
       @media (max-width: 426px) {
-        height: 270px;
+        height: 370px;
         border-radius: 0px;  
       }
 

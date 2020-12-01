@@ -146,10 +146,10 @@
           display: flex;
           height: 97px;
           width: 97px;
-          border: 1px solid var(--mdc-theme-primary);
+          border: 1px solid var(--mdc-theme-karibou-pink);
           cursor: pointer;
           &.selected{
-            border: 1px solid var(--mdc-theme-karibou-pink);
+            border: 1px solid var(--mdc-theme-primary);
             opacity: .3;
           }
           img {

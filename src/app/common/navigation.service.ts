@@ -64,6 +64,22 @@ export class KngNavigationStateService  {
     this.cached = {};
 
     //
+    // set theme
+    const hub = this.config.shared.hub;
+    if (hub && hub.colors && hub.colors.primary) {
+      try {
+        const style = document.documentElement.style;
+        style.setProperty('--mdc-theme-karibou-pink', hub.colors.action);
+        style.setProperty('--mdc-theme-primary', hub.colors.primary);
+        style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText);
+        style.setProperty('--mdc-theme-secondary', hub.colors.action);
+        style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText);
+
+      } catch (err) {}
+    }
+
+
+    //
     // group menu
     const menus = config.shared.menu || [];
     menus.forEach(menu => {
@@ -90,7 +106,7 @@ export class KngNavigationStateService  {
   //
   // FIXME default store is currently Geneva. What should be the exit plan ?
   get store() {
-    return this.currentStore || 'geneva';
+    return this.currentStore || 'artamis';
   }
 
   isMobile(): boolean {
