@@ -1,6 +1,6 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
-  <h3 i18n>{{i18n[locale].title_order_open}}</h3>
+  <h3 i18n>{{hubName}}, {{i18n[locale].title_order_open}}</h3>
   <p i18n class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
       <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b> 
@@ -16,7 +16,8 @@
 <!--- ORDER IS CANCEL -->
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='voided'">
   <div class="details" >
-      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
+    <span class="bold">{{hubName}} </span>
+    <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
       {{i18n[locale].title_order_cancel}}
       <span class="text-strike">{{order.getTotalPrice()|currency:'CHF'}}</span>
   </div>                                      
@@ -25,7 +26,8 @@
 <!--- ORDER IS EVALUATED -->
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='evaluated'">
   <div class="details" >
-      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y':'':locale}}</span>,
+    <span class="bold">{{hubName}} </span>
+    <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y':'':locale}}</span>,
       {{order.items.length}} articles
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
   </div>                                      
@@ -45,6 +47,7 @@
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
   <ng-content></ng-content>
   <div class="details" >
+      <span class="bold">{{hubName}} </span>
       <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
       {{order.items.length}} articles
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>

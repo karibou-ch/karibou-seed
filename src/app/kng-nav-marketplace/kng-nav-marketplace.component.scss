@@ -1,8 +1,7 @@
 @import "colors.scss";
 
 .kng-drawer{
-  background: $mdc-theme-primary;
-  background: var(--mdc-theme-prim$mdc-theme-primary);
+  background: var(--mdc-theme-primary);
   color:#FFF;
   position: fixed;
   top: calc( 100vh * -1.85 );

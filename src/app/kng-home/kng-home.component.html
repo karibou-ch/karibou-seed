@@ -1,3 +1,5 @@
+
+
 <!-- FEEDBACK -->
 <kng-feedback [config]="config" [user]="user" forceload="true">
     <h3>{{$i18n[locale].home_feedback_title}}</h3>
@@ -7,7 +9,7 @@
 <div class="home-header" [hidden]="!hasContent('p',target)" 
     [class.cover]="hasBackgroundContent(target)" 
     [ngStyle]="getContentStyle(target)">
-
+  
   <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
       [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
   </div>
@@ -48,9 +50,17 @@
 
   <!-- INFORMATION FOR HOME ONLY-->
   <div class="home-header" *ngIf="i==2 && target == 'home' && config.shared.hub.header.active">
+    <!-- HUB -->
+    <div class="banner" >
+      <h1>{{config.shared.hub.name}}</h1>
+      <h2>{{config.shared.hub.description[locale]}}</h2>  
+      <img hidden [src]="config.shared.hub.tagLine.image" />
+      <button hidden>Changer de marché</button>
+    </div>
+  
     <div class="welcome" [innerHtml]="config.shared.hub.header.message[locale]"></div>
   </div>
-  
+
   
   <div [class]="category.slug"
        [hidden]="!category.active" 

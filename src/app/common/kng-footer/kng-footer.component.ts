@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User, Config, UserService } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '..';
@@ -7,7 +7,8 @@ import { version } from '../../../../package.json';
 @Component({
   selector: 'kng-footer',
   templateUrl: './kng-footer.component.html',
-  styleUrls: ['./kng-footer.component.scss']
+  styleUrls: ['./kng-footer.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class KngFooterComponent implements OnInit {
 

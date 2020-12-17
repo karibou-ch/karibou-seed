@@ -18,6 +18,10 @@
       <div [hidden]="!getTagline('p')" 
             [innerHtml]="getTagline('p')">
       </div>
+      <div class="postalcode" [hidden]="isValidPostalCode || true">
+        <p>Entrez votre code postal afin de valider votre zone de livraison</p>
+        <input type="text" placeholder="Votre code postal" pattern="^[0-9]{4}$" (change)="onChange($event)" [class.red]="!isValidPostalCode">
+      </div>
     </div>
 
     <a  hidden href="https://www.facebook.com/sharer/sharer.php?u=karibou-ch">

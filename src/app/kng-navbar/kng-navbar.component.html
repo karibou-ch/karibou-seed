@@ -54,16 +54,16 @@
       <mdc-top-app-bar-section align="start" >
         <img class="icon" src="/assets/img/k-puce-light.png" (click)="navigation.open = ! navigation.open" />
         <mdc-top-app-bar-title class="home"  (click)="openCalendar(marketplace,true)">
-          {{hubTitle}} 
+          {{hubTitle}}      
           <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="home center hide-sm wobble"  (click)="openCalendar(marketplace)">
+        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(marketplace)">
           <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
-          <i class="material-icons">keyboard_arrow_down</i>
+          <i class="material-icons wobble-vertical">keyboard_arrow_down</i>
         </mdc-top-app-bar-title>
 
       </mdc-top-app-bar-section>

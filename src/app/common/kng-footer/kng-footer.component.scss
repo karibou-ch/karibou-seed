@@ -15,6 +15,7 @@ div.footer{
   background-position-y: top;
   background-position-x: 40%;
   background-repeat: repeat-x;
+  background-color: white;
   padding-top: 110px;
 
 
@@ -48,6 +49,12 @@ div.footer{
           padding:5px;
         }
         &.right{
+          font-size: 12px;
+          font-weight: 200;
+          padding: 5px;
+          img {
+            display: none;
+          }
           @media screen and (min-width:426px){
             text-align: right;            
           }

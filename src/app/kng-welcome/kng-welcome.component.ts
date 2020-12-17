@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, HostListener, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 
@@ -35,13 +35,15 @@ export class KngWelcomeComponent implements OnInit {
   };
 
   config: Config;
+  postalCode: string;
 
   constructor(
     public $i18n: i18n,
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $photo: PhotoService
+    private $photo: PhotoService,
+    private $cdr: ChangeDetectorRef
   ) {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
@@ -66,7 +68,7 @@ export class KngWelcomeComponent implements OnInit {
     //
     //
   }
-
+  
 
   doLangSwitch() {
     this.$i18n.localeSwitch();
@@ -89,6 +91,14 @@ export class KngWelcomeComponent implements OnInit {
     return {'background-image': this.bgGradient + bgStyle};
   }
 
+  getShippingPostalCode() {
+    if (!this.config || !this.config.shared.shipping) {
+      return [];
+    }
+    const periphery = this.config.shared.shipping.periphery || [];
+    return [1201, 1202, 1203, 1204, 1205, 1206, 1207, 1208, 1209].concat(periphery);
+  }
+
   getTagline(key) {
     if (!this.config || !this.config.shared.tagLine[key]) {
       return;
@@ -105,6 +115,10 @@ export class KngWelcomeComponent implements OnInit {
     const bgStyle = 'url(' + defaultImg + ')';
     return {'background-image': bgStyle};
 
+  }
+
+  get isValidPostalCode() {
+    return this.getShippingPostalCode().indexOf(+this.postalCode) > -1;
   }
 
   isAppReady() {
@@ -126,6 +140,13 @@ export class KngWelcomeComponent implements OnInit {
       return;
     }
 
+  }
+
+  //
+  // codepostal
+  onChange($event) {
+    this.postalCode = $event.target.value;
+    //setTimeout(() => this.$cdr.markForCheck(),100);
   }
 
 

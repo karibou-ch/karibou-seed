@@ -207,8 +207,7 @@ kng-ui-bottom-actions{
       margin-right:30px;
       // margin-left: auto;
       flex:0 1 auto;
-      -box-shadow: 0px 0px 5px 1px rgba(109, 109, 109, 0.46);
-
+      color: var(--mdc-theme-secondary-text) !important;
       @media (max-width: 426px) {
         margin-right:10px;
         .mdc-fab__label{

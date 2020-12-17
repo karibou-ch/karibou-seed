@@ -60,6 +60,9 @@ export class KngFeedbackComponent implements OnInit {
   @Input() user: User;
   @Input() forceload: boolean;
 
+  get hubName() {
+    return (this.config && this.config.shared) ? this.config.shared.hub.name : '';
+  }
 
   get locale() {
     return this.$i18n.locale;
@@ -116,6 +119,10 @@ export class KngFeedbackComponent implements OnInit {
       return EnumFinancialStatus[EnumFinancialStatus.paid];
     }
 
+    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.partially_refunded]) {
+      return EnumFinancialStatus[EnumFinancialStatus.paid];
+    }
+
   }
 
   isOpen(order: Order) {
@@ -152,6 +159,8 @@ export class KngFeedbackComponent implements OnInit {
     if (this.forceload) {
       this.loadOrders();
     }
+
+
   }
 
   loadOrders() {
