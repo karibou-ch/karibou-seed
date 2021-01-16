@@ -34,6 +34,10 @@ export class UserSignComponent {
       img: '/assets/img/payment/visa.jpg',
       label: 'VISA'
     },
+    amex: {
+      img: '/assets/img/payment/ae.jpg',
+      label: 'American Express'
+    },
     'american express': {
       img: '/assets/img/payment/ae.jpg',
       label: 'American Express'
@@ -56,6 +60,7 @@ export class UserSignComponent {
   i18n: any = {
     fr: {
       action_reset: 'Réinitialiser',
+      action_reset_done: 'Email envoyé!',
       login_title: 'Identifiez-vous avec votre email',
       login_why: `Une fois identifié, vous aurez une meilleure expérience du marché en ligne 😉`,
       login_create_account: 'Je n\'ai pas de compte',
@@ -76,6 +81,7 @@ export class UserSignComponent {
     },
     en: {
       action_reset: 'Reset',
+      action_reset_done: 'Email sent!',
       login_title: 'Use email to Sign in',
       login_why: `Identified user will have a better experience of the marketplace 😉`,
       login_create_account: 'New to karibou? Sign up',
@@ -104,6 +110,7 @@ export class UserSignComponent {
   isReady = false;
   sign: any;
   recover: any;
+  sendRecover: boolean;
   signup: any;
   store: string;
 
@@ -133,6 +140,7 @@ export class UserSignComponent {
     //
     // initialize HTML content (check on route definition)
     this.askAction = this.$route.snapshot.data.action;
+    this.sendRecover = false;
 
     //
     // initialize loader
@@ -163,10 +171,26 @@ export class UserSignComponent {
     });
 
     //
+    // check existance on token
+    let defaultEmail = '';
+    let defaultPassword = '';
+    const token = this.$route.snapshot.queryParams['token'];
+    if (token && token.length) {
+      // FIXME split char is hardcoded
+      try{
+        const fields = atob(token).split('::');
+        if (fields.length === 2) {
+          defaultEmail = fields[0];
+          defaultPassword = fields[1];
+        }  
+      }catch(e) {}
+    }
+
+    //
     // login account
     this.sign = this.$fb.group({
-      'email': ['', [Validators.required, KngInputValidator.emailValidator]],
-      'password': ['', [Validators.required, KngInputValidator.passwordValidator]]
+      'email': [defaultEmail, [Validators.required, KngInputValidator.emailValidator]],
+      'password': [defaultPassword, [Validators.required, KngInputValidator.passwordValidator]]
     });
 
     //
@@ -174,6 +198,7 @@ export class UserSignComponent {
     this.recover = this.$fb.group({
       'email': ['', [Validators.required, KngInputValidator.emailValidator]]
     });
+
 
 
     this.updateState();
@@ -290,10 +315,6 @@ export class UserSignComponent {
       return this.$location.back();
     }
 
-
-      return window.location.href = document['referrer'];
-    }
-
     //
     // last case, HOME
     this.$location.back();
@@ -315,13 +336,11 @@ export class UserSignComponent {
   onUpdatePayment($result,other?){
     //
     // force update of all payments method
-    console.log('---- DEBUG onEmit 1', $result);
 
     this.$user.me().subscribe(user => {
       this.user = user;
       const msg = ($result.error) ? ($result.error.message || $result.error) : 'Ok';
       this.$snack.open(msg, this.$i18n.label().thanks, this.$i18n.snackOpt);
-      console.log('---- DEBUG onEmit 2');
       this.onBack();
     });
   }
@@ -330,6 +349,7 @@ export class UserSignComponent {
     const email = this.recover.value.email.toLocaleLowerCase();
     this.$user.recover(email).subscribe(
       ok => {
+        this.sendRecover = true;
         this.$snack.open(this.$i18n.label().user_recover_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
       }, err => {
         this.$snack.open(err.error, this.$i18n.label().thanks, this.$i18n.snackOpt);

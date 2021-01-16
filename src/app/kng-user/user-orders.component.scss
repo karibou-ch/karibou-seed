@@ -47,10 +47,10 @@
       }
   
       mdc-list-item-text{
-        width: 90%;
+        width: 100%;
         color: var(--mdc-theme-primary-on-background);
         @media screen and (max-width:425px){
-          max-width: 95vw;          
+          max-width: 95%;          
         }
         mdc-list-item-secondary{
           div.info{
