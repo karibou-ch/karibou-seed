@@ -13,8 +13,8 @@
    
    
        <mdc-card-primary-action>
-         <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
-           <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
+         <mdc-card-media [square]="true" [ngStyle]="bgStyle" class="media ">
+           <img src="/assets/img/k-highlight.png" class="highlight-new" hidden/>
 
            <div class="product-available">
             non disponible
@@ -71,9 +71,9 @@
 
       <!-- CERTIFIED -->
       <div class="certified ">
-        <ul class="info ">
-          <li [hidden]="!product.quantity.display">{{product.quantity.comment}}</li>
-          <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
+        <ul class="info " [hidden]="!product.quantity.display && !product.shelflife.display">
+          <li >{{product.quantity.comment}}</li>
+          <li >{{product.shelflife.comment}}</li>
         </ul>
 
         <mdc-chip-set>
@@ -101,7 +101,7 @@
         </div> -->
       </div>
 
-      <div class="breaker"></div>
+      <div class="breaker small"></div>
 
       <!-- ADMIN OR OWNER ACTIONS -->
       <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
