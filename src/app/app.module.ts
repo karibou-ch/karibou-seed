@@ -159,8 +159,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       scrollPositionRestoration: 'disabled'
     }),
     ServiceWorkerModule.register('ngsw-worker.js', { 
-      enabled: environment.production,
-      registrationStrategy: 'registerWithDelay:2000'
+      enabled: environment.production
     })
   ],
   providers: [
