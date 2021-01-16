@@ -84,6 +84,11 @@ export class CardComponent {
       img: '/assets/img/payment/visa.jpg',
       label: 'VISA'
     },
+    amex: {
+      img: '/assets/img/payment/ae.jpg',
+      label: 'American Express'
+    },
+
     'american express': {
       img: '/assets/img/payment/ae.jpg',
       label: 'American Express'
