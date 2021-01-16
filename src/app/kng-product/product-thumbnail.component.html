@@ -19,8 +19,8 @@
 
 
 		<mdc-card-primary-action [routerLink]="['/store',store, departement,'products',product.sku,product.title]">
-			<mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
-				<img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
+			<mdc-card-media [square]="true" [ngStyle]="bgStyle" class="media ">
+				<!-- <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" /> -->
 
 				<div class="product-available">
 					non disponible
