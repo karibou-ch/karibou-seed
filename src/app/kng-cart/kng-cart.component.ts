@@ -20,6 +20,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { MetricsService, EnumMetrics } from '../common/metrics.service';
 import { StripeService } from 'ngx-stripe';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -29,12 +30,7 @@ import { StripeService } from 'ngx-stripe';
 })
 export class KngCartComponent implements OnInit, OnDestroy {
 
-
-  //
-  // TODO remove this ASAP if not needed
-  // if(['visa','mastercard','american express'].indexOf(gateway.label)!==-1){
-  //   this.cartConfig.gateway.label=gateway.label+" (3.0% aujourd'hui offert)";
-  // }
+  private _sharedCart: string;
 
   store: string;
   shops: Shop[];
@@ -48,8 +44,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
   hasOrderError = false;
   noshippingMsg: string;
   subscription;
+  shipping: any;
   shippingTime;
   shippingNote: string;
+  shippingDiscount: string;
   showInfoAmount: boolean;
   showInfoFees: boolean;
   amountReserved: number;
@@ -74,7 +72,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_collect: 'collect',
       cart_info_total: 'Total provisoire',
       cart_info_subtotal: 'Sous total',
-      cart_info_shipping: 'Livraison',
+      cart_info_shipping: 'Livraison 100% cycliste',
+      cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
+      cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
       cart_info_payment: 'Méthode de paiement',
       cart_info_discount: 'Rabais',
       cart_info_limit: `En raison de la situation actuelle, nos créneaux de livraison sont tous occupés.
@@ -83,10 +83,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Merci beaucoup pour votre compréhension.
        <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
-      cart_info_service_k: `Le service karibou.ch est de <span class=" ">5%</span>
-        <a class="more small">[commission]</a>`,
-      cart_info_service_k_plus: `Notre politique des prix est transparente. Le prix du produit est fixé par le commerçant,
-       la majoration nous permet de rétribuer notre équipe. <span class="pink">🤗</span></span>`,
+      cart_info_service_k: `Le service karibou.ch <span class=" ">5%</span>
+        <a class="more">- détails</a>`,
+      cart_info_service_k_plus: `Le service Karibou contribue à vous proposer un service personnalisé, le plus écologique et éthique possible`,
       cart_remove: 'enlever',
       cart_modify: 'Modifier',
       cart_discount_info: 'Rabais commerçant',
@@ -99,6 +98,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant de',
       cart_amount_2: 'pour permettre des modifications de commande (prix au poids, ou ajout de produits).',
       cart_nextshipping: 'Livraison',
+      cart_shared_title1: 'Vous utilisez un panier partagé',
+      cart_shared_title2: 'Identifiez-vous pour partager vos modifications!',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_order: 'Commander pour',
@@ -107,7 +108,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_collect: 'collect',
       cart_info_total: 'Provisional total',
       cart_info_subtotal: 'Subtotal',
-      cart_info_shipping: 'Shipping',
+      cart_info_shipping: 'shipping guaranteed <span class="bold">200%</span> ecological ',
+      cart_info_shipping_discount: 'From <b>_AMOUNT_</b> chf of purchase, you get delivery to your door for <b>_DISCOUNT_</b> !',
+      cart_info_shipping_applied: 'You get a delivery discount!',
       cart_info_payment: 'Payment method',
       cart_info_discount: 'Discount',
       cart_info_limit: `Due to the current situation, our delivery slots are all full.
@@ -115,9 +118,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
        new delivery windows become available. Thank you very much for your understanding.
        <p>We do deliver every day from Tuesday to Friday and we schedule orders for 6 days in advance only.
        Every morning you will see the next delivery window.</p>`,
-      cart_info_service_k: 'Your contribution for our service is  <span class="gray ">5%</span> <a class="more small">[about our fees]</a>',
-      cart_info_service_k_plus: `Our pricing policy is transparent. Price of the product is set by the retailer.
-       A fair fee allows us to remunerate our team <span class="pink">🤗</span>`,
+      cart_info_service_k: 'Your contribution for our service is  <span class="gray ">5%</span> <a class="more">- about our fees</a>',
+      cart_info_service_k_plus: `Our fees contributes to offer you a personalized, ecological and ethical service.`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
       cart_discount: 'discount',
@@ -129,6 +131,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve the amount of',
       cart_amount_2: 'to allow order changes (price by weight, or addition of products).',
       cart_nextshipping: 'Next delivery',
+      cart_shared_title1: 'You are using a shared basket',
+      cart_shared_title2: 'You must be logged to share your changes.',
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
       cart_order: 'Order now  for ',
@@ -152,6 +156,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       img: '/assets/img/payment/visa.jpg',
       label: 'VISA'
     },
+    'amex': {
+      img: '/assets/img/payment/ae.jpg',
+      label: 'American Express'
+    },
     'american express': {
       img: '/assets/img/payment/ae.jpg',
       label: 'American Express'
@@ -172,6 +180,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    public $dom: DomSanitizer,
     public $i18n: i18n,
     public $loader: LoaderService,
     public $cart: CartService,
@@ -193,6 +202,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // FIXME currently only one shipping time!
     this.shippingTime = Object.keys(this.config.shared.hub.shippingtimes)[0];
     this.shippingTime = this.config.shared.hub.shippingtimes[this.shippingTime];
+    this.shipping = this.config.shared.shipping;
 
     this.user = loader[1];
     this.shops = loader[3];
@@ -210,7 +220,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
     }
 
-    const cartId = this.$route.snapshot.paramMap.get('name');
+    const cart = this.$route.snapshot.paramMap.get('name');
+    if(cart !== 'default') {
+      this._sharedCart = cart;
+    }
+    
 
   }
 
@@ -226,25 +240,16 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return this.hub.siteName.image;
   }
 
-
-  // FIXME remove repeated code
-  getNoShippingMessage() {
-    const currentShippingDay = this.$cart.getCurrentShippingDay();
-
-    //
-    // check window delivery
-    if (currentShippingDay &&
-      this.currentRanks[currentShippingDay.getDay()] > this.currentLimit) {
-      return this.$i18n[this.locale].nav_no_shipping_long;
-    }
-
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
-    return noshipping && noshipping.message[this.locale];
+  get sharedCart(){
+    const uuid = this.$cart.getCID();    
+    return this.$dom.bypassSecurityTrustUrl(window.location.host + '/store/' + this.store + '/cart/' + uuid);
   }
 
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if(this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
 
@@ -261,6 +266,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
         // set the stripe key
         if (this.config.shared && this.config.shared.keys) {
           this.$stripe.setKey(this.config.shared.keys.pubStripe);
+          this.shipping = this.config.shared.shipping;
         }
       }
       // emit signal for user
@@ -283,14 +289,16 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // compute available discount and delta to get one
       this.computeDiscount();
       this.noshippingMsg = this.getNoShippingMessage();
+      this.buildDiscountLabel();
 
+      console.log('--- DBG shipping',this.shipping)
     }, error => {
       console.log('loader-update', error);
     });
 
     //
     // load cart from server to limit Cart Sync Issue
-    this.$cart.load();
+    this.$cart.load(this._sharedCart);
 
     //
     // on open page => force scroll to top
@@ -311,6 +319,28 @@ export class KngCartComponent implements OnInit, OnDestroy {
   add(item: CartItem, variant?: string) {
     this.$cart.add(item, variant);
     this.computeDiscount();
+  }
+
+  buildDiscountLabel() {
+    const address = this.currentShipping();
+    const price = this.$cart.estimateShippingFees(address);
+    const dA = this.$cart.hasShippingReduction();
+    const dB = this.$cart.hasShippingReductionB();
+    const label = this.i18n[this.locale]['cart_info_shipping_discount'];
+
+    //
+    // Maximum discount
+    if(dB) {
+      return this.shippingDiscount = this.i18n[this.locale]['cart_info_shipping_applied'];
+    //
+    // Minimum discount
+    } else if (dA) {
+      return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',price - this.shipping.priceB);
+    //
+    // Missing amount
+    } else {
+      return  this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountA).replace('_DISCOUNT_',price - this.shipping.priceA);
+    }    
   }
 
   createPaymentConfirmation(order: Order) {
@@ -572,10 +602,38 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
 
+  // FIXME remove repeated code
+  getNoShippingMessage() {
+    const currentShippingDay = this.$cart.getCurrentShippingDay();
+
+    //
+    // check window delivery
+    if (currentShippingDay &&
+      this.currentRanks[currentShippingDay.getDay()] > this.currentLimit) {
+      return this.$i18n[this.locale].nav_no_shipping_long;
+    }
+
+    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
+    return noshipping && noshipping.message[this.locale];
+  }
+
+
   goBack(): void {
     this.$router.navigate(['../home'], { relativeTo: this.$route });
   }
 
+
+  hasShippingDiscount() {
+    return this.$cart.hasShippingReduction();
+  }
+
+  hasShippingDiscountB() {
+    return this.$cart.hasShippingReductionB();
+  }
+
+  isSharedCart() {
+    return !!this._sharedCart;
+  }
 
   isDayAvailable() {
     const day = this.$cart.getCurrentShippingDay();

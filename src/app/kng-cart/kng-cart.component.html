@@ -5,10 +5,21 @@
     <h3 class="primary-text" i18n>{{i18n[locale].cart_nextshipping}} <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b></h3>
     <hr/>
   </section>
+
+  <!-- PANIER PARTAGER -->
+  <section [hidden]="!isSharedCart()" class="block-cart">
+    <h2 i18n>{{i18n[locale].cart_shared_title1}} <span class="material-icons">favorite</span>
+    </h2>
+    <h3 class="primary-text" [hidden]="user.isAuthenticated()">
+      {{i18n[locale].cart_shared_title2}}
+    </h3>
+  </section>
   
   <!-- VOTRE PANIER -->
   <section [hidden]="!items.length">
-    <h3 i18n>{{config?.shared.hub.checkout.title[$i18n.locale]}}</h3>
+    <h3 i18n>{{config?.shared.hub.checkout.title[$i18n.locale]}}  
+      <a  [href]="sharedCart" target="_new">...</a>    
+    </h3>
     <!-- <h3 class="primary-text" i18n *ngIf="!noshippingMsg; else noShipping">
       {{i18n[locale].cart_nextshipping}} 
       <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
@@ -91,8 +102,8 @@
       </mdc-list-item-graphic>
   
       <mdc-list-item-meta (click)="showInfoFees=!showInfoFees">
-        <div class="info"><span [innerHtml]="i18n[locale].cart_info_service_k"></span> &nbsp;</div>
-        <div class="price gray" >{{currentServiceFees()|currency:'CHF'}}</div>
+        <div class="info gray-1"><span [innerHtml]="i18n[locale].cart_info_service_k"></span> &nbsp;</div>
+        <div class="price gray-1" >{{currentServiceFees()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>
 
@@ -123,7 +134,7 @@
 
   <div class="block-warning" *ngIf="noshippingMsg">
     <i class="material-icons">info</i> {{noshippingMsg}} 
-</div>
+  </div>
 
   <!-- NOT LOGGED -->
   <div class="order-login" [hidden]="user.isAuthenticated()||!items.length">
@@ -150,7 +161,7 @@
       </p>
       <div class="profile-action"  >
         <button (click)="selectAddressIsDone = false;">
-          <mdc-icon class="pink">map</mdc-icon>
+          <mdc-icon class="primary-on-text">map</mdc-icon>
           {{i18n[locale].cart_modify}} 
         </button>
       </div>      
@@ -170,7 +181,7 @@
           <strong class="text-capitalize">{{address.name}}</strong> {{address.note}}
         </mdc-list-item-text>                  
         <mdc-list-item-meta>
-          <span [class.bold]="isSelectedAddress(address)">
+          <span [class.bold]="isSelectedAddress(address)" class="gray small">
           Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</span>
         </mdc-list-item-meta>        
       </mdc-list-item>
@@ -201,7 +212,7 @@
       <!-- NEW ADDRESS -->
       <div class="profile-action"  >
         <button [routerLink]="['/store/'+store+'/me/login-or-address']">
-          <mdc-icon class="pink">map</mdc-icon>
+          <mdc-icon class="primary-on-text">map</mdc-icon>
           {{$i18n[locale].cart_address_add}} 
         </button>
       </div>
@@ -230,7 +241,7 @@
       </p>
       <div class="profile-action"  >
         <button (click)="selectPaymentIsDone = false;">
-          <mdc-icon class="pink">payment</mdc-icon>
+          <mdc-icon class="primary-on-text">payment</mdc-icon>
           {{i18n[locale].cart_modify}} 
         </button>
       </div>
@@ -261,24 +272,10 @@
       <!-- ADD PAYMENT -->
       <div class="profile-action"  >
         <button [routerLink]="['/store/'+store+'/me/login-or-payment']">
-          <mdc-icon class="pink">payment</mdc-icon>
+          <mdc-icon class="primary-on-text">payment</mdc-icon>
           {{$i18n[locale].cart_payment_add}} 
         </button>
       </div>
-      <!-- 
-      <mdc-list-item [routerLink]="['/store/'+store+'/me/login-or-payment']" >
-        <mdc-list-item-graphic class="kng-payment">
-          &nbsp;
-        </mdc-list-item-graphic>
-        <mdc-list-item-text secondaryText="visa, mastercard, american express">
-          {{$i18n[locale].cart_payment_add}} 
-        </mdc-list-item-text>
-        <mdc-list-item-meta class="icon">
-          <mdc-icon class="gray">note_add</mdc-icon>
-        </mdc-list-item-meta>
-        
-      </mdc-list-item>
-      -->
     </mdc-list>    
  
   </div>
@@ -288,7 +285,7 @@
     <div class="cart-flow ">3</div>
     <section class="header" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.hub.checkout.resume[$i18n.locale]">
-   </section>  
+    </section>  
 
     <!-- TAX & SHIPPING -->
     <mdc-list avatar="true" [interactive]="false">
@@ -299,14 +296,19 @@
         </mdc-list-item-meta>
       </mdc-list-item>      
 
+      <!--- SHIPPING DISCOUNT -->
+      <mdc-list-item class="shipping-discount" >
+        <div class="info"  [innerHtml]="shippingDiscount"></div>
+      </mdc-list-item>
+
       
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
-          <div class="info">{{i18n[locale].cart_info_shipping}}</div>
-          <div class="price" >{{$cart.shipping()|currency:'CHF'}}</div>
+          <div class="info" [innerHtml]="i18n[locale].cart_info_shipping"></div>
+          <div class="price" [class.pink]="hasShippingDiscountB()">{{$cart.shipping()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>
-        
+      
       <mdc-list-item  [hidden]="getTotalDiscount()==0">
         <mdc-list-item-meta>
           <div class="info" i18n>{{i18n[locale].cart_info_discount}}</div>
