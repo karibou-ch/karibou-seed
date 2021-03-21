@@ -108,7 +108,9 @@ export class AddressComponent implements OnDestroy{
   }
 
   ngOnDestroy() {
-    this.collector$.unsubscribe();
+    if(this.collector$) {
+      this.collector$.unsubscribe();
+    }
   }
 
   get locale() {

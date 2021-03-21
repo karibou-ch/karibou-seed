@@ -50,7 +50,6 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
       this.lockedHUB = this.config.shared.hub.domainOrigin;
     }
-
     //
     // validate shipping state
     this.noshippingMsg = this.getNoShippingMessage();

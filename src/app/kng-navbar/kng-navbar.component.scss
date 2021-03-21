@@ -3,7 +3,7 @@
 
 mdc-drawer{
   &.mdc-drawer{
-    width: 350px!important;
+    width: 300px!important;
   }
   
   a{
@@ -124,6 +124,11 @@ div.navbar{
     margin-left: auto;  
     margin-top: 135px;
 
+    @media (min-width:1440px) {
+      max-width: 1170px;
+      width: 1170px;        
+    }
+
     @media (min-width:1024px) {
       max-width: 940px;
       width: 940px;        
@@ -190,6 +195,7 @@ div.navbar{
       max-width: 24px;
       margin-left: 2px;
       margin-top: 4px;
+      transform: translateX(6px) translateY(-1px);
     }
     //
     // override firefox *:any-link{

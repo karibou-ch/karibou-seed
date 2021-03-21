@@ -7,24 +7,33 @@
 </kng-nav-marketplace>
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
-  <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/']">
+  <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/store',store,'home']">
   </mdc-drawer-header>
   <mdc-drawer-content>
 
     <mdc-list-group subheader="">
       <mdc-list>
+        <mdc-list-item [routerLink]="['/store',store,'shops','list']">
+          <span i18n>{{$i18n.label().nav_store_shops_list}}</span>
+        </mdc-list-item>
+
         <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
           <!--<mdc-icon mdcListItemGraphic class="">account_box</mdc-icon>--><span i18n>{{$i18n.label().nav_account}}</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-          <!--<mdc-icon mdcListItemGraphic class="">account_circle</mdc-icon>--><span i18n>{{$i18n.label().nav_login}}</span>
+          <span i18n>{{$i18n.label().nav_login}}</span>
         </mdc-list-item>
+
         <mdc-list-item>
           {{$i18n.label().nav_i18n}}
           <mdc-radio class="radio-primary align-right" value="en" [checked]="$i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>En
           <mdc-radio class="radio-primary" value="fr" [checked]="$i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>Fr
         </mdc-list-item>
 
+        <mdc-list-item *ngFor="let elem of getMenuItems('links')" [routerLink]="['/store',store,elem.url]">
+          <span [innerHtml]="elem.name[locale]"></span>
+        </mdc-list-item>
+        <mdc-list-divider></mdc-list-divider>
 
       </mdc-list>
     </mdc-list-group>
@@ -52,7 +61,7 @@
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
-        <img class="icon" src="/assets/img/k-puce-light.png" (click)="navigation.open = ! navigation.open" />
+        <img class="icon" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
         <mdc-top-app-bar-title class="home"  (click)="openCalendar(marketplace,true)">
           {{hubTitle}}      
           <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>

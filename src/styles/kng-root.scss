@@ -8,7 +8,10 @@ body.shop .mdc-content{
 }
 
 @media screen and (min-width:1024px){
+  body.shops .navigation,
   body.shop .navigation{
     display: none;
   }  
+
+
 }

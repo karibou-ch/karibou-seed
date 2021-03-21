@@ -240,8 +240,10 @@ body{
 .lime             {color:         lime!important;}
 .red              {color:         red!important;}
 .gray             {color:         #ccc!important;}
+.gray-1           {color:         #999!important;}
 .black            {color:         black!important;}
 .pink             {color:         #da1c5c!important;}
+.pink             {color:         var(--mdc-theme-secondary)!important;}
 .light            {color:           #aaa!important;}
 .white            {color:         white!important;}
 .gold            {color:         gold!important;}

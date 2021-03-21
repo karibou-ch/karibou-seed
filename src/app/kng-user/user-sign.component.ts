@@ -7,6 +7,7 @@ import { KngNavigationStateService, i18n } from '../common';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { Config, User, UserService } from 'kng2-core';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
 @Component({
   selector: 'kng-user-sign',
@@ -135,7 +136,8 @@ export class UserSignComponent {
     private $fb: FormBuilder,
     private $location: Location,
     private $nav: KngNavigationStateService,
-    private $snack: MdcSnackbar
+    private $snack: MdcSnackbar,
+    private $metric: MetricsService
   ) {
     //
     // initialize HTML content (check on route definition)
@@ -387,6 +389,7 @@ export class UserSignComponent {
     };
     this.$user.register(user).subscribe(
       (user) => {
+        this.$metric.event(EnumMetrics.metric_account_create);
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {
           timeoutMs: 9000
         });

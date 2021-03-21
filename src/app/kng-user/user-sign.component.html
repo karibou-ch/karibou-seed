@@ -12,7 +12,7 @@
     <div class="logo" 
          [ngStyle]="getTaglineLogo()"
          [class.small]="askAction=='signup'"
-         [routerLink]="'/store/artamis/home'" 
+         [routerLink]="['/store',getHubSlug(),'home']" 
          [hidden]="askAction=='payment'||askAction=='address'"></div>
 
     <!-- LOGIN -->
