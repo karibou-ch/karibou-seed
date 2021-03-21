@@ -59,6 +59,8 @@ export class ProductListComponent implements OnInit {
   childSub$;
   childMap: any;
   relative = './';
+  scrollDirection: number;
+  scrollToCategory: string;
 
   options: {
     hub?: string;
@@ -97,7 +99,12 @@ export class ProductListComponent implements OnInit {
     this.user = loader[1];
     this.category.categories = loader[2];
     this.scrollCallback = this.getNextPage.bind(this);
+    this.scrollDirection = 0;
     ProductListComponent.SCROLL_CACHE = 0;
+  }
+
+  get store(){
+    return this.config && this.config.shared.hub.slug;
   }
 
   ngOnDestroy() {
@@ -135,7 +142,6 @@ export class ProductListComponent implements OnInit {
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.dialog.nativeElement.classList.remove('fadeout');
-
   }
 
   //
@@ -146,7 +152,10 @@ export class ProductListComponent implements OnInit {
     if(diff < 100) {
       return;
     }
-    this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
+    setTimeout(()=>{
+      this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
+    },40);
+    
   }
 
   clean() {
@@ -221,30 +230,29 @@ export class ProductListComponent implements OnInit {
       // update child only after products
       // TODO     .pipe(takeWhile(() => !this.destroyed))
 
-      this.childSub$ = this.$route.params.subscribe(param => {
-        this.filterVendor = null;
-        if (param['child']) {
-          this.relative = '../';
-          this.toggleChild(param['child']);
-        } else if (this.category.current.child[0]) {
-          this.relative = './';
-          this.toggleChild(this.getChildCategory(this.category.current)[0].name);
-        }
-      });
+      // this.childSub$ = this.$route.params.subscribe(param => {
+      //   // this.filterVendor = null;
+      //   if (param['child']) {
+      //     this.relative = '../';
+      //     this.scrollToCategory = this.filterChild = (param['child']);          
+      //   } else if (this.category.current.child[0]) {
+      //     this.relative = './';
+      //     this.scrollToCategory = this.filterChild = (this.getChildCategory(this.category.current)[0].name);
+      //   }
+      // });
 
 
       //
       // set vendors after toggle of child category
       this.setVendors(this.products);
       this.cdr.markForCheck();
-      // this.restoreScroll();
     });
   }
 
   setProducts() {
     return this.cache.products = this.products.filter(product => {
       const cat = !this.filterChild || product.belong.name === this.filterChild;
-      return cat;
+      return cat || true;
     });
   }
 
@@ -272,7 +280,7 @@ export class ProductListComponent implements OnInit {
     }
 
     this.filterChild = child;
-    this.setProducts();
+    //this.setProducts();
   }
 
 
@@ -290,6 +298,13 @@ export class ProductListComponent implements OnInit {
     ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
+  scrollTo($event, name) {
+    this.scrollToCategory = name;
+    this.filterChild = name;
+    
+    $event.stopPropagation();
+    $event.preventDefault();
+  }
 
   //
   // sort products by:
