@@ -17,6 +17,7 @@ import { KngNavigationStateService, i18n } from '../common';
 export class KngWelcomeComponent implements OnInit {
 
   photos = [];
+  exited: boolean;
 
   K_BRAND = '/assets/img/k-brand-lg.png';
   //
@@ -40,15 +41,15 @@ export class KngWelcomeComponent implements OnInit {
   constructor(
     public $i18n: i18n,
     private $navigation: KngNavigationStateService,
-    private $route: ActivatedRoute,
     private $router: Router,
-    private $photo: PhotoService,
-    private $cdr: ChangeDetectorRef
+    private $route: ActivatedRoute,
+    private $photo: PhotoService
   ) {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
+    this.exited = false
     // Object.assign(this.config, loader[0]);
-
+    
     this.$photo.shops({active: true, random: 40}).subscribe((photos: any) => {
       // remove underconstruction shops with missing photos //
       this.photos = photos.filter(s => s.photo).map(shop => shop.photo.fg);
@@ -109,8 +110,14 @@ export class KngWelcomeComponent implements OnInit {
   }
 
   getTaglineImage() {
-    const defaultImg = (this.config.shared.hub && this.config.shared.hub.tagLine) ?
-          this.config.shared.hub.tagLine.image : this.K_BRAND;
+    if(!this.config.shared || !this.config.shared.tagLine) {
+      return {};
+    }
+    let defaultImg = this.config.shared.tagLine.image;
+    if(this.config.shared.hub && this.config.shared.hub.tagLine) {
+      defaultImg = this.config.shared.hub.tagLine.image;
+    }
+
 
     const bgStyle = 'url(' + defaultImg + ')';
     return {'background-image': bgStyle};
@@ -136,6 +143,7 @@ export class KngWelcomeComponent implements OnInit {
     if(href && href.length > 2 && href.indexOf('http') === -1) {
       $event.stopPropagation();
       $event.preventDefault();
+      this.exited = true;
       this.$router.navigateByUrl(href);
       return;
     }

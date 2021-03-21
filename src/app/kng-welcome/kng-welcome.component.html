@@ -4,19 +4,19 @@
 </ng-container>
 <ng-template #loadingTpl>...</ng-template> -->
 <div class="container top">
-  <div class="welcome">
+  <div class="welcome" [class.exited]="exited">
     <div class="logo" [ngStyle]="getTaglineImage()"></div>
     <!-- WELCOME -->
     <div class="inner" >
       <h1>{{getTagline('t')}}</h1>
-      <div class="i18n-switch" (click)="doLangSwitch()">
-        <span>{{_('action_lang_switch')}}</span>
-      </div>
       <h2 [hidden]="!getTagline('h')" 
         [innerHtml]="getTagline('h')">
       </h2>
       <div [hidden]="!getTagline('p')" 
             [innerHtml]="getTagline('p')">
+      </div>
+      <div class="i18n-switch" (click)="doLangSwitch()">
+        <span>{{_('action_lang_switch')}}</span>
       </div>
       <div class="postalcode" [hidden]="isValidPostalCode || true">
         <p>Entrez votre code postal afin de valider votre zone de livraison</p>
@@ -36,7 +36,7 @@
   <div class="how-it-works" [innerHTML]="getAbout('p')">
               
   </div>
-  <div class="favorite-products" [ngStyle]="getAboutImage()">
+  <div class="favorite-products" hidden [ngStyle]="getAboutImage()">
     <div class="elem" [innerHTML]="getAbout('h')"></div>
     <!-- <div class="elem"></div> -->
   </div>
