@@ -1,17 +1,10 @@
-<div class="bottom-actions" >
+<div class="bottom-actions" >  
   <div class="fabs">
-    <mdc-chip (click)="doPreferred()" class="bookmark" >
-      <mdc-chip-icon leading>bookmark</mdc-chip-icon>
-      <mdc-chip-text>{{i18n[locale].bookmark}}</mdc-chip-text>
-    </mdc-chip>
-    
-    <button mdc-fab  extended label="MENU"
+    <button mdc-fab  extended label="MENU" [hidden]="show"
       (click)="doToggle()">
-      <mdc-icon >{{show?'close':'menu'}}</mdc-icon>
+      <mdc-icon >menu</mdc-icon>
     </button>  
-
-  </div>
-  
+  </div>  
 
   <div class="search">
     <i class="left material-icons">search</i>
@@ -27,8 +20,12 @@
 </div>  
 
 <div class="results" [hidden]="!show">
+  <button  (click)="doToggle()" class="close">
+    <mdc-icon >{{show?'close':'menu'}}</mdc-icon>
+  </button>  
+
   <!-- CATS -->
-  <ul class="col">
+  <ul class="col" [hidden]="products.length">
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
@@ -56,6 +53,9 @@
             </mdc-list-item-secondary>
         </mdc-list-item-text>
   
+      </mdc-list-item>
+      <mdc-list-item>
+        <mdc-list-item-text >.</mdc-list-item-text>
       </mdc-list-item>
     </mdc-list>
 

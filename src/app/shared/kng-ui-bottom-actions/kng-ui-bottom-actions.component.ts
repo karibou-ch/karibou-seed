@@ -54,9 +54,22 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     private $metric: MetricsService,
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
-  ) { }
+  ) { 
+    this.exited = true;
+  }
 
   ngOnInit() {
+    // FIXME release subscribe
+    this.$navigation.search$().subscribe((keyword)=>{
+      if(keyword == 'favoris') {
+        this.doClear();
+        this.doPreferred();
+        return;
+      }
+      this.search.nativeElement.value = keyword;
+      this.doInput(keyword);
+    });
+
     this.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
       return c.active && (c.type === 'Category');
     });
