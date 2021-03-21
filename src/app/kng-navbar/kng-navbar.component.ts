@@ -96,14 +96,17 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.primary = [];
     this.topmenu = [];
 
+    // K. image
+    this.Kimage = '/assets/img/k-puce-light.png';
+
     // FIXME remove code repeat
     const hub = this.config.shared.hub.slug;
     if (hub) {
       this.currentRanks = this.config.shared.currentRanks[hub] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+      this.Kimage = this.config.shared.hub.logo || this.Kimage;
     }
-
 
   }
 
@@ -112,13 +115,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // this.route$.unsubscribe();
     // this.$cart.unsubscribe();
     // this.$user.unsubscribe();
-    this.subscription.unsubscribe();
+    if(this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnInit() {
 
-    // K. image
-    this.Kimage = this.config.shared.tagLine.image;
 
     // HUB title
     this.hubTitle = this.config.shared.hub.siteName[this.locale];
@@ -164,7 +167,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       if (emit.config) {
         this.detectIOS();
         Object.assign(this.config, emit.config);
-        this.$navigation.updateConfig(this.config);
+        // this.$navigation.updateConfig(this.config);
       }
       //
       // update cart
@@ -233,6 +236,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  getMenuItems(group: string) {
+    return this.$navigation.getMenuItems(group);
+  }
+
+
   getTagline(key) {
     if (!this.config || !this.config.shared.tagLine[key]) {
       return '';
@@ -299,7 +307,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // if not mobile then route to HOME
     if (check) {
       if (!this.$navigation.isMobile() ) {
-        return this.$router.navigate(['/']);
+        return this.$router.navigate(['/store',this.store,'home']);
       }
     }
 

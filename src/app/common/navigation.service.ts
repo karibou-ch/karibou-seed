@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { Config, ConfigService, ShopService } from 'kng2-core';
 
 import { filter } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
 // import { i18n } from './i18n.service';
 
 /**
@@ -24,6 +25,7 @@ export class KngNavigationStateService  {
   private agent: string;
   private cached: any = {};
 
+  private _search$: Subject<string>;
 
   constructor(
     private $config: ConfigService,
@@ -32,6 +34,9 @@ export class KngNavigationStateService  {
     private $router: Router
   ) {
     this.menu = {};
+
+    this._search$ = new Subject();
+
     //
     // init common parameters
     this.agent = navigator.userAgent || navigator.vendor || window['opera'];
@@ -42,10 +47,19 @@ export class KngNavigationStateService  {
       .pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
           this.timestamp = Date.now();
       });
+
+    this.$config.config$.subscribe(config =>{
+      this.updateConfig(config);
+    });
+      
   }
 
   back() {
     this.$location.back();
+  }
+
+  fireSearch(keyword: string) {
+    this._search$.next(keyword);
   }
 
   hasHistory() {
@@ -87,6 +101,10 @@ export class KngNavigationStateService  {
       }
       this.menu[menu.group].push(menu);
     });
+
+    if(!this.store && hub && hub.slug) {
+      this.store = hub.slug;
+    }
   }
 
   get HUBs() {
@@ -105,7 +123,7 @@ export class KngNavigationStateService  {
   //
   // FIXME default store is currently Geneva. What should be the exit plan ?
   get store() {
-    return this.currentStore || 'artamis';
+    return this.currentStore;
   }
 
   isMobile(): boolean {
@@ -145,4 +163,7 @@ export class KngNavigationStateService  {
     return this.cached[group];
   }
 
+  search$() {
+    return this._search$.asObservable();
+  }
 }

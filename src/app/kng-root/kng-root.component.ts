@@ -16,8 +16,9 @@ export class KngRootComponent implements OnInit {
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
   ) {
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
+    // const loader = this.$route.snapshot.data.loader;
+    // this.config = loader[0];
+    // console.log('---root 0',this.config);
   }
 
   ngOnInit() {

@@ -3,6 +3,7 @@ import { SwUpdate } from '@angular/service-worker';
 
 import { MetricsService } from './common/metrics.service';
 import { i18n } from './common';
+import { LoaderService } from 'kng2-core';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent {
   };
 
   constructor(
+    private $loader: LoaderService,
     private $i18n: i18n,
     private $update: SwUpdate,
     private $mterics: MetricsService
@@ -46,6 +48,10 @@ export class AppComponent {
         this.$update.activateUpdate().then(() => document.location.reload(true));
       }
     });
+
+    //
+    // load config on boot
+    this.$loader.ready().toPromise().then();
 
   }
 }
