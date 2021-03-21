@@ -12,11 +12,11 @@ div.footer{
   font-size: .9rem;
 
   background-image: url(/assets/img/k-footer.png);
-  background-position-y: top;
+  background-position-y: 8%;
   background-position-x: 40%;
   background-repeat: repeat-x;
-  background-color: white;
-  padding-top: 110px;
+  background-color: #f3f3f3;
+  padding-top: 120px;
 
 
   div.main{
@@ -38,7 +38,7 @@ div.footer{
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
-        border-bottom:5px dotted var(--mdc-theme-primary);      
+        border-bottom:3px dotted var(--mdc-theme-primary);      
       }
       .elem{
         flex:1 0 calc(33% - 40px);
@@ -65,12 +65,12 @@ div.footer{
           padding-left: 0;
           margin-top: 0;
           li{
-            line-height: 1.8em;
+            line-height: 1.9em;
           }
           a{
             text-decoration: none;
-            color: $mdc-theme-secondary-text;
-            color: var(--mdc-theme-secondary-text);
+            color: var(--mdc-theme-primary);
+            font-size: 120%;
           }          
         }
       }
