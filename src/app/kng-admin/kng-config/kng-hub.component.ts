@@ -213,6 +213,7 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     }, (err) => this.$snack.open(err.error, 'OK'));
 
     this.currentHub.description = {fr: null, en: null, de: null};
+    this.currentHub.logo = this.currentHub.logo || null;
   }
 
 
@@ -246,7 +247,6 @@ export class KngHUBComponent implements OnInit, OnDestroy {
       noshipping.from = format(<Date>noshipping.from);
       noshipping.to = format(<Date>noshipping.to);
     });
-
   }
 
   ngOnInit() {
@@ -281,7 +281,9 @@ export class KngHUBComponent implements OnInit, OnDestroy {
         this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
         return;
       }
-      this.onHubSave();
+
+      // FIXME remove timeout here
+      setTimeout(()=> this.onHubSave() ,1000);
     });
   }
 
@@ -290,9 +292,10 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     this.isReady = false;
     this.isLoading = true;
     this.$hub.save(this.currentHub).subscribe(
-      () => {
+      (hub) => {
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
+        Object.assign(this.config.shared.hub,hub);
         }, (err) => this.$snack.open(err.error, 'OK'),
       () => this.isLoading = false
     );

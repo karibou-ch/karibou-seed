@@ -143,7 +143,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
         //
         // spec: scrollTop; when open nested product we should scrollTop
-        try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
+        //try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
 
       });
 
