@@ -11,11 +11,11 @@ import { combineLatest } from 'rxjs';
 // https://www.instacart.com/whole-foods/aisles/594-bread
 
 @Component({
-  selector: 'kng-shops',
-  templateUrl: './kng-shops.component.html',
-  styleUrls: ['./kng-shops.component.scss']
+  selector: 'kng-shop',
+  templateUrl: './kng-shop.component.html',
+  styleUrls: ['./kng-shop.component.scss']
 })
-export class KngShopsComponent implements OnInit {
+export class KngShopComponent implements OnInit {
 
   user: User;
   config: Config;
@@ -26,7 +26,7 @@ export class KngShopsComponent implements OnInit {
   error: string;
   vendor: Shop = new Shop();
   products: Product[];
-  LIMITED_PRODUCTS = 35;
+  LIMITED_PRODUCTS = 70;
   ngStyleBck: any;
 
 //
@@ -59,6 +59,7 @@ export class KngShopsComponent implements OnInit {
     public $product: ProductService,
     public $route: ActivatedRoute
   ) {
+    document.body.classList.add('shop');
     const loader = this.$route.snapshot.data.loader;
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
@@ -80,8 +81,11 @@ export class KngShopsComponent implements OnInit {
     // this.$photo.shops({active:true,random:40}).subscribe((photos:any)=>{
     //   this.photos=photos.map(shop=>shop.photo.fg);
     // })
+    if(!this.urlpath) {
+      return;
+    }
+
     const options = {
-      _popular: true,
       available: true,
       shopname: this.urlpath
     };
@@ -108,7 +112,8 @@ export class KngShopsComponent implements OnInit {
       }).slice(0, this.LIMITED_PRODUCTS);
     }, error => {
       this.error = error.error;
-    });
+    });    
+
 
     //
     // FIXME remove ugly hack
@@ -133,5 +138,41 @@ export class KngShopsComponent implements OnInit {
 
   get locale() {
     return this.$i18n.locale;
+  }
+}
+
+
+@Component({
+  selector: 'kng-shops',
+  templateUrl: './kng-shops.component.html',
+  styleUrls: ['./kng-shops.component.scss']
+})
+export class KngShopsComponent extends KngShopComponent{
+
+  ngStyleBck: any;
+  shops: Shop[];
+
+  ngOnInit(){
+    this.ngStyleBck = {};
+    this.shops = [];
+    super.ngOnInit();
+    if(this.urlpath) {
+      return;
+    }
+
+    document.title = this.config.shared.hub.name;
+
+    this.$shop.shops$.subscribe(shops => {
+      this.shops = shops.filter(shop => shop.status);
+      this.shops.forEach(shop => {
+        this.ngStyleBck[shop.urlpath] = {
+          'background-image': this.bgGradient + 'url(' + shop.photo.fg + '/-/resize/400x/fb.jpg)'
+        }
+      });
+
+    });
+  }
+
+  loadOneShop(){
   }
 }
