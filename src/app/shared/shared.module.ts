@@ -21,6 +21,7 @@ import { KngHomeComponent } from '../kng-home/kng-home.component';
 
 import { ProductSwipeComponent,
          ProductListComponent,
+         ProductGroupedListComponent,
          ProductThumbnailComponent,
          ProductComponent,
          ProductTinyComponent} from '../kng-product';
@@ -34,6 +35,7 @@ import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 
 import { appRoutes } from './shared.routes';
 import { NgxStripeModule } from 'ngx-stripe';
+import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
 
 @NgModule({
   imports: [
@@ -58,6 +60,7 @@ import { NgxStripeModule } from 'ngx-stripe';
     KngUserReminderComponent,
     KngUiBottomActionsComponent,
     InfiniteScrollerDirective,
+    ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
     UcWidgetComponent,
@@ -77,9 +80,11 @@ import { NgxStripeModule } from 'ngx-stripe';
     ProductComponent,
     ProductTinyComponent,
     ProductListComponent,
+    ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    KngFeedbackComponent
+    KngFeedbackComponent,
+    KngProductLinkComponent
   ],
 })
 export class SharedModule {
