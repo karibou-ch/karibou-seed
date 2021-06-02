@@ -8,8 +8,12 @@
 
 
     <div class="kng-layout-card">
-      <kng-product-thumbnail [visibility]="visibility[category.slug]" [sku]="product.sku" [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor"
-        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index" class="">
+      <kng-product-thumbnail 
+        [visibility]="visibility[category.slug]" 
+        [sku]="product.sku" 
+        [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor"
+        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index" 
+        [ngClass]="getClassSize(product)">
       </kng-product-thumbnail>
       <div class="category" [hidden]="!visibility[category.slug] || !showMore" 
         [routerLink]="['category',category.slug]">

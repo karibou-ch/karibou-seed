@@ -145,6 +145,14 @@ export class ProductGroupedListComponent implements OnInit {
 
   }
 
+  getClassSize(product) {
+    const clazz = ['grid-small','grid-medium','grid-large'];
+    const image = product.photo.url;
+    // //ucarecdn.com/fdbdcd69-fcc2-4edb-8a85-d01c4fdde319/[-/crop/800x800/0,28/-/preview/]
+    const idx = (image.charCodeAt(15) - 47) % clazz.length;
+    return clazz[idx];
+  }
+
   ngOnDestroy() {
   }
 
