@@ -5,6 +5,10 @@
     <h3>{{$i18n[locale].home_feedback_title}}</h3>
 </kng-feedback>
 
+<!-- LINKS -->
+<kng-product-link [config]="config"></kng-product-link>
+
+
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="!hasContent('p',target)" 
     [class.cover]="hasBackgroundContent(target)" 
@@ -15,7 +19,6 @@
   </div>
 
   <div class="welcome" [innerHtml]="getContent('p',target)"></div>
-  <kng-product-link [config]="config"></kng-product-link>
   
 </div>
 <!-- <div class="home-header">
@@ -32,7 +35,7 @@
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
-<div class="toolbox home" [class.exited]="scrollDirection < -5 || scrollDirection > 15 || (!scrollDirection)">
+<div class="toolbox home" [class.exited]="scrollDirection < -5 || scrollDirection > 15 || (!scrollDirection) ">
   <mdc-chip-set choice >
     <mdc-chip (click)="scrollToSlug(category.slug)"
               [id]="'category-'+j"                    

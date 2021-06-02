@@ -553,8 +553,10 @@
   
   .kng-layout-card{
     display: flex!important;
-    justify-content: center;
-    justify-content: space-around;
+    justify-content: flex-start;
+    @media (max-width: 426px) {
+      justify-content: space-around;
+    }
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 

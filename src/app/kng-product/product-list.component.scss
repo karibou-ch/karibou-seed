@@ -136,7 +136,7 @@
     width: 10px;
     overflow-x: visible;
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1025px) {
       transform:none!important;
       left:calc( (100vw - 865px) / 2);
       top: 30px;
@@ -228,8 +228,7 @@
   padding: 0px 0;
 
   display: relative;
-  width: 85%;
-  max-width: 600px;
+  width: 95%;
   margin: auto;
   flex: 1;
   align-items: center;    

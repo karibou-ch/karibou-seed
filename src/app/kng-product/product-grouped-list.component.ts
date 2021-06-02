@@ -94,7 +94,6 @@ export class ProductGroupedListComponent implements OnInit {
 
     const nextSection = this.findNextSection(slug);
 
-    console.log('--- DBG scrollTo',nextSection);
     this.scrollElIntoView(nextSection);
     this.scrollPosition = 0;
   }

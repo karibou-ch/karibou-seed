@@ -60,6 +60,7 @@ kng-product-swipe{
         kng-product-thumbnail,
         .selected-card {
           width: 150px;
+          max-width: 150px;
           flex: 1 0 150px;
           margin: 0 6px;
           box-shadow: 0px 0px 20px #ddd;

@@ -46,7 +46,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   displaySlug: string;
   scrollDirection:number;
 
-
   //
   // gradient of background image
   bgGradient = `linear-gradient(

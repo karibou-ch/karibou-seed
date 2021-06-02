@@ -190,14 +190,11 @@
   .media{
     height: 9rem;
     background-color:#ddd;
-    @media (max-width: 426px) {
-      height: 7rem;
-    }
 
     background-repeat: no-repeat;
     background-size: cover;  
     background-position-y: 50%;
-    border-radius: 5px;  
+    border-radius: 12px;  
     transition: background-color .2s ease-in-out;
 
   }  
