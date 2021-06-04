@@ -287,7 +287,7 @@
       position: relative!important;
       margin: 50px 30px 20px;
       
-      @media (max-width: 426px) {
+      @media (max-width: 429px) {
         height: 270px;
         border-radius: 0px;  
         margin: 20px 40px;
@@ -521,7 +521,7 @@
     padding:10px 5px;
   }
 
-  @media (max-width:426px) {
+  @media (max-width:429px) {
     width: calc( 100% - 10px );
   }
   @media (max-width:320px) {
@@ -554,9 +554,6 @@
   .kng-layout-card{
     display: flex!important;
     justify-content: flex-start;
-    @media (max-width: 426px) {
-      justify-content: space-around;
-    }
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
@@ -568,14 +565,12 @@
       margin-bottom: auto;
       max-width: 163px;
 
-      @media (max-width: 426px) {
+      @media (max-width: 429px) {
         flex: 1 0;
         min-width: 29vw;
-        margin: 4px 4px 0;
+        margin: 4px 8px;
         flex: 0 0 49%;
         min-width: 39vw;
-        margin: 4px 0px 0;
-
       }
     }
   }

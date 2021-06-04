@@ -30,7 +30,7 @@ div.footer{
     margin-bottom: 0px;    
     .line{
       padding:2px 0;
-      @media screen and (max-width:426px){
+      @media screen and (max-width:429px){
         padding-left: 30px;
       }
       display:flex;
@@ -44,7 +44,7 @@ div.footer{
         flex:1 0 calc(33% - 40px);
         padding:20px;
         min-width: 200px;
-        @media screen and (max-width:426px){
+        @media screen and (max-width:429px){
           flex:1 0 calc(100% - 40px);
           padding:5px;
         }
@@ -55,7 +55,7 @@ div.footer{
           img {
             display: none;
           }
-          @media screen and (min-width:426px){
+          @media screen and (min-width:429px){
             text-align: right;            
           }
         }

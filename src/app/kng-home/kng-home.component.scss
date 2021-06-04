@@ -21,7 +21,7 @@ div.home-header{
     margin: 0;
     margin-top:0px;
     margin-bottom:30px;
-    box-shadow: 0px 2px 5px #eee;
+    -box-shadow: 0px 2px 5px #eee;
     overflow: hidden;
 
     >p,
@@ -40,7 +40,7 @@ div.home-header{
       &.left{
         text-align: left;
       }
-      @media screen and (max-width:426px){
+      @media screen and (max-width:429px){
         flex:0 1 auto;
       }
     }
@@ -115,7 +115,7 @@ div.home-header{
         img{
           height: 100%;          
         }
-        @media (max-width:426px) {
+        @media (max-width:429px) {
           max-width:100%;
           overflow: hidden;
           max-height: 230px;             
@@ -132,7 +132,7 @@ div.home-header{
       .left{
         flex: 1;
         max-width: 48%;        
-        @media (max-width:426px) {
+        @media (max-width:429px) {
           flex: 1 0 100%;
           max-width:100%;
           font-size:70%;
@@ -155,7 +155,7 @@ div.home-header{
           transform: scale(.9);    
           max-height: 200px;
           padding: 0;
-          @media (max-width:426px) {
+          @media (max-width:429px) {
             max-width:100%;
             font-size:70%;
             transform: none;    
@@ -170,7 +170,7 @@ div.home-header{
         padding: 20px;
         align-self: center;
         max-width: 45%;        
-        @media (max-width:426px) {
+        @media (max-width:429px) {
           max-width:100%;
         }
       }
@@ -356,7 +356,7 @@ div.product-container{
   padding-top: 0;
   padding: 0;
   width: 100%;  
-  @media (max-width:426px) {
+  @media (max-width:429px) {
     width: 100vw;
     padding: 0;
     margin-left: -3px;
@@ -372,6 +372,10 @@ div.product-container{
 
   section{
     text-align:left;
+    @media (max-width:429px) {
+      text-align:center;
+    }
+
     padding-top:10px;
     h2,h3{
       font-weight: 500;
@@ -405,7 +409,7 @@ div.product-container{
   .kng-layout-card{
     background-color: #fff;
     padding: 10px 10px 0px 10px;    
-    @media (max-width: 426px) {
+    @media (max-width: 429px) {
       padding: 0 10px;
       width: calc( 100% - 20px);
     }
@@ -414,7 +418,7 @@ div.product-container{
   .kng-layout-card{
     div.category,
     kng-product-thumbnail{
-      @media (max-width: 426px) {
+      @media (max-width: 429px) {
       }
     }
     div.category{

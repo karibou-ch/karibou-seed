@@ -50,10 +50,10 @@
     min-width: 100%;
     display: flex!important;
     justify-content: flex-start;
-    @media (max-width: 426px) {
-      justify-content: space-around;      
+    @media (max-width: 429px) {
+      justify-content: center;      
     }
-    
+
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
@@ -64,7 +64,7 @@
       margin: 8px;
       margin-bottom: 0;
       max-width: 163px;
-      @media (max-width: 426px) {
+      @media (max-width: 429px) {
         flex: 1 0;
         min-width: 29vw;
         margin: 4px 4px 0;

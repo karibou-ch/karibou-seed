@@ -123,6 +123,7 @@ div.navbar{
     margin-right: auto;
     margin-left: auto;  
     margin-top: 135px;
+    background-color: white;
 
     @media (min-width:1440px) {
       max-width: 1170px;
@@ -139,7 +140,7 @@ div.navbar{
       width: 100%;      
     }
 
-    @media (max-width: 426px) {
+    @media (max-width: 429px) {
       padding: 0px;
       margin-top: 105px;
       min-width: 326px;
