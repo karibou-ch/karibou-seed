@@ -1,10 +1,13 @@
 <div class="content">
-  <div class="shops">
-    <div *ngFor="let shop of shops" [routerLink]="['../',shop.urlpath]" class="shop">
-      <img [src]="ngStyleImg[shop.urlpath]" />
-      <div class="description">
-        <span>{{shop.name}}</span>
-      </div>
-    </div>
-  </div>
+
+  <mdc-image-list textProtection class="standard-image-list image-list--rounded-corners">
+    <mdc-image-list-item *ngFor="let shop of shops" [routerLink]="['../',shop.urlpath]">
+      <mdc-image-list-image-aspect>
+        <img mdcImageListImage [ngStyle]="ngStyleBck[shop.urlpath]" />
+      </mdc-image-list-image-aspect>
+      <mdc-image-list-supporting>
+        <span mdcImageListLabel>{{shop.name}}</span>
+      </mdc-image-list-supporting>
+    </mdc-image-list-item>
+  </mdc-image-list>  
 </div>
