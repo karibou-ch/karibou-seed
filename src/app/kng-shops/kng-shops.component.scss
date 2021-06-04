@@ -1,14 +1,5 @@
 
-:host{
- .mdc-content{
-    width: 100vw!important;
-    padding: unset!important;
-    margin: unset!important;
-  }
-  
-}
-
-div.content{
+div.content2{
   display: flex;
   flex-flow: column wrap;
   width: 100vw;
@@ -27,7 +18,7 @@ div.content{
 
   margin-top: 70px;
   margin-bottom: 100px;
-  @media screen and (max-width:426px){
+  @media screen and (max-width:429px){
     margin-top: 100px;
   }  
 
@@ -40,23 +31,97 @@ div.content{
     margin: 0 auto;
     padding: 0;
 
-    max-width: 1024px;
-    width: 1024px;
+    max-width: 100%;
+    width: 100%;
     margin: auto;      
 
-    @media screen and (max-width:426px){
+    @media screen and (max-width:429px){
       width: calc( 100vw - 20px );        
     }  
 
   }
   
   .standard-image-list .mdc-image-list__item {
-    width: calc(20% - 4.2px);
+    width: calc(25% - 4.2px);
     margin: 2px;
     cursor: pointer;
 
-    @media screen and (max-width:426px){
+    @media screen and (max-width:429px){
       width: calc(50% - 4.2px);
     }
   }  
+}
+
+
+//
+// variables
+$grid-width : 25%;
+$row_increment : 10px;
+$card_border_radius : 16px;
+$grid-small : 32;
+$grid-medium : 32;
+$grid-large : 32;
+
+
+
+.shops{
+min-width: 100%;
+padding-bottom:0; 
+margin-top: 100px;
+margin: 20px;
+
+display: grid;
+grid-template-columns: repeat(auto-fill, $grid-width);
+-grid-auto-rows: $row_increment;
+justify-content: center;
+@media (max-width:429px) {
+  grid-template-columns: repeat(auto-fill, 50%);
+}
+
+.shop{
+  border-radius: 20px;
+  margin: 10px 10px;
+  overflow: hidden;
+  object-fit: cover;
+  position: relative;
+  &.grid-small {
+    grid-row-end: span $grid-small;
+  }
+
+  &.grid-medium {
+      grid-row-end: span $grid-medium;
+  }
+
+  &.grid-large {
+      grid-row-end: span $grid-large;
+  }
+
+  img{
+    width: 100%;
+  }
+  .description{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30%;
+    padding: 0 16px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+
+    padding: 8px 0;
+    line-height: 24px;
+    text-align: center;
+    span{
+      font-size: 1.0rem;
+      line-height: 1.75rem;
+      font-weight: 400;
+      letter-spacing: 0.009375em;
+      -font-style: oblique;
+      white-space: nowrap;
+      overflow: hidden;      
+    }
+  }
+}
+
+
 }

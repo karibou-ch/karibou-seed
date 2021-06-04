@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { i18n, KngUtils } from '../common';
 import { Config, User, Shop, PhotoService, Product, ProductService, Category } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
@@ -150,10 +150,12 @@ export class KngShopComponent implements OnInit {
 export class KngShopsComponent extends KngShopComponent{
 
   ngStyleBck: any;
+  ngStyleImg: any;
   shops: Shop[];
 
   ngOnInit(){
     this.ngStyleBck = {};
+    this.ngStyleImg = {};
     this.shops = [];
     super.ngOnInit();
     if(this.urlpath) {
@@ -168,6 +170,8 @@ export class KngShopsComponent extends KngShopComponent{
         this.ngStyleBck[shop.urlpath] = {
           'background-image': this.bgGradient + 'url(' + shop.photo.fg + '/-/resize/400x/fb.jpg)'
         }
+        this.ngStyleImg[shop.urlpath] = shop.photo.fg + '/-/resize/400x/fb.jpg';
+
       });
 
     });
