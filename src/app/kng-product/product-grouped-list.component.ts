@@ -47,7 +47,9 @@ export class ProductGroupedListComponent implements OnInit {
   categories: CategoryView[];
   isChildCategory: boolean;
 
-
+  //
+  // replace default score sort
+  @Input() alphasort: boolean;
   @Input() config: any;
   @Input() user: User;
   @Input() hub: string;
@@ -216,7 +218,7 @@ export class ProductGroupedListComponent implements OnInit {
     if(!this.products.length) {
       return;
     }
-    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):50;
+    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):100;
     const divider = (window.innerWidth < 426) ? 2 : 4;
 
     this.group = {};
@@ -239,12 +241,11 @@ export class ProductGroupedListComponent implements OnInit {
     });
 
 
-    const cats = Object.keys(this.group)
+    const cats = Object.keys(this.group);
+    const sortBy = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
     cats.forEach(cat => {
       // console.log('--- DEBUG cat',cat, this.group[cat].length);
-      this.group[cat] = this.group[cat].sort((a, b) => {
-        return b.stats.score - a.stats.score;
-      }).slice(0, maxcat);
+      this.group[cat] = this.group[cat].sort(sortBy).slice(0, maxcat);
       if (this.group[cat].length % divider === 0 && this.showMore) {
         this.group[cat].pop();
       }
@@ -265,6 +266,24 @@ export class ProductGroupedListComponent implements OnInit {
   
     // }, 100);
 
+  }
+
+  //
+  // sort products by:
+  //  - title
+  sortProductsByTitle(a, b) {
+    // sort : Title
+    const score = a.title.localeCompare(b.title);
+    return score;
+  }
+
+  //
+  // sort products by:
+  //  - stats.score
+  sortProductsByScore(a, b) {
+    // sort : HighScore => LowScore
+    const score = b.stats.score - a.stats.score;
+    return score;
   }
 
 

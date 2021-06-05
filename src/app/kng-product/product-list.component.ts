@@ -250,10 +250,11 @@ export class ProductListComponent implements OnInit {
   }
 
   setProducts() {
-    return this.cache.products = this.products.filter(product => {
-      const cat = !this.filterChild || product.belong.name === this.filterChild;
-      return cat || true;
-    });
+    return this.cache.products = this.products;
+    // return this.cache.products = this.products.filter(product => {
+    //   const cat = !this.filterChild || product.belong.name === this.filterChild;
+    //   return cat || true;
+    // });
   }
 
   setVendors(products: Product[]) {
@@ -310,9 +311,12 @@ export class ProductListComponent implements OnInit {
   // sort products by:
   //  - belong.weight
   //  - stats.score
+  //  - title
   sortProducts(a, b) {
     // sort : HighScore => LowScore
-    const score = b.stats.score - a.stats.score;
+    // const score = b.stats.score - a.stats.score;
+    // sort : Title
+    const score = a.title.localeCompare(b.title);
     if (!a.belong || !a.belong) {
       return score;
     }
@@ -322,6 +326,7 @@ export class ProductListComponent implements OnInit {
     if (belong !== 0) {
       return belong;
     }
+
     return score;
   }
 
