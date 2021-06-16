@@ -5,7 +5,7 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close">
-        <mdc-icon class="size-large">navigate_before</mdc-icon>
+        <span class="material-icons size-large">navigate_before</span>
       </button>
 
       <mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
@@ -21,10 +21,10 @@
           </div>
   
            <button class="action-add right " (click)="addToCart($event,product)">
-            <mdc-icon class="size-medium">add</mdc-icon>
+            <span class="material-icons size-medium">add</span>
           </button>
           <button class="action-remove " (click)="removeToCart($event,product)">
-            <mdc-icon class="size-medium">remove</mdc-icon>
+            <span class="material-icons size-medium">remove</span>
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
               
@@ -160,31 +160,31 @@
           <li>
             <div>Lun.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,1)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,1)}}</span>
             </div>
           </li>
           <li>
             <div>Mar.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,2)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,2)}}</span>
             </div>
           </li>
           <li>
             <div>Mer.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,3)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,3)}}</span>
             </div>
           </li>
           <li>
             <div>Jeu.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,4)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,4)}}</span>
             </div>
           </li>
           <li>
             <div>Ven.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,5)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,5)}}</span>
             </div>
           </li>
         </ul>
