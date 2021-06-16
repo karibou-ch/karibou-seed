@@ -157,6 +157,7 @@
     <div class="cart-flow"  >1</div>
     <section class="selected">
       <p class="text-capitalize black block-info">
+        <mdc-icon class="secondary-text">check_circle</mdc-icon>&nbsp;
         {{currentShipping().name}}, {{currentShipping().streetAdress}}
       </p>
       <div class="profile-action"  >
@@ -216,19 +217,6 @@
           {{$i18n[locale].cart_address_add}} 
         </button>
       </div>
-
-      <!--
-      <mdc-list-item [routerLink]="['/store/'+store+'/me/login-or-address']" >
-        <mdc-list-item-graphic class="kng-address">
-          &nbsp;
-        </mdc-list-item-graphic>
-        <mdc-list-item-text secondaryText="Nous déposons vos sacs devant votre porte si vous êtes absent">
-          {{$i18n[locale].cart_address_add}} 
-        </mdc-list-item-text>
-        <mdc-list-item-meta class="icon">
-          <mdc-icon class="primary">note_add</mdc-icon>
-        </mdc-list-item-meta>        
-      </mdc-list-item> -->
     </mdc-list>    
   </div>
 
@@ -237,6 +225,7 @@
     <div class="cart-flow" >2</div>
     <section class="selected">
       <p class="black block-info">
+        <mdc-icon class="secondary-text">check_circle</mdc-icon>&nbsp;
         {{currentPaymentMethod()?.issuer}} {{currentPaymentMethod()?.number}}
       </p>
       <div class="profile-action"  >
@@ -283,9 +272,12 @@
   <!-- RESUME -->
   <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable() && isOpen()">
     <div class="cart-flow ">3</div>
-    <section class="header" [class.deposit]="!isCartDeposit()" 
+    <section class="header" [hidden]="hasShippingReductionMultipleOrder()" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.hub.checkout.resume[$i18n.locale]">
     </section>  
+    <section class="header"  [hidden]="!hasShippingReductionMultipleOrder()">
+      <h3 class="bold">{{i18n[locale].cart_info_shipping_group}}</h3>
+    </section>
 
     <!-- TAX & SHIPPING -->
     <mdc-list avatar="true" [interactive]="false">
@@ -305,7 +297,7 @@
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
           <div class="info" [innerHtml]="i18n[locale].cart_info_shipping"></div>
-          <div class="price" [class.pink]="hasShippingDiscountB()">{{$cart.shipping()|currency:'CHF'}}</div>
+          <div class="price" [class.pink]="hasShippingDiscountB()||hasShippingReductionMultipleOrder()">{{$cart.shipping()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>
       
