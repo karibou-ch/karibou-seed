@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { KngShopsComponent, KngShopComponent } from './kng-shops.component';
 
 import { Kng2CoreModule, LoaderResolve  } from 'kng2-core';
-import { MdcIconModule } from '@angular-mdc/web';
 import { MdcImageListModule } from '@angular-mdc/web/image-list';
 
 import { SharedModule } from '../shared/shared.module';
@@ -26,7 +25,6 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
     CommonModule,
     Kng2CoreModule,
     SharedModule,
-    MdcIconModule,
     MdcImageListModule,
     routing
   ],
