@@ -1,8 +1,6 @@
-
-
 <!-- FEEDBACK -->
-<kng-feedback [config]="config" [user]="user" forceload="true">
-    <h3>{{$i18n[locale].home_feedback_title}}</h3>
+<kng-feedback [config]="config" [user]="user" forceload="true" [orders]="pendingOrders">
+  <h3>{{$i18n[locale].home_feedback_title}}</h3>
 </kng-feedback>
 
 <!-- LINKS -->
@@ -17,17 +15,13 @@
   <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
       [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
   </div>
-
-  <div class="welcome" [innerHtml]="getContent('p',target)"></div>
-  
+  <div class="welcome" [innerHtml]="getContent('p',target)"></div>  
 </div>
-<!-- <div class="home-header">
-  <kng-product-link [shops]="shops" [config]="config">
-    <div class="title">
-      <p>{{$i18n[locale].home_links_title}} </p>      
-    </div>
-  </kng-product-link>  
-</div> -->
+
+
+<!-- -->
+<!-- MARKETPLACE -->
+<kng-nav-marketplace [config]="config" [orders]="pendingOrders"></kng-nav-marketplace>
 
 
 <!-- SELECTION -->

@@ -10,6 +10,7 @@ div.home-header{
   background-size: cover;
   background-color: transparent!important;
   margin-top: 10px; 
+  margin-bottom: 3px; 
   @media (max-width:1024px){
     padding: 10px 10px;
     width: calc( 100% - 20px );
@@ -17,12 +18,12 @@ div.home-header{
 
   >div{    
     width: 100%;
-    background: var(--mdc-theme-background-container);
+    -background: var(--mdc-theme-background-container);
     margin: 0;
     margin-top:0px;
     margin-bottom:30px;
     -box-shadow: 0px 2px 5px #eee;
-    overflow: hidden;
+    -overflow: hidden;
 
     >p,
     >div{
@@ -57,6 +58,7 @@ div.home-header{
       background: var(--mdc-theme-secondary);
       color: var(--mdc-theme-secondary-text);
       border: none;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
       a{
         color: var(--mdc-theme-secondary-text)!important;
       }
@@ -67,6 +69,7 @@ div.home-header{
       font-weight: 500;
       color: #222!important;
       border: none;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
       a{
         color: black!important;
       }
@@ -78,6 +81,7 @@ div.home-header{
       color: white;
       font-weight: 500;
       border: none;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
       a{
         color: white!important;
       }
@@ -92,6 +96,34 @@ div.home-header{
       }
     }
     
+    .fullscreen {
+      max-width: 940px;
+      width: 940px;
+      margin: auto;
+      display: block;
+      padding: 20px;
+      border: none;
+      @media  (max-width:429px){
+        max-width: 100%;
+        width: 100%;
+        padding: 50px 4px;
+      }
+
+      h2{
+        text-transform: none;
+        text-align: center;
+        margin: 0px;
+        margin-top: 10px;
+        line-height: 1.3em;
+        color: var(--mdc-theme-primary);        
+        font-size: 41px;
+        font-weight: 700;
+        text-shadow: 0 0 8px rgba(0, 0, 0, .21);        
+        &.alt{
+          color: var(--mdc-theme-secondary);        
+        }
+      }      
+    }
   }
 
 
@@ -275,6 +307,13 @@ kng-product-link{
     font-size: initial;
   }
 }
+
+kng-nav-marketplace {
+  margin-bottom: 40px;
+  display: block;
+}
+
+
 //
 // CATEGORY 
 .toolbox{
@@ -283,7 +322,7 @@ kng-product-link{
   z-index: 2;
 
   position: fixed;
-  top:120px;
+  bottom:40px;
   overflow-x: visible;
   left: 0;
   right: 0;
@@ -291,12 +330,12 @@ kng-product-link{
   width: 10px;
 
   @media (min-width: 1024px) {
+    top:185px;
+    bottom: inherit;
     transform:none!important;
     opacity: 1!important;
   }
 
-  @media (min-width: 1025px) {
-  }
 
   @media (min-width: 1440px) {
     margin-left: -208px;
@@ -371,31 +410,6 @@ div.product-container{
   // display cards
 
   section{
-    text-align:left;
-    @media (max-width:429px) {
-      text-align:center;
-    }
-
-    padding-top:10px;
-    h2,h3{
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.87);      
-      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
-      font-size: 1.675rem;
-      text-transform: uppercase;    
-      margin-top: 20px;
-      margin-left: 10px;
-      margin-right: 10px;      
-    }
-    h3{
-      font-weight: 200;
-      font-size: 1.275rem;
-      color: #aaa;
-      text-shadow:1px 1px 0 white;
-      margin-top: -10px;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
   
     h5,h4{
       color:var(--mdc-theme-secondary);

@@ -1,10 +1,10 @@
 
-<kng-nav-marketplace 
+<kng-nav-calendar 
   [config]="config" 
   [currentShippingDay]="currentShippingDay"
   [isPremium]="user?.isPremium()"
-  (updated)="setShippingDay($event)" #marketplace>
-</kng-nav-marketplace>
+  (updated)="setShippingDay($event)" #calendar>
+</kng-nav-calendar>
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/store',store,'home']">
@@ -62,7 +62,7 @@
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
         <img class="icon" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="home"  (click)="openCalendar(marketplace,true)">
+        <mdc-top-app-bar-title class="home"  (click)="openCalendar(calendar,true)">
           {{hubTitle}}      
           <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
         </mdc-top-app-bar-title>
@@ -70,7 +70,7 @@
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(marketplace)">
+        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(calendar)">
           <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
           <i class="material-icons wobble-vertical">keyboard_arrow_down</i>
         </mdc-top-app-bar-title>
