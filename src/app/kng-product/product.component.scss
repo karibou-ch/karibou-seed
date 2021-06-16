@@ -1,7 +1,7 @@
 @import "colors.scss";
 
 .mdc-list{
-  mdc-icon{
+  .material-icons{
     .size-large {
       font-size: 30px;
     }
@@ -533,7 +533,7 @@
       font-weight: 500;
       color: rgba(0, 0, 0, 0.87);      
       color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
-      font-size: 1.675rem;
+      font-size: 1.4675rem;
       text-transform: uppercase;    
       margin-top: 20px;
       margin-left: 10px;
