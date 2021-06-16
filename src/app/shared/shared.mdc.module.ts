@@ -7,7 +7,6 @@ import {
   MdcChipsModule,
   MdcTextFieldModule,
   MdcCheckboxModule,
-  MdcLinearProgressModule,
   MdcFormFieldModule,
   MdcDialogModule,
   MdcMenuModule
@@ -22,8 +21,7 @@ import {
     MdcFormFieldModule,
     MdcMenuModule,
     MdcTextFieldModule,
-    MdcCheckboxModule,
-    MdcLinearProgressModule
+    MdcCheckboxModule
     ],
   declarations: []
 })
