@@ -1,5 +1,5 @@
 <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
-  <ng-content  *ngIf="i==2 && contentIf"></ng-content>
+  <ng-content  *ngIf="i==categoryMiddle && contentIf"></ng-content>
   <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>
     <section  class="" [ngClass]="isChildCategory ? 'child':'title'">
       <h2>{{category.name}}</h2>

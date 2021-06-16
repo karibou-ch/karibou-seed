@@ -47,6 +47,7 @@ export class ProductGroupedListComponent implements OnInit {
   categories: CategoryView[];
   isChildCategory: boolean;
 
+
   //
   // replace default score sort
   @Input() alphasort: boolean;
@@ -108,7 +109,7 @@ export class ProductGroupedListComponent implements OnInit {
   };
 
 
-
+  categoryMiddle:number;
   group: any;
   visibility: any;
   current: any;
@@ -129,6 +130,7 @@ export class ProductGroupedListComponent implements OnInit {
       products: []
     };
 
+    this.categoryMiddle = 2;
     this.products = [];
     this.visibility = {};
     this.current = {};
@@ -251,6 +253,11 @@ export class ProductGroupedListComponent implements OnInit {
       }
 
     });
+    //
+    // display middle message when category list is small
+    if(cats.length<3){
+      this.categoryMiddle = 1;
+    }
 
     this.categories = this.categories.filter (cat => cats.indexOf(cat.name)>-1).sort(this.sortByWeight);
     // FIXME avoid this test 
