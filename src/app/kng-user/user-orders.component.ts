@@ -24,6 +24,7 @@ export class UserOrdersComponent implements OnInit {
   config: any;
   orders: Order[];
   limitTo: number;
+  childOrder: { [key: number]: Order[]};
   openOrder: Order;
   selected: Order;
   items: ScoredItem[] = [];
@@ -80,7 +81,7 @@ export class UserOrdersComponent implements OnInit {
   ngOnInit() {
     this.$order.findOrdersByUser(this.user, {limit: 10}).pipe(
       flatMap(orders => {
-        this.processOrders(orders);
+        this.processOrders((orders as Order[]));
         if (!this.items.length) {
           return [];
         }
@@ -136,7 +137,7 @@ export class UserOrdersComponent implements OnInit {
   }
 
   getLimitedOrders() {
-    return this.orders.filter((item, idx) => idx < this.limitTo );
+    return this.orders.filter((item, idx) => idx < this.limitTo && !item.shipping.parent );
   }
 
   getOpenOrder() {
@@ -199,9 +200,12 @@ export class UserOrdersComponent implements OnInit {
     // });
     //
     // display 20 last orders
+    this.childOrder = {};
+
     this.orders = orders.sort((o1, o2) => o2.shipping.when.getTime() - o1.shipping.when.getTime());
     this.openOrder = this.orders.find(order => order.payment.status === 'authorized');
     this.orders.forEach((order, idx) => {
+      this.setChildOrder(order);
       order.items.forEach(item => {
         if (!scoreditem[item.sku]) {
           scoreditem[item.sku] = {
@@ -238,6 +242,14 @@ export class UserOrdersComponent implements OnInit {
 
   }
 
+  setChildOrder(order) {
+    const parentoid = order.shipping.parent;
+    this.childOrder[order.oid] = this.childOrder[order.oid] || [];
+    if(parentoid) {
+      this.childOrder[parentoid] = this.childOrder[parentoid] || [];
+      this.childOrder[parentoid].push(order);
+    }
+  }
   selectedOrder(order) {
     if (this.selected && this.selected.oid === order.oid) {
       return this.selected = undefined;
