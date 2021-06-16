@@ -17,7 +17,8 @@ import {
   User,
   CartAction,
   PhotoService,
-  Shop
+  Shop,
+  Order
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
@@ -33,6 +34,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
 
   shops: Shop[];
+  pendingOrders: Order[];
   config: Config;
   categories: Category[];
   cached: any = {};
@@ -49,8 +51,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   //
   // gradient of background image
   bgGradient = `linear-gradient(
-    rgba(50, 50, 50, 0.1),
-    rgba(50, 50, 50, 0.7)
+    rgba(50, 50, 50, 0.01),
+    rgba(50, 50, 50, 0.1)
+  ),`;
+
+  bgGradientXS = `linear-gradient(
+    rgba(150, 150, 150, 0.2),
+    rgba(150, 150, 150, 0.7)
   ),`;
 
   //
@@ -127,6 +134,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // default home target (home, delicacy, cellar)
     this.target = this.$route.snapshot.url.length && this.$route.snapshot.url[0].path || 'home';
     this.shops = [];
+
+    this.pendingOrders = [];
+    if(loader.length>3) {
+      this.pendingOrders = <Order[]>loader[4];
+    }    
     // this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
     //   //
     //   // deploy random shop picture for outside javascript
@@ -148,6 +160,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     let loaded = false;
 
     this.subscription = this.$loader.update().subscribe(emit => {
+
+      // emit signal for order
+      if(emit.orders) {
+        this.pendingOrders = emit.orders;
+      }
 
       // emit signal for config
       if (emit.config) {
@@ -192,6 +209,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       const site = this.config.shared.hub.siteName[this.locale];
       const tag =  this.config.shared.hub.tagLine.t[this.locale];
       document.title = site + ' - ' + tag;
+    }
+
+    if(this.$navigation.isMobileOrTablet()) {
+      this.bgGradient = this.bgGradientXS;
     }
   }
 
@@ -310,6 +331,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (hub) {
       options.hub = hub;
     }
+
 
     const shops = {};
     this.$product.select(options).subscribe((products: Product[]) => {
