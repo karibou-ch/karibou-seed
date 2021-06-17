@@ -9,7 +9,7 @@
 
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="!hasContent('p',target)" 
-    [class.cover]="hasBackgroundContent(target)" 
+    [class.cover-lg]="hasBackgroundContent(target)" 
     [ngStyle]="getContentStyle(target)">
   
   <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 

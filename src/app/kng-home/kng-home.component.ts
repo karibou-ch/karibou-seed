@@ -56,8 +56,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   ),`;
 
   bgGradientXS = `linear-gradient(
-    rgba(150, 150, 150, 0.2),
-    rgba(150, 150, 150, 0.7)
+    rgba(250, 250, 250, 0.2),
+    rgba(250, 250, 250, 0.8)
   ),`;
 
   //

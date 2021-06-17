@@ -103,6 +103,7 @@ div.home-header{
       display: block;
       padding: 20px;
       border: none;
+      height: 250px;
       @media  (max-width:429px){
         max-width: 100%;
         width: 100%;
@@ -116,7 +117,7 @@ div.home-header{
         margin-top: 10px;
         line-height: 1.3em;
         color: var(--mdc-theme-primary);        
-        font-size: 41px;
+        font-size: 31px;
         font-weight: 700;
         text-shadow: 0 0 8px rgba(0, 0, 0, .21);        
         &.alt{
