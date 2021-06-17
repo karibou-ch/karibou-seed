@@ -54,6 +54,17 @@ div.home-header{
       margin-left: auto;
       margin-right: auto;
     }
+
+    .main{
+      background: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
+      border: none;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
+      a{
+        color: var(--mdc-theme-primary-text)!important;
+      }
+    }
+
     .info{
       background: var(--mdc-theme-secondary);
       color: var(--mdc-theme-secondary-text);
@@ -116,7 +127,7 @@ div.home-header{
         margin: 0px;
         margin-top: 10px;
         line-height: 1.3em;
-        color: var(--mdc-theme-primary);        
+        -color: var(--mdc-theme-primary);        
         font-size: 31px;
         font-weight: 700;
         text-shadow: 0 0 8px rgba(0, 0, 0, .21);        
@@ -140,7 +151,7 @@ div.home-header{
       padding: 0px;
       font-size: 18px;
       overflow: hidden; 
-      border-radius: 20px;
+      border-radius: 8px;
       border: 3px solid #ddd;
       .left-half{
         max-width: 40%;        
@@ -239,7 +250,7 @@ div.home-header{
       width: 80%;
     }
     h1,h2,h3,h4,p{
-      color: var(--mdc-theme-on-primary);
+      color: var(--mdc-theme-primary-text);
       text-align: left;
       text-transform: none;      
     }
@@ -387,6 +398,9 @@ kng-nav-marketplace {
   .mdc-chip-set--choice .mdc-chip.mdc-chip--selected:not(.bookmark),
   .mdc-chip.mdc-chip--selected:not(.bookmark) {
     font-weight: 700;
+    background-color: var(--mdc-theme-primary)!important;
+    color: var(--mdc-theme-primary-text, #fff)!important;
+
   }  
 
 }

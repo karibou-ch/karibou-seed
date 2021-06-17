@@ -2,7 +2,7 @@
 
 .kng-drawer{
   background: var(--mdc-theme-primary);
-  color:#FFF;
+  color:var(--mdc-theme-primary-text);
   position: fixed;
   top: calc( 100vh * -1.85 );
   left: 0;
@@ -60,10 +60,10 @@
     cursor: pointer;
     background: transparent;
     border: 0;
-    color: #fff;
     position: absolute;
     top: 25px;
     right: 80px;
+    color: var(--mdc-theme-primary-text);
     @media (max-width: 769px) {
       top: 10px;
       right: 20px!important;      
@@ -148,13 +148,13 @@
       
         &.selected{
           background-color: var(--mdc-theme-primary);
-          border: 1px solid var(--mdc-theme-primary);
+          border: 1px solid var(--mdc-theme-secondary);
           .ei_Title{
-            color: var(--mdc-theme-text-primary-on-primary);
             font-weight: 600;
+            color: var(--mdc-theme-primary-text);
           }
           .ei_Copy{
-            color: var(--mdc-theme-text-primary-on-primary);
+            color: var(--mdc-theme-primary-text);
           }
         }
         .ei_Title{
@@ -165,7 +165,7 @@
           font-size:10px;
           margin-top: auto;
           margin-bottom: 0;
-          color: var(--mdc-theme-on-secondary);
+          color: black;
         }
            
         &:hover:not(.disabled){

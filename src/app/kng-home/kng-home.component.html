@@ -29,7 +29,7 @@
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
-<div class="toolbox home" [class.exited]="scrollDirection < -5 || scrollDirection > 15 || (!scrollDirection) ">
+<div class="toolbox home" [class.hide]="(!scrollDirection)" [class.exited]="scrollDirection < -5 || scrollDirection > 15 || (!scrollDirection) ">
   <mdc-chip-set choice >
     <mdc-chip (click)="scrollToSlug(category.slug)"
               [id]="'category-'+j"                    
@@ -67,7 +67,7 @@
 
 
   <kng-product-grouped-list 
-       useMaxCat="true" showMore="on" clazz="home-header"       
+       useMaxCat="true" showMore="on" offsetTop="500" clazz="home-header"       
        [config]="config" 
        [user]="user" 
        [contentCategories]="getCategories()" 

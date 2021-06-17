@@ -51,6 +51,7 @@ export class ProductGroupedListComponent implements OnInit {
   //
   // replace default score sort
   @Input() alphasort: boolean;
+  @Input() offsetTop: number;
   @Input() config: any;
   @Input() user: User;
   @Input() hub: string;
@@ -182,7 +183,7 @@ export class ProductGroupedListComponent implements OnInit {
       const height = container.nativeElement.clientHeight;
       const className = container.nativeElement.getAttribute('name');
 
-      // console.log('----',scrollTop,height, '----',scrollPosition, '---',window.innerHeight);
+      
       //
       // container.nativeElement.className visible! el.offsetParent
       this.current[className] = false;
@@ -265,14 +266,6 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     this.visibility[this.categories[0].slug] = true;
-    // setTimeout(() => {
-    //   this.detectVisibility(1);
-    //   if(!this.scrollContainer){
-    //     this.$cdr.markForCheck();
-    //   }
-  
-    // }, 100);
-
   }
 
   //
@@ -390,6 +383,11 @@ export class ProductGroupedListComponent implements OnInit {
         this.scrollDirection = 1;
       }
     }
+    this.scrollPosition = scrollPosition;
+
+    if(this.offsetTop && scrollPosition<this.offsetTop) {
+      this.scrollDirection = 0;
+    }
 
     if (this.scrollDirection > 20) {
       this.doDirectionUp();
@@ -397,7 +395,7 @@ export class ProductGroupedListComponent implements OnInit {
     if (this.scrollDirection < -20) {
       this.doDirectionDown();
     }
-    this.scrollPosition = scrollPosition;
+
 
     // FIXME make it better (<-5 && !exited) = event.exit 
     //this.direction$.next(5*(Math.round( this.scrollDirection / 5)));
