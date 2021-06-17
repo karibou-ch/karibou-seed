@@ -145,8 +145,6 @@
     </div>
     <h3>
       <mdc-icon>supervisor_account</mdc-icon>Ajouter un vendeur 
-      <input type="checkbox" id="activeonly" name="activeonly" ngModel="filterVendors" [ngModelOptions]="{standalone: true}">
-      <label for="activeonly">(Tous/Actif)</label>
     </h3>
     <div>
     
@@ -156,7 +154,7 @@
         <mdc-chip-set >
           <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
           <mdc-chip (click)="onAddVendor(vendor)" 
-                    *ngFor="let vendor of getAvailableVendors(filterVendors);let idx=index;" [value]="vendor._id">
+                    *ngFor="let vendor of getAvailableVendors();let idx=index;" [value]="vendor._id">
             <mdc-chip-text>{{vendor.name}}</mdc-chip-text>
           </mdc-chip>
         </mdc-chip-set>
