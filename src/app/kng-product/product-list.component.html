@@ -44,8 +44,9 @@
     <!-- FURTHER -->
     <div class="further-product-container mdc-layout-grid" >
       <kng-product-grouped-list class="kng-layout-card"        
+        alphasort="true"
         [config]="config" 
-        [user]="user" 
+        [user]="user"         
         [filterByVendor]="filterVendor && filterVendor.urlpath"
         [scrollContainer]="getDialog()"
         [scrollToSlug]="scrollToCategory"

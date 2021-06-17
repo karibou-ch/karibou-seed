@@ -1,16 +1,13 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
-  <h3 i18n>{{hubName}}, {{i18n[locale].title_order_open}}</h3>
+  <h3 i18n>{{i18n[locale].title_order_open}}</h3>
   <p i18n class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
       <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b> 
       <br/>{{i18n[locale].title_order_shipping}} <b class="text-capitalize">{{order.shipping.name}}</b>
+      &nbsp;<span [hidden]="!childOrders.length" class="ita">//{{childOrders.length}} {{i18n[locale].title_order_grouped}} </span>
   </p>
-  <mdc-linear-progress 
-    #progress  determinate="true" [progress]="order.getProgress()/100" [buffer]="0.85" 
-    style="display:block"></mdc-linear-progress>
-  <p class="footer">
-  </p>
+  <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
 </div>
 
 <!--- ORDER IS CANCEL -->
@@ -35,10 +32,10 @@
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
     <span>{{i18n[locale].title_evaluation}}</span>&nbsp;
-    <mdc-icon class="stars" [class.scored]="score>=0">star_rate</mdc-icon> 
-    <mdc-icon class="stars" [class.scored]="score>=1">star_rate</mdc-icon> 
-    <mdc-icon class="stars" [class.scored]="score>=2">star_rate</mdc-icon>
-    <mdc-icon class="stars" [class.scored]="score>=3">star_rate</mdc-icon>
+    <span class="stars material-icons" [class.scored]="score>=0">star_rate</span> 
+    <span class="stars material-icons" [class.scored]="score>=1">star_rate</span> 
+    <span class="stars material-icons" [class.scored]="score>=2">star_rate</span>
+    <span class="stars material-icons" [class.scored]="score>=3">star_rate</span>
   </div>
 </div>
 
@@ -56,18 +53,18 @@
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
     <span>{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
-    <mdc-icon class="stars" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</mdc-icon> 
-    <mdc-icon class="stars" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</mdc-icon> 
-    <mdc-icon class="stars" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</mdc-icon>
-    <mdc-icon class="stars" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</mdc-icon>
+    <span class="stars material-icons" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
+    <span class="stars material-icons" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+    <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
+    <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>
   </div>
   <div class="evaluate" [hidden]="!displayEvaluate()" [class.boxed]="boxed">
       <div class="label">
         <span>{{i18n[locale].title_evaluation_save}}</span>
-        <mdc-icon class="stars" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</mdc-icon> 
-        <mdc-icon class="stars" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</mdc-icon> 
-        <mdc-icon class="stars" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</mdc-icon>
-        <mdc-icon class="stars" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</mdc-icon>      
+        <span class="stars material-icons" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
+        <span class="stars material-icons" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+        <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
+        <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
       </div>
       <button (click)="saveEvaluate()">{{$i18n.label().action_save}} </button>    
       <button (click)="openIssue()" class="issue">{{i18n[locale].title_issue_question}}</button>    
@@ -78,7 +75,7 @@
   <div class="blured" ></div>
   <div class="container top">
     <button (click)="onBack()" class="close">
-        <mdc-icon class="size-xlarge">close</mdc-icon>
+        <span class="size-xlarge  material-icons">close</span>
     </button>
     <div class="feedback-container" >
       <h3 i18n>{{i18n[locale].title_issue_title}}</h3>

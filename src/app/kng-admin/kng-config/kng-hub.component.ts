@@ -9,6 +9,7 @@ import { FormBuilder} from '@angular/forms';
 
 import {
   LoaderService,
+  Category,
   ConfigService,
   Config,
   UserAddress,
@@ -172,12 +173,14 @@ export class KngHUBComponent implements OnInit, OnDestroy {
   private _codeMirror: any;
 
 
+  categories: Category[];
   config: Config;
   menus: any[];
   groups: string[];
   isLoading: boolean;
   isReady = false;
   currentHub: Hub;
+  sixMOnth: Date;
   edit = {};
 
 
@@ -200,10 +203,14 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     this.isReady = true;
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
+    this.categories = loader[2];
     //
     // HUB from config
     this.currentHub = Object.assign({}, this.config.shared.hub);
 
+    //
+    // create 6 month date
+    this.sixMOnth = new Date(Date.now()-86400000*30*6);
 
     //
     // HUB from DB
@@ -342,6 +349,7 @@ export class KngHUBComponent implements OnInit, OnDestroy {
 export class KngHUBManagerComponent extends KngHUBComponent {
 
   mapVendors = {};
+  mapCategories = {};
   vendors: Shop[];
   newUser: string;
 
@@ -356,6 +364,8 @@ export class KngHUBManagerComponent extends KngHUBComponent {
       // console.log('---- DB ', this.vendors[5]);
       // console.log('---- DB ',  this.currentHub.vendors[0]);
     });
+
+    this.categories.forEach(cat => this.mapCategories[cat._id]=cat);
   }
 
   addDate() {
@@ -370,12 +380,29 @@ export class KngHUBManagerComponent extends KngHUBComponent {
     return this.mapVendors[id];
   }
 
-  getAvailableVendors() {
+  getCategoryName(id) {
+    return this.mapCategories[id].name;
+  }
+
+
+  getAvailableVendors(filter?) {
     return this.vendors.filter(vendor => {
       const a = this.currentHub.vendors.indexOf(vendor._id) === -1;
-      //const b = vendor.status || vendor.created
-      return a;
+      const b = vendor.status || (vendor.created>this.sixMOnth)
+      return a && b;
     });
+  }
+
+  getAvailableCategories(filter?) {
+    return this.categories.sort((a,b)=> a.name.localeCompare(b.name))
+  }
+
+
+
+  //
+  // vendors
+  delCategory(idx: number) {
+    this.currentHub.categories.splice(idx, 1);
   }
 
   //
@@ -414,6 +441,9 @@ export class KngHUBManagerComponent extends KngHUBComponent {
     this.currentHub.vendors.splice(idx, 1);
   }
 
+  onAddCategory($event) {
+    this.currentHub.categories.push($event._id || $event.value);
+  }
 
   onAddVendor($event) {
     this.currentHub.vendors.push($event._id || $event.value);

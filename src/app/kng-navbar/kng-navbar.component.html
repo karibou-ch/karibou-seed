@@ -1,10 +1,10 @@
 
-<kng-nav-marketplace 
+<kng-nav-calendar 
   [config]="config" 
   [currentShippingDay]="currentShippingDay"
   [isPremium]="user?.isPremium()"
-  (updated)="setShippingDay($event)" #marketplace>
-</kng-nav-marketplace>
+  (updated)="setShippingDay($event)" #calendar>
+</kng-nav-calendar>
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/store',store,'home']">
@@ -62,7 +62,7 @@
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
         <img class="icon" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="home"  (click)="openCalendar(marketplace,true)">
+        <mdc-top-app-bar-title class="home"  (click)="openCalendar(calendar,true)">
           {{hubTitle}}      
           <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
         </mdc-top-app-bar-title>
@@ -70,7 +70,7 @@
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(marketplace)">
+        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(calendar)">
           <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
           <i class="material-icons wobble-vertical">keyboard_arrow_down</i>
         </mdc-top-app-bar-title>
@@ -81,22 +81,22 @@
       <mdc-top-app-bar-section align="end" class="actions">        
         <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
           <div i18n> <span class="cart-items-count"></span></div>
-          <mdc-icon mdcTopAppBarActionItem >shopping_cart</mdc-icon>          
+          <mdc-icon mdcTopAppBarActionItem class="secondary-text" >shopping_cart</mdc-icon>          
         </a>
 
         <!-- LOGIN / REGISTER -->
         <a class="label " [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon mdcTopAppBarActionItem class="gold" >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
+          <mdc-icon mdcTopAppBarActionItem class="secondary-text" >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
         </a>
         <a class="label" [routerLink]="['./me/login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon mdcTopAppBarActionItem >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
+          <mdc-icon mdcTopAppBarActionItem class="secondary-text">account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
         </a>
 
         <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
           routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
-          <span  mdcTopAppBarActionItem [innerHTML]="menu.name[locale]"></span>
+          <span  mdcTopAppBarActionItem class="secondary-text" [innerHTML]="menu.name[locale]"></span>
         </a>
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>

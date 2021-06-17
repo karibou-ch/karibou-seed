@@ -143,19 +143,12 @@
         </mdc-chip-set>
       </div>  
     </div>
-    <!-- <div class="config-custom row-form">
-      <mdc-select required placeholder="Ajouter un vendeur" (valueChange)="onAddVendor($event)">
-        <mdc-icon mdcSelectIcon>note_add</mdc-icon>
-        <mdc-menu>
-          <mdc-list>
-            <mdc-list-item *ngFor="let vendor of getAvailableVendors()" [value]="vendor._id">
-              {{vendor.name}}
-            </mdc-list-item>
-          </mdc-list>
-        </mdc-menu>
-      </mdc-select>      
-    </div>   -->
-    <h3><mdc-icon>supervisor_account</mdc-icon>Ajouter un vendeur</h3>
+    <h3>
+      <mdc-icon>supervisor_account</mdc-icon>Ajouter un vendeur 
+    </h3>
+    <div>
+    
+    </div>
     <div class="config-custom row-form">
       <div class="menu">
         <mdc-chip-set >
@@ -163,6 +156,42 @@
           <mdc-chip (click)="onAddVendor(vendor)" 
                     *ngFor="let vendor of getAvailableVendors();let idx=index;" [value]="vendor._id">
             <mdc-chip-text>{{vendor.name}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+  
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="block">
+    <h3><mdc-icon>supervisor_account</mdc-icon>Categories </h3>
+    <hr class="dashed"/>
+    <div class="config-custom row-form">
+      <div class="menu">
+        <mdc-chip-set >
+          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+          <mdc-chip (click)="delCategory(idx)" 
+                    *ngFor="let category of currentHub.categories;let idx=index;" [value]="category">
+            <mdc-chip-text>{{getCategoryName(category)}}</mdc-chip-text>
+          </mdc-chip>
+        </mdc-chip-set>
+      </div>  
+    </div>
+    <h3>
+      <mdc-icon>supervisor_account</mdc-icon>Ajouter une categorie 
+    </h3>
+    <div>
+    
+    </div>
+    <div class="config-custom row-form">
+      <div class="menu">
+        <mdc-chip-set >
+          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
+          <mdc-chip (click)="onAddCategory(category)" 
+                    *ngFor="let category of getAvailableCategories();let idx=index;" [value]="category._id">
+            <mdc-chip-text>{{category.name}}</mdc-chip-text>
           </mdc-chip>
         </mdc-chip-set>
   

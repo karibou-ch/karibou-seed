@@ -5,6 +5,9 @@ div.container{
     button{
       align-self:center;
       margin: 10px;
+      background-color: var(--mdc-theme-primary);
+      border-color: var(--mdc-theme-primary-text,#423f3b);
+      color: var(--mdc-theme-primary-text,#423f3b);
     }
 
   }

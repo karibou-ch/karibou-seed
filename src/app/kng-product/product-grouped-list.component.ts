@@ -48,6 +48,10 @@ export class ProductGroupedListComponent implements OnInit {
   isChildCategory: boolean;
 
 
+  //
+  // replace default score sort
+  @Input() alphasort: boolean;
+  @Input() offsetTop: number;
   @Input() config: any;
   @Input() user: User;
   @Input() hub: string;
@@ -106,7 +110,7 @@ export class ProductGroupedListComponent implements OnInit {
   };
 
 
-
+  categoryMiddle:number;
   group: any;
   visibility: any;
   current: any;
@@ -127,6 +131,7 @@ export class ProductGroupedListComponent implements OnInit {
       products: []
     };
 
+    this.categoryMiddle = 2;
     this.products = [];
     this.visibility = {};
     this.current = {};
@@ -178,7 +183,7 @@ export class ProductGroupedListComponent implements OnInit {
       const height = container.nativeElement.clientHeight;
       const className = container.nativeElement.getAttribute('name');
 
-      // console.log('----',scrollTop,height, '----',scrollPosition, '---',window.innerHeight);
+      
       //
       // container.nativeElement.className visible! el.offsetParent
       this.current[className] = false;
@@ -216,7 +221,7 @@ export class ProductGroupedListComponent implements OnInit {
     if(!this.products.length) {
       return;
     }
-    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):50;
+    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):100;
     const divider = (window.innerWidth < 426) ? 2 : 4;
 
     this.group = {};
@@ -239,17 +244,21 @@ export class ProductGroupedListComponent implements OnInit {
     });
 
 
-    const cats = Object.keys(this.group)
+    const cats = Object.keys(this.group);
+    const sortBy = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
     cats.forEach(cat => {
       // console.log('--- DEBUG cat',cat, this.group[cat].length);
-      this.group[cat] = this.group[cat].sort((a, b) => {
-        return b.stats.score - a.stats.score;
-      }).slice(0, maxcat);
+      this.group[cat] = this.group[cat].sort(sortBy).slice(0, maxcat);
       if (this.group[cat].length % divider === 0 && this.showMore) {
         this.group[cat].pop();
       }
 
     });
+    //
+    // display middle message when category list is small
+    if(cats.length<3){
+      this.categoryMiddle = 1;
+    }
 
     this.categories = this.categories.filter (cat => cats.indexOf(cat.name)>-1).sort(this.sortByWeight);
     // FIXME avoid this test 
@@ -257,14 +266,24 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     this.visibility[this.categories[0].slug] = true;
-    // setTimeout(() => {
-    //   this.detectVisibility(1);
-    //   if(!this.scrollContainer){
-    //     this.$cdr.markForCheck();
-    //   }
-  
-    // }, 100);
+  }
 
+  //
+  // sort products by:
+  //  - title
+  sortProductsByTitle(a, b) {
+    // sort : Title
+    const score = a.title.localeCompare(b.title);
+    return score;
+  }
+
+  //
+  // sort products by:
+  //  - stats.score
+  sortProductsByScore(a, b) {
+    // sort : HighScore => LowScore
+    const score = b.stats.score - a.stats.score;
+    return score;
   }
 
 
@@ -364,6 +383,11 @@ export class ProductGroupedListComponent implements OnInit {
         this.scrollDirection = 1;
       }
     }
+    this.scrollPosition = scrollPosition;
+
+    if(this.offsetTop && scrollPosition<this.offsetTop) {
+      this.scrollDirection = 0;
+    }
 
     if (this.scrollDirection > 20) {
       this.doDirectionUp();
@@ -371,7 +395,7 @@ export class ProductGroupedListComponent implements OnInit {
     if (this.scrollDirection < -20) {
       this.doDirectionDown();
     }
-    this.scrollPosition = scrollPosition;
+
 
     // FIXME make it better (<-5 && !exited) = event.exit 
     //this.direction$.next(5*(Math.round( this.scrollDirection / 5)));

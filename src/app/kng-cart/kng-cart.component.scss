@@ -1,5 +1,3 @@
-@import "colors.scss";
-
 //
 // innerHtml CASE
 :host ::ng-deep{
@@ -157,7 +155,8 @@
       transform: translateY(7px);      
     }
     button {          
-      border: 1px solid var(--mdc-theme-primary);
+      border: 1px solid #ddd;
+      color: black;
       padding: 2px 15px;
       border-radius: 23px;
       margin-right: auto;

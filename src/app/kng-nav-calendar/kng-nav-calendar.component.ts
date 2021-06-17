@@ -1,17 +1,19 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { i18n } from '../common';
-import { Config, Order } from 'kng2-core';
+import { Config } from 'kng2-core';
 import { version } from '../../../package.json';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'kng-nav-marketplace',
-  templateUrl: './kng-nav-marketplace.component.html',
-  styleUrls: ['./kng-nav-marketplace.component.scss']
+  selector: 'kng-nav-calendar',
+  templateUrl: './kng-nav-calendar.component.html',
+  styleUrls: ['./kng-nav-calendar.component.scss']
 })
-export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
+export class KngNavCalendarComponent implements OnInit,OnDestroy {
+  private _open: boolean;
+
+
   @Input() config: Config;
-  @Input() orders: Order[];
   @Input() currentShippingDay: Date;
   @Input() isPremium: boolean;
 
@@ -48,6 +50,9 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
       this.lockedHUB = this.config.shared.hub.domainOrigin;
     }
+    //
+    // validate shipping state
+    this.noshippingMsg = this.getNoShippingMessage();
 
   }
 
@@ -59,6 +64,19 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     return this.$i18n.locale;
   }
 
+  set open(open: boolean) {
+    if(open) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+    }
+
+    this._open = open;
+  }
+
+  get open() {
+    return this._open;
+  }
   //
   // label is 'nav_no_shipping' or 'nav_no_shipping_long'
   getNoShippingMessage() {
@@ -68,6 +86,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     if (!this.isDayAvailable(this.currentShippingDay)) {
       return this.$i18n[this.locale]['nav_no_shipping_long'];
     }
+
 
     //
     // check manager message
@@ -79,20 +98,26 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     this.$i18n.locale = lang;
   }
 
-  toggleStore(hub) {
-    //
-    // this HUB is running is own domain!!
-    if (this.currentHub.domainOrigin) {
-      // FIXME hardcoded link there
-      window.location.href = 'https://karibou.ch/store/' + hub.slug + '/home';
-    } else {
-      window.location.href = '/store/' + hub.slug + '/home';
+  doSetCurrentShippingDay($event, day: Date, idx: number) {
+    if (!this.isDayAvailable(day)) {
+      return;
     }
+    // this.dialogRef.close(day);
+
+    this.open = false;
+    this.updated.emit({day});
   }
 
   isDayAvailable(day: Date) {
     const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
     return (this.currentRanks[day.getDay()] <= maxLimit);
+  }
+
+  getShippingText(day: Date) {
+    if (!this.isDayAvailable(day)) {
+      return this.i18n.label().nav_shipping_off;
+    }
+    return this.labelTime;
   }
 
   getShippingDays() {

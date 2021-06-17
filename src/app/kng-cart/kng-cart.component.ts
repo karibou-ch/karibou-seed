@@ -73,6 +73,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_total: 'Total provisoire',
       cart_info_subtotal: 'Sous total',
       cart_info_shipping: 'Livraison 100% cycliste',
+      cart_info_shipping_group: 'Vous complétez une commande en cours',
       cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
       cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
       cart_info_payment: 'Méthode de paiement',
@@ -109,6 +110,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_total: 'Provisional total',
       cart_info_subtotal: 'Subtotal',
       cart_info_shipping: 'shipping guaranteed <span class="bold">200%</span> ecological ',
+      cart_info_shipping_group: 'You are close to complete an order in progress',
       cart_info_shipping_discount: 'From <b>_AMOUNT_</b> chf of purchase, you get delivery to your door for <b>_DISCOUNT_</b> !',
       cart_info_shipping_applied: 'You get a delivery discount!',
       cart_info_payment: 'Payment method',
@@ -258,7 +260,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     this.subscription = this.$loader.update().subscribe(emit => {
       if (emit.state) {
-        console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
+        // console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
       }
       // emit signal for config
       if (emit.config) {
@@ -273,10 +275,24 @@ export class KngCartComponent implements OnInit, OnDestroy {
       if (emit.user) {
         this.user = emit.user;
         this.checkPaymentMethod(true);
+        //
+        // load orders 
+        if(emit.user.id){
+          const cathError = true;
+          this.$order.findOrdersByUser(emit.user,{limit:4},cathError).subscribe();        
+        }
       }
       // emit signal for cart
       if (emit.state) {
         this.items = this.$cart.getItems();
+
+        //
+        // set default address
+        const address = this.$cart.getCurrentShippingAddress();
+        if(!!(address&&address.streetAdress) && !this.selectAddressIsDone) {
+          this.setShippingAddress(address);
+        }
+
       }
       const current = this.$cart.getCurrentShippingAddress();
       if (current.note && !this.shippingNote) {
@@ -290,8 +306,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
       this.computeDiscount();
       this.noshippingMsg = this.getNoShippingMessage();
       this.buildDiscountLabel();
-
-      console.log('--- DBG shipping',this.shipping)
     }, error => {
       console.log('loader-update', error);
     });
@@ -308,8 +322,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     this.checkPaymentMethod();
 
-    //
-    // set default address
     if (this.user && this.user.addresses.length === 1) {
       this.setShippingAddress(this.user.addresses[0]);
     }
@@ -326,7 +338,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
     const price = this.$cart.estimateShippingFees(address);
     const dA = this.$cart.hasShippingReduction();
     const dB = this.$cart.hasShippingReductionB();
+    const dC = this.$cart.hasShippingReductionMultipleOrder();
     const label = this.i18n[this.locale]['cart_info_shipping_discount'];
+
+    //
+    // grouped discount
+    if(dC){ 
+      return  this.shippingDiscount = '';
+    } 
 
     //
     // Maximum discount
@@ -622,6 +641,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$router.navigate(['../home'], { relativeTo: this.$route });
   }
 
+  hasShippingReductionMultipleOrder(){
+    return this.$cart.hasShippingReductionMultipleOrder();
+  }
 
   hasShippingDiscount() {
     return this.$cart.hasShippingReduction();
@@ -675,7 +697,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   setShippingAddress(address: UserAddress) {
-    this.selectAddressIsDone = !!address;
+    this.selectAddressIsDone = !!(address&&address.streetAdress);
     this.$cart.setShippingAddress(address);
 
     //

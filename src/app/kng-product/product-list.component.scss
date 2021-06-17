@@ -208,7 +208,7 @@
   .mdc-chip-set--choice .mdc-chip.mdc-chip--selected,
   .mdc-chip.mdc-chip--selected {
     background-color: var(--mdc-theme-primary)!important;
-    color: var(--mdc-theme-surface, #fff)!important;
+    color: var(--mdc-theme-primary-text, #fff)!important;
   }  
 
 

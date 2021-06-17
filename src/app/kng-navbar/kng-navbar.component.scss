@@ -1,6 +1,3 @@
-@import "colors.scss";
-
-
 mdc-drawer{
   &.mdc-drawer{
     width: 300px!important;
@@ -33,12 +30,10 @@ mdc-drawer{
       width: 100%;
   
       .label-shipping{
-        color: $mdc-theme-primary-dark;
         color: var(--mdc-theme-primary-dark);
         font-size: 85%;
         margin-right: 5px;    
         .bullet{
-          background: $mdc-theme-secondary;
           background: var(--mdc-theme-secondary);
           border-radius: 50%;
           padding: 0;
@@ -162,9 +157,6 @@ div.navbar{
     transform: translateX(-19px);    
   }
   .cart-items-count{    
-    -color: #009200 !important;
-    -color: #20714e!important;
-    color: $mdc-theme-primary-text;
     color: var(--mdc-theme-primary-text);
     font-weight: 600;    
     &.label{
@@ -188,7 +180,7 @@ div.navbar{
   }
 
   .mdc-top-app-bar{
-    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+    -box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     z-index: 2;
     color: var(--mdc-theme-primary-text);
 
@@ -201,7 +193,6 @@ div.navbar{
     //
     // override firefox *:any-link{
     a{
-      color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       text-decoration:none;
     }
@@ -266,9 +257,6 @@ div.navbar{
         transform: translateY(-7px) translateX(18px);
         display: inline-block;
         text-transform: none;
-        span{
-          color: gold;          
-        }
       }
     }
     
@@ -286,7 +274,6 @@ div.navbar{
         }
 
       }
-      color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       
       i.material-icons{
@@ -298,7 +285,6 @@ div.navbar{
       }      
     }
     .mdc-tab-indicator > span{
-      background: $mdc-theme-primary-text;
       background: var(--mdc-theme-primary-text);
       height: 4px;
     }

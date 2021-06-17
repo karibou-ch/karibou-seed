@@ -19,6 +19,7 @@ import { MdcSnackbar, MdcMenu, MdcTopAppBarSection, MdcDialogRef, MDC_DIALOG_DAT
 import { merge, timer } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
+import { OrderService } from '../../../../kng2-core/dist';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   user: User;
   categories: Category[];
   shops: Shop[];
+  orders: Order[];
   private route$: any;
 
   //
@@ -72,6 +74,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     public $i18n: i18n,
     private $route: ActivatedRoute,
     private $router: Router,
+    private $order: OrderService,
     private $user: UserService,
     public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
@@ -91,6 +94,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // not mandatory
     this.categories = <Category[]>loader[2] || [];
     this.shops = <Shop[]>loader[3] || [];
+
+    this.orders = [];
+    if(loader.length>3) {
+      this.orders = <Order[]>loader[4];
+    }
 
     // console.log('')
     this.primary = [];
@@ -143,24 +151,32 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     //
     // init cart here because navbar is loaded on all pages
-    this.$cart.setContext(this.config, this.user, this.shops);
+    this.$cart.setContext(this.config, this.user, this.shops,this.orders);
 
     this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
 
+
     this.subscription = merge(
-      this.$user.user$.pipe(map(user => ({ user: user }))),
-      this.$config.config$.pipe(map(config => ({ config: config }))),
-      this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state: state })))
+      this.$user.user$.pipe(map(user => ({ user}))),
+      this.$config.config$.pipe(map(config => ({ config }))),
+      this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state }))),
+      this.$order.orders$.pipe(map(orders => ({orders})))
     ).subscribe((emit: any) => {
 
       //
       // update user
-      if (emit.user && this.user.id !== emit.user.id) {
+      if (emit.user && this.user && this.user.id !== emit.user.id) {
         Object.assign(this.user, emit.user);
-        this.$cart.setContext(this.config, this.user);
+        this.$cart.setContext(this.config, this.user,this.shops,this.orders);
         this.$cdr.markForCheck();
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
+      }
+
+      // FIXME use appropriate place to setup $cart
+      if(emit.orders && !this.orders.length) {
+        this.orders = emit.orders;
+        this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
       }
       //
       // update config

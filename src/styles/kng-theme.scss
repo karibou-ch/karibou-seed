@@ -462,6 +462,83 @@ body{
   background-image: url(/assets/img/icon-gift-solid.svg)
 }
 
+//
+// progress
+progress.kng-progress[value] {
+	/* Get rid of the default appearance */
+	appearance: none;
+	
+	/* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
+	border: none;
+	
+	/* Add dimensions */
+	width: 100%; height: 4px;
+	
+  background-color: whitesmoke;
+  border-radius: 3px;
+  -box-shadow: 0 1px 3px rgba(0,0,0,.2) inset;
+
+	
+	position: relative;
+	margin: 0 0 1.5em; 
+}
+
+
+progress.kng-progress[value]::-webkit-progress-bar {
+	background-color: whitesmoke;
+	border-radius: 3px;
+	-box-shadow: 0 1px 3px rgba(0,0,0,.2) inset;
+}
+
+progress.kng-progress[value]::-webkit-progress-value {
+	position: relative;
+	
+	background-size: 35px 20px, 100% 100%, 100% 100%;
+	border-radius:3px;	
+}
+
+
+progress.kng-progress[value]::-webkit-progress-value:after {
+	/* Only webkit/blink browsers understand pseudo elements on pseudo classes. A rare phenomenon! */
+	content: '';
+	position: absolute;
+	
+	width:5px; height:1px;
+	top:7px; right:7px;
+	
+	background-color: white;
+	border-radius: 100%;
+}
+progress.kng-progress::-webkit-progress-value{
+	/* Gradient background with Stripes */
+	background-image:
+	-webkit-linear-gradient( 90deg,
+													 transparent,
+													 transparent 33%,
+													 rgba(0,0,0,.1) 33%,
+													 rgba(0,0,0,.1) 66%,
+													 transparent 66%),
+    -webkit-linear-gradient( top,
+														rgba(255, 255, 255, .25),
+														rgba(0,0,0,.2)),
+     -webkit-linear-gradient( left, var(--mdc-theme-primary), var(--mdc-theme-secondary));
+}
+
+progress.kng-progress::-moz-progress-bar{
+	background-image:
+	-moz-linear-gradient( 90deg,
+													 transparent,
+													 transparent 33%,
+													 rgba(0,0,0,.1) 33%,
+													 rgba(0,0,0,.1) 66%,
+													 transparent 66%),
+    -moz-linear-gradient( top,
+														rgba(255, 255, 255, .25),
+														rgba(0,0,0,.2)),
+     -moz-linear-gradient(left, var(--mdc-theme-primary), var(--mdc-theme-secondary));
+
+}
+
 
 //
 // animation

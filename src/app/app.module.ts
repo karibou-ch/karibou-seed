@@ -34,7 +34,6 @@ import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-foun
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
-import { KngNavMarketplaceComponent } from './kng-nav-marketplace/kng-nav-marketplace.component';
 
 
 @Injectable()
@@ -130,19 +129,18 @@ export class GlobalErrorHandler implements ErrorHandler {
   declarations: [
     AppComponent,
     KngNavbarComponent,
-    KngNavMarketplaceComponent,
     KngRootComponent,
     KngWelcomeComponent,
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
-    KngPageNotFoundComponent
+    KngPageNotFoundComponent,
   ],
   // List of components that aren't used in templates directly
   entryComponents:[
   ],
   exports: [
     Kng2CoreModule,
-    KngCommonModule
+    KngCommonModule,
   ],
   imports: [
     BrowserModule,
