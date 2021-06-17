@@ -34,7 +34,7 @@ import { map } from 'rxjs/operators';
 export class ProductComponent implements OnInit, OnDestroy {
   static WEEK_1: number = 86400 * 7;
 
-  @Input() sku: number;  
+  @Input() sku: number;
   @Input() config: any;
   @Input() categories: Category[];
   @Input() selected: boolean;
@@ -49,7 +49,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   products: Product[];
   category: Category;
   thumbnail = false;
-  bgStyle = '/-/resize/200x/';
+  bgStyle: any;
   photosz: string;
   cartItem: CartItem;
 
@@ -131,7 +131,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       '/shop/' + this.$route.snapshot.params['shop'] : '';
 
     //
-    // when display wider
+    // dialog display
     if (!this.sku) {
 
       this.isDialog = true;
@@ -143,7 +143,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
         //
         // spec: scrollTop; when open nested product we should scrollTop
-        try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
+        //try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
 
       });
 
@@ -178,6 +178,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.scrollCallback = null;
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
@@ -321,11 +322,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
-    // FIXME fadeout brakes window
-    // this.dialog.nativeElement.classList.add('fadeout')
+    this.$navigation.back();
     setTimeout(() => {
-      if (this.$navigation.hasHistory()) {
-        return this.$navigation.back();
+      if (!this.scrollCallback) {
+        return;
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });
     }, 200);
@@ -366,7 +366,22 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url + this.photosz + ')';
+    // const gradient = `radial-gradient(circle at 50% 0,rgba(255,0,0,.5),rgba(255,0,0,0) 70.71%),
+    //                   radial-gradient(circle at 6.7% 75%,rgba(0,0,255,.5),rgba(0,0,255,0) 70.71%),
+    //                   radial-gradient(circle at 93.3% 75%,rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%)`;
+    this.bgStyle = {
+      'background-image' : 'url(' + this.product.photo.url + this.photosz + ')',
+    };
+
+    //
+    // if colors detected
+    const colors = this.product.photo.colors;
+    if (colors && colors.length) {
+      const shadow = `-20px 0 32px -18px rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}),
+                    -3px -13px 35px -18px rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b})`;
+
+      this.bgStyle['box-shadow'] = shadow;
+    }
   }
 }
 
@@ -389,9 +404,13 @@ export class ProductThumbnailComponent extends ProductComponent {
       ),`;
 
   updateBackground() {
-    this.bgStyle = 'url(' + this.product.photo.url + '/-/resize/250x/)';
+    this.bgStyle = {
+      'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
+    };
     if (this.cartItem) {
-      this.bgStyle = this.bgGradient + this.bgStyle;
+      this.bgStyle = {
+        'background-image' : this.bgGradient + this.bgStyle['background-image']
+      };
     }
   }
 

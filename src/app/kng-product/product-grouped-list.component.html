@@ -1,0 +1,21 @@
+<ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
+  <ng-content  *ngIf="i==categoryMiddle && contentIf"></ng-content>
+  <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>
+    <section  class="" [ngClass]="isChildCategory ? 'child':'title'">
+      <h2>{{category.name}}</h2>
+      <h3 [innerHtml]="category.description"></h3>
+    </section>
+
+
+    <div class="kng-layout-card">
+      <kng-product-thumbnail [visibility]="visibility[category.slug]" [sku]="product.sku" [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor"
+        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index" class="">
+      </kng-product-thumbnail>
+      <div class="category" [hidden]="!visibility[category.slug] || !showMore" 
+        [routerLink]="['category',category.slug]">
+        <div class="icon"><i class="material-icons">playlist_add</i></div>
+        <div>{{category.name}} </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

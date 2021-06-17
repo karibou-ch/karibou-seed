@@ -1,11 +1,12 @@
 {
   "name": "karibou-seed",
-  "version": "3.6.25",
+  "version": "3.10.6",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "analyse": "source-map-explorer ./dist/*es2015*.js ./dist/*es2015*.js.map --html dist/stack.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -22,13 +23,14 @@
     "@angular/platform-browser-dynamic": "~9.1.11",
     "@angular/router": "~9.1.11",
     "@angular/service-worker": "~9.1.11",
-    "@sentry/browser": "^5.12.5",
+    "@sentry/browser": "^5.18.0",
+    "@stripe/stripe-js": "^1.11.0",
     "classlist.js": "^1.1.20150312",
     "codemirror": "^5.55.0",
     "core-js": "^2.5.7",
     "kng2-core": "file:../kng2-core/dist",
-    "ngx-stripe": "^7.4.4",
     "rxjs": "~6.5.5",
+    "ngx-stripe": "^8.1.x",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

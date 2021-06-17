@@ -59,7 +59,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    NgxStripeModule.forRoot(),
+    NgxStripeModule,
     FormsModule,
     ReactiveFormsModule,
     UserMdcModule,

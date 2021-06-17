@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoaderService, User, UserService } from 'kng2-core';
+import { config, ConfigService, User, UserService } from 'kng2-core';
 import { Observable ,  of } from 'rxjs';
 import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { KngNavigationStateService } from './navigation.service';
@@ -10,7 +10,7 @@ import { catchError, map } from 'rxjs/operators';
 const paramLookup = (name) => {
   const fragments = window.location.pathname.split('/');
   const idx = fragments.findIndex(f => f === name);
-  return (idx === -1 ) ? 'geneva' : fragments[idx + 1];
+  return (idx === -1 ) ? 'artamis' : fragments[idx + 1];
 };
 
 
@@ -25,7 +25,7 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.$user.me().pipe(
       map(user => {
-        console.log('------ IsAuthenticatedGard', user.display(), user.isAuthenticated());
+        console.log('------ IsAuthenticatedGard', user.display(), user.isAuthenticated(), user.reminder);
         if (user.isAuthenticated()) {
           return true;
         }
@@ -39,8 +39,6 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     return this.canActivate(route, state);
   }
-
-
 }
 
 @Injectable()
@@ -48,20 +46,30 @@ export class IsWelcomeGard implements CanActivate, CanActivateChild {
   constructor(
     private $router: Router,
     private $navigation: KngNavigationStateService,
-    private $user: UserService
+    private $user: UserService,
+    private $config: ConfigService
     ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    console.log('guard welcome');
-    return this.$user.me().pipe(
+    const user$ = this.$user.me().pipe(
       catchError(err => of(new User()))
-    ).toPromise().then(user => {
+    ).toPromise();
+    return user$.then(user => {
       if (!user.isAuthenticated()) {
         return true;
       }
+      //
+      // FIXME, the default HUB value should only be managed by $navigation service
+      // if (user.reminder && user.reminder.defaultHub) {
+      //   this.$navigation.store = user.reminder.defaultHub;
+      // }
       const store = this.$navigation.store || paramLookup('store');
-      this.$router.navigate(['/store', store, 'home']);
-      return false;
+      console.log('------ IsWelcomeGard', user.display(), user.isAuthenticated(),store);
+      if(store) {
+        this.$router.navigate(['/store', store, 'home']);
+      }
+      
+      return true;
     });
   }
 
@@ -70,4 +78,3 @@ export class IsWelcomeGard implements CanActivate, CanActivateChild {
   }
 
 }
-

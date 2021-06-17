@@ -21,6 +21,7 @@ import { KngHomeComponent } from '../kng-home/kng-home.component';
 
 import { ProductSwipeComponent,
          ProductListComponent,
+         ProductGroupedListComponent,
          ProductThumbnailComponent,
          ProductComponent,
          ProductTinyComponent} from '../kng-product';
@@ -29,12 +30,12 @@ import { Kng2CoreModule } from 'kng2-core';
 import { KngSharedMdcModule } from './shared.mdc.module';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { KngNavbarComponent } from '../kng-navbar';
-import { KngRootComponent } from '../kng-root/kng-root.component';
 import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
 import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 
 import { appRoutes } from './shared.routes';
+import { NgxStripeModule } from 'ngx-stripe';
+import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { appRoutes } from './shared.routes';
     Kng2CoreModule,
     KngSharedMdcModule,
     KngCommonModule,
+    NgxStripeModule.forRoot(),
     RouterModule.forChild(appRoutes),
   ],
   exports: [
@@ -58,6 +60,7 @@ import { appRoutes } from './shared.routes';
     KngUserReminderComponent,
     KngUiBottomActionsComponent,
     InfiniteScrollerDirective,
+    ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
     UcWidgetComponent,
@@ -77,9 +80,11 @@ import { appRoutes } from './shared.routes';
     ProductComponent,
     ProductTinyComponent,
     ProductListComponent,
+    ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
     KngFeedbackComponent,
+    KngProductLinkComponent
   ],
 })
 export class SharedModule {

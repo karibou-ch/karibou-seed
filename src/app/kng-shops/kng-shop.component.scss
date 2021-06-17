@@ -1,0 +1,220 @@
+
+:host{
+  background: var(--mdc-theme-background);
+
+  // width: 100vw;
+  // position: fixed;
+  // top: 48px;
+  // left: 0;
+  // z-index: 2;
+  // padding: 32px;
+  @media (max-width:425px){
+    padding: 5px;
+  }
+
+  section.title{
+    text-align: left!important;
+  }
+
+  .shop{
+    display: flex;
+    flex-flow: row wrap;
+    margin-top: -0px;
+    width: 100vw;
+    min-width: 100vw;
+    min-height: 90vh;
+
+    justify-content: center;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--mdc-theme-primary);
+    box-shadow: 0 4px 32px -2px rgba(128, 128, 128, 0.39);
+
+    div.left-card{
+      position: relative;
+      flex: 1 0 50vw;
+      max-width: 1024px;
+      min-height: 100%;
+      display: flex;
+      flex-flow: column nowrap;
+      overflow: hidden;
+      margin: 0;
+      background-color: var(--mdc-theme-primary);
+      background-size: cover;
+      background-position:50%;
+      color: white;      
+      @media (max-width:1024px){
+        min-height: 100vh;
+        margin-left: -4px;
+        flex: 1 0 100vw;
+      }
+
+
+      .owner{
+        flex: 0 0 100px;
+        width: 100px;
+        height: 100px;
+        padding: 0px;
+        border: 3px solid white;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto;
+        transform: translateY(-50px);
+        margin-top: 0px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.3);
+        img{
+          width: 100%;
+          border-radius: 100%;
+          background-color: #f2f2f0;
+        }
+      }
+      h1{    
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        text-shadow:0 0 1px rgba(0,30,0,.83);
+        margin: auto;
+        padding: 40px;
+        margin-bottom: 30%;
+      }
+  
+    }
+
+    div.right-card{
+      position: relative;
+      flex: 1 0 50vw;
+      min-height: 90vh;
+      display: flex;
+      flex-flow: column nowrap;
+      overflow: hidden;
+      margin: auto;
+      background-color: var(--mdc-theme-primary);
+
+      h1{    
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        text-shadow:0 1px 0 rgba(0,30,0,.53);
+        margin: auto;
+        padding: 40px;
+        margin-top: 10%;
+        color: var(--mdc-theme-primary-text);
+        padding-bottom: 0;
+      }
+
+
+      .logo{
+        width: 100%;
+        margin: 0;
+        margin-top:auto;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      div.contact{
+        text-align: center;
+        margin-bottom: 20px;
+        a{
+          mdc-icon{
+            transform: translateY(4px);            
+          }
+
+          width:75%;
+          max-width: 300px;
+          background: #b5ada2;
+          color: var(--mdc-theme-primary);
+          padding: 15px 10px;
+          border-radius: 45px;
+          display: block;
+          margin: auto;
+          text-decoration: none;        
+          font-size:large;  
+      
+        }
+      }
+
+      div.description{
+        width: calc( 100% - 80px );
+        max-width: 1024px;
+        height: 100%;
+        flex: 1;
+        margin: 10% auto;
+        margin-bottom: 4px;
+        position: relative;
+        font-size: 18px;
+        text-shadow: 0px 1px 0 rgba(49, 49, 49, 0.43);
+        text-align: center;
+        padding: 40px;
+        text-align: center;
+        color: var(--mdc-theme-primary);
+        color: var(--mdc-theme-primary-text);
+        ul{
+          list-style: none!important;
+        }
+  
+      }
+
+    }
+
+  }
+
+  div.content{
+    display: flex;
+    flex-flow: column wrap;
+    width: 100vw;
+
+    justify-content: center;
+    line-height: 1.4;
+
+    flex: 1 0 100vw;
+
+    font-family: Helvetica,Arial, sans-serif;
+    line-height: 1.3em;
+    font-size: 1.2em;
+    font-weight: 200;
+    font-style: normal;
+    letter-spacing: -.003em;
+
+    section{
+      max-width: 760px;
+      width: 760px;
+      margin: auto;      
+
+      @media screen and (max-width:429px){
+        width: calc( 100vw - 20px );        
+      }  
+    }
+
+
+    section.FAQ{
+       ol,ul{
+        list-style: none;
+        padding-left: 10px;
+
+        li{
+          h4{
+            margin: 4px 0;
+          }
+          div{
+            color: #999;
+            font-style: italic;
+            font-weight: 400;                
+          }
+        }
+      }
+    }
+
+    section.map{
+      line-height:1.5em;
+      color: #999;
+      img{
+        width: 100%;
+      }
+      a{
+        color: var(--mdc-theme-primary);
+      }
+    }
+
+  }
+
+}

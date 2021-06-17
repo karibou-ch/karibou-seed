@@ -1,5 +1,3 @@
-@import "colors.scss";
-
 //
 // innerHtml CASE
 :host ::ng-deep{
@@ -30,19 +28,22 @@
 }
 .cart-container{
   padding-top: 0px;
-  background-color: $mdc-theme-background-container;
   background: var(--mdc-theme-background-container);
   margin-left: -20px;
   margin-right: -20px;
   padding-left: 20px;
   padding-right: 20px;
 
-  @media (max-width:426px) {
-    width: 100%;
+  @media (max-height:700px) {
+  }
+
+  @media (max-width:429px) {
+    width: calc( 100% - 8px );
     margin-left: 0px;
     margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;    
+    padding-left: 4px;
+    padding-right: 4px;    
+    zoom: .9;
   }
 
   .kng-address, 
@@ -72,12 +73,16 @@
   section{
     h2,h3{
       font-weight: 500;
-      color: $mdc-theme-primary;
       color: var(--mdc-theme-primary);
       font-size: 1.875rem;
       text-transform: uppercase;    
-      margin-top: 40px;
+      padding-top: 20px;
       text-align:center;
+      a {
+        text-decoration: none!important;
+        color: #ddd!important;
+      }
+
     }
     h3{
       font-weight: 200;
@@ -89,7 +94,6 @@
   
     h5,h4{
       text-align: center;
-      color: $mdc-theme-primary;
       color:var(--mdc-theme-primary);
       font-weight: 500;
       margin-bottom: 0px;    
@@ -125,6 +129,18 @@
     }
   }
 
+  .block-cart {
+    padding-bottom: 10px;
+    width: calc( 100% + 40px );
+    margin-left: -20px;    
+    background-color: #eee;
+    h2,h3 {
+      text-transform:none;
+      margin-bottom: 5px;
+      padding-top: 5px;
+    }
+  }
+
 
   .amount-info{
     padding: 10px 4px;
@@ -139,11 +155,12 @@
       transform: translateY(7px);      
     }
     button {          
-      border: 1px dashed gold;
+      border: 1px solid #ddd;
+      color: black;
       padding: 2px 15px;
       border-radius: 23px;
-      margin-right: 0;
-      margin-left: auto;
+      margin-right: auto;
+      margin-left: 23px;
       font-size: .8rem;
       vertical-align: bottom;
       line-height: 30px;
@@ -153,13 +170,8 @@
 
 
   .cart-flow{
-    color: $mdc-theme-primary-text;
-    color: var(--mdc-theme-primary-text);
-    background: $mdc-theme-primary-text;
-    background: var(--mdc-theme-primary-text);
-    background-color: var(--mdc-theme-karibou-pink);
-    width: 30px;
-    height: 30px;
+    width: 0px;
+    height: 0px;
     position: absolute;
     left: 1px;
     margin-top:-55px;
@@ -168,13 +180,9 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;    
-    &.flow-done{
-      background: $mdc-theme-primary;
-      background: var(--mdc-theme-primary);
-      
-      color: $mdc-theme-primary-text;
-      color: var(--mdc-theme-primary-text);
-    }
+    background: var(--mdc-theme-primary);
+    
+    color: var(--mdc-theme-primary-text);
     &::after{
       content: "";
       position: absolute;
@@ -196,9 +204,6 @@
     z-index: 1;
     cursor: pointer;   
     margin: 04px 0;             
-    // color:var(--mdc-theme-secondary);
-    // background: white;
-    // border:1px solid #ddd;    
 
     &.style1{
       flex:0 0 50%;
@@ -211,9 +216,6 @@
     }
   
     &.action{
-      // background-color: var(--mdc-theme-secondary);
-      // color: white;
-      // border-radius: 20px;
       padding: 5px;      
       width: 50%;        
     }
@@ -225,13 +227,17 @@
     &.border-top{
       border-top: 1px solid #aaa;
     }
+
+    &.auto-height {
+      height: auto;
+    }
+
     &.slim-item{
       margin-top: -12px;
     }
 
     &.mdc-list-item--selected,
     &.selected{
-      border:1px solid $mdc-theme-primary;
       border:1px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
       border:1px solid gold !important;
     }
@@ -248,11 +254,15 @@
       }
     }
 
-    @media (max-width:426px) {
+    @media (max-width:429px) {
       padding-left: 5px;      
     }
 
     mdc-list-item-text{
+      span.title.large{
+        font-size: 18px;
+        margin-left: 4px;
+      }
       div.title{
         display: block;        
       }
@@ -290,6 +300,9 @@
         background-size: cover;
         background-position-y: 50%;    
         background-color: #ddd;
+        &.round{
+          border-radius: 30px;
+        }
       }
     }
   
@@ -309,7 +322,7 @@
         padding: 12px;
         color: black;
         border: 1px solid #ddd;
-        @media (max-width:426px) {
+        @media (max-width:429px) {
           font-size: 80%;                      
           padding: 8px;
         }
@@ -352,7 +365,6 @@
   // card elements
   mdc-card{
     &.selected{
-      border:2px solid $mdc-theme-primary;
       border:2px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
       border:2px solid gold !important;
     }
@@ -426,9 +438,38 @@
 
   }
 
+  .order-address.is-done {
+    div.cart-flow{
+      color: var(--mdc-theme-primary-text);
+      background: var(--mdc-theme-primary-text);
+      background-color: var(--mdc-theme-karibou-pink);
+  
+    }
+    section.selected {
+      display: block;
+      .link{
+        color: blue;
+        font-weight: 300;
+        text-transform: none;        
+      }
+    }
+    section:not(.selected) {
+      display: none;
+    }
+    mdc-list{
+      display: none;
+    }
+  }
 
   .order-address{
-    margin-top: 40px;
+    section.selected{
+      display: none;
+      p{
+        text-align: left!important;
+        padding-left: 30px!important;
+      }
+    }
+    margin-top: 20px;
     padding-top: 40px;
     border-top:1px solid #ddd;
     width:auto;
@@ -446,6 +487,7 @@
         text-align: center;
         width:100%;
         max-width: 800px;
+        font-weight: 500;
       }  
     }
 
@@ -463,8 +505,13 @@
   }
 
   .order-resume{
+    div.cart-flow{
+      background-color: var(--mdc-theme-karibou-pink);
+      color: var(--mdc-theme-primary-text);
+    }
+
     position: relative;
-    margin-top: 40px;
+    margin-top: 20px;
     padding-top: 40px;
     border-top:1px solid #ddd;
     text-align: center;
@@ -482,6 +529,24 @@
     p.block-info{
       width: 100%;
       text-align: center;
+    }
+
+    .shipping-discount {
+      height: 30px;
+      padding: 0;
+      overflow: visible;
+      text-align: center;
+      margin-top: -10px;
+      .info{
+        text-align: center;
+        margin: auto;
+        color: var(--mdc-theme-secondary);
+        padding:0;
+        margin-top: 0px;
+        margin-right: 15px;        
+        white-space: nowrap;
+        font-size: 14px;
+      }
     }
 
     div.shipping-note{
@@ -530,18 +595,20 @@
     }
 
     .checkout-msg{
-      min-height: 100px;
+      min-height: 80px;
       position: relative;
       width: 100vw;
-      background: $mdc-theme-primary;
-      background: var(--mdc-theme-primary);      
-      color:$mdc-theme-primary-text;
-      color:var(--mdc-theme-primary-text);
-      padding: 30px;
+      background: var(--mdc-theme-secondary);
+      color:var(--mdc-theme-secondary-text);
+      padding: 20px;
       margin: 0;
       margin-bottom:30px;
       margin-left: -20px;
       margin-right: -20px;
+      @media (max-width:429px) {
+        padding-top: 40px;
+        
+      }
     }
       
     

@@ -42,20 +42,41 @@
   <kng-config-input clazz="config" label="Signature" name="mail.signature" format="area" 
                     [(ngModel)]="currentHub.mail.signature"></kng-config-input>
 
-  <!-- HUB Tagline -->
-  <h3 i18n>Site</h3>
+  <!-- HUB SiteName -->
+  <h3 i18n>Colors </h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Site" name="site.titre" format="text" 
+  <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text" 
+                    [(ngModel)]="currentHub.colors.primary"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Text Color" name="colors.text" format="text" 
+                    [(ngModel)]="currentHub.colors.primaryText"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Action Color" name="colors.action" format="text" 
+                    [(ngModel)]="currentHub.colors.action"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Action Text Color" name="colors.action-text" format="text" 
+                    [(ngModel)]="currentHub.colors.actionText"></kng-config-input>
+
+  <!-- HUB Links -->
+  <h3 i18n>Links </h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Links" name="links" format="area" 
+                    [(ngModel)]="currentHub.defaultTags"></kng-config-input>
+
+  <!-- HUB SiteName -->
+  <h3 i18n>Site Name </h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Site Name" name="site.titre" format="text" 
                     [(ngModel)]="currentHub.siteName[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Site" name="site.desc" format="area" 
+  <kng-config-input clazz="config" label="Description" name="site.desc" format="area" 
                     [(ngModel)]="currentHub.description[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Image logo" name="site.logo" format="image" 
+  <kng-config-input clazz="config" label="Site Name Image" name="site.image" format="image" 
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.siteName.image"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Image welcome" name="site.image" format="image" 
+  <kng-config-input clazz="config" label="Icon Logo" name="site.logo" format="image" 
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.logo"></kng-config-input>
 

@@ -9,7 +9,9 @@ export enum EnumMetrics {
   metric_account_login,
   metric_account_forget_password,
   metric_add_to_card,
+  metric_view_menu,
   metric_view_page,
+  metric_view_proposal,
   metric_order_address,
   metric_order_payment,
   metric_order_sent,
@@ -22,7 +24,7 @@ export enum EnumMetrics {
 })
 export class MetricsService {
 
-  FB_PIXEL = '142141582812801';
+  FB_PIXEL = '1633129600094162';
 
 
   isAdmin: boolean;
@@ -166,6 +168,10 @@ export class MetricsService {
 
 
   page(path: string) {
+    if (this.isAdmin) {
+      return;
+    }
+
     this.getHost('ga')('send', 'pageview', { page: path });
     this.getHost('fbq')('track', 'PageView');
   }
@@ -184,7 +190,7 @@ export class MetricsService {
     const ga = this.getHost('ga');
     const fbq = this.getHost('fbq');
 
-    if (!this.isEnable()) {
+    if (!this.isEnable() || this.isAdmin) {
       return;
     }
     const params: any = {};
@@ -205,6 +211,12 @@ export class MetricsService {
     // ga('send', 'event', [category], [Action], [Label], [Value], [fieldsObject]);
 
     switch (metric) {
+      case EnumMetrics.metric_view_proposal:
+        ga('send', 'event', 'user', 'proposal');
+        break;
+      case EnumMetrics.metric_view_menu:
+        ga('send', 'event', 'user', 'menu');
+        break;
       case EnumMetrics.metric_account_login:
         ga('send', 'event', 'user', 'login');
         break;

@@ -1,0 +1,61 @@
+<div class="shop">
+  <div *ngIf="vendor" class="left-card" [ngStyle]="ngStyleBck"></div>
+  <div *ngIf="vendor" class="right-card">
+    <h1>{{vendor.name}}</h1>
+
+    <div class="description" [kng-markdown]="vendor.description"></div>  
+    <div class="contact">      
+      <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><mdc-icon>phone</mdc-icon> {{vendor.address.phone}}</a>      
+    </div>
+    <!-- MARQUE -->
+    <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">
+    </div> -->
+    <img class="logo" [src]="vendor.photo.logo"  [hidden]="!vendor.photo.logo">
+    
+        
+  </div>
+</div>
+<div class="content" *ngIf="vendor">
+  <!-- SHOP PRODUCTS -->
+  <section class="products" >
+    <kng-product-grouped-list 
+      *ngIf="products.length"
+      alphasort="true"
+      [config]="config" 
+      [user]="user" 
+      [contentCategories]="categories" 
+      [contentProducts]="products">
+      </kng-product-grouped-list>
+
+  </section>
+  <!-- SHOP GEO -->
+  <section class="map" [hidden]="!vendor.address.geo">
+    <div class="breaker"></div>
+    <h2>{{i18n[locale].map_title}}</h2>
+    <div>
+        <img [src]="getStaticMap(vendor.address)" >
+    </div>
+    <address>
+      <b>{{vendor.name}}</b>
+      <br>
+      {{vendor.address.streetAdress}} / {{vendor.address.postalCode}} / {{vendor.address.region}}
+      <br>
+      <a [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
+      <!-- <a class="" ng-show="vendor.photo.source&&user.isOwnerOrAdmin(vendor.name)" ng-href="{{vendor.photo.source}}" target="_new">[Votre galerie photo]</a> -->
+    </address>
+  </section>                        
+
+  <!-- SHOP FAQ -->
+  <section class="FAQ" *ngIf="vendor.faq&&vendor.faq.length">
+    <div class="breaker"></div>
+    <h2>{{i18n[locale].faq}}</h2>
+    <ul>
+      <li *ngFor="let faq of vendor.faq">
+        <h4>{{faq.q}}</h4>
+        <div [kng-markdown]="faq.a" removeRoot="true" ></div>
+      </li>
+    </ul>
+  </section>      
+
+
+</div>

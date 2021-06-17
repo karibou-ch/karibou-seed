@@ -1,7 +1,7 @@
 <div class="user-container">
   <section>
       <h1 class="text-capitalize">{{user.display()}} 
-        <span [hidden]="!user.isPremium()"><i class="material-icons pink">grade</i><i class="material-icons pink large">grade</i></span>
+        <span [hidden]="!user.isPremium()"><i class="material-icons text-secondary">grade</i><i class="material-icons text-secondary large">grade</i></span>
       </h1>      
       <div class="title" i18n>{{i18n[locale].profile_title}} {{user.created|date:'MMM d, y':'':$i18n.locale}}</div>
       <p class="resume ">

@@ -8,7 +8,7 @@ button{
   color: white;
   border-radius: 20px;
   font-size: inherit;      
-  @media (max-width:426px) {
+  @media (max-width:429px) {
     flex:1 0 95%;
     margin-top: 15px!important;
     font-size: 80%;    
@@ -39,14 +39,14 @@ button{
   position: relative;
   background: white;
   box-shadow: 0px 0px 10px #ddd;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   padding: 10px;
   flex: 1;
   display: flex;
   flex-flow: column;
   font-weight: 200;
 
-  mdc-icon.stars{
+  .stars{
     width: 25px;
     color: #aaa;
     transform: translateY(-3px);
@@ -68,7 +68,7 @@ button{
         transform: scale(1);
         margin-top: -10px!important;
 
-        @media (max-width: 426px) {
+        @media (max-width: 429px) {
           margin-top: 5px!important;
         }
       }
@@ -132,7 +132,7 @@ button{
     right: 10px;
     z-index: 4;
     text-shadow: 0px 2px 0px #eee;
-    @media (max-width: 426px) {
+    @media (max-width: 429px) {
       top: -20px;
       right: -10px;
     }
@@ -203,7 +203,7 @@ button{
       display: flex;      
     }
 
-    @media (max-width: 426px) {
+    @media (max-width: 429px) {
       box-shadow: none;
       position: absolute;        
       margin-top: 40px;

@@ -1,7 +1,5 @@
-@import "colors.scss";
-
 .mdc-list{
-  mdc-icon{
+  .material-icons{
     .size-large {
       font-size: 30px;
     }
@@ -10,6 +8,8 @@
     }
   }
 }
+
+
 
 .product-dialog{
   overflow-y: scroll;
@@ -133,12 +133,20 @@
     min-height: 400px;
     background: white;
 
-    margin-top: 15px;
+    margin-top: 0px;
     position: relative;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.04), 
                 0px 2px 2px 0px rgba(0, 0, 0, 0.04), 
                 0px 1px 5px 0px rgba(0, 0, 0, 0.06);
     box-shadow: inherit;
+
+    &.noinstock .product-available{
+      display: block!important;
+    }
+    &.noavailable .product-available{
+      display: block!important;
+    }
+    
 
     @media (max-width:425px) {
       margin-top: 0px;      
@@ -155,6 +163,23 @@
       }
   
     }
+
+    .product-available{
+      position: absolute;
+      top: 0;
+      width: 100%;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.55);
+      z-index: 2;
+      text-align: center;
+      padding-top: 30%;
+      color: #444;
+      font-weight: 700;
+      letter-spacing: -.5px;      
+      display: none;
+      font-size: x-large;
+    }
+
   
     img{
       width: 58px;
@@ -181,9 +206,8 @@
   
     
     .action-add,.action-remove{
-      background-color: #{$mdc-theme-primary} !important;
       background-color: var(--mdc-theme-primary) !important;
-      color: white!important;
+      color: var(--mdc-theme-primary-text) !important;
       opacity: 0.9;
       border: 0;
       font-weight: bold;
@@ -249,7 +273,7 @@
     }
   
     .media{
-      height: 400px;
+      height: 500px;
       background-color:#ddd;
   
       background-repeat: no-repeat;
@@ -258,10 +282,12 @@
       border-radius: 5px;  
       transition: background-color .2s ease-in-out;
       position: relative!important;
+      margin: 50px 30px 20px;
       
-      @media (max-width: 426px) {
+      @media (max-width: 429px) {
         height: 270px;
         border-radius: 0px;  
+        margin: 20px 40px;
       }
 
       .product-variants{
@@ -285,7 +311,8 @@
     }  
   
     .product-card__subtitle{
-      font-size: larger;
+      font-size: 15px;
+      margin: 0px 40px;
     }
   
     .product-card__primary{
@@ -294,7 +321,7 @@
       text-overflow: ellipsis;
       -white-space: nowrap;    
       padding: 10px 5px;
-      background-color: #f6f6f6;
+      background-color: rgba(246, 246, 246, 0.3);
     }
 
     .product-card__secondary{
@@ -308,6 +335,7 @@
       bottom: 10px;
       font-weight: 900;
       font-size: large;
+      margin: 0px 40px;
       .red{
         color: red!important;
       }
@@ -324,6 +352,7 @@
       left: 5px;
       bottom: 10px;
       font-weight: 500;    
+      margin: 0px 40px;
     }
   }
   
@@ -393,8 +422,8 @@
       transform: translateX(-4px);
     }
     .mdc-chip--selected{
-      background-color: #{$mdc-theme-primary-light};
-      background-color: var(--mdc-theme-primary-light);
+      background-color: var(--mdc-theme-secondary);
+      color: var(--mdc-theme-secondary-text);
     }
     >div{
       font-size: smaller;
@@ -489,7 +518,7 @@
     padding:10px 5px;
   }
 
-  @media (max-width:426px) {
+  @media (max-width:429px) {
     width: calc( 100% - 10px );
   }
   @media (max-width:320px) {
@@ -501,7 +530,7 @@
       font-weight: 500;
       color: rgba(0, 0, 0, 0.87);      
       color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
-      font-size: 1.675rem;
+      font-size: 1.4675rem;
       text-transform: uppercase;    
       margin-top: 20px;
       margin-left: 10px;
@@ -521,8 +550,7 @@
   
   .kng-layout-card{
     display: flex!important;
-    justify-content: center;
-    justify-content: space-around;
+    justify-content: flex-start;
     flex-wrap: wrap;
     align-items: center;   
     padding-bottom:0; 
@@ -534,14 +562,12 @@
       margin-bottom: auto;
       max-width: 163px;
 
-      @media (max-width: 426px) {
+      @media (max-width: 429px) {
         flex: 1 0;
         min-width: 29vw;
-        margin: 4px 4px 0;
+        margin: 4px 8px;
         flex: 0 0 49%;
         min-width: 39vw;
-        margin: 4px 0px 0;
-
       }
     }
   }

@@ -1,18 +1,4 @@
 <div class="container-orders">
-  <!-- <div class="processing" *ngIf="openOrder" >
-      <h3 i18n>Votre commande en cours </h3>
-      <p i18n class="help-block">
-          Votre commande du <b>{{openOrder.shipping.when|date:'EEE d MMM y'}}</b> est en cours de préparation <b>({{openOrder.getProgress().toFixed(0)}}%)</b>
-          <br/>La livraison est prévue chez <b>{{openOrder.shipping.name}}</b>
-      </p>
-      <mdc-linear-progress 
-        #progress  determinate="true" [progress]="openOrder.getProgress()/100" [buffer]="0.75" 
-        style="display:block"></mdc-linear-progress>
-      <p class="footer">
-      </p>
-  </div>
- -->
-
   <!-- LAST ORDERS -->
   <p class="no-orders" [hidden]="!isReady||orders.length" i18n>
     {{i18n[locale].title_no_order}} &#9785;
@@ -26,9 +12,9 @@
                     [selected]="selected?.oid==order.oid"
                     [class.autoHeight]="selected?.oid==order.oid"
                     (click)="selectedOrder(order)">
-      <mdc-icon class="hide-md" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                    
+      <mdc-icon class="hide-sm" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                    
       <mdc-list-item-text >        
-          <kng-feedback [user]="user" [orders]="[order]" boxed="true"></kng-feedback>     
+          <kng-feedback [config]="config" [user]="user" [orders]="[order]" [child]="childOrder[order.oid]" boxed="true"></kng-feedback>     
           <mdc-list-item-secondary *ngIf="selected?.oid==order.oid">
             <ul>
               <li *ngFor="let item of order.items" [class.strike]="item.fulfillment.status=='failure'">
@@ -36,17 +22,37 @@
                 <span class="issue red" [hidden]="!item.fulfillment.refunded">remboursé</span>
               </li>
               <li [hidden]="!isPending(order)">
-                <a href="javascript:;" class="text-secondary smaller "                    
+                <a href="javascript:;" class="black smaller "                    
                   (click)="cancel(order)" i18n>
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
               <li [hidden]="isPending(order)">
-                <a href="javascript:;" class="text-secondary smaller "                    
+                <a href="javascript:;" class="black smaller "                    
                 (click)="addAllToCart(order)" i18n>
                 <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
               </li>
             </ul>  
+            <!--- ORDER COMPLEMENT -->
+            <ul *ngFor="let complement of childOrder[order.oid]">
+              <li class="bold">En complément</li>
+              <li *ngFor="let item of complement.items" [class.strike]="item.fulfillment.status=='failure'">
+                {{item.quantity}}x {{item.title}} ({{item.part}}) 
+                <span class="issue red" [hidden]="!item.fulfillment.refunded">remboursé</span>
+              </li>
+              <li [hidden]="!isPending(complement)">
+                <a href="javascript:;" class="black smaller "                    
+                  (click)="cancel(complement)" i18n>
+                  <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
+              </li>
+              <li [hidden]="isPending(complement)">
+                <a href="javascript:;" class="black smaller "                    
+                (click)="addAllToCart(complement)" i18n>
+                <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+              </li>
+            </ul>  
+  
         </mdc-list-item-secondary>                           
+
       </mdc-list-item-text>  
       <div class="hide-sm" mdcListItemMeta>
         <div>{{order.shipping.when|date:'EEE d MMM y'}}</div>

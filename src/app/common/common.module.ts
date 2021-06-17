@@ -14,16 +14,14 @@ import { KngHttpInterceptorService } from './kng-http-interceptor.service';
 
 import { CommonMdcModule } from './common.mdc.module';
 
-// import {
-//   MdcLinearProgressModule,
-// } from '@angular-mdc/web';
-
 import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KngNavigationStoreResolve } from './navigation.store.service';
 import { KngUtils } from './utils';
+import { KngNavMarketplaceComponent } from '../kng-nav-marketplace/kng-nav-marketplace.component';
+import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.component';
 
 @NgModule({
   imports: [
@@ -34,12 +32,16 @@ import { KngUtils } from './utils';
   exports: [
     CommonMdcModule,
     RouterModule,
+    KngNavMarketplaceComponent,
+    KngNavCalendarComponent,
     KngFooterComponent,
     KngLazyLoadDirective,
   ],
   declarations: [
     // KngNavbarComponent,
     // KngRootComponent,
+    KngNavMarketplaceComponent,
+    KngNavCalendarComponent,
     KngFooterComponent,
     KngLazyLoadDirective,
   ],

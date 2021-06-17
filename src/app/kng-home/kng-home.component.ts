@@ -4,14 +4,9 @@ import {
   OnDestroy,
   ViewEncapsulation,
   HostListener,
-  ViewChildren,
-  ElementRef,
-  QueryList,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CartService,
   Category,
@@ -21,7 +16,9 @@ import {
   LoaderService,
   User,
   CartAction,
-  PhotoService
+  PhotoService,
+  Shop,
+  Order
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
@@ -34,33 +31,33 @@ import { i18n, KngNavigationStateService } from '../common';
   // changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
-
-  @ViewChildren('section') sections: QueryList<ElementRef>;
-
   isReady: boolean = false;
 
+  shops: Shop[];
+  pendingOrders: Order[];
   config: Config;
   categories: Category[];
   cached: any = {};
   group: any = {};
   home: Product[] = [];
+  products: Product[];
   target: string; // home, selection, wellness, cellar
   user: User;
   subscription;
-
-  //
-  // infinite scroll callback
-  scrollCallback;
-  scrollPosition: number;
-  scrollDirection: number;
-  currentPage = 3;
-  visibility: any = {};
+  categorySlug: string;
+  displaySlug: string;
+  scrollDirection:number;
 
   //
   // gradient of background image
   bgGradient = `linear-gradient(
-    rgba(50, 50, 50, 0.1),
-    rgba(50, 50, 50, 0.7)
+    rgba(50, 50, 50, 0.01),
+    rgba(50, 50, 50, 0.1)
+  ),`;
+
+  bgGradientXS = `linear-gradient(
+    rgba(250, 250, 250, 0.2),
+    rgba(250, 250, 250, 0.8)
   ),`;
 
   //
@@ -121,22 +118,27 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
+    private $router: Router,
     private $photo: PhotoService
   ) {
     // bind infinite scroll callback function
-    this.scrollCallback = this.getNextPage.bind(this);
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.isReady = false;
     this.config = loader[0];
     this.user = loader[1];
     this.categories = loader[2] || [];
-    this.currentPage = 1000;
 
+    this.products = [];
 
     //
     // default home target (home, delicacy, cellar)
     this.target = this.$route.snapshot.url.length && this.$route.snapshot.url[0].path || 'home';
+    this.shops = [];
 
+    this.pendingOrders = [];
+    if(loader.length>3) {
+      this.pendingOrders = <Order[]>loader[4];
+    }    
     // this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
     //   //
     //   // deploy random shop picture for outside javascript
@@ -145,7 +147,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if(this.subscription) {
+      this.subscription.unsubscribe();  
+    }
   }
 
   ngOnInit() {
@@ -156,6 +160,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     let loaded = false;
 
     this.subscription = this.$loader.update().subscribe(emit => {
+
+      // emit signal for order
+      if(emit.orders) {
+        this.pendingOrders = emit.orders;
+      }
 
       // emit signal for config
       if (emit.config) {
@@ -193,6 +202,22 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    //
+    // update title based on HUB instance
+    if (this.config.shared.hub && this.config.shared.hub.name) {
+      const site = this.config.shared.hub.siteName[this.locale];
+      const tag =  this.config.shared.hub.tagLine.t[this.locale];
+      document.title = site + ' - ' + tag;
+    }
+
+    if(this.$navigation.isMobileOrTablet()) {
+      this.bgGradient = this.bgGradientXS;
+    }
+  }
+
+  get store(){
+    return this.$navigation.store;
   }
 
   get locale() {
@@ -203,38 +228,25 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.$cart.add(product);
   }
 
-  doDirectionUp() {
-
-  }
-
-  doDirectionDown() {
-
-  }
-
-  getNextPage() {
-    //
-    // next page must be async loaded
-    return timer(10).pipe(map(ctx => this.currentPage++));
+  fireSearch(link){
+    this.$navigation.fireSearch(link);    
   }
 
   getCategories() {
-    if (this.cached.categories && this.currentPage === this.cached.currentPage) {
+    if (this.cached.categories) {
       return this.cached.categories;
     }
+
     if (!this.isReady) {
       return [];
     }
-    // TODO needs dynamic DEPARTEMENT feature
-    this.cached.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
-      return (c.active) &&
-             (c.type === 'Category') &&
-             (c.group.toLocaleLowerCase() === this.target || this.target === 'selection' ) &&
-             (this.group[c.name]) && (this.group[c.name].length);
-    }).slice(0, this.currentPage);
-    this.cached.currentPage = this.currentPage;
-    this.cached.categories.forEach(cat => this.visibility[cat.slug] = false);
 
-    return this.cached.categories;
+    return this.cached.categories = this.categories.sort(this.sortByWeight).filter(c => {
+      return (c.active) && 
+             (c.type === 'Category') &&
+             (c.group.toLocaleLowerCase() === this.target) &&
+             (this.group[c.name]);
+    });
   }
 
 
@@ -295,6 +307,18 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
 
+
+  //
+  // detect child overlay 
+  @HostListener('window:popstate', ['$event'])
+  onPopState($event) {
+    setTimeout(() => {
+      const overlay = document.querySelector('.product-dialog');
+      this.mountOverlay(!!overlay);
+    }, 400);
+  }
+
+
   productsGroupByCategory() {
     const options = Object.assign({}, this.options, this.pageOptions[this.target], {group: this.target});
     this.options.showMore = options.showMore;
@@ -308,164 +332,33 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       options.hub = hub;
     }
 
-    // FIXME inner size
-    const maxcat = (window.innerWidth < 426) ? 8 : 12;
-    const divider = (window.innerWidth < 426) ? 2 : 4;
+
+    const shops = {};
     this.$product.select(options).subscribe((products: Product[]) => {
-      this.home = [];
-      this.group = {};
-      products.forEach((product: Product) => {
+      this.products = products;
+      products.forEach((product: Product) => {        
+        shops[product.vendor.urlpath] = product.vendor;
+        this.group[product.categories.name] = true;
         if (product.attributes.discount) {
           this.home.push(product);
-          //
-          // when discount display randomly product on category
-          if (Math.random() > .7) {
-            return;
-          }
-        }
-
-        //
-        // group by category
-        if (!this.group[product.categories.name]) {
-          this.group[product.categories.name] = [];
-        }
-        this.group[product.categories.name].push(product);
-      });
-      this.home = this.home.slice(0, 14);
-      Object.keys(this.group).forEach(cat => {
-        // console.log('--- DEBUG cat',cat, this.group[cat].length);
-        this.group[cat] = this.group[cat].sort((a, b) => {
-          return b.stats.score - a.stats.score;
-        }).slice(0, maxcat);
-        if (this.group[cat].length % divider === 0 && options.showMore) {
-          this.group[cat].pop();
         }
       });
+      this.shops = Object.keys(shops).map(slug => shops[slug]);
+      this.home = this.home.slice(0, 20);
       this.isReady = true;
-      setTimeout(() => {
-        this.detectVisibility(0);
-      }, 100);
     });
 
   }
 
+  scrollToSlug(slug: string) {
+    this.categorySlug = slug;
+    this.displaySlug = slug;
+    this.$router.navigate(['/store', this.$navigation.store,(this.target || 'home'), 'category',slug]);
 
-  scrollNextSectionIntoView(slug: string) {
-    const nextSection = this.findNextSection(slug);
-    this.scrollElIntoView(nextSection);
-  }
-
-  scrollHasNextSection(currentIndex: number) {
-    return true; // currentIndex < this.images.length - 1;
-  }
-
-  trackerCategories(index, category: Category) {
-    return category.slug;
-  }
-
-  trackerProducts(index, product: Product) {
-    return product.sku;
-  }
-
-
-  private findNextSection(slug: string): HTMLElement {
-    const sectionNativeEls = this.getSectionsNativeElements();
-    const nextIndex = sectionNativeEls.findIndex(el => el.className === slug);
-
-    // console.log('----',slug,nextIndex,this.sections.toArray()[nextIndex])
-    return sectionNativeEls[nextIndex];
-  }
-
-  private getSectionsNativeElements() {
-    return this.sections.toArray().map(el => el.nativeElement);
-  }
-
-  //
-  // detect if current container is visible
-  // on the screen (based on scroll position)
-  detectVisibility(scrollPosition: number) {
-    // safe test
-    if (!this.sections) {
-      return;
-    }
-    this.sections.forEach(container => {
-      const scrollTop = container.nativeElement.offsetTop;
-      const height = container.nativeElement.clientHeight;
-
-      //
-      // container.nativeElement.className visible!
-      if (scrollPosition >= scrollTop &&
-        scrollPosition < (scrollTop + height)) {
-        this.visibility[container.nativeElement.className] = true;
-      }
-      if ((scrollPosition + window.innerHeight) >= scrollTop &&
-        (scrollPosition + window.innerHeight) < (scrollTop + height)) {
-        this.visibility[container.nativeElement.className] = true;
-      }
-      if ((scrollPosition + window.innerHeight) >= scrollTop &&
-        (scrollPosition + window.innerHeight) > (scrollTop + height)) {
-        this.visibility[container.nativeElement.className] = true;
-      }
-    });
-  }
-
-  //
-  // detect child overlay 
-  @HostListener('window:popstate', ['$event'])
-  onPopState($event) {
-    setTimeout(() => {
-      const overlay = document.querySelector('.product-dialog');
-      this.mountOverlay(!!overlay);
-    }, 400);
-  }
-
-  scrollElIntoView(el: HTMLElement) {
-    if (!el) {
-      return;
-    }
-
-    //
-    // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
-    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
+    setTimeout(()=> this.scrollDirection = 0,100);
   }
 
   sortByWeight(a: Category, b: Category) {
     return a.weight - b.weight;
-  }
-
-  //
-  // detect scrall motion and hide component
-  @HostListener('window:scroll', ['$event'])
-  windowScroll($event?) {
-    const scrollPosition = window.pageYOffset;
-    //
-    // avoid CPU usage
-    if (Math.abs(this.scrollPosition - scrollPosition) < 6) {
-      return;
-    }
-
-    this.detectVisibility(scrollPosition);
-
-    if (scrollPosition > this.scrollPosition) {
-      if (this.scrollDirection < 0) {
-        this.scrollDirection--;
-      } else {
-        this.scrollDirection = -6;
-      }
-    } else {
-      if (this.scrollDirection > 0) {
-        this.scrollDirection++;
-      } else {
-        this.scrollDirection = 1;
-      }
-    }
-
-    if (this.scrollDirection > 20) {
-      this.doDirectionUp();
-    }
-    if (this.scrollDirection < -20) {
-      this.doDirectionDown();
-    }
-    this.scrollPosition = scrollPosition;
   }
 }

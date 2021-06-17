@@ -4,65 +4,57 @@
     <div class="category-wide" >
 
       <!-- CLOSE -->
-      <button (click)="onClose(true)" class="close">
-        <mdc-icon class="size-large">navigate_before</mdc-icon>
+      <button (click)="onClose(true)" class="close" >
+        <mdc-icon class="size-large">arrow_back</mdc-icon>
       </button>
 
-      <h3 mdcHeadline5 class="title" [innerHtml]="category.current.name"></h3>
-      <h6 mdcSubtitle1 class="subtitle" [innerHtml]="category.current.description"></h6>
-
-      <div class="breaker small"></div>
+      <!-- TITLE -->
+      <h4 class="title" [innerHtml]="category.current.name"></h4>
 
       <!-- CATEGORY -->
-      <div class="certified ">
+      <!-- FIXED SIZE -->
+      <div class="toolbox " [class.exited]="scrollDirection < -5 || scrollDirection > 15 || !scrollDirection">
         <!-- TODO BUILD PERSISTENT SUB CAT [routerLink]="['./',child.name]"-->
         <!-- TODO [selected]="filterChild==child.name"-->
+        <!-- [routerLink]="[relative,child.name]" -->
         <mdc-chip-set choice #subcategory>
-          <mdc-chip [routerLink]="[relative,child.name]"                     
+          <mdc-chip (click)="scrollTo($event,child.name)"
                     [id]="'child'+j"                    
+                    [selected]="child.name == filterChild"
                     *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
             <mdc-chip-text>{{child.name}}</mdc-chip-text>
           </mdc-chip>
-        </mdc-chip-set>
-        
+        </mdc-chip-set>        
       </div>
-
 
       <!-- VENDORS-->
       <div class="vendor" >
         <div class="owner" 
+            (click)="toggleVendor(vendor)"
             *ngFor="let vendor of getVendors()">
-            <img [src]="vendor.photo.owner" [class.selected]="filterVendor==vendor.urlpath"></div>
+            <img [src]="vendor.photo.owner" [class.selected]="filterVendor && filterVendor.urlpath==vendor.urlpath"></div>
       </div>
+      <div class="owner-title" *ngIf="filterVendor">
+        <a class="link" [routerLink]="['/store',store,'shops',filterVendor.urlpath]">{{filterVendor && filterVendor.name}}</a>
+      </div>
+
+
     </div>
 
     <!-- FURTHER -->
     <div class="further-product-container mdc-layout-grid" >
-        <!-- <section>
-          <h2>{{category.name}}</h2>
-          <h3 [innerHtml]="category.description"></h3>
-        </section> -->
-        <div infiniteScroller
-             scrollPercent="30"
-             immediateCallback="false"
-             [infiniteScrollContainer]="getDialog()"
-             [scrollCallback]="scrollCallback" 
-             class="kng-layout-card">
-          <kng-product-thumbnail             
-              *ngFor="let product of getProducts();trackBy:trackerProducts;let j=index" 
-              [sku]="product.sku" 
-              [visibility]="getVisibility(j)"
-              class="">
-          </kng-product-thumbnail>
-        </div>
-
-        <div *ngIf="!getProducts().length" class="empty-products">
-          Rien à proposer pour la prochaine livraison!
-        </div>
-
-
-
-      </div>
+      <kng-product-grouped-list class="kng-layout-card"        
+        alphasort="true"
+        [config]="config" 
+        [user]="user"         
+        [filterByVendor]="filterVendor && filterVendor.urlpath"
+        [scrollContainer]="getDialog()"
+        [scrollToSlug]="scrollToCategory"
+        [contentCategories]="getChildCategory(category.current)" 
+        [contentProducts]="getProducts()"
+        (currentCategory)="filterChild=$event"
+        (direction)="scrollDirection=$event"> </kng-product-grouped-list>
+ 
   
   </div>
 </div>

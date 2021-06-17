@@ -1,0 +1,27 @@
+  <!-- MARKETPLACE -->
+  <h2>{{i18n.label().nav_store}}</h2>
+  <h3>{{i18n.label().nav_store_sub}}</h3>
+  <div class="marketplace">
+    <div class="container">
+      <div class="hub"  
+        *ngFor="let hub of config.shared.hubs;let idx=index" 
+        (click)="toggleStore(hub)"
+        [class.selected]="hub.slug === currentHub.slug">
+        <div class="selected" [hidden]="hub.slug !== currentHub.slug">
+          <span class="stars material-icons" >check_circle</span> 
+        </div>
+        <div class="ei_Logo"  ><img [src]="hub.logo" /></div>
+
+        <div class="ei_Title">
+          <div class="bold">{{hub.name}}</div>
+          <div class="ei_Desc">{{hub.description[locale]}}</div>
+        </div>
+        
+        <!-- <div class="ei_Link" [hidden]="hub.slug === currentHub.slug">
+          <div class="action"><a class="pink" (click)="toggleStore(hub)">{{i18n.label().nav_store_change}}</a></div>
+        </div> -->
+
+      </div>
+
+    </div>
+  </div>

@@ -5,7 +5,7 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close">
-        <mdc-icon class="size-large">navigate_before</mdc-icon>
+        <span class="material-icons size-large">navigate_before</span>
       </button>
 
       <mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
@@ -13,14 +13,18 @@
    
    
        <mdc-card-primary-action>
-         <mdc-card-media [square]="true" [ngStyle]="{'background-image': bgStyle}" class="media ">
-           <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" />
+         <mdc-card-media [square]="true" [ngStyle]="bgStyle" class="media ">
+           <img src="/assets/img/k-highlight.png" class="highlight-new" hidden/>
 
+           <div class="product-available">
+            non disponible
+          </div>
+  
            <button class="action-add right " (click)="addToCart($event,product)">
-            <mdc-icon class="size-medium">add</mdc-icon>
+            <span class="material-icons size-medium">add</span>
           </button>
           <button class="action-remove " (click)="removeToCart($event,product)">
-            <mdc-icon class="size-medium">remove</mdc-icon>
+            <span class="material-icons size-medium">remove</span>
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
               
@@ -67,9 +71,9 @@
 
       <!-- CERTIFIED -->
       <div class="certified ">
-        <ul class="info ">
-          <li [hidden]="!product.quantity.display">{{product.quantity.comment}}</li>
-          <li [hidden]="!product.shelflife.display">{{product.shelflife.comment}}</li>
+        <ul class="info " [hidden]="!product.quantity.display && !product.shelflife.display">
+          <li >{{product.quantity.comment}}</li>
+          <li >{{product.shelflife.comment}}</li>
         </ul>
 
         <mdc-chip-set>
@@ -97,21 +101,16 @@
         </div> -->
       </div>
 
-      <div class="breaker"></div>
+      <div class="breaker small"></div>
 
       <!-- ADMIN OR OWNER ACTIONS -->
       <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
-        <h4>Fonctions Admin</h4>
         <div>Quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</div>
         <div>
-        <button mdc-button primary role="button" (click)="product.pricing.stock=0;save(product);"
-          [disabled]="WaitText">0</button>
-        <button mdc-button primary role="button" (click)="product.pricing.stock=10;save(product);"
-          [disabled]="WaitText">10</button>
-        <button mdc-button primary role="button" (click)="product.pricing.stock=40;save(product);"
-          [disabled]="WaitText">40</button>
+          Éditer &nbsp;
+          <a href="https://admin.karibou.ch/product/{{product.sku}}">le produit</a>&nbsp;--&nbsp; 
+          <a href="https://admin.karibou.ch/vendor/{{product.vendor.urlpath}}">la boutique</a>
         </div>
-
         <hr/>
         <div>Photos formats bruts</div>
         <div>
@@ -120,17 +119,6 @@
           <a target="_blank" href="{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
         </div>
         <hr/>
-        <div [hidden]="!user.isAdmin()">Position du produit</div>
-        <div [hidden]="!user.isAdmin()">
-          <button mdc-button primary role="button"                   
-                  (click)="product.attributes.boost=!product.attributes.boost;save(product);"
-            [disabled]="WaitText">BOOST ({{product.attributes.boost}})</button>
-          <button mdc-button primary role="button" 
-                  (click)="product.attributes.home=!product.attributes.home;save(product);"
-            [disabled]="WaitText">HOME ({{product.attributes.home}})</button>
-        </div>
-        <hr/>
-
       </div>
 
       <!-- VENDOR-->
@@ -156,31 +144,31 @@
           <li>
             <div>Lun.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,1)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,1)}}</span>
             </div>
           </li>
           <li>
             <div>Mar.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,2)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,2)}}</span>
             </div>
           </li>
           <li>
             <div>Mer.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,3)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,3)}}</span>
             </div>
           </li>
           <li>
             <div>Jeu.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,4)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,4)}}</span>
             </div>
           </li>
           <li>
             <div>Ven.</div>
             <div class="indicator">
-              <mdc-icon class="size-small">{{getAvailability(product,5)}}</mdc-icon>
+              <span class="material-icons size-small">{{getAvailability(product,5)}}</span>
             </div>
           </li>
         </ul>

@@ -33,6 +33,11 @@ mdc-list{
   position: relative;  
 }
 
+.mdc-dialog-scroll-lock .toolbox.home {
+  opacity: 0!important;
+}
+
+
 .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, 
 .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background{
   background-color:var(--mdc-theme-primary);
@@ -67,8 +72,8 @@ mdc-list{
 
 
 .mdc-fab{
-  color: var(--mdc-theme-primary-text)!important;    
-  background: var(--mdc-theme-primary)!important;    
+  color: var(--mdc-theme-secondary-text)!important;    
+  background: var(--mdc-theme-secondary)!important;    
   &.text-primary {
 //    @include mdc-fab-accessible($material-color-green-800);
     @include mdc-fab-accessible($mdc-theme-primary);
@@ -95,7 +100,7 @@ mdc-list{
 //     transform: translateY(160px) scale(1)!important;
 //   }
 
-//   @media (max-width: 426px) {
+//   @media (max-width: 429px) {
 //     width: 100%!important;
 //     transform: translateY(200px) scale(1)!important;
 //   }

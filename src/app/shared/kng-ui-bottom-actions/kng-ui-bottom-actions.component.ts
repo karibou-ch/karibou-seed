@@ -2,7 +2,8 @@
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
 from '@angular/core';
 import { Category, ProductService, Product, CartService, Config } from 'kng2-core';
-import { i18n } from '../../common';
+import { i18n, KngNavigationStateService } from '../../common';
+import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 
 @Component({
   selector: 'kng-ui-bottom-actions',
@@ -18,18 +19,17 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Input() exited: boolean;
   @Input() group: string;
 
-  store = 'geneva';
   show: boolean;
   findGetNull: boolean;
   products: Product[] = [];
 
   i18n: any = {
     fr: {
-      bookmark: 'Sugestions',
+      bookmark: 'Favoris',
       search_placeholder: 'Recherche',
     },
     en: {
-      bookmark: 'Proposals',
+      bookmark: 'Favorites',
       search_placeholder: 'Search',
     }
   };
@@ -50,11 +50,26 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   constructor(
     public  $i18n: i18n,
     private $cart: CartService,
+    private $navigation: KngNavigationStateService,
+    private $metric: MetricsService,
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
-  ) { }
+  ) { 
+    this.exited = true;
+  }
 
   ngOnInit() {
+    // FIXME release subscribe
+    this.$navigation.search$().subscribe((keyword)=>{
+      if(keyword == 'favoris') {
+        this.doClear();
+        this.doPreferred();
+        return;
+      }
+      this.search.nativeElement.value = keyword;
+      this.doInput(keyword);
+    });
+
     this.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
       return c.active && (c.type === 'Category');
     });
@@ -66,6 +81,10 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  }
+
+  get store() {
+    return this.$navigation.store;
   }
 
   get locale() {
@@ -154,9 +173,14 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       options.group = this.group;
     }
 
+    //
+    // Metrics please
+    this.$metric.event(EnumMetrics.metric_view_proposal);
+    
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
       this.products = products.sort(this.sortByScore);
+      this.show = true;
       this.$cdr.markForCheck();
     });
 
@@ -173,6 +197,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.doClear();
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+      this.$metric.event(EnumMetrics.metric_view_menu);
+
     }
 
   }

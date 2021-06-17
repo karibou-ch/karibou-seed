@@ -54,10 +54,13 @@ export class ProductListComponent implements OnInit {
   };
   vendors: Shop[];
 
-  filterVendor: string;
+  filterVendor: Shop;
   filterChild: string;
-  childSub;
+  childSub$;
+  childMap: any;
   relative = './';
+  scrollDirection: number;
+  scrollToCategory: string;
 
   options: {
     hub?: string;
@@ -89,19 +92,25 @@ export class ProductListComponent implements OnInit {
       similar: []
     };
     this.vendors = [];
+    this.childMap = {};
 
     const loader = this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
     this.user = loader[1];
     this.category.categories = loader[2];
     this.scrollCallback = this.getNextPage.bind(this);
+    this.scrollDirection = 0;
     ProductListComponent.SCROLL_CACHE = 0;
+  }
+
+  get store(){
+    return this.config && this.config.shared.hub.slug;
   }
 
   ngOnDestroy() {
     this.clean();
-    if (this.childSub) {
-      this.childSub.unsubscribe();
+    if (this.childSub$) {
+      this.childSub$.unsubscribe();
     }
   }
 
@@ -133,7 +142,6 @@ export class ProductListComponent implements OnInit {
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.dialog.nativeElement.classList.remove('fadeout');
-
   }
 
   //
@@ -144,7 +152,10 @@ export class ProductListComponent implements OnInit {
     if(diff < 100) {
       return;
     }
-    this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
+    setTimeout(()=>{
+      this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
+    },40);
+    
   }
 
   clean() {
@@ -158,8 +169,11 @@ export class ProductListComponent implements OnInit {
     this.onClose(this.dialog);
   }
 
+  //
+  // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    return category.child;
+    const child = category.child || [];
+    return child.filter(child => this.childMap[child.name]).sort((a,b) => a.weight - b.weight);
   }
 
   getDialog() {
@@ -197,6 +211,17 @@ export class ProductListComponent implements OnInit {
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
+
+      //
+      // count child categories
+      this.products.forEach(product => {
+        if (!this.childMap[product.belong.name]) {
+          this.childMap[product.belong.name] = 0;
+        }
+        this.childMap[product.belong.name]++;
+      });
+
+
       //
       // select first child category
       // this.subcategory.chips.filter(elem=>true)[0].selected=true;
@@ -205,31 +230,31 @@ export class ProductListComponent implements OnInit {
       // update child only after products
       // TODO     .pipe(takeWhile(() => !this.destroyed))
 
-      this.childSub = this.$route.params.subscribe(param => {
-        if (param['child']) {
-          this.relative = '../';
-          this.toggleChild(param['child']);
-        } else if (this.category.current.child[0]) {
-          this.relative = './';
-          this.toggleChild(this.category.current.child[0].name);
-        }
-      });
+      // this.childSub$ = this.$route.params.subscribe(param => {
+      //   // this.filterVendor = null;
+      //   if (param['child']) {
+      //     this.relative = '../';
+      //     this.scrollToCategory = this.filterChild = (param['child']);          
+      //   } else if (this.category.current.child[0]) {
+      //     this.relative = './';
+      //     this.scrollToCategory = this.filterChild = (this.getChildCategory(this.category.current)[0].name);
+      //   }
+      // });
 
 
       //
       // set vendors after toggle of child category
       this.setVendors(this.products);
       this.cdr.markForCheck();
-      // this.restoreScroll();
     });
   }
 
   setProducts() {
-    return this.cache.products = this.products.filter(product => {
-      const vendor = !this.filterVendor || product.vendor.urlpath === this.filterVendor;
-      const cat = !this.filterChild || product.belong.name === this.filterChild;
-      return cat && vendor;
-    });
+    return this.cache.products = this.products;
+    // return this.cache.products = this.products.filter(product => {
+    //   const cat = !this.filterChild || product.belong.name === this.filterChild;
+    //   return cat || true;
+    // });
   }
 
   setVendors(products: Product[]) {
@@ -239,24 +264,24 @@ export class ProductListComponent implements OnInit {
   }
 
   toggleVendor(vendor: Shop) {
-    if (this.filterVendor === vendor.urlpath) {
+    if (this.filterVendor &&
+        this.filterVendor.urlpath === vendor.urlpath) {
       return this.filterVendor = null;
     }
-    this.filterVendor = vendor.urlpath;
-    this.setProducts();
+    this.filterVendor = vendor;
   }
 
   toggleChild(child: string) {
+
     if (this.filterChild === child) {
-      this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
-      this.filterChild = null;
-      this.setProducts();
+      // this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
+      // this.filterChild = null;
+      // this.setProducts();
       return;
     }
 
-    this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = (elem.value === child));
     this.filterChild = child;
-    this.setProducts();
+    //this.setProducts();
   }
 
 
@@ -274,14 +299,24 @@ export class ProductListComponent implements OnInit {
     ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
+  scrollTo($event, name) {
+    this.scrollToCategory = name;
+    this.filterChild = name;
+    
+    $event.stopPropagation();
+    $event.preventDefault();
+  }
 
   //
   // sort products by:
   //  - belong.weight
   //  - stats.score
+  //  - title
   sortProducts(a, b) {
     // sort : HighScore => LowScore
-    const score = b.stats.score - a.stats.score;
+    // const score = b.stats.score - a.stats.score;
+    // sort : Title
+    const score = a.title.localeCompare(b.title);
     if (!a.belong || !a.belong) {
       return score;
     }
@@ -291,6 +326,7 @@ export class ProductListComponent implements OnInit {
     if (belong !== 0) {
       return belong;
     }
+
     return score;
   }
 

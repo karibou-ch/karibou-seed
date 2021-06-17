@@ -14,9 +14,15 @@ export class KngNavigationStoreResolve implements Resolve<Promise<any>> {
     private $navigation: KngNavigationStateService
   ) { }
   resolve(route: ActivatedRouteSnapshot) {
+
+    //
+    // update store 
+    if(!this.$navigation.store && route.params.store){
+      this.$navigation.store = route.params.store;
+    }
+
     //
     // store value is mandatory to enter in a market
-    this.$navigation.store = route.params['store'];
     return new Promise(resolve => {
       this.$loader.readyWithStore().subscribe((loader) => {
         resolve(loader);

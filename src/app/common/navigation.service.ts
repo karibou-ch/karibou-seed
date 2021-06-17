@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { Config, ConfigService, ShopService } from 'kng2-core';
 
 import { filter } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
 // import { i18n } from './i18n.service';
 
 /**
@@ -24,6 +25,7 @@ export class KngNavigationStateService  {
   private agent: string;
   private cached: any = {};
 
+  private _search$: Subject<string>;
 
   constructor(
     private $config: ConfigService,
@@ -32,6 +34,9 @@ export class KngNavigationStateService  {
     private $router: Router
   ) {
     this.menu = {};
+
+    this._search$ = new Subject();
+
     //
     // init common parameters
     this.agent = navigator.userAgent || navigator.vendor || window['opera'];
@@ -42,10 +47,19 @@ export class KngNavigationStateService  {
       .pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
           this.timestamp = Date.now();
       });
+
+    this.$config.config$.subscribe(config =>{
+      this.updateConfig(config);
+    });
+      
   }
 
   back() {
     this.$location.back();
+  }
+
+  fireSearch(keyword: string) {
+    this._search$.next(keyword);
   }
 
   hasHistory() {
@@ -53,19 +67,44 @@ export class KngNavigationStateService  {
     return this.referrer !== this.$router.url;
   }
 
+  //
+  // FIXME, config.shared can be undefined
   updateConfig(config: Config) {
+    if (!config.shared) {
+      return;
+    }
     this.config = config;
     this.menu = {};
     this.cached = {};
 
     //
+    // set theme
+    const hub = this.config.shared.hub;
+    if (hub && hub.colors && hub.colors.primary) {
+      try {
+        const style = document.documentElement.style;
+        if (hub.colors.primary) { style.setProperty('--mdc-theme-primary', hub.colors.primary); }
+        if (hub.colors.primaryText) { style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText); }
+        if (hub.colors.action) { style.setProperty('--mdc-theme-secondary', hub.colors.action); }
+        if (hub.colors.actionText) { style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText); }
+        if (hub.colors.action) { style.setProperty('--mdc-theme-karibou-pink', hub.colors.action); }
+      } catch (err) {}
+    }
+
+
+    //
     // group menu
-    config.shared.menu.forEach(menu => {
+    const menus = config.shared.menu || [];
+    menus.forEach(menu => {
       if (!this.menu[menu.group]) {
         this.menu[menu.group] = [];
       }
       this.menu[menu.group].push(menu);
     });
+
+    if(!this.store && hub && hub.slug) {
+      this.store = hub.slug;
+    }
   }
 
   get HUBs() {
@@ -78,13 +117,13 @@ export class KngNavigationStateService  {
     }
     this.currentStore = store;
     this.$config.get(store).subscribe();
-    this.$shops.query({hub:store}).subscribe();
+    this.$shops.query({hub: store}).subscribe();
   }
 
   //
   // FIXME default store is currently Geneva. What should be the exit plan ?
   get store() {
-    return this.currentStore || 'geneva';
+    return this.currentStore;
   }
 
   isMobile(): boolean {
@@ -124,4 +163,7 @@ export class KngNavigationStateService  {
     return this.cached[group];
   }
 
+  search$() {
+    return this._search$.asObservable();
+  }
 }

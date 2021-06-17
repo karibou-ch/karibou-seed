@@ -1,85 +1,95 @@
 <!-- FEEDBACK -->
-<kng-feedback [user]="user" forceload="true">
-    <h3>{{$i18n[locale].home_feedback_title}}</h3>
+<kng-feedback [config]="config" [user]="user" forceload="true" [orders]="pendingOrders">
+  <h3>{{$i18n[locale].home_feedback_title}}</h3>
 </kng-feedback>
+
+<!-- LINKS -->
+<kng-product-link [config]="config"></kng-product-link>
+
 
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="!hasContent('p',target)" 
-    [class.cover]="hasBackgroundContent(target)" 
+    [class.cover-lg]="hasBackgroundContent(target)" 
     [ngStyle]="getContentStyle(target)">
-
+  
   <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
       [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
   </div>
-
-  <div class="welcome" [innerHtml]="getContent('p',target)"></div>
+  <div class="welcome" [innerHtml]="getContent('p',target)"></div>  
 </div>
+
+
+<!-- -->
+<!-- MARKETPLACE -->
+<kng-nav-marketplace [config]="config" [orders]="pendingOrders"></kng-nav-marketplace>
+
 
 <!-- SELECTION -->
 <kng-product-swipe *ngIf="home.length>2" [products]="home"></kng-product-swipe>
+
+<!-- CATEGORY -->
+<!-- FIXED SIZE -->
+<div class="toolbox home" [class.hide]="(!scrollDirection)" [class.exited]="scrollDirection < -5 || scrollDirection > 15 || (!scrollDirection) ">
+  <mdc-chip-set choice >
+    <mdc-chip (click)="scrollToSlug(category.slug)"
+              [id]="'category-'+j"                    
+              [selected]="category.slug == displaySlug"
+              *ngFor="let category of getCategories();let j=index">
+      <mdc-chip-text>{{category.name}}</mdc-chip-text>
+    </mdc-chip>
+    <mdc-chip (click)="fireSearch('favoris')" class="bookmark">
+      <mdc-chip-icon secondary leading>bookmark</mdc-chip-icon>
+      <mdc-chip-text>Favoris</mdc-chip-text>
+    </mdc-chip>
+    <mdc-chip [routerLink]="['/store',store,'shops','list']">
+      <mdc-chip-icon secondary leading>home</mdc-chip-icon>
+      <mdc-chip-text>{{$i18n.label().nav_store_shops_list}}</mdc-chip-text>
+    </mdc-chip>
+
+
+  </mdc-chip-set>        
+</div>
 
 <!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
 <kng-ui-bottom-actions [exited]="scrollDirection<-5" 
                        [group]="target"
                        [categories]="getCategories()"
                        [config]="config"
-                       (selected)="scrollNextSectionIntoView($event)">  
+                       (selected)="scrollToSlug($event)">  
 </kng-ui-bottom-actions>
 
 
   
-  
-  
-<!-- Window virtual scroll (manage size) 
-  -- https://medium.com/@yongtze_chi/virtual-scrolling-with-angular-145233f79384
-  -->
-<!-- <div class="product-container mdc-layout-grid"
-    infiniteScroller
-    scrollPerecnt="70"
-    immediateCallback="false"
-    infiniteScrollContainer="window"
-    [scrollCallback]="scrollCallback"> -->    
-<div class="product-container mdc-layout-grid" >
+<div class="product-container mdc-layout-grid" *ngIf="products.length" >
     
   <!-- Layout documentation
        https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
 
-  <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
 
-  <!-- INFORMATION FOR HOME ONLY-->
-  <div class="home-header" *ngIf="i==2 && target == 'home' && config.shared.hub.header.active">
-    <div class="welcome" [innerHtml]="config.shared.hub.header.message[locale]"></div>
-  </div>
-  
-  
-  <div [class]="category.slug"
-       [hidden]="!category.active" 
-       #section>
-    <section>
-      <h2>{{category.name}}</h2>
-      <h3 [innerHtml]="category.description"></h3>
-    </section>
-    <div class="kng-layout-card" >
-        <kng-product-thumbnail 
-            [visibility]="visibility[category.slug]"
-            [sku]="product.sku"
-            *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index"
-            class="">
-        </kng-product-thumbnail>
-        <div class="category" 
-             [hidden]="!visibility[category.slug]||!options.showMore"
-             [ngClass]="category.color" 
-             [routerLink]="['category',category.slug]" >
-          <div class="icon"><i class="material-icons">playlist_add</i></div>
-          <div>{{category.name}} </div>
-
-        </div>
-
+  <kng-product-grouped-list 
+       useMaxCat="true" showMore="on" offsetTop="500" clazz="home-header"       
+       [config]="config" 
+       [user]="user" 
+       [contentCategories]="getCategories()" 
+       [contentProducts]="products"       
+       [contentIf]="target == 'home' && config.shared.hub.header.active"
+       [scrollToSlug]="categorySlug" 
+       (currentCategory)="displaySlug=($event || displaySlug)"
+       (direction)="scrollDirection=$event">
+    <!-- INFORMATION FOR HOME ONLY-->
+    <div class="home-header">
+      <!-- HUB -->
+      <div class="banner" >
+        <h1>{{config.shared.hub.name}}</h1>
+        <h2>{{config.shared.hub.description[locale]}}</h2>  
+        <img hidden [src]="config.shared.hub.tagLine.image" />
+        <button hidden>Changer de marché</button>
+      </div>
+    
+      <div class="welcome" [innerHtml]="config.shared.hub.header.message[locale]"></div>
     </div>
-    <div class="breaker small"></div>
-  </div>
-  </ng-template>
-      
+
+  </kng-product-grouped-list>
 </div>
   
 <router-outlet ></router-outlet>

@@ -13,7 +13,7 @@
   padding-left: 20px;
   padding-right: 20px;
 
-  @media (max-width:426px) {
+  @media (max-width:429px) {
     width: 100%;
     margin-left: 0px;
     margin-right: 0;
@@ -75,7 +75,7 @@
     background-color: var(--mdc-theme-primary);
     margin-top: 40px;
     margin-bottom: 40px;
-    @media screen and (max-width:426px){
+    @media screen and (max-width:429px){
       width:calc( 100vw - 90px );
     }
     
@@ -133,7 +133,7 @@
         display: block;
         margin-left: -20px;
         margin-right: -20px;              
-        @media screen and (max-width:426px) {
+        @media screen and (max-width:429px) {
           max-width: calc( 100vw + 1px );          
           margin-left: -5px;
           margin-right: -5px;              

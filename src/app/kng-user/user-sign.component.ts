@@ -7,6 +7,7 @@ import { KngNavigationStateService, i18n } from '../common';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { Config, User, UserService } from 'kng2-core';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
 @Component({
   selector: 'kng-user-sign',
@@ -34,6 +35,10 @@ export class UserSignComponent {
       img: '/assets/img/payment/visa.jpg',
       label: 'VISA'
     },
+    amex: {
+      img: '/assets/img/payment/ae.jpg',
+      label: 'American Express'
+    },
     'american express': {
       img: '/assets/img/payment/ae.jpg',
       label: 'American Express'
@@ -56,6 +61,7 @@ export class UserSignComponent {
   i18n: any = {
     fr: {
       action_reset: 'Réinitialiser',
+      action_reset_done: 'Email envoyé!',
       login_title: 'Identifiez-vous avec votre email',
       login_why: `Une fois identifié, vous aurez une meilleure expérience du marché en ligne 😉`,
       login_create_account: 'Je n\'ai pas de compte',
@@ -65,7 +71,7 @@ export class UserSignComponent {
       login_back_login: 'J\'ai déjà un compte',
       login_ok: 'Merci, vous êtes maintenant connecté',
       login_ko: 'L\'utilisateur ou le mot de passe est incorrect',
-      login_skip: 'Je ne souhaite pas m\'identifier, je veux visiter le marché',
+      login_skip: 'Je veux visiter le marché sans m\'identifier',
       signup_create: 'Créer votre compte',
       signup_phone: 'Le téléphone est essentiel pour pouvoir vous contacter lors d\'une commande',
       password_change_ok: 'Votre mot de passe à été modifié',
@@ -76,6 +82,7 @@ export class UserSignComponent {
     },
     en: {
       action_reset: 'Reset',
+      action_reset_done: 'Email sent!',
       login_title: 'Use email to Sign in',
       login_why: `Identified user will have a better experience of the marketplace 😉`,
       login_create_account: 'New to karibou? Sign up',
@@ -85,7 +92,7 @@ export class UserSignComponent {
       login_back_login: 'Already have an account? Sign in',
       login_ok: '1000 Thanks, you are now connected',
       login_ko: 'Username or password are not correct',
-      login_skip: 'I want to skip the identification to visit the food store',
+      login_skip: 'Visit the food store without identification',
       signup_create: 'Continue',
       signup_phone: 'The phone is mandatory to contact you when ordering',
 
@@ -104,6 +111,7 @@ export class UserSignComponent {
   isReady = false;
   sign: any;
   recover: any;
+  sendRecover: boolean;
   signup: any;
   store: string;
 
@@ -128,11 +136,13 @@ export class UserSignComponent {
     private $fb: FormBuilder,
     private $location: Location,
     private $nav: KngNavigationStateService,
-    private $snack: MdcSnackbar
+    private $snack: MdcSnackbar,
+    private $metric: MetricsService
   ) {
     //
     // initialize HTML content (check on route definition)
     this.askAction = this.$route.snapshot.data.action;
+    this.sendRecover = false;
 
     //
     // initialize loader
@@ -163,10 +173,26 @@ export class UserSignComponent {
     });
 
     //
+    // check existance on token
+    let defaultEmail = '';
+    let defaultPassword = '';
+    const token = this.$route.snapshot.queryParams['token'];
+    if (token && token.length) {
+      // FIXME split char is hardcoded
+      try{
+        const fields = atob(token).split('::');
+        if (fields.length === 2) {
+          defaultEmail = fields[0];
+          defaultPassword = fields[1];
+        }  
+      }catch(e) {}
+    }
+
+    //
     // login account
     this.sign = this.$fb.group({
-      'email': ['', [Validators.required, KngInputValidator.emailValidator]],
-      'password': ['', [Validators.required, KngInputValidator.passwordValidator]]
+      'email': [defaultEmail, [Validators.required, KngInputValidator.emailValidator]],
+      'password': [defaultPassword, [Validators.required, KngInputValidator.passwordValidator]]
     });
 
     //
@@ -176,8 +202,23 @@ export class UserSignComponent {
     });
 
 
+
     this.updateState();
   }
+
+  //
+  // release data
+  ngOnDestroy() {
+    this.config = null;
+    // console.log('---DEBUG ngDestroy',this.config);
+
+  }
+
+  ngOnInit() {
+    if (this.askAction === 'payment') {
+    }
+  }
+
 
   get locale() {
     return this.$i18n.locale;
@@ -228,16 +269,11 @@ export class UserSignComponent {
   }
 
 
-  ngOnInit() {
-    if (this.askAction === 'payment') {
-    }
-  }
-
-  getHubName() {
+  getHubSlug() {
     if (!this.config || !this.config.shared.hub) {
-      return '';
+      return 'artamis';
     }
-    return this.config.shared.hub.name;
+    return this.config.shared.hub.slug;
   }
 
   getTagline(key) {
@@ -271,17 +307,25 @@ export class UserSignComponent {
       return this.$router.navigate([this.mandatory.referrer]);
     }
 
-
     if (document['referrer']) {
+      // const url = document['referrer'].split('/store');
+      // if (url.length === 2) {
+      //   return this.$router.navigateByUrl('/store' + url[1]);
+      // }
+
+      // return window.location.href = document['referrer'];
       return this.$location.back();
     }
 
-
-
     //
     // last case, HOME
-    return this.$location.back();
-    // this.$router.navigate(['/store',this.$nav.store]);
+    this.$location.back();
+    setTimeout(() => {
+      if (!this.config) {
+        return;
+      }
+      this.$router.navigate(['/store', this.$nav.store, 'home']);
+    }, 400);
   }
 
 
@@ -294,6 +338,7 @@ export class UserSignComponent {
   onUpdatePayment($result,other?){
     //
     // force update of all payments method
+
     this.$user.me().subscribe(user => {
       this.user = user;
       const msg = ($result.error) ? ($result.error.message || $result.error) : 'Ok';
@@ -306,6 +351,7 @@ export class UserSignComponent {
     const email = this.recover.value.email.toLocaleLowerCase();
     this.$user.recover(email).subscribe(
       ok => {
+        this.sendRecover = true;
         this.$snack.open(this.$i18n.label().user_recover_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
       }, err => {
         this.$snack.open(err.error, this.$i18n.label().thanks, this.$i18n.snackOpt);
@@ -338,10 +384,12 @@ export class UserSignComponent {
       lastname: this.signup.value.name,
       password: this.signup.value.password,
       confirm: this.signup.value.confirm,
+      hub: this.getHubSlug(),
       phoneNumbers: [{number: this.signup.value.phone, what: 'mobile'}]
     };
     this.$user.register(user).subscribe(
       (user) => {
+        this.$metric.event(EnumMetrics.metric_account_create);
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {
           timeoutMs: 9000
         });

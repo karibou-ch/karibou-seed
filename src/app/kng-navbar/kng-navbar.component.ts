@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CartService,
   CartAction,
   Config,
   ConfigMenu,
   ConfigService,
-  LoaderService,
   User,
   UserService,
   Category,
@@ -20,88 +19,7 @@ import { MdcSnackbar, MdcMenu, MdcTopAppBarSection, MdcDialogRef, MDC_DIALOG_DAT
 import { merge, timer } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-
-//
-// Popup available shipping dates
-@Component({
-  templateUrl: 'kng-navbar.calendar.component.html',
-  styleUrls: ['./kng-navbar.calendar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class KngCalendarForm {
-
-  config: Config;
-  currentShippingDay: Date;
-  labelTime: string;
-  isPremium: boolean;
-  currentRanks: any;
-  currentLimit: number;
-  premiumLimit: number;
-  noshippingMsg: string;
-  showHUBs: boolean;
-  lockedHUB: boolean;
-
-  constructor(public dialogRef: MdcDialogRef<KngCalendarForm>,
-    private $i18n: i18n,
-    @Inject(MDC_DIALOG_DATA) public data: any) {
-      this.config = data.config;
-      this.noshippingMsg = data.noshippingMsg;
-      this.currentShippingDay = data.currentShippingDay;
-      this.isPremium = data.isPremium;
-
-      // FIXME remove hardcoded shippingtimes[16]
-      const hub = this.config.shared.hub.slug;
-      if (hub) {
-        this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
-        this.currentRanks = this.config.shared.currentRanks[hub] || {};
-        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-        this.lockedHUB = this.config.shared.hub.domainOrigin;
-      }
-  }
-
-  get i18n() {
-    return this.$i18n;
-  }
-
-  get locale() {
-    return this.$i18n.locale;
-  }
-
-  onLang($event, lang) {
-    this.$i18n.locale = lang;
-  }
-
-
-
-  toggleStore($event) {
-    this.showHUBs = ($event.target.id === 'hubs');
-  }
-
-  doSetCurrentShippingDay($event, day: Date, idx: number) {
-    if (!this.isDayAvailable(day)) {
-      return;
-    }
-    this.dialogRef.close(day);
-  }
-
-  isDayAvailable(day: Date) {
-    const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return (this.currentRanks[day.getDay()] <= maxLimit);
-  }
-
-  getShippingText(day: Date) {
-    if(!this.isDayAvailable(day)) {
-      return this.i18n.label().nav_shipping_off;
-    }
-    return this.labelTime;
-  }
-
-  getShippingDays() {
-    return this.config.shared.shippingweek;
-  }
-
-}
+import { OrderService } from '../../../../kng2-core/dist';
 
 
 @Component({
@@ -122,6 +40,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   user: User;
   categories: Category[];
   shops: Shop[];
+  orders: Order[];
   private route$: any;
 
   //
@@ -135,7 +54,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   hubImage: string;
   content: any;
   cgAccepted: boolean;
-  noshippingMsg: string;
   cardItemsSz = 0;
   cartItemCountElem: any;
   currentShippingDay: Date;
@@ -155,9 +73,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $config: ConfigService,
     public $i18n: i18n,
     private $route: ActivatedRoute,
+    private $router: Router,
+    private $order: OrderService,
     private $user: UserService,
     public $navigation: KngNavigationStateService,
-    private $dialog: MdcDialog,
     private $snack: MdcSnackbar,
     private $cdr: ChangeDetectorRef,
   ) {
@@ -176,9 +95,17 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.categories = <Category[]>loader[2] || [];
     this.shops = <Shop[]>loader[3] || [];
 
+    this.orders = [];
+    if(loader.length>3) {
+      this.orders = <Order[]>loader[4];
+    }
+
     // console.log('')
     this.primary = [];
     this.topmenu = [];
+
+    // K. image
+    this.Kimage = '/assets/img/k-puce-light.png';
 
     // FIXME remove code repeat
     const hub = this.config.shared.hub.slug;
@@ -186,9 +113,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.currentRanks = this.config.shared.currentRanks[hub] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+      this.Kimage = this.config.shared.hub.logo || this.Kimage;
     }
-
-    this.noshippingMsg = this.getNoShippingMessage();
 
   }
 
@@ -197,13 +123,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // this.route$.unsubscribe();
     // this.$cart.unsubscribe();
     // this.$user.unsubscribe();
-    this.subscription.unsubscribe();
+    if(this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   ngOnInit() {
 
-    // K. image
-    this.Kimage = this.config.shared.tagLine.image;
 
     // HUB title
     this.hubTitle = this.config.shared.hub.siteName[this.locale];
@@ -225,32 +151,39 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     //
     // init cart here because navbar is loaded on all pages
-    this.$cart.setContext(this.config, this.user, this.shops);
+    this.$cart.setContext(this.config, this.user, this.shops,this.orders);
 
     this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
 
-    this.subscription = merge(
-      this.$user.user$.pipe(map(user => ({ user: user }))),
-      this.$config.config$.pipe(map(config => ({ config: config }))),
-      this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state: state })))
-    ).subscribe((emit: any) => {
 
+    this.subscription = merge(
+      this.$user.user$.pipe(map(user => ({ user}))),
+      this.$config.config$.pipe(map(config => ({ config }))),
+      this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state }))),
+      this.$order.orders$.pipe(map(orders => ({orders})))
+    ).subscribe((emit: any) => {
 
       //
       // update user
-      if (emit.user && this.user.id !== emit.user.id) {
+      if (emit.user && this.user && this.user.id !== emit.user.id) {
         Object.assign(this.user, emit.user);
-        this.$cart.setContext(this.config, this.user);
+        this.$cart.setContext(this.config, this.user,this.shops,this.orders);
         this.$cdr.markForCheck();
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
+      }
+
+      // FIXME use appropriate place to setup $cart
+      if(emit.orders && !this.orders.length) {
+        this.orders = emit.orders;
+        this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
       }
       //
       // update config
       if (emit.config) {
         this.detectIOS();
         Object.assign(this.config, emit.config);
-        this.$navigation.updateConfig(this.config);
+        // this.$navigation.updateConfig(this.config);
       }
       //
       // update cart
@@ -319,6 +252,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  getMenuItems(group: string) {
+    return this.$navigation.getMenuItems(group);
+  }
+
+
   getTagline(key) {
     if (!this.config || !this.config.shared.tagLine[key]) {
       return '';
@@ -350,21 +288,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
-  getNoShippingMessage(label?: string) {
-    label = label || 'nav_no_shipping';
-    //
-    // check window delivery
-    if (!this.isDayAvailable(this.currentShippingDay)) {
-      return this.$i18n[this.locale][label];
-    }
-
-
-    //
-    // check manager message
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
-    return noshipping && noshipping.message[this.locale];
-  }
-
   isAppReady() {
     return this.$navigation.store !== undefined;
   }
@@ -390,25 +313,21 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // console.log('---- changed locale')
   }
 
-  openCalendar(){
-    const dialogRef = this.$dialog.open(KngCalendarForm,{
-      data: {
-        config: this.config,
-        isPremium: this.user.isPremium(),
-        currentShippingDay: this.currentShippingDay,
-        noshippingMsg: this.getNoShippingMessage('nav_no_shipping_long')
-      }
-    });
+  setShippingDay(value: any) {
+    this.$cart.setShippingDay(value.day);
+    this.currentShippingDay = this.$cart.getCurrentShippingDay();
+    this.$cdr.markForCheck();
+  }
 
-    dialogRef.afterClosed().subscribe((current: any) => {
-      if (current === 'close') {
-        return;
+  openCalendar(marketplace: any, check?: boolean) {
+    // if not mobile then route to HOME
+    if (check) {
+      if (!this.$navigation.isMobile() ) {
+        return this.$router.navigate(['/store',this.store,'home']);
       }
-      this.$cart.setShippingDay(current);
-      this.currentShippingDay = this.$cart.getCurrentShippingDay();
-      //
-      // FIXME when using dropdown for shipping
-      this.$cdr.markForCheck();
-    });
+    }
+
+    marketplace.open = true;
+
   }
 }

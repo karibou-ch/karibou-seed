@@ -1,6 +1,8 @@
-@import "colors.scss";
-
 mdc-drawer{
+  &.mdc-drawer{
+    width: 300px!important;
+  }
+  
   a{
     color: #0a072b;
   }
@@ -28,12 +30,10 @@ mdc-drawer{
       width: 100%;
   
       .label-shipping{
-        color: $mdc-theme-primary-dark;
         color: var(--mdc-theme-primary-dark);
         font-size: 85%;
         margin-right: 5px;    
         .bullet{
-          background: $mdc-theme-secondary;
           background: var(--mdc-theme-secondary);
           border-radius: 50%;
           padding: 0;
@@ -51,7 +51,7 @@ mdc-drawer{
 
   .admin{
     mdc-list{
-      background: #555!important;
+      -background: #555!important;
     }
     mdc-list-item, 
     h3,
@@ -118,6 +118,12 @@ div.navbar{
     margin-right: auto;
     margin-left: auto;  
     margin-top: 135px;
+    background-color: white;
+
+    @media (min-width:1440px) {
+      max-width: 1170px;
+      width: 1170px;        
+    }
 
     @media (min-width:1024px) {
       max-width: 940px;
@@ -129,7 +135,7 @@ div.navbar{
       width: 100%;      
     }
 
-    @media (max-width: 426px) {
+    @media (max-width: 429px) {
       padding: 0px;
       margin-top: 105px;
       min-width: 326px;
@@ -138,10 +144,19 @@ div.navbar{
     
   }
   
+  .cart-users-count{
+    background: var(--mdc-theme-secondary);
+    font-size: 10px;
+    padding: 5px 4px;
+    width: 5px;
+    height: 4px;
+    border-radius: 50%;
+    line-height: 8px;
+    position: absolute;
+    top: 10px;
+    transform: translateX(-19px);    
+  }
   .cart-items-count{    
-    -color: #009200 !important;
-    -color: #20714e!important;
-    color: $mdc-theme-primary-text;
     color: var(--mdc-theme-primary-text);
     font-weight: 600;    
     &.label{
@@ -165,18 +180,19 @@ div.navbar{
   }
 
   .mdc-top-app-bar{
-    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+    -box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     z-index: 2;
+    color: var(--mdc-theme-primary-text);
 
     img.icon{
       max-width: 24px;
       margin-left: 2px;
       margin-top: 4px;
+      transform: translateX(6px) translateY(-1px);
     }
     //
     // override firefox *:any-link{
     a{
-      color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       text-decoration:none;
     }
@@ -241,9 +257,6 @@ div.navbar{
         transform: translateY(-7px) translateX(18px);
         display: inline-block;
         text-transform: none;
-        span{
-          color: gold;          
-        }
       }
     }
     
@@ -256,12 +269,11 @@ div.navbar{
         }
         mdc-tab-indicator{
           >span{
-            background-color: var(--mdc-theme-karibou-pink)!important;
+            background-color: var(--mdc-theme-secondary)!important;
           }          
         }
 
       }
-      color: $mdc-theme-primary-text!important;
       color: var(--mdc-theme-primary-text)!important;
       
       i.material-icons{
@@ -273,7 +285,6 @@ div.navbar{
       }      
     }
     .mdc-tab-indicator > span{
-      background: $mdc-theme-primary-text;
       background: var(--mdc-theme-primary-text);
       height: 4px;
     }

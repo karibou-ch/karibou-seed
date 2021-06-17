@@ -1,78 +1,13 @@
-<div class="shop" *ngIf="vendor">
+<div class="content">
 
-
-  <div class="left-card" 
-      [ngStyle]="{'background-image': bgGradient + 'url(' + vendor.photo.fg + '/-/resize/900x/fb.jpg)'}">
-
-    <!-- <div class="owner">
-      <img [src]="vendor.photo.owner">
-    </div> -->
-  
-    
-  </div>
-  <div class="right-card">
-    <h1>{{vendor.name}}</h1>
-
-    <div class="description" [kng-markdown]="vendor.description"></div>  
-    <div class="contact">      
-      <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><mdc-icon>phone</mdc-icon> {{vendor.address.phone}}</a>      
-    </div>
-    <!-- MARQUE -->
-    <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">
-    </div> -->
-    <img class="logo" [src]="vendor.photo.logo"  [hidden]="!vendor.photo.logo">
-    
-        
-  </div>
-
-</div>
-<div class="content" *ngIf="vendor">
-  <!-- SHOP FAQ -->
-  <section class="FAQ" *ngIf="vendor.faq&&vendor.faq.length">
-    <div class="breaker"></div>
-    <h2>{{i18n[locale].faq}}</h2>
-    <ul>
-      <li *ngFor="let faq of vendor.faq">
-        <h4>{{faq.q}}</h4>
-        <div [kng-markdown]="faq.a" removeRoot="true" ></div>
-      </li>
-    </ul>
-  </section>      
-
-  <!-- SHOP GEO -->
-  <section class="map" [hidden]="!vendor.address.geo">
-    <div class="breaker"></div>
-    <h2>{{i18n[locale].map_title}}</h2>
-    <div>
-        <img [src]="getStaticMap(vendor.address)" >
-    </div>
-    <address>
-      <b>{{vendor.name}}</b>
-      <br>
-      {{vendor.address.streetAdress}} / {{vendor.address.postalCode}} / {{vendor.address.region}}
-      <br>
-      <a [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
-      <!-- <a class="" ng-show="vendor.photo.source&&user.isOwnerOrAdmin(vendor.name)" ng-href="{{vendor.photo.source}}" target="_new">[Votre galerie photo]</a> -->
-    </address>
-  </section>                        
-
-  <!-- SHOP PRODUCTS -->
-  <section class="products" *ngIf="products.length">
-    <div class="breaker"></div>
-    <h2>{{i18n[locale].products_title}}</h2>
-    <h3>{{i18n[locale].products_subtitle}}</h3>
-    <div class="kng-layout-card mdc-layout-grid" >
-      <kng-product-thumbnail             
-        *ngFor="let product of products;let j=index" 
-        [config]="config"
-        [user]="user"
-        [categories]="categories"
-        [sku]="product.sku" 
-        [visibility]="true"
-        class="">
-      </kng-product-thumbnail>
-    </div>
-  </section>
-
-
+  <mdc-image-list textProtection class="standard-image-list image-list--rounded-corners">
+    <mdc-image-list-item *ngFor="let shop of shops" [routerLink]="['../',shop.urlpath]">
+      <mdc-image-list-image-aspect>
+        <img mdcImageListImage [ngStyle]="ngStyleBck[shop.urlpath]" />
+      </mdc-image-list-image-aspect>
+      <mdc-image-list-supporting>
+        <span mdcImageListLabel>{{shop.name}}</span>
+      </mdc-image-list-supporting>
+    </mdc-image-list-item>
+  </mdc-image-list>  
 </div>

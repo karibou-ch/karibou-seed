@@ -1,0 +1,79 @@
+kng-product-link {
+  width: 100%;   
+
+  @media (max-width:425px) {
+    padding: 0px 20px;
+    padding: 0px;
+    width: calc( 100% - 40px);
+    width: 100%;
+    display: block;
+  }  
+
+  .links {
+    position: relative;
+    background: white;
+    margin-bottom: 20px;
+    font-weight: 200; 
+    -webkit-overflow-scrolling: touch;
+    .title {
+      margin-left: 15px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      padding-top: 10px; 
+      h2,h3{
+        margin: 0;
+      }     
+    }
+    .content {
+      overflow: hidden;
+      overflow-x: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      mdc-chip-set {
+        flex-wrap: nowrap;
+        width: fit-content;
+        padding: 10px;
+        .bookmark {      
+          mdc-chip-icon {
+            color: var(--mdc-theme-secondary);
+          }      
+        }
+    
+      }  
+      
+      .shops {
+        display: flex;
+        flex-wrap: nowrap;
+        width: fit-content;
+        box-sizing: border-box;        
+        -transform: translateX(-2px);
+        padding-left: 15px;
+        article {
+          width: 80px;
+          height: 100px;          
+          margin: 4px;
+          flex: 1 0 80px;
+          margin-right: 10px;
+          img.photo-owner {
+            height:64px;
+            width:64px;
+            padding:1px;
+            -border: 1px solid #ddd;
+            border-radius:35px;        
+          }
+          .title{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;            
+            margin: 0;
+            margin-left: -5px;
+            padding-top: 5px;
+          }
+        }          
+      }
+        
+    }
+  }
+}

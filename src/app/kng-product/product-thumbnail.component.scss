@@ -1,4 +1,3 @@
-@import "colors.scss";
 
 .product-card.incart .action-remove,
 .product-card.incart .action-add
@@ -91,6 +90,7 @@
       bottom: 0;
       background: rgba(255, 255, 255, 0.85);
       z-index: 2;
+      margin-top: -15px;
       ul{
         list-style: none;
         padding: 15px;
@@ -105,8 +105,7 @@
       position: absolute;
       left: 5px;
       bottom: 5px;
-      color: #{$mdc-theme-primary};
-      color: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
       font-weight: 600;
       font-size: 11px;
       background: white;
@@ -137,9 +136,8 @@
 
   
   .action-add,.action-remove{
-    background-color: #{$mdc-theme-primary}!important;
     background-color: var(--mdc-theme-primary) !important;
-    color: white!important;
+    color: var(--mdc-theme-primary-text) !important;
     opacity: 0.7;
     border: 0;
     font-weight: bold;
@@ -189,20 +187,17 @@
   .media{
     height: 9rem;
     background-color:#ddd;
-    @media (max-width: 426px) {
-      height: 7rem;
-    }
 
     background-repeat: no-repeat;
     background-size: cover;  
     background-position-y: 50%;
-    border-radius: 5px;  
+    border-radius: 12px;  
     transition: background-color .2s ease-in-out;
 
   }  
 
   .product-card__subtitle{
-    font-size: smaller;
+    font-size: 15px;
   }
 
   .product-card__primary{

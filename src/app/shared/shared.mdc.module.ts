@@ -7,7 +7,9 @@ import {
   MdcChipsModule,
   MdcTextFieldModule,
   MdcCheckboxModule,
-  MdcLinearProgressModule
+  MdcFormFieldModule,
+  MdcDialogModule,
+  MdcMenuModule
 } from '@angular-mdc/web';
 
 
@@ -15,9 +17,11 @@ import {
   exports: [
     MdcCardModule,
     MdcChipsModule,
+    MdcDialogModule,
+    MdcFormFieldModule,
+    MdcMenuModule,
     MdcTextFieldModule,
-    MdcCheckboxModule,
-    MdcLinearProgressModule
+    MdcCheckboxModule
     ],
   declarations: []
 })

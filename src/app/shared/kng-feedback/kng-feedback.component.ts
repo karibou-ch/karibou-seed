@@ -19,6 +19,7 @@ export class KngFeedbackComponent implements OnInit {
     fr: {
       title_order_prepare: 'Votre commande est en cours de préparation pour',
       title_order_open: 'Vous avez une commande en cours ...',
+      title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
       title_evaluation: 'Votre évaluation:',
@@ -33,6 +34,7 @@ export class KngFeedbackComponent implements OnInit {
     },
     en: {
       title_order_prepare: 'You order is being prepared for',
+      title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
@@ -57,19 +59,26 @@ export class KngFeedbackComponent implements OnInit {
 
   @Input() boxed: boolean;
   @Input() orders: Order[] = [];
+  @Input() child: Order[] = [];
   @Input() user: User;
   @Input() forceload: boolean;
 
+  get hubName() {
+    return (this.config && this.config.shared) ? this.config.shared.hub.name : '';
+  }
 
   get locale() {
     return this.$i18n.locale;
+  }
+
+  get childOrders() {
+    return this.child||[];
   }
 
   constructor(
     public  $i18n: i18n,
     private $snack: MdcSnackbar,
     private $order: OrderService,
-    private $user: UserService,
     private $cdr: ChangeDetectorRef
   ) {
   }
@@ -117,6 +126,10 @@ export class KngFeedbackComponent implements OnInit {
       return EnumFinancialStatus[EnumFinancialStatus.paid];
     }
 
+    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.partially_refunded]) {
+      return EnumFinancialStatus[EnumFinancialStatus.paid];
+    }
+
   }
 
   isOpen(order: Order) {
@@ -145,20 +158,24 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.orders.length) {
+    if (this.orders && this.orders.length) {
       this.order = this.orders[0];
       this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
       this.score = this.order.score;
     }
     if (this.forceload) {
-      this.loadOrders();
+      //this.loadOrders();
     }
+
+
   }
 
   loadOrders() {
     if (!this.user.id) {
       return;
     }
+
+    const hub = this.config ? this.config.shared.hub.slug : '';
     this.$order.findOrdersByUser(this.user, {limit: 4}).subscribe(orders => {
       if (!orders.length) {
         return;

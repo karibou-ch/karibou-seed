@@ -2,46 +2,42 @@
 /**
 A secondary color is used to accent select parts of your UI. 
 It can be complementary or analogous to your primary color */
-$mdc-theme-primary: #2dae76;
-$mdc-theme-secondary:#6ab5b1;
-$mdc-theme-on-primary:white;
 
-/**
 //
+// colors palette examples,
+// https://material.io/design/color/applying-color-to-ui.html
+
+
+//
+// colors palette generator
 // https://material.io/color/#!/?view.left=0&view.right=1&primary.color=ffffff&secondary.color=43b02a&primary.text.color=43b02a&secondary.text.color=ffffff
 
-*/
 
 // BROWN
-$mdc-theme-secondary:#8d6e63;
-$mdc-theme-secondary-light: #be9c91;
-$mdc-theme-secondary-dark: #5f4339;
-$mdc-theme-secondary-text: #d7ccc8;
+// $mdc-theme-secondary:#8d6e63;
+// $mdc-theme-secondary-light: #be9c91;
+// $mdc-theme-secondary-dark: #5f4339;
+// $mdc-theme-secondary-text: #d7ccc8;
 
 // ORANGE
-$mdc-theme-secondary: #f7941e;
-$mdc-theme-secondary-light: #FFDBA4;
-$mdc-theme-secondary-dark: #C26900;
-$mdc-theme-secondary-text: #FFC780;
+// $mdc-theme-secondary: #f7941e;
+// $mdc-theme-secondary-light: #FFDBA4;
+// $mdc-theme-secondary-dark: #C26900;
+// $mdc-theme-secondary-text: #FFC780;
 
-// GRAY
-$mdc-theme-secondary: #eee;
-$mdc-theme-secondary-light: #FFDBA4;
-$mdc-theme-secondary-dark: #aaaaaa;
-$mdc-theme-secondary-text: rgba(0,0,0,.68);
 
 // YELLOW
 // https://medium.com/jexia
-$mdc-theme-primary: #fab700;
-$mdc-theme-primary-light: #fdd923;
-$mdc-theme-primary-dark: #623500;
-$mdc-theme-primary-text: #966000;
+// $mdc-theme-primary: #fab700;
+// $mdc-theme-primary-light: #fdd923;
+// $mdc-theme-primary-dark: #623500;
+// $mdc-theme-primary-text: #966000;
 
 // GREEN
-$mdc-theme-primary:#43b02a;
-$mdc-theme-primary-light: #67e1a5;
-$mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-$mdc-theme-primary-text: #fff;
+// $mdc-theme-primary:#43b02a;
+// $mdc-theme-primary-light: #67e1a5;
+// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
+// $mdc-theme-primary-text: #fff;
 
 // // GREEN
 // $mdc-theme-primary:#fff;
@@ -50,10 +46,16 @@ $mdc-theme-primary-text: #fff;
 // $mdc-theme-primary-text: rgba(67, 176, 42, 0.87);
 
 // BLUE
-$mdc-theme-primary:rgba(0, 0, 50, 0.9);
-$mdc-theme-primary-light: #43b02a;
-$mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-$mdc-theme-primary-text: #eee;
+// $mdc-theme-primary:rgba(0, 0, 50, 0.9);
+// $mdc-theme-primary-light: #43b02a;
+// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
+// $mdc-theme-primary-text: #eee;
+
+// PINK
+$mdc-theme-secondary: #da1c5c;
+$mdc-theme-secondary-light: #ff5d89;
+$mdc-theme-secondary-dark: #a20033;
+$mdc-theme-secondary-text: #fff6f3;
 
 // BROWN
 $mdc-theme-primary:#423f3b;
