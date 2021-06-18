@@ -47,7 +47,7 @@ import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.co
   ],
 })
 export class KngCommonModule {
-  public static forRoot(options?: any): ModuleWithProviders {
+  public static forRoot(options?: any): ModuleWithProviders<KngCommonModule> {
     return {
       ngModule: KngCommonModule,
       providers: [

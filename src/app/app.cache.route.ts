@@ -1,10 +1,12 @@
 import { RouteReuseStrategy } from '@angular/router/';
 import { ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+import { Injectable } from "@angular/core";
 
 //
 // FIXME RouteReuseStrategy
 // https://itnext.io/cache-components-with-angular-routereusestrategy-3e4c8b174d5f
 // https://stackoverflow.com/a/41515648
+@Injectable()
 export class CacheRouteReuseStrategy implements RouteReuseStrategy {
   storedRouteHandles = new Map<string, DetachedRouteHandle>();
   allowRetriveCache = {

@@ -1,4 +1,4 @@
-import { Directive, AfterViewInit, ElementRef, Input, OnDestroy, Renderer } from '@angular/core';
+import { Directive, AfterViewInit, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core';
 
 import { Observable, Subscription, fromEvent } from 'rxjs';
 import { exhaustMap, filter, map, pairwise, startWith } from 'rxjs/operators';
@@ -51,7 +51,7 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
   @Input()
   infiniteScrollContainer;
 
-  constructor(private renderer: Renderer, private elm: ElementRef) {
+  constructor(private renderer: Renderer2, private elm: ElementRef) {
 
   }
 

@@ -88,7 +88,7 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
   ],
 })
 export class SharedModule {
-  public static forRoot(options?: any): ModuleWithProviders {
+  public static forRoot(options?: any): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       providers: [

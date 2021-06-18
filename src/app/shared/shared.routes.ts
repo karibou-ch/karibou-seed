@@ -39,12 +39,12 @@ export const childrenRoute: Route[] = [
 
 // TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
-  { path: 'admin', loadChildren: '../kng-admin/admin.module#AdminModule' },
-  { path: 'cart', loadChildren: '../kng-cart/kng-cart.module#KngCartModule' },
-  { path: 'content', loadChildren: '../kng-document/kng-document.module#KngDocumentModule' },
-  { path: 'me', loadChildren: '../kng-user/user.module#UserModule' },
-  { path: 'shops', loadChildren: '../kng-shops/kng-shops.module#ShopsModule' },
-  { path: 'shop', loadChildren: '../kng-shops/kng-shops.module#ShopsModule' },
+  { path: 'admin', loadChildren: () => import('../kng-admin/admin.module').then(m => m.AdminModule) },
+  { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
+  { path: 'content', loadChildren: () => import('../kng-document/kng-document.module').then(m => m.KngDocumentModule) },
+  { path: 'me', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule) },
+  { path: 'shops', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.ShopsModule) },
+  { path: 'shop', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.ShopsModule) },
   // FIXME path construction is ugly
   { path: 'home', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: 'grocery', component: KngHomeComponent, data: { departement: 'grocery' }, resolve: { loader: LoaderResolve }, children: childrenRoute},

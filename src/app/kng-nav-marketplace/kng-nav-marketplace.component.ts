@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ElementRef } from '@angular/core';
 import { i18n } from '../common';
 import { Config, Order } from 'kng2-core';
 import { version } from '../../../package.json';
@@ -28,11 +28,13 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
   currentHub: any;
 
   constructor(
+    public $elem: ElementRef<HTMLElement>,
     private $i18n: i18n,
     private $router: Router,
   ) {
 
   }
+
 
   ngOnDestroy() {
   }
@@ -46,7 +48,12 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
       this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-      this.lockedHUB = this.config.shared.hub.domainOrigin;
+      this.lockedHUB = !!this.config.shared.hub.domainOrigin;
+    }
+
+    if(this.lockedHUB) {
+      const native: HTMLElement =this.$elem.nativeElement;
+      native.setAttribute('hidden','');
     }
 
   }

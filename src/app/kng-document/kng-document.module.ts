@@ -46,7 +46,7 @@ const routing: ModuleWithProviders = RouterModule.forChild(routes);
   ]
 })
 export class KngDocumentModule {
-  public static forRoot(options?: any): ModuleWithProviders {
+  public static forRoot(options?: any): ModuleWithProviders<KngDocumentModule> {
     return {
       ngModule: KngDocumentModule,
       providers: [

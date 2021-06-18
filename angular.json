@@ -44,6 +44,12 @@
           },
           "configurations": {
             "local": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -52,6 +58,12 @@
               ]
             },
             "auto": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -94,14 +106,20 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "8kb",
+                  "maximumError": "15kb"
                 }
               ],
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
             },
             "devel": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -121,6 +139,12 @@
               ]
             },
             "bretzel": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
