@@ -22,7 +22,7 @@ const routes: Routes = [
 //  { path: '', component: KngDocumentComponent,resolve:{ loader:LoaderResolve }, data:{ cards:true }}
 ];
 
-const routing: ModuleWithProviders = RouterModule.forChild(routes);
+const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes);
 
 //
 // define module

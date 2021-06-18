@@ -11,5 +11,5 @@ last 2 versions
 Firefox >= 59
 not dead
 not IE 9-11 # For IE 9-11 support, remove 'not'.
-ios_saf >= 10
-Safari >= 10
+ios_saf >= 11
+Safari >= 11
