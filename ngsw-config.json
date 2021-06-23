@@ -3,7 +3,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "Karibou.ch",
+      "name": "app",
       "installMode": "lazy",
 
       "resources": {
@@ -15,40 +15,27 @@
           "/*.css",
           "/*.js",
           "!/**/*.map"
+        ],
+        "urls":[             
+          "https://fonts.googleapis.com/**",
+          "https://cdnjs.cloudflare.com/**"
         ]
       }
     }, {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "prefetch",
+      "updateMode": "lazy",
       "resources": {
         "files": [
           "/assets/**",
           "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
-        ]
-      }
-    },
-    {     
-      "name":"externals",     
-      "installMode":"prefetch",     
-      "updateMode":"prefetch",     
-      "resources": {         
+        ],
         "urls":[             
-          "https://fonts.googleapis.com/**",
-          "https://cdnjs.cloudflare.com/**"
-        ]     
-      } 
-    },    
-    {    
-      "name": "images",    
-      "installMode": "prefetch",    
-      "updateMode": "prefetch",    
-      "resources": {      
-        "urls": [        
           "https://ucarecdn.com/**",
           "https://use.fontawesome.com/**"
-        ]    
+        ]
+
       }
-    }    
+    }
   ]
 }
