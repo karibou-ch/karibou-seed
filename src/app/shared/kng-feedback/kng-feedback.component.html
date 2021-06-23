@@ -3,8 +3,8 @@
   <h3 i18n>{{i18n[locale].title_order_open}}</h3>
   <p i18n class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
-      <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b> 
-      <br/>{{i18n[locale].title_order_shipping}} <b class="text-capitalize">{{order.shipping.name}}</b>
+      <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b><br/>
+      {{i18n[locale].title_order_shipping}} <b class="text-capitalize">{{order.shipping.name}}</b>
       &nbsp;<span [hidden]="!childOrders.length" class="ita">//{{childOrders.length}} {{i18n[locale].title_order_grouped}} </span>
   </p>
   <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
