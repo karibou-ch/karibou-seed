@@ -105,10 +105,10 @@
       position: absolute;
       left: 5px;
       bottom: 5px;
-      color: var(--mdc-theme-primary-text);
+      color: var(--mdc-theme-primary);
       font-weight: 600;
       font-size: 11px;
-      background: white;
+      background: var(--mdc-theme-primary-text);
       padding: 1px 3px;      
       letter-spacing: -0.2px;
       opacity: .8;      
