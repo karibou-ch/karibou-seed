@@ -19,7 +19,7 @@ const routes: Routes = [
 
 //
 //
-const routing: ModuleWithProviders = RouterModule.forChild(routes);
+const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes);
 
 
 @NgModule({

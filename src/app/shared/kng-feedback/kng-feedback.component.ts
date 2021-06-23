@@ -75,6 +75,17 @@ export class KngFeedbackComponent implements OnInit {
     return this.child||[];
   }
 
+  //
+  //
+  get time(){
+    if(!this.order) {
+      return '';
+    }
+
+    
+    return ((this.order.shipping.when.getTime()-Date.now())/3600000).toFixed(0);
+  }
+
   constructor(
     public  $i18n: i18n,
     private $snack: MdcSnackbar,
@@ -132,7 +143,7 @@ export class KngFeedbackComponent implements OnInit {
 
   }
 
-  isOpen(order: Order) {
+  isOpen(order: Order) {    
     if (!order) {
       return false;
     }

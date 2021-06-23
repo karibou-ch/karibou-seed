@@ -144,6 +144,9 @@ div.home-header{
     position: relative;
     min-height: 120px;
     width: 100%;
+    b{
+      font-weight: bold!important;
+    }
 
     >div{
       display: flex;

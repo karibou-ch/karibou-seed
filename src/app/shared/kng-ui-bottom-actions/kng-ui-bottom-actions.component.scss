@@ -207,9 +207,10 @@ kng-ui-bottom-actions{
       display: flex;
       flex-flow: row;
       margin: 0;
-      -width: 100vw;      
       justify-content:flex-end;
       z-index: 1;
+      position: absolute;
+      top:-45px;
     }
 
     .mdc-fab{

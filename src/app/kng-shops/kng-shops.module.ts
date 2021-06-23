@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: ':urlpath', component: KngShopComponent, resolve: { loader: LoaderResolve } },
 ];
 
-const routing: ModuleWithProviders = RouterModule.forChild(routes);
+const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes);
 
 //
 // define module
