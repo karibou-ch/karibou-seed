@@ -44,9 +44,8 @@ export class AppComponent {
     // });
     this.$update.available.subscribe(event => {
       const local = this.$i18n.locale;
-      if (confirm(this.i18n[local].reload)) {
-        this.$update.activateUpdate().then(() => document.location.reload(true));
-      }
+      alert(this.i18n[local].reload);
+      this.$update.activateUpdate().then(() => document.location.reload(true));
     });
 
     //
