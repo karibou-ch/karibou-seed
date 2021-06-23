@@ -1,20 +1,14 @@
 import { Component,
          OnInit,
          ViewEncapsulation,
-         ChangeDetectionStrategy,
          ChangeDetectorRef,
-         Input} from '@angular/core';
+         Input,
+         ElementRef} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import {
   ProductService,
-  Product,
-  LoaderService,
-  User,
-  Category,
-  CategoryService,
-  config,
-  Shop
+  Product
 } from 'kng2-core';
 import { i18n } from '../common';
 
@@ -26,12 +20,24 @@ import { i18n } from '../common';
   //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductSwipeComponent implements OnInit {
+  private _products:Product[];
 
   bgStyle = '/-/resize/200x/';
 
   @Input() limit: number;
   @Input() config: any;
-  @Input() products: Product[];
+  @Input() set products(products: Product[]){
+    const native: HTMLElement =this.$elem.nativeElement;
+    this._products = products;
+    //
+    // hide if empty
+    if (!this._products || this._products.length < 3){
+      native.setAttribute('hidden', '');
+    } else{
+      native.removeAttribute('hidden');
+    }
+    
+  }
   @Input() set autoload(any) {
     this.load();
   }
@@ -45,6 +51,7 @@ export class ProductSwipeComponent implements OnInit {
   };
 
   constructor(
+    private $elem: ElementRef<HTMLElement>,
     private $i18n: i18n,
     private $product: ProductService,
     private $route: ActivatedRoute,
@@ -54,9 +61,12 @@ export class ProductSwipeComponent implements OnInit {
     const loader  = this.$route.snapshot.data.loader ||
                   this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
-    this.limit  = 8;
+    this.limit  = 10;
     this.products = [];
-    this.hideIfEmpty = false;
+  }
+
+  get products() {
+    return this._products;
   }
 
   getSelectedContent(elem: string) {
@@ -76,17 +86,17 @@ export class ProductSwipeComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(!this.products ||
-       !this.products.length) {
-      this.load();
-    }
+
+    // if(!this.products ||
+    //    !this.products.length) {
+    //   this.load();
+    // }
   }
 
 
   load() {
     this.$product.select(this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortByDate);
-      this.hideIfEmpty = (this.products.length <= 2);
       this.$cdr.markForCheck();
     });
   }
