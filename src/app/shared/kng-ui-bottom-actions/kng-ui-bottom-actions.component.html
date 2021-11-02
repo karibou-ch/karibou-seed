@@ -4,7 +4,15 @@
       (click)="doToggle()">
       <mdc-icon >menu</mdc-icon>
     </button>  
+
   </div>  
+  <div class="fabs left">
+    <button mdc-fab   [hidden]="show" class="bookmark"
+      (click)="doPreferred()">
+      <mdc-icon >favorite</mdc-icon>
+    </button>  
+  </div>
+
 
   <div class="search">
     <i class="left material-icons">search</i>

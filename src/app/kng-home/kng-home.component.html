@@ -37,10 +37,6 @@
               *ngFor="let category of getCategories();let j=index">
       <mdc-chip-text>{{category.name}}</mdc-chip-text>
     </mdc-chip>
-    <mdc-chip (click)="fireSearch('favoris')" class="bookmark">
-      <mdc-chip-icon secondary leading>bookmark</mdc-chip-icon>
-      <mdc-chip-text>Favoris</mdc-chip-text>
-    </mdc-chip>
     <mdc-chip [routerLink]="['/store',store,'shops','list']">
       <mdc-chip-icon secondary leading>home</mdc-chip-icon>
       <mdc-chip-text>{{$i18n.label().nav_store_shops_list}}</mdc-chip-text>
@@ -67,7 +63,7 @@
 
 
   <kng-product-grouped-list 
-       useMaxCat="true" showMore="on" offsetTop="500" clazz="home-header"       
+       useMaxCat="true"  showMore="on" offsetTop="500" clazz="home-header"       
        [config]="config" 
        [user]="user" 
        [contentCategories]="getCategories()" 

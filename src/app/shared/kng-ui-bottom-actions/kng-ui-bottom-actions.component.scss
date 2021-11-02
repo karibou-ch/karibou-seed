@@ -211,6 +211,17 @@ kng-ui-bottom-actions{
       z-index: 1;
       position: absolute;
       top:-45px;
+      &.left{
+        left:7px;
+        .mdc-fab{
+          width: 50px;
+          height: 50px;
+          @media (min-width: 1025px) {
+            margin-right:auto;
+            margin-left:calc( ( 100vw - 780px ) / 2 - 140px );
+          }    
+        }
+      }
     }
 
     .mdc-fab{
@@ -230,7 +241,7 @@ kng-ui-bottom-actions{
       }
 
       @media (min-width: 1025px) {
-        margin-right:calc( ( 100vw - 780px ) / 2 - 90px );
+        margin-right:calc( ( 100vw - 780px ) / 2 - 140px );
       }
     }    
 
