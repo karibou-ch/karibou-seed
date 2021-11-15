@@ -73,7 +73,7 @@
   section{
     h2,h3{
       font-weight: 500;
-      color: var(--mdc-theme-primary);
+      color: #333;
       font-size: 1.875rem;
       text-transform: uppercase;    
       padding-top: 20px;
@@ -88,7 +88,6 @@
       font-weight: 200;
       font-size: 1.275rem;
       color: #aaa;
-      text-shadow:1px 1px 0 white;
       text-align: center;
     }
   
@@ -133,9 +132,12 @@
     padding-bottom: 10px;
     width: calc( 100% + 40px );
     margin-left: -20px;    
-    background-color: #eee;
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary-text);
     h2,h3 {
-      text-transform:none;
+      background-color: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
+        text-transform:none;
       margin-bottom: 5px;
       padding-top: 5px;
     }
@@ -145,7 +147,12 @@
   .amount-info{
     padding: 10px 4px;
     background: #eee;    
-    background-color: antiquewhite;  
+    width: 101%;
+    color: #888;
+    text-align: left;
+    margin-top: 0;
+    line-height: 18px;
+    font-size: 14px;
   }
 
   .profile-action {

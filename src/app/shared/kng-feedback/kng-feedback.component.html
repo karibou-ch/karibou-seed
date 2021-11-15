@@ -1,6 +1,9 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
   <h3 i18n>{{i18n[locale].title_order_open}}</h3>
+  <p class="block-info" [innerHtml]="i18n[locale].title_order_grouped_info">
+  </p>
+
   <p i18n class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
       <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b><br/>
@@ -45,10 +48,11 @@
   <ng-content></ng-content>
   <div class="details" >
       <span class="bold">{{hubName}} </span>
-      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
-      {{order.items.length}} articles
+      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</span>
+      <b>{{order.items.length}}</b> articles
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
-  </div>                                      
+  </div>                   
+                   
   <div class="form">
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
@@ -66,7 +70,8 @@
         <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
         <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
       </div>
-      <button (click)="saveEvaluate()">{{$i18n.label().action_save}} </button>    
+      <p class="block-info" [innerHtml]="i18n[locale].title_issue_subtitle"></p>
+      <button (click)="saveEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>    
       <button (click)="openIssue()" class="issue">{{i18n[locale].title_issue_question}}</button>    
   </div>
 </div>
@@ -90,7 +95,7 @@
             {{item.quantity}}x {{item.title}} ({{item.part}})
             <!-- ORDER FEEDBACK -->
             <mdc-list-item-secondary >
-              <mdc-textarea i18n-label label="Description du problème" fullwidth 
+              <mdc-textarea i18n-label label="Description/Describe" fullwidth 
                   [ngModelOptions]="{standalone: true}" [hidden]="!selected[item.sku]" rows="2" [(ngModel)]="item.note" kng-autosize>
               </mdc-textarea>                              
             </mdc-list-item-secondary>
@@ -100,9 +105,8 @@
       </mdc-list>   
 
       <div class="breaker"></div>
-      <p i18n class="help-block" [innerHtml]="i18n[locale].title_issue_hub"></p>
       <!-- ORDER FEEDBACK -->
-      <mdc-textarea i18n-label [label]="i18n[locale].form_text_label" fullwidth [ngModelOptions]="{standalone: true}"
+      <mdc-textarea i18n-label [label]="i18n[locale].title_issue_hub" fullwidth [ngModelOptions]="{standalone: true}"
       kng-autosize rows="2" 
       [(ngModel)]="feedbackText">
       </mdc-textarea>                  

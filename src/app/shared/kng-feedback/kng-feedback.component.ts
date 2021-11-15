@@ -12,8 +12,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class KngFeedbackComponent implements OnInit {
 
-  @Input() config: Config;
-
+  private _user:User;
 
   i18n: any = {
     fr: {
@@ -21,15 +20,17 @@ export class KngFeedbackComponent implements OnInit {
       title_order_open: 'Vous avez une commande en cours ...',
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
+      title_order_grouped_info:'<b>Psst!</b> Vous avez oublié quelque chose? Pour compléter votre commande, il suffit d\'en passer une nouvelle <span class="bold">😇</span>!',
       title_order_cancel: 'la commande a été annulée ',
-      title_evaluation: 'Votre évaluation:',
-      title_evaluation_quick: 'Évaluation rapide:',
-      title_evaluation_save: 'Enregistrer l\'évaluation:',
-      title_issue_question: 'Un souci avec un article?',
+      title_evaluation: 'Votre note',
+      title_evaluation_quick: 'Evaluez votre satisfaction',
+      title_evaluation_save: 'Votre note',
+      title_issue_question: 'Avez-vous rencontré un problème?',
       title_issue_hub: 'Si vous souhaitez faire un commentaire plus général c\'est ici',
-      title_issue_title: 'Vous avez eu un problème avec un produit?',
-      title_issue_header: '<br/>Nous sommes désolés! mais quand ça arrive, on vous rembourse toujours!\n<br/>Sélectionnez les articles ci-dessous et informé l\'artisan.',
-      title_issue_send: 'Envoyer le Feedback !',
+      title_issue_title: 'Vous avez rencontré un problème avec un produit',
+      title_issue_subtitle: 'Chaque retour est précieux pour améliorer la qualité du service',
+      title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.<br/>Ne vous inquiétez pas, vous serez remboursé.',
+      title_issue_send: 'Enregistrez la note',
       form_text_label: 'Note concernant le service?'
     },
     en: {
@@ -38,14 +39,15 @@ export class KngFeedbackComponent implements OnInit {
       title_order_shipping: 'Delivery is expected at',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
-      title_evaluation: 'Your rating:',
-      title_evaluation_quick: 'Quick rating',
-      title_evaluation_save: 'Save your rating',
+      title_evaluation: 'Your rating',
+      title_evaluation_quick: 'Rate your Satisfaction',
+      title_evaluation_save: 'Your rating',
       title_issue_question: 'An issue with your order ?',
-      title_issue_title: 'Did you have an issue with an item ?',
-      title_issue_header: '<br/>We are really sorry but don\'t worry you will get your money back!\n<br/>select the issues, the maker will be informed',
+      title_issue_title: 'You have an issue with a product',
+      title_issue_subtitle: 'Each feedback helps us to improve the quality',
+      title_issue_header: 'Select the product(s) below to inform the vendor.<br/>We are really sorry but don\'t worry you will get your money back!',
       title_issue_hub: 'If you have a more general comment please write here',
-      title_issue_send: 'Send your Feedback !',
+      title_issue_send: 'Save your rating',
       form_text_label: 'Add a comment about our service'
     }
   };
@@ -57,11 +59,15 @@ export class KngFeedbackComponent implements OnInit {
   score: number;
   feedbackText: string;
 
+  @Input() config: Config;
   @Input() boxed: boolean;
   @Input() orders: Order[] = [];
   @Input() child: Order[] = [];
-  @Input() user: User;
   @Input() forceload: boolean;
+  @Input() set user(u:User){
+    this._user = u;
+    this.loadOrders();
+  }
 
   get hubName() {
     return (this.config && this.config.shared) ? this.config.shared.hub.name : '';
@@ -75,6 +81,10 @@ export class KngFeedbackComponent implements OnInit {
     return this.child||[];
   }
 
+
+  get user():User {
+    return this._user;
+  }
   //
   //
   get time(){
@@ -183,6 +193,8 @@ export class KngFeedbackComponent implements OnInit {
 
   loadOrders() {
     if (!this.user.id) {
+      this.orders = [];
+      this.order = null;
       return;
     }
 

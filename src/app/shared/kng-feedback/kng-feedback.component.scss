@@ -15,6 +15,19 @@ button{
   }
 }
 
+p.block-info{
+  font-size: 90%;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--mdc-theme-background);
+  -background: var(--mdc-theme-primary);
+  -color: var(--mdc-theme-primary-text);
+  margin-top: 0px;
+  margin-bottom: 10px;
+  margin-left: -5px;
+}      
+
 
 .processing{
   background-color: white;
@@ -22,7 +35,7 @@ button{
 
   >p,
   >h3{
-    padding: 0 5px;
+    padding: 10px 10px;
     margin-bottom: 5px;
     margin-top: 5px;
   }
@@ -35,6 +48,8 @@ button{
     padding: 0;
     margin-top: -20px;    
   }
+
+  
 
   position: relative;
   background: white;
@@ -85,18 +100,26 @@ button{
     }
     position: absolute;
     top: 0;right: 0;left: 0;bottom: 0;
+    padding:0 10px 10px;
     background-color: white;
     display: flex;
     flex-flow:wrap;
     align-items: center;
     justify-content: flex-start;
+    h3,p{
+      width: 97%;
+      margin-top: 7px;
+      margin-left: auto;
+    }
     button{
       &.issue{
         flex:1;
         margin-right: 5px;
       }
-      flex:0;
+      flex:0 40%;
       margin-left: 5px;
+      height: 41px;
+      margin-top: 5px!important;
     }    
     div.label{
       flex:0 0 95%;
@@ -104,6 +127,9 @@ button{
       mdc-icon{
         transform: translateY(5px);
       }
+    }
+    .stars{
+      transform: translateY(6px);
     }
   }
 }
@@ -164,6 +190,9 @@ button{
       white-space: pre-wrap;
       padding: 5px;
     }
+
+
+    
 
     mdc-list-item {
       &:not(.mdc-list-item--selected){

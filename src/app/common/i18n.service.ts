@@ -25,7 +25,7 @@ export class i18n  {
     action_lang_switch: 'switch into English',
     action_error_reload: 'Zut, un problème est survenu lors du chargement de la page. Réessayez?',
     action_install_ios: 'Installez Karibou.ch dans votre appareil.<br/> Appuyez sur l\'icône de Partage, puis sélectionnez<br/><b>Ajouter à l\'écran d\'accueil.</b>',
-    cart_address_add: 'Gérer vos adresses',
+    cart_address_add: 'Vos adresses de livraison',
     cart_address_info: 'En cas d\'absence, le cycliste dépose vos sacs devant votre porte',
     cart_payment_add: 'Gérer vos méthodes de paiements',
     cart_save_deliver: 'Votre commande est enregistrée, vous serez livré le ',

@@ -84,11 +84,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Merci beaucoup pour votre compréhension.
        <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
-      cart_info_service_k: `Le service karibou.ch <span class=" ">5%</span>
-        <a class="more">- détails</a>`,
-      cart_info_service_k_plus: `Le service Karibou contribue à vous proposer un service personnalisé, le plus écologique et éthique possible`,
+      cart_info_service_k: `Le service karibou.ch <span class=" ">6%</span>`,
+      cart_info_service_k_plus: `Sur karibou.ch pas de majoration du prix des produits! Ce coût finance la préparation et vérification de votre commande ainsi que le service au client.`,
       cart_remove: 'enlever',
-      cart_modify: 'Modifier',
+      cart_modify_add: 'Choisir une autre adresse de livraison',
+      cart_modify_payment: 'Choisir un autre mode de paiement',
       cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais à partir de ',
@@ -120,10 +120,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
        new delivery windows become available. Thank you very much for your understanding.
        <p>We do deliver every day from Tuesday to Friday and we schedule orders for 6 days in advance only.
        Every morning you will see the next delivery window.</p>`,
-      cart_info_service_k: 'Your contribution for our service is  <span class="gray ">5%</span> <a class="more">- about our fees</a>',
-      cart_info_service_k_plus: `Our fees contributes to offer you a personalized, ecological and ethical service.`,
+      cart_info_service_k: 'The service fee <span class="gray ">6%</span>',
+      cart_info_service_k_plus: `Karibou.ch doesn\'t increase the product price! This fee covers a broad range of operating costs including background checks, and customer support`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
+      cart_modify_add: 'Select another shipping address',
+      cart_modify_payment: 'Select another payment methods',
+
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
       cart_discount_title: 'rabais livraison à partir de ',
@@ -244,7 +247,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   get sharedCart(){
     const uuid = this.$cart.getCID();    
-    return this.$dom.bypassSecurityTrustUrl(window.location.host + '/store/' + this.store + '/cart/' + uuid);
+    return this.$dom.bypassSecurityTrustUrl(window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/cart/' + uuid);
   }
 
 
@@ -343,7 +346,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     //
     // grouped discount
-    if(dC){ 
+    if(dC || address['fees'] >= 0){ 
       return  this.shippingDiscount = '';
     } 
 
@@ -354,11 +357,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //
     // Minimum discount
     } else if (dA) {
-      return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',price - this.shipping.priceB);
+      return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',Math.max(price - this.shipping.priceB,0).toFixed(2));
     //
     // Missing amount
     } else {
-      return  this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountA).replace('_DISCOUNT_',price - this.shipping.priceA);
+      return  this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountA).replace('_DISCOUNT_',Math.max(price - this.shipping.priceA,0).toFixed(2));
     }    
   }
 
@@ -495,7 +498,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   currentShipping() {
-    return this.$cart.getCurrentShippingAddress();
+    const shipping = this.$cart.getCurrentShippingAddress();
+    return shipping;
   }
 
   currentShippingFees() {
@@ -537,7 +541,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     }, error => {
       if (error.status === 401) {
-        this.$user.logout().subscribe();
+        this.$navigation.debounceLogout();
       }
     });
   }
