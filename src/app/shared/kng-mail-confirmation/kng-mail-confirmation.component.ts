@@ -17,20 +17,22 @@ export class KngMailConfirmationComponent implements OnInit, OnDestroy {
   @Input() user: User;
 
   checker$: Subscription;
-
+  sendConfirmation = false;
 
   i18n: any = {
     fr: {
       title_h3: 'En attente de confirmation de votre adresse email',
       title_h2: 'Votre adresse email n\'a toujours pas été confirmée.',
       action_1: 'Une demande de confirmation vous a été envoyée par email le',
-      action_2: 'Vous pouvez aussi demander un nouveau email de confirmation'
+      action_2: 'Vous pouvez aussi demander un nouveau email de confirmation',
+      action_2_done:'Email envoyé, veuillez vérifier votre boîte de réception!'
     },
     en: {
       title_h3: 'Waiting for email confirmation',
       title_h2: 'Your email addresse must be valided before to continue.',
       action_1: 'A confirmation email has been sent in your inbox on the ',
-      action_2: 'Send a new confirmation email '
+      action_2: 'Send a new confirmation email ',
+      action_2_done:'Email sent!'
     }
   };
 
@@ -75,6 +77,7 @@ export class KngMailConfirmationComponent implements OnInit, OnDestroy {
       // .email:string
       // .owner:string
       this.user.email.status = status.created;
+      this.sendConfirmation = true;
       this.$snack.open(
         this.$i18n.label().user_confirmation_mail,
         this.$i18n.label().thanks, this.$i18n.snackOpt);

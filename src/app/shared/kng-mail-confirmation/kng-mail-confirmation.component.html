@@ -8,7 +8,7 @@
     <h2 i18n>{{i18n[locale].title_h2}}</h2>
     <p class="block-info" i18n>
         {{i18n[locale].action_1}} {{user.getEmailStatus()|date}}. 
-        <br/><a href="javascript:;" (click)="sendConfirmationMail()">{{i18n[locale].action_2}}</a>
+        <br/><a href="javascript:;" (click)="sendConfirmationMail()">{{sendConfirmation ? i18n[locale].action_2_done : i18n[locale].action_2}}</a>
         
     </p>
 </div>  
