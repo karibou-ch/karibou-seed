@@ -22,6 +22,18 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
     'selection': false
   };
 
+  clearCache(){
+    this.storedRouteHandles.clear();
+    this.allowCache = {
+      'home': false,
+      'grocery': false,
+      'cellar': false,
+      'wellness': false,
+      'selection': false
+    };
+  
+  }
+
 
   /**
    * VALIDITY
