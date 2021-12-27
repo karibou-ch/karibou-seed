@@ -97,6 +97,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     }
   }
 
+  // FIXME, scheduler should be in API
   isDayAvailable(day: Date) {
     const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
     return (this.currentRanks[day.getDay()] <= maxLimit);

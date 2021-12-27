@@ -1,7 +1,7 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
   <h3 i18n>{{i18n[locale].title_order_open}}</h3>
-  <p class="block-info" [innerHtml]="i18n[locale].title_order_grouped_info">
+  <p class="block-info" [innerHtml]="i18n[locale].title_order_grouped_info" [hidden]="boxed || !isDayAvailable(order.shipping.when)">
   </p>
 
   <p i18n class="help-block">
@@ -47,6 +47,7 @@
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
   <ng-content></ng-content>
   <div class="details" >
+      <span class="red" [hidden]="!isInvoiceOpen(order)">{{i18n[locale].title_invoice_open}}&nbsp;</span>
       <span class="bold">{{hubName}} </span>
       <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</span>
       <b>{{order.items.length}}</b> articles

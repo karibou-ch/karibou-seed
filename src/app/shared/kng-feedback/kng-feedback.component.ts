@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Config, User, Order, UserService, OrderService, EnumFinancialStatus } from 'kng2-core';
+import { Config, User, Order, UserService, OrderService, EnumFinancialStatus, CartService } from 'kng2-core';
 import { i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
@@ -31,6 +31,7 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_subtitle: 'Chaque retour est précieux pour améliorer la qualité du service',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.<br/>Ne vous inquiétez pas, vous serez remboursé.',
       title_issue_send: 'Enregistrez la note',
+      title_invoice_open:'(Vous avez une facture ouverte)',
       form_text_label: 'Note concernant le service?'
     },
     en: {
@@ -48,6 +49,7 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_header: 'Select the product(s) below to inform the vendor.<br/>We are really sorry but don\'t worry you will get your money back!',
       title_issue_hub: 'If you have a more general comment please write here',
       title_issue_send: 'Save your rating',
+      title_invoice_open:'(You have an open invoice)',
       form_text_label: 'Add a comment about our service'
     }
   };
@@ -59,6 +61,9 @@ export class KngFeedbackComponent implements OnInit {
   score: number;
   feedbackText: string;
 
+  currentLimit: number;
+  premiumLimit: number;
+
   @Input() config: Config;
   @Input() boxed: boolean;
   @Input() orders: Order[] = [];
@@ -66,7 +71,9 @@ export class KngFeedbackComponent implements OnInit {
   @Input() forceload: boolean;
   @Input() set user(u:User){
     this._user = u;
-    this.loadOrders();
+    setTimeout(()=>{
+      this.loadOrders();
+    },1)
   }
 
   get hubName() {
@@ -97,6 +104,7 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   constructor(
+    public $cart: CartService,
     public  $i18n: i18n,
     private $snack: MdcSnackbar,
     private $order: OrderService,
@@ -151,6 +159,10 @@ export class KngFeedbackComponent implements OnInit {
       return EnumFinancialStatus[EnumFinancialStatus.paid];
     }
 
+    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.invoice]) {
+      return EnumFinancialStatus[EnumFinancialStatus.paid];
+    }
+
   }
 
   isOpen(order: Order) {    
@@ -158,6 +170,10 @@ export class KngFeedbackComponent implements OnInit {
       return false;
     }
     return !!(order.oid && !order.closed);
+  }
+
+  isInvoiceOpen(order: Order) {
+    return order.payment.status == 'invoice';
   }
 
   isEvaluable(order: Order) {
@@ -170,6 +186,12 @@ export class KngFeedbackComponent implements OnInit {
     return !this.isOpen(order);
   }
 
+  // FIXME, scheduler should be in API
+  isDayAvailable(day: Date) {
+    const nextAvailable = this.$cart.getCurrentShippingDay();
+    return (day.getDay() == nextAvailable.getDay())
+  }
+
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
@@ -179,6 +201,10 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+    this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+
     if (this.orders && this.orders.length) {
       this.order = this.orders[0];
       this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
@@ -195,6 +221,10 @@ export class KngFeedbackComponent implements OnInit {
     if (!this.user.id) {
       this.orders = [];
       this.order = null;
+      return;
+    }
+
+    if(this.orders.length){
       return;
     }
 

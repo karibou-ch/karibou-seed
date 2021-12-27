@@ -4,7 +4,7 @@ import { Order, OrderService, User, OrderItem, Category, ProductService,
           EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService, Product } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
 
-import { flatMap } from 'rxjs/operators';
+import { flatMap, switchMap } from 'rxjs/operators';
 import { i18n } from '../common';
 import { forkJoin } from 'rxjs';
 
@@ -78,10 +78,12 @@ export class UserOrdersComponent implements OnInit {
   }
 
 
+  //
+  // https://stackoverflow.com/questions/49698640/flatmap-mergemap-switchmap-and-concatmap-in-rxjs
   ngOnInit() {
     this.$order.findOrdersByUser(this.user, {limit: 10}).pipe(
-      flatMap(orders => {
-        this.processOrders((orders as Order[]));
+      switchMap((orders:Order[]) => {
+        this.processOrders(orders);
         if (!this.items.length) {
           return [];
         }
@@ -159,18 +161,19 @@ export class UserOrdersComponent implements OnInit {
     // "pending","authorized","partially_paid","paid","partially_refunded","refunded","voided"
     switch (order.payment.status) {
       case 'pending':
-      return 'more_horiz';
+        return 'more_horiz';
       case 'authorized':
-      return 'radio_button_unchecked';
+        return 'radio_button_unchecked';
       case 'paid':
-      return 'check_circle';
+      case 'invoice':
+        return 'check_circle';
       case 'partially_refunded':
       case 'manually_refunded':
-      return 'check_circle';
+        return 'check_circle';
       case 'refunded':
-      return 'sync_problem';
+        return 'sync_problem';
       case 'voided':
-      return 'cancel';
+        return 'cancel';
     }
     return 'cancel';
   }
@@ -181,7 +184,11 @@ export class UserOrdersComponent implements OnInit {
   }
 
   isPaidOrRefund(order: Order) {
-    return ['paid', 'manually_refund', 'partially_refunded'].indexOf(order.payment.status) > -1;
+    return ['invoice','paid', 'manually_refund', 'partially_refunded'].indexOf(order.payment.status) > -1;
+  }
+
+  isInvoiceOpen(order: Order) {
+    return order.payment.status == 'invoice';
   }
 
   isPending(order: Order) {
