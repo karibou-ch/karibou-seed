@@ -34,14 +34,23 @@
 
   <!-- CATS -->
   <ul class="col" [hidden]="products.length">
+    <!-- TODO rebuild list of categories based on the menu group -->
+    <!-- <li class="menu-group" *ngFor="let menu of primary;let idx=index;" (click)="onPrimaryMenu(menu.url)">
+        <div [innerHTML]="menu.name[locale]"></div>
+    </li> -->
+
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
       <i [class]="category.image" class="icon"></i>
       <!-- <img src="assets/img/icon-wine.svg" width="32px" height="32px"/> -->
       <!-- <mdc-icon>radio_button_unchecked</mdc-icon> -->
-      &nbsp;{{category.name}}
+      <div>&nbsp;{{category.name}}</div>
     </li>                
+
+    <!-- LINKS -->
+    <kng-product-link [config]="config"></kng-product-link>
+
   </ul>
 
   <!-- PRODUCTS -->

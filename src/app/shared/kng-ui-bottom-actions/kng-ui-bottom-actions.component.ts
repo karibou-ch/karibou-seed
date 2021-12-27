@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-spacing
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
 from '@angular/core';
-import { Category, ProductService, Product, CartService, Config } from 'kng2-core';
+import { Category, ProductService, Product, CartService, Config, ConfigMenu } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../../common';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 
@@ -18,6 +18,9 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Input() categories: Category[];
   @Input() exited: boolean;
   @Input() group: string;
+  @Input() defaultMenu: string;
+
+  primary: ConfigMenu[];
 
   show: boolean;
   findGetNull: boolean;
@@ -69,6 +72,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.search.nativeElement.value = keyword;
       this.doInput(keyword);
     });
+
+    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
 
     this.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
       return c.active && (c.type === 'Category');
@@ -207,6 +212,10 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.search.nativeElement.select();
 
     } catch (e) {}
+
+  }
+
+  onPrimaryMenu(menu) {
 
   }
 
