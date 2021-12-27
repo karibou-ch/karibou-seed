@@ -328,6 +328,9 @@ body{
 .icon-phone-solid,
 .icon-alcool, .fa-alcool,
 .icon-bread, .fa-bread,
+.icon-digestive, .fa-digestive,
+.icon-fish, .fa-fish,
+.icon-champagne, .fa-champagne,
 .icon-caterer, .fa-caterer,
 .icon-cheese, .fa-cheese,
 .icon-drink, .fa-drink,
@@ -461,6 +464,17 @@ body{
 .icon-gift, .fa-gift{
   background-image: url(/assets/img/icon-gift-solid.svg)
 }
+
+.icon-digestive, .fa-digestive {
+  background-image: url(/assets/img/icon-digestive.svg)
+}
+.icon-fish, .fa-fish {
+  background-image: url(/assets/img/icon-fish.svg)
+}
+.icon-champagne, .fa-champagne {
+  background-image: url(/assets/img/icon-champagne.svg)
+}
+
 
 //
 // progress
