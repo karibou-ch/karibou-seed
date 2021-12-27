@@ -23,6 +23,8 @@ import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Meta } from '@angular/platform-browser';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
 @Component({
@@ -50,6 +52,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   category: Category;
   thumbnail = false;
   bgStyle: any;
+  bgImage: string;
   photosz: string;
   cartItem: CartItem;
 
@@ -82,6 +85,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    private $meta: Meta,
+    private $metric: MetricsService,
     private $cart: CartService,
     public $i18n: i18n,
     private $util: KngUtils,
@@ -264,6 +269,28 @@ export class ProductComponent implements OnInit, OnDestroy {
       'radio_button_unchecked' : 'radio_button_checked';
   }
 
+
+  getAvailabilityLabel(product: Product) {
+    const vendor = product.vendor;
+    // if(vendor && vendor.available.active) {
+    //   return "sold out";
+    // } 
+    if(vendor && !vendor.status) {
+      return "discontinued";
+    }
+    if(!product.isAvailableForOrder()) {
+      return "sold out";
+    }
+    if(product.pricing.stock < 1) {
+      return "sold out";
+    }
+    if(product.pricing.stock < 20) {
+      return "in stock";// "LimitedAvailability";
+    }
+    return "in stock";
+  }
+
+
   getNextPage() {
     return timer(10).pipe(map(ctx => this.currentPage += 4));
   }
@@ -306,9 +333,26 @@ export class ProductComponent implements OnInit, OnDestroy {
     // specifics actions
     if (this.isDialog) {
       //
-      // update window title
+      // update window title      
       document.title = product.title;
+      const location = window.location.href;
+      const category = product.categories && product.categories.name;
 
+      this.$meta.addTag({property: 'og:title',content: product.title});
+      this.$meta.addTag({property: 'og:url',content: location });
+      this.$meta.addTag({property: 'og:image',content: (product.photo.url + "-/scale_crop/600x600/center/" + product.sku + ".jpg")});
+      this.$meta.addTag({property: 'og:image:width',content: product.title});
+      this.$meta.addTag({property: 'og:description',content: product.details.description});
+      this.$meta.addTag({property: 'og:price:amount',content: product.getPrice().toFixed(2)});
+      this.$meta.addTag({property: 'og:price:currency',content: 'CHF'});
+      this.$meta.addTag({property: 'product:brand',content: product.vendor.name});
+      this.$meta.addTag({property: 'product:availability',content: this.getAvailabilityLabel(product)});
+      this.$meta.addTag({property: 'product:retailer_item_id',content:product.sku });
+      this.$meta.addTag({property: 'product:item_group_id',content: category });
+      this.$meta.addTag({property: 'product:category',content: category||'Market' });
+      this.$metric.event(EnumMetrics.metric_view_page,{
+        path:window.location.pathname
+      });
       //
       // others products for this vendor
       this.$product.select(params).subscribe((products) => {
@@ -373,6 +417,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       'background-image' : 'url(' + this.product.photo.url + this.photosz + ')',
     };
 
+    this.bgImage = this.product.photo.url + this.photosz;
+
     //
     // if colors detected
     const colors = this.product.photo.colors;
@@ -394,6 +440,7 @@ export class ProductThumbnailComponent extends ProductComponent {
 
   hidden = true;
   @Input() large: boolean;
+  @Input() displayVendor: boolean;
   @Input('visibility') set visibility(value: boolean) {
     this.hidden = (!value);
   }
@@ -401,15 +448,16 @@ export class ProductThumbnailComponent extends ProductComponent {
   bgGradient = `linear-gradient(
         rgba(50, 50, 50, 0.7),
         rgba(50, 50, 50, 0.3)
-      ),`;
+      )`;
 
   updateBackground() {
-    this.bgStyle = {
-      'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
-    };
+    this.bgImage = this.product.photo.url + '/-/resize/250x/';
+    // this.bgStyle = {
+    //   'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
+    // };
     if (this.cartItem) {
       this.bgStyle = {
-        'background-image' : this.bgGradient + this.bgStyle['background-image']
+        'background-color' : this.bgGradient 
       };
     }
   }

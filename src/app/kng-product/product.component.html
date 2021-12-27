@@ -8,60 +8,59 @@
         <span class="material-icons size-large">navigate_before</span>
       </button>
 
-      <mdc-card class="product-card card-skeleton" [outlined]="false" [class.incart]="cartItem&&cartItem?.quantity"
+      <article class="product-card card-skeleton" [class.incart]="cartItem&&cartItem?.quantity"
       [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
    
    
-       <mdc-card-primary-action>
-         <mdc-card-media [square]="true" [ngStyle]="bgStyle" class="media ">
-           <img src="/assets/img/k-highlight.png" class="highlight-new" hidden/>
-
-           <div class="product-available">
+      <section>
+        <div class="media" [ngStyle]="bgStyle">
+          <img src="/assets/img/k-highlight.png" class="highlight-new" hidden />
+      
+          <div class="product-available">
             non disponible
           </div>
-  
-           <button class="action-add right " (click)="addToCart($event,product)">
+      
+          <button class="action-add right " (click)="addToCart($event,product)">
             <span class="material-icons size-medium">add</span>
           </button>
           <button class="action-remove " (click)="removeToCart($event,product)">
             <span class="material-icons size-medium">remove</span>
           </button>
           <div class="info-quantity">{{cartItem?.quantity}}</div>
-              
+      
           <div class="info-portion part" [hidden]="!hasVariation(product)">
             <div class="">
-              Fr {{product.pricing.part|basepriceex:product.pricing.price}} 
-            </div> 
+              Fr {{product.pricing.part|basepriceex:product.pricing.price}}
+            </div>
             <!-- <div class="" hidden>{{product.pricing.part|portion}}</div> -->
           </div>
-          
-          <!-- VARIANTS -->          
+      
+          <!-- VARIANTS -->
           <div *ngIf="openVariant" class="product-variants">
             <ul>
-              <li (click)="addToCart($event,product,variant.short)"
-                  *ngFor="let variant of product.variants">{{variant.short}}</li>
+              <li (click)="addToCart($event,product,variant.short)" *ngFor="let variant of product.variants">{{variant.short}}
+              </li>
             </ul>
           </div>
-  
-         </mdc-card-media>
-         <div class="product-card__primary">
-           <span class="product-card__subtitle">{{product.title}}</span>
-         </div>
-         <div class="product-card__secondary">
-           <div class="part">
-             {{product.pricing.part}}
-           </div>
-           <div class="price ">
-             <span [class.discount]="product.attributes.discount" class=" ">
-               Fr {{product.pricing.price| number:'1.2-2'}}
-             </span>
-             <span [hidden]="!product.attributes.discount">
-               <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
-             </span>
-           </div>
-         </div>
-       </mdc-card-primary-action>
-     </mdc-card>
+      
+        </div>
+        <div class="product-card__primary">
+          <div class="product-card__subtitle">{{product.title}}</div>
+          <div class="part">
+            {{product.pricing.part}}
+          </div>
+          <div class="price ">
+            <span [class.discount]="product.attributes.discount" class=" ">
+              Fr {{product.pricing.price| number:'1.2-2'}}
+            </span>
+            <span [hidden]="!product.attributes.discount">
+              <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+            </span>
+          </div>
+      
+        </div>
+      </section>
+     </article>
 
       <!-- DESCRIPTION -->
       <div class="description">

@@ -8,7 +8,7 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-	<mdc-card class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}" [outlined]="false" 
+	<article class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}"  
 						[class.selected]="selected"
 						[class.large]="large"
 						[class.incart]="cartItem&&cartItem?.quantity"
@@ -18,9 +18,10 @@
 
 
 
-		<mdc-card-primary-action [routerLink]="['/store',store, departement,'products',product.sku,product.title]">
-			<mdc-card-media [square]="true" [ngStyle]="bgStyle" class="media ">
-				<!-- <img src="/assets/img/k-highlight.png" class="highlight-new" [hidden]="!isHighlighted||cartItem?.quantity" /> -->
+		<section [routerLink]="['/store',store, departement,'products',product.sku,product.title]">
+			<!-- MEDIA -->
+			<div  class="media " [ngStyle]="bgStyle" >
+				<img [src]="bgImage" class="thumbnail" />
 
 				<div class="product-available">
 					non disponible
@@ -41,7 +42,7 @@
 					<span [hidden]="!hasLabel(product,'grta')" class="text-right"> GRTA</span>
 				</div>
 
-			</mdc-card-media>
+			</div>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
 				<mdc-icon class="size-medium">add</mdc-icon>
@@ -50,13 +51,11 @@
 				<mdc-icon class="size-medium">remove</mdc-icon>
 			</button>
 			<div class="info-quantity">{{cartItem?.quantity}}</div>
-			<div class="info-score"><i class="material-icons">star</i></div>
+			<div class="info-score"><i class="material-icons">favorite</i></div>
 		
 			<!-- TITLE -->
 			<div class="product-card__primary">
-				<span class="product-card__subtitle">{{product.title}}</span>
-			</div>
-			<div class="product-card__secondary">
+				<div class="product-card__subtitle">{{product.title}}</div>
 				<div class="part">
 					{{product.pricing.part}}
 				</div>
@@ -70,9 +69,16 @@
 					</span>
 
 				</div>
+
 			</div>
-		</mdc-card-primary-action>
-	</mdc-card>
+			<div class="product-card__secondary">
+			</div>
+			<div class="product-card__vendor" *ngIf="displayVendor && product.vendor.photo">
+				<img [src]="product.vendor.photo?.owner"alt="160x160" class="photo-owner" />
+				<div>{{product.vendor.name}}</div>
+			</div>
+		</section>
+	</article>
 </ng-template>
 
 
