@@ -3,10 +3,10 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { Location } from '@angular/common';
 
-import { Config, ConfigService, ShopService } from 'kng2-core';
+import { Config, ConfigService, ShopService, UserService } from 'kng2-core';
 
-import { filter } from 'rxjs/operators';
-import { ReplaySubject, Subject } from 'rxjs';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 // import { i18n } from './i18n.service';
 
 /**
@@ -26,9 +26,11 @@ export class KngNavigationStateService  {
   private cached: any = {};
 
   private _search$: Subject<string>;
+  private _logout$: Subject<void>;
 
   constructor(
     private $config: ConfigService,
+    private $user: UserService,
     private $shops: ShopService,
     private $location: Location,
     private $router: Router
@@ -36,7 +38,13 @@ export class KngNavigationStateService  {
     this.menu = {};
 
     this._search$ = new Subject();
-
+    this._logout$ = new Subject<void>()
+    this._logout$.pipe(
+      debounceTime(1000),
+      tap(()=>console.log('--DBG debounceLogout')),
+      switchMap(()=>this.$user.logout())
+    ).subscribe();
+    
     //
     // init common parameters
     this.agent = navigator.userAgent || navigator.vendor || window['opera'];
@@ -56,6 +64,11 @@ export class KngNavigationStateService  {
 
   back() {
     this.$location.back();
+  }
+
+  debounceLogout() {
+    this._logout$.next();
+    return this._logout$.asObservable();
   }
 
   fireSearch(keyword: string) {
@@ -164,6 +177,6 @@ export class KngNavigationStateService  {
   }
 
   search$() {
-    return this._search$.asObservable();
+    return this._search$.asObservable().pipe(debounceTime(600));
   }
 }

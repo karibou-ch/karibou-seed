@@ -7,8 +7,7 @@ import { Config,
          User } from 'kng2-core';
 import { Location } from '@angular/common';
 
-import { timer } from 'rxjs';
-import { debounce } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 
 @Component({
@@ -59,7 +58,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   doLogout() {
-    this.$user.logout().pipe(debounce(() => timer(300)))
+    this.$user.logout().pipe(debounceTime(600))
       .subscribe(() => this.$router.navigate(['../'], {relativeTo: this.$route}));
   }
 
