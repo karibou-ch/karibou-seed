@@ -155,7 +155,8 @@ div.home-header{
       font-size: 18px;
       overflow: hidden; 
       border-radius: 8px;
-      border: 3px solid #ddd;
+      -border: 3px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
       .left-half{
         max-width: 40%;        
         height: 200px;
@@ -343,6 +344,7 @@ kng-nav-marketplace {
   right: 0;
 
   width: 10px;
+  opacity: 0;
 
   @media (min-width: 1024px) {
     top:185px;

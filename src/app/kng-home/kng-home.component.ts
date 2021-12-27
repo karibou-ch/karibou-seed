@@ -4,9 +4,10 @@ import {
   OnDestroy,
   ViewEncapsulation,
   HostListener,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouteReuseStrategy } from '@angular/router';
 import {
   CartService,
   Category,
@@ -20,6 +21,7 @@ import {
   Shop,
   Order
 } from 'kng2-core';
+import { CacheRouteReuseStrategy } from '../app.cache.route';
 import { i18n, KngNavigationStateService } from '../common';
 
 
@@ -114,6 +116,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   constructor(
     public $cart: CartService,
     public $i18n: i18n,
+    //private $routeCache:RouteReuseStrategy,
+    //private $cdr: ChangeDetectorRef,
     private $loader: LoaderService,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
@@ -174,6 +178,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       if (emit.user) {
         // force reload product list (avoid cache between anonymous and user transition)
         this.options.reload = emit.user.isAuthenticated() ? 1 : 0;
+        this.user = Object.assign(this.user,emit.user);
+        // (<CacheRouteReuseStrategy>this.$routeCache).clearCache();
+        // console.log('---- clear cache',this.user.id)
+        // this.$cdr.markForCheck();
       }
 
       // emit signal for CartAction[state]
@@ -187,19 +195,23 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       // CART_ADDRESS   = 8,
       // CART_PAYMENT   = 9,
       // CART_SHPPING   =10,
-      if (emit.state) {
-        if (CartAction.CART_SHPPING === emit.state.action) {
-          this.options.when = this.$cart.getCurrentShippingDay();
-          this.productsGroupByCategory();
-        }
-        //
-        // FIXME issue 2x CART_LOADED !!
-        if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !Object.keys(this.group).length)
-          && !loaded) {
-          this.options.when = this.$cart.getCurrentShippingDay();
-          this.productsGroupByCategory();
-          loaded = true;
-        }
+      if (!emit.state) {
+        return;
+      }
+      //console.log('---DBG',emit.state.action==CartAction.CART_LOADED,emit);
+
+      //
+      // update shipping day
+      if (CartAction.CART_SHPPING === emit.state.action) {
+        // this.options.when = this.$cart.getCurrentShippingDay();
+        this.productsGroupByCategory();
+      }
+
+      //
+      // FIXME issue 2x CART_LOADED !!
+      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !Object.keys(this.group).length)) {
+        // this.options.when = this.$cart.getCurrentShippingDay();
+        this.productsGroupByCategory();
       }
     });
 
@@ -322,6 +334,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   productsGroupByCategory() {
     const options = Object.assign({}, this.options, this.pageOptions[this.target], {group: this.target});
     this.options.showMore = options.showMore;
+    this.options.when = this.$cart.getCurrentShippingDay();
+
     // FIXME remove hardcoded constraint
     if(this.target === 'selection') {
       delete options.group;

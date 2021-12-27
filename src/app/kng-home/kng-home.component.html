@@ -3,10 +3,6 @@
   <h3>{{$i18n[locale].home_feedback_title}}</h3>
 </kng-feedback>
 
-<!-- LINKS -->
-<kng-product-link [config]="config"></kng-product-link>
-
-
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="!hasContent('p',target)" 
     [class.cover-lg]="hasBackgroundContent(target)" 
@@ -22,6 +18,9 @@
 <!-- -->
 <!-- MARKETPLACE -->
 <kng-nav-marketplace [config]="config" [orders]="pendingOrders"></kng-nav-marketplace>
+
+<!-- LINKS -->
+<kng-product-link [config]="config"></kng-product-link>
 
 
 <!-- SELECTION -->
