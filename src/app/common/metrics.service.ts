@@ -105,12 +105,12 @@ export class MetricsService {
 
     //
     // delay the loading to avoid bad user experience
-    timer(when || 500).pipe(map(ctx => {
+    timer(when || 50).pipe(map(ctx => {
 
       console.log('Metrics -- init');
       // this.initKissmetrics();
       this.initFB();
-      this.initGA();
+      //this.initGA();
 
       this.$loader.update().subscribe((ctx) => {
         //
@@ -137,8 +137,7 @@ export class MetricsService {
     if (!this.isEnable()) {
       return;
     }
-    this.getHost('ga')('set', '&uid', uid);
-    // this.getHost('_kmq').push(['identify', uid])
+    this.getHost('gtag')({user_id:uid});
   }
 
   identityClear() {
@@ -158,6 +157,7 @@ export class MetricsService {
     const _default: any = {
       fbq: function() {},
       ga: function() {},
+      gtag: function() {},
       _kmq: {push: function() {}}
     };
     return ((<any>window)[name]) || _default[name];
@@ -172,7 +172,7 @@ export class MetricsService {
       return;
     }
 
-    this.getHost('ga')('send', 'pageview', { page: path });
+    //this.getHost('ga')('send', 'pageview', { page: path });
     this.getHost('fbq')('track', 'PageView');
   }
 
@@ -181,13 +181,13 @@ export class MetricsService {
   // - signed
   // - login
   // - addToCard
-  // - viewPage (category-subcategory)
+  // - ViewContent
   // - order:address
   // - order:payment
   // - order:sent (amount)
   // - order:feedback
   event(metric: EnumMetrics, options?) {
-    const ga = this.getHost('ga');
+    const gtag = this.getHost('gtag');
     const fbq = this.getHost('fbq');
 
     if (!this.isEnable() || this.isAdmin) {
@@ -209,32 +209,39 @@ export class MetricsService {
 
     // google
     // ga('send', 'event', [category], [Action], [Label], [Value], [fieldsObject]);
+    // gtag('event', [category], [Action], [Label], [Value], [fieldsObject]);
+    // ga4 ecommerce
+    // https://developers.google.com/analytics/devguides/collection/ga4/ecommerce?client_type=gtag#view_cart
 
-    switch (metric) {
+    switch (metric) {      
+      case EnumMetrics.metric_view_page:
+        fbq('track', 'ViewContent');
+        //ga('send', 'pageview', { page: params.path });
+        break;
       case EnumMetrics.metric_view_proposal:
-        ga('send', 'event', 'user', 'proposal');
+        //gtag('event', 'user', 'proposal');
         break;
       case EnumMetrics.metric_view_menu:
-        ga('send', 'event', 'user', 'menu');
+        //gtag('event', 'user', 'menu');
         break;
       case EnumMetrics.metric_account_login:
-        ga('send', 'event', 'user', 'login');
+        gtag('event', 'user', 'login');
         break;
       case EnumMetrics.metric_account_create:
         fbq('track', 'CompleteRegistration');
-        ga('send', 'event', 'user', 'CompleteRegistration');
+        gtag('event', 'user', 'CompleteRegistration');
         break;
       case EnumMetrics.metric_add_to_card:
         fbq('track', 'AddToCart', params.amount);
-        ga('send', 'event', 'order', 'AddToCart', '', params.amount);
+        gtag('event', 'add_to_cart',{ currency:'CHF', value:params.amount });
         break;
       case EnumMetrics.metric_order_sent:
         fbq('track', 'Purchase', {value: params.amount, currency: 'CHF'});
-        ga('send', 'event', 'order', 'Purchase', '', params.amount);
+        gtag('event', 'purchase',  {value: params.amount, currency: 'CHF'});        
         break;
       case EnumMetrics.metric_order_payment:
         fbq('track', 'InitiateCheckout');
-        ga('send', 'event', 'order', 'InitiateCheckout');
+        gtag('event', 'begin_checkout', {value: params.amount, currency: 'CHF'});
         break;
     }
   }
