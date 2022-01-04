@@ -9,6 +9,7 @@ export enum EnumMetrics {
   metric_account_login,
   metric_account_forget_password,
   metric_add_to_card,
+  metric_exception,
   metric_view_menu,
   metric_view_page,
   metric_view_proposal,
@@ -54,7 +55,6 @@ export class MetricsService {
     console.log('Metrics -- load FB', this.getHost('fbq'));
 
 
-    // ORIGINAL O.E.
     this.getHost('fbq')('init', this.FB_PIXEL);
     this.getHost('fbq')('track', 'PageView');
   }
@@ -64,38 +64,11 @@ export class MetricsService {
       return;
     }
 
-
-    (function (i, s, o, g, r, a, m) {
-    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-      (i[r].q = i[r].q || []).push(arguments);
-    }, i[r].l = 1 * (<any>new Date()); a = s.createElement(o),
-      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-    // (<any>window).ga('require', 'displayfeatures');
-    // (<any>window).ga('create', 'UA-57032730-1', 'auto');
-    this.getHost('ga')('require', 'displayfeatures');
-    this.getHost('ga')('create', 'UA-57032730-1', 'auto');
-    this.getHost('ga')('send', 'pageview');
-
-    console.log('Metrics -- load GA', this.getHost('ga'));
+    // https://support.google.com/tagmanager/answer/7582054?hl=fr&ref_topic=3441530
+    // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
+    console.log('Metrics -- load GTAG', this.getHost('gtag'));
 
   }
-
-  //
-  // DEPRECATED kissmetric is loaded on preload.js (check config at angular.json)
-  // initKissmetrics(){
-  //   var _kmk = _kmk || 'b86f4d476760eff81deae793f252b30c49d3dee2';
-  //   function _kms(u){
-  //     setTimeout(function(){
-  //       var d = document, f = d.getElementsByTagName('script')[0],
-  //       s = d.createElement('script');
-  //       s.type = 'text/javascript'; s.async = true; s.src = u;
-  //       f.parentNode.insertBefore(s, f);
-  //     }, 1);
-  //   }
-  //   _kms('//i.kissmetrics.com/i.js');
-  //   _kms('//scripts.kissmetrics.com/' + _kmk + '.2.js');
-  // }
 
 
   init(when?) {
@@ -110,7 +83,7 @@ export class MetricsService {
       console.log('Metrics -- init');
       // this.initKissmetrics();
       this.initFB();
-      //this.initGA();
+      this.initGA();
 
       this.$loader.update().subscribe((ctx) => {
         //
@@ -126,7 +99,7 @@ export class MetricsService {
         if (user && user.id) {
           console.log('-- metrics.identitySet', user.id);
           this.isAdmin = user.isAdmin();
-          return this.identitySet(user.email.address);
+          return this.identitySet(user.id);
         }
       });
     })).subscribe();
@@ -137,15 +110,16 @@ export class MetricsService {
     if (!this.isEnable()) {
       return;
     }
-    this.getHost('gtag')({user_id:uid});
+    this.getHost('gtag')('config', 'G-WQKN27KZGG', { 
+      'user_id': uid 
+    });
+    
   }
 
   identityClear() {
     if (!this.isEnable()) {
       return;
     }
-    // this.getHost('_kmq').push(['clearIdentity']);
-    // this.getHost('ga').push(['clearIdentity']);
   }
 
   isEnable() {
@@ -157,7 +131,7 @@ export class MetricsService {
     const _default: any = {
       fbq: function() {},
       ga: function() {},
-      gtag: function() {},
+      gtag: function() {console.log('--- DBG gtag',arguments)},
       _kmq: {push: function() {}}
     };
     return ((<any>window)[name]) || _default[name];
@@ -216,7 +190,7 @@ export class MetricsService {
     switch (metric) {      
       case EnumMetrics.metric_view_page:
         fbq('track', 'ViewContent');
-        //ga('send', 'pageview', { page: params.path });
+        //gtag('event', 'pageview', { page: params.path });
         break;
       case EnumMetrics.metric_view_proposal:
         //gtag('event', 'user', 'proposal');
@@ -243,6 +217,13 @@ export class MetricsService {
         fbq('track', 'InitiateCheckout');
         gtag('event', 'begin_checkout', {value: params.amount, currency: 'CHF'});
         break;
+        case EnumMetrics.metric_error:
+        case EnumMetrics.metric_exception:
+            gtag('event', 'exception', {
+          'description': params.message||params.error,
+          'fatal': false
+        });
+        
     }
   }
 }

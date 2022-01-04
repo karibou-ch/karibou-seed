@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { UserService } from 'kng2-core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { tap, debounceTime } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { i18n } from './i18n.service';
 import { MetricsService, EnumMetrics } from './metrics.service';
+import { KngNavigationStateService } from './navigation.service';
 
 
 export class ErrorState {
@@ -24,6 +25,7 @@ export class KngHttpInterceptorService {
   constructor(
     public $i18n: i18n,
     public $metric: MetricsService,
+    public $navigation: KngNavigationStateService,
     public $user: UserService
   ) {
     this.error$ = new Subject();
@@ -67,15 +69,14 @@ export class KngHttpInterceptorService {
             }, 1000);
           }
 
-          this.$metric.event(EnumMetrics.metric_error, err);
+          this.$metric.event(EnumMetrics.metric_error, {message:err.message});
 
         }
 
         //
         // on Unauthorized ERROR
         if (err.status === 401) {
-          // console.log('TokenInterceptorProvider:ERROR',err.status)
-          this.$user.logout().subscribe();
+          this.$navigation.debounceLogout();
           this.error$.next({message: err.message, status: err.status, url: err.url} as ErrorState );
         }
       })

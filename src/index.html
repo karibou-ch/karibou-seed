@@ -52,11 +52,15 @@
       font-weight: 700;
     }
   </style>
-
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQKN27KZGG"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag(){window.dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WQKN27KZGG',{ 'send_page_view': false });
   </script>
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -66,17 +70,7 @@
   </script>
   <!-- End Google Tag Manager -->  
 
-  <!-- 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=<ID de propriété A>"></script>
-  <script>
-    // Événements recommandés
-    // https://support.google.com/analytics/answer/9267735
-    // https://developers.google.com/analytics/devguides/collection/ga4/ecommerce?client_type=gtag#add_to_cart
-    gtag('js', new Date());
-    gtag('config', '<ID de propriété A>');
-    gtag('config', '<ID de propriété B>');
-  </script> 
-  -->
+
       
       
   <link rel="manifest" href="manifest.webmanifest">
