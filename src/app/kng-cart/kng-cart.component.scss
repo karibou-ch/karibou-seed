@@ -644,6 +644,14 @@
     justify-content: center;
     flex-direction:row;
     display: flex;    
+    button{
+      background-color: var(--mdc-theme-primary);
+      border-color: var(--mdc-theme-primary-text);
+      color: var(--mdc-theme-primary-text);      
+      border-radius: 39px;
+      border-style: solid;
+      padding: 2px 20px;      
+    }
   }  
 
   div.order-login{
