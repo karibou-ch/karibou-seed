@@ -50,6 +50,7 @@ export class ProductGroupedListComponent implements OnInit {
 
   //
   // replace default score sort
+  @Input() displayVendor: boolean;
   @Input() alphasort: boolean;
   @Input() offsetTop: number;
   @Input() config: any;
@@ -229,9 +230,10 @@ export class ProductGroupedListComponent implements OnInit {
       if (product.attributes.discount) {
         //
         // when discount display randomly product on category
-        if (Math.random() > .7) {
-          return;
-        }
+        // FIXME: this is not a good idea!
+        // if (Math.random() > .7) {
+        //   return;
+        // }
       }
 
       //
