@@ -351,7 +351,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.$meta.addTag({property: 'product:item_group_id',content: category });
       this.$meta.addTag({property: 'product:category',content: category||'Market' });
       this.$metric.event(EnumMetrics.metric_view_page,{
-        path:window.location.pathname
+        path:window.location.pathname,
+        title: document.title
       });
       //
       // others products for this vendor
