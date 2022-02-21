@@ -155,62 +155,40 @@
 
   <!-- ADDRESS IFF isAuth()-->
   <div class="order-address" [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isDayAvailable()||!isOpen()">      
-    <div class="cart-flow"  >1</div>
-    <section class="selected">
-      <p class="text-capitalize black block-info">
-        <mdc-icon class="secondary-text">check_circle</mdc-icon>&nbsp;
-        {{currentShipping().name}}, {{currentShipping().streetAdress}}
-      </p>
-      <div class="profile-action"  >
-        <button (click)="selectAddressIsDone = false;">
-          <mdc-icon class="black">map</mdc-icon>
-          {{i18n[locale].cart_modify_add}} 
-        </button>
-      </div>      
-    </section>
     <section  [innerHtml]="config?.shared.hub.checkout.address[$i18n.locale]" ></section>
       
     <!-- USER ADDRESS -->
-    <mdc-list  twoLine avatar singleSelection interactive >
-      <mdc-list-item *ngFor="let address of user.addresses" 
-                    [selected]="isSelectedAddress(address)"              
-                    (click)="setShippingAddress(address)">
-        <mdc-list-item-graphic>
-          <div class="avatar"
-          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"></div>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text [secondaryText]="address.streetAdress" >
-          <strong class="text-capitalize">{{address.name}}</strong> {{address.note}}
-        </mdc-list-item-text>                  
-        <mdc-list-item-meta>
-          <span [class.bold]="isSelectedAddress(address)" class="gray small">
-          Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</span>
-        </mdc-list-item-meta>        
-      </mdc-list-item>
-
-      <!-- SEPARATOR -->
-      <mdc-list-divider inset></mdc-list-divider>      
-
-      <!-- ADDRESS DEPOSIT -->
-      <mdc-list-item *ngFor="let address of getDepositAddress()" 
-                      [hidden]="!address.active"
-                      (click)="setShippingAddress(address)"
-                      [selected]="isSelectedAddress(address)">
-        <mdc-list-item-graphic>
-          <div class="avatar"
-          [ngStyle]="{'background-image': bgGradient + 'url(' + getStaticMap(address) + ')'}"></div>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text [secondaryText]="address.streetAdress">
-          <strong>{{address.name}}</strong> 
-        </mdc-list-item-text>                  
-        <mdc-list-item-meta>
-          <span [class.bold]="isSelectedAddress(address)">
-            Fr {{address.fees|number:'1.2-2'}}</span>
-        </mdc-list-item-meta>        
-      </mdc-list-item>
-      <!-- SEPARATOR -->
-      <mdc-list-divider inset></mdc-list-divider>
-
+    <section class="addresses">
+      <div class="address" *ngFor="let address of user.addresses"  (click)="setShippingAddress(address)">
+          <div class="meta">
+            <span class="material-icons">
+              {{isSelectedAddress(address)?'check_circle':'radio_button_unchecked'}}
+            </span>
+          </div>
+          <div class="content">
+            <span class="text-capitalize">{{address.name}}</span>             
+            <div class="street">{{address.streetAdress}}</div>
+            <div class="note">{{address.note}}</div>  
+          </div>
+          <div class="end">
+            <span [class.bold]="isSelectedAddress(address)" class="gray small">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</span>
+          </div>
+      </div>
+      <div class="address deposit" *ngFor="let address of getDepositAddress()" [hidden]="!address.active" 
+          (click)="setShippingAddress(address)">
+          <div class="meta">
+            <span class="material-icons">
+              {{isSelectedAddress(address)?'check_circle':'radio_button_unchecked'}}
+            </span>
+          </div>
+          <div class="content">
+            <span class="name text-capitalize">{{address.name}}</span> 
+            <div class="street">{{address.streetAdress}}</div>  
+          </div>
+          <div class="end">
+            <span [class.bold]="isSelectedAddress(address)" class="gray small"> Fr {{address.fees|number:'1.2-2'}}</span>
+          </div>
+      </div>
       <!-- NEW ADDRESS -->
       <div class="profile-action"  >
         <button [routerLink]="['/store/'+store+'/me/login-or-address']">
@@ -218,61 +196,46 @@
           {{$i18n[locale].cart_address_add}} 
         </button>
       </div>
-    </mdc-list>    
+
+    </section>
   </div>
 
   <!-- PAYMENT-->
-  <div class="order-address" [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable() && isOpen()">      
-    <div class="cart-flow" >2</div>
-    <section class="selected">
-      <p class="black block-info">
-        <mdc-icon class="secondary-text">check_circle</mdc-icon>&nbsp;
-        {{currentPaymentMethod()?.issuer}} {{currentPaymentMethod()?.number}}
-      </p>
-      <div class="profile-action"  >
-        <button (click)="selectPaymentIsDone = false;">
-          <mdc-icon class="black">payment</mdc-icon>
-          {{i18n[locale].cart_modify_payment}} 
-        </button>
-      </div>
-
-    </section>
+  <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady()&&isDayAvailable() && isOpen()">      
     <section  [innerHtml]="config?.shared.hub.checkout.payment[$i18n.locale]"></section>
 
 
     <!-- FIXME hide wallet method -->
     <!--               [hidden]="payment.issuer=='wallet'"-->
-    <mdc-list  twoLine avatar singleSelection interactive>
-      <mdc-list-item *ngFor="let payment of user.payments" 
-                      [hidden]="payment.issuer=='wallet'"
-                      (click)="setPaymentMethod(payment)"
-                      [class.selected]="isSelectedPayment(payment)">
-        <mdc-list-item-graphic>
-          <div class="avatar"
-          [ngStyle]="{'background-image': bgGradient + 'url(' + issuer[payment.issuer].img + ')'}"></div>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text [secondaryText]="payment.expiryToDate()|date:'MM/y'">
-          {{issuer[payment.issuer].label}}
-        </mdc-list-item-text>                  
-
-        <!-- <mdc-checkbox mdcListItemMeta [checked]="isSelectedPayment(payment)"></mdc-checkbox> -->
-      </mdc-list-item>
-      <!-- SEPARATOR -->
-      <mdc-list-divider inset></mdc-list-divider>
-      <!-- ADD PAYMENT -->
+    <section class="payments">
+      <div class="payment" *ngFor="let payment of user.payments" 
+        [hidden]="payment.issuer=='wallet'"
+        (click)="setPaymentMethod(payment)">
+        <div class="meta">
+          <span class="material-icons">
+            {{isSelectedPayment(payment)?'check_circle':'radio_button_unchecked'}}
+          </span>
+        </div>
+        <div class="content">
+          {{issuer[payment.issuer].label}} -
+          {{payment.expiryToDate()|date:'MM/y'}}
+        </div>
+        <div class="end">
+          <img [src]="issuer[payment.issuer].img" />
+        </div>
+      </div>
       <div class="profile-action"  >
         <button [routerLink]="['/store/'+store+'/me/login-or-payment']">
           <mdc-icon class="primary-on-text">payment</mdc-icon>
           {{$i18n[locale].cart_payment_add}} 
         </button>
-      </div>
-    </mdc-list>    
+      </div>      
+    </section>
  
   </div>
   
   <!-- RESUME -->
   <div class="order-resume" *ngIf="isOrderReady() && isDayAvailable() && isOpen()">
-    <div class="cart-flow ">3</div>
     <section class="header" [hidden]="hasShippingReductionMultipleOrder()" [class.deposit]="!isCartDeposit()" 
          [innerHtml]="config?.shared.hub.checkout.resume[$i18n.locale]">
     </section>  

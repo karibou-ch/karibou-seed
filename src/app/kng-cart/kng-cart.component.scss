@@ -157,52 +157,29 @@
 
   .profile-action {
     display: flex;
-    padding: 0px;
+    padding: 10px 0;
+    width: 100%;
     mdc-icon {
       transform: translateY(7px);      
     }
+    @media (min-width:429px) {
+      button{
+        margin-left: auto!important;
+      }
+    }
     button {          
-      border: 1px solid #ddd;
       color: black;
       padding: 2px 15px;
-      border-radius: 23px;
       margin-right: auto;
-      margin-left: 23px;
-      font-size: .8rem;
+      margin-left: -5px;
       vertical-align: bottom;
-      line-height: 30px;
-      background-color: transparent;
+      line-height: 40px;
+      -background-color: transparent;
+      font-size: 15px;
+      width: 95%;
     }
   }
 
-
-  .cart-flow{
-    width: 0px;
-    height: 0px;
-    position: absolute;
-    left: 1px;
-    margin-top:-55px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;    
-    background: var(--mdc-theme-primary);
-    
-    color: var(--mdc-theme-primary-text);
-    &::after{
-      content: "";
-      position: absolute;
-      top: 35px;
-      left: 15px;
-      width: 1px;
-      height: calc(100% - 38px);
-      height: 20px!important;
-      background-color: rgba(0, 0, 0, 0.1);
-      -webkit-transition: all 0.4s;
-      transition: all 0.4s;
-    }
-  }
 
   button{
     border: 0;
@@ -368,117 +345,66 @@
     }
   }
 
+
   //
-  // card elements
-  mdc-card{
-    &.selected{
-      border:2px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
-      border:2px solid gold !important;
-    }
-    border-radius: 0;
-    padding:5px;
-    background: white;
-    position: relative;
-    flex: 0 0 140px;
-    width: 140px;
-    margin: 8px;    
-    box-shadow: inherit;
-    // FIXME Safari 10.1 CSS FIX
-    min-height: 210px;
-      
-    .card__media{
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      background-position-y:0px;
-      border-radius: 5px;  
-      transition: background-color .2s ease-in-out;
-      
-      span{
-        position: absolute;
-        bottom: 0%;
-        left: 0;
-        right:0;
-        text-align: center;
-        font-size: 150%;
-        background: rgba(154, 154, 154, 0.6);
-        background: rgba(45, 174, 116, 0.64);
-        background: rgba(214, 214, 214, 0.7);
-        color: #000;
-        text-transform: capitalize;
-        padding: 5px 3px;
+  // section address, payment and resume
+  section.payments,
+  section.addresses {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    width: 80%;
+    margin: 10px auto;
+    @media (max-width:429px) {
+      padding-left: 30px;      
+      justify-content: flex-start;
+      .payment,
+      .address{
+        background-color:transparent!important;
+        border: none!important;
+        width: 90%;
       }
     }
-    .card__primary,
-    .card__secondary{
-      text-align: center;
-      padding: 5px 0px;
-      margin: 0;
-      margin-top:auto;
-      font-size: smaller;
-      .type{
-        font-weight: bold;
+    .payment,
+    .address{
+      display: flex;
+      border: 1px solid #eee;
+      padding: 5px;
+      border-radius: 7px;
+      min-height: 65px;      
+      -background-color: #f5f5f5;
+      div.meta{
+        width: 40px;
       }
-      .price{
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-        font-size: large;
-        font-weight: 500;
+      div.content{
+        width: 100%;
+        .name{
+          line-height: 20px;
+        }
+        .street, .note{
+          font-size: .875rem;
+          font-weight: 400;
+          letter-spacing: .01785714em;
+          color: #888;
+        }
+      }
+      div.end{
+        width: 80px;
+        img{
+          width: 100%;
+        }
       }
     }
-    .card__secondary{
-      color:#333 ;      
-      background-color: rgba(66, 63, 58, 0.4);
-    }
-
-    .card__secondary.payment{
-      &.invalid{
-        color:red;        
-        text-shadow: 0 0 2px #ddd;
-        font-weight: 400;        
-      }
-    }
-    .card__subtitle{
-      margin:0;        
-    }       
-
   }
 
-  .order-address.is-done {
-    div.cart-flow{
-      color: var(--mdc-theme-primary-text);
-      background: var(--mdc-theme-primary-text);
-      background-color: var(--mdc-theme-karibou-pink);
+
+
   
-    }
-    section.selected {
-      display: block;
-      .link{
-        color: blue;
-        font-weight: 300;
-        text-transform: none;        
-      }
-    }
-    section:not(.selected) {
-      display: none;
-    }
-    mdc-list{
-      display: none;
-    }
-  }
-
   .order-address{
-    section.selected{
-      display: none;
-      p{
-        text-align: left!important;
-        padding-left: 30px!important;
-      }
-    }
     margin-top: 20px;
     padding-top: 40px;
-    border-top:1px solid #ddd;
+    border-top:1px solid #ccc;
     width:auto;
     display: flex;
     justify-content: center;
@@ -497,25 +423,9 @@
         font-weight: 500;
       }  
     }
-
-    button.action{
-      width: 50%;
-    }
-
-    mdc-card-primary-action{
-      height: 100%;
-    }
-
-    mdc-list{
-      width: 100%;
-    }
-  }
+  }  
 
   .order-resume{
-    div.cart-flow{
-      background-color: var(--mdc-theme-karibou-pink);
-      color: var(--mdc-theme-primary-text);
-    }
 
     position: relative;
     margin-top: 20px;
