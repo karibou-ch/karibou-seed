@@ -17,6 +17,10 @@
           <span i18n>{{$i18n.label().nav_store_shops_list}}</span>
         </mdc-list-item>
 
+        <div class="mdc-list-item mdc-ripple-upgraded">
+          <a href="tel:{{hubPhone}}"><i class="icon-phone-solid invert"></i>{{hubPhone}}</a>  
+        </div>
+
         <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
           <!--<mdc-icon mdcListItemGraphic class="">account_box</mdc-icon>--><span i18n>{{$i18n.label().nav_account}}</span>
         </mdc-list-item>

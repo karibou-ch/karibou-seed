@@ -6,6 +6,7 @@ import {
   Config,
   ConfigMenu,
   ConfigService,
+  OrderService,
   User,
   UserService,
   Category,
@@ -14,12 +15,11 @@ import {
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
-import { MdcSnackbar, MdcMenu, MdcTopAppBarSection, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
+import { MdcSnackbar, MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { merge, timer } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-import { OrderService } from '../../../../kng2-core/dist';
 
 
 @Component({
@@ -52,6 +52,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   Kimage: string;
   hubTitle: string;
   hubImage: string;
+  hubPhone: string;
   content: any;
   cgAccepted: boolean;
   cardItemsSz = 0;
@@ -134,6 +135,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // HUB title
     this.hubTitle = this.config.shared.hub.siteName[this.locale];
     this.hubImage = this.config.shared.hub.siteName.image;
+    this.hubPhone = this.config.shared.hub.address.phone;
 
     this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
     this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
@@ -166,8 +168,12 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
       //
       // update user
-      if (emit.user && this.user && this.user.id !== emit.user.id) {
+      if (emit.user) {
+        this.user = this.user || {} as User;
         Object.assign(this.user, emit.user);
+
+        //
+        // FIXME avoid multiple update of same value 
         this.$cart.setContext(this.config, this.user,this.shops,this.orders);
         this.$cdr.markForCheck();
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
@@ -292,6 +298,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.$navigation.store !== undefined;
   }
 
+  // FIXME, scheduler should be in API
   isDayAvailable(day: Date) {
     if(!day){
       return false;
