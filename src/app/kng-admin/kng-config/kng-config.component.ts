@@ -203,7 +203,11 @@ export class KngConfigComponent implements OnInit, OnDestroy {
         this.formatDates();
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
-        }, (err) => this.$snack.open(err.error, 'OK'),
+        }, (err) => {
+          this.isReady = true;
+          this.isLoading = false;
+          this.$snack.open(err.error, 'OK')
+        },
       () => this.isLoading = false
     );
   }
