@@ -60,6 +60,7 @@ div.home-header{
       color: var(--mdc-theme-primary-text);
       border: none;
       box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
+      width: 100%;
       a{
         color: var(--mdc-theme-primary-text)!important;
       }
@@ -176,6 +177,10 @@ div.home-header{
             zoom: 1;            
           }
         }
+      }
+      .banner{
+        box-shadow: none;
+        border-radius: inherit;
       }
       .left{
         flex: 1;

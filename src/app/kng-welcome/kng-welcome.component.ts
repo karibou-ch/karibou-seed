@@ -7,6 +7,7 @@ import {
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
 @Component({
   selector: 'kng-welcome',
@@ -41,15 +42,20 @@ export class KngWelcomeComponent implements OnInit {
   constructor(
     public $i18n: i18n,
     private $navigation: KngNavigationStateService,
+    private $metric: MetricsService,
     private $router: Router,
     private $route: ActivatedRoute,
     private $photo: PhotoService
   ) {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
-    this.exited = false
+    this.exited = false;
     // Object.assign(this.config, loader[0]);
-    
+    this.$metric.event(EnumMetrics.metric_view_page,{
+      path:window.location.pathname,
+      title: 'Landing'
+    });
+  
     this.$photo.shops({active: true, random: 40}).subscribe((photos: any) => {
       // remove underconstruction shops with missing photos //
       this.photos = photos.filter(s => s.photo).map(shop => shop.photo.fg);

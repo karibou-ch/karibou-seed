@@ -112,6 +112,7 @@
     font-size:large;  
     background-color: var(--mdc-theme-primary);
     color: var(--mdc-theme-primary-text);
+    border: 1px solid var(--mdc-theme-primary-text) !important;
   }
 
   &.top{
