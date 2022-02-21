@@ -190,20 +190,20 @@ export class MetricsService {
     switch (metric) {      
       case EnumMetrics.metric_view_page:
         fbq('track', 'ViewContent');
-        //gtag('event', 'pageview', { page: params.path });
+        gtag('event', 'page_view', { page_location: params.path, page_title: params.title });
         break;
       case EnumMetrics.metric_view_proposal:
         //gtag('event', 'user', 'proposal');
         break;
-      case EnumMetrics.metric_view_menu:
-        //gtag('event', 'user', 'menu');
+      case EnumMetrics.metric_order_payment:
+        gtag('event', 'checkout_progress');
         break;
       case EnumMetrics.metric_account_login:
-        gtag('event', 'user', 'login');
+        gtag('event', 'login');
         break;
       case EnumMetrics.metric_account_create:
         fbq('track', 'CompleteRegistration');
-        gtag('event', 'user', 'CompleteRegistration');
+        gtag('event', 'sign_up');
         break;
       case EnumMetrics.metric_add_to_card:
         fbq('track', 'AddToCart', params.amount);
