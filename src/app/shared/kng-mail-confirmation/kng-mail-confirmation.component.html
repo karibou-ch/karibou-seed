@@ -4,10 +4,11 @@
 <div *ngIf="!user.isReady()" class="mail-checker">
     <h3 i18n>{{i18n[locale].title_h3}}</h3>
     <!-- FIXME -->
-    <progress class="mdc-progress" value="30"></progress>
+    <progress class="progress" value="30"></progress>
     <h2 i18n>{{i18n[locale].title_h2}}</h2>
     <p class="block-info" i18n>
-        {{i18n[locale].action_1}} {{user.getEmailStatus()|date}}. 
+        <!-- FIXME {{user.getEmailStatus()|date}}. -->
+        {{i18n[locale].action_1}} {{user.getEmailStatus()}}. 
         <br/><a href="javascript:;" (click)="sendConfirmationMail()">{{sendConfirmation ? i18n[locale].action_2_done : i18n[locale].action_2}}</a>
         
     </p>
