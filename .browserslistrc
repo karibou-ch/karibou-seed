@@ -7,9 +7,10 @@
 
 # based analytics results
 > 0.5%
-last 2 versions
-Firefox >= 59
-not dead
-not IE 9-11 # For IE 9-11 support, remove 'not'.
-ios_saf >= 11
-Safari >= 11
+last 3 Chrome version
+last 3 Firefox version
+last 3 Edge major versions
+last 3 Safari major versions
+last 3 iOS major versions
+Firefox ESR
+not IE 11
