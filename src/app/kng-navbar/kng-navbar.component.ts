@@ -162,7 +162,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.subscription = merge(
       this.$user.user$.pipe(map(user => ({ user}))),
       this.$config.config$.pipe(map(config => ({ config }))),
-      this.$cart.cart$.pipe(debounceTime(100), map(state => ({ state }))),
+      this.$cart.cart$.pipe(map(state => ({ state }))),
       this.$order.orders$.pipe(map(orders => ({orders})))
     ).subscribe((emit: any) => {
 
