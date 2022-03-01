@@ -7,7 +7,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { ActivatedRoute, Router, RouteReuseStrategy } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CartService,
   Category,
@@ -21,7 +21,6 @@ import {
   Shop,
   Order
 } from 'kng2-core';
-import { CacheRouteReuseStrategy } from '../app.cache.route';
 import { i18n, KngNavigationStateService } from '../common';
 
 
