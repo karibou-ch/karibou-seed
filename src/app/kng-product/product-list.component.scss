@@ -135,6 +135,8 @@
     height: 80px;
     width: 10px;
     overflow-x: visible;
+    /* display sub category on product list screen */
+    opacity: 1;
 
     @media (min-width: 1025px) {
       transform:none!important;
