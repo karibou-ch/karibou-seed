@@ -66,17 +66,19 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   pageOptions: any = {
     home: {
       maxcat: 12,
-      discount: true,
+      home: true,
       popular: true,
       showMore: true
     },
     grocery: {
       maxcat: 12,
+      home: true,
       popular: true,
       showMore: true
     },
     cellar: {
       maxcat: 12,
+      home: true,
       popular: true,
       showMore: true
     },
@@ -352,7 +354,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       products.forEach((product: Product) => {        
         shops[product.vendor.urlpath] = product.vendor;
         this.group[product.categories.name] = true;
-        if (product.attributes.discount) {
+        if (product.attributes.home) {
           this.home.push(product);
         }
       });

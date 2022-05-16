@@ -84,7 +84,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
        Merci beaucoup pour votre compréhension.
        <p>Nous livrons du mardi au vendredi, et nous réservons les commandes pour 6 jours à l'avance uniquement.
        Chaque jour une nouvelle possibilité de livraison apparait.</p>`,
-      cart_info_service_k: `Le service karibou.ch <span class=" ">8%</span>`,
+      cart_info_service_k: `Le service karibou.ch <span class=" ">6%</span>`,
       cart_info_service_k_plus: `Sur karibou.ch, le prix de chaque produit = le prix pratiqué en boutique/sur le marché!<br/> Ce coût finance la collecte, la préparation et la vérification de votre commande ainsi que notre service au client 5🌟.`,
       cart_remove: 'enlever',
       cart_modify_add: 'Choisir une autre adresse de livraison',
@@ -120,7 +120,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
        new delivery windows become available. Thank you very much for your understanding.
        <p>We do deliver every day from Tuesday to Friday and we schedule orders for 6 days in advance only.
        Every morning you will see the next delivery window.</p>`,
-      cart_info_service_k: 'The service fee <span class="gray ">8%</span>',
+      cart_info_service_k: 'The service fee <span class="gray ">6%</span>',
       cart_info_service_k_plus: `On Karibou.ch, the price of each product = the price charged in the store/market!<br/> This fee covers a broad range of operating costs including pickup, packaging, background checks of your order and our 5🌟 customer support`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
