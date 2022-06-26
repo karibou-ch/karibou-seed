@@ -23,6 +23,8 @@ import {
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
+
 
 @Component({
   selector: 'kng-home',
@@ -120,11 +122,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     //private $routeCache:RouteReuseStrategy,
     //private $cdr: ChangeDetectorRef,
     private $loader: LoaderService,
+    private $metric: MetricsService,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
-    private $router: Router,
-    private $photo: PhotoService
+    private $router: Router
   ) {
     // bind infinite scroll callback function
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
@@ -159,10 +161,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     window.scroll(0, 0);
-
-    //
-    // FIXME avoid double home load
-    let loaded = false;
 
     this.subscription = this.$loader.update().subscribe(emit => {
 
@@ -221,7 +219,21 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if (this.config.shared.hub && this.config.shared.hub.name) {
       const site = this.config.shared.hub.siteName[this.locale];
       const tag =  this.config.shared.hub.tagLine.t[this.locale];
+      const hub = this.config.shared.hub.slug;
+      const source = this.$route.snapshot.queryParamMap.get('target')||
+                     this.$route.snapshot.queryParamMap.get('ad') ||
+                     this.$route.snapshot.queryParamMap.get('umt_source')
       document.title = site + ' - ' + tag;
+      //
+      // publish metrics
+      const metric ={
+        path:window.location.pathname,
+        title: 'Home',
+        action:'home',
+        hub,
+        source
+      }
+      this.$metric.event(EnumMetrics.metric_view_page,metric);
     }
 
     if(this.$navigation.isMobileOrTablet()) {
@@ -338,9 +350,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.options.when = this.$cart.getCurrentShippingDay();
 
     // FIXME remove hardcoded constraint
-    if(this.target === 'selection') {
-      delete options.group;
-    }
+    // if(this.target === 'selection') {
+    //   delete options.group;
+    // }
 
     const hub = this.$navigation.store;
     if (hub) {
@@ -354,7 +366,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       products.forEach((product: Product) => {        
         shops[product.vendor.urlpath] = product.vendor;
         this.group[product.categories.name] = true;
-        if (product.attributes.home) {
+        if (product.attributes.home && !this.home.some(p => p.sku == product.sku)) {          
           this.home.push(product);
         }
       });
