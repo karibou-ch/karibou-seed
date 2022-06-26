@@ -376,7 +376,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
     this.$router.navigate(['/store', this.store, 'me', 'orders']);
     this.items = [];
-    this.$cart.empty();
   }
 
   confirmPaymenIntent(intent: any) {
@@ -473,6 +472,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
         //
         // validate
+        this.$cart.empty();
         this.createPaymentConfirmation(order);
       },
       status => {

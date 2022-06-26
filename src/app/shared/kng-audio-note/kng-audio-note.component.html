@@ -1,0 +1,21 @@
+<div class="audio-note" [class.recording]="audioIsRecording">
+  <div class="loading" [hidden]="!cartItemAudioLoading" >
+    Enregistrement en cours, patientez...
+  </div>
+  <div class="title">{{$i18n.label().cart_audio}}</div>
+  <textarea  hidden autofocus rows="5" [(ngModel)]="cartItemNote" placeholder="Ajoutez un commentaire ou enregistrez un message audio."></textarea>
+
+  <div class="audio-controls">
+    <div class="audio-error" [hidden]="!cartItemAudioError" >
+      Désolé, l'enregistrement audio n'est pas disponible!
+    </div>
+
+    <!--- SAFARI >=13 -->
+    <audio id="audio" controls [hidden]="!cartItemAudio || audioIsRecording"></audio>
+    <button class="record"  
+      (pointerdown)="audioRecord($event)"
+      (pointerup)="audioStopAndSave()">
+      <span class="material-icons">mic</span>
+    </button>
+  </div>
+</div>

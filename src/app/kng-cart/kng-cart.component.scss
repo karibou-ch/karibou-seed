@@ -238,6 +238,14 @@
       }
     }
 
+    .note{
+      padding-left: 20px;
+      color:var(--mdc-theme-primary);
+      .material-icons{
+        font-size: 18px;
+      }      
+    }
+
     @media (max-width:429px) {
       padding-left: 5px;      
     }
