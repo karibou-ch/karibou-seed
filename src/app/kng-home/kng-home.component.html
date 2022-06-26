@@ -19,12 +19,12 @@
 <!-- MARKETPLACE -->
 <kng-nav-marketplace [config]="config" [orders]="pendingOrders"></kng-nav-marketplace>
 
-<!-- LINKS -->
-<kng-product-link [config]="config"></kng-product-link>
-
 
 <!-- SELECTION -->
 <kng-product-swipe [products]="home" ></kng-product-swipe>
+
+<!-- LINKS -->
+<kng-product-link [config]="config">{{$i18n.label().nav_shortcuts}}</kng-product-link>
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->

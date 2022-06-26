@@ -47,6 +47,9 @@ export class KngProductLinkComponent implements OnInit {
     this.hideIfEmpty = (this.links.length == 0);
   }
 
+  get i18n(){
+    return this.$i18n;
+  }
   ngOnInit() {    
   }
 

@@ -10,7 +10,7 @@ div.home-header{
   background-size: cover;
   background-color: transparent!important;
   margin-top: 10px; 
-  margin-bottom: 3px; 
+  margin-bottom: 0px; 
   @media (max-width:1024px){
     padding: 10px 10px;
     width: calc( 100% - 20px );
@@ -141,7 +141,7 @@ div.home-header{
 
 
   .welcome{
-    margin-bottom:30px;
+    margin-bottom:0px;
     position: relative;
     min-height: 120px;
     width: 100%;
@@ -330,7 +330,7 @@ kng-product-link{
 }
 
 kng-nav-marketplace {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   display: block;
 }
 

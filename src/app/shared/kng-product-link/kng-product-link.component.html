@@ -12,14 +12,4 @@
         </mdc-chip>
       </mdc-chip-set>
   </div>
-  <div class="content">
-      <!-- DISPLAY SHOPS -->
-      <div class="shops">
-        <article *ngFor="let shop of shops;trackBy:trackByShop;let idx = index;">
-          <img class="photo-owner" [src]="shop.photo.owner" />        
-          <div class="title">{{shop.name}}</div>
-        </article>        
-
-      </div>
-  </div>
 </div>

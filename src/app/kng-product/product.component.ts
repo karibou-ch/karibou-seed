@@ -23,8 +23,9 @@ import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Meta } from '@angular/platform-browser';
+import { DomSanitizer, Meta } from '@angular/platform-browser';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
+
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
 @Component({
@@ -55,6 +56,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   bgImage: string;
   photosz: string;
   cartItem: CartItem;
+  cartItemNote: string;
+  cartItemAudio: string;
+  cartItemAudioLoading = false;
+  cartItemAudioError = false;
 
   departement = 'home';
 
@@ -116,7 +121,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
-
   }
 
   //
@@ -190,13 +194,27 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-
   get store() {
     return this.$navigation.store;
   }
 
-  addToCart($event, product: Product, variant?: string) {
-    $event.stopPropagation();
+  onAudioError(error) {
+    console.log('---DBG audio error',error);
+  }
+
+  onAudioStopAndSave(url: string) {
+    console.log('---',url)
+    this.cartItemAudio = url;
+    if(!url){
+      return;
+    }
+    this.addToCart(0,this.product, null, true);
+  }
+
+  addToCart($event, product: Product, variant?: string, audio?: boolean) {
+    if($event){
+      $event.stopPropagation();
+    }
     //
     // FIXME should not be possible
     if (!product.variants) {
@@ -224,8 +242,15 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.openVariant = false;
 
+    const item = CartItem.fromProduct(product,variant);
+    item.note = this.cartItemNote;
+    item.audio = this.cartItemAudio;
+    if(audio){
+      this.$cart.addOrUpdateNote(item);      
+    }else{
+      this.$cart.add(item);
+    }
 
-    this.$cart.add(product, variant);
     this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
@@ -313,9 +338,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.product = product;
 
     //
-    // get cart value
-    this.cartItem = this.$cart.findBySku(product.sku);
-    //
     // updated product is hilighted for 2 weeks
     this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;
     this.updateBackground();
@@ -354,11 +376,33 @@ export class ProductComponent implements OnInit, OnDestroy {
         path:window.location.pathname,
         title: document.title
       });
+
+      //
+      // FIXME wait for cart loaded before to get content
+      setTimeout(()=>{
+        //
+        // get cart value
+        this.cartItem = this.$cart.findBySku(product.sku);
+        if(!this.cartItem) {
+          return
+        }
+        // this.$dom.bypassSecurityTrustUrl
+        this.cartItemAudio = (this.cartItem.audio);
+        this.cartItemNote = this.cartItem.note;
+        if(this.cartItemAudio){
+          document.querySelector('#audio').setAttribute('src', this.cartItemAudio);
+        }
+
+
+
+      },100)
+
       //
       // others products for this vendor
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
       });
+
     }
   }
 
