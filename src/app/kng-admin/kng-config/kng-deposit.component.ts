@@ -74,6 +74,9 @@ export class KngDepositDlgComponent {
     this.$dlgRef.close(this.form.value);
 
   }
+  addAddress() {
+    
+  }
 
   askDelete() {
     this.$dlgRef.close('delete');

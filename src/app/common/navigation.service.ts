@@ -41,7 +41,6 @@ export class KngNavigationStateService  {
     this._logout$ = new Subject<void>()
     this._logout$.pipe(
       debounceTime(1000),
-      tap(()=>console.log('--DBG debounceLogout')),
       switchMap(()=>this.$user.logout())
     ).subscribe();
     
