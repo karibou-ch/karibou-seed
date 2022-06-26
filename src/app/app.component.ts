@@ -29,6 +29,14 @@ export class AppComponent {
     private $mterics: MetricsService
   ) {
     //
+    // FIXME, avoid context menu on full application (but only needed on audio record)
+    window.oncontextmenu = function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    };    
+
+    //
     // init metric/funnel service
     this.$mterics.init();
 

@@ -36,6 +36,9 @@ import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 import { appRoutes } from './shared.routes';
 import { NgxStripeModule } from 'ngx-stripe';
 import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
+import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component';
+import { KngAudioRecorderService } from './kng-audio-recorder.service';
+
 
 @NgModule({
   imports: [
@@ -52,6 +55,7 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
   exports: [
     RouterModule,
     KngCommonModule,
+    KngAudioNoteComponent,
     KngControlMessagesComponent,
     KngFeedbackComponent,
     KngHomeComponent,
@@ -69,6 +73,7 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
     // KngNavbarComponent,
     // KngRootComponent,
     KngHomeComponent,
+    KngAudioNoteComponent,
     KngControlMessagesComponent,
     KngTextfieldAutosizeDirective,
     KngMailConfirmationComponent,
@@ -92,6 +97,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        KngAudioRecorderService
       ]
     };
   }

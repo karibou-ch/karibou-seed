@@ -38,8 +38,6 @@ import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.co
     KngLazyLoadDirective,
   ],
   declarations: [
-    // KngNavbarComponent,
-    // KngRootComponent,
     KngNavMarketplaceComponent,
     KngNavCalendarComponent,
     KngFooterComponent,
