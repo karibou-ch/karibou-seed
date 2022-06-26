@@ -1,13 +1,12 @@
 kng-product-link {
   width: 100%;   
+  margin-left: 10px;
+  display: block;
 
   @media (max-width:425px) {
     padding: 0px 20px;
     padding: 0px;
-    width: calc( 100% - 40px);
     width: 100%;
-    display: block;
-    margin-left: 5px;
   }  
 
   .links {
@@ -16,8 +15,9 @@ kng-product-link {
     margin-bottom: 20px;
     font-weight: 200; 
     -webkit-overflow-scrolling: touch;
+          
     .title {
-      margin: 20px 5px;
+      margin: 20px 0px;
       color: var(--mdc-theme-text-primary-on-background,rgba(0,0,0,.87));
     }
     .content {

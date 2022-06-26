@@ -1,8 +1,6 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
   <h3 i18n>{{i18n[locale].title_order_open}}</h3>
-  <p class="block-info" [innerHtml]="i18n[locale].title_order_grouped_info" [hidden]="boxed || !isDayAvailable(order.shipping.when)">
-  </p>
 
   <p i18n class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
@@ -11,6 +9,8 @@
       &nbsp;<span [hidden]="!childOrders.length" class="ita">//{{childOrders.length}} {{i18n[locale].title_order_grouped}} </span>
   </p>
   <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
+  <p class="block-info" [innerHtml]="i18n[locale].title_order_grouped_info" [hidden]="boxed || !isDayAvailable(order.shipping.when)">
+  </p>
 </div>
 
 <!--- ORDER IS CANCEL -->
