@@ -227,14 +227,6 @@ export class ProductGroupedListComponent implements OnInit {
 
     this.group = {};
     this.products.forEach((product: Product) => {
-      if (product.attributes.discount) {
-        //
-        // when discount display randomly product on category
-        // FIXME: this is not a good idea!
-        // if (Math.random() > .7) {
-        //   return;
-        // }
-      }
 
       //
       // group by category
@@ -247,10 +239,10 @@ export class ProductGroupedListComponent implements OnInit {
 
 
     const cats = Object.keys(this.group);
-    const sortBy = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
+    const sortByAlphaOrScore = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
     cats.forEach(cat => {
       // console.log('--- DEBUG cat',cat, this.group[cat].length);
-      this.group[cat] = this.group[cat].sort(sortBy).slice(0, maxcat);
+      this.group[cat] = this.group[cat].sort(sortByAlphaOrScore).slice(0, maxcat);
       if (this.group[cat].length % divider === 0 && this.showMore) {
         this.group[cat].pop();
       }
@@ -268,24 +260,6 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     this.visibility[this.categories[0].slug] = true;
-  }
-
-  //
-  // sort products by:
-  //  - title
-  sortProductsByTitle(a, b) {
-    // sort : Title
-    const score = a.title.localeCompare(b.title);
-    return score;
-  }
-
-  //
-  // sort products by:
-  //  - stats.score
-  sortProductsByScore(a, b) {
-    // sort : HighScore => LowScore
-    const score = b.stats.score - a.stats.score;
-    return score;
   }
 
 
@@ -345,6 +319,25 @@ export class ProductGroupedListComponent implements OnInit {
     el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
   }
 
+
+  //
+  // sort products by:
+  //  - title
+  sortProductsByTitle(a, b) {
+    // sort : Title
+    const score = a.title.localeCompare(b.title);
+    return score;
+  }
+
+  //
+  // sort products by:
+  //  - stats.score
+  sortProductsByScore(a, b) {
+    // sort : HighScore => LowScore
+    const score = b.stats.score - a.stats.score;
+    return score;
+  }  
+
   sortByWeight(a: CategoryView, b: CategoryView) {
     return a.weight - b.weight;
   }
@@ -353,9 +346,7 @@ export class ProductGroupedListComponent implements OnInit {
   // detect scrall motion and hide component
   // @HostListener('window:scroll', ['$event'])
   windowScroll($event?) {
-
     const scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
-
     //
     // initial position, event reset value
     if(scrollPosition == 0) {
