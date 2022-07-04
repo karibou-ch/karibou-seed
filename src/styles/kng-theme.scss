@@ -8,7 +8,7 @@
 // 
 // Screen
 body{
-  font-family: Roboto, sans-serif !important; 
+  font-family: Roboto, Helvetica, Arial, sans-serif !important; 
   margin-right: 0px!important;
   margin-left: 0px!important;
   margin-bottom: 0px!important;
@@ -475,6 +475,37 @@ body{
   background-image: url(/assets/img/icon-champagne.svg)
 }
 
+
+.kng-chip {
+  border-radius: 16px;
+  background-color: #e0e0e0;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: Roboto, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.01785714em;
+  text-decoration: inherit;
+  text-transform: inherit;
+  height: 32px;
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border-width: 0;
+  outline: none;
+  cursor: pointer;
+  overflow: hidden;  
+  margin-left: 5px;
+  .end{
+    transform: translateX(5px);
+  }
+  .start{
+    transform: translateX(-5px);
+  }
+
+}
 
 //
 // progress
