@@ -19,12 +19,9 @@
   }
 
   @media (min-width: 1025px) {
-    padding: 5px;
-    .product-backdrop {      
-    }
-  
+    padding: 5px;  
   }
-  .product-dialog__surface{
+  .product-dialog-surface{
     /* see overflow in mdc-style.scss */
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
     background-color: var(--mdc-theme-background, #fff);
@@ -80,12 +77,12 @@
   }
 }
 
-.category-wide{
+.shop-wide{
   position: relative;
   display:flex;  
   flex-flow: column;
   justify-content:flex-end; /*halign*/
-  align-items:flex-start; /*valign*/
+  align-items:center; /*valign*/
   overflow:hidden;
   letter-spacing: .04em;
   text-decoration: inherit;
@@ -101,79 +98,21 @@
     font-size: 24px;
   }
 
-  .further-product-container {
-    display: relative;
-    width: 95%;
-    max-width: 600px;
+  .owner img{
+    max-width: 50%;
+  }
+
+  img.logo{
+    max-width: 100%;    
+    object-fit: contain;
     margin: auto;
-    flex: 1;
-    align-items: center;    
-    >div{
-      padding:10px 5px;
-    }
-    .light{
-      color: #aaa;
-    }
   }
 
-  .breaker.small{
-    margin-top: 25px;
-  }
-
-
-  .toolbox{
-    transform: translateY(0);
-    transition: all 200ms;
-    z-index: 2;
-
-    position: fixed;
-    top:-20px;
-    left: -5px;
-    height: 80px;
-    width: 10px;
-    overflow-x: visible;
-    /* display sub category on product list screen */
-    opacity: 1;
-
-    @media (min-width: 1025px) {
-      transform:none!important;
-      left:calc( (100vw - 865px) / 2);
-      top: 30px;
-      margin-left: -200px;
-    }
-
-    @media (min-width: 1640px) {
-      left:calc( (100vw - 945px) / 2);
-    }
-
-
-    &.show{
-      top: 0;
-      background: rgba(0, 0, 0, 0.65);
-      bottom: 0;
-      height: 100vh;  
-      transform: none;  
-    }
-
-
-    &.exited:not(.show){
-      transform: translateX(-245px);    
-      opacity: 0;
-    }
-
-    font-size: smaller;
-    // display: flex!important;
-    // height: auto;
-    // flex-flow: row wrap; 
-    mdc-chip-set{
-      display: block;
-      transform: scale(.8);
-      mdc-chip{
-        margin: 7px 4px;
-        box-shadow: 0 0 1px 1px rgba(100, 100, 100, 0.4);            
-        color: #000;
-      }
-    } 
+  .contact{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px auto;    
   }
 
   .vendor{
@@ -181,72 +120,63 @@
     align-items: center;
     flex-flow: row wrap;
     justify-content: flex-start;
-    width: 94%;
+    width: 100%;
     margin-top: 15px;
     padding-left: 5px;
     padding-top: 5px;    
+    max-width: 700px;
 
     div.owner{
       overflow: hidden;
-      width: 48px;
-      height: 48px;
-      cursor: pointer;
+      display: flex;
+      width: 100%;
       img{
         border-radius: 50%;
-        width: 100%;
-        height: 100%;
-        border: 2px solid #fff;
-        padding: 1px;
-        &.selected{
-          border: 1px solid var(--mdc-theme-karibou-pink);
+        width: 96px;
+        height: 96px;
+        margin: auto;
+      }      
+    }
+  }
+
+}
+
+.further-product-container {
+  .map{
+    img{
+      max-width: 100%;
+    }  
+  }
+  .FAQ{
+    margin-top: 50px;
+    ul{
+      list-style: none;
+      padding: 4px;
+      li{
+        h4{
+          font-weight: 600;
         }
       }      
     }
   }
 
-  .mdc-chip-set--choice .mdc-chip.mdc-chip--selected,
-  .mdc-chip.mdc-chip--selected {
-    background-color: var(--mdc-theme-primary)!important;
-    color: var(--mdc-theme-primary-text, #fff)!important;
-  }  
-
-
-  .owner-title{
-    padding-left: 20px;
-    padding-top: 10px;
-    text-align: left;
-    font-size: 24px;
-  }
-}
-
-
-.owner-title,
-.vendor,
-.further-product-container{
-  max-width: 740px;
-  padding: 0px 0;
-
   display: relative;
-  width: 95%;
+  width: 100%;
+  max-width: 700px;
   margin: auto;
   flex: 1;
   align-items: center;    
+  h1,h2{
+    margin-left: 0;
+  }
   >div{
     padding:10px 5px;
   }
-
-  @media (max-width:429px) {
-    width: calc( 100% - 10px );
+  .light{
+    color: #aaa;
   }
-  @media (max-width:320px) {
-    width: calc( 100% - 10px );
-  }
-  
-  @media (min-width:1640px) {
-    max-width: 740px;
-  }
-    
 }
+
 
 
 // /* Desktop large
