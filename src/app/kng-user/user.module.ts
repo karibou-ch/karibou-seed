@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LoaderResolve } from 'kng2-core';
-import { SharedModule } from '../shared/shared.module';
+import { KngSharedModule } from '../shared/shared.module';
 
 import { UserSignComponent,
          AddressComponent,
@@ -63,7 +63,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     UserMdcModule,
-    SharedModule,
+    KngSharedModule,
     KngCommonModule,
     RouterModule.forChild(routes)
   ],
