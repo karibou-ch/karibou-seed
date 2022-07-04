@@ -1,0 +1,23 @@
+  <!-- CONTAINER-->
+  <div class="container">
+    <h2 [hidden]="_hideTitle">{{i18n.label().nav_shipping}}</h2>
+
+    <!-- NO SHIPPING -->
+    <div class="noshipping" [hidden]="!noshippingMsg || getShippingDays().length">
+      <i class="material-icons pink">info</i>
+      <b>{{noshippingMsg}}</b>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="calendar">
+      <div class="list">
+          <div class="element" 
+          [class.selected]="day.equalsDate(currentShippingDay)" 
+          [class.disabled]="!isDayAvailable(day)" 
+          *ngFor="let day of currentWeek;let idx=index"
+          (click)="doSetCurrentShippingDay($event,day,idx)">
+            <div class="ei_Title">{{day|date:'EEE d MMM':'':locale}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
