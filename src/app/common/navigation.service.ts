@@ -100,6 +100,20 @@ export class KngNavigationStateService  {
         if (hub.colors.action) { style.setProperty('--mdc-theme-secondary', hub.colors.action); }
         if (hub.colors.actionText) { style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText); }
         if (hub.colors.action) { style.setProperty('--mdc-theme-karibou-pink', hub.colors.action); }
+
+        //
+        // force appBar to Null if not exists
+        if(hub.colors.appbar){
+          style.setProperty('--mdc-theme-appbar', hub.colors.appbar);
+        }else{
+          style.removeProperty('--mdc-theme-appbar');
+        }
+        if(hub.colors.appbarText){
+          style.setProperty('--mdc-theme-appbar-text', hub.colors.appbarText);
+        }else{
+          style.removeProperty('--mdc-theme-appbar-text');
+        }
+
       } catch (err) {}
     }
 
