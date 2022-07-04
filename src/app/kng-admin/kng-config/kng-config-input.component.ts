@@ -125,7 +125,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
 
 
   ucValidator(info) {
-      if (info.size !== null && info.size > 150 * 1024) {
+      if (info.size !== null && info.size > 1024 * 1024) {
       throw new Error('fileMaximumSize');
     }
   }
@@ -158,7 +158,6 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   }
 
   writeValue(value: string): void {
-    // console.log('---- write',value);
     this.value = value;
   }
   registerOnChange(fn: any): void {
