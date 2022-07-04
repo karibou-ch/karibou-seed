@@ -8,7 +8,7 @@ import { KngDocumentComponent, KngEditDocumentComponent } from './kng-document.c
 
 import { Kng2CoreModule, LoaderResolve  } from 'kng2-core';
 import { KngDocumentMdcModule } from './kng-document-mdc.module';
-import { SharedModule } from '../shared/shared.module';
+import { KngSharedModule } from '../shared/shared.module';
 import { KngCommonModule } from '../common/common.module';
 import { KngDocumentLoaderService } from './kng-document-loader.service';
 
@@ -30,7 +30,7 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    SharedModule,
+    KngSharedModule,
     KngCommonModule,
     Kng2CoreModule,
     KngDocumentMdcModule,

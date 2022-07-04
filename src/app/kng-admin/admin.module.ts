@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/shared.module';
+import { KngSharedModule } from '../shared/shared.module';
 
 
 //
@@ -53,7 +53,7 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     FormsModule,
     ReactiveFormsModule,
     AdminMdcModule,
-    SharedModule,
+    KngSharedModule,
     routing
   ],
   entryComponents: [
