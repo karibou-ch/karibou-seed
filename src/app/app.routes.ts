@@ -8,6 +8,8 @@ import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-serve
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { KngNavigationStoreResolve } from './common/navigation.store.service';
+import { KngHomeComponent } from './kng-home/kng-home.component';
+import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
 
 
 
@@ -23,8 +25,15 @@ export const appRoutes: Routes = [
     path: 'store/:store',
     component: KngRootComponent,
     resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
-    loadChildren: () => import('./shared/shared.module').then( m => m.SharedModule)
+    loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
   },
+  {
+    path: 'store/:store/home',
+    component: KngEmptyRootComponent,
+    resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
+    loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
+  },
+
   { path: 'products/:sku/:title', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku/:title' },
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku' },
   { path: 'shop/:slug', pathMatch: 'full', redirectTo: '/store/artamis/shops/:slug' },

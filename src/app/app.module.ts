@@ -34,6 +34,9 @@ import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-foun
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
+import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
+import { KngShopsModule } from './kng-shops/kng-shops.module';
+import { KngSearchBarComponent } from './kng-search-bar/kng-search-bar.component';
 
 
 @Injectable()
@@ -129,11 +132,13 @@ export class GlobalErrorHandler implements ErrorHandler {
   declarations: [
     AppComponent,
     KngNavbarComponent,
+    KngEmptyRootComponent,
     KngRootComponent,
     KngWelcomeComponent,
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent,
+    KngSearchBarComponent,
   ],
   // List of components that aren't used in templates directly
   entryComponents:[
@@ -152,6 +157,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       ]
     }),
     KngCommonModule.forRoot(),
+    KngShopsModule,
     RouterModule.forRoot(appRoutes, {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'

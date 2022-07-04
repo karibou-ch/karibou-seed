@@ -22,7 +22,7 @@ import { KngNavigationStoreResolve } from './navigation.store.service';
 import { KngUtils } from './utils';
 import { KngNavMarketplaceComponent } from '../kng-nav-marketplace/kng-nav-marketplace.component';
 import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.component';
-
+import { KngCalendarComponent } from './kng-calendar/kng-calendar.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -34,6 +34,7 @@ import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.co
     RouterModule,
     KngNavMarketplaceComponent,
     KngNavCalendarComponent,
+    KngCalendarComponent,
     KngFooterComponent,
     KngLazyLoadDirective,
   ],
@@ -42,6 +43,7 @@ import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.co
     KngNavCalendarComponent,
     KngFooterComponent,
     KngLazyLoadDirective,
+    KngCalendarComponent,
   ],
 })
 export class KngCommonModule {
