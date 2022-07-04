@@ -157,7 +157,7 @@ div.navbar{
     transform: translateX(-19px);    
   }
   .cart-items-count{    
-    color: var(--mdc-theme-primary-text);
+    color: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text));
     font-weight: 600;    
     &.label{
       display: inline-block;
@@ -180,10 +180,10 @@ div.navbar{
   }
 
   .mdc-top-app-bar{
-    -box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     z-index: 2;
-    color: var(--mdc-theme-primary-text);
-
+    color: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text));
+    background-color: var(--mdc-theme-appbar,var(--mdc-theme-primary));
+    opacity: .95;
     img.icon{
       max-width: 24px;
       margin-left: 2px;
@@ -193,7 +193,7 @@ div.navbar{
     //
     // override firefox *:any-link{
     a{
-      color: var(--mdc-theme-primary-text)!important;
+      color: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text))!important;
       text-decoration:none;
     }
         
@@ -232,20 +232,6 @@ div.navbar{
       }
     }
 
-    /** top-center navigation */
-    .shipping {
-      cursor: pointer;
-      letter-spacing: -0.5px;
-      text-transform: capitalize;
-      margin-left: calc( 50% - 150px );
-      font-weight: 200;
-      position: absolute;
-      width: 270px;
-      left: 0;      
-      i{
-        transform: translateY(4px);
-      }  
-    }
 
     /** top-right navigation */
     .actions {
@@ -274,7 +260,7 @@ div.navbar{
         }
 
       }
-      color: var(--mdc-theme-primary-text)!important;
+      color: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text))!important;
       
       i.material-icons{
         transform: translateY(6px);
@@ -285,7 +271,7 @@ div.navbar{
       }      
     }
     .mdc-tab-indicator > span{
-      background: var(--mdc-theme-primary-text);
+      background: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text));
       height: 4px;
     }
     

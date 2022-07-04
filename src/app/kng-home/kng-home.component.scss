@@ -453,30 +453,5 @@ div.product-container{
       width: calc( 100% - 20px);
     }
   }
-
-  .kng-layout-card{
-    div.category,
-    kng-product-thumbnail{
-      @media (max-width: 429px) {
-      }
-    }
-    div.category{
-      cursor: pointer;
-      &.loader{
-      }
-      div{
-        &.icon{
-          i{
-            font-size: 36px;
-          }
-        
-        }
-        &:last-child{
-          padding-top: 0;
-        }
-
-      }
-    }
-  }
 }
 

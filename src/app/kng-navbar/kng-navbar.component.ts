@@ -5,13 +5,11 @@ import {
   CartAction,
   Config,
   ConfigMenu,
-  ConfigService,
-  OrderService,
   User,
-  UserService,
   Category,
   Shop,
-  Order
+  Order,
+  LoaderService
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -71,12 +69,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
     public $cart: CartService,
-    private $config: ConfigService,
     public $i18n: i18n,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $order: OrderService,
-    private $user: UserService,
+    private $loader: LoaderService,
     public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
     private $cdr: ChangeDetectorRef,
@@ -97,6 +93,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.shops = <Shop[]>loader[3] || [];
 
     this.orders = [];
+
+    //
+    // use latest orders
     if(loader.length>3) {
       this.orders = <Order[]>loader[4];
     }
@@ -108,22 +107,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // K. image
     this.Kimage = '/assets/img/k-puce-light.png';
 
-    // FIXME remove code repeat
-    const hub = this.config.shared.hub.slug;
-    if (hub) {
-      this.currentRanks = this.config.shared.currentRanks[hub] || {};
-      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-      this.Kimage = this.config.shared.hub.logo || this.Kimage;
-    }
-
   }
 
 
   ngOnDestroy() {
-    // this.route$.unsubscribe();
-    // this.$cart.unsubscribe();
-    // this.$user.unsubscribe();
     if(this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -131,16 +118,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-
-    // HUB title
-    this.hubTitle = this.config.shared.hub.siteName[this.locale];
-    this.hubImage = this.config.shared.hub.siteName.image;
-    this.hubPhone = this.config.shared.hub.address.phone;
-
-    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
-    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
-
-    this.store = this.$navigation.store;
+    this.detectIOS();
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
     // TODO needs dynamic DEPARTEMENT feature
@@ -151,20 +129,35 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //if (this.currentTab == -1) this.currentTab = this.primary.length;
     }
 
-    //
-    // init cart here because navbar is loaded on all pages
-    this.$cart.setContext(this.config, this.user, this.shops,this.orders);
 
-    this.currentShippingDay = this.$cart.getCurrentShippingDay();
+    this.subscription = this.$loader.update().subscribe(emit=> {
 
+      //
+      // update config
+      if (emit.config) {
+        Object.assign(this.config, emit.config);
+        // HUB title
+        this.hubTitle = this.config.shared.hub.siteName[this.locale];
+        this.hubImage = this.config.shared.hub.siteName.image;
+        this.hubPhone = this.config.shared.hub.address.phone;
 
+        this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
+        this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
 
-    this.subscription = merge(
-      this.$user.user$.pipe(map(user => ({ user}))),
-      this.$config.config$.pipe(map(config => ({ config }))),
-      this.$cart.cart$.pipe(map(state => ({ state }))),
-      this.$order.orders$.pipe(map(orders => ({orders})))
-    ).subscribe((emit: any) => {
+        this.store = this.$navigation.store;
+
+        //
+        // init cart here because navbar is loaded on all pages
+        this.$cart.setContext(this.config, this.user, this.shops,this.orders);
+
+        this.currentRanks = this.config.shared.currentRanks[this.store] || {};
+        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+        this.Kimage = this.config.shared.hub.logo || this.Kimage;
+  
+        this.currentShippingDay = this.$cart.getCurrentShippingDay();
+        this.$cdr.markForCheck();
+      }
 
       //
       // update user
@@ -184,13 +177,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         this.orders = emit.orders;
         this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
       }
-      //
-      // update config
-      if (emit.config) {
-        this.detectIOS();
-        Object.assign(this.config, emit.config);
-        // this.$navigation.updateConfig(this.config);
-      }
+
       //
       // update cart
       if (emit.state) {

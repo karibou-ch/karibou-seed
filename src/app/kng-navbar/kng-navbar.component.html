@@ -67,22 +67,18 @@
       <mdc-top-app-bar-section align="start" >
         <img class="icon" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
         <mdc-top-app-bar-title class="home"  (click)="openCalendar(calendar,true)">
-          {{hubTitle}}      
+          Karibou.ch      
           <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(calendar)">
-          <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
-          <i class="material-icons wobble-vertical">keyboard_arrow_down</i>
-        </mdc-top-app-bar-title>
-
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
       <mdc-top-app-bar-section align="end" class="actions">        
+
         <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
           <div i18n> <span class="cart-items-count"></span></div>
           <mdc-icon mdcTopAppBarActionItem class="secondary-text" >shopping_cart</mdc-icon>          
@@ -106,25 +102,27 @@
     </mdc-top-app-bar-row>
 
     <mdc-top-app-bar-row class="navigation">      
-      <!-- APPBAR-SECTION-START -->
+      <!-- APPBAR-SECTION-START HUB AND DATE -->
       <mdc-top-app-bar-section align="start">
+        <div class="kng-chip" [routerLink]="['/store',store]"> <i class="material-icons start">roofing</i> Accueil</div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home']">{{hubTitle}} </div>
+        <div class="kng-chip" (click)="openCalendar(calendar,false)">{{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
+
+
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-top-app-bar-section #section>
-        <mdc-tab-bar [activeTabIndex]="currentTab">
+
+
+        <mdc-tab-bar [activeTabIndex]="currentTab" fixed>
+
           <!-- mdcRouter -->
-          <mdc-tab-scroller>
+          <!-- <mdc-tab-scroller>
             <mdc-tab *ngFor="let menu of primary;let idx=index;" [routerLink]="'.'+menu.url"  routerLinkActive #rla="routerLinkActive">
               <span [innerHTML]="menu.name[locale]"></span>
             </mdc-tab>
-            <!-- <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
-              <mdc-icon class="hide">account_box</mdc-icon><span i18n>{{$i18n.label().nav_account}}</span>
-            </mdc-tab>
-            <mdc-tab [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-              <mdc-icon class="hide">account_circle</mdc-icon><span i18n>{{$i18n.label().nav_login2}}</span>
-            </mdc-tab> -->
-          </mdc-tab-scroller>
+          </mdc-tab-scroller> -->
         </mdc-tab-bar>
       </mdc-top-app-bar-section>
 
