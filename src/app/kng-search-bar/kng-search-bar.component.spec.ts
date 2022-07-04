@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MdcSearchBarComponent } from './mdc-search-bar.component';
+import { KngSearchBarComponent } from './kng-search-bar.component';
 
-describe('MdcSearchBarComponent', () => {
-  let component: MdcSearchBarComponent;
-  let fixture: ComponentFixture<MdcSearchBarComponent>;
+describe('KngSearchBarComponent', () => {
+  let component: KngSearchBarComponent;
+  let fixture: ComponentFixture<KngSearchBarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MdcSearchBarComponent ]
+      declarations: [ KngSearchBarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MdcSearchBarComponent);
+    fixture = TestBed.createComponent(KngSearchBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -10,12 +10,12 @@ import {
 
 
 @Component({
-  selector: 'mdc-toolbar-section[mdc-search-bar],mdc-search-bar',
-  templateUrl: './mdc-search-bar.component.html',
-  styleUrls: ['./mdc-search-bar.component.scss'],
+  selector: 'kng-search-bar',
+  templateUrl: './kng-search-bar.component.html',
+  styleUrls: ['./kng-search-bar.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class MdcSearchBarComponent implements OnInit {
+export class KngSearchBarComponent implements OnInit {
 
   constructor() { }
 
@@ -44,12 +44,12 @@ export class MdcSearchBarComponent implements OnInit {
 
   ngOnInit() {
     // bind open search
-    document.querySelector('.mat-toolbar--open-search').addEventListener('click', this.onSearch.bind(this));
+    // document.querySelector('.mat-toolbar--open-search').addEventListener('click', this.onSearch.bind(this));
 
     // bind exit search
-    document.querySelector('.mat-toolbar--exit-search').addEventListener('click', this.onExitSearch.bind(this));
+    // document.querySelector('.mat-toolbar--exit-search').addEventListener('click', this.onExitSearch.bind(this));
 
-    this.searchIcon = document.querySelector('.mat-toolbar--open-search');
+    // this.searchIcon = document.querySelector('.mat-toolbar--open-search');
   }
 
   ngAfterViewInit(): void {
