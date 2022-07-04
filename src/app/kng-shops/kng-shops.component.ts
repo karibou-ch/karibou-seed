@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { i18n, KngUtils } from '../common';
+import { i18n, KngNavigationStateService, KngUtils } from '../common';
 import { Config, User, Shop, PhotoService, Product, ProductService, Category } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { ShopService } from 'kng2-core';
@@ -54,12 +54,12 @@ export class KngShopComponent implements OnInit {
 
   constructor(
     public $i18n: i18n,
+    public $navigation: KngNavigationStateService,
     public $photo: PhotoService,
     public $shop: ShopService,
     public $product: ProductService,
     public $route: ActivatedRoute
   ) {
-    document.body.classList.add('shop');
     const loader = this.$route.snapshot.data.loader;
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
@@ -70,11 +70,11 @@ export class KngShopComponent implements OnInit {
     this.ngStyleBck = {};
   }
 
+  get store() {
+    return this.$navigation.store;
+  }
 
   ngOnDestroy() {
-    //
-    // class shop would change the mdc-content behavior
-    document.body.classList.remove('shop');
   }
 
   ngOnInit() {
@@ -96,7 +96,6 @@ export class KngShopComponent implements OnInit {
       this.$shop.get(this.urlpath),
       this.$product.select(options)
     ]).subscribe(([vendor, products]: [Shop, Product[]]) => {
-      document.body.classList.add('shop');
       document.title = vendor.name;
 
       Object.assign(this.vendor, vendor);
@@ -163,14 +162,21 @@ export class KngShopsComponent extends KngShopComponent{
     document.title = this.config.shared.hub.name;
 
     this.$shop.shops$.subscribe(shops => {
-      this.shops = shops.filter(shop => shop.status);
-      this.shops.forEach(shop => {
-        this.ngStyleBck[shop.urlpath] = {
-          'background-image': this.bgGradient + 'url(' + shop.photo.fg + '/-/resize/400x/fb.jpg)'
+      this.shops = shops.filter(shop => shop.status).sort(this.sortByName.bind(this));
+      this.shops.forEach(shop => {        
+        shop['ngStyleBck'] = {
+          'background-image': this.bgGradient + 'url(' + shop.photo.fg + '/-/resize/64x/fb.jpg)'
         }
+
+        shop['img'] = shop.photo.fg + '/-/resize/400x/fb.jpg';
+
       });
 
     });
+  }
+
+  sortByName(a,b) {
+    return a.name.localeCompare(b.name);
   }
 
   loadOneShop(){

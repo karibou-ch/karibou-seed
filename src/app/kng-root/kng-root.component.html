@@ -1,5 +1,43 @@
 <kng-navbar style="height:100%">
-  <router-outlet ></router-outlet>
+
+  <div>
+      
+    <!-- MARKETPLACE -->
+    <kng-nav-marketplace [config]="config" [orders]="pendingOrders"></kng-nav-marketplace>
+  
+    <!-- DATE -->
+    <kng-calendar (updated)="currentShippingDay=$event"></kng-calendar>
+
+
+    <div class="hub-header">
+      <button class="goto" [routerLink]="['/store',store,'home']"><b>{{config.shared.hub.name}}</b>, commander pour le <b>{{currentShippingDay|date:'d MMMM':'':locale}}</b> </button>
+
+    </div>
+    
+    <h2>La sélection</h2>
+
+    
+    <!-- <section class="products hide">
+        <div class="product" *ngFor="let product of selected;let j=index">
+          <div  class="media ">
+            <img [src]="getImage(product)" />
+            <div class="title">{{product.title}}</div>
+          </div>          
+
+        </div>
+    </section> -->
+
+    <kng-shops></kng-shops>
+
+    <!-- DISPLAY HUB -->
+    <!-- <div class="hub-header hide">
+      <div class="banner" >
+        <h1>Bienvenu {{config.shared.hub.name}}</h1>
+        <h2>{{config.shared.hub.description[locale]}}</h2>  
+        <button class="action" [routerLink]="['/store',store,'home']">Commander pour le <b>{{currentShippingDay|date:'d MMMM':'':locale}}</b> </button>
+      </div>
+    </div> -->
+
+  </div>
 
 </kng-navbar>  
-<!-- <router-outlet ></router-outlet> -->
