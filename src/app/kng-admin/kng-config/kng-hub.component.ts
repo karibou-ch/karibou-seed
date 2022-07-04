@@ -303,6 +303,7 @@ export class KngHUBComponent implements OnInit, OnDestroy {
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
         Object.assign(this.config.shared.hub,hub);
+        Object.assign(this.currentHub,hub);
         }, (err) => this.$snack.open(err.error, 'OK'),
       () => this.isLoading = false
     );
