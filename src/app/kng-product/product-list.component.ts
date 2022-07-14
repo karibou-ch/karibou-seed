@@ -21,7 +21,7 @@ import {
 import { combineLatest, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MdcChipSet, MdcChip } from '@angular-mdc/web';
-import { i18n, KngUtils } from '../common';
+import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 @Component({
   selector: 'kng-product-list',
@@ -75,6 +75,7 @@ export class ProductListComponent implements OnInit {
   constructor(
     public $i18n: i18n,
     public $cart: CartService,
+    public $navigation: KngNavigationStateService,
     public $shop: ShopService,
     public $product: ProductService,
     public $router: Router,
@@ -95,6 +96,7 @@ export class ProductListComponent implements OnInit {
     this.childMap = {};
     this.options = {
       available: true,
+      status: true,
       when: true
     };
 
@@ -298,6 +300,9 @@ export class ProductListComponent implements OnInit {
   onClose(closedialog) {
     setTimeout(() => {
       this.clean();
+      if(this.$navigation.hasHistory()){
+        return this.$navigation.back();
+      }
       this.$router.navigate(['../../'], {relativeTo: this.$route});
     }, 200);
   }

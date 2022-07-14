@@ -242,7 +242,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.openVariant = false;
 
-    const item = CartItem.fromProduct(product,variant);
+    const item = CartItem.fromProduct(product,this.config.shared.hub.slug, variant);
     item.note = this.cartItemNote;
     item.audio = this.cartItemAudio;
     if(audio){

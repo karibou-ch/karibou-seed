@@ -9,14 +9,11 @@ import { Component,
          QueryList,
          Output,
          EventEmitter} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import {
-  ProductService,
   Product,
   User,
-  Category,
-  CartService
+  Category
 } from 'kng2-core';
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -121,12 +118,7 @@ export class ProductGroupedListComponent implements OnInit {
   category$ : ReplaySubject<string>;
 
   constructor(
-    private $cart: CartService,
-    private $product: ProductService,
-    private $router: Router,
-    private $route: ActivatedRoute,
     private $cdr: ChangeDetectorRef,
-    private $elm: ElementRef
   ) {
     this.cache = {
       products: []
@@ -141,7 +133,6 @@ export class ProductGroupedListComponent implements OnInit {
     this.direction$ = new ReplaySubject<number>();
     this.category$ = new ReplaySubject<string>();
     this.direction$.pipe(distinctUntilChanged()).subscribe(direction => {
-      // console.log('---',direction)
       this.direction.emit(direction)
     })
     this.category$.pipe(distinctUntilChanged()).subscribe(name => {
@@ -222,8 +213,14 @@ export class ProductGroupedListComponent implements OnInit {
     if(!this.products.length) {
       return;
     }
-    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):100;
-    const divider = (window.innerWidth < 426) ? 2 : 4;
+    // const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):100;
+    // const divider = (window.innerWidth < 426) ? 2 : 4;
+    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 2 : (
+      (window.innerWidth < 1025)? 6:12
+    )):200;
+    const divider = (window.innerWidth < 426) ? 2 : (
+          (window.innerWidth < 1025)? 6:4
+    );
 
     this.group = {};
     this.products.forEach((product: Product) => {
@@ -260,6 +257,7 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     this.visibility[this.categories[0].slug] = true;
+    this.visibility[this.categories[1].slug] = true;
   }
 
 
@@ -378,6 +376,8 @@ export class ProductGroupedListComponent implements OnInit {
     }
     this.scrollPosition = scrollPosition;
 
+    //
+    // @input() case
     if(this.offsetTop && scrollPosition<this.offsetTop) {
       this.scrollDirection = 0;
     }
