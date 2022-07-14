@@ -498,6 +498,9 @@ body{
   cursor: pointer;
   overflow: hidden;  
   margin-left: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   .end{
     transform: translateX(5px);
   }
