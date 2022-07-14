@@ -58,7 +58,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
   ) { 
-    this.exited = true;
+    this.exited = false;
   }
 
   ngOnInit() {
@@ -75,7 +75,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
     this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
 
-    this.categories = this.categories.sort(this.sortByWeight).filter((c, i) => {
+    this.categories = (this.categories||[]).sort(this.sortByWeight).filter((c, i) => {
       return c.active && (c.type === 'Category');
     });
   }
@@ -177,10 +177,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     if (this.group) {
       options.group = this.group;
     }
-
-    //
-    // Metrics please
-    this.$metric.event(EnumMetrics.metric_view_proposal);
     
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
@@ -202,8 +198,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.doClear();
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-      this.$metric.event(EnumMetrics.metric_view_menu);
-
     }
 
   }

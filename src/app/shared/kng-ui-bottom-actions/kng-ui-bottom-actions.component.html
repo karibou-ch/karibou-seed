@@ -1,20 +1,17 @@
-<div class="bottom-actions" >  
-  <div class="fabs">
+<div class="bottom-actions hide-lg" >  
+  <div class="fabs hide">
     <button mdc-fab  extended label="MENU" [hidden]="show"
       (click)="doToggle()">
       <mdc-icon >menu</mdc-icon>
     </button>  
-
   </div>  
-  <div class="fabs left">
+  <div class="fabs left hide">
     <button mdc-fab   [hidden]="show" class="bookmark"
       (click)="doPreferred()">
       <mdc-icon >favorite</mdc-icon>
     </button>  
   </div>
-
-
-  <div class="search">
+  <div class="search" [hidden]="!show">
     <i class="left material-icons">search</i>
     <span #stats class="stats"></span>
     <input type="text" 
@@ -25,6 +22,13 @@
     <i class="right material-icons" [hidden]="!hasSearch()" (click)="doClear()">close</i>
   </div>  
 
+  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-icons icon">home</span></button>  
+  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-icons icon">shopping_bag</span></button>  
+  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','shops']"><span class="material-icons icon">storefront</span></button>  
+  <button class="action" (click)="show=true"><span class="material-icons icon">manage_search</span></button>  
+  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']"><span class="material-icons icon">shopping_cart</span></button>  
+
+
 </div>  
 
 <div class="results" [hidden]="!show">
@@ -33,7 +37,7 @@
   </button>  
 
   <!-- CATS -->
-  <ul class="col" [hidden]="products.length">
+  <ul class="category" [hidden]="products.length">
     <!-- TODO rebuild list of categories based on the menu group -->
     <!-- <li class="menu-group" *ngFor="let menu of primary;let idx=index;" (click)="onPrimaryMenu(menu.url)">
         <div [innerHTML]="menu.name[locale]"></div>
@@ -43,9 +47,7 @@
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
       <i [class]="category.image" class="icon"></i>
-      <!-- <img src="assets/img/icon-wine.svg" width="32px" height="32px"/> -->
-      <!-- <mdc-icon>radio_button_unchecked</mdc-icon> -->
-      <div>&nbsp;{{category.name}}</div>
+      <span>&nbsp;{{category.name}}</span>
     </li>                
 
   </ul>
