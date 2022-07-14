@@ -35,6 +35,23 @@
     <h4 class="title-error" [hidden]="!hasOrderError" i18n>{{i18n[locale].cart_error}}</h4>
   </section>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" >
+    <!-- DISPLAY HUBS -->
+    <mdc-list-item *ngFor="let hub of hubs" (click)="doChangeHub(hub)">
+      <mdc-list-item-graphic>
+        <div class="avatar round"
+              [ngStyle]="{'background-image': 'url(' + hub.siteName.image + '/-/resize/300x/fb.jpg' + ')'}">
+        </div>
+      </mdc-list-item-graphic>      
+      <mdc-list-item-text >
+        <span class="title large">{{hub.name}} </span>
+        <mdc-list-item-secondary *ngIf="currentCart[hub.slug]">
+          <span>{{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-icons icon">shopping_cart</span></span>
+        </mdc-list-item-secondary>
+    </mdc-list-item-text>
+
+    </mdc-list-item>
+
+
     <mdc-list-item>
       <mdc-list-item-graphic>
         <div class="avatar round"
@@ -45,6 +62,7 @@
       <mdc-list-item-text >
           <span class="title large">{{hub.name}} </span>
           <mdc-list-item-secondary>
+            <span *ngIf="currentCart[currentHub]">{{currentCart[currentHub].count}} articles</span>
             <span *ngIf="!noshippingMsg; else noShipping">
               {{i18n[locale].cart_nextshipping}} 
               <b>{{$cart.getCurrentShippingDay()|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
@@ -57,6 +75,7 @@
       </mdc-list-item-text>
     </mdc-list-item>
 
+    <!-- DISPLAY HUB ITEMS -->
     <mdc-list-item *ngFor="let item of sortedItems()" (click)="onSelect($event,item)">
       <mdc-list-item-graphic>
         <div class="avatar"
@@ -123,7 +142,7 @@
     <mdc-list-item class="slim-item">
       <mdc-list-item-meta>
         <div class="info" i18n>{{i18n[locale].cart_info_subtotal}}</div>
-        <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
+        <div class="price" >{{subTotal()|currency:'CHF'}}</div>
       </mdc-list-item-meta>
     </mdc-list-item>      
 
@@ -255,8 +274,8 @@
     <mdc-list avatar="true" [interactive]="false">
       <mdc-list-item class="border-top">
         <mdc-list-item-meta>
-          <div class="info" i18n>{{i18n[locale].cart_info_subtotal}} ({{$cart.getItems().length}})</div>
-          <div class="price" >{{$cart.subTotal()|currency:'CHF'}}</div>
+          <div class="info" i18n>{{i18n[locale].cart_info_subtotal}} ({{sortedItems().length}})</div>
+          <div class="price" >{{subTotal()|currency:'CHF'}}</div>
         </mdc-list-item-meta>
       </mdc-list-item>      
 

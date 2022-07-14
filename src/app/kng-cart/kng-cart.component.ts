@@ -12,9 +12,8 @@ import { CartService,
          UserService,
          OrderService,
          Shop,
-         CartState,
-         CartAction,
-         Order} from 'kng2-core';
+         Order,
+         ConfigService} from 'kng2-core';
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
@@ -37,6 +36,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   vendorAmount: any;
   user: User = new User();
   config: Config;
+  currentHub: string;
   items: CartItem[];
   sign: any;
   cgAccepted = false;
@@ -55,6 +55,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   currentLimit: number;
   premiumLimit: number;
   requestIntent: string;
+  currentCart:any;
 
   selectPaymentIsDone: boolean;
   selectAddressIsDone: boolean;
@@ -189,6 +190,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     public $i18n: i18n,
     public $loader: LoaderService,
     public $cart: CartService,
+    public $config: ConfigService,
     private $metric: MetricsService,
     public $navigation: KngNavigationStateService,
     private $order: OrderService,
@@ -202,6 +204,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // initialize loader
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
+    this.currentCart = {};
 
     //
     // FIXME currently only one shipping time!
@@ -217,14 +220,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // FIXME remove hardcoded reserved value 0.11!
     this.amountReserved = 1.11;
 
-    // FIMXE remove repeated code limit
-    const hub = this.config.shared.hub.slug;
-    if (hub) {
-      this.currentRanks = this.config.shared.currentRanks[hub] || {};
-      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-    }
-
     const cart = this.$route.snapshot.paramMap.get('name');
     if(cart !== 'default') {
       this._sharedCart = cart;
@@ -239,6 +234,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   get hub() {
     return this.config.shared.hub;
+  }
+
+  get hubs() {
+    return this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
   }
 
   get hubLogo() {
@@ -262,9 +261,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.store = this.$navigation.store;
 
     this.subscription = this.$loader.update().subscribe(emit => {
-      if (emit.state) {
-        // console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
-      }
+      // if (emit.state) {
+      //   console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
+      // }
       // emit signal for config
       if (emit.config) {
         //
@@ -273,6 +272,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
           this.$stripe.setKey(this.config.shared.keys.pubStripe);
           this.shipping = this.config.shared.shipping;
         }
+        //
+        // update local config
+        this.currentHub = this.config.shared.hub.slug;
+        this.currentRanks = this.config.shared.currentRanks[this.currentHub] || {};
+        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;    
       }
       // emit signal for user
       if (emit.user) {
@@ -288,6 +293,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for cart
       if (emit.state) {
         this.items = this.$cart.getItems();
+
+        this.hubs.forEach(hub => {
+          this.currentCart[hub.slug]={
+            count:this.items.filter(item=> item.hub == hub.slug).length,
+            amount:this.$cart.subTotal(hub.slug)
+          };
+        });
 
         //
         // set default address
@@ -412,26 +424,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
     });
   }
 
+  doChangeHub(hub){
+    this.$router.navigate(['/store',hub.slug,'home','cart','default']);
+    this.$config.get(hub.slug).subscribe();
+  }
+
   doOrder() {
-    // //
-    // // prepare shipping
-    // var shipping=cart.config.address;
-    // shipping.when=(config.shop.shippingweek[cart.config.shipping]);
-    // shipping.hours=16;//config.shop.order.shippingtimes;
-
-
-    // //
-    // // prepare items
-    // var items=$scope.cart.items;
-
-    // //
-    // // get payment token
-    // var payment={
-    //   alias:cart.config.payment.alias,
-    //   issuer:cart.config.payment.issuer,
-    //   name:cart.config.payment.name,
-    //   number:cart.config.payment.number
-    // };
+    //
+    // prepare shipping
     // FIXME hour selection should be better
     const shipping = new OrderShipping(
       this.currentShipping(),
@@ -440,6 +440,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     );
 
     const hub = this.config.shared.hub.slug;
+    const items = this.sortedItems();
 
     //
     // update shipping note
@@ -451,7 +452,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$order.create(
       hub,
       shipping,
-      this.items.map(item => item.toDEPRECATED()),
+      items.map(item => item.toDEPRECATED()),
       this.$cart.getCurrentPaymentMethod()
     ).subscribe((order) => {
         this.isRunning = false;
@@ -559,8 +560,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //
     // sum total by vendor
     this.$cart.getItems().forEach(item => {
-      // let vendor=this.shops.find(shop=>shop.urlpath==item.vendor.urlpath).urlpath;
-      const vendor = item.vendor.urlpath;
+      const vendor = item.vendor.urlpath + item.hub;
       if (!this.vendorAmount[vendor]) {
         this.vendorAmount[vendor] = {
           amount: 0, discount: {}
@@ -591,20 +591,16 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   getDiscount(item: CartItem) {
-    const discount = this.vendorAmount[item.vendor.urlpath].discount;
+    const discount = this.vendorAmount[item.vendor.urlpath + item.hub].discount;
 
     if (discount.threshold) {
-      // discount.total;
-      // discount.needed;
-      // discount.threshold;
-      // console.log('--- vendor.discount',this.vendorAmount[item.vendor.urlpath]);
       return discount.needed;
     }
     return '';
   }
 
   getVendorDiscount(item: CartItem) {
-    return this.vendorAmount[item.vendor.urlpath].discount;
+    return this.vendorAmount[item.vendor.urlpath + item.hub].discount;
   }
 
   getTotalDiscount() {
@@ -737,8 +733,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.$metric.event(EnumMetrics.metric_order_payment);
   }
 
+  subTotal() {
+    return this.$cart.subTotal(this.currentHub);
+  }
+
   sortedItems() {
-    return this.items.sort((a,b) => {
+    return this.items.filter(item => item.hub == this.currentHub).sort((a,b) => {
       return a.category.slug.localeCompare(b.category.slug);
     });
   }

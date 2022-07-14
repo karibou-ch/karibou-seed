@@ -19,6 +19,9 @@
         max-width: 800px;
         text-shadow: 1px 1px 0 white;
         margin-top: -15px;    
+        @media (max-width:429px) {
+          text-align: left;
+        }
       }  
       p.block-info{
         color: #aaa;
@@ -159,22 +162,22 @@
     display: flex;
     padding: 10px 0;
     width: 100%;
+    max-width: 320px;
+    margin-right: 0;
+    margin-left: auto;
+
     mdc-icon {
       transform: translateY(7px);      
     }
-    @media (min-width:429px) {
-      button{
-        margin-left: auto!important;
-      }
+    @media (max-width:429px) {
+      margin-right: auto;
+      margin-left: 0;
     }
     button {          
       color: black;
       padding: 2px 15px;
-      margin-right: auto;
-      margin-left: -5px;
       vertical-align: bottom;
       line-height: 40px;
-      -background-color: transparent;
       font-size: 15px;
       width: 95%;
     }
@@ -359,14 +362,18 @@
   section.payments,
   section.addresses {
     display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    width: 80%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
     margin: 10px auto;
+    flex-direction: row;
+    align-content: flex-start;
+
+
     @media (max-width:429px) {
       padding-left: 30px;      
       justify-content: flex-start;
+      flex-direction: column;
       .payment,
       .address{
         background-color:transparent!important;
@@ -377,11 +384,10 @@
     .payment,
     .address{
       display: flex;
-      border: 1px solid #eee;
       padding: 5px;
       border-radius: 7px;
       min-height: 65px;      
-      -background-color: #f5f5f5;
+      min-width: 120px;
       div.meta{
         width: 40px;
       }
@@ -398,9 +404,10 @@
         }
       }
       div.end{
-        width: 80px;
+        display: none;
+        width: 50px;
         img{
-          width: 100%;
+          width: 70%;
         }
       }
     }
