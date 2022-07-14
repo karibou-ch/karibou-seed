@@ -338,81 +338,55 @@ kng-nav-marketplace {
 //
 // CATEGORY 
 .toolbox{
-  transform: translateY(0);
   transition: all 200ms;
-  z-index: 2;
-
   position: fixed;
-  bottom:80px;
   overflow-x: visible;
+  top: 120px;
+  -background-color: #f7f9f9;
+  width: 300px;
+  padding: 0;
   left: 0;
-  right: 0;
-
-  width: 10px;
-  opacity: 0;
-
-  @media (min-width: 1024px) {
-    top:185px;
-    bottom: inherit;
-    transform:none!important;
-    opacity: 1!important;
-  }
-
-
-  @media (min-width: 1440px) {
-    margin-left: -208px;
-    left: auto;
-    right: auto;
-  }
-
-  &.show{
-    top: 0;
-    background: rgba(0, 0, 0, 0.65);
-    bottom: 0;
-    height: 100vh;  
-    transform: none;  
-  }
-
-
-  &.exited:not(.show){
-    transform: translateX(-240px);    
+  height: calc(100% - 300px);
+  opacity: 1;
+  &.display{
     opacity: 0;
   }
-
-  font-size: smaller;
-  // display: flex!important;
-  // height: auto;
-  // flex-flow: row wrap; 
-  mdc-chip-set{
-    transform: scale(.9);
-    display: block;
-    mdc-chip{
-      transition: all 200ms;
-      margin: 8px 4px!important;
-      box-shadow: 0 0 1px 1px rgba(100, 100, 100, 0.6);
-      color: #555;
-      background-color: #fefefe;
-      @media (min-width: 1300px) {
-        box-shadow:none;
-      }
-    }
-
-  } 
-  .bookmark {      
-    background-color: #fefefe!important;
-    mdc-chip-icon {
-      color: var(--mdc-theme-secondary)!important;
-    }      
+  @media screen and (max-width:1440px) and (min-width:1025px){
+    width: 239px;
   }
 
-  .mdc-chip-set--choice .mdc-chip.mdc-chip--selected:not(.bookmark),
-  .mdc-chip.mdc-chip--selected:not(.bookmark) {
-    font-weight: 700;
-    background-color: var(--mdc-theme-primary)!important;
-    color: var(--mdc-theme-primary-text, #fff)!important;
+  @media (max-width:1024px){
+    display: none;
+  }
 
-  }  
-
+  ul{
+    list-style: none;
+    padding: 0;
+    margin-left: 0px;    
+    li{
+      &.selected{
+        background-color: #eee;
+      }
+      .fa{
+        scale: .9;
+        margin-left: 5px;
+        margin-right: 10px;        
+        width: 19px;
+        height: 19px;
+        display: inline-block;
+      }
+      cursor: pointer;
+      padding: 5px 18px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;      
+      font-size: 0.95em;
+    }
+  }
+}
+h2.root{
+  display: none;
+  margin-left: 20px;  
 }
 
 div.product-container{

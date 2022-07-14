@@ -67,19 +67,19 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // page content by target
   pageOptions: any = {
     home: {
-      maxcat: 12,
+      maxcat: 8,
       home: true,
       popular: true,
       showMore: true
     },
     grocery: {
-      maxcat: 12,
+      maxcat: 8,
       home: true,
       popular: true,
       showMore: true
     },
     cellar: {
-      maxcat: 12,
+      maxcat: 8,
       home: true,
       popular: true,
       showMore: true
@@ -89,7 +89,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       showMore: false
     },
     wellness: {
-      maxcat: 12,
+      maxcat: 8,
       popular: true,
       showMore: true
     }
@@ -253,8 +253,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.$cart.add(product);
   }
 
-  fireSearch(link){
-    this.$navigation.fireSearch(link);    
+  searchAction(link){
+    this.$navigation.searchAction(link);    
   }
 
   getCategories() {
@@ -348,6 +348,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     const options = Object.assign({}, this.options, this.pageOptions[this.target], {group: this.target});
     this.options.showMore = options.showMore;
     this.options.when = this.$cart.getCurrentShippingDay();
+    this.options.maxcat = this.$navigation.isMobile()? 3:8;
 
     // FIXME remove hardcoded constraint
     // if(this.target === 'selection') {
@@ -381,8 +382,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.categorySlug = slug;
     this.displaySlug = slug;
     this.$router.navigate(['/store', this.$navigation.store,(this.target || 'home'), 'category',slug]);
-
-    setTimeout(()=> this.scrollDirection = 0,100);
   }
 
   sortByWeight(a: Category, b: Category) {

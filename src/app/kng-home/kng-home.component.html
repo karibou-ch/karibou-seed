@@ -20,36 +20,24 @@
 <kng-product-swipe [products]="home" ></kng-product-swipe>
 
 <!-- LINKS -->
-<kng-product-link [config]="config"><h2 class="title">{{$i18n.label().nav_shortcuts}}</h2></kng-product-link>
+<!-- <kng-product-link [config]="config"><h2 class="title">{{$i18n.label().nav_shortcuts}}</h2></kng-product-link> -->
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
-<div class="toolbox home" [class.hide]="(!scrollDirection)" [class.exited]="scrollDirection < -5 || scrollDirection > 15 || (!scrollDirection) ">
-  <mdc-chip-set choice >
-    <mdc-chip (click)="scrollToSlug(category.slug)"
+<!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
+<div class="toolbox home" >
+  <ul>
+    <li (click)="scrollToSlug(category.slug)"
               [id]="'category-'+j"                    
-              [selected]="category.slug == displaySlug"
+              [class.selected]="category.slug == displaySlug"
               *ngFor="let category of getCategories();let j=index">
-      <mdc-chip-text>{{category.name}}</mdc-chip-text>
-    </mdc-chip>
-    <mdc-chip [routerLink]="['/store',store,'shops','list']">
-      <mdc-chip-icon secondary leading>home</mdc-chip-icon>
-      <mdc-chip-text>{{$i18n.label().nav_store_shops_list}}</mdc-chip-text>
-    </mdc-chip>
-
-
-  </mdc-chip-set>        
+      <i [class]="category.image" class="icon"></i>              
+      <span>{{category.name}}</span>
+    </li>
+  </ul>
 </div>
 
-<!-- FAB  [exited]="scrollDirection<-5||!scrollDirection" -->
-<kng-ui-bottom-actions [exited]="scrollDirection<-5" 
-                       [group]="target"
-                       [categories]="getCategories()"
-                       [config]="config"
-                       (selected)="scrollToSlug($event)">  
-</kng-ui-bottom-actions>
-
-
+<h2 class="root show-sm">Les catégories</h2>
   
 <div class="product-container mdc-layout-grid" *ngIf="products.length" >
     
@@ -68,9 +56,9 @@
        (currentCategory)="displaySlug=($event || displaySlug)"
        (direction)="scrollDirection=$event">
     <!-- INFORMATION FOR HOME ONLY-->
-    <div class="home-header">
+    <div class="home-header hide-sm">
       <!-- HUB -->
-      <div class="banner" >
+      <div class="banner hide" >
         <h1>{{config.shared.hub.name}}</h1>
         <h2>{{config.shared.hub.description[locale]}}</h2>  
         <img hidden [src]="config.shared.hub.tagLine.image" />
