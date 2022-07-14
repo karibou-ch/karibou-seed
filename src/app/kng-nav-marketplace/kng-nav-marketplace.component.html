@@ -1,6 +1,6 @@
   <!-- MARKETPLACE -->
   <h2>{{i18n.label().nav_store}}</h2>
-  <h3>{{i18n.label().nav_store_sub}}</h3>
+  <h3 class="hide-sm">{{i18n.label().nav_store_sub}}</h3>
   <div class="marketplace">
     <div class="container">
       <div class="hub"  
@@ -19,10 +19,15 @@
           <div class="market">MARCHÉ</div>
           <div class="title">{{hub.name}}</div>
           <div class="description">{{hub.description[locale]}}</div>
+          <div class="cart">
+             {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-icons icon">shopping_cart</span>
+          </div>
           <div class="options">
             <span class="shops">{{hub.vendors}} Vendeurs </span>          
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;besoin d'aide?</a>  
+        
           </div>
-          <div class="calendar">
+          <div class="calendar hide-sm">
             <ul class="availability">
               <li class="schedule">
                 <span class="material-icons icon" >schedule</span>
