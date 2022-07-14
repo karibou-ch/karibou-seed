@@ -54,8 +54,8 @@ export class KngProductLinkComponent implements OnInit {
   }
 
 
-  fireSearch(link){
-    this.$navigation.fireSearch(link);    
+  searchAction(link){
+    this.$navigation.searchAction(link);    
   }
 
   trackByShop(index,shop) {
