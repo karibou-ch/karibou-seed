@@ -15,8 +15,7 @@ import {
 import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar, MdcTopAppBarSection } from '@angular-mdc/web';
 
-import { merge, timer } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
+import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';
 
 
@@ -58,15 +57,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   currentShippingDay: Date;
   isFixed = true;
   displayIosInstall: boolean;
-  subscription;
-
+  subscription : Subscription;
+  scrollDirection = 0;
   //
   // FIXME remove code repeat
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
 
-  @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
     public $cart: CartService,
     public $i18n: i18n,
@@ -107,16 +105,22 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // K. image
     this.Kimage = '/assets/img/k-puce-light.png';
 
+    this.subscription = new Subscription();
   }
 
 
   ngOnDestroy() {
-    if(this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    // FIXME, better to use declarative pipe(takeUntil(destroyed$))
+    this.subscription.unsubscribe();
   }
 
   ngOnInit() {
+    this.subscription.add(
+      this.$navigation.registerScrollEvent().subscribe(scrollDirection => {
+        this.scrollDirection = scrollDirection;
+        this.$cdr.markForCheck();
+      })  
+    )
 
     this.detectIOS();
 
@@ -129,95 +133,83 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //if (this.currentTab == -1) this.currentTab = this.primary.length;
     }
 
-
-    this.subscription = this.$loader.update().subscribe(emit=> {
-
-      //
-      // update config
-      if (emit.config) {
-        Object.assign(this.config, emit.config);
-        // HUB title
-        this.hubTitle = this.config.shared.hub.siteName[this.locale];
-        this.hubImage = this.config.shared.hub.siteName.image;
-        this.hubPhone = this.config.shared.hub.address.phone;
-
-        this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
-        this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
-
-        this.store = this.$navigation.store;
+    this.subscription.add(
+      this.$loader.update().subscribe(emit=> {
 
         //
-        // init cart here because navbar is loaded on all pages
-        this.$cart.setContext(this.config, this.user, this.shops,this.orders);
-
-        this.currentRanks = this.config.shared.currentRanks[this.store] || {};
-        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-        this.Kimage = this.config.shared.hub.logo || this.Kimage;
+        // update config
+        if (emit.config) {
+          Object.assign(this.config, emit.config);
+          // HUB title
+          this.hubTitle = this.config.shared.hub.siteName[this.locale];
+          this.hubImage = this.config.shared.hub.siteName.image;
+          this.hubPhone = this.config.shared.hub.address.phone;
   
-        this.currentShippingDay = this.$cart.getCurrentShippingDay();
-        this.$cdr.markForCheck();
-      }
-
-      //
-      // update user
-      if (emit.user) {
-        this.user = this.user || {} as User;
-        Object.assign(this.user, emit.user);
-
-        //
-        // FIXME avoid multiple update of same value 
-        this.$cart.setContext(this.config, this.user,this.shops,this.orders);
-        this.$cdr.markForCheck();
-        this.currentShippingDay = this.$cart.getCurrentShippingDay();
-      }
-
-      // FIXME use appropriate place to setup $cart
-      if(emit.orders && !this.orders.length) {
-        this.orders = emit.orders;
-        this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
-      }
-
-      //
-      // update cart
-      if (emit.state) {
-        this.cardItemsSz = this.$cart.subTotal();
-        timer(100).subscribe(() => {
+          this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
+          this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
+  
+          this.store = this.$navigation.store;
+  
           //
-          // top bar
-          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
-          //
-          // tab bar
-          this.cartItemCountElem = this.cartItemCountElem || this.section.elementRef.nativeElement.querySelector('.cart-items-count');
-          if (this.cartItemCountElem) {
-            this.cartItemCountElem.innerHTML = '' + this.cardItemsSz + ' fr';
-          }
-        });
-
-        //
-        // update shipping date
-        if (!emit.state.item) {
-          return;
+          // init cart here because navbar is loaded on all pages
+          this.$cart.setContext(this.config, this.user, this.shops,this.orders);
+  
+          this.currentRanks = this.config.shared.currentRanks[this.store] || {};
+          this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+          this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+          this.Kimage = this.config.shared.hub.logo || this.Kimage;
+    
+          this.currentShippingDay = this.$cart.getCurrentShippingDay();
+          this.$cdr.markForCheck();
         }
-
-        if (emit.state.action === CartAction.ITEM_MAX) {
-          return this.$snack.open(
-            this.$i18n.label()[CartAction[emit.state.action]],
+  
+        //
+        // update user
+        if (emit.user) {
+          this.user = this.user || {} as User;
+          Object.assign(this.user, emit.user);
+  
+          //
+          // FIXME avoid multiple update of same value 
+          this.$cart.setContext(this.config, this.user,this.shops,this.orders);
+          this.$cdr.markForCheck();
+          this.currentShippingDay = this.$cart.getCurrentShippingDay();
+        }
+  
+        // FIXME use appropriate place to setup $cart
+        if(emit.orders && !this.orders.length) {
+          this.orders = emit.orders;
+          this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
+        }
+  
+        //
+        // update cart
+        if (emit.state) {
+          this.cardItemsSz = this.$cart.subTotal(this.store);
+          this.updateDomPrice();
+  
+          //
+          // update shipping date
+          if (!emit.state.item) {
+            return;
+          }
+  
+          if (emit.state.action === CartAction.ITEM_MAX) {
+            return this.$snack.open(
+              this.$i18n.label()[CartAction[emit.state.action]],
+              this.$i18n.label().thanks,
+              this.$i18n.snackOpt
+            );
+          }
+          this.$snack.open(
+            // tslint:disable-next-line: max-line-length
+            this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
         }
-
-        this.$snack.open(
-          // tslint:disable-next-line: max-line-length
-          this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
-          this.$i18n.label().thanks,
-          this.$i18n.snackOpt
-        );
-      }
-    });
-
-
+      })  
+    );
   }
 
   detectIOS() {
@@ -305,6 +297,15 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   onLang($event, lang) {
     this.$i18n.locale = lang;
     // console.log('---- changed locale')
+  }
+
+  updateDomPrice(){
+    timer(100).subscribe(() => {
+      //
+      // top bar
+      (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
+    });
+
   }
 
   setShippingDay(value: any) {

@@ -61,14 +61,13 @@
 <div [hidden]="!isAppReady()" class="navbar">
 
   <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar fixed="false"  [dense]="$navigation.isMobile()">
+  <mdc-top-app-bar [fixed]="!$navigation.isMobile()" >
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
-        <img class="icon" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="home"  (click)="openCalendar(calendar,true)">
+        <img class="icon hide-sm" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
+        <mdc-top-app-bar-title class="brand"  (click)="openCalendar(calendar,true)">
           Karibou.ch      
-          <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
@@ -101,34 +100,22 @@
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
 
-    <mdc-top-app-bar-row class="navigation">      
+    <mdc-top-app-bar-row class="navigation ">      
       <!-- APPBAR-SECTION-START HUB AND DATE -->
-      <mdc-top-app-bar-section align="start">
+      <mdc-top-app-bar-section align="start" class="hide-sm">
         <div class="kng-chip" [routerLink]="['/store',store]"> <i class="material-icons start">roofing</i> Accueil</div>
-        <div class="kng-chip" [routerLink]="['/store',store,'home']">{{hubTitle}} </div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home']">Marché {{hubTitle}} </div>
         <div class="kng-chip" (click)="openCalendar(calendar,false)">{{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
 
 
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
-      <mdc-top-app-bar-section #section>
-
-
-        <mdc-tab-bar [activeTabIndex]="currentTab" fixed>
-
-          <!-- mdcRouter -->
-          <!-- <mdc-tab-scroller>
-            <mdc-tab *ngFor="let menu of primary;let idx=index;" [routerLink]="'.'+menu.url"  routerLinkActive #rla="routerLinkActive">
-              <span [innerHTML]="menu.name[locale]"></span>
-            </mdc-tab>
-          </mdc-tab-scroller> -->
-        </mdc-tab-bar>
+      <mdc-top-app-bar-section  class="title hide-md hide-lg">
+        <span class="start">Marché {{hubTitle}} </span>
+        <div class="kng-chip end" (click)="openCalendar(calendar,false)">{{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
 
-      <!-- APPBAR-SECTION-END -->
-      <mdc-top-app-bar-section align="end" class="">
-      </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
 
@@ -136,6 +123,11 @@
   <div class="mdc-content">
     <ng-content></ng-content>
   </div>
+
+  <!-- FAB  [exited]="scrollDirection<-5" -->
+  <kng-ui-bottom-actions *ngIf="$navigation.isMobile()" [config]="config" [categories]="categories">  
+  </kng-ui-bottom-actions>
+
 
   <!-- IOS INSTALL -->
   <div class="overlay-pane" [class.overlay-open]="displayIosInstall">

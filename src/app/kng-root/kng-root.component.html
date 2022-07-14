@@ -3,21 +3,22 @@
   <div>
       
     <!-- MARKETPLACE -->
-    <kng-nav-marketplace [config]="config" [orders]="pendingOrders"></kng-nav-marketplace>
+    <kng-nav-marketplace [hidden]="lockedHUB" [config]="config" [orders]="[]"></kng-nav-marketplace>
   
     <!-- DATE -->
     <kng-calendar (updated)="currentShippingDay=$event"></kng-calendar>
 
 
+    <h2 class="">Je commence mes cources</h2>
     <div class="hub-header">
-      <button class="goto" [routerLink]="['/store',store,'home']"><b>{{config.shared.hub.name}}</b>, commander pour le <b>{{currentShippingDay|date:'d MMMM':'':locale}}</b> </button>
+      <button class="goto" (click)="doOpenMarket(store)" [routerLink]="['/store',store,'home']">{{config.shared.hub.name}} pour le {{currentShippingDay|date:'d MMMM':'':locale}}, <b>Go &nbsp;<span class="material-icons pink">rocket_launch</span> </b>  </button>
 
     </div>
     
-    <h2>La sélection</h2>
+    <h2>Les coups coeur du marché</h2>
 
-    
-    <!-- <section class="products hide">
+  
+    <section class="products ">
         <div class="product" *ngFor="let product of selected;let j=index">
           <div  class="media ">
             <img [src]="getImage(product)" />
@@ -25,9 +26,9 @@
           </div>          
 
         </div>
-    </section> -->
+    </section>
 
-    <kng-shops></kng-shops>
+    <!-- <kng-shops (open)="doOpenShop($event)"></kng-shops> -->
 
     <!-- DISPLAY HUB -->
     <!-- <div class="hub-header hide">

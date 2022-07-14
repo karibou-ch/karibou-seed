@@ -74,6 +74,9 @@ button{
   color: var(--mdc-theme-primary);
   border: 1px solid var(--mdc-theme-primary-text) !important;
   display: inline;
+  .material-icons{
+    transform: translateY(5px);
+  }
   cursor: pointer;
 }
 
@@ -87,13 +90,17 @@ button.action{
 
 button.goto{
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   padding: 18px 10px;
-  border-radius: 45px;
+  border-radius: 10px;
   margin: auto;
   margin-bottom: 40px;
   color: var(--mdc-theme-primary);
   background-color: #eee;
+  text-transform: uppercase;
+  border: 1px solid var(--mdc-theme-primary)!important;
+  -box-shadow: 0px 2px 8px rgba(0, 0, 0,  0.16);
+  line-height: 33px;
 }
 
 h2{
@@ -101,12 +108,11 @@ h2{
   color: rgba(0, 0, 0, 0.87);
   color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
   font-size: 1.4675rem;
-  margin: 0 10px 40px;
+  margin: 0 10px 10px;
 }
 
 //
 // products
-
 .products {
   display: flex;
   flex-wrap: wrap;
@@ -139,7 +145,7 @@ h2{
       bottom: 0;
       left: 0;
       color: white;
-      background: rgba(0,0,0, .37);
+      background: linear-gradient(rgba(0,0,0, .37), transparent);;
       width: 100%;
       padding: 20px 10px;
       top: 0;

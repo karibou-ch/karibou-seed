@@ -13,6 +13,8 @@ export class KngRootComponent implements OnInit {
   config: any;
   currentShippingDay: Date;
   selected: Product[];
+  lockedHUB:boolean;
+  static SCROLL_CACHE = 0;
 
   constructor(
     public $i18n: i18n,
@@ -23,6 +25,7 @@ export class KngRootComponent implements OnInit {
   ) {
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.config = loader[0];
+
     this.currentShippingDay = new Date();
     this.selected = [];
   }
@@ -35,16 +38,26 @@ export class KngRootComponent implements OnInit {
   ngOnInit() {
     this.$route.params.subscribe(params => {
       this.$navigation.store = this.store = params['store'];
-      // this.loadProducts();
+      this.lockedHUB = !!this.config.shared.hub.domainOrigin;
+
+      //
+      // Load products Selection
+      this.loadProducts();
     });
 
     //
     // FIXME check ugly hack !!
+    try {window.scroll(0, 0); } catch (e) {}
+
     setTimeout(() => {
-      try {window.scroll(0, 0); } catch (e) {}
+      document.body.scrollTop = 0;
+      //document.body.scrollTop = KngRootComponent.SCROLL_CACHE;
     }, 100);
 
   }  
+
+  ngAfterViewChecked() {
+  }
 
   isAppReady() {
     return this.$navigation.store !== undefined;
@@ -68,6 +81,15 @@ export class KngRootComponent implements OnInit {
 
   getImage(product){
     return product.photo.url + '/-/resize/300x/';
+  }
+
+  doOpenMarket(slug) {
+    KngRootComponent.SCROLL_CACHE = 0;
+  }
+
+  doOpenShop(shop) {
+    console.log('---- on scroll',KngRootComponent.SCROLL_CACHE)
+    KngRootComponent.SCROLL_CACHE = document.body.scrollTop;
   }
 
   set store(name) {
