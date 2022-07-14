@@ -72,6 +72,16 @@ export class KngCalendarComponent implements OnInit {
     return this.$i18n.locale;
   }
 
+  get hideTitle() {
+    return this._hideTitle;
+  }
+
+  ngAfterViewInit() {
+    try {
+      document.querySelector('kng-calendar .calendar').scrollLeft = 80;
+    } catch (e) {}
+  }
+
   //
   // label is 'nav_no_shipping' or 'nav_no_shipping_long'
   getNoShippingMessage() {

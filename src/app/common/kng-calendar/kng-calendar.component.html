@@ -1,6 +1,7 @@
   <!-- CONTAINER-->
   <div class="container">
-    <h2 [hidden]="_hideTitle">{{i18n.label().nav_shipping}}</h2>
+    <h2 [hidden]="hideTitle">{{i18n.label().nav_shipping}}</h2>
+    <h3 class="hide-sm">Attention, les jours de livraisons ne sont pas identiques avec tous les marchés</h3>
 
     <!-- NO SHIPPING -->
     <div class="noshipping" [hidden]="!noshippingMsg || getShippingDays().length">
