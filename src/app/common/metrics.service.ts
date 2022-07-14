@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserService, LoaderService, CartAction, AnalyticsService, Metrics, Hub } from 'kng2-core';
 import { timer } from 'rxjs';
-import { Action } from 'rxjs/internal/scheduler/Action';
 import { map, debounce } from 'rxjs/operators';
 
 export enum EnumMetrics {
@@ -127,7 +126,12 @@ export class MetricsService {
   }
 
   isEnable() {
-    return (window.location.origin.indexOf('karibou.ch') > -1) && !this.isAdmin;
+    if(this.isAdmin){
+      return false;
+    }
+    const origin = window.location.origin;
+    // FIMXE use config instead of hardcoded
+    return (origin.indexOf('karibou.ch') > -1) || (origin.indexOf('halle-de-rive.ch') > -1);
   }
 
   getHost(name: string): any {
@@ -241,4 +245,3 @@ export class MetricsService {
     }
   }
 }
-
