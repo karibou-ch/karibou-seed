@@ -130,7 +130,7 @@ export class MetricsService {
       return false;
     }
     const origin = window.location.origin;
-    // FIMXE use config instead of hardcoded
+    // FIMXE use config instead of hardcodedw
     return (origin.indexOf('karibou.ch') > -1) || (origin.indexOf('halle-de-rive.ch') > -1);
   }
 
