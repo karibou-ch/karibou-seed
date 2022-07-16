@@ -19,7 +19,6 @@ export class KngRootComponent implements OnInit {
   constructor(
     public $i18n: i18n,
     public $cart: CartService,
-    public $product: ProductService,
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
   ) {
@@ -37,12 +36,12 @@ export class KngRootComponent implements OnInit {
   
   ngOnInit() {
     this.$route.params.subscribe(params => {
-      this.$navigation.store = this.store = params['store'];
+      this.store = params['store'];
       this.lockedHUB = !!this.config.shared.hub.domainOrigin;
 
       //
       // Load products Selection
-      this.loadProducts();
+      // this.loadProducts();
     });
 
     //
@@ -65,18 +64,19 @@ export class KngRootComponent implements OnInit {
 
   //
   // quick load of selected products
-  async loadProducts() {
-    if(!this.config.shared.mailchimp){
-      return;
-    }
-    this.selected = [];
-    const selected = this.config.shared.mailchimp[this.store].map(media=>media.sku);    
-    const products = await (this.$product.select({skus:selected}).toPromise());
-    for(const product of products.slice(0,8)){
-      this.selected.push(product);
-    }  
-    return this.selected;
-  }
+  // DEPRECATED
+  // async loadProducts() {
+  //   if(!this.config.shared.mailchimp){
+  //     return;
+  //   }
+  //   this.selected = [];
+  //   const selected = this.config.shared.mailchimp[this.store].map(media=>media.sku);    
+  //   const products = await (this.$product.select({skus:selected}).toPromise());
+  //   for(const product of products.slice(0,8)){
+  //     this.selected.push(product);
+  //   }  
+  //   return this.selected;
+  // }
 
 
   getImage(product){

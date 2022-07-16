@@ -2,6 +2,14 @@
 
   <div>
       
+    <div class="home-header hide-sm">
+      <!-- HUB -->
+      <div class="banner" >
+        <h1>{{config.shared.hub.name}}</h1>
+        <h2>{{config.shared.hub.description[locale]}}</h2>  
+      </div>
+    </div>
+
     <!-- MARKETPLACE -->
     <kng-nav-marketplace [hidden]="lockedHUB" [config]="config" [orders]="[]"></kng-nav-marketplace>
   
@@ -9,13 +17,12 @@
     <kng-calendar (updated)="currentShippingDay=$event"></kng-calendar>
 
 
-    <h2 class="">Je commence mes cources</h2>
+    <h2 class="">Je commence mes courses</h2>
     <div class="hub-header">
-      <button class="goto" (click)="doOpenMarket(store)" [routerLink]="['/store',store,'home']">{{config.shared.hub.name}} pour le {{currentShippingDay|date:'d MMMM':'':locale}}, <b>Go &nbsp;<span class="material-icons pink">rocket_launch</span> </b>  </button>
-
+      <button class="goto" (click)="doOpenMarket(store)" [routerLink]="['/store',store,'home']">{{config.shared.hub.name}} le {{currentShippingDay|date:'d MMMM':'':locale}}, <b>Go &nbsp;<span class="material-icons pink">manage_search</span> </b>  </button>
     </div>
     
-    <h2>Les coups coeur du marché</h2>
+    <h2 class="hide">Les coups coeur du marché</h2>
 
   
     <section class="products ">

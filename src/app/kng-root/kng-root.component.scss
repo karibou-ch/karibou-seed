@@ -15,6 +15,11 @@ div.hub-header{
     width: calc( 100% - 20px );
   }
 
+  @media (max-width:429px){
+    padding: 10px 0px;
+  }
+
+
   .banner{
     position: relative;
     background: var(--mdc-theme-primary);
@@ -94,6 +99,7 @@ button.goto{
   padding: 18px 10px;
   border-radius: 10px;
   margin: auto;
+  margin-left:10px;
   margin-bottom: 40px;
   color: var(--mdc-theme-primary);
   background-color: #eee;
@@ -108,7 +114,7 @@ h2{
   color: rgba(0, 0, 0, 0.87);
   color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
   font-size: 1.4675rem;
-  margin: 0 10px 10px;
+  margin: 0 10px 30px;
 }
 
 //
