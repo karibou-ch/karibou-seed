@@ -1,150 +1,85 @@
-	form{
+//
+// display on large screen
+kng-search-bar{
+	display:flex;
+	opacity: .8;	
+	margin: auto;
+	@media (max-width: 429px) {
+		display:none;
+	}
+	&.force-display{
 		display:flex;
-		width:100%
 	}
+}
 
-	.mat-toolbar--exit-search {
-		color: Grey;
+//
+// display on mobile
+kng-search{
+	display:flex;	
+	@media (min-width: 429px) {
+		display:none!important;
 	}
+}
 
-	.mat-toolbar--search {
-		visibility: hidden;
-		background-color: #ddd;
-		position: fixed;
-	}
 
-	.mat-toolbar--search-container {
-		background: white!important;
-		height:56px;
-		display: flex;
-		width:100%;
-	}
-
-	.mdc-textfield--fullwidth:not(.mdc-textfield--multiline) {
-		height: auto;
-		display: flex;
-    width: 100%;
-	}
-  
-	.mat-search--desktop {
-		border-radius: 2px;
-		background: rgba(255, 255, 255, .45)!important;
-		flex: 2;
-		flex-direction: column;
-		justify-content: center;
-		z-index:1!important;
-	}
-	.mat-search--desktop::before,
-	.mat-search--desktop::after {
-			background-color: rgba(255, 255, 255, .05);
-		}
-	@media only screen and (max-width: 782px) {
-		/* display button for mobile */
-		.mat-search--desktop {
-			position: fixed;
-			left: 0;
-			right: 0;
-			top: 0;			
-			height: 60%;
-			flex-direction:row;
-			flex:3;
-			background:transparent!important;
-			form.desktop{
-				display: none!important;
-			}
-			header{
-				left: 0;
-				right: 0;
-			}
-		}
-		.mat-toolbar__section--end-icons {
-			-webkit-box-flex: 0;
-			-ms-flex: none;
-			flex: none;
-		}
-	}
-	@media only screen and (min-width : 782px) {
-		/* display button for mobile */
-		.mat-search--mobile {
-			display: none;
-		}
-	}
-	.mat-search--desktop:hover {
-		background: rgba(255, 255, 255, .1);
-	}
-	.mat-search--desktop__input:focus {
-		opacity: 1 !important;
-	}
-	.mat-search--desktop__content{
-		margin-left: 16px;
-		opacity: 0.7;
-	}
-
-	.mat-toolbar--search-text{
-		border: 0;
-		outline: none;
-		color: #333;
-		width: 100%;
-		font-size: 14px;
-	}
-
-	.mat-search--desktop__input {
-		background-color: transparent;
-		border: 0;
-		outline: none;
-		color: #333;
-		width: 100%;
-		font-size: 14px;
-	}
-	.mat-search--desktop__icon {
-		line-height: 35px;
-		font-size: 22px;
+.search{
+	z-index: 1;
+	height: 45px;
+	width: 100%;
+	max-width: 450px;
+	display: flex;
+	right: 0;
+	left: 0;      
+	i.left{
+		position: absolute;
+		margin-left: 22px;
+		z-index: 1;
+		margin-top: 12px;  
+		color: var(--mdc-theme-primary)!important;      
 		cursor: pointer;
 	}
-	.mat-search--desktop__input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-		color: #333;
-	}
-	.mat-search--desktop__input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-	   color: #333;
-	   opacity: 1;
-	}
-	.mat-search--desktop__input::-moz-placeholder { /* Mozilla Firefox 19+ */
-	   color: #333;
-	   opacity: 1;
-	}
-	.mat-search--desktop__input:-ms-input-placeholder { /* Internet Explorer 10-11 */
-	   color: #333;
-	}
-	.mat-search--desktop__input::-ms-input-placeholder { /* Microsoft Edge */
-	   color: #333;
-	}
+	i.right-favorite{
+		z-index: 1;
+		margin-top: 11px;  
+		color: var(--mdc-theme-primary)!important;      
+		margin-left:-54px;
+		cursor: pointer;
+		@media (max-width: 429px) {
+			right: 25px;
+		}
 
-
-	/*
-		==============================
-		  Search animation
-		==============================
-	*/
-	.mat-margin-animation {
-		margin-top: -48px;
 	}
-	
-	@keyframes mat-toolbar--open-search {
-		from {
-			clip-path: circle(0 at calc(100% - var(--mat-toolbar--search-location)) 50%);
+	i.right{
+		z-index: 1;
+		margin-top: 11px;  
+		color: var(--mdc-theme-primary)!important;      
+		cursor: pointer;
+		margin-left:-54px;
+		@media (max-width: 429px) {
+			right: 25px;
 		}
-		to {
-			clip-path: circle(150% at calc(100% - var(--mat-toolbar--search-location)) 50%);
-		}
+		opacity: .5;
 	}
-	@keyframes mat-toolbar--close-search {
-		from {
-			background: #ddd;
-			clip-path: circle(150% at calc(100% - var(--mat-toolbar--search-location)) 50%);
-		}
-		to {
-			background: #efefef;
-			clip-path: circle(0 at calc(100% - var(--mat-toolbar--search-location)) 50%);
-		}
+	.stats{
+		font-size: 90%;
+		position: absolute;
+		margin-top: 15px;
+		font-weight: 900;
+		color: #999;     
+		transition: all .3s;   
 	}
-	
+	input{
+		outline: 0;
+		border: 1px solid rgba(185, 185, 185, 0.6);
+		border-radius: 25px;
+		background: #fff;
+		width:500px;
+		max-width: calc( 100vw - 60px);
+		padding-left: 30px;
+		font-size: 15px;
+		margin: 0 15px;
+	}
+	@media (max-width: 429px) {
+		-margin-right:10px;
+	}
+}

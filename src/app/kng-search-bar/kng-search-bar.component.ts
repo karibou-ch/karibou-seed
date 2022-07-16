@@ -3,10 +3,12 @@ import {
   ElementRef,
   HostBinding,
   HostListener,
+  Input,
   OnInit,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
+import { i18n, KngNavigationStateService } from '../common';
 
 
 @Component({
@@ -17,95 +19,122 @@ import {
 })
 export class KngSearchBarComponent implements OnInit {
 
-  constructor() { }
-
   //
   // @ContentChild vs @ViewChild
   // https://stackoverflow.com/a/34327754/680373
  
   @ViewChild('search', { static: true }) search: ElementRef;
-  @ViewChild('searchContainer', { static: true }) searchContainer: ElementRef;
-  @ViewChild('searchText', { static: true }) searchText: ElementRef;
+  @ViewChild('stats', { static: true }) stats: ElementRef;
 
   //
-  // Element doesnt access offsetLeft
-  searchIcon: any;
+  // avoid double search
+  searchLastValue: string;
 
 
-  @HostBinding('class') isHostClass = 'mat-search--desktop  mat-toolbar--open-search primary';
+
+  @HostBinding('class.search-desktop') appbar = true;
   @HostBinding('style.z-index') isOpen = 'auto';
 
   //
   // bind submit search form
   @HostListener('submit', ['$event']) onClick($event: Event) {
-    console.log('----------- onsubmit', $event);
+    const value = this.search.nativeElement.value;
+    this.$navigation.searchAction(value);
+    $event.stopPropagation();
+    return false;
+  }
+
+  constructor(
+    public $i18n: i18n,
+    public $navigation: KngNavigationStateService
+  ) { 
+    this.$navigation.search$().subscribe((keyword)=>{
+      if(keyword == 'clear') {
+        this.search.nativeElement.value = '';
+        this.stats.nativeElement.innerText = '';
+        return;
+      }
+      if(keyword.indexOf('stats:')>-1) {
+        this.doStats(keyword.split(':')[1]);
+        return;
+      }
+
+      this.search.nativeElement.value = keyword;
+    });
+
+  }
+
+
+  get i18n() {
+    return this.$i18n;
+  }
+
+  get locale() {
+    return this.$i18n.locale;
+  }
+
+  get label() {
+    return this.$i18n.label();
   }
 
 
   ngOnInit() {
-    // bind open search
-    // document.querySelector('.mat-toolbar--open-search').addEventListener('click', this.onSearch.bind(this));
-
-    // bind exit search
-    // document.querySelector('.mat-toolbar--exit-search').addEventListener('click', this.onExitSearch.bind(this));
-
-    // this.searchIcon = document.querySelector('.mat-toolbar--open-search');
   }
 
   ngAfterViewInit(): void {
   }
 
-  //
-  // on search
-  onSearch() {
-    this.isOpen = '1';
+  doFavorite(){
+    this.$navigation.searchAction('favoris');
+  }
+
+  doInput(value?: string) {
+    value = value || this.search.nativeElement.value;
+    if(this.searchLastValue == value) {
+      return;
+    }
+    this.searchLastValue = value;
+    this.$navigation.searchAction(value);
+  }
+
+  doStats(count){
+    const margin = (this.search.nativeElement.value || '').length * 10;
+
     //
-    // document.querySelector('.mat-toolbar--search').style = "visibility: visible; overflow: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - 300 - 20) + "px;";
-    this.search.nativeElement.style = 'visibility: visible; overflow: hidden; --mat-toolbar--search-location: ' + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + 'px;';
-    // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);";
-    this.searchContainer.nativeElement.style = 'animation: mat-toolbar--open-search 0.7s forwards; -webkit-transform: translateZ(0);';
-    // document.querySelector('.mat-toolbar--search-text').focus();
-    this.searchText.nativeElement.focus();
-
-    // if(document.querySelector('.mat-toolbar__row--tab-bar')){
-    //   document.querySelector('.mat-toolbar__row--tab-bar').classList.add('mat-margin-animation');
-    //   if(document.querySelector('.mat-toolbar-adjust')){document.querySelector('.mat-toolbar-adjust').classList.add('mat-margin-animation')};
-    //   setTimeout(function() {
-    //     document.querySelector('.mat-toolbar__row--tab-bar').style.cssText += "display: none";
-    //   }, 300);
-    // }
+    // async clear?
+    this.stats.nativeElement.style.marginLeft = 35 + margin + 'px';
+    if (!this.search.nativeElement.value) {
+      this.stats.nativeElement.innerText = '';
+      return;
+    }
+    this.stats.nativeElement.innerText = '(' + count + ')';
   }
 
-  //
-  // .mat-toolbar--exit-search
-  onExitSearch() {
-    this.isOpen = 'auto';
-
-    // document.querySelector('.mat-toolbar--search-container').style = "animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);";
-    this.searchContainer.nativeElement.style = 'animation: mat-toolbar--close-search 0.5s forwards; -webkit-transform: translateZ(0);';
-    // document.querySelector('.mat-toolbar--search-text').value = '';
-    this.searchText.nativeElement.value = '';
-    setTimeout(() => {
-      // setTimeout(function() {document.querySelector('.mat-toolbar--search').style = "visibility: hidden; --mat-toolbar--search-location: " + (document.body.clientWidth - searchIcon.offsetLeft - 20) + "px;";}, 500);
-      this.search.nativeElement.style = 'visibility: hidden; --mat-toolbar--search-location: ' + (document.body.clientWidth - this.searchIcon.offsetLeft - 20) + 'px;';
-
-    }, 700);
-		// if(document.querySelector('.mat-toolbar__row--tab-bar')){
-		// 	document.querySelector('.mat-toolbar__row--tab-bar').style = "display: block;";
-		// 	setTimeout(function() {
-		// 		document.querySelector('.mat-toolbar__row--tab-bar').classList.remove('mat-margin-animation');
-		// 		if(document.querySelector('.mat-toolbar-adjust')){document.querySelector('.mat-toolbar-adjust').classList.remove('mat-margin-animation')};
-		// 	}, 100);
-		// }
-
+  onFocus() {
+    try {
+      this.search.nativeElement.select();
+    } catch (e) {}
   }
 
-  //
-  // .clear-search-query
-  onClearSearchQuery() {
-    this.searchText.nativeElement.value = '';
-    this.searchText.nativeElement.focus();
+  doClear() {
+    this.$navigation.searchAction('clear');
   }
 
 
+}
+
+
+
+@Component({
+  selector: 'kng-search',
+  templateUrl: './kng-search.component.html',
+  styleUrls: ['./kng-search-bar.component.scss']
+})
+export class KngSearchComponent extends KngSearchBarComponent implements OnInit {
+
+  @HostBinding('class') mobile = 'search-mobile';
+
+  ngOnInit(): void {
+    
+  }
 }
