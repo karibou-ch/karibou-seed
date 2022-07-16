@@ -139,6 +139,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         //
         // update config
         if (emit.config) {
+          this.store = this.$navigation.store;
+          //
+          // init cart here because navbar is loaded on all pages
+          this.$cart.setContext(this.config, this.user, this.shops,this.orders);
+
           Object.assign(this.config, emit.config);
           // HUB title
           this.hubTitle = this.config.shared.hub.siteName[this.locale];
@@ -147,19 +152,15 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   
           this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
           this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
-  
-          this.store = this.$navigation.store;
-  
-          //
-          // init cart here because navbar is loaded on all pages
-          this.$cart.setContext(this.config, this.user, this.shops,this.orders);
-  
+      
           this.currentRanks = this.config.shared.currentRanks[this.store] || {};
           this.currentLimit = this.config.shared.hub.currentLimit || 1000;
           this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
           this.Kimage = this.config.shared.hub.logo || this.Kimage;
     
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
+          this.cardItemsSz = this.$cart.subTotal(this.store);
+
           this.$cdr.markForCheck();
         }
   
@@ -186,6 +187,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         // update cart
         if (emit.state) {
           this.cardItemsSz = this.$cart.subTotal(this.store);
+          this.currentShippingDay = this.$cart.getCurrentShippingDay();
           this.updateDomPrice();
   
           //

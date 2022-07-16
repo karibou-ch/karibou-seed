@@ -109,10 +109,10 @@ div.navbar{
       width: 940px;        
       -max-width: 1170px;
       -width: 1170px;        
-      margin-right: 110px;
+      margin-right: 160px;
     }
 
-    @media (min-width:1600px) {
+    @media (min-width:1550px) {
       -max-width: 1170px;
       -width: 1170px;        
       margin-right: auto;
@@ -201,7 +201,7 @@ div.navbar{
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      font-weight: 400;
+      font-weight: 200;
       >.start{
         margin-left: 10px;
       }

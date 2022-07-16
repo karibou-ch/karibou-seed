@@ -66,30 +66,31 @@
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
         <img class="icon hide-sm" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="brand"  (click)="openCalendar(calendar,true)">
+        <mdc-top-app-bar-title class="brand" [routerLink]="['/store',store]" >
           Karibou.ch      
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
+        <kng-search-bar></kng-search-bar>
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
       <mdc-top-app-bar-section align="end" class="actions">        
 
-        <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
+        <a class="label shopping-cart" href="javascript:;" [routerLink]="['/store',store,'home','cart','default']">
           <div i18n> <span class="cart-items-count"></span></div>
           <mdc-icon mdcTopAppBarActionItem class="secondary-text" >shopping_cart</mdc-icon>          
         </a>
 
         <!-- LOGIN / REGISTER -->
-        <a class="label " [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
+        <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
           <mdc-icon mdcTopAppBarActionItem class="secondary-text" >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
         </a>
-        <a class="label" [routerLink]="['./me/login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
+        <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
           <mdc-icon mdcTopAppBarActionItem class="secondary-text">account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
         </a>
 
@@ -105,6 +106,7 @@
       <mdc-top-app-bar-section align="start" class="hide-sm">
         <div class="kng-chip" [routerLink]="['/store',store]"> <i class="material-icons start">roofing</i> Accueil</div>
         <div class="kng-chip" [routerLink]="['/store',store,'home']">Marché {{hubTitle}} </div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home','shops']">Ses commerçants </div>
         <div class="kng-chip" (click)="openCalendar(calendar,false)">{{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
 
@@ -125,7 +127,7 @@
   </div>
 
   <!-- FAB  [exited]="scrollDirection<-5" -->
-  <kng-ui-bottom-actions *ngIf="$navigation.isMobile()" [config]="config" [categories]="categories">  
+  <kng-ui-bottom-actions [config]="config" [categories]="categories">  
   </kng-ui-bottom-actions>
 
 
