@@ -1,34 +1,12 @@
-<div class="bottom-actions hide-lg" >  
-  <div class="fabs hide">
-    <button mdc-fab  extended label="MENU" [hidden]="show"
-      (click)="doToggle()">
-      <mdc-icon >menu</mdc-icon>
-    </button>  
-  </div>  
-  <div class="fabs left hide">
-    <button mdc-fab   [hidden]="show" class="bookmark"
-      (click)="doPreferred()">
-      <mdc-icon >favorite</mdc-icon>
-    </button>  
+<div class="bottom-actions " >  
+  <kng-search-bar class="force-display" [hidden]="!show"></kng-search-bar>
+
+  <div class="bottom-bar hide-lg" [hidden]="show">
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-icons icon">home</span><div>{{label.nav_bottom_home}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-icons icon">manage_search</span><div>{{label.nav_bottom_browse}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLink]="['/store',store,'home','shops']"><span class="material-icons icon">storefront</span><div>{{label.nav_bottom_shops}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']"><span class="material-icons icon">shopping_cart</span><div>{{label.nav_bottom_cart}}</div></button>    
   </div>
-  <div class="search" [hidden]="!show">
-    <i class="left material-icons">search</i>
-    <span #stats class="stats"></span>
-    <input type="text" 
-          (input)="doInput($event.target.value)"
-          (change)="doInput()" 
-          (focus)="onFocus()" 
-          [placeholder]="i18n[locale].search_placeholder" #search>    
-    <i class="right material-icons" [hidden]="!hasSearch()" (click)="doClear()">close</i>
-  </div>  
-
-  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-icons icon">home</span></button>  
-  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-icons icon">shopping_bag</span></button>  
-  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','shops']"><span class="material-icons icon">storefront</span></button>  
-  <button class="action" (click)="show=true"><span class="material-icons icon">manage_search</span></button>  
-  <button class="action" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']"><span class="material-icons icon">shopping_cart</span></button>  
-
-
 </div>  
 
 <div class="results" [hidden]="!show">
@@ -37,20 +15,14 @@
   </button>  
 
   <!-- CATS -->
-  <ul class="category" [hidden]="products.length">
-    <!-- TODO rebuild list of categories based on the menu group -->
-    <!-- <li class="menu-group" *ngFor="let menu of primary;let idx=index;" (click)="onPrimaryMenu(menu.url)">
-        <div [innerHTML]="menu.name[locale]"></div>
-    </li> -->
-
+  <!-- <ul class="category" [hidden]="products.length">
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
       <i [class]="category.image" class="icon"></i>
       <span>&nbsp;{{category.name}}</span>
     </li>                
-
-  </ul>
+  </ul> -->
 
   <!-- PRODUCTS -->
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!products.length">
@@ -73,7 +45,7 @@
       <mdc-list-item>
         <mdc-list-item-text >.</mdc-list-item-text>
       </mdc-list-item>
-    </mdc-list>
+  </mdc-list>
 
   <!-- SHOPS -->
   <!-- <kng-shops></kng-shops>   -->

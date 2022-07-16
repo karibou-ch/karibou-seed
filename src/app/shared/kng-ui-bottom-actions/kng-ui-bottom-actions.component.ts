@@ -26,16 +26,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   findGetNull: boolean;
   products: Product[] = [];
 
-  i18n: any = {
-    fr: {
-      bookmark: 'Favoris',
-      search_placeholder: 'Recherche',
-    },
-    en: {
-      bookmark: 'Favorites',
-      search_placeholder: 'Search',
-    }
-  };
 
   @HostBinding('class.show') get classShow(): boolean {
     return this.show;
@@ -67,10 +57,18 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       if(keyword == 'favoris') {
         this.doClear();
         this.doPreferred();
+        this.show = true;
         return;
       }
-      this.search.nativeElement.value = keyword;
-      this.doInput(keyword);
+      if(keyword == 'clear') {
+        this.doClear();
+        return;
+      }
+      if(keyword.indexOf('stats:')>-1) {
+        return;
+      }
+      this.show = true;
+      this.doSearch(keyword);
     });
 
     this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
@@ -96,6 +94,13 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     return this.$i18n.locale;
   }
 
+  get label(){
+    return this.$i18n.label();
+  }
+
+  get i18n() {
+    return this.$i18n;
+  }
 
   addToCard(product) {
     this.$cart.add(new Product(product));
@@ -105,12 +110,13 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     return this.search.nativeElement.value;
   }
 
+  doClearScroll() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  }
+
   doClear() {
     this.products = [];
-    this.search.nativeElement.value = null;
-    this.stats.nativeElement.innerText = '';
-    document.body.classList.add('mdc-dialog-scroll-lock');
-    document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.$cdr.markForCheck();
   }
 
@@ -122,15 +128,12 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
-  doInput(value?: string) {
+  doSearch(value: string) {
     const blur = !value;
-    let margin = 8; // display stats result
-    value = value || this.search.nativeElement.value;
     const tokens = value.split(' ').map(val => (val || '').length);
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
-    this.stats.nativeElement.innerText = '';
     //
     // on search open window
     if (tokens.some(len => len >= 3)) {
@@ -140,20 +143,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       };
       this.show = true;
       this.findGetNull = false;
-      margin = (this.search.nativeElement.value || '').length * margin;
       this.$products.search(value, options).subscribe(products => {
-        //
-        // async clear?
-        this.stats.nativeElement.style.marginLeft = 35 + margin + 'px';
-        if (!this.search.nativeElement.value) {
-          this.stats.nativeElement.innerText = '';
-          return;
-        }
-        this.stats.nativeElement.innerText = '(' + products.length + ')';
+        this.$navigation.searchAction('stats:'+products.length);
 
         this.findGetNull = !products.length;
         this.products = products.sort(this.sortByScore);
-        blur && this.search.nativeElement.blur();
         this.$cdr.markForCheck();
       });
     }
@@ -199,13 +193,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
-
-  }
-  onFocus() {
-    try {
-      this.search.nativeElement.select();
-
-    } catch (e) {}
 
   }
 
