@@ -3,10 +3,11 @@ kng-product-swipe{
   min-height: 280px !important;
   overflow: hidden;
   display: block;
-  margin-bottom: 5px;
+  margin: 10px 10px;
 
   @media (max-width:425px) {
-    width: 100vw;    
+    width: calc(100vw - 30px );    
+    margin: 10px 15px;
   }
 
   .selected{
@@ -45,14 +46,15 @@ kng-product-swipe{
         display: flex;
         flex-flow: row nowrap;  
         justify-content: flex-start;
-        transform: translateX(-20px);
-
+        width: 100%;
+        margin: 20px 0;
+        padding: 0;
       
         kng-product-thumbnail,
         .selected-card {
-          width: 150px;
-          max-width: 150px;
-          flex: 1 0 150px;
+          width: 160px;
+          max-width: 160px;
+          flex: 1 0 160px;
           margin: 0 6px;
           box-shadow: 0px 0px 20px #ddd;
           border-radius: 10px;

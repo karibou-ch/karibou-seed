@@ -24,6 +24,7 @@ export class ProductSwipeComponent implements OnInit {
 
   bgStyle = '/-/resize/200x/';
 
+  @Input() mailchimp: string;
   @Input() limit: number;
   @Input() config: any;
   @Input() set products(products: Product[]){
@@ -39,12 +40,12 @@ export class ProductSwipeComponent implements OnInit {
     
   }
   @Input() set autoload(any) {
-    this.load();
+    this.loadProducts();
   }
 
   hideIfEmpty: boolean;
-  options = {
-    discount: true,
+  options:any = {    
+    selected: true,
     available: true,
     status: true,
     when: true
@@ -79,25 +80,29 @@ export class ProductSwipeComponent implements OnInit {
   ngOnDestroy() {
   }
 
-  ngAfterViewInit() {
-    try {
-      document.querySelector('kng-product-swipe > div > div.content').scrollLeft = 70;
-    } catch (e) {}
-  }
 
   ngOnInit() {
-
-    // if(!this.products ||
-    //    !this.products.length) {
-    //   this.load();
-    // }
+    this.loadProducts();
   }
 
 
-  load() {
+  loadProducts() {    
+    if(this.products && this.products.length) {
+      return;
+    }
+
+    if(this.mailchimp) {
+      this.options.skus = this.config.shared.mailchimp[this.mailchimp].map(media=>media.sku).filter(sku=>!!sku);    
+    }
+
     this.$product.select(this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortByDate);
       this.$cdr.markForCheck();
+      setTimeout(()=>{
+        try {
+          document.querySelector('kng-product-swipe > div > div.content').scrollLeft = 75;
+        } catch (e) {}    
+      },100);
     });
   }
 
