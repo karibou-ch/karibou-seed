@@ -38,6 +38,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
+      title_order_grouped_info:'<b>Psst!</b> Forgot something? To complete your order, just place a new one <span class="bold">😇</span>!',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
       title_evaluation: 'Your rating',
