@@ -2,7 +2,7 @@
   margin: 0;
   width: 100%;
   height: 100%;
-  background: #eee;
+  background: var(--mdc-theme-appbar);
 
   &.recording{
     background-color: #ffb6b6;
@@ -58,6 +58,9 @@
 
     audio{
       outline: 0;
+      scale: .8;
+      margin-left: -10px;
+      margin-right: 50px;      
     }
     audio::-webkit-media-controls-play-button,
     audio::-webkit-media-controls-panel {
@@ -70,7 +73,7 @@
       height: 40px;
       margin: 10px;
       border-radius: 20px;
-      border: 1px solid #aaa;        
+      border: 1px solid var(--mdc-theme-primary);        
       -webkit-touch-callout:none;
       -webkit-user-select:none;
       -khtml-user-select:none;
