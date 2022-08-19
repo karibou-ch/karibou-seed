@@ -21,6 +21,7 @@ import { UserMdcModule } from './user-mdc.module';
 import { IsAuthenticatedGard } from '../common';
 import { KngCommonModule } from '../common/common.module';
 import { KngUserReminderComponent } from '../shared/kng-user-reminder/kng-user-reminder.component';
+import { MdcChipsModule } from '@angular-mdc/web';
 //
 // define routes module
 // get an EmptyError: no elements in sequence with this route
@@ -63,9 +64,13 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     UserMdcModule,
+    MdcChipsModule,
     KngSharedModule,
     KngCommonModule,
     RouterModule.forChild(routes)
+  ],
+  exports:[
+    MdcChipsModule,
   ],
   declarations: [
     AddressComponent,

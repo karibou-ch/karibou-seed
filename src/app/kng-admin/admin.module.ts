@@ -25,6 +25,7 @@ import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-de
 //
 // define routes module
 const routes: Routes = [
+  { path: 'cat', component: KngCategoriesComponent, resolve: { loader: LoaderResolve } },
   { path: 'category', component: KngCategoriesComponent, resolve: { loader: LoaderResolve } },
   { path: 'config', component: KngConfigComponent, resolve: { loader: LoaderResolve } },
   { path: 'information', component: KngInformationCfgComponent, resolve: { loader: LoaderResolve } },

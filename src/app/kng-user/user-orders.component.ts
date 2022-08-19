@@ -107,21 +107,17 @@ export class UserOrdersComponent implements OnInit {
   addToCard(item: OrderItem) {
     const variant = (item.variant) ? item.variant.title : null;
     this.$products.get(item.sku).subscribe(product => {
-      this.$cart.add(CartItem.fromProduct(product, variant));
+      this.$cart.add(CartItem.fromProduct(product, this.config.shared.hub.slug, variant));
     }, error => this.$snack.open(error.error));
   }
 
   addAllToCart(order: Order) {
-    // WARNING: empty is async, you cant use /cart before empty has finished
-    // this.$cart.empty().subscribe(() => {
-    // });
-
     //
     // FIXME, replace load N products in N calls BY N products in one call
     forkJoin(order.items.map(item => this.$products.get(item.sku))).subscribe((products) => {
       const items = products.map((product,i) => {
         const variant = (order.items[i].variant) ? order.items[i].variant.title : null;
-        return CartItem.fromProduct(product, variant);
+        return CartItem.fromProduct(product, this.config.shared.hub.slug, variant);
       });
       this.$cart.addAll(items);
     });

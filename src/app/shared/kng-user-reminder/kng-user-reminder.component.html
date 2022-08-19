@@ -3,12 +3,12 @@
     {{i18n[locale].title}}
 </div>
 <div class="content">
-  <mdc-chip-set choice #notify (change)="doUpdate($event)">
-    <mdc-chip *ngFor="let day of weekdays" [value]="day.value"  [selected]="selectedNotification==day.value">
-      <mdc-chip-icon leading [hidden]="!day.icon">{{day.icon}}</mdc-chip-icon>
-      <mdc-chip-text>{{ day.label }}</mdc-chip-text>
-    </mdc-chip>
-  </mdc-chip-set>
+  <div class="kng-chip-content">
+    <div class="kng-chip" *ngFor="let day of weekdays"  [class.selected]="selectedNotification==day.value" (click)="doUpdate(day.value)">
+      {{ day.label }}
+      <i class="material-icons end" >alarm</i>
+    </div>
+  </div>
 <div class="info" mdcBody1 i18n>
   <b>{{i18n[locale].super}}</b>
   {{i18n[locale].info}}

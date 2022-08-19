@@ -206,21 +206,19 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     this.categories = loader[2];
     //
     // HUB from config
-    this.currentHub = Object.assign({}, this.config.shared.hub);
-
+    // this.currentHub = Object.assign({}, this.config.shared.hub);
+    const hubSlug = (this.config.shared.hub)?this.config.shared.hub.slug:'artamis';
     //
     // create 6 month date
     this.sixMOnth = new Date(Date.now()-86400000*30*6);
 
     //
     // HUB from DB
-    this.$hub.get(this.currentHub.slug).subscribe(hub => {
+    this.$hub.get(hubSlug).subscribe(hub => {
       this.initHub(hub);
       Object.assign(this.currentHub, hub);
     }, (err) => this.$snack.open(err.error, 'OK'));
 
-    this.currentHub.description = {fr: null, en: null, de: null};
-    this.currentHub.logo = this.currentHub.logo || null;
   }
 
 
@@ -243,6 +241,10 @@ export class KngHUBComponent implements OnInit, OnDestroy {
 
 
   initHub(hub) {
+    this.currentHub = {} as Hub;
+    this.currentHub.description = {fr: null, en: null, de: null};
+    this.currentHub.logo = this.currentHub.logo || null;
+
     const format = (d: Date) => {
       d = new Date(d);
       const month = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -328,11 +330,10 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     const street = this.currentHub.address.streetAdress;
     const postal = this.currentHub.address.postalCode;
     const region = this.currentHub.address.region;
-    const hub = this.config.shared.hub;
 
     //
     // detect change
-    if (!street || !postal || [hub.address.streetAdress, hub.address.postalCode].indexOf($event) > -1) {
+    if (!street || !postal || [street, postal].indexOf($event) > -1) {
       return;
     }
 
