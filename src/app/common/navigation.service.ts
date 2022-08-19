@@ -1,12 +1,12 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, Route, ActivatedRoute } from '@angular/router';
 
 import { Location } from '@angular/common';
 
 import { Config, ConfigService, ShopService, UserService } from 'kng2-core';
 
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { fromEvent, ReplaySubject, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
 
 /**
  *
@@ -23,6 +23,7 @@ export class KngNavigationStateService  {
   private currentStore: string;
   private agent: string;
   private cached: any = {};
+  static forceLockedHub: string;
 
   private _search$: Subject<string>;
   private _logout$: Subject<void>;
@@ -32,11 +33,12 @@ export class KngNavigationStateService  {
     private $user: UserService,
     private $shops: ShopService,
     private $location: Location,
+    private $route: ActivatedRoute,
     private $router: Router
   ) {
     this.menu = {};
 
-    this._search$ = new Subject();
+    this._search$ = new Subject<string>();
     this._logout$ = new Subject<void>()
     this._logout$.pipe(
       debounceTime(1000),
@@ -46,7 +48,9 @@ export class KngNavigationStateService  {
     //
     // init common parameters
     this.agent = navigator.userAgent || navigator.vendor || window['opera'];
-
+    this.$route.queryParams.subscribe(params => {
+      KngNavigationStateService.forceLockedHub = params.locked || KngNavigationStateService.forceLockedHub;
+    });
 
     this.$router.events
       .pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
@@ -124,6 +128,7 @@ export class KngNavigationStateService  {
     this.currentStore = store;
     this.$config.get(store).subscribe();
     this.$shops.query({hub: store}).subscribe();
+    console.log('---- DBG  load HUB content',store);
   }
 
   get store() {
@@ -159,9 +164,16 @@ export class KngNavigationStateService  {
     return this.cached[group];
   }
 
-
   hasHistory() {
     return this.history.length>0;
+  }
+
+  isLocked(): boolean {
+
+    if(KngNavigationStateService.forceLockedHub == this.store) {
+      return true;
+    }
+    return !!this.config.shared.hub.domainOrigin;
   }
 
   isMobile(): boolean {
@@ -244,7 +256,10 @@ export class KngNavigationStateService  {
   }
 
   search$() {
-    return this._search$.asObservable().pipe(debounceTime(600));
+    return this._search$.asObservable().pipe(
+      filter(keyword => !!keyword && keyword.length>3),
+      debounceTime(600)
+    );
   }
 
 }
