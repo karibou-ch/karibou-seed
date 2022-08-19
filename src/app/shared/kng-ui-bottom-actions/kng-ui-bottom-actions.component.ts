@@ -117,6 +117,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   doClear() {
     this.products = [];
+
     this.$cdr.markForCheck();
   }
 
