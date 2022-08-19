@@ -140,14 +140,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         // update config
         if (emit.config) {
           this.store = this.$navigation.store;
-          //
-          // init cart here because navbar is loaded on all pages
-          this.$cart.setContext(this.config, this.user, this.shops,this.orders);
 
           Object.assign(this.config, emit.config);
           // HUB title
           this.hubTitle = this.config.shared.hub.siteName[this.locale];
-          this.hubImage = this.config.shared.hub.siteName.image;
           this.hubPhone = this.config.shared.hub.address.phone;
   
           this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
@@ -156,11 +152,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.currentRanks = this.config.shared.currentRanks[this.store] || {};
           this.currentLimit = this.config.shared.hub.currentLimit || 1000;
           this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-          this.Kimage = this.config.shared.hub.logo || this.Kimage;
+          this.hubImage = this.config.shared.hub.logo;
     
-          this.currentShippingDay = this.$cart.getCurrentShippingDay();
-          this.cardItemsSz = this.$cart.subTotal(this.store);
-
           this.$cdr.markForCheck();
         }
   
@@ -228,9 +221,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     // Detects if device is in standalone mode
     const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
-    if (isIos() && !isInStandaloneMode() && Math.random() > .8) {
+    if (isIos() && !isInStandaloneMode() && Math.random() > .85) {
       this.displayIosInstall =  true;
-      timer(10000).subscribe(() => {
+      timer(5000).subscribe(() => {
         this.displayIosInstall =  false;
         this.$cdr.markForCheck();
       });
@@ -275,6 +268,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
+
+  isLockedHUB() {
+    return this.$navigation.isLocked();
+  }
+
   isAppReady() {
     return this.$navigation.store !== undefined;
   }
@@ -298,7 +296,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   onLang($event, lang) {
     this.$i18n.locale = lang;
-    // console.log('---- changed locale')
+    console.log('---- changed locale',lang)
   }
 
   updateDomPrice(){

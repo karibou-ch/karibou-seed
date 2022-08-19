@@ -19,6 +19,12 @@ mdc-drawer{
       width: 30%;
     }
   }
+  input[type="radio"] {
+    width: 18px;
+    height: 18px;          
+    margin-right: 10px;
+  }
+
 
   mdc-list{
 
@@ -153,16 +159,33 @@ div.navbar{
     top:inherit!important;    
   }
 
+
   .mdc-top-app-bar{
     z-index: 2;
     color: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text));
     background-color: var(--mdc-theme-appbar,var(--mdc-theme-primary));
     opacity: .95;
+    margin: 0;    
+
     &.mdc-top-app-bar--fixed-scrolled {
       box-shadow: 0px 2px 3px -1px rgba(90, 90, 90, .20)!important;
     }
+
+    .mdc-top-app-bar__row{
+      max-width: 1600px;
+      margin: auto;    
+  
+      display: flex;
+      justify-content: center;
+    }    
+
     .brand{
       padding-left: 10px;
+      font-weight: 400;
+      font-size: 1.1rem;
+      @media (max-width: 429px) {
+        font-weight: 200;
+      }
     }
 
     img.icon{
@@ -170,6 +193,16 @@ div.navbar{
       margin-left: 2px;
       margin-top: 4px;
       transform: translateX(6px) translateY(-1px);
+      &.icon-hub{
+        display: none;        
+      }
+      &.icon-hub.icon-show {
+        display: block!important;
+      }
+      @media (max-width: 429px) {
+        display: none;
+      }
+
     }
     //
     // override firefox *:any-link{
@@ -178,7 +211,10 @@ div.navbar{
       text-decoration:none;
     }
         
-
+    .kng-chip.active{
+      font-weight: 600;  
+      border: 1px solid #ccc;    
+    }
 
     /** top-right navigation */
     .actions {
@@ -186,12 +222,8 @@ div.navbar{
     }
 
     .shopping-cart {
-      div{
-        transform: translateY(-7px) translateX(18px);
-        display: inline-block;
-        text-transform: none;
-        margin-right: 10px;
-      }
+      margin-left: auto;
+      margin-right: 10px;
     }
     
     .title{
@@ -201,7 +233,7 @@ div.navbar{
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      font-weight: 200;
+      font-weight: 400;
       >.start{
         margin-left: 10px;
       }
