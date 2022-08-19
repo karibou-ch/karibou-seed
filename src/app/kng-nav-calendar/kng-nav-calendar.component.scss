@@ -1,13 +1,17 @@
-@import "colors.scss";
 
 .kng-drawer{
-  background: var(--mdc-theme-primary);
   color:var(--mdc-theme-primary-text);
+  background: linear-gradient(transparent,white 50%);
+
   position: fixed;
   top: calc( 100vh * -1.85 );
   left: 0;
   width: 100%;
-  min-height: 500px;
+  min-height: 300px;
+  @media (max-width: 769px) {
+    height: 95vh;
+  }
+
   transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
   overflow: hidden;
   box-sizing: border-box;
@@ -18,11 +22,8 @@
 
   box-shadow: 0 12px 24px 10px rgba(0, 0, 0, 0.4);            
 
-  padding-bottom: 4px;
+  padding-bottom: 2px;
 
-  @media (max-width: 411px) {
-    height: 100vh;
-  }
 
   &.kng-drawer-open{
     top: 0px;
@@ -30,11 +31,12 @@
 
   .k-brand{
     position: absolute;
-    left: 5px;
+    left: 20px;
+    bottom: 20px;
     font-size: 11px;
     z-index: 100;
     opacity: .5;
-    -transform: translateY(-14px) translateX(-14px);
+    color: #333;
     img {
       width: 16px;
       transform: translateY(7px);
@@ -59,14 +61,18 @@
   button.close{
     cursor: pointer;
     background: transparent;
+    color: black;
     border: 0;
     position: absolute;
-    top: 25px;
-    right: 80px;
-    color: var(--mdc-theme-primary-text);
+    top: 12px;
+    right: 10px;
+    color: #333;
+    background: var(--mdc-theme-appbar);
+    width: 100px;
+    text-align: right;    
     @media (max-width: 769px) {
-      top: 10px;
-      right: 20px!important;      
+      top: 8px;
+      right: 2px !important;
     }
 
     .size-large{
@@ -88,95 +94,28 @@
       font-size: 1em;
       font-weight: 400;
     }
-    .links{
-      font-size: .8em;
-      margin-bottom: 20px;
-      a{
-        color: #bbb;
-        margin-right: 10px;
-        .invert{
-          filter: invert(1);
-        }
-        .fixed-position{
-          transform: translateY(5px);
-        }
-      }
-
-    }
   }
+
 
   .marketplace,
   .calendar_events{
     color:var(--mdc-theme-text-primary-on-background);
-    min-height: 340px;
+    min-height: 240px;
     background: white;  
     margin: 0; 
-    margin-top: 4px;
+    margin-top: 70px;
     padding-top: 10px;
-    h2,h3{
-      font-weight: 600;
-      color: rgba(0, 0, 0, 0.87);      
-      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
-      font-size: 1.4675rem;
-      margin-top: 20px;
-      margin-left: 10px;
-      margin-right: 10px;      
-    }
-
-    .container {
-      padding: 4px;
-      padding-left: 20px;
+    kng-calendar{
+      height: 100%;
       display: flex;
-      flex-flow: row nowrap;    
-      overflow-x: auto;
-  
-      .element{
-        margin: 6px 2px;
-        margin-right: 25px;
-        padding:9px;
-        border: 1px solid var(--mdc-theme-text-primary-on-background);
-        width: 80px;
-        height: 80px;
-        font-size: .9em;
-        display: flex;
-        flex-flow: column;    
-        cursor: pointer;
-        &.disabled {
-          background-color: #eee;
-          opacity: .7;
-        }
-      
-        &.selected{
-          background-color: var(--mdc-theme-primary);
-          border: 1px solid var(--mdc-theme-secondary);
-          .ei_Title{
-            font-weight: 600;
-            color: var(--mdc-theme-primary-text);
-          }
-          .ei_Copy{
-            color: var(--mdc-theme-primary-text);
-          }
-        }
-        .ei_Title{
-          color: var(--mdc-theme-text-primary-on-background);
-        }        
-
-        .ei_Copy{
-          font-size:10px;
-          margin-top: auto;
-          margin-bottom: 0;
-          color: black;
-        }
-           
-        &:hover:not(.disabled){
-          background-image: linear-gradient(-222deg, var(--mdc-theme-primary), var(--mdc-theme-primary));
-          box-shadow: 0px 0px 52px -18px rgba(0, 0, 0, 0.75);
-          .ei_Copy,.ei_Title{
-            color:#fff;
-          }
-        }
-      }        
+      margin-top: auto;      
+      margin-left: 15px;
+      @media (max-width: 769px) {
+        margin-left: 5px;
+      }
+    
     }
+  
   }
   
 }

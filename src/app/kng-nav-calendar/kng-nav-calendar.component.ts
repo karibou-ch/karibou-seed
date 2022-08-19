@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { i18n } from '../common';
+import { i18n, KngNavigationStateService } from '../common';
 import { Config } from 'kng2-core';
 import { version } from '../../../package.json';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'kng-nav-calendar',
@@ -26,14 +25,12 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
   currentLimit: number;
   premiumLimit: number;
   showHUBs: boolean;
-  lockedHUB: boolean;
   currentHub: any;
 
   constructor(
-    private $i18n: i18n,
-    private $router: Router,
+    private $i18n: i18n
   ) {
-
+    this._open = false;
   }
 
   ngOnDestroy() {
@@ -48,7 +45,6 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
       this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-      this.lockedHUB = this.config.shared.hub.domainOrigin;
     }
     //
     // validate shipping state
@@ -65,6 +61,9 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
   }
 
   set open(open: boolean) {
+    if(open == this._open ){
+      return;
+    }
     if(open) {
       document.body.classList.add('mdc-dialog-scroll-lock');
     } else {
@@ -77,6 +76,8 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
   get open() {
     return this._open;
   }
+
+
   //
   // label is 'nav_no_shipping' or 'nav_no_shipping_long'
   getNoShippingMessage() {
@@ -90,7 +91,7 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
 
     //
     // check manager message
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
+    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
     return noshipping && noshipping.message[this.locale];
   }
 
@@ -98,12 +99,12 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
     this.$i18n.locale = lang;
   }
 
-  doSetCurrentShippingDay($event, day: Date, idx: number) {
+  doSetCurrentShippingDay(day: Date) {
     if (!this.isDayAvailable(day)) {
       return;
     }
     // this.dialogRef.close(day);
-
+    this.currentShippingDay=day;
     this.open = false;
     this.updated.emit({day});
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ElementRef } from '@angular/core';
-import { i18n } from '../common';
+import { i18n, KngNavigationStateService } from '../common';
 import { CartService, Config, LoaderService, Order } from 'kng2-core';
 import { version } from '../../../package.json';
 import { Router } from '@angular/router';
@@ -24,7 +24,6 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
   currentLimit: number;
   premiumLimit: number;
   showHUBs: boolean;
-  lockedHUB: boolean;
   currentHub: any;
   currentCart: any;
 
@@ -37,6 +36,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     public $elem: ElementRef<HTMLElement>,
     public $cart: CartService,
     public $i18n: i18n,
+    public $navigation: KngNavigationStateService,
     public $loader: LoaderService,
     public $router: Router,
   ) {
@@ -75,7 +75,6 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
         this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
         this.currentLimit = this.config.shared.hub.currentLimit || 1000;
         this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-        this.lockedHUB = !!this.config.shared.hub.domainOrigin;
       }
 
       this.config.shared.hubs.forEach(hub => {
@@ -88,11 +87,11 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
       //
       // update scroll position
       const index = this.config.shared.hubs.findIndex(hub => this.currentHub._id == hub.id);
-      try {
         setTimeout(()=>{
-          document.querySelector('kng-nav-marketplace .marketplace').scrollLeft = 274*index;
-        },100);
-      } catch (e) {}
+          try {
+            document.querySelector('kng-nav-marketplace .marketplace').scrollLeft = 274*index;
+          } catch (e) {}
+        },100);      
   
 
       
@@ -120,6 +119,9 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     return this.$i18n.locale;
   }
 
+  get lockedHUB() {
+    return this.$navigation.isLocked();
+  }
 
 
   getWeekDay(idx) {
@@ -141,7 +143,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
     //
     // check manager message
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
+    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
     return noshipping && noshipping.message[this.locale];
   }
 
@@ -152,13 +154,12 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
   toggleStore(hub) {
     //
     // this HUB is running is own domain!!
-    if (this.currentHub.domainOrigin) {
+    if (this.$navigation.isLocked() || this.currentHub.domainOrigin) {
       // FIXME hardcoded link there
       window.location.href = 'https://karibou.ch/store/' + hub.slug + '';
     } else {
       const url = '/store/' + hub.slug + '';
-      this.$router.navigateByUrl(url);
-      //window.location.href = url;
+      this.updated.emit(hub);
     }
   }
 

@@ -16,7 +16,7 @@
             <span class="stars material-icons" >check_circle</span> 
           </div>
   
-          <div class="market">MARCHÉ</div>
+          <div class="market">{{i18n.label().nav_market}}</div>
           <div class="title">{{hub.name}}</div>
           <div class="description">{{hub.description[locale]}}</div>
           <div class="cart">
@@ -28,11 +28,12 @@
         
           </div>
           <div class="calendar hide-sm">
+            <div class="schedule">
+              <span class="material-icons icon" >schedule</span>
+              <span class="txt">ouvert  </span>
+            </div>              
+
             <ul class="availability">
-              <li class="schedule">
-                <span class="material-icons icon" >schedule</span>
-                <span class="txt">ouvert les </span>
-              </li>              
               <li *ngFor="let day of [1,2,3,4,5]" >
                 <div>{{getWeekDay(day)}}</div>
                 <div class="indicator">
