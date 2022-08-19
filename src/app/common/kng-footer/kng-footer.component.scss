@@ -18,6 +18,12 @@ div.footer{
   background-color: #f3f3f3;
   padding-top: 120px;
 
+  @media (max-width:429px) {
+    min-height: 80px;
+    .main{
+      display: none!important;
+    }
+  }
 
   div.main{
     color: var(--mdc-theme-primary-on-background);  
@@ -38,7 +44,7 @@ div.footer{
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
-        border-bottom:3px dotted var(--mdc-theme-primary);      
+        border-bottom:2px dotted #eee;      
       }
       .elem{
         flex:1 0 calc(33% - 40px);
@@ -69,9 +75,8 @@ div.footer{
           }
           a{
             text-decoration: none;
-            color: var(--mdc-theme-primary);
-            font-size: 120%;
-          }          
+            color: #555;
+            font-size: 90%;          }          
         }
       }
     }

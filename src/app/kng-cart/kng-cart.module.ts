@@ -8,6 +8,8 @@ import { KngCartComponent } from './kng-cart.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoaderResolve } from 'kng2-core';
 import { KngCommonModule } from '../common/common.module';
+import { KngCartItemsComponent } from './kng-cart-items/kng-cart-items.component';
+import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
 
 
 //
@@ -37,7 +39,9 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     RouterModule
   ],
   declarations: [
-    KngCartComponent
+    KngCartComponent,
+    KngCartItemsComponent,
+    KngCartCheckoutComponent
   ]
 })
 export class KngCartModule { }

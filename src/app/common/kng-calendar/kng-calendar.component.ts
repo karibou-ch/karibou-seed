@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Hub } from 'kng2-core';
 import { CartService, Config, LoaderService, Order } from 'kng2-core';
 import { i18n } from '../i18n.service';
 
@@ -18,7 +19,7 @@ export class KngCalendarComponent implements OnInit {
   labelTime: string;
   noshippingMsg: string;
   currentWeek:Date[];
-  currentHub: any;
+  currentHub: Hub;
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
@@ -26,6 +27,7 @@ export class KngCalendarComponent implements OnInit {
 
   currentShippingDay: Date;
   availableDays:Date[];
+  multipleHubsDays:Date[];
 
 
   constructor(
@@ -35,6 +37,7 @@ export class KngCalendarComponent implements OnInit {
   ) { 
     this.currentWeek = [];
     this.availableDays = [];
+    this.multipleHubsDays = [];
   }
 
   ngOnInit(): void {
@@ -47,7 +50,7 @@ export class KngCalendarComponent implements OnInit {
         return;
       }
       this.config = emit.config;
-      this.currentHub = this.config.shared.hub; 
+      this.currentHub = this.config.shared.hub as Hub; 
       this.labelTime = this.config.shared.hub.shippingtimes[16]
       this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
@@ -57,7 +60,8 @@ export class KngCalendarComponent implements OnInit {
       // validate shipping state
       this.noshippingMsg = this.getNoShippingMessage();
       this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date()).plusDays(idx));      
-      this.availableDays = Order.fullWeekShippingDays();
+      this.availableDays = Order.fullWeekShippingDays(this.currentHub);
+      this.multipleHubsDays = this.$cart.getShippingDayForMultipleHUBs();
       if(!this.isDayAvailable(this.currentWeek[0])){
         this.currentWeek.shift();
       }
@@ -95,7 +99,7 @@ export class KngCalendarComponent implements OnInit {
 
     //
     // check manager message
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
+    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
     return noshipping && noshipping.message[this.locale];
   }  
 
