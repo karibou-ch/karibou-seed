@@ -1,7 +1,11 @@
 <div class="content">
+  <section>
+    <h2>{{$i18n.label().nav_shops}}</h2>
+    <h3> {{$i18n.label().nav_shops_sub}}</h3>
+  </section>
 
   <section class="shops-list">
-    <article *ngFor="let shop of shops" [routerLink]="['/store',store,'home','shop',shop.urlpath]">
+    <article *ngFor="let shop of shops" (click)="doOpen(shop.urlpath)" [routerLink]="['/store',store,'home','shops',shop.urlpath]">
       <div class="shop-image" [ngStyle]="shop.ngStyleBck" >
         <img [src]="shop.img" />
       </div>

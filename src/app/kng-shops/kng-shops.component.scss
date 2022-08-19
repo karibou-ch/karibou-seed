@@ -16,6 +16,19 @@ div.content{
 
   margin-top: 0px;
   margin-bottom: 100px;
+  section{
+    margin-left: 15px;
+    h2{
+      font-size: 1.375em;
+    }
+    h3{
+      font-weight: 200;
+      font-size: 1.275rem;
+      color: #aaa;
+      text-shadow: 1px 1px 0 #fff;
+      margin-top: -10px;      
+    }
+  }
 
   
   .shops-list {
@@ -24,8 +37,7 @@ div.content{
     margin: 0 auto;
     padding: 0;
 
-    max-width: 1024px;
-    width: 1024px;
+    width: 100%;
     margin: auto;      
 
     @media screen and (max-width:426px){
@@ -36,16 +48,16 @@ div.content{
       cursor: pointer;
       width: calc( 100% / 4 - 10px );
       @media screen and (max-width:426px){
-        width: 100%;        
+        width: calc(50% - 10px );        
       }  
   
       margin: 5px;
-      margin-bottom: 15px;
+      margin-bottom: 1px;
       .shop-image{
-        height: 200px;
+        height: 170px;
         position: relative;
         overflow: hidden;        
-        border-radius: 16px;
+        border-radius: 12px;
         img{
           object-position: center center;
           width: 100%;
@@ -58,7 +70,12 @@ div.content{
       }
   
       .shop-description{
-        margin:12px 8px;
+        margin:6px 8px;
+        padding: 10px 0;
+        font-size: 13px;
+        line-height: 17px;
+        font-weight: 600;
+        margin-top: -2px;
       }
     }
 
