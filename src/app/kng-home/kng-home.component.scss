@@ -16,132 +16,52 @@ div.home-header{
     width: calc( 100% - 20px );
   }
 
-  >div{    
-    width: 100%;
-    -background: var(--mdc-theme-background-container);
-    margin: 0;
-    margin-top:0px;
-    margin-bottom:30px;
-    -box-shadow: 0px 2px 5px #eee;
-    -overflow: hidden;
-
-    >p,
-    >div{
-      padding: 20px;
-      color: var(--mdc-theme-text-primary-on-background);
+  .banner{
+    position: relative;
+    background: var(--mdc-theme-primary);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 8px;
+    min-height: 120px;
+    border-radius: 15px;
+    color: var(--mdc-theme-primary-text);
+    padding: 12px 16px 0;
+    font-weight: normal;    
+    max-width: 100%;
+    @media (max-width:427px){
+      max-width: calc( 100% - 32px);
     }
-
-    h1,h2,h3{
-      text-transform: uppercase;
-      text-align: center;      
-      margin: 0px;
+    h1{
+      font-size: 28px;
+      line-height: 32px;
+      font-weight: bold;
       margin-top: 10px;
-      line-height: 1.3em;
-      font-weight: 500;
-      &.left{
-        text-align: left;
-      }
-      @media screen and (max-width:429px){
-        flex:0 1 auto;
-      }
+      text-transform: none;      
     }
-  
-  }
-
-  .welcome{
-    width: auto;
-    @media screen and (max-width:1024px){
-      margin-left: auto;
-      margin-right: auto;
+    h2{
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 400;
+      margin-top: 0px;      
     }
-
-    .main{
-      background: var(--mdc-theme-primary);
+    h1,h2,h3,h4,p{
       color: var(--mdc-theme-primary-text);
-      border: none;
-      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
-      width: 100%;
-      a{
-        color: var(--mdc-theme-primary-text)!important;
-      }
+      text-align: left;
+      text-transform: none;      
     }
-
-    .info{
-      background: var(--mdc-theme-secondary);
-      color: var(--mdc-theme-secondary-text);
-      border: none;
-      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
-      a{
-        color: var(--mdc-theme-secondary-text)!important;
-      }
+    p{
+      padding: 5px 0;
     }
-
-    .green{
-      background-color: #bbffb2;      
-      font-weight: 500;
-      color: #222!important;
-      border: none;
-      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
-      a{
-        color: black!important;
-      }
-
-    }
-  
-    .intro{
-      background: black;
-      color: white;
-      font-weight: 500;
-      border: none;
-      box-shadow: 0px 2px 8px rgba(0,0,0,0.16);
-      a{
-        color: white!important;
-      }
-    }
-    
-    .maintenance{
-      background: var(--mdc-theme-primary);
-      color: var(--mdc-theme-primary-text);
-      border: none;
-      a{
-        color: var(--mdc-theme-primary-text)!important;
-      }
-    }
-    
-    .fullscreen {
-      max-width: 940px;
-      width: 940px;
-      margin: auto;
-      display: block;
-      padding: 20px;
-      border: none;
-      height: 250px;
-      @media  (max-width:429px){
-        max-width: 100%;
-        width: 100%;
-        padding: 50px 4px;
-      }
-
-      h2{
-        text-transform: none;
-        text-align: center;
-        margin: 0px;
-        margin-top: 10px;
-        line-height: 1.3em;
-        -color: var(--mdc-theme-primary);        
-        font-size: 31px;
-        font-weight: 700;
-        text-shadow: 0 0 8px rgba(0, 0, 0, .21);        
-        &.alt{
-          color: var(--mdc-theme-secondary);        
-        }
-      }      
+    img{
+      height: 80px;
+      float: right;
+      position: absolute;
+      right: 20px;
+      top: 20%;      
     }
   }
 
 
   .welcome{
-    margin-bottom:0px;
+    margin-bottom:20px;
     position: relative;
     min-height: 120px;
     width: 100%;
@@ -156,7 +76,6 @@ div.home-header{
       font-size: 18px;
       overflow: hidden; 
       border-radius: 8px;
-      -border: 3px solid #ddd;
       box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
       .left-half{
         max-width: 40%;        
@@ -178,10 +97,7 @@ div.home-header{
           }
         }
       }
-      .banner{
-        box-shadow: none;
-        border-radius: inherit;
-      }
+
       .left{
         flex: 1;
         max-width: 48%;        
@@ -231,58 +147,6 @@ div.home-header{
     }
   }
 
-  .banner{
-    position: relative;
-    background: var(--mdc-theme-primary);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 8px;
-    border-radius: 15px;
-    color: var(--mdc-theme-primary-text);
-    padding: 12px 16px;
-    min-height: auto;
-    font-weight: normal;    
-    max-width: calc( 100% - 232px);
-    @media (max-width:427px){
-      max-width: calc( 100% - 32px);
-    }
-    h1{
-      font-size: 28px;
-      line-height: 35px;
-      font-weight: bold;
-      margin-top: 0px;
-      text-transform: none;      
-    }
-    h2{
-      font-size: 15px;
-      line-height: 22px;
-      font-weight: 600;
-      margin-top: 16px;      
-      width: 80%;
-    }
-    h1,h2,h3,h4,p{
-      color: var(--mdc-theme-primary-text);
-      text-align: left;
-      text-transform: none;      
-    }
-    p{
-      padding: 5px 0;
-    }
-    img{
-      height: 80px;
-      float: right;
-      position: absolute;
-      right: 20px;
-      top: 20%;      
-    }
-    button{
-      margin-top: 20px;
-      padding: 12px 16px;
-      border-radius: 3px;
-      border-width: 0px;
-      width: -moz-fit-content;
-      background-color: var(--mdc-theme-secondary);
-      color: var(--mdc-theme-secondary-text);      
-    }
-  }
 
   &.cover{
     color: #fff!important;
@@ -306,6 +170,11 @@ div.home-header{
 
 }
 
+kng-search{
+  margin: 35px 0 10px;
+  display: block;  
+}
+
 kng-feedback {
   @media (max-width:1024px){
     padding: 5px 10px;
@@ -317,6 +186,13 @@ kng-feedback {
 // HOME SELECTION
 kng-product-swipe{
   margin-top:10px;
+}
+
+button.kng-chip{
+  margin-left: 15px;
+  width: calc(100% - 30px);
+  color: #555;
+  display: none;
 }
 
 //
@@ -342,14 +218,20 @@ kng-nav-marketplace {
   position: fixed;
   overflow-x: visible;
   top: 120px;
-  -background-color: #f7f9f9;
+  background: linear-gradient(#f7f9f9, rgba(255, 255, 255,0.30));
   width: 300px;
   padding: 0;
   left: 0;
   height: calc(100% - 300px);
-  opacity: 1;
+  scale: .9;
+
+
   &.display{
     opacity: 0;
+  }
+  @media screen and (min-width:1600px) {
+    margin-left:-335px;
+    left: initial;   
   }
   @media screen and (max-width:1440px) and (min-width:1025px){
     width: 239px;
@@ -364,6 +246,10 @@ kng-nav-marketplace {
     padding: 0;
     margin-left: 0px;    
     li{
+      &:hover{
+        background-color: #eee;
+      }      
+  
       &.selected{
         background-color: #eee;
       }
@@ -391,6 +277,7 @@ h2.root{
 
 div.product-container{
   margin-top: 0px;
+  margin-bottom: 100px;
   padding-top: 0;
   padding: 0;
   width: 100%;  

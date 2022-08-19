@@ -1,26 +1,20 @@
-<!-- FEEDBACK -->
-<kng-feedback [config]="config" [user]="user" forceload="true" [orders]="pendingOrders">
-  <h3>{{$i18n[locale].home_feedback_title}}</h3>
-</kng-feedback>
 
-<!-- INFORMATION -->
-<div class="home-header" [hidden]="!hasContent('p',target)" 
-    [class.cover-lg]="hasBackgroundContent(target)" 
-    [ngStyle]="getContentStyle(target)">
-  
-  <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
-      [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
+      
+<div class="home-header">
+  <!-- HUB -->
+  <div class="banner" >
+    <h1>{{config.shared.hub.name}}</h1>
+    <h2>{{config.shared.hub.description[locale]}}</h2>  
   </div>
-  <div class="welcome" [innerHtml]="getContent('p',target)"></div>  
 </div>
 
+<!-- MOBILE SEARCH  -->
+<kng-search></kng-search>
+<button (click)="doSearch('favoris')" class="kng-chip show-sm"><b>Psst:</b> &nbsp;Parcourir les produits favoris avec <b>1 clic!</b></button>
 
 
 <!-- SELECTION -->
-<kng-product-swipe [products]="home" ></kng-product-swipe>
-
-<!-- LINKS -->
-<!-- <kng-product-link [config]="config"><h2 class="title">{{$i18n.label().nav_shortcuts}}</h2></kng-product-link> -->
+<kng-product-swipe [mailchimp]="store" ></kng-product-swipe>
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
@@ -37,21 +31,15 @@
   </ul>
 </div>
 
-<h2 class="root show-sm">Les catégories</h2>
-  
+<!-- LISTED CATEGORIES -->
+<h2 class="root show-sm">Les catégories</h2>  
 <div class="product-container mdc-layout-grid" *ngIf="products.length" >
-    
-  <!-- Layout documentation
-       https://github.com/material-components/material-components-web/tree/master/packages/mdc-layout-grid -->
-
-
   <kng-product-grouped-list 
        useMaxCat="true"  showMore="on" offsetTop="500" clazz="home-header"       
        [config]="config" 
        [user]="user" 
        [contentCategories]="getCategories()" 
        [contentProducts]="products"       
-       [contentIf]="target == 'home' && config.shared.hub.header.active"
        [scrollToSlug]="categorySlug" 
        (currentCategory)="displaySlug=($event || displaySlug)"
        (direction)="scrollDirection=$event">
@@ -62,7 +50,6 @@
         <h1>{{config.shared.hub.name}}</h1>
         <h2>{{config.shared.hub.description[locale]}}</h2>  
         <img hidden [src]="config.shared.hub.tagLine.image" />
-        <button hidden>Changer de marché</button>
       </div>
     
       <div class="welcome" [innerHtml]="config.shared.hub.header.message[locale]"></div>

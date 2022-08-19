@@ -3,9 +3,7 @@ import {
   OnInit,
   OnDestroy,
   ViewEncapsulation,
-  HostListener,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
+  HostListener
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -17,10 +15,10 @@ import {
   LoaderService,
   User,
   CartAction,
-  PhotoService,
   Shop,
   Order
 } from 'kng2-core';
+import { Subscription } from 'rxjs';
 import { i18n, KngNavigationStateService } from '../common';
 
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
@@ -35,18 +33,18 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
+  isLoading: boolean = false;
 
   shops: Shop[];
   pendingOrders: Order[];
   config: Config;
   categories: Category[];
+  availableCategories = {};
   cached: any = {};
-  group: any = {};
   home: Product[] = [];
   products: Product[];
-  target: string; // home, selection, wellness, cellar
   user: User;
-  subscription;
+  subscription: Subscription;
   categorySlug: string;
   displaySlug: string;
   scrollDirection:number;
@@ -71,33 +69,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       home: true,
       popular: true,
       showMore: true
-    },
-    grocery: {
-      maxcat: 8,
-      home: true,
-      popular: true,
-      showMore: true
-    },
-    cellar: {
-      maxcat: 8,
-      home: true,
-      popular: true,
-      showMore: true
-    },
-    selection: {
-      home: true,
-      showMore: false
-    },
-    wellness: {
-      maxcat: 8,
-      popular: true,
-      showMore: true
     }
   };
 
   //
   // products for home
-  // /v1/products?available=true&discount=true&home=true&maxcat=8&popular=true&status=true&when=true
   options: {
     discount?: boolean;
     home?: boolean;
@@ -134,35 +110,41 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.config = loader[0];
     this.user = loader[1];
     this.categories = loader[2] || [];
+    this.subscription = new Subscription();
 
     this.products = [];
 
     //
     // default home target (home, delicacy, cellar)
-    this.target = this.$route.snapshot.url.length && this.$route.snapshot.url[0].path || 'home';
     this.shops = [];
 
     this.pendingOrders = [];
     if(loader.length>3) {
       this.pendingOrders = <Order[]>loader[4];
     }    
-    // this.$photo.shops({ active: true, random: 1 }).subscribe((shops: any) => {
-    //   //
-    //   // deploy random shop picture for outside javascript
-    //   this.homePhoto = shops[0].photo.fg;
-    // });
   }
 
   ngOnDestroy() {
-    if(this.subscription) {
+    this.subscription.unsubscribe();  
       this.subscription.unsubscribe();  
-    }
+    this.subscription.unsubscribe();  
+      this.subscription.unsubscribe();  
+    this.subscription.unsubscribe();  
+      this.subscription.unsubscribe();  
+    this.subscription.unsubscribe();  
+      this.subscription.unsubscribe();  
+    this.subscription.unsubscribe();  
   }
 
   ngOnInit() {
     window.scroll(0, 0);
+    this.subscription.add(
+      this.$route.params.subscribe(params => {
+      this.$navigation.store = params['store'];
+    }));
+    
 
-    this.subscription = this.$loader.update().subscribe(emit => {
+    this.subscription.add(this.$loader.update().subscribe(emit => {
 
       // emit signal for order
       if(emit.orders) {
@@ -207,12 +189,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       }
 
       //
-      // FIXME issue 2x CART_LOADED !!
-      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !Object.keys(this.group).length)) {
+      // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
+      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !this.isLoading)) {
         // this.options.when = this.$cart.getCurrentShippingDay();
         this.productsGroupByCategory();
       }
-    });
+    }));
 
     //
     // update title based on HUB instance
@@ -254,73 +236,31 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.$cart.add(product);
   }
 
-  searchAction(link){
+  doSearch(link){
     this.$navigation.searchAction(link);    
   }
 
   getCategories() {
+    if (!this.isReady) {
+      return [];
+    }
+    
     if (this.cached.categories) {
       return this.cached.categories;
     }
 
-    if (!this.isReady) {
-      return [];
-    }
-
+    // Filter categories for group HOME
     return this.cached.categories = this.categories.sort(this.sortByWeight).filter(c => {
       return (c.active) && 
              (c.type === 'Category') &&
-             (c.group.toLocaleLowerCase() === this.target) &&
-             (this.group[c.name]);
+             (c.group.toLocaleLowerCase() === 'home') &&
+             this.availableCategories[c.name];
     });
   }
 
 
 
-  //
-  // HUB information
-  getContentStyle(target: string) {
-    target = (target || this.target).toLowerCase();
-    const content = this.config.shared.hub.home.content.find(c => c.target === target);
-    // {'background-image': 'url(' + getStaticMap(edit.address) + ')'}
-    if (!content || !content.image) {
-      return {};
-    }
 
-    const bgStyle = 'url(' + content.image + ')';
-    return { 'background-image': this.bgGradient + bgStyle };
-  }
-
-
-  //
-  // HUB information
-  getContent(elem: string, target: string) {
-    target = (target || this.target).toLowerCase();
-    try {
-      const content = this.config.shared.hub.home.content.find(c => c.target === target);
-      return content[elem][this.$i18n.locale];
-    } catch (err) {
-      return '';
-    }
-  }
-
-  hasBackgroundContent(target: string) {
-    target = (target || this.target).toLowerCase();
-    const content = this.config.shared.hub.home.content.find(c => c.target === target);
-    return (content && !!content.image);
-  }
-
-  hasContent(elem: string, target: string) {
-    target = (target || this.target).toLowerCase();
-    try {
-      const content = this.config.shared.hub.home.content.find(c => c.target === target);
-      const value = content[elem][this.$i18n.locale];
-      return value !== '' && (!!value);
-    } catch (err) {
-      return false;
-    }
-
-  }
 
   mountOverlay(overlay) {
     if (overlay) {
@@ -329,6 +269,22 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     } else {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
+
+  //
+  // catch click on innerHtml and apply navigate() behavior
+  @HostListener('click', ['$event'])
+  onClick($event): boolean {
+    const target = $event.target as HTMLElement;
+    const href = target.getAttribute('href');
+    //
+    // verify if it's a routerLink
+    if(href && href.length > 2 && href.indexOf('http') === -1) {
+      $event.stopPropagation();
+      $event.preventDefault();
+      this.$router.navigateByUrl(href);
+      return false;
     }
   }
 
@@ -346,20 +302,16 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   productsGroupByCategory() {
-    const options = Object.assign({}, this.options, this.pageOptions[this.target], {group: this.target});
-    this.options.showMore = options.showMore;
-    this.options.when = this.$cart.getCurrentShippingDay();
-    this.options.maxcat = this.$navigation.isMobile()? 3:8;
-
-    // FIXME remove hardcoded constraint
-    // if(this.target === 'selection') {
-    //   delete options.group;
-    // }
+    const options = Object.assign({}, this.options, this.pageOptions.home);
+    options.when = this.$cart.getCurrentShippingDay();
+    options.maxcat = this.$navigation.isMobile()? 2:options.maxcat;
 
     const hub = this.$navigation.store;
     if (hub) {
       options.hub = hub;
     }
+
+    this.isLoading = true;
 
 
     const shops = {};
@@ -367,7 +319,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.products = products;
       products.forEach((product: Product) => {        
         shops[product.vendor.urlpath] = product.vendor;
-        this.group[product.categories.name] = true;
+        this.availableCategories[product.categories && product.categories.name] = true;
         if (product.attributes.home && !this.home.some(p => p.sku == product.sku)) {          
           this.home.push(product);
         }
@@ -375,6 +327,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.shops = Object.keys(shops).map(slug => shops[slug]);
       this.home = this.home.slice(0, 20);
       this.isReady = true;
+      this.isLoading = false;
     });
 
   }
@@ -382,7 +335,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   scrollToSlug(slug: string) {
     this.categorySlug = slug;
     this.displaySlug = slug;
-    this.$router.navigate(['/store', this.$navigation.store,(this.target || 'home'), 'category',slug]);
+    setTimeout(()=> {
+      this.scrollDirection = 0;
+      this.$router.navigate(['/store', this.$navigation.store,'home', 'category',slug]);
+    },500);
+
   }
 
   sortByWeight(a: Category, b: Category) {
