@@ -1,30 +1,21 @@
 <kng-navbar style="height:100%">
 
-  <div>
-      
-    <div class="home-header hide-sm">
-      <!-- HUB -->
-      <div class="banner" >
-        <h1>{{config.shared.hub.name}}</h1>
-        <h2>{{config.shared.hub.description[locale]}}</h2>  
-      </div>
-    </div>
+  <div class="root-container">
+
+    <!-- FEEDBACK -->
+    <kng-feedback [config]="config" [user]="user" forceload="true" [orders]="orders">
+      <h3>{{label.home_feedback_title}}</h3>
+    </kng-feedback>
+
 
     <!-- MARKETPLACE -->
-    <kng-nav-marketplace [hidden]="lockedHUB" [config]="config" [orders]="[]"></kng-nav-marketplace>
+    <kng-nav-marketplace (updated)="doOpenMarket($event)" [hidden]="lockedHUB" [config]="config" [orders]="orders"></kng-nav-marketplace>
   
     <!-- DATE -->
     <kng-calendar (updated)="currentShippingDay=$event"></kng-calendar>
 
 
-    <h2 class="">Je commence mes courses</h2>
-    <div class="hub-header">
-      <button class="goto" (click)="doOpenMarket(store)" [routerLink]="['/store',store,'home']">{{config.shared.hub.name}} le {{currentShippingDay|date:'d MMMM':'':locale}}, <b>Go &nbsp;<span class="material-icons pink">manage_search</span> </b>  </button>
-    </div>
-    
-    <h2 class="hide">Les coups coeur du marché</h2>
-
-  
+    <!-- <h2 class="">Les coups coeur du marché</h2>  
     <section class="products ">
         <div class="product" *ngFor="let product of selected;let j=index">
           <div  class="media ">
@@ -33,19 +24,9 @@
           </div>          
 
         </div>
-    </section>
+    </section> -->
 
-    <!-- <kng-shops (open)="doOpenShop($event)"></kng-shops> -->
-
-    <!-- DISPLAY HUB -->
-    <!-- <div class="hub-header hide">
-      <div class="banner" >
-        <h1>Bienvenu {{config.shared.hub.name}}</h1>
-        <h2>{{config.shared.hub.description[locale]}}</h2>  
-        <button class="action" [routerLink]="['/store',store,'home']">Commander pour le <b>{{currentShippingDay|date:'d MMMM':'':locale}}</b> </button>
-      </div>
-    </div> -->
-
+    <div class="breaker"></div>
   </div>
 
 </kng-navbar>  
