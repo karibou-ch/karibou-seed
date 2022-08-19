@@ -20,6 +20,8 @@ export class KngAudioNoteComponent implements OnInit {
   cartItemAudio: string;
   cartItemNote: string;
 
+  onContextMenu:any;
+
   @Input() key: string;
   @Input() set src(url: string){
     this.cartItemAudio = url;
@@ -35,10 +37,19 @@ export class KngAudioNoteComponent implements OnInit {
       // record error , display user message
       this.cartItemAudioError = true;
     })
+    this.onContextMenu = window.oncontextmenu;
+    //
+    // avoid context menu on full application (but only needed on audio record)
+    window.oncontextmenu = function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      return false;
+    };    
 
   }
 
   ngOnDestroy(): void {
+    window.oncontextmenu = this.onContextMenu;
 
   }
 
