@@ -2,7 +2,16 @@ import { UserAddress, Utils, Config, config } from 'kng2-core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, debounceTime, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+
+@Pipe({ name: 'safeHtml'})
+export class KngSafeHtmlPipe implements PipeTransform  {
+  constructor(private sanitized: DomSanitizer) {}
+  transform(value) {
+    return this.sanitized.bypassSecurityTrustHtml(value);
+  }
+}
 
 
 @Injectable()
