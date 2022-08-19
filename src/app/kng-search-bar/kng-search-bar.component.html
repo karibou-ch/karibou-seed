@@ -7,5 +7,5 @@
         (focus)="onFocus()" 
         [placeholder]="label.search_placeholder" >    
   <i class="right-favorite material-icons" (click)="doFavorite()">favorite</i>
-  <i class="right material-icons" (click)="doClear()">close</i>
+  <i class="right material-icons" [class.cleared]="isCleared" (click)="doClear()">close</i>
 </form>  

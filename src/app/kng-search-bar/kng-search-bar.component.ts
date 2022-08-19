@@ -49,9 +49,10 @@ export class KngSearchBarComponent implements OnInit {
     public $navigation: KngNavigationStateService
   ) { 
     this.$navigation.search$().subscribe((keyword)=>{
-      if(keyword == 'clear') {
+      if(keyword == 'clear'||keyword == 'favoris') {
         this.search.nativeElement.value = '';
         this.stats.nativeElement.innerText = '';
+        this.searchLastValue = null;
         return;
       }
       if(keyword.indexOf('stats:')>-1) {
@@ -75,6 +76,10 @@ export class KngSearchBarComponent implements OnInit {
 
   get label() {
     return this.$i18n.label();
+  }
+
+  get isCleared() {
+    return (!this.searchLastValue || this.searchLastValue=='')
   }
 
 
@@ -102,7 +107,7 @@ export class KngSearchBarComponent implements OnInit {
 
     //
     // async clear?
-    this.stats.nativeElement.style.marginLeft = 35 + margin + 'px';
+    this.stats.nativeElement.style.marginLeft = 45 + margin + 'px';
     if (!this.search.nativeElement.value) {
       this.stats.nativeElement.innerText = '';
       return;
