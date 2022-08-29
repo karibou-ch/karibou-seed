@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-spacing
 import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
 from '@angular/core';
-import { Category, ProductService, Product, CartService, Config, ConfigMenu } from 'kng2-core';
+import { Category, ProductService, Product, CartService, Config, ConfigMenu, CartItem } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../../common';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 
@@ -103,7 +103,8 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   addToCard(product) {
-    this.$cart.add(new Product(product));
+    const item = CartItem.fromProduct(product,this.store);    
+    this.$cart.add(item);
   }
 
   hasSearch() {
