@@ -170,9 +170,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class KngHUBComponent implements OnInit, OnDestroy {
 
-  private _codeMirror: any;
-
-
+  hubs: Hub[];
   categories: Category[];
   config: Config;
   menus: any[];
@@ -212,11 +210,18 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     // create 6 month date
     this.sixMOnth = new Date(Date.now()-86400000*30*6);
 
+    this.hubs = this.config.shared.hubs;
+
     //
     // HUB from DB
     this.$hub.get(hubSlug).subscribe(hub => {
       this.initHub(hub);
       Object.assign(this.currentHub, hub);
+    }, (err) => this.$snack.open(err.error, 'OK'));
+
+    this.$hub.list().subscribe(hubs => {
+      hubs.forEach(hub=> hub.slug = hub.slug[0]);
+      this.hubs = hubs;
     }, (err) => this.$snack.open(err.error, 'OK'));
 
   }
@@ -298,8 +303,13 @@ export class KngHUBComponent implements OnInit, OnDestroy {
 
 
   onHubSave() {
+    const weekdays: string|string[] = this.currentHub.weekdays as any;
+    if(typeof weekdays == 'string'){
+      this.currentHub.weekdays = weekdays.split(',').map(day => parseInt(day+'')) as number[];
+    }
     this.isReady = false;
     this.isLoading = true;
+    
     this.$hub.save(this.currentHub).subscribe(
       (hub) => {
         this.isReady = true;
@@ -315,6 +325,21 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     this.isReady = false;
     this.isLoading = true;
     this.$hub.saveManager(this.currentHub).subscribe(
+      () => {
+        this.isReady = true;
+        this.$snack.open(this.$i18n.label().save_ok, 'OK');
+        }, (err) => {
+          this.isLoading = false;
+          this.isReady = true;
+          this.$snack.open(err.error, 'OK');
+        }
+    );
+  }
+
+  onAdminHubSave() {
+    this.isReady = false;
+    this.isLoading = true;
+    this.$hub.saveAdmin(this.currentHub).subscribe(
       () => {
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
