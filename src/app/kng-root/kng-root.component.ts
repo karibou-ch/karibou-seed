@@ -32,10 +32,11 @@ export class KngRootComponent implements OnInit {
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.config = loader[0];
     this.user = loader[1];
-    this.orders = loader[4] || [];
+    this.orders = loader[4] || [];  
     this.currentShippingDay = new Date();
     this.selected = [];
     this.subscription = new Subscription();
+    console.log('---- ROOT',this.orders)
   }
 
 
@@ -69,16 +70,17 @@ export class KngRootComponent implements OnInit {
 
     this.subscription.add(
       this.$loader.update().subscribe(emit => {
+      if (emit.state && emit.state.order){
+        this.orders.unshift(emit.state.order);
+      }
+
       if (!emit.config) {
         return
       }
       this.config = emit.config;
-      this.store = this.config.shared.hub.slug;
+      this.store = this.config.shared.hub && this.config.shared.hub.slug;
     }));
 
-    //
-    // FIXME check ugly hack !!
-    try {window.scroll(0, 0); } catch (e) {}
 
     setTimeout(() => {
       document.body.scrollTop = 0;

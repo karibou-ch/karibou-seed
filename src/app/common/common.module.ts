@@ -19,31 +19,57 @@ import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { KngNavigationStoreResolve } from './navigation.store.service';
-import { KngUtils } from './utils';
+import { KngUtils, KngSafeHtmlPipe } from './utils';
 import { KngNavMarketplaceComponent } from '../kng-nav-marketplace/kng-nav-marketplace.component';
 import { KngNavCalendarComponent } from '../kng-nav-calendar/kng-nav-calendar.component';
 import { KngCalendarComponent } from './kng-calendar/kng-calendar.component';
+import { KngUiBottomActionsComponent } from '../shared/kng-ui-bottom-actions/kng-ui-bottom-actions.component';
+import { KngSearchBarComponent, KngSearchComponent } from '../shared';
+import { KngNewsComponent } from './kng-news/kng-news.component';
+import { KngFeedbackComponent } from '../shared/kng-feedback/kng-feedback.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
+
+
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     CommonMdcModule
   ],
   exports: [
+    FormsModule,
+    ReactiveFormsModule,
     CommonMdcModule,
     RouterModule,
+    KngUiBottomActionsComponent,
+    KngSearchComponent,
+    KngSearchBarComponent,
     KngNavMarketplaceComponent,
     KngNavCalendarComponent,
+    KngMailConfirmationComponent,
     KngCalendarComponent,
     KngFooterComponent,
     KngLazyLoadDirective,
+    KngNewsComponent,
+    KngSafeHtmlPipe,
+    KngFeedbackComponent
   ],
   declarations: [
+    KngUiBottomActionsComponent,
+    KngSearchComponent,
+    KngSearchBarComponent,
     KngNavMarketplaceComponent,
     KngNavCalendarComponent,
+    KngMailConfirmationComponent,
     KngFooterComponent,
     KngLazyLoadDirective,
     KngCalendarComponent,
+    KngNewsComponent,
+    KngSafeHtmlPipe,
+    KngFeedbackComponent
   ],
 })
 export class KngCommonModule {
@@ -57,6 +83,7 @@ export class KngCommonModule {
         KngNavigationStateService,
         KngNavigationStoreResolve,
         KngUtils,
+        KngSafeHtmlPipe,
         IsAuthenticatedGard,
         IsWelcomeGard
       ]
