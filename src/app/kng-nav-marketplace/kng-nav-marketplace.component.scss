@@ -36,9 +36,10 @@
     .container {
       display: flex;
       flex-flow: row nowrap;
-      justify-content: flex-start;
       width: 100%;
       @media (max-width:429px) {
+        background-color: #f9f9f9;
+        padding: 10px 0;
         flex-flow: row wrap;
       }
   
@@ -56,14 +57,15 @@
         cursor: pointer;
         display: flex;
         flex-flow: column nowrap;   
+        box-shadow: 0px 2px 10px rgba(0,0,0,0.18);
         
         @media (max-width:429px) {
-          max-height: 184px;
-          margin: 5px;
-          border-radius: 6px;
-          border: 2px solid #ddd;
-          width: 100%;
-          -background: linear-gradient(var(--mdc-theme-appbar), white);
+          max-height: 210px;
+          margin: 10px 0px;
+          border-radius: 0px;
+          border: none;
+          background-color: white;
+          width: calc(100% );
           .content{
             .description{
               white-space: nowrap;
@@ -73,28 +75,36 @@
         }
           
         &.selected{
-          border:2px solid var(--mdc-theme-primary);
+          -border-top:2px solid var(--mdc-theme-primary);
           box-shadow: 0px 2px 10px rgba(0,0,0,0.18);
+          .change {
+            display: none;
+          }
         }
         .selected {
           position: absolute;
           right: 14px;
           top: 10px;
           color: var(--mdc-theme-primary);
+          -width: 36px;
           height: 36px;
-          width: 36px;
-          text-align: center;        
+          text-align: center;       
+          button{
+            border-radius: 8px;
+            border: 1px solid #aaa;
+            padding: 1px 8px;       
+            font-size: 12px;     
+          } 
           .stars{
             font-size: 38px;
           }
         }
         .logo{
           @media (max-width:429px) {
-            width: 65px;
-            height:65px;
-            margin: 5px auto 0;
-            border-radius: 50px;    
-            display: none;      
+            -width: 65px;
+            height:80px;
+            margin: 0px auto 0;
+            border-radius: 0px;    
           }
   
           width: 100%;

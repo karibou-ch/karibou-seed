@@ -19,7 +19,6 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   VERSION = version;
   labelTime: string;
-  noshippingMsg: string;
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
@@ -119,6 +118,10 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     return this.$i18n.locale;
   }
 
+  get label() {
+    return this.$i18n.label();
+  }
+
   get lockedHUB() {
     return this.$navigation.isLocked();
   }
@@ -129,22 +132,6 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
       this.weekdays[this.locale] = this.$i18n.label().weekdays.split('_').map(day=>day.slice(0,3)+'.');
     }
     return this.weekdays[this.locale][idx];
-  }
-
-  //
-  // label is 'nav_no_shipping' or 'nav_no_shipping_long'
-  getNoShippingMessage() {
-    // const label = long ?  'nav_no_shipping_long' : 'nav_no_shipping';
-    //
-    // check window delivery
-    if (!this.isDayAvailable(this.currentShippingDay)) {
-      return this.$i18n[this.locale]['nav_no_shipping_long'];
-    }
-
-    //
-    // check manager message
-    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
-    return noshipping && noshipping.message[this.locale];
   }
 
   onLang($event, lang) {

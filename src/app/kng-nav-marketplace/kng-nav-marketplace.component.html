@@ -15,6 +15,10 @@
           <div class="selected" [hidden]="hub.slug !== currentHub.slug">
             <span class="stars material-icons" >check_circle</span> 
           </div>
+          <div class="selected change">
+            <button class="goto" [routerLink]="['/store',hub.slug,'home']">{{label.nav_store_change}}</button>
+          </div>
+
   
           <div class="market">{{i18n.label().nav_market}}</div>
           <div class="title">{{hub.name}}</div>

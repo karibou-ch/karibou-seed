@@ -108,6 +108,7 @@
     kng-calendar{
       height: 100%;
       display: flex;
+      justify-content:center;
       margin-top: auto;      
       margin-left: 15px;
       @media (max-width: 769px) {

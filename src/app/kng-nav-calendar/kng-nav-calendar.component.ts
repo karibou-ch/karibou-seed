@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { i18n, KngNavigationStateService } from '../common';
+import { i18n } from '../common';
 import { Config } from 'kng2-core';
 import { version } from '../../../package.json';
 
@@ -20,7 +20,6 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
 
   VERSION = version;
   labelTime: string;
-  noshippingMsg: string;
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
@@ -46,9 +45,6 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
     }
-    //
-    // validate shipping state
-    this.noshippingMsg = this.getNoShippingMessage();
 
   }
 
@@ -77,23 +73,6 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
     return this._open;
   }
 
-
-  //
-  // label is 'nav_no_shipping' or 'nav_no_shipping_long'
-  getNoShippingMessage() {
-    // const label = long ?  'nav_no_shipping_long' : 'nav_no_shipping';
-    //
-    // check window delivery
-    if (!this.isDayAvailable(this.currentShippingDay)) {
-      return this.$i18n[this.locale]['nav_no_shipping_long'];
-    }
-
-
-    //
-    // check manager message
-    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
-    return noshipping && noshipping.message[this.locale];
-  }
 
   onLang($event, lang) {
     this.$i18n.locale = lang;
