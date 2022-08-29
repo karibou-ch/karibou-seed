@@ -22,6 +22,13 @@ export const appRoutes: Routes = [
     resolve: { loader: LoaderResolve }
   },
   {
+    path: 'store',
+    component: KngRootComponent,
+    resolve: { loader: LoaderResolve},
+    loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
+  },
+
+  {
     path: 'store/:store',
     component: KngRootComponent,
     resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
@@ -34,12 +41,28 @@ export const appRoutes: Routes = [
     loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
   },
 
+  { 
+    path: 'store/:store/admin', 
+    component: KngEmptyRootComponent,
+    resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
+    loadChildren: () => import('./kng-admin/admin.module').then(m => m.AdminModule) 
+  },
+
+  { path: 'store/:store/content', 
+  component: KngEmptyRootComponent,
+  resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
+  loadChildren: () => import('./kng-document/kng-document.module').then(m => m.KngDocumentModule) 
+  },
+
+
+  { path: 'store/:store/shop/:slug', pathMatch: 'full', redirectTo: '/store/:store/home/shops/:slug' },
+
   { path: 'products/:sku/:title', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku/:title' },
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku' },
   { path: 'shop/:slug', pathMatch: 'full', redirectTo: '/store/artamis/shops/:slug' },
-  { path: 'account/login', pathMatch: 'full', redirectTo: '/store/artamis/me/login' },
-  { path: 'account/orders', pathMatch: 'full', redirectTo: '/store/artamis/me/orders' },
-  { path: 'account/reminder', pathMatch: 'full', redirectTo: '/store/artamis/me/reminder' },
+  { path: 'account/login', pathMatch: 'full', redirectTo: '/store/artamis/home/me/login' },
+  { path: 'account/orders', pathMatch: 'full', redirectTo: '/store/artamis/home/me/orders' },
+  { path: 'account/reminder', pathMatch: 'full', redirectTo: '/store/artamis/home/me/reminder' },
   {
     path: '',
     pathMatch: 'full',

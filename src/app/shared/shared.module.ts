@@ -4,7 +4,6 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 // exported components and directives
 import { KngControlMessagesComponent } from './kng-control-messages/control-messages.component';
 import { InfiniteScrollerDirective } from './infinite-scroller.directive';
-import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
 import { KngTextfieldAutosizeDirective } from './kng-textfield-autosize.directive';
 
 //
@@ -38,13 +37,13 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
 import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component';
 import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
+import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
+import { KngSearchBarComponent, KngSearchComponent } from '../kng-search-bar/kng-search-bar.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     RouterModule,
     Kng2CoreModule,
     KngSharedMdcModule,
@@ -57,11 +56,8 @@ import { KngHomeComponent } from '../kng-home/kng-home.component';
     KngCommonModule,
     KngAudioNoteComponent,
     KngControlMessagesComponent,
-    KngFeedbackComponent,
-    KngMailConfirmationComponent,
     KngTextfieldAutosizeDirective,
     KngUserReminderComponent,
-    KngUiBottomActionsComponent,
     InfiniteScrollerDirective,
     ProductGroupedListComponent,
     ProductThumbnailComponent,
@@ -72,10 +68,10 @@ import { KngHomeComponent } from '../kng-home/kng-home.component';
     KngAudioNoteComponent,
     KngHomeComponent,
     KngControlMessagesComponent,
+    KngShopComponent,
+    KngShopsComponent,
     KngTextfieldAutosizeDirective,
-    KngMailConfirmationComponent,
     InfiniteScrollerDirective,
-    KngUiBottomActionsComponent,
     KngUserReminderComponent,
     UcWidgetComponent,
     ProductComponent,
@@ -85,7 +81,6 @@ import { KngHomeComponent } from '../kng-home/kng-home.component';
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    KngFeedbackComponent,
     KngProductLinkComponent
   ],
 })

@@ -4,6 +4,7 @@ import { KngEmptyRootComponent } from '../common/kng-empty-root/kng-empty-root.c
 
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngProductListByShopComponent, ProductListComponent, ProductComponent } from '../kng-product';
+import { KngShopsComponent } from '../kng-shops/kng-shops.component';
 
 
 // export const appRoutes: Routes = [
@@ -40,17 +41,14 @@ export const childrenRoute: Route[] = [
 
 // TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
-  { path: 'admin', loadChildren: () => import('../kng-admin/admin.module').then(m => m.AdminModule) },
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
-  { path: 'content', loadChildren: () => import('../kng-document/kng-document.module').then(m => m.KngDocumentModule) },
-  { path: 'me', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
-  { path: 'shop/:shop/:child', component: KngProductListByShopComponent },
-  { path: 'shop/:shop', component: KngProductListByShopComponent },
+  { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},
+  { path: 'shops/:shop/:child', component: KngProductListByShopComponent },
+  { path: 'shops/:shop', component: KngProductListByShopComponent },
+  { path: 'me', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule) },
 
   // FIXME path construction is ugly
   { path: '', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'grocery', component: KngHomeComponent, data: { departement: 'grocery' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'cellar', component: KngHomeComponent, data: { departement: 'cellar' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
   { path: '', pathMatch: 'full' },
 ];

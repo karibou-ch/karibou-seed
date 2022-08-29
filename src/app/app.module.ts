@@ -35,7 +35,6 @@ import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
 import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
-import { KngShopsModule } from './kng-shops/kng-shops.module';
 import { KngSearchBarComponent } from './kng-search-bar/kng-search-bar.component';
 
 
@@ -94,7 +93,9 @@ export class GlobalErrorHandler implements ErrorHandler {
     // Reload App is enough
     // For PWA, reload is not enough, activeUpdate is mandatory
     if (!!chunkFailedMessage.test(error.message)) {
-      return this.$update.activateUpdate().then(() => document.location.reload(true));
+      return this.$update.checkForUpdate().then((available)=>{
+        this.$update.activateUpdate().then(() => document.location.reload(true));
+      })
     }
 
     //
@@ -138,7 +139,6 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent,
-    KngSearchBarComponent,
   ],
   // List of components that aren't used in templates directly
   entryComponents:[
@@ -157,7 +157,6 @@ export class GlobalErrorHandler implements ErrorHandler {
       ]
     }),
     KngCommonModule.forRoot(),
-    KngShopsModule,
     RouterModule.forRoot(appRoutes, {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
