@@ -1,12 +1,13 @@
   <!-- CONTAINER-->
   <div class="calendar-container">
-    <h2 [hidden]="hideTitle">{{i18n.label().nav_shipping}} {{currentHub.name}}</h2>
-    <h3 class="hide-sm">Attention, les jours de livraisons ne sont pas identiques avec tous les marchés</h3>
+    <h2 [hidden]="hideTitle">{{label.nav_shipping}} {{currentHub.name}}</h2>
+    <!-- PENDING ORDER -->
+    <h3 [hidden]="!pendingOrder">{{label.cart_order_grouped_details}}, <b>{{pendingOrderShipping|date:'EEE d MMM':'':locale}}</b></h3>
 
     <!-- NO SHIPPING -->
-    <div class="noshipping" [hidden]="!noshippingMsg || getShippingDays().length">
-      <i class="material-icons pink">info</i>
-      <b>{{noshippingMsg}}</b>
+    <div class="noshipping block-warning" [hidden]="!noshippingMsg">
+      <i class="material-icons ">info</i>
+      <span>{{noshippingMsg}}</span>
     </div>
 
     <!-- CALENDAR -->

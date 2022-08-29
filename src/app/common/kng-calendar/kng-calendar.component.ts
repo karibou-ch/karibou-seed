@@ -28,6 +28,7 @@ export class KngCalendarComponent implements OnInit {
   currentShippingDay: Date;
   availableDays:Date[];
   multipleHubsDays:Date[];
+  pendingOrder: Order|undefined;
 
 
   constructor(
@@ -62,14 +63,15 @@ export class KngCalendarComponent implements OnInit {
       this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date()).plusDays(idx));      
       this.availableDays = Order.fullWeekShippingDays(this.currentHub);
       this.multipleHubsDays = this.$cart.getShippingDayForMultipleHUBs();
+      this.pendingOrder = this.$cart.hasPendingOrder();
       if(!this.isDayAvailable(this.currentWeek[0])){
         this.currentWeek.shift();
       }
     })
   }
 
-  get i18n() {
-    return this.$i18n;
+  get label() {
+    return this.$i18n.label();
   }
 
   get locale() {
@@ -78,6 +80,10 @@ export class KngCalendarComponent implements OnInit {
 
   get hideTitle() {
     return this._hideTitle;
+  }
+
+  get pendingOrderShipping() {
+    return this.pendingOrder && this.pendingOrder.shipping.when;
   }
 
   ngAfterViewInit() {
@@ -89,13 +95,6 @@ export class KngCalendarComponent implements OnInit {
   //
   // label is 'nav_no_shipping' or 'nav_no_shipping_long'
   getNoShippingMessage() {
-    // const label = long ?  'nav_no_shipping_long' : 'nav_no_shipping';
-    //
-    // check window delivery
-    if (!this.isDayAvailable(this.currentShippingDay)) {
-      return this.$i18n[this.locale]['nav_no_shipping_long'];
-    }
-
 
     //
     // check manager message
@@ -126,7 +125,7 @@ export class KngCalendarComponent implements OnInit {
 
   getShippingText(day: Date) {
     if (!this.isDayAvailable(day)) {
-      return this.i18n.label().nav_shipping_off;
+      return this.label.nav_shipping_off;
     }
     return this.labelTime;
   }
