@@ -56,6 +56,7 @@ export class ProductGroupedListComponent implements OnInit {
   @Input() showMore: boolean;
   @Input() useMaxCat: boolean;
 
+  @Input() showSection: boolean;
   @Input() contentIf: boolean;
   @Input() clazz: string;
   @Input() filterByVendor: string;
@@ -95,9 +96,8 @@ export class ProductGroupedListComponent implements OnInit {
     }
 
     const nextSection = this.findNextSection(slug);
-
     this.scrollElIntoView(nextSection);
-    this.scrollPosition = 0;
+    this.direction.emit(0);
   }
 
   @Output() direction:EventEmitter<number> = new EventEmitter<number>();
@@ -139,6 +139,10 @@ export class ProductGroupedListComponent implements OnInit {
       this.currentCategory.emit(name)
     })
 
+  }
+
+  get isMobile() {
+    return (window.innerWidth < 426);
   }
 
   ngOnDestroy() {
@@ -213,12 +217,12 @@ export class ProductGroupedListComponent implements OnInit {
     if(!this.products.length) {
       return;
     }
-    // const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):100;
-    // const divider = (window.innerWidth < 426) ? 2 : 4;
-    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 2 : (
-      (window.innerWidth < 1025)? 6:12
+    // const maxcat = this.useMaxCat? (this.isMobile ? 8 : 12):100;
+    // const divider = this.isMobile ? 2 : 4;
+    const maxcat = this.useMaxCat? (this.isMobile ? 2 : (
+      (window.innerWidth < 1025)? 6:5
     )):200;
-    const divider = (window.innerWidth < 426) ? 2 : (
+    const divider = this.isMobile ? 2 : (
           (window.innerWidth < 1025)? 6:4
     );
 
@@ -227,6 +231,8 @@ export class ProductGroupedListComponent implements OnInit {
 
       //
       // group by category
+      // FIXME Error when categories is Null 
+      product.categories = product.categories || {};
       const catName = this.isChildCategory ? product.belong.name : product.categories.name;
       if (!this.group[catName]) {
         this.group[catName] = [];
@@ -257,7 +263,9 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     this.visibility[this.categories[0].slug] = true;
-    this.visibility[this.categories[1].slug] = true;
+    if(this.categories.length>1){
+      this.visibility[this.categories[1].slug] = true;
+    }
   }
 
 
