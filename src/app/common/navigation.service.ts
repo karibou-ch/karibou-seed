@@ -128,7 +128,7 @@ export class KngNavigationStateService  {
     this.currentStore = store;
     this.$config.get(store).subscribe();
     this.$shops.query({hub: store}).subscribe();
-    console.log('---- DBG  load HUB content',store);
+    console.log('---- DBG set $navigation.store',store);
   }
 
   get store() {
