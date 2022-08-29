@@ -142,6 +142,7 @@ export class ProductListComponent implements OnInit {
       this.productsByCategory();
     } 
     else if(this.$route.snapshot.params['shop']){
+      delete this.options.status;
       this.options.shopname  = this.$route.snapshot.params['shop'];
       this.category.current = this.category.categories[0];
       this.category.current.child = this.category.current.child.sort((a, b) => {
@@ -313,10 +314,11 @@ export class ProductListComponent implements OnInit {
     ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
+
   scrollTo($event, name) {
     this.scrollToCategory = name;
     this.filterChild = name;
-    
+    this.scrollDirection = 0;    
     $event.stopPropagation();
     $event.preventDefault();
   }

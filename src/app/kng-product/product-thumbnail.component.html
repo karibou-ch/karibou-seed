@@ -11,7 +11,7 @@
 	<article class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}"  
 						[class.selected]="selected"
 						[class.large]="large"
-						[class.incart]="cartItem&&cartItem?.quantity"
+						[class.incart]="cartItemQuantity"
 						[class.noavailable]="!product.isAvailableForOrder()" 
 						[class.popular]="product.stats.score>0.25"
 						[class.noinstock]="!product.pricing.stock">
@@ -45,12 +45,12 @@
 			</div>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
-				<mdc-icon class="size-medium">add</mdc-icon>
+				<span class="material-icons size-medium">add</span>
 			</button>
 			<button class="action-remove " (click)="removeToCart($event,product)">
-				<mdc-icon class="size-medium">remove</mdc-icon>
+				<span class="material-icons size-medium">remove</span>
 			</button>
-			<div class="info-quantity">{{cartItem?.quantity}}</div>
+			<div class="info-quantity">{{cartItemQuantity}}</div>
 			<div class="info-score"><i class="material-icons">favorite</i></div>
 		
 			<!-- TITLE -->

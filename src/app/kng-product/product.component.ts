@@ -55,7 +55,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   bgStyle: any;
   bgImage: string;
   photosz: string;
-  cartItem: CartItem;
   cartItemNote: string;
   cartItemAudio: string;
   cartItemAudioLoading = false;
@@ -86,6 +85,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     maxcat: 40,
     available: true,
     when: true,
+    status: true,
     windowtime: 200
   };
 
@@ -123,6 +123,22 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.scrollCallback = this.getNextPage.bind(this);
   }
 
+
+
+  get cartItemQuantity(){
+    const qty= this.$cart.getItemsQtyMap(this.product.sku,this.config.shared.hub.slug);
+    return qty;
+  }
+
+
+  get isAvailableForOrder(){
+    return !this.isReady || this.product.isAvailableForOrder();
+  }
+  get isInStockForOrder() {
+    return !this.isReady || this.product.pricing.stock;
+  }
+
+
   //
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
@@ -131,7 +147,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isReady = true;
+    this.isReady = false;
 
 
     //
@@ -203,7 +219,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onAudioStopAndSave(url: string) {
-    console.log('---',url)
     this.cartItemAudio = url;
     if(!url){
       return;
@@ -232,17 +247,16 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // check if item is already on cart
     // Open variant UI
-    const isOnCart = this.$cart.getItems().find(it => it.sku === product.sku);
-    if (!isOnCart &&
-        product.variants.length
-        && !variant) {
+    const hub = this.config.shared.hub.slug;
+    const isOnCart = this.$cart.getItemsQtyMap(product.sku,hub);
+    if (!isOnCart && product.variants.length && !variant) {
       this.openVariant = true;
       return;
     }
 
     this.openVariant = false;
 
-    const item = CartItem.fromProduct(product,this.config.shared.hub.slug, variant);
+    const item = CartItem.fromProduct(product,hub, variant);
     item.note = this.cartItemNote;
     item.audio = this.cartItemAudio;
     if(audio){
@@ -251,7 +265,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.$cart.add(item);
     }
 
-    this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
 
@@ -303,7 +316,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     if(vendor && !vendor.status) {
       return "discontinued";
     }
-    if(!product.isAvailableForOrder()) {
+    if(!this.isAvailableForOrder) {
       return "sold out";
     }
     if(product.pricing.stock < 1) {
@@ -382,19 +395,16 @@ export class ProductComponent implements OnInit, OnDestroy {
       setTimeout(()=>{
         //
         // get cart value
-        this.cartItem = this.$cart.findBySku(product.sku);
-        if(!this.cartItem) {
+        const cartItem = this.$cart.findBySku(product.sku,this.config.shared.hub.slug);
+        if(!cartItem) {
           return
         }
         // this.$dom.bypassSecurityTrustUrl
-        this.cartItemAudio = (this.cartItem.audio);
-        this.cartItemNote = this.cartItem.note;
+        this.cartItemAudio = (cartItem.audio);
+        this.cartItemNote = cartItem.note;
         if(this.cartItemAudio){
           document.querySelector('#audio').setAttribute('src', this.cartItemAudio);
         }
-
-
-
       },100)
 
       //
@@ -423,7 +433,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   removeToCart($event, product: Product) {
     $event.stopPropagation();
     this.$cart.remove(product);
-    this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
 
@@ -500,7 +509,8 @@ export class ProductThumbnailComponent extends ProductComponent {
     // this.bgStyle = {
     //   'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
     // };
-    if (this.cartItem) {
+    
+    if (this.cartItemQuantity) {
       this.bgStyle = {
         'background-color' : this.bgGradient 
       };

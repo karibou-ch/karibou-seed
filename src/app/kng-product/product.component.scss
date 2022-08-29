@@ -23,7 +23,7 @@
   visibility:visible;
   -transition: opacity .5s ease-in-out;
   -opacity: 1;
-  z-index: 2;
+  z-index: 3;
   background: white;
   @media (min-width: 1025px) {
     background-color: rgba(0, 0, 0, 0.57);
@@ -297,6 +297,15 @@
         width: auto;
         min-height: auto;
       }
+      .photo-owner{
+        top: 10px;
+        position: absolute;
+        left: 10px;
+        border: 4px solid #666;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;        
+      }
 
       .product-variants{
         position: absolute;
@@ -437,29 +446,9 @@
   }
 
   .certified{
-    .mdc-chip-set{
+    div.kng-chip-content{
       transform: translateX(-4px);
-    }
-    .mdc-chip--selected{
-      background-color: var(--mdc-theme-secondary);
-      color: var(--mdc-theme-secondary-text);
-    }
-    >div{
-      font-size: smaller;
-      display: flex!important;
-      height: auto;
-      flex-flow: row wrap;
-  
-      .label-product{
-        background-color: rgba(92, 184, 92, 0.06);
-        border-radius: 15px;
-        padding: 4px 10px;
-        border: 1px solid rgba(70, 140, 70, 0.99);  
-        color: rgba(70, 140, 70, 0.99);
-        margin: 4px;
-        margin-left: 0;
-      }
-  
+      padding: 10px 0;
     }
       
     >ul{
