@@ -24,7 +24,7 @@ export class ProductSwipeComponent implements OnInit {
 
   bgStyle = '/-/resize/200x/';
 
-  @Input() mailchimp: string;
+  @Input() hub: string;
   @Input() limit: number;
   @Input() config: any;
   @Input() set products(products: Product[]){
@@ -45,10 +45,11 @@ export class ProductSwipeComponent implements OnInit {
 
   hideIfEmpty: boolean;
   options:any = {    
-    selected: true,
+    home: true,
     available: true,
     status: true,
-    when: true
+    when: true,
+    limit: 6
   };
 
   constructor(
@@ -91,8 +92,12 @@ export class ProductSwipeComponent implements OnInit {
       return;
     }
 
-    if(this.mailchimp) {
-      this.options.skus = this.config.shared.mailchimp[this.mailchimp].map(media=>media.sku).filter(sku=>!!sku);    
+    if(this.hub) {
+      const mailchimp = this.config.shared.mailchimp[this.hub] || [];
+      if(mailchimp.length){
+        this.options.skus = mailchimp.map(media=>media.sku).filter(sku=>!!sku);    
+      }
+      this.options.hub=this.hub;
     }
 
     this.$product.select(this.options).subscribe((products: Product[]) => {
