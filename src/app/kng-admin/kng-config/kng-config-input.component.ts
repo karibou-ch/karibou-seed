@@ -1,9 +1,7 @@
 import { Component, forwardRef, Input, EventEmitter, Output, HostBinding } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { Config, UserAddress } from 'kng2-core';
-import { ReplaySubject } from 'rxjs';
+import { Config, Hub, UserAddress } from 'kng2-core';
 import { i18n, KngUtils, KngNavigationStateService } from 'src/app/common';
-import { HttpClient } from '@angular/common/http';
 
 // Create a mgModel Component
 @Component({
@@ -23,6 +21,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   @Input() withCheck: boolean;
   @Input() disabled = false;
   @Input() name: string;
+  @Input() hubs: Hub[];
   @Input() clazz: string;
   @Input() format: string;
   @Input() checked: boolean;
@@ -77,7 +76,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   }
 
   get HUBs() {
-    return this.$navigation.HUBs;
+    return this.hubs || this.$navigation.HUBs;
   }
 
   get value() {
@@ -125,7 +124,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
 
 
   ucValidator(info) {
-      if (info.size !== null && info.size > 1024 * 1024) {
+      if (info.size !== null && info.size > 1024 * 1024 * 10) {
       throw new Error('fileMaximumSize');
     }
   }

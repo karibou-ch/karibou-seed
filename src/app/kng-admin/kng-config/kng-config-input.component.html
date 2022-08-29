@@ -31,7 +31,6 @@
   <ng-container  *ngSwitchCase="'text'">
     <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
     <div class="input">
-
       <mdc-text-field  i18n-label [label]="label" type="text" [(ngModel)]="value" >
       </mdc-text-field>
     </div>
@@ -83,6 +82,7 @@
       <a class="" [class.checked]="i18n.locale=='fr'" (click)="onLang($event,'fr')">fr</a>
    </div>
   </ng-container>
+
 
   <!--- GEO -->
   <ng-container  *ngSwitchCase="'geo'">
