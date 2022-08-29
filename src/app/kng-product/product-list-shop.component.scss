@@ -114,6 +114,10 @@
     margin: auto;
     box-shadow: 0px 2px 10px rgba(0,0,0,0.18);
     border-radius: 40px;
+    min-height: 600px;
+    @media (max-width:429px) {
+      min-height: 300px;      
+    }
   }
 
   .contact{
@@ -135,7 +139,8 @@
     max-width: 700px;
     div.description{
       max-width: calc(100% - 30px);    
-      margin-left: 15px;  
+      margin-left: 15px; 
+      min-height: 100px; 
     }
 
     div.owner{
@@ -154,6 +159,52 @@
 }
 
 .further-product-container {
+
+  section.audio-chat{
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 15px;
+    max-width: 650px;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
+    border-radius:14px;
+
+    background-image: url(/assets/img/k-wave-bg.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position-y: 50%;    
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, .15);
+    margin: 10px auto;
+    @media (max-width:429px) {
+      width:calc(100% - 20px);
+      margin: 10px;
+    }
+
+    div{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: rgba(0, 0, 0, .70);
+      display: flex;
+      align-items:flex-end;
+      h2{
+        color: #fff;
+        line-height: 26px;
+        font-size: 18px;
+        padding: 10px;
+        padding-bottom: 0;
+        text-shadow: #333 0px 0 1px;
+        font-weight: 200;;
+      }
+  
+    }
+  }
+
   .map{
     img{
       max-width: 100%;
@@ -174,7 +225,7 @@
 
   display: relative;
   width: 100%;
-  max-width: 700px;
+  max-width: 740px;
   margin: auto;
   flex: 1;
   align-items: center;    

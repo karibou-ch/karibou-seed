@@ -5,7 +5,7 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close" >
-        <mdc-icon class="size-large">arrow_back</mdc-icon>
+        <span class="material-icons size-large">arrow_back</span>
       </button>
 
 
@@ -29,15 +29,23 @@
         <img class="shop" [src]="vendor.photo.fg+'/-/resize/600x/fb.jpg'"  [hidden]="!vendor.photo.fg">
         <img class="logo" [src]="vendor.photo.logo"  [hidden]="!vendor.photo.logo">
       </div>
+
+  
     </div>
 
     <!-- FURTHER -->
     <div class="further-product-container" *ngIf="vendor">
+      <section class="audio-chat hide">
+        <div>
+          <h2>Passer une commande avec un message audio et un budget, et le commerçant s'occupe de tout! 😮 😮 😮</h2>
+        </div>    
+      </section>
  
       <section class="products" >
         <kng-product-grouped-list 
           *ngIf="products.length"
           alphasort="true"
+          showSection="true"
           [config]="config" 
           [user]="user" 
           [scrollContainer]="getDialog()"
