@@ -4,7 +4,7 @@ import { UserService, Config } from 'kng2-core';
 import { i18n } from '../common';
 
 @Component({
-  selector: 'app-kng-validate-mail',
+  selector: 'kng-validate-mail',
   templateUrl: './kng-validate-mail.component.html',
   styleUrls: ['./kng-validate-mail.component.scss']
 })
