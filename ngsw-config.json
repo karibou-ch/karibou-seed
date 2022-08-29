@@ -5,32 +5,34 @@
     {
       "name": "app",
       "installMode": "lazy",
-
       "resources": {
         "files": [
           "!/api/*",
           "/favicon.ico",
           "/index.html",
           "/manifest.webmanifest",
+          "/*.map",
           "/*.css",
           "/*.js",
-          "!/**/*.map"
+          "/**/*.css",
+          "/**/*.js",
+          "/**/*.map"
         ],
         "urls":[             
-          "https://fonts.googleapis.com/**",
           "https://cdnjs.cloudflare.com/**"
         ]
       }
     }, {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "lazy",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
           "/assets/**",
           "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
         ],
         "urls":[             
+          "https://fonts.googleapis.com/**",
           "https://ucarecdn.com/**",
           "https://use.fontawesome.com/**"
         ]
