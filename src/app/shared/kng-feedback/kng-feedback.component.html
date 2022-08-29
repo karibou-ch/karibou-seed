@@ -9,8 +9,6 @@
       &nbsp;<span [hidden]="!childOrders.length" class="ita">//{{childOrders.length}} {{i18n[locale].title_order_grouped}} </span>
   </p>
   <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
-  <p class="block-info" [innerHtml]="i18n[locale].title_order_grouped_info" [hidden]="boxed || !isDayAvailable(order.shipping.when)">
-  </p>
 </div>
 
 <!--- ORDER IS CANCEL -->
@@ -95,22 +93,22 @@
           <mdc-list-item-text>
             {{item.quantity}}x {{item.title}} ({{item.part}})
             <!-- ORDER FEEDBACK -->
-            <mdc-list-item-secondary >
-              <mdc-textarea i18n-label label="Description/Describe" fullwidth 
-                  [ngModelOptions]="{standalone: true}" [hidden]="!selected[item.sku]" rows="2" [(ngModel)]="item.note" kng-autosize>
-              </mdc-textarea>                              
+            <mdc-list-item-secondary>
+              <label for="story">Description/Describe:</label>
+              <textarea id="story" class="" 
+                  [hidden]="!selected[item.sku]" rows="2" [(ngModel)]="item.note" kng-autosize>
+              </textarea>                              
             </mdc-list-item-secondary>
           </mdc-list-item-text>                        
-          <mdc-checkbox mdcListItemMeta [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]"></mdc-checkbox>        
+          <input type="checkbox" mdcListItemMeta [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]">
         </mdc-list-item>
       </mdc-list>   
 
       <div class="breaker"></div>
       <!-- ORDER FEEDBACK -->
-      <mdc-textarea i18n-label [label]="i18n[locale].title_issue_hub" fullwidth [ngModelOptions]="{standalone: true}"
-      kng-autosize rows="2" 
-      [(ngModel)]="feedbackText">
-      </mdc-textarea>                  
+      <label for="feedback">{{i18n[locale].title_issue_hub}}</label>
+
+      <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>                  
 
       <!-- FEEDBACK ACTIONS -->
       <button  (click)="saveEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>

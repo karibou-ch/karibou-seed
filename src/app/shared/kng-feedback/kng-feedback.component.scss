@@ -15,6 +15,10 @@ button{
   }
 }
 
+.shipping-grouped{
+  display: none;
+}
+
 p.block-info{
   font-size: 90%;
   border: 1px solid #eee;
@@ -44,6 +48,7 @@ p.block-info{
 .feedback{
   &.boxed{
     box-shadow: none;
+    border-bottom: none;
     margin-bottom: 0;
     padding: 0;
     margin-top: -20px;    
@@ -53,7 +58,8 @@ p.block-info{
 
   position: relative;
   background: white;
-  box-shadow: 0px 0px 10px #ddd;
+  -box-shadow: 0px 0px 10px #ddd;
+  border-bottom: 2px solid #ddd;
   margin-bottom: 0px;
   padding: 10px;
   flex: 1;

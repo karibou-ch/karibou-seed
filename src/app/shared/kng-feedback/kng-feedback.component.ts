@@ -20,7 +20,6 @@ export class KngFeedbackComponent implements OnInit {
       title_order_open: 'Vous avez une commande en cours ...',
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
-      title_order_grouped_info:'<b>Psst!</b> Vous avez oublié quelque chose? Pour compléter votre commande, il suffit d\'en passer une nouvelle <span class="bold">😇</span>!',
       title_order_cancel: 'la commande a été annulée ',
       title_evaluation: 'Votre note',
       title_evaluation_quick: 'Evaluez votre satisfaction',
@@ -38,7 +37,6 @@ export class KngFeedbackComponent implements OnInit {
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
-      title_order_grouped_info:'<b>Psst!</b> Forgot something? To complete your order, just place a new one <span class="bold">😇</span>!',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
       title_evaluation: 'Your rating',
@@ -99,10 +97,13 @@ export class KngFeedbackComponent implements OnInit {
     if(!this.order) {
       return '';
     }
-
-    
     return ((this.order.shipping.when.getTime()-Date.now())/3600000).toFixed(0);
   }
+
+  get label(){
+    return this.$i18n.label();
+  }  
+
 
   constructor(
     public $cart: CartService,
@@ -188,9 +189,8 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   // FIXME, scheduler should be in API
-  isDayAvailable(day: Date) {
-    const nextAvailable = this.$cart.getCurrentShippingDay();
-    return (day.getDay() == nextAvailable.getDay())
+  hasPotentialShippingReductionMultipleOrder() {
+    return this.$cart.hasPotentialShippingReductionMultipleOrder();
   }
 
   ngOnDestroy() {
