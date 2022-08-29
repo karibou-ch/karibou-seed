@@ -126,14 +126,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();  
-      this.subscription.unsubscribe();  
-    this.subscription.unsubscribe();  
-      this.subscription.unsubscribe();  
-    this.subscription.unsubscribe();  
-      this.subscription.unsubscribe();  
-    this.subscription.unsubscribe();  
-      this.subscription.unsubscribe();  
-    this.subscription.unsubscribe();  
   }
 
   ngOnInit() {
@@ -253,7 +245,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.cached.categories = this.categories.sort(this.sortByWeight).filter(c => {
       return (c.active) && 
              (c.type === 'Category') &&
-             (c.group.toLocaleLowerCase() === 'home') &&
              this.availableCategories[c.name];
     });
   }
@@ -307,6 +298,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     options.maxcat = this.$navigation.isMobile()? 2:options.maxcat;
 
     const hub = this.$navigation.store;
+
     if (hub) {
       options.hub = hub;
     }

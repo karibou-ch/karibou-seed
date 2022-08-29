@@ -9,12 +9,12 @@
 </div>
 
 <!-- MOBILE SEARCH  -->
-<kng-search></kng-search>
+<kng-search class="home"></kng-search>
 <button (click)="doSearch('favoris')" class="kng-chip show-sm"><b>Psst:</b> &nbsp;Parcourir les produits favoris avec <b>1 clic!</b></button>
 
 
 <!-- SELECTION -->
-<kng-product-swipe [mailchimp]="store" ></kng-product-swipe>
+<kng-product-swipe [hub]="store" ></kng-product-swipe>
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
