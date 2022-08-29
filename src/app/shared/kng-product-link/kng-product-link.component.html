@@ -1,15 +1,10 @@
 <div class="links" [hidden]="hideIfEmpty">
   <ng-content class="title"></ng-content>
   <div class="content" *ngIf="!shops">
-      <mdc-chip-set choice >
-        <!-- <mdc-chip (click)="searchAction('favoris')" class="bookmark">
-          <mdc-chip-icon secondary leading>bookmark</mdc-chip-icon>
-          <mdc-chip-text>Favoris</mdc-chip-text>
-        </mdc-chip> -->
-
-        <mdc-chip *ngFor="let link of links;let i=index" (click)="searchAction(link)">
-          <mdc-chip-text>{{link}}</mdc-chip-text>
-        </mdc-chip>
-      </mdc-chip-set>
+      <div class="kng-chip-content" >
+        <div class="kng-chip" *ngFor="let link of links;let i=index" (click)="searchAction(link)">
+          <span>{{link}}</span>
+        </div>
+      </div>
   </div>
 </div>
