@@ -2,7 +2,10 @@
   <div class="loading" [hidden]="!cartItemAudioLoading" >
     Enregistrement en cours, patientez...
   </div>
-  <div class="title">{{$i18n.label().cart_audio}}</div>
+  <div class="title">
+    {{$i18n.label().cart_audio}}
+    <p>{{$i18n.label().cart_audio_note}} <b>{{amount}} fr</b></p>
+  </div>
   <textarea  hidden autofocus rows="5" [(ngModel)]="cartItemNote" placeholder="Ajoutez un commentaire ou enregistrez un message audio."></textarea>
 
   <div class="audio-controls">

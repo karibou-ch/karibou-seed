@@ -11,6 +11,8 @@ import { i18n } from '../../common';
 })
 export class KngAudioNoteComponent implements OnInit {
 
+  private _amount: string;
+
   @Output() onCartItemAudioLoading = new EventEmitter<boolean>();
   @Output() onCartItemAudioError = new EventEmitter<Error>();
   @Output() onCartItemAudio = new EventEmitter<string>();
@@ -22,9 +24,16 @@ export class KngAudioNoteComponent implements OnInit {
 
   onContextMenu:any;
 
+  @Input() set amount(value: number){
+    this._amount = (value).toFixed(2); 
+  };
   @Input() key: string;
   @Input() set src(url: string){
     this.cartItemAudio = url;
+  }
+
+  get amount(){
+    return parseFloat(this._amount);
   }
 
   constructor(
