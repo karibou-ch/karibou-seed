@@ -42,6 +42,8 @@ export class KngCartCheckoutComponent implements OnInit {
   requestIntent: string;
   currentCart:any;
   itemsAmount:number;
+  doToggleFees: boolean;
+
 
   selectPaymentIsDone: boolean;
   selectAddressIsDone: boolean;
@@ -171,6 +173,7 @@ export class KngCartCheckoutComponent implements OnInit {
     this._currentHub = hub;
     this._items = items;
     this._totalDiscount = totalDiscount;
+    this.errorMessage = null;
     this._isReady = true;
     this._user = user;
     this.open = true;

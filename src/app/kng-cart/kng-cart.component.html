@@ -7,21 +7,10 @@
 
   <!-- VOS PANIER -->
   <section class="cart" [hidden]="!items.length">
-    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>
-
-
-    <!-- <h3 class="primary-text" i18n *ngIf="!noshippingMsg; else noShipping">
-      {{i18n[locale].cart_nextshipping}} 
-      <b>{{currentShippingDay|date:'EEEE,d MMMM':'':$i18n.locale}}</b>
-      <br/> {{shippingTime}}
-    </h3>
-    <ng-template #noShipping>
-      <h3 class="primary-text">
-        {{noshippingMsg}} 
-      </h3>
-    </ng-template> -->
-    
+    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>    
   </section>
+
+  <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- PANIER PARTAGER -->
   <section [hidden]="!isSharedCart()" class="block-cart">
@@ -36,15 +25,14 @@
   </div>
   
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
-    <ng-container *ngFor="let hub of hubs; index as idx">
+    <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
 
     <!-- DISPLAY HUB ITEMS -->
-    <kng-cart-items (checkout)="doInitateCheckout($event)" [i18n]="i18n" [config]="config" [currentHub]="hub" [showFooter]="idx==0"></kng-cart-items>
+    <kng-cart-items (checkout)="doInitateCheckout($event)" [i18n]="i18n" [config]="config" [currentHub]="hub" [showSeparator]="idx>0" [showFooter]="!last"></kng-cart-items>
     </ng-container>
   </mdc-list>
 
   
-  <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
 
 </div>

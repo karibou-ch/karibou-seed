@@ -17,6 +17,7 @@ export class KngCartItemsComponent implements OnInit {
 
   @Input() i18n: any;
   @Input() showFooter: boolean;
+  @Input() showSeparator: boolean;
   @Input() currentHub: Hub;
   @Input() set config(cfg: Config){
     this._config = cfg;
@@ -29,6 +30,7 @@ export class KngCartItemsComponent implements OnInit {
   itemsAmount: number;
   noshippingMsg: string;
   hasOrderError: boolean;
+  doToggleFees: boolean;
 
   currentRanks: any;
   currentLimit: number;
@@ -67,6 +69,10 @@ export class KngCartItemsComponent implements OnInit {
     return this.$i18n.locale;
   }
 
+  get labell(){
+    return this.i18n[this.locale];
+  }  
+
 
   get label(){
     return this.$i18n.label();
@@ -81,8 +87,14 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get cart_info_service_k() {
-    return this.i18n[this.locale].cart_info_service_k + ' ('+this.$cart.totalHubFees(this.currentHub.slug)+' fr)';
+    const label = this.i18n[this.locale].cart_info_service_k.replace('__FEES__',(this.currentHub.serviceFees*100).toFixed(0));
+    return  label + ' ('+this.$cart.totalHubFees(this.currentHub.slug)+' fr)';
   }
+
+  get cart_info_hub_not_active() {
+    return this.i18n[this.locale].cart_info_hub_not_active.replace('__HUB__',this.currentHub.name);
+  }
+
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
@@ -90,6 +102,12 @@ export class KngCartItemsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    // case of non active hub with currentHub == undefined
+    if(!this.currentHub) {
+      this.currentHub = this.config.shared.hub;
+      this.currentHub.status.active = false;
+    }
+
     this._subscription.add(
     this.$loader.update().subscribe(emit => {
       if (emit.user) {
@@ -118,7 +136,7 @@ export class KngCartItemsComponent implements OnInit {
       this.noshippingMsg = this.getNoShippingMessage();
       this.hasOrderError = this.$cart.hasError(this.currentHub.slug);
       this.isReady = true;
-      console.log('---- DBG cart-items', CartAction[emit.state.action],this.currentHub.slug, 'items',this.items.length);
+      //console.log('---- DBG cart-items', CartAction[emit.state.action],this.currentHub.slug, 'items',this.items.length);
     }));
   }
 
@@ -190,7 +208,7 @@ export class KngCartItemsComponent implements OnInit {
   //
   // used for order limitation
   isNotShippingLimit() {
-    if(!this.currentShippingDay){
+    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active){
       return true;
     }
     const day = this.currentShippingDay;

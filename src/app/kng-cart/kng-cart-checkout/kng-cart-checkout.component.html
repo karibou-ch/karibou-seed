@@ -85,21 +85,26 @@
           <!-- BILL GROUPED -->
           <div class="bill grouped" [hidden]="!hasShippingReductionMultipleOrder()">
             <div>
-              <i class="material-icons gray">info</i>&nbsp;{{label.cart_info_shipping_group}}
+              <i class="material-icons black">info</i>&nbsp;{{label.cart_info_shipping_group}}
             </div>  
           </div>
 
+          <!-- INFO FEES -->
           <div class="bill">
             <div class="label">
               <span [innerHtml]="label.cart_info_subtotal"></span>
-
+              <i class="material-icons gray" (click)="doToggleFees=!doToggleFees">info</i>
             </div>
             <div class="amount">{{itemsAmount|currency:'CHF'}}</div>
           </div>
+          <div class="bill" [hidden]="!doToggleFees">
+            <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
+          </div>
+
 
           <div class="bill">
             <div class="label">
-              <span [innerHtml]="label.cart_info_shipping"></span><i class="material-icons gray">info</i>
+              <span [innerHtml]="label.cart_info_shipping"></span>
 
             </div>
             <div class="amount">{{currentShippingFees()|currency:'CHF'}}</div>
@@ -119,21 +124,26 @@
 
           <div class="bill total">
             <div class="label">
-              {{label.cart_info_total}}
-              <i class="material-icons gray">info</i>
+              {{label.cart_info_total}}              
             </div>
             <div class="amount" >{{currentTotal()|currency:'CHF'}}</div>
           </div>
 
+          <!-- INFO HELP MOBILE -->
+          <div class="bill help hide-sm">
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+          </div>
+
         </div>
+        <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
           <div class="bill">
             <h2 class="full ">4. {{label.cart_info_shipping_title}} <b>{{shippingTime}}</b></h2>            
           </div>  
 
           <div class="bill shipping" >
-            <div class="bold text-capitalize">{{currentShipping().name}}</div>
-            <div class="text-overflow">{{currentShipping().streetAdress}}</div>
+            <div class="bold text-capitalize">{{currentShippingDay()|date:'EEE dd/M':'':locale}}, {{currentShipping().name}}</div>
+            <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
             <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
           </div>
 
@@ -155,7 +165,7 @@
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
             </div>
             <div>
-              <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE d':'':locale}}</button>    
+              <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
             </div>
             <div class="bill error" [hidden]="!errorMessage">
               <b>Oops:</b> {{errorMessage}}
@@ -170,13 +180,10 @@
               {{label.cart_amount_2}}              
             </div>
           </div>
-
-          <!-- INFO HELP -->
-          <div class="bill help">
-            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;besoin d'aide?</a>
+          <!-- INFO HELP MOBILE -->
+          <div class="bill help hide-md hide-lg">
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
           </div>
-
-
         </div>
           
 

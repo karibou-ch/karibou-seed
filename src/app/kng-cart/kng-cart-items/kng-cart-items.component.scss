@@ -82,7 +82,7 @@
 
     .note{
       padding-left: 20px;
-      color:var(--mdc-theme-primary);
+      color:var(--mdc-theme-secondary);
       .material-icons{
         font-size: 18px;
       }      
@@ -134,6 +134,7 @@
   
     .mdc-list-item__graphic{
       width: 56px;
+      margin-right: 8px;
       .avatar{
         width: 56px;
         height: 56px;
@@ -155,6 +156,9 @@
       font-size: 1rem;
       flex-wrap: nowrap;
       align-items: center;   
+      @media (max-width:429px) {
+        zoom: .85;
+      }
       div.label{
         flex: 1;
         position: absolute;
@@ -186,14 +190,16 @@
       div.quantity{
         flex:1;
         border:1px solid #ddd;
-        border-radius: 2px;
+        border-radius: 4px;
         padding: 4px 10px;
         height: 24px;
+        display: flex;
+        align-items: center;
       }
   
       div.price{
         flex:1;
-        margin-left: 8px;
+        margin-left: 2px;
         min-width: 80px;
         text-align: right;
         color: black;
@@ -226,6 +232,7 @@
     .title-subtitle{
       @media (max-width:429px) {
         max-width: 190px;
+        font-size: 14px;
       }
     }
   
@@ -235,7 +242,7 @@
       height: 20px;
       border-radius: 8px;
       padding: 0 10px;
-      margin-left: -7px;      
+      margin-left: 0px;      
       border:1px solid #eee;
   
     }
@@ -255,9 +262,17 @@
   &.separator {
     background: #f9f9f9;
     font-weight: 600;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #dedede;    
+    border-bottom: 2px solid #aaa;
     margin: 15px 0;    
+  }
+
+  &.separator.hide-title{
+    >div{
+      display: none;
+    }    
+    margin: 5px 0;    
+    height: 30px;
+    border-top: none;    
   }
 
 
@@ -280,8 +295,8 @@
   }
 
   .graphic{
-    margin-left: 0;
-    margin-right: 16px;
+    margin-left: -2px;
+    margin-right: 10px;
     width: 56px;
     height: 56px;
     flex-shrink: 0;
@@ -300,20 +315,23 @@
     }
     >div.round{
       border-radius: 50%;
-      border: 2px solid var(--mdc-theme-secondary);
+      border: 3px solid #eee;
     }
   }
 
   .subtitle{
-    font-size: 15px;
-    color: #aaa;
+    color: #999;
     margin-top: -4px;    
+    font-size: 14px;
+    .link{
+      border-color: #ccc;
+    }
   }
 
   button.action{
-    background-color: var(--mdc-theme-primary);
-    border-color: var(--mdc-theme-primary-text);
-    color: var(--mdc-theme-primary-text);
+    background-color: var(--mdc-theme-secondary);
+    border-color: var(--mdc-theme-secondary-text);
+    color: var(--mdc-theme-secondary-text);
     border-radius: 39px;
     border-style: solid;
     padding: 4px 20px;    
@@ -326,7 +344,7 @@
   }  
 
   button.continue{
-    border: 1px solid var(--mdc-theme-appbar);
+    border: 1px solid var(--mdc-theme-secondary);
     border-radius: 8px;
     padding: 4px 10px;
     width: auto;
@@ -344,14 +362,18 @@
     border: 1px solid var(--mdc-theme-appbar);
     border-radius: 8px;
     padding: 4px 10px;
-    width: 80%;
+    width: 75%;
     max-width: 400px;
     margin-right: auto;
     font-size: 17px;
     height: 35px;
-    color: var(--mdc-theme-primary-text);
-    background-color: var(--mdc-theme-primary);
-  }    
+    color: var(--mdc-theme-secondary-text);
+    background-color: var(--mdc-theme-secondary);
+  }
+  button[disabled]{
+    background: #eee!important;
+    color: #aaa!important;    
+  }
   
 }
 
