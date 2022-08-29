@@ -61,7 +61,7 @@
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
-        <img class="icon hide-sm"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/>
+        <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
         <img class="icon icon-hub" [class.icon-show]="isLockedHUB()"  [src]="hubImage" (click)="navigation.open = ! navigation.open" />
         <mdc-top-app-bar-title class="brand" [routerLink]="['/store',store]" [hidden]="isLockedHUB()">
           Karibou.ch      
@@ -99,7 +99,7 @@
         <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-icons start">roofing</i>{{$i18n.label().nav_bottom_home}}</div>
         <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_market}} {{hubTitle}} </div>
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_shops}}</div>
-        <div class="kng-chip" (click)="openCalendar(calendar,false)">{{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
+        <div class="kng-chip" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
         <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
           <div i18n> <span class="cart-items-count"></span></div>
           <span  class="end material-icons secondary-text" >shopping_cart</span>          
@@ -113,7 +113,7 @@
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-top-app-bar-section  class="title hide-md hide-lg">
         <span class="start">{{$i18n.label().nav_market}} {{hubTitle}} </span>
-        <div class="kng-chip end" (click)="openCalendar(calendar,false)">{{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
+        <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
 
     </mdc-top-app-bar-row>

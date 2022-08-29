@@ -118,7 +118,7 @@ div.navbar{
       margin-right: 160px;
     }
 
-    @media (min-width:1550px) {
+    @media (min-width:1650px) {
       -max-width: 1170px;
       -width: 1170px;        
       margin-right: auto;
@@ -189,12 +189,13 @@ div.navbar{
     }
 
     img.icon{
-      max-width: 24px;
+      border-radius:6px;
+      max-width: 38px;
       margin-left: 2px;
       margin-top: 4px;
       transform: translateX(6px) translateY(-1px);
       &.icon-hub{
-        display: none;        
+        -display: none;        
       }
       &.icon-hub.icon-show {
         display: block!important;

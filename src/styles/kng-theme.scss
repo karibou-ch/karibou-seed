@@ -311,11 +311,11 @@ body{
 }
 
 .link{
-  border-bottom: 1px dotted #efefef;
+  border-bottom: 2px dotted #efefef;
   cursor: pointer;
   text-decoration:none;
   &.gray{
-    color:#aaa !important;
+    border-color:#ddd !important;
   }
 }
 
