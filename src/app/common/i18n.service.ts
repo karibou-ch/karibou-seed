@@ -59,7 +59,7 @@ export class i18n  {
     nav_store_sub: 'Remplissez vos paniers chez les commerçants de plusieurs marchés et recevez tout en une seule livraison',
     nav_store_change: 'Faire ses courses',
     nav_store_shops_list: 'Les boutiques',
-    nav_store_continue:'Faire ces courses',
+    nav_store_continue:'Faire ses courses',
     nav_contactus: 'Contactez-nous!',
     nav_installapp: 'Installer karibou.ch',
     e404: 'Cette page n\'existe pas :-(',
