@@ -78,10 +78,11 @@ export class KngCartItemsComponent implements OnInit {
     return this.$i18n.label();
   }  
   get cart_info_one_date() {
-    if(!this.currentShippingDay){
+    const when = this.$cart.getCurrentShippingDay();
+    if(!this.currentShippingDay || !when){
       return '';
     }
-    const day = this.$cart.getCurrentShippingDay().getDay();
+    const day = when.getDay();
     const label = this.i18n[this.locale].cart_info_one_date.replace('__HUB__',this.currentHub.name).replace('__DAY__',this.weekdays[day]);
     return label;
   }
@@ -163,7 +164,6 @@ export class KngCartItemsComponent implements OnInit {
 
   // FIXME remove repeated code
   getNoShippingMessage() {
-
     //
     // check window delivery
     if (this.currentShippingDay &&
@@ -199,7 +199,8 @@ export class KngCartItemsComponent implements OnInit {
   //
   // multiple markets with one delivery
   isCrossMarketShippingDate(){
-    const currentDay = this.$cart.getCurrentShippingDay()
+    const currentDay = this.$cart.getCurrentShippingDay();
+    if(!currentDay) { return 0; }
     const week = this.config.potentialShippingWeek(this.currentHub);
     const available =week.some(day => day.getDay() == currentDay.getDay());
     return available;
