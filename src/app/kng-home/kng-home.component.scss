@@ -170,6 +170,7 @@ div.home-header{
 
 }
 
+kng-search.search-mobile,
 kng-search.home{
   margin: 35px 0 10px;
   display: block;  
@@ -211,7 +212,7 @@ kng-nav-marketplace {
   transition: all 200ms;
   position: fixed;
   overflow-x: visible;
-  top: 120px;
+  top: 100px;
   background: linear-gradient(#f7f9f9, rgba(255, 255, 255,0.30));
   width: 300px;
   padding: 0;
@@ -223,7 +224,7 @@ kng-nav-marketplace {
   &.display{
     opacity: 0;
   }
-  @media screen and (min-width:1650px) {
+  @media screen and (min-width:1600px) {
     margin-left:-335px;
     left: initial;   
   }
