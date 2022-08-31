@@ -54,12 +54,12 @@
 			<div class="info-score"><i class="material-icons">favorite</i></div>
 		
 			<!-- TITLE -->
-			<div class="product-card__primary">
-				<div class="product-card__subtitle">{{product.title}}</div>
-				<div class="part">
+			<div class="product-header">
+				<div class="product-title">{{product.title}}</div>
+				<div class="product-part">
 					{{product.pricing.part}}
 				</div>
-				<div class="price ">
+				<div class="product-price ">
 					<span [class.discount]="product.attributes.discount" >
 						Fr {{product.pricing.price| number:'1.2-2'}}
 					</span>

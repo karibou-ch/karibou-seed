@@ -206,24 +206,6 @@
 
   }  
 
-  .product-card__subtitle{
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: -2px;
-  }
-
-  .product-card__primary{
-    height: 38px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;    
-    padding: 5px;
-  }
-
-  .product-card__secondary{
-    position: relative;
-  }
-
   .product-card__vendor{
     display: flex;
     padding: 0;
@@ -233,27 +215,53 @@
     margin-bottom: 8px;
   }
 
-  .price{
-    position: absolute;
-    right: 5px;
-    bottom: 8px;
-    font-size: large;
-    font-weight: 500;
-    .discount {
-      margin-right: 5px;
-      text-decoration: line-through;
-      color: #999;
-      font-size: small;      
-      background: white;
+  .product-header{
+    display: flex;
+    flex-wrap:wrap;
+    width: 100%;
+    padding: 5px 0 8px;
+
+    .product-title{
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: normal;
+      color: rgb(52, 53, 56);    
+      padding: 2px 0;
     }
+
+    .product-price{
+      width: 50%;
+      text-align: right;
+      margin-right: 5px;
+      margin-left: auto;
+      font-size: large;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      color: rgb(52, 53, 56);
+      .discount {
+        margin-right: 5px;
+        text-decoration: line-through;
+        color: #999;
+        font-size: small;      
+        background: white;
+      }
+    }
+  
+    .product-part{
+      margin-left: 0px;
+      margin-right: auto;
+      width: 40%;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      color: rgb(114, 118, 126);
+    }    
   }
 
-  .part{
-    position: absolute;
-    left: 5px;
-    bottom: 10px;
-    font-size: small;
-    font-weight: 500;    
-  }
 }
 
