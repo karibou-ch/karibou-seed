@@ -218,6 +218,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for user
       if (emit.user) {
         this.user = emit.user;       
+        this.$cart.setContext(this.config,this.user);
         //this.loadOrders(); 
       }
       // emit signal for cart
