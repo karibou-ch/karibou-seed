@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, Injectable, ErrorHandler } from '@angular/core';
+import { LOCALE_ID, NgModule, Injectable, ErrorHandler, NgZone } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 
@@ -35,7 +35,6 @@ import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
 import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
-import { KngSearchBarComponent } from './kng-search-bar/kng-search-bar.component';
 
 
 @Injectable()
@@ -90,12 +89,15 @@ export class GlobalErrorHandler implements ErrorHandler {
     const chunkFailedMessage = /Loading chunk [\d]+ failed/;
 
     //
-    // Reload App is enough
+    // Clear cache and Reload App is enough
     // For PWA, reload is not enough, activeUpdate is mandatory
-    if (!!chunkFailedMessage.test(error.message)) {
+    if (!!chunkFailedMessage.test(error.message)) {      
+         
+      try{ caches.keys().then(keys => keys.forEach(c=>caches.delete(c))); } catch(err){}
+      
       return this.$update.checkForUpdate().then((available)=>{
         this.$update.activateUpdate().then(() => document.location.reload(true));
-      })
+      });      
     }
 
     //
@@ -112,17 +114,24 @@ export class GlobalErrorHandler implements ErrorHandler {
       //   return m.SentryModule;
       // }
 
-      if (!environment.production ||
-          window.location.origin.indexOf('karibou.ch') === -1) {
-        return m.SentryModule;
-      }
-
       //
       // POST ERROR
-      Sentry.captureException(extractedError);
+      if (environment.production &&
+          window.location.origin.indexOf('evaletolab.ch') === -1 &&
+          window.location.origin.indexOf('localhost') === -1) {
+          Sentry.captureException(extractedError);
+      }
+
 
       return m.SentryModule;
     });
+
+    //
+    // 
+    // this.$zone.run(() =>{
+
+    // });
+
 
     throw error;
   }
