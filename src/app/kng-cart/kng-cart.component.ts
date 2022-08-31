@@ -17,7 +17,6 @@ import { CartService,
 
 import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
-import { MetricsService, EnumMetrics } from '../common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
