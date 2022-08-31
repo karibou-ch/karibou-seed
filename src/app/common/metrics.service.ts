@@ -131,7 +131,7 @@ export class MetricsService {
     }
     const origin = window.location.origin;
     // FIMXE use config instead of hardcodedw
-    return (origin.indexOf('karibou.ch') > -1) || (origin.indexOf('halle-de-rive.ch') > -1);
+    return (origin.indexOf('evaletolab.ch') == -1) || (origin.indexOf('localhost') == -1);
   }
 
   getHost(name: string): any {
