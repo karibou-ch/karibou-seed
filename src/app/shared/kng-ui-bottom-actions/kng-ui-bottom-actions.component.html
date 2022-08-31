@@ -5,7 +5,11 @@
     <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-icons icon">home</span><div>{{label.nav_bottom_home}}</div></button>  
     <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-icons icon">manage_search</span><div>{{label.nav_bottom_browse}}</div></button>  
     <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLink]="['/store',store,'home','shops']"><span class="material-icons icon">storefront</span><div>{{label.nav_bottom_shops}}</div></button>  
-    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']"><span class="material-icons icon">shopping_cart</span><div>{{label.nav_bottom_cart}}</div></button>    
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']">
+      <div class="cart-items-count-mobile"></div>
+      <span class="material-icons icon">shopping_cart</span>
+      <div>{{label.nav_bottom_cart}}</div>
+    </button>    
   </div>
 </div>  
 

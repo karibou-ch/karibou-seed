@@ -53,7 +53,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   content: any;
   cgAccepted: boolean;
   cardItemsSz = 0;
-  cartItemCountElem: any;
+  cartItemCountElem = 0;
   currentShippingDay: Date;
   isFixed = true;
   displayIosInstall: boolean;
@@ -180,6 +180,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         // update cart
         if (emit.state) {
           this.cardItemsSz = this.$cart.subTotal(this.store);
+          this.cartItemCountElem = this.$cart.getItems().length;
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
           this.updateDomPrice();
   
@@ -302,8 +303,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   updateDomPrice(){
     timer(100).subscribe(() => {
       //
-      // top bar
+      // top & bottom bar
       (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
+      (<Element>(document.querySelector('.cart-items-count-mobile') || {})).innerHTML = '' + this.cartItemCountElem;
     });
 
   }

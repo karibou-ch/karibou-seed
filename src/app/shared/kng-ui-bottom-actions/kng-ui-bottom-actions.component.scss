@@ -194,6 +194,22 @@ kng-ui-bottom-actions{
       .icon{
         font-size: 34px;
       }
+      .cart-items-count-mobile {
+        background: black;
+        color: white;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        font-weight: 600;
+        font-size: 15px;
+        position: absolute;
+        margin-left: -24px;
+        margin-top: 4px;
+        opacity: .4;
+      }
     }
 
 
