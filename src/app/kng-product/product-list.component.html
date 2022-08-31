@@ -14,7 +14,7 @@
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
-      <div class="toolbox " [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection">
+      <div class="toolbox " [class.exited]="scrollDirection < -15 || scrollDirection > 15 || !scrollDirection">
         <ul  #subcategory>
           <li class="kng-chip" (click)="scrollTo($event,child.name)"
                     [id]="'child'+j"                    
