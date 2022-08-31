@@ -113,14 +113,10 @@ div.navbar{
     @media (min-width:1441px) {
       max-width: 940px;
       width: 940px;        
-      -max-width: 1170px;
-      -width: 1170px;        
       margin-right: 160px;
     }
 
-    @media (min-width:1650px) {
-      -max-width: 1170px;
-      -width: 1170px;        
+    @media (min-width:1600px) {
       margin-right: auto;
     }
 
