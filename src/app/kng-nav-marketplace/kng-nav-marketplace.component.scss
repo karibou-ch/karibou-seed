@@ -57,12 +57,11 @@
         cursor: pointer;
         display: flex;
         flex-flow: column nowrap;   
-        box-shadow: 0px 2px 10px rgba(0,0,0,0.18);
+        box-shadow: 0px 2px 10px rgba(0,0,0,0.10);
         
         @media (max-width:429px) {
           max-height: 210px;
-          margin: 10px 0px;
-          border-radius: 0px;
+          margin: 10px 10px;
           border: none;
           background-color: white;
           width: calc(100% );
