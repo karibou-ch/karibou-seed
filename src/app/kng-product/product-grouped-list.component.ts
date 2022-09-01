@@ -17,6 +17,7 @@ import {
 } from 'kng2-core';
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { i18n } from '../common';
 
 export interface CategoryView {
   name: string;
@@ -119,6 +120,7 @@ export class ProductGroupedListComponent implements OnInit {
 
   constructor(
     private $cdr: ChangeDetectorRef,
+    private $i18n: i18n,
   ) {
     this.cache = {
       products: []
@@ -212,6 +214,12 @@ export class ProductGroupedListComponent implements OnInit {
   getCategories() {
     return this.categories.sort(this.sortByWeight);
   }
+
+  getCategoryI18n(cat){
+    const key = 'category_name_'+cat.slug.replace(/-/g,'_');
+    return this.$i18n.label()[key] || cat.name;
+  }
+
 
   productsGroupByCategory() {
     if(!this.products.length) {

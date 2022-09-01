@@ -224,6 +224,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.$i18n.locale;
   }
 
+  get label() {
+    return this.$i18n.label();    
+  }
+
   add(product: Product) {
     this.$cart.add(product);
   }
@@ -249,9 +253,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
-
+  getCategoryI18n(cat){
+    const key = 'category_name_'+cat.slug.replace(/-/g,'_');
+    return this.label[key] || cat.name;
+  }
 
   mountOverlay(overlay) {
     if (overlay) {

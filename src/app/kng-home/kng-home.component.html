@@ -10,7 +10,7 @@
 
 <!-- MOBILE SEARCH  -->
 <kng-search class="home"></kng-search>
-<button (click)="doSearch('favoris')" class="kng-chip show-sm"><b>Psst:</b> &nbsp;Parcourir les produits favoris avec <b>1 clic!</b></button>
+<button (click)="doSearch('favoris')" class="kng-chip show-sm" [innerHtml]="label.action_favorites"></button>
 
 
 <!-- SELECTION -->
@@ -26,13 +26,13 @@
               [class.selected]="category.slug == displaySlug"
               *ngFor="let category of getCategories();let j=index">
       <i [class]="category.image" class="icon"></i>              
-      <span>{{category.name}}</span>
+      <span>{{getCategoryI18n(category)}}</span>
     </li>
   </ul>
 </div>
 
 <!-- LISTED CATEGORIES -->
-<h2 class="root show-sm">Les catégories</h2>  
+<h2 class="root show-sm">{{label.category_title}}</h2>  
 <div class="product-container mdc-layout-grid" *ngIf="products.length" >
   <kng-product-grouped-list 
        useMaxCat="true"  showMore="on" offsetTop="500" clazz="home-header"       

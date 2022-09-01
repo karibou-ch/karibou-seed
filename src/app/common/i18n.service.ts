@@ -25,6 +25,7 @@ export class i18n  {
     action_lang_switch: 'switch into English',
     action_error_reload: 'Zut, un problème est survenu lors du chargement de la page. Réessayez?',
     action_install_ios: 'Installez Karibou.ch dans votre appareil.<br/> Appuyez sur l\'icône de Partage, puis sélectionnez<br/><b>Ajouter à l\'écran d\'accueil.</b>',
+    action_favorites:'<b>Psst:</b> &nbsp;Parcourir les produits favoris avec <b>1 clic!</b>',
     user_address_add: 'Gérez vos adresses',
     cart_address_info: 'En cas d\'absence, le cycliste dépose vos sacs devant votre porte',
     user_payment_add: 'Méthodes de paiements',
@@ -95,7 +96,8 @@ export class i18n  {
     ITEM_UPDATE: 'modifé: ',
     ITEM_ADD: 'ajouté: ',
     ITEM_REMOVE: 'supprimé: ',
-    ITEM_MAX: 'Impossible de commander d\'avantage de ce produit'
+    ITEM_MAX: 'Impossible de commander d\'avantage de ce produit',
+    category_title:'Les catégories'
   };
 
   public en: any = {
@@ -106,6 +108,7 @@ export class i18n  {
     action_lang_switch: 'basculer en français',
     action_error_reload: 'Ooops, there was a problem loading, try again?',
     action_install_ios: 'Install this app on your device.<br/> Tap the share icon and then<br/><b>Add to homescreen.</b>',
+    action_favorites:'<b>Psst:</b> &nbsp;Browse favorite with one <b>1 clic!</b>',
     home_feedback_title: 'How was your last order ?',
     home_links_title: 'Discover the stores on this page',
     user_address_add: 'Add or modify your shipping address',
@@ -177,7 +180,31 @@ export class i18n  {
     ITEM_UPDATE: 'Updated: ',
     ITEM_ADD: 'Add: ',
     ITEM_REMOVE: 'Remove: ',
-    ITEM_MAX: 'Oops reach the order limit of this produtc'
+    ITEM_MAX: 'Oops reach the order limit of this product',
+    category_title:'Categories',
+    category_name_champagnes:'Champagne',
+    category_name_fruits_legumes:'Fruits & Vegetables',
+    category_name_boucherie_artisanale:'Meat Shop',
+    category_name_poissonnerie:'Fish Shop',
+    category_name_boissons:'Drinks',
+    category_name_bieres_artisanales:'Craft Beer',
+    category_name_vins_rouges:'Red Wines',
+    category_name_vins_blancs_roses:'White Wines & Rosé',
+    category_name_aperitifs_digestifs:'Aperitifs & Digestives',
+    category_name_traiteur_maison:'Delicatessen shop',
+    category_name_antipasti_conserves:'Antipasti & Canned food ',
+    category_name_miels_confitures_et_plus:'Honey, Jam and more',
+    category_name_pates_sauces:'Pasta & Sauces',
+    category_name_huiles_vinaigre_condiments:'Oils, Vinegar & Condiments',
+    category_name_bien_etre:'Well-Being Products',
+    category_name_cereales_legumineuses_graines:'Cereals, Legumes, Seeds',
+    category_name_douceurs_chocolats:'Sweets & Chocolates',
+    category_name_fromages_produits_frais:'Cheeses & Fresh Products',
+    category_name_boulangerie_artisanale:'Artisanal Bakery',
+    category_name_charcuterie_pates:'Charcuterie & Pâtés',
+    category_name_fleurs:'Flowers',
+    category_name_idees_cadeaux:'Gift Ideas',
+    category_name_lessives_menage:'Cleaning Products'    
   };
 
   //

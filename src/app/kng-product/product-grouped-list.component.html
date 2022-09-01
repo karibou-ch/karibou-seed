@@ -19,7 +19,7 @@
       <div class="category" [hidden]="!visibility[category.slug] || !showMore" 
         [routerLink]="['category',category.slug]">
         <div class="icon"><i class="material-icons">playlist_add</i></div>
-        <div>{{category.name}} </div>
+        <div>{{getCategoryI18n(category)}} </div>
       </div>
     </div>
   </div>
