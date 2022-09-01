@@ -218,6 +218,12 @@ export class KngCartItemsComponent implements OnInit {
     return (this.currentRanks[day.getDay()] <= maxLimit);
   }
 
+  isCheckoutEnabled() {
+    return this.isCrossMarketShippingDate() && 
+           this.isNotShippingLimit() && 
+           this.items.length && !this.noshippingMsg;
+  }
+
   subTotal() {
     return this.$cart.subTotal(this.currentHub.slug);
   }

@@ -7,31 +7,28 @@
   </div>      
   <div class="text text-overflow" [hidden]="!isReady">
     <span class="title large"><span class="">{{label.nav_market}}</span> {{hub.name}} </span>
-    <div *ngIf="items.length" class="text-overflow title-subtitle">
-      <span class="">{{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}</span>
+    <div class="text-overflow title-subtitle">
+      <span class="checkout-disabled-title" 
+            [innerHtml]="cart_info_one_date" 
+            [hidden]="isCrossMarketShippingDate()"></span>
+      <span [hidden]="!isCrossMarketShippingDate()">
+        {{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
+      </span>
       <div class="subtitle" (click)="doToggleFees=!doToggleFees">
         <span [innerHtml]="cart_info_service_k" class="link "></span>
       </div>      
-    </div>
-
-    <div *ngIf="!items.length">
-      <button class="goto" [routerLink]="['/store',hub.slug,'home']">{{label.nav_store_change}}</button>
     </div>
   
   </div>
   <div class="end" *ngIf="items.length">
     {{items.length}} articles, <b>{{itemsAmount}} fr</b>
   </div>
-  <div class="end" *ngIf="!items.length">
-    <button class="goto round" [routerLink]="['/store',hub.slug,'home']" >
-      <span class="material-icons icon">arrow_forward</span>
-    </button>
-  </div>
 
 </div>
 <!-- DISPLAY HUB ORDER -->
-<div class="list-item action-line border-bottom" *ngIf="items.length && !noshippingMsg">
-  <button class="order" (click)="doCheckout()" [disabled]="!isCrossMarketShippingDate() || !isNotShippingLimit()">{{i18n[locale].cart_signin}} </button>
+<div class="list-item action-line border-bottom">
+  <button class="order" (click)="doCheckout()" 
+          [disabled]="!isCheckoutEnabled()">{{i18n[locale].cart_signin}} </button>
   <button class="continue" [routerLink]="['/store',hub.slug,'home']"><span class="hide-sm">{{label.nav_store_continue}}</span> <span class="material-icons icon hide-lg">arrow_forward</span></button>
 </div>
 <!-- WARNING MESSAGE -->
@@ -64,7 +61,7 @@
 
 <!-- WARNING DISPLAY HUB DATE -->
 <div class="list-item auto-line slim-item pending-date" [class.display-message]="!isCrossMarketShippingDate()">
-  <p class="shipping-grouped block-warning" [innerHtml]="cart_info_one_date">
+  <p class="shipping-grouped text-overflow block-warning" [innerHtml]="i18n[locale].cart_info_one_date_more">
 </div>
 
 <!-- DISPLAY HUB ITEMS -->

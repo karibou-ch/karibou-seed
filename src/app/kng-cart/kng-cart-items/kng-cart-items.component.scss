@@ -34,7 +34,7 @@
 
 
     &.slim-item{
-      margin-top: -12px;
+      margin-top: -14px;
     }
 
     &.selected{
@@ -230,6 +230,10 @@
     margin-top: 14px;
     margin-bottom: auto;    
     .title-subtitle{
+      .checkout-disabled-title{
+        color: red;
+        font-weight: 200;
+      }
       @media (max-width:429px) {
         max-width: 190px;
         font-size: 14px;

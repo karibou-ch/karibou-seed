@@ -58,7 +58,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_payment: 'Méthode de paiement',
       cart_info_discount: 'Rabais',
       cart_info_hub_not_active:'Le marché <b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
-      cart_info_one_date: 'Le marché __HUB__ est fermé le __DAY__.',
+      cart_info_one_date: 'Pas de livraison le __DAY__ pour ce marché.',
+      cart_info_one_date_more: 'Changer de date pour tout recevoir en une livraison.',
       cart_info_limit: `Nos créneaux de livraison sont tous occupés. Toutefois, vous pouvez préparer votre panier et valider votre commande
       lorsque de nouvelles fenêtres de livraison seront disponibles.
        Merci beaucoup pour votre compréhension.`,
@@ -96,7 +97,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_payment: 'Payment method',
       cart_info_discount: 'Discount',
       cart_info_hub_not_active:'The <b>__HUB__</b> market is in maintenance and he is not available for checkout',
-      cart_info_one_date: 'The __HUB__ market is closed on __DAY__.',
+      cart_info_one_date: 'Shipping is not available on __DAY__ for this marker.',
+      cart_info_one_date_more: 'Change the date to receive everything in one delivery',
       cart_info_limit: `Our delivery slots are all full. However, you can prepare your basket and confirm your order when
        new delivery windows become available. Thank you very much for your understanding.`,
       cart_info_service_k: 'Service fee <span class="gray ">__FEES__%</span> included',
