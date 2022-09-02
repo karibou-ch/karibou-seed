@@ -45,7 +45,7 @@ export class ProductSwipeComponent implements OnInit {
 
   hideIfEmpty: boolean;
   options:any = {    
-    home: true,
+    _home: true,
     available: true,
     status: true,
     when: true,
