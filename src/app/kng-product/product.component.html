@@ -1,21 +1,24 @@
 <div class="product-dialog fadeout" #dialog>
   <div class="product-backdrop"></div>
   <div class="product-dialog__surface">
-    <div class="product-wide" [class.incart]="cartItem&&cartItem?.quantity">
+    <div class="product-wide" [class.incart]="cartItemQuantity">
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close">
-        <span class="material-icons size-large">navigate_before</span>
+        <span class="material-icons size-large">arrow_back</span>
       </button>
 
-      <article class="product-card card-skeleton" [class.incart]="cartItem&&cartItem?.quantity"
-      [class.noavailable]="!product.isAvailableForOrder()" [class.noinstock]="!product.pricing.stock">
-   
-   
+      <article class="product-card card-skeleton" 
+              [class.incart]="cartItemQuantity"
+              [class.noavailable]="!isAvailableForOrder" 
+              [class.noinstock]="!isInStockForOrder">
       <section>
         <div class="media" [ngStyle]="bgStyle">
           <img src="/assets/img/k-highlight.png" class="highlight-new" hidden />
-      
+          <img [hidden]="!product.vendor.photo?.owner" 
+               [src]="product.vendor.photo?.owner" alt="160x160"
+          class="photo-owner ">
+
           <div class="product-available">
             non disponible
           </div>
@@ -26,9 +29,9 @@
           <button class="action-remove " (click)="removeToCart($event,product)">
             <span class="material-icons size-medium">remove</span>
           </button>
-          <div class="info-quantity">{{cartItem?.quantity}}</div>
+          <div class="info-quantity">{{cartItemQuantity}}</div>
       
-          <div class="info-portion part" [hidden]="!hasVariation(product)">
+          <div class="info-portion" [hidden]="!hasVariation(product)">
             <div class="">
               Fr {{product.pricing.part|basepriceex:product.pricing.price}}
             </div>
@@ -44,8 +47,9 @@
           </div>
       
         </div>
-        <div class="product-card__primary">
-          <div class="product-card__subtitle">{{product.title}}</div>
+        <div class="header">
+
+          <div class="title">{{product.title}}</div>
           <div class="part">
             {{product.pricing.part}}
           </div>
@@ -60,7 +64,16 @@
       
         </div>
       </section>
-     </article>
+
+      <!-- NOTE -->
+      <kng-audio-note 
+          class="product-note"
+          [hidden]="!cartItemQuantity"
+          [key]="config.shared.keys.pubUpcare"
+          [amount]="product.pricing.price * cartItemQuantity"
+          [src]="cartItemAudio" 
+          (onCartItemAudio)="onAudioStopAndSave($event)"
+          (onCartItemAudioError)="onAudioError($event)"></kng-audio-note>
 
       <!-- DESCRIPTION -->
       <div class="description">
@@ -75,36 +88,24 @@
           <li >{{product.shelflife.comment}}</li>
         </ul>
 
-        <mdc-chip-set>
-          <mdc-chip [hidden]="!product.details.homemade"><mdc-chip-text  class="label label-product">Artisanal</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.local"><mdc-chip-text  class="label label-product">Local</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.lactose"><mdc-chip-text  class="label label-product">Sans lactose</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.gluten"><mdc-chip-text  class="label label-product">Sans gluten</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.grta"><mdc-chip-text  class="label label-product">GRTA</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.bio&&!product.details.biodynamics"><mdc-chip-text class="label label-product">BIO</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.biodynamics"><mdc-chip-text  class="label label-product">Biodynamie</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.bioconvertion"><mdc-chip-text  class="label label-product">Bioconversion</mdc-chip-text></mdc-chip>
-          <mdc-chip [hidden]="!product.details.natural"><mdc-chip-text  class="label label-product" title="Naturel">Sans chimie de synthèse</mdc-chip-text></mdc-chip>
-        </mdc-chip-set>
+        <div class="kng-chip-content">
+          <div class="kng-chip" [hidden]="!product.details.homemade"><span>Artisanal</span></div>
+          <div class="kng-chip" [hidden]="!product.details.local"><span>Local</span></div>
+          <div class="kng-chip" [hidden]="!product.details.lactose"><span>Sans lactose</span></div>
+          <div class="kng-chip" [hidden]="!product.details.gluten"><span>Sans gluten</span></div>
+          <div class="kng-chip" [hidden]="!product.details.grta"><span>GRTA</span></div>
+          <div class="kng-chip" [hidden]="!product.details.bio&&!product.details.biodynamics"><span>BIO</span></div>
+          <div class="kng-chip" [hidden]="!product.details.biodynamics"><span>Biodynamie</span></div>
+          <div class="kng-chip" [hidden]="!product.details.bioconvertion"><span>Bioconversion</span></div>
+          <div class="kng-chip" [hidden]="!product.details.natural"><span>Sans chimie de synthèse</span></div>
+        </div>
     
-        <!-- <div>
-          <div [hidden]="!product.details.homemade" class="label label-product">Artisanal</div>
-          <div [hidden]="!product.details.local" class="label label-product">Local</div>
-          <div [hidden]="!product.details.lactose" class="label label-product">Sans lactose</div>
-          <div [hidden]="!product.details.gluten" class="label label-product">Sans gluten</div>
-          <div [hidden]="!product.details.grta" class="label label-product">GRTA</div>
-          <div [hidden]="!product.details.bio&&!product.details.biodynamics" class="label label-product">BIO</div>
-          <div [hidden]="!product.details.biodynamics" class="label label-product">Biodynamie</div>
-          <div [hidden]="!product.details.bioconvertion" class="label label-product">Bioconversion</div>
-          <div [hidden]="!product.details.natural" class="label label-product" title="Naturel">Sans chimie de synthèse</div>
-        </div> -->
       </div>
 
       <div class="breaker small"></div>
 
       <!-- ADMIN OR OWNER ACTIONS -->
       <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
-        <div>Quantité disponible (actuellement <b>{{product.pricing.stock}}</b>)</div>
         <div>
           Éditer &nbsp;
           <a href="https://admin.karibou.ch/product/{{product.sku}}">le produit</a>&nbsp;--&nbsp; 
@@ -172,8 +173,9 @@
           </li>
         </ul>
       </div>
+    </article>
 
-    </div>
+  </div>
 
     <!-- FURTHER -->
     <div class="further-product-container mdc-layout-grid" >

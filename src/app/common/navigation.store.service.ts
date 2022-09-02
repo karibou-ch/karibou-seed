@@ -17,6 +17,8 @@ export class KngNavigationStoreResolve implements Resolve<Promise<any>> {
 
     //
     // update store 
+    //console.log('---- DBG  KngNavigationStoreResolve.store',route.params.store);
+
     if(!this.$navigation.store && route.params.store){
       this.$navigation.store = route.params.store;
     }

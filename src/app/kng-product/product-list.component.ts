@@ -15,11 +15,13 @@ import {
   User,
   Category,
   Shop,
-  CartService
+  CartService,
+  ShopService
 } from 'kng2-core';
-import { timer } from 'rxjs';
+import { combineLatest, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MdcChipSet, MdcChip } from '@angular-mdc/web';
+import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 @Component({
   selector: 'kng-product-list',
@@ -33,7 +35,6 @@ export class ProductListComponent implements OnInit {
 
   @ViewChild('subcategory', { static: true }) subcategory: MdcChipSet;
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
-  scrollCallback;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';
 
@@ -52,34 +53,34 @@ export class ProductListComponent implements OnInit {
     current: Category;
     similar: Category[];
   };
+  vendor: Shop;
   vendors: Shop[];
 
   filterVendor: Shop;
   filterChild: string;
   childSub$;
   childMap: any;
-  relative = './';
   scrollDirection: number;
   scrollToCategory: string;
 
   options: {
     hub?: string;
     available: boolean;
-    status: boolean;
+    status?: boolean;
     when: Date|boolean;
     reload?: number;
-  } = {
-    available: true,
-    status: true,
-    when: true
+    shopname?: string;
   };
 
   constructor(
-    private $cart: CartService,
-    private $product: ProductService,
-    private $router: Router,
-    private $route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    public $i18n: i18n,
+    public $cart: CartService,
+    public $navigation: KngNavigationStateService,
+    public $shop: ShopService,
+    public $product: ProductService,
+    public $router: Router,
+    public $route: ActivatedRoute,
+    public cdr: ChangeDetectorRef
   ) {
     this.cache = {
       products: []
@@ -93,12 +94,17 @@ export class ProductListComponent implements OnInit {
     };
     this.vendors = [];
     this.childMap = {};
+    this.options = {
+      available: true,
+      status: true,
+      when: true
+    };
 
     const loader = this.$route.snapshot.parent.data.loader;
     this.config = loader[0];
     this.user = loader[1];
     this.category.categories = loader[2];
-    this.scrollCallback = this.getNextPage.bind(this);
+    this.getNextPage.bind(this);
     this.scrollDirection = 0;
     ProductListComponent.SCROLL_CACHE = 0;
   }
@@ -106,6 +112,11 @@ export class ProductListComponent implements OnInit {
   get store(){
     return this.config && this.config.shared.hub.slug;
   }
+
+  get locale() {
+    return this.$i18n.locale;
+  }
+
 
   ngOnDestroy() {
     this.clean();
@@ -116,32 +127,41 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.isReady = true;
-    this.category.slug = this.$route.snapshot.params['category'];
 
+    if(this.$route.snapshot.params['category']){
+      this.category.slug = this.$route.snapshot.params['category'];
+      this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
+      this.category.current.child = this.category.current.child.sort((a, b) => {
+        return a.weight - b.weight;
+      });
 
-    //
-    // this should not happends
-    if (!this.category.slug) {
-      return;
-    }
-    this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
-    this.category.current.child = this.category.current.child.sort((a, b) => {
-      return a.weight - b.weight;
-    });
-
-
-    this.category.similar = this.category.categories
+      this.category.similar = this.category.categories
       .filter(cat => cat.group === this.category.current.group && cat.slug !== this.category.slug)
       .sort(cat => cat.weight);
+      this.bgStyle = 'url(' + this.category.current.cover + ')';  
+      this.productsByCategory();
+    } 
+    else if(this.$route.snapshot.params['shop']){
+      delete this.options.status;
+      this.options.shopname  = this.$route.snapshot.params['shop'];
+      this.category.current = this.category.categories[0];
+      this.category.current.child = this.category.current.child.sort((a, b) => {
+        return a.weight - b.weight;
+      });
 
-    this.bgStyle = 'url(' + this.category.current.cover + ')';
+      this.productsByShop();
+    } 
+    //
+    // this should not happends
+    else {
+      this.isReady = false;
+    }
+    
 
-    this.loadProducts();
     //
     // DIALOG INIT HACK
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
-    this.dialog.nativeElement.classList.remove('fadeout');
   }
 
   //
@@ -169,15 +189,15 @@ export class ProductListComponent implements OnInit {
     this.onClose(this.dialog);
   }
 
+  getDialog() {
+    return this.dialog;
+  }
+
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
     const child = category.child || [];
     return child.filter(child => this.childMap[child.name]).sort((a,b) => a.weight - b.weight);
-  }
-
-  getDialog() {
-    return this.dialog;
   }
 
 
@@ -204,8 +224,38 @@ export class ProductListComponent implements OnInit {
   }
 
 
-  loadProducts() {
+  productsByShop() {
+    this.options.when = this.$cart.getCurrentShippingDay();
 
+    combineLatest([
+      this.$shop.get(this.options.shopname),
+      this.$product.select(this.options)
+    ]).subscribe(([vendor, products]: [Shop, Product[]]) => {
+      document.title = vendor.name;
+      this.vendor = vendor;
+
+      if (vendor.photo && vendor.photo.fg) {
+        // this.ngStyleBck = {
+        //   'background-image': this.bgGradient + 'url(' + vendor.photo.fg + '/-/resize/900x/fb.jpg)'
+        // };
+      }
+
+      this.cache.products = this.products = products.sort(this.sortProducts);
+
+      //
+      // count child categories
+      this.products.forEach(product => {
+        if (!this.childMap[product.belong.name]) {
+          this.childMap[product.belong.name] = 0;
+        }
+        this.childMap[product.belong.name]++;
+      });
+      
+      this.cdr.markForCheck();
+    });
+  }
+
+  productsByCategory() {
     this.options.hub = this.config.shared.hub && this.config.shared.hub.slug;
     this.options.when = this.$cart.getCurrentShippingDay();
 
@@ -221,46 +271,18 @@ export class ProductListComponent implements OnInit {
         this.childMap[product.belong.name]++;
       });
 
-
-      //
-      // select first child category
-      // this.subcategory.chips.filter(elem=>true)[0].selected=true;
-
-      //
-      // update child only after products
-      // TODO     .pipe(takeWhile(() => !this.destroyed))
-
-      // this.childSub$ = this.$route.params.subscribe(param => {
-      //   // this.filterVendor = null;
-      //   if (param['child']) {
-      //     this.relative = '../';
-      //     this.scrollToCategory = this.filterChild = (param['child']);          
-      //   } else if (this.category.current.child[0]) {
-      //     this.relative = './';
-      //     this.scrollToCategory = this.filterChild = (this.getChildCategory(this.category.current)[0].name);
-      //   }
-      // });
-
-
       //
       // set vendors after toggle of child category
-      this.setVendors(this.products);
+      this.setVendors();
       this.cdr.markForCheck();
     });
   }
 
-  setProducts() {
-    return this.cache.products = this.products;
-    // return this.cache.products = this.products.filter(product => {
-    //   const cat = !this.filterChild || product.belong.name === this.filterChild;
-    //   return cat || true;
-    // });
-  }
 
-  setVendors(products: Product[]) {
-    products.forEach(product => map[product.vendor.urlpath] = product.vendor);
+  setVendors() {
+    this.products.forEach(product => map[product.vendor.urlpath] = product.vendor);
     this.vendors = Object.keys(map).map(key => map[key]);
-    this.setProducts();
+    this.cache.products = this.products;
   }
 
   toggleVendor(vendor: Shop) {
@@ -272,23 +294,16 @@ export class ProductListComponent implements OnInit {
   }
 
   toggleChild(child: string) {
-
-    if (this.filterChild === child) {
-      // this.subcategory.chips.forEach((elem: MdcChip) => elem.selected = false);
-      // this.filterChild = null;
-      // this.setProducts();
-      return;
-    }
-
     this.filterChild = child;
-    //this.setProducts();
   }
 
 
   onClose(closedialog) {
-    this.dialog.nativeElement.classList.add('fadeout');
     setTimeout(() => {
       this.clean();
+      if(this.$navigation.hasHistory()){
+        return this.$navigation.back();
+      }
       this.$router.navigate(['../../'], {relativeTo: this.$route});
     }, 200);
   }
@@ -299,10 +314,11 @@ export class ProductListComponent implements OnInit {
     ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
+
   scrollTo($event, name) {
     this.scrollToCategory = name;
     this.filterChild = name;
-    
+    this.scrollDirection = 0;    
     $event.stopPropagation();
     $event.preventDefault();
   }
@@ -338,5 +354,46 @@ export class ProductListComponent implements OnInit {
   trackerProducts(index, product: Product) {
     return product.sku;
   }
+
+}
+
+
+@Component({
+  selector: 'kng-product-list-shop',
+  templateUrl: './product-list-shop.component.html',
+  styleUrls: ['./product-list-shop.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class KngProductListByShopComponent extends ProductListComponent{
+  @ViewChild('subcategory', { static: true }) subcategory: MdcChipSet;
+  @ViewChild('dialog', { static: true }) dialog: ElementRef;
+  i18n: any = {
+    fr: {
+      map_title: 'Infos pratiques',
+      faq: 'Retrouvez la liste des questions fréquentes (FAQ)',
+      products_title: 'Nos produits',
+      products_subtitle: ''
+    },
+    en: {
+      map_title: 'Infos pratiques',
+      faq: 'Frequently asked questions (FAQ)',
+      products_title: 'Our products',
+      products_subtitle: ''
+    }
+  };
+
+  getStaticMap(address) {
+    if (!this.config.shared || !this.config.shared.keys.pubMap) {
+      return;
+    }
+    const pubMap = this.config.shared.keys.pubMap;
+    return KngUtils.getStaticMap(address, pubMap, '400x200');
+  }
+
+  getCleanPhone(phone: string) {
+    if (!phone) { return ''; }
+    return  phone.replace(/[\.;-]/g, '');
+  }
+
 
 }

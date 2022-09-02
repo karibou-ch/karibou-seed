@@ -9,10 +9,10 @@
   .inline-show-sm     {display: inline-block!important;}
 }
 
-@media only screen and (max-width: 1023px) {
-  .hide-md    {display: none;}
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  .hide-md    {display: none!important;}
 }
 @media only screen and (min-width: 1024px) {
   .show-lg    {display: block;}
-  .hide-lg    {display: none;}
+  .hide-lg    {display: none!important;}
 }

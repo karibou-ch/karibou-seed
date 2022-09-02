@@ -1,20 +1,54 @@
   <!-- MARKETPLACE -->
   <h2>{{i18n.label().nav_store}}</h2>
-  <h3>{{i18n.label().nav_store_sub}}</h3>
+  <h3 class="hide-sm">{{i18n.label().nav_store_sub}}</h3>
   <div class="marketplace">
     <div class="container">
       <div class="hub"  
         *ngFor="let hub of config.shared.hubs;let idx=index" 
         (click)="toggleStore(hub)"
         [class.selected]="hub.slug === currentHub.slug">
-        <div class="selected" [hidden]="hub.slug !== currentHub.slug">
-          <span class="stars material-icons" >check_circle</span> 
+        <div class="logo"  >
+          <img [src]="hub.siteName.image + '/-/resize/300x/fb.jpg'" />
         </div>
-        <div class="ei_Logo"  ><img [src]="hub.logo" /></div>
 
-        <div class="ei_Title">
-          <div class="bold">{{hub.name}}</div>
-          <div class="ei_Desc">{{hub.description[locale]}}</div>
+        <div class="content">
+          <div class="selected" [hidden]="hub.slug !== currentHub.slug">
+            <span class="stars material-icons" >check_circle</span> 
+          </div>
+          <div class="selected change">
+            <button class="goto" [routerLink]="['/store',hub.slug,'home']">{{label.nav_store_change}}</button>
+          </div>
+
+  
+          <div class="market">{{i18n.label().nav_market}}</div>
+          <div class="title">{{hub.name}}</div>
+          <div class="description">{{hub.description[locale]}}</div>
+          <div class="cart">
+             {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-icons icon">shopping_cart</span>
+          </div>
+          <div class="options">
+            <span class="shops">{{hub.vendors}} Vendeurs </span>          
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;besoin d'aide?</a>  
+        
+          </div>
+          <div class="calendar hide-sm">
+            <div class="schedule">
+              <span class="material-icons icon" >schedule</span>
+              <span class="txt">ouvert  </span>
+            </div>              
+
+            <ul class="availability">
+              <li *ngFor="let day of [1,2,3,4,5]" >
+                <div>{{getWeekDay(day)}}</div>
+                <div class="indicator">
+                  <span class="material-icons icon" [hidden]="hub.weekdays.indexOf(day)>-1">radio_button_unchecked</span>
+                  <span class="material-icons icon" [hidden]="hub.weekdays.indexOf(day)==-1">radio_button_checked</span>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+    
         </div>
         
         <!-- <div class="ei_Link" [hidden]="hub.slug === currentHub.slug">

@@ -33,7 +33,7 @@
   &.loader{
     width: auto;
     height: 190px;
-    margin: 4px;
+    margin: 0px;
     background-image: url('/assets/img/k-product-placeholder.png');
     background-repeat: repeat-x;
     background-position: left;
@@ -147,7 +147,7 @@
   .action-add,.action-remove{
     background-color: var(--mdc-theme-primary) !important;
     color: var(--mdc-theme-primary-text) !important;
-    opacity: 0.7;
+    opacity: 0.9;
     border: 0;
     font-weight: bold;
     border-radius: 25px;
@@ -182,6 +182,7 @@
     text-shadow: 0 0 6px rgba(0,0,0,0.9);
     color: white;
     visibility: hidden;
+    font-weight: 600;
   }
 
   .info-score{
@@ -205,24 +206,6 @@
 
   }  
 
-  .product-card__subtitle{
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: -2px;
-  }
-
-  .product-card__primary{
-    height: 38px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;    
-    padding: 5px;
-  }
-
-  .product-card__secondary{
-    position: relative;
-  }
-
   .product-card__vendor{
     display: flex;
     padding: 0;
@@ -232,27 +215,53 @@
     margin-bottom: 8px;
   }
 
-  .price{
-    position: absolute;
-    right: 5px;
-    bottom: 8px;
-    font-size: large;
-    font-weight: 500;
-    .discount {
-      margin-right: 5px;
-      text-decoration: line-through;
-      color: #999;
-      font-size: small;      
-      background: white;
+  .product-header{
+    display: flex;
+    flex-wrap:wrap;
+    width: 100%;
+    padding: 5px 0 8px;
+
+    .product-title{
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: normal;
+      color: rgb(52, 53, 56);    
+      padding: 2px 0;
     }
+
+    .product-price{
+      width: 55%;
+      text-align: right;
+      margin-right: 5px;
+      margin-left: auto;
+      font-size: large;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      color: rgb(52, 53, 56);
+      .discount {
+        margin-right: 5px;
+        text-decoration: line-through;
+        color: #999;
+        font-size: small;      
+        background: white;
+      }
+    }
+  
+    .product-part{
+      margin-left: 0px;
+      margin-right: auto;
+      width: 35%;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      color: rgb(114, 118, 126);
+    }    
   }
 
-  .part{
-    position: absolute;
-    left: 5px;
-    bottom: 10px;
-    font-size: small;
-    font-weight: 500;    
-  }
 }
 

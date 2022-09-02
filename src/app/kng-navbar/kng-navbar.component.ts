@@ -5,20 +5,17 @@ import {
   CartAction,
   Config,
   ConfigMenu,
-  ConfigService,
-  OrderService,
   User,
-  UserService,
   Category,
   Shop,
-  Order
+  Order,
+  LoaderService
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar, MdcTopAppBarSection } from '@angular-mdc/web';
 
-import { merge, timer } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
+import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';
 
 
@@ -56,27 +53,24 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   content: any;
   cgAccepted: boolean;
   cardItemsSz = 0;
-  cartItemCountElem: any;
+  cartItemCountElem = 0;
   currentShippingDay: Date;
   isFixed = true;
   displayIosInstall: boolean;
-  subscription;
-
+  subscription : Subscription;
+  scrollDirection = 0;
   //
   // FIXME remove code repeat
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
 
-  @ViewChild('section', { static: true }) section: MdcTopAppBarSection;
   constructor(
     public $cart: CartService,
-    private $config: ConfigService,
     public $i18n: i18n,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $order: OrderService,
-    private $user: UserService,
+    private $loader: LoaderService,
     public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
     private $cdr: ChangeDetectorRef,
@@ -97,6 +91,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.shops = <Shop[]>loader[3] || [];
 
     this.orders = [];
+
+    //
+    // use latest orders
     if(loader.length>3) {
       this.orders = <Order[]>loader[4];
     }
@@ -108,39 +105,24 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // K. image
     this.Kimage = '/assets/img/k-puce-light.png';
 
-    // FIXME remove code repeat
-    const hub = this.config.shared.hub.slug;
-    if (hub) {
-      this.currentRanks = this.config.shared.currentRanks[hub] || {};
-      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-      this.Kimage = this.config.shared.hub.logo || this.Kimage;
-    }
-
+    this.subscription = new Subscription();
   }
 
 
   ngOnDestroy() {
-    // this.route$.unsubscribe();
-    // this.$cart.unsubscribe();
-    // this.$user.unsubscribe();
-    if(this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    // FIXME, better to use declarative pipe(takeUntil(destroyed$))
+    this.subscription.unsubscribe();
   }
 
   ngOnInit() {
+    this.subscription.add(
+      this.$navigation.registerScrollEvent().subscribe(scrollDirection => {
+        this.scrollDirection = scrollDirection;
+        this.$cdr.markForCheck();
+      })  
+    )
 
-
-    // HUB title
-    this.hubTitle = this.config.shared.hub.siteName[this.locale];
-    this.hubImage = this.config.shared.hub.siteName.image;
-    this.hubPhone = this.config.shared.hub.address.phone;
-
-    this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
-    this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
-
-    this.store = this.$navigation.store;
+    this.detectIOS();
 
     // FIXME mdc-tab activation is BUGGY, this is an alternate version
     // TODO needs dynamic DEPARTEMENT feature
@@ -151,86 +133,79 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //if (this.currentTab == -1) this.currentTab = this.primary.length;
     }
 
-    //
-    // init cart here because navbar is loaded on all pages
-    this.$cart.setContext(this.config, this.user, this.shops,this.orders);
-
-    this.currentShippingDay = this.$cart.getCurrentShippingDay();
-
-
-
-    this.subscription = merge(
-      this.$user.user$.pipe(map(user => ({ user}))),
-      this.$config.config$.pipe(map(config => ({ config }))),
-      this.$cart.cart$.pipe(map(state => ({ state }))),
-      this.$order.orders$.pipe(map(orders => ({orders})))
-    ).subscribe((emit: any) => {
-
-      //
-      // update user
-      if (emit.user) {
-        this.user = this.user || {} as User;
-        Object.assign(this.user, emit.user);
+    this.subscription.add(
+      this.$loader.update().subscribe(emit=> {
 
         //
-        // FIXME avoid multiple update of same value 
-        this.$cart.setContext(this.config, this.user,this.shops,this.orders);
-        this.$cdr.markForCheck();
-        this.currentShippingDay = this.$cart.getCurrentShippingDay();
-      }
+        // update config
+        if (emit.config) {
+          this.store = this.$navigation.store;
 
-      // FIXME use appropriate place to setup $cart
-      if(emit.orders && !this.orders.length) {
-        this.orders = emit.orders;
-        this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
-      }
-      //
-      // update config
-      if (emit.config) {
-        this.detectIOS();
-        Object.assign(this.config, emit.config);
-        // this.$navigation.updateConfig(this.config);
-      }
-      //
-      // update cart
-      if (emit.state) {
-        this.cardItemsSz = this.$cart.subTotal();
-        timer(100).subscribe(() => {
-          //
-          // top bar
-          (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
-          //
-          // tab bar
-          this.cartItemCountElem = this.cartItemCountElem || this.section.elementRef.nativeElement.querySelector('.cart-items-count');
-          if (this.cartItemCountElem) {
-            this.cartItemCountElem.innerHTML = '' + this.cardItemsSz + ' fr';
-          }
-        });
-
-        //
-        // update shipping date
-        if (!emit.state.item) {
-          return;
+          Object.assign(this.config, emit.config);
+          // HUB title
+          this.hubTitle = this.config.shared.hub.siteName[this.locale];
+          this.hubPhone = this.config.shared.hub.address.phone;
+  
+          this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
+          this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
+      
+          this.currentRanks = this.config.shared.currentRanks[this.store] || {};
+          this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+          this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+          this.hubImage = this.config.shared.hub.logo;
+    
+          this.$cdr.markForCheck();
         }
-
-        if (emit.state.action === CartAction.ITEM_MAX) {
-          return this.$snack.open(
-            this.$i18n.label()[CartAction[emit.state.action]],
+  
+        //
+        // update user
+        if (emit.user) {
+          this.user = this.user || {} as User;
+          Object.assign(this.user, emit.user);
+  
+          //
+          // FIXME avoid multiple update of same value 
+          this.$cart.setContext(this.config, this.user,this.shops,this.orders);
+          this.$cdr.markForCheck();
+          this.currentShippingDay = this.$cart.getCurrentShippingDay();
+        }
+  
+        // FIXME use appropriate place to setup $cart
+        if(emit.orders && !this.orders.length) {
+          this.orders = emit.orders;
+          this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
+        }
+  
+        //
+        // update cart
+        if (emit.state) {
+          this.cardItemsSz = this.$cart.subTotal(this.store);
+          this.cartItemCountElem = this.$cart.getItems().length;
+          this.currentShippingDay = this.$cart.getCurrentShippingDay();
+          this.updateDomPrice();
+  
+          //
+          // update shipping date
+          if (!emit.state.item) {
+            return;
+          }
+  
+          if (emit.state.action === CartAction.ITEM_MAX) {
+            return this.$snack.open(
+              this.$i18n.label()[CartAction[emit.state.action]],
+              this.$i18n.label().thanks,
+              this.$i18n.snackOpt
+            );
+          }
+          this.$snack.open(
+            // tslint:disable-next-line: max-line-length
+            this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
             this.$i18n.label().thanks,
             this.$i18n.snackOpt
           );
         }
-
-        this.$snack.open(
-          // tslint:disable-next-line: max-line-length
-          this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
-          this.$i18n.label().thanks,
-          this.$i18n.snackOpt
-        );
-      }
-    });
-
-
+      })  
+    );
   }
 
   detectIOS() {
@@ -247,9 +222,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     // Detects if device is in standalone mode
     const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
-    if (isIos() && !isInStandaloneMode() && Math.random() > .8) {
+    if (isIos() && !isInStandaloneMode() && Math.random() > .85) {
       this.displayIosInstall =  true;
-      timer(10000).subscribe(() => {
+      timer(5000).subscribe(() => {
         this.displayIosInstall =  false;
         this.$cdr.markForCheck();
       });
@@ -294,6 +269,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return title.charAt(0).toUpperCase() + title.slice(1);
   }
 
+
+  isLockedHUB() {
+    return this.$navigation.isLocked();
+  }
+
   isAppReady() {
     return this.$navigation.store !== undefined;
   }
@@ -317,7 +297,17 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   onLang($event, lang) {
     this.$i18n.locale = lang;
-    // console.log('---- changed locale')
+    console.log('---- changed locale',lang)
+  }
+
+  updateDomPrice(){
+    timer(100).subscribe(() => {
+      //
+      // top & bottom bar
+      (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
+      (<Element>(document.querySelector('.cart-items-count-mobile') || {})).innerHTML = '' + this.cartItemCountElem;
+    });
+
   }
 
   setShippingDay(value: any) {

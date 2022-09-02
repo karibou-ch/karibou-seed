@@ -1,0 +1,84 @@
+<div class="product-dialog " #dialog (scroll)="onScroll($event)">
+  <div class="product-backdrop"></div>
+  <div class="product-dialog-surface">
+    <div class="shop-wide" >
+
+      <!-- CLOSE -->
+      <button (click)="onClose(true)" class="close" >
+        <span class="material-icons size-large">arrow_back</span>
+      </button>
+
+
+      <!-- VENDOR-->
+      <!-- TITLE -->
+      <h4 class="title" >{{vendor?.name}}</h4>
+      <div class="vendor" *ngIf="vendor">
+        <div class="owner" >
+          <img [src]="vendor?.photo.owner">
+        </div>
+
+        <div class="description" [kng-markdown]="vendor.description"></div>  
+        <div class="contact">      
+          <a class="kng-chip" [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
+
+          <a class="kng-chip" href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-icons start">phone</i> {{vendor.address.phone}}</a>      
+        </div>
+        <!-- MARQUE -->
+        <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">
+        </div> -->
+        <img class="shop" [src]="vendor.photo.fg+'/-/resize/600x/fb.jpg'"  [hidden]="!vendor.photo.fg">
+        <img class="logo" [src]="vendor.photo.logo"  [hidden]="!vendor.photo.logo">
+      </div>
+
+  
+    </div>
+
+    <!-- FURTHER -->
+    <div class="further-product-container" *ngIf="vendor">
+      <section class="audio-chat hide">
+        <div>
+          <h2>Passer une commande avec un message audio et un budget, et le commerçant s'occupe de tout! 😮 😮 😮</h2>
+        </div>    
+      </section>
+ 
+      <section class="products" >
+        <kng-product-grouped-list 
+          *ngIf="products.length"
+          alphasort="true"
+          showSection="true"
+          [config]="config" 
+          [user]="user" 
+          [scrollContainer]="getDialog()"
+          [contentCategories]="category.categories" 
+          [contentProducts]="products"
+          (direction)="scrollDirection=$event">
+        </kng-product-grouped-list>
+      </section>
+
+      <!-- SHOP GEO -->
+      <section class="map"   [hidden]="!vendor.address.geo" >
+        <h2>{{i18n[locale].map_title}}</h2>
+        <div>
+            <img [src]="getStaticMap(vendor.address)" >
+        </div>
+        <address>
+          <br>
+          {{vendor.address.streetAdress}} / {{vendor.address.postalCode}} / {{vendor.address.region}}
+        </address>
+      </section>                                
+
+      <!-- SHOP FAQ -->
+      <section class="FAQ" *ngIf="vendor && vendor.faq.length">
+        <h2>{{i18n[locale].faq}}</h2>
+        <ul>
+          <li *ngFor="let faq of vendor.faq">
+            <h4>{{faq.q}}</h4>
+            <div [kng-markdown]="faq.a" removeRoot="true" ></div>
+          </li>
+        </ul>
+      </section>      
+      <div class="breaker"></div>
+
+  </div>
+
+</div>

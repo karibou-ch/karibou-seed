@@ -19,18 +19,24 @@
 }
 
 .content {
-  mdc-chip-set{
+  div.kng-chip-content{
     list-style: none;
     margin: 0;  
     display: flex;
     flex-flow: row wrap;
     justify-content: left;  
-    mdc-chip{
-      min-width: 100px;
+    padding: 10px 0;
+    .kng-chip{
+      .material-icons{
+        display: none;
+      }
     }
-    .mdc-chip--selected {
+    .kng-chip.selected {
       background-color: var(--mdc-theme-secondary)!important;
       color:var(--mdc-theme-secondary-text)!important;
+      .material-icons{
+        display: initial;
+      }
     }
   }
 }

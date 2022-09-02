@@ -9,17 +9,15 @@ import { Component,
          QueryList,
          Output,
          EventEmitter} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import {
-  ProductService,
   Product,
   User,
-  Category,
-  CartService
+  Category
 } from 'kng2-core';
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { i18n } from '../common';
 
 export interface CategoryView {
   name: string;
@@ -59,6 +57,7 @@ export class ProductGroupedListComponent implements OnInit {
   @Input() showMore: boolean;
   @Input() useMaxCat: boolean;
 
+  @Input() showSection: boolean;
   @Input() contentIf: boolean;
   @Input() clazz: string;
   @Input() filterByVendor: string;
@@ -98,9 +97,8 @@ export class ProductGroupedListComponent implements OnInit {
     }
 
     const nextSection = this.findNextSection(slug);
-
     this.scrollElIntoView(nextSection);
-    this.scrollPosition = 0;
+    this.direction.emit(0);
   }
 
   @Output() direction:EventEmitter<number> = new EventEmitter<number>();
@@ -121,12 +119,8 @@ export class ProductGroupedListComponent implements OnInit {
   category$ : ReplaySubject<string>;
 
   constructor(
-    private $cart: CartService,
-    private $product: ProductService,
-    private $router: Router,
-    private $route: ActivatedRoute,
     private $cdr: ChangeDetectorRef,
-    private $elm: ElementRef
+    private $i18n: i18n,
   ) {
     this.cache = {
       products: []
@@ -141,13 +135,16 @@ export class ProductGroupedListComponent implements OnInit {
     this.direction$ = new ReplaySubject<number>();
     this.category$ = new ReplaySubject<string>();
     this.direction$.pipe(distinctUntilChanged()).subscribe(direction => {
-      // console.log('---',direction)
       this.direction.emit(direction)
     })
     this.category$.pipe(distinctUntilChanged()).subscribe(name => {
       this.currentCategory.emit(name)
     })
 
+  }
+
+  get isMobile() {
+    return (window.innerWidth < 426);
   }
 
   ngOnDestroy() {
@@ -218,26 +215,32 @@ export class ProductGroupedListComponent implements OnInit {
     return this.categories.sort(this.sortByWeight);
   }
 
+  getCategoryI18n(cat){
+    const key = 'category_name_'+cat.slug.replace(/-/g,'_');
+    return this.$i18n.label()[key] || cat.name;
+  }
+
+
   productsGroupByCategory() {
     if(!this.products.length) {
       return;
     }
-    const maxcat = this.useMaxCat? ((window.innerWidth < 426) ? 8 : 12):100;
-    const divider = (window.innerWidth < 426) ? 2 : 4;
+    // const maxcat = this.useMaxCat? (this.isMobile ? 8 : 12):100;
+    // const divider = this.isMobile ? 2 : 4;
+    const maxcat = this.useMaxCat? (this.isMobile ? 2 : (
+      (window.innerWidth < 1025)? 6:5
+    )):200;
+    const divider = this.isMobile ? 2 : (
+          (window.innerWidth < 1025)? 6:4
+    );
 
     this.group = {};
     this.products.forEach((product: Product) => {
-      if (product.attributes.discount) {
-        //
-        // when discount display randomly product on category
-        // FIXME: this is not a good idea!
-        // if (Math.random() > .7) {
-        //   return;
-        // }
-      }
 
       //
       // group by category
+      // FIXME Error when categories is Null 
+      product.categories = product.categories || {};
       const catName = this.isChildCategory ? product.belong.name : product.categories.name;
       if (!this.group[catName]) {
         this.group[catName] = [];
@@ -247,10 +250,10 @@ export class ProductGroupedListComponent implements OnInit {
 
 
     const cats = Object.keys(this.group);
-    const sortBy = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
+    const sortByAlphaOrScore = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
     cats.forEach(cat => {
       // console.log('--- DEBUG cat',cat, this.group[cat].length);
-      this.group[cat] = this.group[cat].sort(sortBy).slice(0, maxcat);
+      this.group[cat] = this.group[cat].sort(sortByAlphaOrScore).slice(0, maxcat);
       if (this.group[cat].length % divider === 0 && this.showMore) {
         this.group[cat].pop();
       }
@@ -268,24 +271,9 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     this.visibility[this.categories[0].slug] = true;
-  }
-
-  //
-  // sort products by:
-  //  - title
-  sortProductsByTitle(a, b) {
-    // sort : Title
-    const score = a.title.localeCompare(b.title);
-    return score;
-  }
-
-  //
-  // sort products by:
-  //  - stats.score
-  sortProductsByScore(a, b) {
-    // sort : HighScore => LowScore
-    const score = b.stats.score - a.stats.score;
-    return score;
+    if(this.categories.length>1){
+      this.visibility[this.categories[1].slug] = true;
+    }
   }
 
 
@@ -345,6 +333,25 @@ export class ProductGroupedListComponent implements OnInit {
     el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
   }
 
+
+  //
+  // sort products by:
+  //  - title
+  sortProductsByTitle(a, b) {
+    // sort : Title
+    const score = a.title.localeCompare(b.title);
+    return score;
+  }
+
+  //
+  // sort products by:
+  //  - stats.score
+  sortProductsByScore(a, b) {
+    // sort : HighScore => LowScore
+    const score = b.stats.score - a.stats.score;
+    return score;
+  }  
+
   sortByWeight(a: CategoryView, b: CategoryView) {
     return a.weight - b.weight;
   }
@@ -353,9 +360,7 @@ export class ProductGroupedListComponent implements OnInit {
   // detect scrall motion and hide component
   // @HostListener('window:scroll', ['$event'])
   windowScroll($event?) {
-
     const scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
-
     //
     // initial position, event reset value
     if(scrollPosition == 0) {
@@ -387,6 +392,8 @@ export class ProductGroupedListComponent implements OnInit {
     }
     this.scrollPosition = scrollPosition;
 
+    //
+    // @input() case
     if(this.offsetTop && scrollPosition<this.offsetTop) {
       this.scrollDirection = 0;
     }

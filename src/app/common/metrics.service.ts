@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserService, LoaderService, CartAction, AnalyticsService, Metrics } from 'kng2-core';
+import { UserService, LoaderService, CartAction, AnalyticsService, Metrics, Hub } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map, debounce } from 'rxjs/operators';
 
@@ -130,8 +130,8 @@ export class MetricsService {
       return false;
     }
     const origin = window.location.origin;
-    // FIMXE use config instead of hardcoded
-    return (origin.indexOf('karibou.ch') > -1) || (origin.indexOf('halle-de-rive.ch') > -1);
+    // FIMXE use config instead of hardcodedw
+    return (origin.indexOf('evaletolab.ch') == -1) || (origin.indexOf('localhost') == -1);
   }
 
   getHost(name: string): any {

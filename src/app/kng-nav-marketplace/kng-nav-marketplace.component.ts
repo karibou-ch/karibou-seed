@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ElementRef } from '@angular/core';
-import { i18n } from '../common';
-import { Config, Order } from 'kng2-core';
+import { i18n, KngNavigationStateService } from '../common';
+import { CartService, Config, LoaderService, Order } from 'kng2-core';
 import { version } from '../../../package.json';
 import { Router } from '@angular/router';
 
@@ -19,20 +19,31 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   VERSION = version;
   labelTime: string;
-  noshippingMsg: string;
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
   showHUBs: boolean;
-  lockedHUB: boolean;
   currentHub: any;
+  currentCart: any;
+
+  weekdays:{
+    fr:[],
+    en:[]
+  };
 
   constructor(
     public $elem: ElementRef<HTMLElement>,
-    private $i18n: i18n,
-    private $router: Router,
+    public $cart: CartService,
+    public $i18n: i18n,
+    public $navigation: KngNavigationStateService,
+    public $loader: LoaderService,
+    public $router: Router,
   ) {
-
+    this.weekdays = {
+      fr:[],
+      en:[]
+    }
+    this.currentCart = {};
   }
 
 
@@ -41,20 +52,61 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
 
-    // FIXME remove hardcoded shippingtimes[16]
-    this.currentHub = this.config.shared.hub;
-    if (this.currentHub && this.currentHub.slug) {
-      this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
-      this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
-      this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-      this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-      this.lockedHUB = !!this.config.shared.hub.domainOrigin;
-    }
 
-    if(this.lockedHUB) {
-      const native: HTMLElement =this.$elem.nativeElement;
-      native.setAttribute('hidden','');
-    }
+    this.$loader.update().subscribe(emit=> {
+      if(emit.state){
+        const items = this.$cart.getItems();
+        this.config.shared.hubs.forEach(hub => {
+          this.currentCart[hub.slug]={
+            count:items.filter(item=> item.hub == hub.slug).length,
+            amount:this.$cart.subTotal(hub.slug)
+          };
+        })
+      }
+      if(!emit.config) {
+        return;
+      }
+
+      // FIXME remove hardcoded shippingtimes[16]
+      this.currentHub = this.config.shared.hub;
+      if (this.currentHub && this.currentHub.slug) {
+        this.labelTime = this.config.shared.hub.shippingtimes[16] || 'loading...';
+        this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
+        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+      }
+
+      this.config.shared.hubs.forEach(hub => {
+        this.currentCart[hub.slug]={
+          count:0,
+          amount:0
+        };
+      })
+
+      //
+      // update scroll position
+      const index = this.config.shared.hubs.findIndex(hub => this.currentHub._id == hub.id);
+        setTimeout(()=>{
+          try {
+            document.querySelector('kng-nav-marketplace .marketplace').scrollLeft = 274*index;
+          } catch (e) {}
+        },100);      
+  
+
+      
+      // console.log('----cfg',this.config.shared.hub);
+      // const hub = this.config.shared.hub;
+      // hub.tagline.image;
+      // hub.siteName.image;
+      // hub.about.image;
+  
+
+      if(this.lockedHUB) {
+        const native: HTMLElement =this.$elem.nativeElement;
+        native.setAttribute('hidden','');
+      }
+
+    })
 
   }
 
@@ -66,20 +118,20 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     return this.$i18n.locale;
   }
 
-  //
-  // label is 'nav_no_shipping' or 'nav_no_shipping_long'
-  getNoShippingMessage() {
-    // const label = long ?  'nav_no_shipping_long' : 'nav_no_shipping';
-    //
-    // check window delivery
-    if (!this.isDayAvailable(this.currentShippingDay)) {
-      return this.$i18n[this.locale]['nav_no_shipping_long'];
-    }
+  get label() {
+    return this.$i18n.label();
+  }
 
-    //
-    // check manager message
-    const noshipping = this.config.noShippingMessage().find(shipping => !!shipping.message);
-    return noshipping && noshipping.message[this.locale];
+  get lockedHUB() {
+    return this.$navigation.isLocked();
+  }
+
+
+  getWeekDay(idx) {
+    if(!this.weekdays[this.locale].length){
+      this.weekdays[this.locale] = this.$i18n.label().weekdays.split('_').map(day=>day.slice(0,3)+'.');
+    }
+    return this.weekdays[this.locale][idx];
   }
 
   onLang($event, lang) {
@@ -89,11 +141,12 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
   toggleStore(hub) {
     //
     // this HUB is running is own domain!!
-    if (this.currentHub.domainOrigin) {
+    if (this.$navigation.isLocked() || this.currentHub.domainOrigin) {
       // FIXME hardcoded link there
-      window.location.href = 'https://karibou.ch/store/' + hub.slug + '/home';
+      window.location.href = 'https://karibou.ch/store/' + hub.slug + '';
     } else {
-      window.location.href = '/store/' + hub.slug + '/home';
+      const url = '/store/' + hub.slug + '';
+      this.updated.emit(hub);
     }
   }
 

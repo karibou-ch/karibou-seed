@@ -20,7 +20,8 @@ import {
   MdcTabBarModule,
   MdcTextFieldModule,
   MDCDataTableModule,
-  MdcSelectModule
+  MdcSelectModule,
+  MdcIconModule
 } from '@angular-mdc/web';
 
 
@@ -32,6 +33,7 @@ import {
     MdcChipsModule,
     MdcDrawerModule,
     MdcDialogModule,
+    MdcIconModule,
     MdcElevationModule,
     MdcFabModule,
     MdcFormFieldModule,

@@ -28,11 +28,11 @@
 
       <div class="breaker small"></div>
       
-      <button [routerLink]="['/store/' + store + '/me/login-or-address']"
-        mdc-button [outlined]="true" i18n>{{$i18n[locale].cart_address_add}}</button>     
+      <button [routerLink]="['/store/' + store + '/home/me/login-or-address']"
+        mdc-button [outlined]="true" i18n>{{$i18n[locale].user_address_add}}</button>     
 
-      <button [routerLink]="['/store/' + store + '/me/login-or-payment']"
-        mdc-button [outlined]="true" i18n>{{$i18n[locale].cart_payment_add}}</button>     
+      <button [routerLink]="['/store/' + store + '/home/me/login-or-payment']"
+        mdc-button [outlined]="true" i18n>{{$i18n[locale].user_payment_add}}</button>     
 
 
   </form>

@@ -1,9 +1,9 @@
 <ng-template ngFor let-i="index" let-category [ngForOf]="getCategories()" [ngForTrackBy]="trackerCategories">
   <ng-content  *ngIf="i==categoryMiddle && contentIf"></ng-content>
   <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>
-    <section  class="" [ngClass]="isChildCategory ? 'child':'title'">
+    <section  class="category-hide-sm" [class.display]="showSection" [ngClass]="isChildCategory ? 'child':'title'">
       <h2>{{category.name}}</h2>
-      <h3 [innerHtml]="category.description"></h3>
+      <h3 class="hide" [innerHtml]="category.description"></h3>
     </section>
 
 
@@ -19,7 +19,7 @@
       <div class="category" [hidden]="!visibility[category.slug] || !showMore" 
         [routerLink]="['category',category.slug]">
         <div class="icon"><i class="material-icons">playlist_add</i></div>
-        <div>{{category.name}} </div>
+        <div>{{getCategoryI18n(category)}} </div>
       </div>
     </div>
   </div>

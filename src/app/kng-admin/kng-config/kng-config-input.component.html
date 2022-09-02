@@ -76,15 +76,13 @@
 
   <!-- LANG -->
   <ng-container *ngSwitchCase="'lang'">
-    <mdc-icon>language</mdc-icon> 
-    <div class="lang">Changer de langue</div>   
-    <div class="center">
-      <mdc-radio class="radio-primary" value="en" [checked]="i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>
-      <label>En</label>
-      <mdc-radio class="radio-primary" value="fr" [checked]="i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>
-      <label>Fr</label>
-    </div>
+    <div class="lang">i18n</div>   
+    <div class="input-i18n">
+      <a class="" [class.checked]="i18n.locale=='en'" (click)="onLang($event,'en')">en</a>
+      <a class="" [class.checked]="i18n.locale=='fr'" (click)="onLang($event,'fr')">fr</a>
+   </div>
   </ng-container>
+
 
   <!--- GEO -->
   <ng-container  *ngSwitchCase="'geo'">

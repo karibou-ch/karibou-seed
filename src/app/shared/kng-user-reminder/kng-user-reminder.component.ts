@@ -68,10 +68,9 @@ export class KngUserReminderComponent implements OnInit {
     }
    }
 
-  doUpdate(event) {
-    let day = event.value.value;
+  doUpdate(day) {
 
-    if (day && event.value.selected) {
+    if (day) {
        day = day | 0;
       this.user.reminder.weekdays = (day > -1) ? [day] : [];
       this.user.reminder.time = this.time;
@@ -92,6 +91,8 @@ export class KngUserReminderComponent implements OnInit {
     this.$user.save(this.user).subscribe(
       user => {
         this.$snack.open(this.$i18n.label().save_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
+        this.selectedNotification = this.weekdays[this.weekdays.length - 1];
+        this.selectedNotification = this.user.reminder.weekdays[0] > -1 ? this.user.reminder.weekdays[0] : -1;
       },
       (hang) => this.$snack.open(hang.error, this.$i18n.label().thanks, this.$i18n.snackOpt)
     );

@@ -28,6 +28,7 @@ export class AppComponent {
     private $update: SwUpdate,
     private $mterics: MetricsService
   ) {
+
     //
     // init metric/funnel service
     this.$mterics.init();
