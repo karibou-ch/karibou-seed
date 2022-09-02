@@ -175,6 +175,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
   get hubs() {
     //return this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
     const _current = this.config.shared.hubs.find(hub => hub.slug == this.currentHub);
+    if(this.lockedHUB){
+      return [_current];
+    }
     const _hubs = this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
     _hubs.unshift(_current)
     return _hubs;
