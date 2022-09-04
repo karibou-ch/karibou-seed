@@ -2,7 +2,10 @@
   <div class="calendar-container">
     <h2 [hidden]="hideTitle">{{label.nav_shipping}} {{currentHub.name}}</h2>
     <!-- PENDING ORDER -->
-    <h3 [hidden]="!pendingOrder">{{label.cart_order_grouped_details}}, <b>{{pendingOrderShipping|date:'EEE d MMM':'':locale}}</b></h3>
+    <h3 [hidden]="!pendingOrder">
+      {{label.cart_order_grouped_details}}, <b>{{pendingOrderShipping|date:'EEE d MMM':'':locale}}</b>.
+      &nbsp;{{label.cart_order_grouped_details_more}}
+    </h3>
 
     <!-- NO SHIPPING -->
     <div class="noshipping block-warning" [hidden]="!noshippingMsg">
