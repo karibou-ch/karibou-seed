@@ -289,7 +289,8 @@ export class KngCartCheckoutComponent implements OnInit {
     this.$user.checkPaymentMethod(this._user).subscribe(user => {
       //
       // set default payment
-      const lastIssuer = (this.orders.length) ? this.orders[0].payment.issuer:null;
+      // FIXME me this.orders[0].payment.issue is crashing 
+      const lastIssuer = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.issuer:null;
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
       const previousPayment = payments.find(payment => payment.issuer == lastIssuer);
