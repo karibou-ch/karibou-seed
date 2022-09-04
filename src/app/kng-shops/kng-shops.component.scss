@@ -1,62 +1,83 @@
-
-:host{
- .mdc-content{
-    width: 100vw!important;
-    padding: unset!important;
-    margin: unset!important;
-  }
-  
-}
-
 div.content{
   display: flex;
   flex-flow: column wrap;
-  width: 100vw;
+  width: 100%;
 
   justify-content: center;
   line-height: 1.4;
 
   flex: 1 0 100vw;
 
-  font-family: Helvetica,Arial, sans-serif;
   line-height: 1.3em;
   font-size: 1.2em;
   font-weight: 200;
   font-style: normal;
   letter-spacing: -.003em;
 
-  margin-top: 70px;
+  margin-top: 0px;
   margin-bottom: 100px;
-  @media screen and (max-width:426px){
-    margin-top: 100px;
-  }  
+  section.header{
+    h2{
+      font-size: 1.375em;
+    }
+    h3{
+      font-weight: 200;
+      font-size: 1.275rem;
+      color: #aaa;
+      text-shadow: 1px 1px 0 #fff;
+      margin-top: -10px;      
+    }
+  }
 
   
-  .mdc-image-list {
-    display: -ms-flexbox;
+  .shops-list {
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     margin: 0 auto;
     padding: 0;
 
-    max-width: 1024px;
-    width: 1024px;
+    width: 100%;
     margin: auto;      
 
     @media screen and (max-width:426px){
       width: calc( 100vw - 20px );        
     }  
 
+    article{
+      cursor: pointer;
+      width: calc( 100% / 4 - 10px );
+      @media screen and (max-width:426px){
+        width: calc(50% - 10px );        
+      }  
+  
+      margin: 5px;
+      margin-bottom: 1px;
+      .shop-image{
+        height: 170px;
+        position: relative;
+        overflow: hidden;        
+        border-radius: 12px;
+        img{
+          object-position: center center;
+          width: 100%;
+          margin: auto;
+          object-fit: cover;
+          min-height: 100%;
+          object-position: center center;
+          padding: 0;
+        }
+      }
+  
+      .shop-description{
+        margin:6px 8px;
+        padding: 10px 0;
+        font-size: 13px;
+        line-height: 17px;
+        font-weight: 600;
+        margin-top: -2px;
+      }
+    }
+
   }
   
-  .standard-image-list .mdc-image-list__item {
-    width: calc(20% - 4.2px);
-    margin: 2px;
-    cursor: pointer;
-
-    @media screen and (max-width:426px){
-      width: calc(50% - 4.2px);
-    }
-  }  
 }

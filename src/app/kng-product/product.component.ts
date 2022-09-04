@@ -23,8 +23,9 @@ import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Meta } from '@angular/platform-browser';
+import { DomSanitizer, Meta } from '@angular/platform-browser';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
+
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
 @Component({
@@ -54,7 +55,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   bgStyle: any;
   bgImage: string;
   photosz: string;
-  cartItem: CartItem;
+  cartItemNote: string;
+  cartItemAudio: string;
+  cartItemAudioLoading = false;
+  cartItemAudioError = false;
 
   departement = 'home';
 
@@ -81,6 +85,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     maxcat: 40,
     available: true,
     when: true,
+    status: true,
     windowtime: 200
   };
 
@@ -116,8 +121,23 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
-
   }
+
+
+
+  get cartItemQuantity(){
+    const qty= this.$cart.getItemsQtyMap(this.product.sku,this.config.shared.hub.slug);
+    return qty;
+  }
+
+
+  get isAvailableForOrder(){
+    return !this.isReady || this.product.isAvailableForOrder();
+  }
+  get isInStockForOrder() {
+    return !this.isReady || this.product.pricing.stock;
+  }
+
 
   //
   // this component is shared with thumbnail, tiny, and wider product display
@@ -127,7 +147,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isReady = true;
+    this.isReady = false;
 
 
     //
@@ -190,13 +210,26 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-
   get store() {
     return this.$navigation.store;
   }
 
-  addToCart($event, product: Product, variant?: string) {
-    $event.stopPropagation();
+  onAudioError(error) {
+    console.log('---DBG audio error',error);
+  }
+
+  onAudioStopAndSave(url: string) {
+    this.cartItemAudio = url;
+    if(!url){
+      return;
+    }
+    this.addToCart(0,this.product, null, true);
+  }
+
+  addToCart($event, product: Product, variant?: string, audio?: boolean) {
+    if($event){
+      $event.stopPropagation();
+    }
     //
     // FIXME should not be possible
     if (!product.variants) {
@@ -214,19 +247,24 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // check if item is already on cart
     // Open variant UI
-    const isOnCart = this.$cart.getItems().find(it => it.sku === product.sku);
-    if (!isOnCart &&
-        product.variants.length
-        && !variant) {
+    const hub = this.config.shared.hub.slug;
+    const isOnCart = this.$cart.getItemsQtyMap(product.sku,hub);
+    if (!isOnCart && product.variants.length && !variant) {
       this.openVariant = true;
       return;
     }
 
     this.openVariant = false;
 
+    const item = CartItem.fromProduct(product,hub, variant);
+    item.note = this.cartItemNote;
+    item.audio = this.cartItemAudio;
+    if(audio){
+      this.$cart.addOrUpdateNote(item);      
+    }else{
+      this.$cart.add(item);
+    }
 
-    this.$cart.add(product, variant);
-    this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
 
@@ -278,7 +316,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     if(vendor && !vendor.status) {
       return "discontinued";
     }
-    if(!product.isAvailableForOrder()) {
+    if(!this.isAvailableForOrder) {
       return "sold out";
     }
     if(product.pricing.stock < 1) {
@@ -312,9 +350,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.isReady = true;
     this.product = product;
 
-    //
-    // get cart value
-    this.cartItem = this.$cart.findBySku(product.sku);
     //
     // updated product is hilighted for 2 weeks
     this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;
@@ -354,11 +389,30 @@ export class ProductComponent implements OnInit, OnDestroy {
         path:window.location.pathname,
         title: document.title
       });
+
+      //
+      // FIXME wait for cart loaded before to get content
+      setTimeout(()=>{
+        //
+        // get cart value
+        const cartItem = this.$cart.findBySku(product.sku,this.config.shared.hub.slug);
+        if(!cartItem) {
+          return
+        }
+        // this.$dom.bypassSecurityTrustUrl
+        this.cartItemAudio = (cartItem.audio);
+        this.cartItemNote = cartItem.note;
+        if(this.cartItemAudio){
+          document.querySelector('#audio').setAttribute('src', this.cartItemAudio);
+        }
+      },100)
+
       //
       // others products for this vendor
       this.$product.select(params).subscribe((products) => {
         this.products = products.sort(this.sortProducts);
       });
+
     }
   }
 
@@ -379,7 +433,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   removeToCart($event, product: Product) {
     $event.stopPropagation();
     this.$cart.remove(product);
-    this.cartItem = this.$cart.findBySku(product.sku);
     this.updateBackground();
   }
 
@@ -456,7 +509,8 @@ export class ProductThumbnailComponent extends ProductComponent {
     // this.bgStyle = {
     //   'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
     // };
-    if (this.cartItem) {
+    
+    if (this.cartItemQuantity) {
       this.bgStyle = {
         'background-color' : this.bgGradient 
       };

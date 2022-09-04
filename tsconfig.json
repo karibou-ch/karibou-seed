@@ -8,6 +8,7 @@
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports":true,
     "moduleResolution": "node",
     "importHelpers": true,
     "resolveJsonModule": true,

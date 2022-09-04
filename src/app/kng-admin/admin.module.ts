@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/shared.module';
+import { KngSharedModule } from '../shared/shared.module';
 
 
 //
@@ -25,6 +25,7 @@ import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-de
 //
 // define routes module
 const routes: Routes = [
+  { path: 'cat', component: KngCategoriesComponent, resolve: { loader: LoaderResolve } },
   { path: 'category', component: KngCategoriesComponent, resolve: { loader: LoaderResolve } },
   { path: 'config', component: KngConfigComponent, resolve: { loader: LoaderResolve } },
   { path: 'information', component: KngInformationCfgComponent, resolve: { loader: LoaderResolve } },
@@ -53,7 +54,7 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     FormsModule,
     ReactiveFormsModule,
     AdminMdcModule,
-    SharedModule,
+    KngSharedModule,
     routing
   ],
   entryComponents: [

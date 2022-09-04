@@ -1,13 +1,17 @@
 <div class="content">
+  <section class="header">
+    <h2>{{$i18n.label().nav_shops}}</h2>
+    <h3> {{$i18n.label().nav_shops_sub}}</h3>
+  </section>
 
-  <mdc-image-list textProtection class="standard-image-list image-list--rounded-corners">
-    <mdc-image-list-item *ngFor="let shop of shops" [routerLink]="['../',shop.urlpath]">
-      <mdc-image-list-image-aspect>
-        <img mdcImageListImage [ngStyle]="ngStyleBck[shop.urlpath]" />
-      </mdc-image-list-image-aspect>
-      <mdc-image-list-supporting>
-        <span mdcImageListLabel>{{shop.name}}</span>
-      </mdc-image-list-supporting>
-    </mdc-image-list-item>
-  </mdc-image-list>  
+  <section class="shops-list">
+    <article *ngFor="let shop of shops" (click)="doOpen(shop.urlpath)" [routerLink]="['/store',store,'home','shops',shop.urlpath]">
+      <div class="shop-image" [ngStyle]="shop.ngStyleBck" >
+        <img [src]="shop.img" />
+      </div>
+      <div class="shop-description">
+        <span>{{shop.name}}</span>
+      </div>
+    </article>
+  </section>  
 </div>

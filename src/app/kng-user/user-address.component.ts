@@ -59,22 +59,6 @@ export class AddressComponent implements OnDestroy{
     }
   };
 
-  addresses = [
-    'Chemin du 23-Août, 4',
-    'Chemin du 23-Août, 5',
-    'Chemin du 23-Août, 6',
-    'Chemin du 23-Août, 7',
-    'Chemin du 23-Août, 8',
-    'Chemin du 23-Août, 9',
-    'Chemin du 23-Août, 10',
-    'Chemin du 23-Août, 11',
-    'Chemin du 23-Août, 12',
-    'Chemin du 23-Août, 13',
-    'Chemin du 23-Août, 14',
-    'Chemin du 23-Août, 16',
-    'Chemin du 23-Août, 17',
-    'Chemin du 23-Août, 18'
-  ];
   $address: FormGroup;
   locations: string[];
   regions: string[];
@@ -120,7 +104,7 @@ export class AddressComponent implements OnDestroy{
   //
   // entry poiont
   main(config: Config) {
-    this.locations = config.shared.user.location.list;
+    this.locations = config.shared.user.location.list.sort();
     this.regions = config.shared.user.region.list;
     this.pubkeyMap = config.shared.keys.pubMap || '';
 

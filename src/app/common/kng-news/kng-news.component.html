@@ -1,0 +1,27 @@
+<!-- NAVIGATION  -->
+<div class="kng-drawer" [class.kng-drawer-open]="open" >
+  <!-- brand -->
+  <div class="k-brand">
+    <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp;{{i18n[locale].karibou_project}} 
+  </div>
+
+
+  <!-- NEWS-->
+  <div class="content">
+    <!-- INFORMATION -->
+    <div class="header" [hidden]="!hasContent('p')" 
+        [class.cover-lg]="hasBackgroundContent()" 
+        [ngStyle]="getContentStyle()">
+      
+      <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 
+          [innerHtml]="config.shared.hub.maintenance.reason[locale]">    
+      </div>
+      <div class="welcome" [innerHtml]="content"></div>  
+    </div>
+  </div>
+  <div class="action">
+    <button class="goto" (click)="doClose()">{{i18n[locale].karibou_news_ok}}</button>
+    <button class="goto" (click)="doQuit()">{{i18n[locale].karibou_news_ko}}</button>
+  </div>
+
+</div>

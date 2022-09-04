@@ -1,0 +1,89 @@
+.calendar-container{
+  margin: 10px;
+  margin-bottom: 50px;
+  color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
+  width: calc( 100%  - 20px );
+  @media (min-width:1024px) {
+    max-width: 940px;
+    width: 940px;
+    margin-left: 40px;        
+  }
+  h2{
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.87);
+    color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
+    font-size: 1.4675rem;
+    margin-bottom: 15px;
+  }
+  h3{
+    margin-top: 0px;
+    font-weight: 200;
+    font-size: 1.275rem;
+    color: #aaa;
+    text-shadow: 1px 1px 0 white;
+  }
+
+  .calendar{
+    overflow: hidden;
+    overflow-x: auto;
+    background-color: rgba(240, 240, 240, .4);
+    background-color:var(--mdc-theme-appbar);
+    border-radius: 50px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .list{
+      display: flex;
+      flex-wrap: nowrap;
+      width: max-content;
+  
+      .element{
+        margin: 0px 5px;
+        margin-left: 0;
+        background-color: white;
+        border: 1px solid #eee;
+        width: 60px;
+        height: 60px;
+        border-radius: 50px;
+        font-size: .80em;
+        display: flex;
+        flex-flow: column;    
+        text-align: center;
+        cursor: pointer;
+        &.disabled {
+          .ei_Title{
+            color: #333;
+          }
+          background-color: transparent;
+          opacity: .6;
+          border: none;
+          cursor: default;
+        }
+      
+        &.selected{
+          background-color: var(--mdc-theme-primary);
+          .ei_Title{
+            font-weight: 600;
+            color: var(--mdc-theme-primary-text);
+          }
+        }
+        .ei_Title{
+          color: black;
+          margin: auto;
+          padding: 8px;
+        }        
+           
+        &:hover:not(.disabled){
+          background-image: linear-gradient(-222deg, var(--mdc-theme-primary), var(--mdc-theme-primary));
+          box-shadow: 0px 0px 52px -18px rgba(0, 0, 0, 0.75);
+          .ei_Copy,.ei_Title{
+            color:#fff;
+          }
+        }
+      }        
+  
+    }
+
+  }
+}

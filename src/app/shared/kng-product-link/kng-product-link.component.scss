@@ -1,12 +1,12 @@
 kng-product-link {
   width: 100%;   
+  margin-left: 10px;
+  display: block;
 
   @media (max-width:425px) {
     padding: 0px 20px;
     padding: 0px;
-    width: calc( 100% - 40px);
     width: 100%;
-    display: block;
   }  
 
   .links {
@@ -15,14 +15,10 @@ kng-product-link {
     margin-bottom: 20px;
     font-weight: 200; 
     -webkit-overflow-scrolling: touch;
+          
     .title {
-      margin-left: 15px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      padding-top: 10px; 
-      h2,h3{
-        margin: 0;
-      }     
+      margin: 20px 0px;
+      color: var(--mdc-theme-text-primary-on-background,rgba(0,0,0,.87));
     }
     .content {
       overflow: hidden;
@@ -31,10 +27,10 @@ kng-product-link {
         display: none;
       }
 
-      mdc-chip-set {
+      .kng-chip-content {
         flex-wrap: nowrap;
         width: fit-content;
-        padding: 10px;
+        padding: 0px;
         .bookmark {      
           mdc-chip-icon {
             color: var(--mdc-theme-secondary);

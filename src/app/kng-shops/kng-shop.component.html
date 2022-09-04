@@ -5,7 +5,7 @@
 
     <div class="description" [kng-markdown]="vendor.description"></div>  
     <div class="contact">      
-      <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><mdc-icon>phone</mdc-icon> {{vendor.address.phone}}</a>      
+      <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-icons">phone</i> {{vendor.address.phone}}</a>      
     </div>
     <!-- MARQUE -->
     <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">
@@ -17,7 +17,7 @@
 </div>
 <div class="content" *ngIf="vendor">
   <!-- SHOP PRODUCTS -->
-  <section class="products" >
+  <!-- <section class="products" >
     <kng-product-grouped-list 
       *ngIf="products.length"
       alphasort="true"
@@ -27,7 +27,8 @@
       [contentProducts]="products">
       </kng-product-grouped-list>
 
-  </section>
+  </section> -->
+
   <!-- SHOP GEO -->
   <section class="map" [hidden]="!vendor.address.geo">
     <div class="breaker"></div>

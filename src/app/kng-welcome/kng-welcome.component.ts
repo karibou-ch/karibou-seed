@@ -51,10 +51,7 @@ export class KngWelcomeComponent implements OnInit {
     this.config = loader[0];
     this.exited = false;
     // Object.assign(this.config, loader[0]);
-    this.$metric.event(EnumMetrics.metric_view_page,{
-      path:window.location.pathname,
-      title: 'Landing'
-    });
+
   
     this.$photo.shops({active: true, random: 40}).subscribe((photos: any) => {
       // remove underconstruction shops with missing photos //
@@ -73,7 +70,24 @@ export class KngWelcomeComponent implements OnInit {
 
   ngOnInit() {
     //
-    //
+    // publish metrics
+    // FIXME default HUB should not be Artamis!
+    // window.location.host
+    const source = this.$route.snapshot.queryParamMap.get('target')||
+                   this.$route.snapshot.queryParamMap.get('ad') ||
+                   this.$route.snapshot.queryParamMap.get('umt_source');
+    const hub = (this.config.shared.hub && this.config.shared.hub.slug)||'artamis';
+
+    const metric ={
+      path:window.location.pathname,
+      title: 'Landing',
+      action:'landing',
+      hub,
+      source
+    };
+    console.log('---DBG metrics',metric);
+    this.$metric.event(EnumMetrics.metric_view_page,metric);
+
   }
   
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserService, LoaderService, CartAction } from 'kng2-core';
+import { UserService, LoaderService, CartAction, AnalyticsService, Metrics, Hub } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map, debounce } from 'rxjs/operators';
 
@@ -11,6 +11,8 @@ export enum EnumMetrics {
   metric_add_to_card,
   metric_exception,
   metric_view_menu,
+  metric_view_landing,
+  metric_view_home,
   metric_view_page,
   metric_view_proposal,
   metric_order_address,
@@ -32,7 +34,8 @@ export class MetricsService {
 
   constructor(
     private $loader: LoaderService,
-    private $user: UserService
+    private $user: UserService,
+    private $analytics: AnalyticsService
   ) { }
 
   initFB() {
@@ -123,7 +126,12 @@ export class MetricsService {
   }
 
   isEnable() {
-    return (window.location.origin.indexOf('karibou.ch') > -1) && !this.isAdmin;
+    if(this.isAdmin){
+      return false;
+    }
+    const origin = window.location.origin;
+    // FIMXE use config instead of hardcodedw
+    return (origin.indexOf('evaletolab.ch') == -1) || (origin.indexOf('localhost') == -1);
   }
 
   getHost(name: string): any {
@@ -168,6 +176,7 @@ export class MetricsService {
       return;
     }
     const params: any = {};
+    const metrics:Metrics = {} as Metrics;
 
     // item:name
     // amount: CHF
@@ -191,9 +200,18 @@ export class MetricsService {
       case EnumMetrics.metric_view_page:
         fbq('track', 'ViewContent');
         gtag('event', 'page_view', { page_location: params.path, page_title: params.title });
+        if(options.action) {
+          metrics.hub=options.hub;
+          metrics.action=options.action;
+          metrics.source=options.source;
+          this.$analytics.push(metrics);  
+        }
         break;
-      case EnumMetrics.metric_view_proposal:
-        //gtag('event', 'user', 'proposal');
+      case EnumMetrics.metric_view_home:
+        metrics.hub=options.hub;
+        metrics.action='home';
+        metrics.source=options.source;
+        this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_order_payment:
         gtag('event', 'checkout_progress');
@@ -227,4 +245,3 @@ export class MetricsService {
     }
   }
 }
-

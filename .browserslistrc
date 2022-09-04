@@ -16,13 +16,10 @@
 
 # based analytics results
 > 0.5%
-last 2 versions
-#Firefox >= 59
-last 2 Edge major versions
-last 2 Safari major versions
-last 2 iOS major versions
-
-not dead
+last 3 Chrome version
+last 3 Firefox version
+last 3 Edge major versions
+last 3 Safari major versions
+last 3 iOS major versions
+Firefox ESR
 not IE 11
-#ios_saf >= 11
-#Safari >= 11

@@ -2,42 +2,15 @@
 <div class="kng-drawer" [class.kng-drawer-open]="open" >
   <!-- brand -->
   <div class="k-brand">
-    <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp;{{i18n[locale].karibou_project}} - <b>v{{VERSION}}</b>
+    {{i18n[locale].karibou_project}} - <b>v{{VERSION}}</b>
   </div>
 
-  <button class="close" >
-    <mdc-icon class="size-large" (click)="open = false">close</mdc-icon>
+  <button class="close " (click)="open = false">
+    <span class="size-large material-icons" >close</span>
   </button>
-  <!-- HUB INFO -->
-  <div class="header">
-    <h1 routerLink="/">{{currentHub.name}}</h1>
-    <h2>{{currentHub.description[locale]}}</h2>  
-    <div class="links">
-      <a href="mailto:{{currentHub.mail.address}}"><i class="material-icons fixed-position">email</i> 
-        <span class="hide-sm">{{currentHub.mail.address}}</span></a>
-      <a [href]="currentHub.address.url" target="_blank"><i class="icon-link-solid invert"></i>
-        <span class="hide-sm">{{currentHub.address.url}}</span></a>
-      <a href="tel:{{currentHub.address.phone}}"><i class="icon-phone-solid invert"></i>{{currentHub.address.phone}}</a>  
-    </div>  
-  </div>
 
   <!-- CALENDAR-->
   <div class="calendar_events">
-    <h2>{{i18n.label().nav_shipping}}</h2>
-
-    <!-- NO SHIPPING -->
-    <div class="noshipping" [hidden]="!noshippingMsg || getShippingDays().length">
-      <i class="material-icons pink">info</i>
-      <b>Fermeture pour traveaux publiques</b>
-    </div>
-
-    <div class="container">
-      <div class="element" [class.disabled]="!isDayAvailable(day)"
-        [class.selected]="day.equalsDate(currentShippingDay)" *ngFor="let day of getShippingDays();let idx=index"
-        (click)="doSetCurrentShippingDay($event,day,idx)">
-        <div class="ei_Title">{{day|date:'EEEE d MMMM':'':locale}}</div>
-        <div class="ei_Copy">{{getShippingText(day)}}</div>
-      </div>
-    </div>
+    <kng-calendar (updated)="doSetCurrentShippingDay($event)"></kng-calendar>
   </div>
 </div>

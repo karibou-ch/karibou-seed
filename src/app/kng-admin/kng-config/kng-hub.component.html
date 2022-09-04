@@ -1,15 +1,28 @@
 <div class="page-saving" [hidden]="isReady">
   <h1>Saving</h1>
 </div>
-<div class="container">
+<div class="container" *ngIf="currentHub">
   <h3 i18n>{{currentHub.name}}</h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" format="menu"></kng-config-input>
 
   <!-- HUB Lang -->
-  <kng-config-input clazz="config" format="hub"></kng-config-input>
+  <kng-config-input clazz="config" format="hub" [hubs]="hubs"></kng-config-input>
   <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
 
+  <!-- HUB Status -->
+  <h3 i18n>Status</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Active/Inactive Hub" name="hub.status" format="text" [withCheck]="true"
+                      [(ngModel)]="currentHub.status.reason[$i18n.locale]"
+                      [checked]="currentHub.status.active"
+                      (checkChange)="currentHub.status.active=$event"></kng-config-input>
+  
+  <button raised mdc-button (click)="onAdminHubSave()" class="primary">
+    <span mdcButtonLabel>Sauver vos modifications admin</span>
+    <mdc-icon>save</mdc-icon>
+  </button>    
+                    
   <!-- HUB Address -->
   <h3 i18n>Adresse </h3>
   <hr class="dashed"/>
@@ -33,6 +46,32 @@
   <kng-config-input clazz="config" label="Geo" name="address.geo" format="geo" [config]="config"
                     [(ngModel)]="currentHub.address"></kng-config-input>
 
+  <!-- HUB Schedule -->
+  <h3 i18n>Core informations</h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Order qty limit" name="currentLimit" format="text" 
+                    [(ngModel)]="currentHub.currentLimit"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Service fees" name="serviceFees" format="text" 
+                    [(ngModel)]="currentHub.serviceFees"></kng-config-input>
+
+  <kng-config-input clazz="config" label="timelimit" name="timelimit" format="text" 
+                    [(ngModel)]="currentHub.timelimit"></kng-config-input>
+
+  <kng-config-input clazz="config" label="timelimitH" name="timelimitH" format="text" 
+                    [(ngModel)]="currentHub.timelimitH"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Ouverture: Dim(0), Lun(1),Mar(2),Merc(3),Jeu(4),Vend(5),Sam(6)" name="weekdays" format="text" 
+                    [(ngModel)]="currentHub.weekdays"></kng-config-input>
+                  
+  <hr class="dashed"/>
+  <section class="shippingtime">
+    <h3 i18n>Shipping Time</h3>
+    <kng-config-input *ngFor="let time of [0,12,14,16,18]"
+                  clazz="config" label="Boundaries for start time: {{time}}h" name="shippingtime-{{time}}" format="text" 
+                  [(ngModel)]="currentHub.shippingtimes[time+'']"></kng-config-input>
+  </section>
+
   <!-- HUB Mail -->
   <h3 i18n>Mail informations</h3>
   <hr class="dashed"/>
@@ -46,16 +85,34 @@
   <h3 i18n>Colors </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text" 
+                    [style.color]="currentHub.colors.primaryText"
+                    [style.background]="currentHub.colors.primary"
                     [(ngModel)]="currentHub.colors.primary"></kng-config-input>
 
   <kng-config-input clazz="config" label="Text Color" name="colors.text" format="text" 
+                    [style.color]="currentHub.colors.primaryText"
+                    [style.background]="currentHub.colors.primary"
                     [(ngModel)]="currentHub.colors.primaryText"></kng-config-input>
 
   <kng-config-input clazz="config" label="Action Color" name="colors.action" format="text" 
+                    [style.color]="currentHub.colors.actionText"
+                    [style.background]="currentHub.colors.action"
                     [(ngModel)]="currentHub.colors.action"></kng-config-input>
 
   <kng-config-input clazz="config" label="Action Text Color" name="colors.action-text" format="text" 
+                    [style.color]="currentHub.colors.actionText"
+                    [style.background]="currentHub.colors.action"
                     [(ngModel)]="currentHub.colors.actionText"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Appbar Color (optional)" name="colors.action-appbar" format="text" 
+                    [style.color]="currentHub.colors.appbarText" 
+                    [style.background]="currentHub.colors.appbar"
+                    [(ngModel)]="currentHub.colors.appbar"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Appbar Text Color (optional)" name="colors.action-appbar-text" format="text" 
+                    [style.color]="currentHub.colors.appbarText" 
+                    [style.background]="currentHub.colors.appbar"
+                    [(ngModel)]="currentHub.colors.appbarText"></kng-config-input>
 
   <!-- HUB Links -->
   <h3 i18n>Links </h3>

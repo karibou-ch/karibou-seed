@@ -5,6 +5,8 @@
   [isPremium]="user?.isPremium()"
   (updated)="setShippingDay($event)" #calendar>
 </kng-nav-calendar>
+<kng-news [config]="config"></kng-news>
+
 <mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/store',store,'home']">
@@ -13,16 +15,9 @@
 
     <mdc-list-group subheader="">
       <mdc-list>
-        <mdc-list-item [routerLink]="['/store',store,'shops','list']">
-          <span i18n>{{$i18n.label().nav_store_shops_list}}</span>
-        </mdc-list-item>
-
-        <div class="mdc-list-item mdc-ripple-upgraded">
-          <a href="tel:{{hubPhone}}"><i class="icon-phone-solid invert"></i>{{hubPhone}}</a>  
-        </div>
 
         <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
-          <!--<mdc-icon mdcListItemGraphic class="">account_box</mdc-icon>--><span i18n>{{$i18n.label().nav_account}}</span>
+          <span i18n>{{$i18n.label().nav_account}}</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
           <span i18n>{{$i18n.label().nav_login}}</span>
@@ -30,8 +25,10 @@
 
         <mdc-list-item>
           {{$i18n.label().nav_i18n}}
-          <mdc-radio class="radio-primary align-right" value="en" [checked]="$i18n.locale=='en'"  (change)="onLang($event,'en')" ></mdc-radio>En
-          <mdc-radio class="radio-primary" value="fr" [checked]="$i18n.locale=='fr'" (change)="onLang($event,'fr')" ></mdc-radio>Fr
+          <input type="radio" class="radio-primary align-right" value="en"  name="lang" id="lang-en" [checked]="$i18n.locale=='en'" (click)="onLang($event,'en')">
+          <label for="lang-en">En</label>
+          <input type="radio" class="radio-primary" value="fr" name="lang" id="lang-fr" [checked]="$i18n.locale=='fr'" (click)="onLang($event,'fr')">
+          <label for="lang-en">Fr</label>
         </mdc-list-item>
 
         <mdc-list-item *ngFor="let elem of getMenuItems('links')" [routerLink]="['/store',store,elem.url]">
@@ -49,7 +46,6 @@
         <h6 mdcListGroupSubheader>Config</h6>
         <mdc-list-item [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;"
           [routerLink]="getRouterLink(menu.url)">
-          <!-- <mdc-icon class="white" mdcListItemGraphic>radio_button_checked</mdc-icon>&nbsp;-->
           {{menu.name[locale]}}
         </mdc-list-item>
       </mdc-list>
@@ -61,41 +57,33 @@
 <div [hidden]="!isAppReady()" class="navbar">
 
   <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar fixed="false"  [dense]="$navigation.isMobile()">
+  <mdc-top-app-bar [fixed]="!$navigation.isMobile()" >
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
-        <img class="icon" [src]="Kimage" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="home"  (click)="openCalendar(calendar,true)">
-          {{hubTitle}}      
-          <div class="show-sm">{{gtShippingDateFormat()}} <i class="material-icons">keyboard_arrow_down</i></div>
+        <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
+        <img class="icon icon-hub" [class.icon-show]="isLockedHUB()"  [src]="hubImage" (click)="navigation.open = ! navigation.open" />
+        <mdc-top-app-bar-title class="brand" [routerLink]="['/store',store]" [hidden]="isLockedHUB()">
+          Karibou.ch      
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
       <!-- APP TITLE (DATE) -->
       <mdc-top-app-bar-section>
-        <mdc-top-app-bar-title class="home center hide-sm "  (click)="openCalendar(calendar)">
-          <i class="material-icons subtitle">directions_bike</i>&nbsp;{{gtShippingDateFormat()}}
-          <i class="material-icons wobble-vertical">keyboard_arrow_down</i>
-        </mdc-top-app-bar-title>
-
+        <kng-search-bar></kng-search-bar>
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
       <mdc-top-app-bar-section align="end" class="actions">        
-        <a class="label shopping-cart" href="javascript:;" [routerLink]="['./cart/default']">
-          <div i18n> <span class="cart-items-count"></span></div>
-          <mdc-icon mdcTopAppBarActionItem class="secondary-text" >shopping_cart</mdc-icon>          
-        </a>
 
         <!-- LOGIN / REGISTER -->
-        <a class="label " [routerLink]="['./me/orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon mdcTopAppBarActionItem class="secondary-text" >account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
+        <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
+          <span mdcTopAppBarActionItem class="material-icons secondary-text" >account_circle</span><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
         </a>
-        <a class="label" [routerLink]="['./me/login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
-          <mdc-icon mdcTopAppBarActionItem class="secondary-text">account_circle</mdc-icon><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
+        <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
+          <span mdcTopAppBarActionItem class="material-icons secondary-text">account_circle</span><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
         </a>
 
         <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
@@ -105,32 +93,29 @@
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
 
-    <mdc-top-app-bar-row class="navigation">      
-      <!-- APPBAR-SECTION-START -->
-      <mdc-top-app-bar-section align="start">
-      </mdc-top-app-bar-section>
-      <!-- APPBAR-SECTION-MIDDLE -->
-      <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
-      <mdc-top-app-bar-section #section>
-        <mdc-tab-bar [activeTabIndex]="currentTab">
-          <!-- mdcRouter -->
-          <mdc-tab-scroller>
-            <mdc-tab *ngFor="let menu of primary;let idx=index;" [routerLink]="'.'+menu.url"  routerLinkActive #rla="routerLinkActive">
-              <span [innerHTML]="menu.name[locale]"></span>
-            </mdc-tab>
-            <!-- <mdc-tab [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()">
-              <mdc-icon class="hide">account_box</mdc-icon><span i18n>{{$i18n.label().nav_account}}</span>
-            </mdc-tab>
-            <mdc-tab [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-              <mdc-icon class="hide">account_circle</mdc-icon><span i18n>{{$i18n.label().nav_login2}}</span>
-            </mdc-tab> -->
-          </mdc-tab-scroller>
-        </mdc-tab-bar>
+    <mdc-top-app-bar-row class="navigation ">      
+      <!-- APPBAR-SECTION-START HUB AND DATE -->
+      <mdc-top-app-bar-section align="start" class="hide-sm">
+        <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-icons start">roofing</i>{{$i18n.label().nav_bottom_home}}</div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_market}} {{hubTitle}} </div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_shops}}</div>
+        <div class="kng-chip" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
+        <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
+          <div i18n> <span class="cart-items-count"></span></div>
+          <span  class="end material-icons secondary-text" >shopping_cart</span>          
+        </div>
+
+
       </mdc-top-app-bar-section>
 
-      <!-- APPBAR-SECTION-END -->
-      <mdc-top-app-bar-section align="end" class="">
+
+      <!-- APPBAR-SECTION-MIDDLE -->
+      <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
+      <mdc-top-app-bar-section  class="title hide-md hide-lg">
+        <span class="start">{{$i18n.label().nav_market}} {{hubTitle}} </span>
+        <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
+
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
 
@@ -138,6 +123,11 @@
   <div class="mdc-content">
     <ng-content></ng-content>
   </div>
+
+  <!-- FAB  [exited]="scrollDirection<-5" -->
+  <kng-ui-bottom-actions [config]="config" [categories]="categories">  
+  </kng-ui-bottom-actions>
+
 
   <!-- IOS INSTALL -->
   <div class="overlay-pane" [class.overlay-open]="displayIosInstall">

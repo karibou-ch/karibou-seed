@@ -5,37 +5,28 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close" >
-        <mdc-icon class="size-large">arrow_back</mdc-icon>
+        <span class="material-icons size-large">arrow_back</span>
       </button>
 
       <!-- TITLE -->
       <h4 class="title" [innerHtml]="category.current.name"></h4>
+      <p class="subtitle" [innerHtml]="category.current.description"></p>
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
-      <div class="toolbox " [class.exited]="scrollDirection < -5 || scrollDirection > 15 || !scrollDirection">
-        <!-- TODO BUILD PERSISTENT SUB CAT [routerLink]="['./',child.name]"-->
-        <!-- TODO [selected]="filterChild==child.name"-->
-        <!-- [routerLink]="[relative,child.name]" -->
-        <mdc-chip-set choice #subcategory>
-          <mdc-chip (click)="scrollTo($event,child.name)"
+      <div class="toolbox " [class.exited]="scrollDirection < -15 || scrollDirection > 15 || !scrollDirection">
+        <ul  #subcategory>
+          <li class="kng-chip" (click)="scrollTo($event,child.name)"
                     [id]="'child'+j"                    
-                    [selected]="child.name == filterChild"
+                    [class.selected]="child.name == filterChild"
                     *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
-            <mdc-chip-text>{{child.name}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>        
+            <span>{{child.name}}</span>
+          </li>
+        </ul>        
       </div>
 
       <!-- VENDORS-->
       <div class="vendor" >
-        <div class="owner" 
-            (click)="toggleVendor(vendor)"
-            *ngFor="let vendor of getVendors()">
-            <img [src]="vendor.photo.owner" [class.selected]="filterVendor && filterVendor.urlpath==vendor.urlpath"></div>
-      </div>
-      <div class="owner-title" *ngIf="filterVendor">
-        <a class="link" [routerLink]="['/store',store,'shops',filterVendor.urlpath]">{{filterVendor && filterVendor.name}}</a>
       </div>
 
 
@@ -45,6 +36,7 @@
     <div class="further-product-container mdc-layout-grid" >
       <kng-product-grouped-list class="kng-layout-card"        
         alphasort="true"
+        showSection="true"
         [config]="config" 
         [user]="user"         
         [filterByVendor]="filterVendor && filterVendor.urlpath"

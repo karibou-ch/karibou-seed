@@ -1,57 +1,32 @@
-<div class="bottom-actions" >  
-  <div class="fabs">
-    <button mdc-fab  extended label="MENU" [hidden]="show"
-      (click)="doToggle()">
-      <mdc-icon >menu</mdc-icon>
-    </button>  
+<div class="bottom-actions " >  
+  <kng-search-bar class="force-display" [hidden]="!show"></kng-search-bar>
 
-  </div>  
-  <div class="fabs left">
-    <button mdc-fab   [hidden]="show" class="bookmark"
-      (click)="doPreferred()">
-      <mdc-icon >favorite</mdc-icon>
-    </button>  
+  <div class="bottom-bar hide-lg" [hidden]="show">
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-icons icon">home</span><div>{{label.nav_bottom_home}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-icons icon">manage_search</span><div>{{label.nav_bottom_browse}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLink]="['/store',store,'home','shops']"><span class="material-icons icon">storefront</span><div>{{label.nav_bottom_shops}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']">
+      <div class="cart-items-count-mobile"></div>
+      <span class="material-icons icon">shopping_cart</span>
+      <div>{{label.nav_bottom_cart}}</div>
+    </button>    
   </div>
-
-
-  <div class="search">
-    <i class="left material-icons">search</i>
-    <span #stats class="stats"></span>
-    <input type="text" 
-          (input)="doInput($event.target.value)"
-          (change)="doInput()" 
-          (focus)="onFocus()" 
-          [placeholder]="i18n[locale].search_placeholder" #search>    
-    <i class="right material-icons" [hidden]="!hasSearch()" (click)="doClear()">close</i>
-  </div>  
-
 </div>  
 
 <div class="results" [hidden]="!show">
   <button  (click)="doToggle()" class="close">
-    <mdc-icon >{{show?'close':'menu'}}</mdc-icon>
+    <span class="material-icons" >{{show?'close':'menu'}}</span>
   </button>  
 
   <!-- CATS -->
-  <ul class="col" [hidden]="products.length">
-    <!-- TODO rebuild list of categories based on the menu group -->
-    <!-- <li class="menu-group" *ngFor="let menu of primary;let idx=index;" (click)="onPrimaryMenu(menu.url)">
-        <div [innerHTML]="menu.name[locale]"></div>
-    </li> -->
-
+  <!-- <ul class="category" [hidden]="products.length">
     <li *ngFor="let category of categories" 
         [hidden]="!category.active||products.length" 
         (click)="doGoCategory(category.slug)">
       <i [class]="category.image" class="icon"></i>
-      <!-- <img src="assets/img/icon-wine.svg" width="32px" height="32px"/> -->
-      <!-- <mdc-icon>radio_button_unchecked</mdc-icon> -->
-      <div>&nbsp;{{category.name}}</div>
+      <span>&nbsp;{{category.name}}</span>
     </li>                
-
-    <!-- LINKS -->
-    <kng-product-link [config]="config"></kng-product-link>
-
-  </ul>
+  </ul> -->
 
   <!-- PRODUCTS -->
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false" [hidden]="!products.length">
@@ -74,7 +49,11 @@
       <mdc-list-item>
         <mdc-list-item-text >.</mdc-list-item-text>
       </mdc-list-item>
-    </mdc-list>
+  </mdc-list>
+
+  <!-- SHOPS -->
+  <!-- <kng-shops></kng-shops>   -->
+
 
   <!-- <div [hidden]="!findGetNull" class="info">
     <h4>Pas de résultat avec votre recherche</h4>

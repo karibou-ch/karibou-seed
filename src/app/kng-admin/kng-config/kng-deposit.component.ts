@@ -74,6 +74,9 @@ export class KngDepositDlgComponent {
     this.$dlgRef.close(this.form.value);
 
   }
+  addAddress() {
+    
+  }
 
   askDelete() {
     this.$dlgRef.close('delete');
@@ -146,7 +149,13 @@ export class KngDepositComponent extends KngHUBComponent {
   ngConstruct() {
     //
     // HUB from config
-    this.currentHub = this.config.shared.hub;
+    const hubSlug = this.config.shared.hub? this.config.shared.hub.slug:'artamis';
+    //
+    // HUB from DB
+    this.$hub.get(hubSlug).subscribe(hub => {
+      this.initHub(hub);
+      Object.assign(this.currentHub, hub);
+    }, (err) => this.$snack.open(err.error, 'OK'));
 
 
     //

@@ -34,8 +34,8 @@ export class CardComponent {
     fr: {
       stripe_issue: 'Votre banque à indiqué le problème suivant',
       title_header: 'Vos méthodes de paiement',
-      title_edit: 'Sélectionner une méthode pour l\'éditer',
-      action_add: 'Ajouter ou modifier une méthode de paiement',
+      title_edit: 'Sélectionner une méthode pour la supprimer',
+      action_add: 'Ajouter une méthode de paiement',
       action_create_ok: 'Votre méthode de paiement a été enregistrée',
     },
     en: {

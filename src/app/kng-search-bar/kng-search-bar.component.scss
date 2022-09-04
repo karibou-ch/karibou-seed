@@ -1,0 +1,156 @@
+//
+// display on large screen
+kng-search-bar{
+	display:flex;
+	opacity: .8;	
+	margin: auto;
+	@media (max-width: 429px) {
+		display:none;
+	}
+	&.force-display{
+		display:flex;
+	}
+}
+
+//
+// display on mobile
+kng-search{
+	display:flex;	
+	@media (min-width: 429px) {
+		display:none!important;
+	}
+}
+
+
+.search{
+	z-index: 1;
+	height: 45px;
+	width: 100%;
+	max-width: 450px;
+	display: flex;
+	right: 0;
+	left: 0;      
+	i.left{
+		position: absolute;
+		margin-left: 22px;
+		z-index: 1;
+		margin-top: 11px;  
+		color: var(--mdc-theme-primary)!important;      
+		cursor: pointer;
+
+	}
+	i.right-favorite{
+		z-index: 1;
+		color: var(--mdc-theme-primary)!important;      
+		margin-left:-60px;
+		cursor: pointer;
+		transform: scale(0);
+		animation: heart 2.0s cubic-bezier(0.5, 0.1, 0.7, 0.8) 0.6s forwards;
+		animation-iteration-count: 10;
+
+		padding: 5px;
+    margin-top: 4px;
+    height: 27px;
+    width: 31px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    justify-content: center;
+    background-color: #eee;		
+
+	
+		@media (max-width: 429px) {
+			right: 25px;
+		}
+
+	}
+	i.right{
+		z-index: 1;
+		margin-top: 11px;  
+		color: var(--mdc-theme-primary)!important;      
+		cursor: pointer;
+		margin-left:-70px;
+		@media (max-width: 429px) {
+			right: 25px;
+		}
+		&.cleared{
+			opacity: 0;
+		}
+		opacity: 0.5;
+	}
+	.stats{
+		font-size: 90%;
+		position: absolute;
+		margin-top: 15px;
+		font-weight: 900;
+		color: #999;     
+		transition: all .3s;   
+	}
+	input::placeholder {
+		font-size: 18px;
+	}
+	input{
+		outline: 0;
+		border: 1px solid rgba(185, 185, 185, 0.6);
+		border-radius: 25px;
+		background: #fff;
+		width:500px;
+		max-width: calc( 100vw - 60px);
+		padding-left: 30px;
+		font-size: 17px;
+		margin: 0 15px;
+	}
+	@media (max-width: 429px) {
+		-margin-right:10px;
+	}
+}
+
+@keyframes heart {
+  0% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+  15% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+  20% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  30% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  60% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  70% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+  80% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  90% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes search-ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

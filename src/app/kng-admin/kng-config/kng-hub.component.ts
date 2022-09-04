@@ -170,9 +170,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class KngHUBComponent implements OnInit, OnDestroy {
 
-  private _codeMirror: any;
-
-
+  hubs: Hub[];
   categories: Category[];
   config: Config;
   menus: any[];
@@ -206,21 +204,26 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     this.categories = loader[2];
     //
     // HUB from config
-    this.currentHub = Object.assign({}, this.config.shared.hub);
-
+    // this.currentHub = Object.assign({}, this.config.shared.hub);
+    const hubSlug = (this.config.shared.hub)?this.config.shared.hub.slug:'artamis';
     //
     // create 6 month date
     this.sixMOnth = new Date(Date.now()-86400000*30*6);
 
+    this.hubs = this.config.shared.hubs;
+
     //
     // HUB from DB
-    this.$hub.get(this.currentHub.slug).subscribe(hub => {
+    this.$hub.get(hubSlug).subscribe(hub => {
       this.initHub(hub);
       Object.assign(this.currentHub, hub);
     }, (err) => this.$snack.open(err.error, 'OK'));
 
-    this.currentHub.description = {fr: null, en: null, de: null};
-    this.currentHub.logo = this.currentHub.logo || null;
+    this.$hub.list().subscribe(hubs => {
+      hubs.forEach(hub=> hub.slug = hub.slug[0]);
+      this.hubs = hubs;
+    }, (err) => this.$snack.open(err.error, 'OK'));
+
   }
 
 
@@ -243,6 +246,10 @@ export class KngHUBComponent implements OnInit, OnDestroy {
 
 
   initHub(hub) {
+    this.currentHub = {} as Hub;
+    this.currentHub.description = {fr: null, en: null, de: null};
+    this.currentHub.logo = this.currentHub.logo || null;
+
     const format = (d: Date) => {
       d = new Date(d);
       const month = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -296,13 +303,19 @@ export class KngHUBComponent implements OnInit, OnDestroy {
 
 
   onHubSave() {
+    const weekdays: string|string[] = this.currentHub.weekdays as any;
+    if(typeof weekdays == 'string'){
+      this.currentHub.weekdays = weekdays.split(',').map(day => parseInt(day+'')) as number[];
+    }
     this.isReady = false;
     this.isLoading = true;
+    
     this.$hub.save(this.currentHub).subscribe(
       (hub) => {
         this.isReady = true;
         this.$snack.open(this.$i18n.label().save_ok, 'OK');
         Object.assign(this.config.shared.hub,hub);
+        Object.assign(this.currentHub,hub);
         }, (err) => this.$snack.open(err.error, 'OK'),
       () => this.isLoading = false
     );
@@ -323,15 +336,29 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     );
   }
 
+  onAdminHubSave() {
+    this.isReady = false;
+    this.isLoading = true;
+    this.$hub.saveAdmin(this.currentHub).subscribe(
+      () => {
+        this.isReady = true;
+        this.$snack.open(this.$i18n.label().save_ok, 'OK');
+        }, (err) => {
+          this.isLoading = false;
+          this.isReady = true;
+          this.$snack.open(err.error, 'OK');
+        }
+    );
+  }
+
   updateGeo($event) {
     const street = this.currentHub.address.streetAdress;
     const postal = this.currentHub.address.postalCode;
     const region = this.currentHub.address.region;
-    const hub = this.config.shared.hub;
 
     //
     // detect change
-    if (!street || !postal || [hub.address.streetAdress, hub.address.postalCode].indexOf($event) > -1) {
+    if (!street || !postal || [street, postal].indexOf($event) > -1) {
       return;
     }
 

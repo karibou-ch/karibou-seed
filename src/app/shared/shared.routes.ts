@@ -1,8 +1,10 @@
 import { Routes, Route } from '@angular/router';
 import { LoaderResolve } from 'kng2-core';
+import { KngEmptyRootComponent } from '../common/kng-empty-root/kng-empty-root.component';
 
 import { KngHomeComponent } from '../kng-home/kng-home.component';
-import { ProductListComponent, ProductComponent } from '../kng-product';
+import { KngProductListByShopComponent, ProductListComponent, ProductComponent } from '../kng-product';
+import { KngShopsComponent } from '../kng-shops/kng-shops.component';
 
 
 // export const appRoutes: Routes = [
@@ -12,7 +14,7 @@ import { ProductListComponent, ProductComponent } from '../kng-product';
 //     resolve:{ loader:LoaderResolve },
 //     children:[
 //       { path: 'me', loadChildren: '../kng-user/user.module#UserModule' },
-//       { path: 'shops', loadChildren: '../kng-shops/kng-shops.module#ShopsModule' },
+//       { path: 'shops', loadChildren: '../kng-shops/kng-shops.module#KngShopsModule' },
 //       { path: 'content', loadChildren: '../kng-document/kng-document.module#KngDocumentModule' },
 //       { path: 'admin', loadChildren: '../kng-admin/admin.module#AdminModule'  },
 //       { path: 'cart',loadChildren: '../kng-cart/kng-cart.module#KngCartModule'   },
@@ -39,18 +41,14 @@ export const childrenRoute: Route[] = [
 
 // TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
-  { path: 'admin', loadChildren: () => import('../kng-admin/admin.module').then(m => m.AdminModule) },
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
-  { path: 'content', loadChildren: () => import('../kng-document/kng-document.module').then(m => m.KngDocumentModule) },
+  { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
+  { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},
+  { path: 'shops/:shop/:child', component: KngProductListByShopComponent },
+  { path: 'shops/:shop', component: KngProductListByShopComponent },
   { path: 'me', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule) },
-  { path: 'shops', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.ShopsModule) },
-  { path: 'shop', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.ShopsModule) },
+
   // FIXME path construction is ugly
-  { path: 'home', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'grocery', component: KngHomeComponent, data: { departement: 'grocery' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'drink', component: KngHomeComponent, data: { departement: 'drink' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'cellar', component: KngHomeComponent, data: { departement: 'cellar' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'selection', component: KngHomeComponent, data: { departement: 'selection' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: 'wellness', component: KngHomeComponent, data: { departement: 'wellness' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
-  { path: '', pathMatch: 'full', redirectTo: '' },
+  { path: '', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
+  { path: '', pathMatch: 'full' },
 ];

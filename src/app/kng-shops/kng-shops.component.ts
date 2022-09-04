@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { i18n, KngUtils } from '../common';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { i18n, KngNavigationStateService, KngUtils } from '../common';
 import { Config, User, Shop, PhotoService, Product, ProductService, Category } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { ShopService } from 'kng2-core';
@@ -16,6 +16,8 @@ import { combineLatest } from 'rxjs';
   styleUrls: ['./kng-shop.component.scss']
 })
 export class KngShopComponent implements OnInit {
+
+  @Output() open: EventEmitter<string> = new EventEmitter<string>();
 
   user: User;
   config: Config;
@@ -54,12 +56,12 @@ export class KngShopComponent implements OnInit {
 
   constructor(
     public $i18n: i18n,
+    public $navigation: KngNavigationStateService,
     public $photo: PhotoService,
     public $shop: ShopService,
     public $product: ProductService,
     public $route: ActivatedRoute
   ) {
-    document.body.classList.add('shop');
     const loader = this.$route.snapshot.data.loader;
     this.config = <Config>loader[0];
     this.user = <User>loader[1];
@@ -70,11 +72,11 @@ export class KngShopComponent implements OnInit {
     this.ngStyleBck = {};
   }
 
+  get store() {
+    return this.$navigation.store;
+  }
 
   ngOnDestroy() {
-    //
-    // class shop would change the mdc-content behavior
-    document.body.classList.remove('shop');
   }
 
   ngOnInit() {
@@ -96,14 +98,12 @@ export class KngShopComponent implements OnInit {
       this.$shop.get(this.urlpath),
       this.$product.select(options)
     ]).subscribe(([vendor, products]: [Shop, Product[]]) => {
-      document.body.classList.add('shop');
-      document.title = vendor.name;
 
       Object.assign(this.vendor, vendor);
 
       if (vendor.photo && vendor.photo.fg) {
         this.ngStyleBck = {
-          'background-image': this.bgGradient + 'url(' + vendor.photo.fg + '/-/resize/900x/fb.jpg)'
+          'background-image': this.bgGradient 
         };
       }
 
@@ -120,7 +120,11 @@ export class KngShopComponent implements OnInit {
     setTimeout(() => {
       try {window.scroll(0, 0); } catch (e) {}
     }, 100);
+  }
+  
 
+  doOpen(shop){
+    this.open.emit(shop);
   }
 
   getCleanPhone(phone: string) {
@@ -155,22 +159,32 @@ export class KngShopsComponent extends KngShopComponent{
   ngOnInit(){
     this.ngStyleBck = {};
     this.shops = [];
-    super.ngOnInit();
+    super.ngOnInit();    
     if(this.urlpath) {
       return;
     }
 
     document.title = this.config.shared.hub.name;
+    try {window.scroll(0, 0); } catch (e) {}
 
     this.$shop.shops$.subscribe(shops => {
-      this.shops = shops.filter(shop => shop.status);
-      this.shops.forEach(shop => {
-        this.ngStyleBck[shop.urlpath] = {
-          'background-image': this.bgGradient + 'url(' + shop.photo.fg + '/-/resize/400x/fb.jpg)'
+      this.shops = shops.filter(shop => shop.status).sort(this.sortByName.bind(this));
+      this.shops.forEach(shop => {        
+        shop['ngStyleBck'] = {
+          'background-image': 'url(' + shop.photo.fg + '/-/resize/64x/fb.jpg)',
+          'background-repeat': 'no-repeat',
+          'background-size': 'cover'
         }
+
+        shop['img'] = shop.photo.fg + '/-/resize/400x/fb.jpg';
+
       });
 
     });
+  }
+
+  sortByName(a,b) {
+    return a.name.localeCompare(b.name);
   }
 
   loadOneShop(){

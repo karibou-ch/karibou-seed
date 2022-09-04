@@ -1,17 +1,17 @@
 @import "colors.scss";
 
 
-body.shop .mdc-content{
-  width: 100vw!important;
-  padding: unset!important;
-  margin: unset!important;
-}
 
 @media screen and (min-width:1024px){
   body.shops .navigation,
   body.shop .navigation{
     display: none;
   }  
-
-
 }
+
+section.deposit{
+  .deposit-info{
+    display: none;
+  }
+}
+

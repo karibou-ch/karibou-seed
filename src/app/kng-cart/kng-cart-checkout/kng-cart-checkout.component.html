@@ -1,0 +1,201 @@
+<!-- NAVIGATION  -->
+<div class="kng-drawer" [class.kng-drawer-open]="open" >
+  <!-- brand -->
+  <div class="k-brand hide">
+    <b>v{{VERSION}}</b>
+  </div>
+
+  <button class="close " (click)="open = false">
+    <span class="size-large material-icons" >close</span>
+  </button>
+
+  <!-- CHECKOUT-->
+  <div class="checkout" *ngIf="isReady">
+    <div class="cart-container">
+      <!-- ADDRESS IFF isAuth()-->
+      <div class="order-address " [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isOpen()">      
+        <section  [innerHtml]="config?.shared.hub.checkout.address[locale]" ></section>
+          
+        <!-- USER ADDRESS -->
+        <section class="addresses">
+          <div class="address" *ngFor="let address of user.addresses"  (click)="setShippingAddress(address)">
+            <input type="radio"  name="address" [id]="address.name" [checked]="isSelectedAddress(address)">
+              <label [for]="address.name">
+                <div class="name">{{address.name}}</div>
+                <div class="street text-overflow">{{address.streetAdress}}</div>
+                <div class="note text-overflow">{{address.note}}</div>  
+                <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
+              </label>
+          </div>
+          <div class="address deposit" *ngFor="let address of getDepositAddress()" [hidden]="!address.active" 
+              (click)="setShippingAddress(address)">
+              <input type="radio"  name="address" [id]="address.name" [checked]="isSelectedAddress(address)">
+              <label [for]="address.name">
+                <div class="collect">{{address.name}}</div>
+                <div class="street text-overflow">{{address.streetAdress}}</div>
+                <div class="pink text-center">{{label.cart_deposit}}</div>  
+                <div class="shipping-amount">Fr  {{(address.fees)|number:'1.2-2'}}</div>
+              </label>
+          </div>
+          <!-- NEW ADDRESS -->
+          <div class="profile-action"  >
+            <button [routerLink]="['/store/'+store+'/home/me/login-or-address']">              
+              {{labell.user_address_add}} 
+            </button>
+          </div>
+
+        </section>
+      </div>
+
+      <!-- PAYMENT-->
+      <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady() && isOpen()">      
+        <section  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
+
+
+        <!-- FIXME hide wallet method -->
+        <!--               [hidden]="payment.issuer=='wallet'"-->
+        <section class="payments">
+          <div class="payment" *ngFor="let payment of user.payments" 
+            [hidden]="payment.issuer=='wallet'"
+            (click)="setPaymentMethod(payment)">
+
+            <input type="radio"  name="payment" [id]="payment.issuer" [checked]="isSelectedPayment(payment)">
+              <label [for]="payment.issuer">
+                <div class="name">{{issuer[payment.issuer].label}}</div>
+                <div class="note">{{payment.expiryToDate()|date:'MM/y'}}</div>  
+              </label>
+          </div>
+          <div class="profile-action"  >
+            <button [routerLink]="['/store/'+store+'/home/me/login-or-payment']">
+              {{labell.user_payment_add}} 
+            </button>
+          </div>      
+        </section>
+    
+      </div>
+        
+      <!-- RESUME -->
+      <div class="order-resume " *ngIf="isOrderReady && isOpen">
+
+        <div class="order-resume-block">
+          <section  [class.deposit]="isCartDeposit()" 
+                    [innerHtml]="config?.shared.hub.checkout.resume[locale]">
+          </section>  
+  
+          <!-- BILL GROUPED -->
+          <div class="bill grouped" [hidden]="!hasShippingReductionMultipleOrder()">
+            <div>
+              <i class="material-icons black">info</i>&nbsp;{{label.cart_info_shipping_group}}
+            </div>  
+          </div>
+
+          <!-- INFO FEES -->
+          <div class="bill">
+            <div class="label">
+              <span [innerHtml]="label.cart_info_subtotal"></span>
+              <i class="material-icons gray" (click)="doToggleFees=!doToggleFees">info</i>
+            </div>
+            <div class="amount">{{itemsAmount|currency:'CHF'}}</div>
+          </div>
+          <div class="bill" [hidden]="!doToggleFees">
+            <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
+          </div>
+
+
+          <div class="bill">
+            <div class="label">
+              <span [innerHtml]="label.cart_info_shipping"></span>
+
+            </div>
+            <div class="amount">{{currentShippingFees()|currency:'CHF'}}</div>
+          </div>
+
+          <!-- BILL SHIPPING DISCOUNT -->
+          <div class="bill shipping-discount" [hidden]="isCartDeposit()">
+            <div  [innerHtml]="shippingDiscount"></div>
+          </div>
+
+
+          <!-- BILL TOTAL DISCOUNT -->
+          <div class="bill" [hidden]="getTotalDiscount()==0">
+            <div class="label" i18n>{{label.cart_info_discount}}</div>
+            <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
+          </div>
+
+          <div class="bill total">
+            <div class="label">
+              {{label.cart_info_total}}              
+            </div>
+            <div class="amount" >{{currentTotal()|currency:'CHF'}}</div>
+          </div>
+
+          <!-- INFO HELP MOBILE -->
+          <div class="bill help hide-sm">
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+          </div>
+
+        </div>
+        <!-- BLOCK DE DROITE -->
+        <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
+          <div class="bill">
+            <h2 class="full ">4. {{label.cart_info_shipping_title}} <b>{{shippingTime}}</b></h2>            
+          </div>  
+
+          <div class="bill shipping" >
+            <div class="bold text-capitalize">{{currentShippingDay()|date:'EEE dd/M':'':locale}}, {{currentShipping().name}}</div>
+            <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
+            <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
+          </div>
+
+          <!-- INFO SHIPPING NOTE -->
+          <div class="bill" [hidden]="isCartDeposit()">
+            <div>{{labell.user_address_note}}</div>
+            <div class="input-text">
+              <input type="text" placeholder="code, note, etc" [(ngModel)]="shippingNote" />
+            </div>            
+          </div>
+
+                  
+        
+          <div class="bill">
+            <div class="overflow">
+              <input type="checkbox" [(ngModel)]="cgAccepted" >
+              <label i18n class="link">        
+                <a href="javascript:;" class="link"
+                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
+            </div>
+            <div>
+              <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
+            </div>
+            <div class="bill error" [hidden]="!errorMessage">
+              <b>Oops:</b> {{errorMessage}}
+            </div>
+          </div>
+
+          <!-- INFO AMOUNT -->
+          <div class="bill info-amount">
+            <div class="info">
+              {{label.cart_amount_1}} 
+              <b >{{currentTotal()*amountReserved|currency:'CHF'}}</b>
+              {{label.cart_amount_2}}              
+            </div>
+          </div>
+          <!-- INFO HELP MOBILE -->
+          <div class="bill help hide-md hide-lg">
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+          </div>
+        </div>
+          
+
+        <!-- CHECKOUT  MSG -->
+        <div class="checkout-msg" *ngIf="config.shared.hub.checkout.active">
+          <div [innerHtml]="config.shared.hub.checkout.message[locale]"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+</div>

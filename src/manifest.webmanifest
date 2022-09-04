@@ -1,9 +1,12 @@
 {
-  "name": "karibou.ch vos marchés en ligne",
+  "name": "karibou.ch les marchés en ligne",
   "short_name": "karibou.ch",
   "theme_color": "#fff",
   "background_color": "#423f3b",
   "display": "standalone",
+  "display_override": ["fullscreen", "minimal-ui"],
+  "orientation": "portrait",
+  "prefer_related_applications": true,
   "scope": "/",
   "start_url": "/?source=pwa",
   "icons": [

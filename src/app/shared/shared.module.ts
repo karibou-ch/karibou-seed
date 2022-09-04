@@ -4,7 +4,6 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 // exported components and directives
 import { KngControlMessagesComponent } from './kng-control-messages/control-messages.component';
 import { InfiniteScrollerDirective } from './infinite-scroller.directive';
-import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
 import { KngTextfieldAutosizeDirective } from './kng-textfield-autosize.directive';
 
 //
@@ -17,10 +16,10 @@ import { KngUserReminderComponent } from './kng-user-reminder/kng-user-reminder.
 
 import { RouterModule } from '@angular/router';
 import { KngCommonModule } from '../common/common.module';
-import { KngHomeComponent } from '../kng-home/kng-home.component';
 
 import { ProductSwipeComponent,
          ProductListComponent,
+         KngProductListByShopComponent,
          ProductGroupedListComponent,
          ProductThumbnailComponent,
          ProductComponent,
@@ -30,18 +29,21 @@ import { Kng2CoreModule } from 'kng2-core';
 import { KngSharedMdcModule } from './shared.mdc.module';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MdcSearchBarComponent } from './mdc-search-bar/mdc-search-bar.component';
 import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 
 import { appRoutes } from './shared.routes';
 import { NgxStripeModule } from 'ngx-stripe';
 import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
+import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component';
+import { KngAudioRecorderService } from './kng-audio-recorder.service';
+import { KngHomeComponent } from '../kng-home/kng-home.component';
+import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
+import { KngSearchBarComponent, KngSearchComponent } from '../kng-search-bar/kng-search-bar.component';
+
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     RouterModule,
     Kng2CoreModule,
     KngSharedMdcModule,
@@ -52,13 +54,10 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
   exports: [
     RouterModule,
     KngCommonModule,
+    KngAudioNoteComponent,
     KngControlMessagesComponent,
-    KngFeedbackComponent,
-    KngHomeComponent,
-    KngMailConfirmationComponent,
     KngTextfieldAutosizeDirective,
     KngUserReminderComponent,
-    KngUiBottomActionsComponent,
     InfiniteScrollerDirective,
     ProductGroupedListComponent,
     ProductThumbnailComponent,
@@ -66,32 +65,31 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
     UcWidgetComponent,
   ],
   declarations: [
-    // KngNavbarComponent,
-    // KngRootComponent,
+    KngAudioNoteComponent,
     KngHomeComponent,
     KngControlMessagesComponent,
+    KngShopComponent,
+    KngShopsComponent,
     KngTextfieldAutosizeDirective,
-    KngMailConfirmationComponent,
     InfiniteScrollerDirective,
-    KngUiBottomActionsComponent,
     KngUserReminderComponent,
-    MdcSearchBarComponent,
     UcWidgetComponent,
     ProductComponent,
     ProductTinyComponent,
     ProductListComponent,
+    KngProductListByShopComponent,
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    KngFeedbackComponent,
     KngProductLinkComponent
   ],
 })
-export class SharedModule {
-  public static forRoot(options?: any): ModuleWithProviders<SharedModule> {
+export class KngSharedModule {
+  public static forRoot(options?: any): ModuleWithProviders<KngSharedModule> {
     return {
-      ngModule: SharedModule,
+      ngModule: KngSharedModule,
       providers: [
+        KngAudioRecorderService
       ]
     };
   }
