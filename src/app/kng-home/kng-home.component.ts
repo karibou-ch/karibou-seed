@@ -66,7 +66,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   pageOptions: any = {
     home: {
       maxcat: 8,
-      home: true,
+      _home: true,
       popular: true,
       showMore: true
     }
@@ -176,14 +176,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       //
       // update shipping day
       if (CartAction.CART_SHPPING === emit.state.action) {
-        // this.options.when = this.$cart.getCurrentShippingDay();
         this.productsGroupByCategory();
       }
 
       //
       // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
       if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !this.isLoading)) {
-        // this.options.when = this.$cart.getCurrentShippingDay();
         this.productsGroupByCategory();
       }
     }));
@@ -298,11 +296,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   productsGroupByCategory() {
+    const hub = this.$navigation.store;
     const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.when = this.$cart.getCurrentShippingDay();
+    options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,hub);
     options.maxcat = this.$navigation.isMobile()? 2:options.maxcat;
 
-    const hub = this.$navigation.store;
 
     if (hub) {
       options.hub = hub;

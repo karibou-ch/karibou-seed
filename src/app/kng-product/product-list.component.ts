@@ -16,7 +16,8 @@ import {
   Category,
   Shop,
   CartService,
-  ShopService
+  ShopService,
+  Order
 } from 'kng2-core';
 import { combineLatest, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -225,7 +226,7 @@ export class ProductListComponent implements OnInit {
 
 
   productsByShop() {
-    this.options.when = this.$cart.getCurrentShippingDay();
+    this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.store);
 
     combineLatest([
       this.$shop.get(this.options.shopname),
@@ -257,7 +258,7 @@ export class ProductListComponent implements OnInit {
 
   productsByCategory() {
     this.options.hub = this.config.shared.hub && this.config.shared.hub.slug;
-    this.options.when = this.$cart.getCurrentShippingDay();
+    this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.store);
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
