@@ -64,6 +64,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   currentRanks: any;
   currentLimit: number;
   premiumLimit: number;
+  isReady: boolean;
 
   constructor(
     public $cart: CartService,
@@ -106,6 +107,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.Kimage = '/assets/img/k-puce-light.png';
 
     this.subscription = new Subscription();
+    this.isReady = false;
   }
 
 
@@ -183,6 +185,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.cartItemCountElem = this.$cart.getItems().length;
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
           this.updateDomPrice();
+          setTimeout(()=>this.isReady=true,100);
   
           //
           // update shipping date
@@ -190,19 +193,23 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
             return;
           }
   
-          if (emit.state.action === CartAction.ITEM_MAX) {
-            return this.$snack.open(
-              this.$i18n.label()[CartAction[emit.state.action]],
-              this.$i18n.label().thanks,
-              this.$i18n.snackOpt
-            );
+          if(this.isReady){
+            if (emit.state.action === CartAction.ITEM_MAX) {
+              this.$snack.open(
+                this.$i18n.label()[CartAction[emit.state.action]],
+                this.$i18n.label().thanks,
+                this.$i18n.snackOpt
+              );
+            }else{
+              this.$snack.open(
+                // tslint:disable-next-line: max-line-length
+                this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
+                this.$i18n.label().thanks,
+                this.$i18n.snackOpt
+              );  
+            }
+  
           }
-          this.$snack.open(
-            // tslint:disable-next-line: max-line-length
-            this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
-            this.$i18n.label().thanks,
-            this.$i18n.snackOpt
-          );
         }
       })  
     );

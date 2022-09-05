@@ -137,8 +137,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     private $order: OrderService,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $stripe: StripeService,
-    public $snack: MdcSnackbar,
+    private $stripe: StripeService
   ) {
     //
     // initialize loader

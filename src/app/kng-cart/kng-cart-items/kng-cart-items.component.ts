@@ -209,7 +209,8 @@ export class KngCartItemsComponent implements OnInit {
   //
   // used for order limitation
   isNotShippingLimit() {
-    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active){
+    const ranks = Object.keys(this.currentRanks);
+    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active || !ranks.length){
       return true;
     }
     const day = this.currentShippingDay;

@@ -63,10 +63,10 @@ export class KngRootComponent implements OnInit {
 
   
   ngOnInit() {
-    this.subscription.add(
-      this.$route.params.subscribe(params => {
-      this.store = params['store'];
-    }));
+    // this.subscription.add(
+    //   this.$route.params.subscribe(params => {
+    //   this.store = params['store'];
+    // }));
 
     this.subscription.add(
       this.$loader.update().subscribe(emit => {
