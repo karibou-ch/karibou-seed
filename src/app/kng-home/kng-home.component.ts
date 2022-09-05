@@ -298,7 +298,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   productsGroupByCategory() {
     const hub = this.$navigation.store;
     const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,hub);
+    options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
     options.maxcat = this.$navigation.isMobile()? 2:options.maxcat;
 
 
