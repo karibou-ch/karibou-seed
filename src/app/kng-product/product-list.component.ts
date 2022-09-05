@@ -111,8 +111,13 @@ export class ProductListComponent implements OnInit {
   }
 
   get store(){
-    return this.config && this.config.shared.hub.slug;
+    return this.hub && this.config.shared.hub.slug;
   }
+
+  get hub(){
+    return this.config && this.config.shared.hub;
+  }
+
 
   get locale() {
     return this.$i18n.locale;
@@ -226,7 +231,8 @@ export class ProductListComponent implements OnInit {
 
 
   productsByShop() {
-    this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.store);
+    this.options.hub = this.store;
+    this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
 
     combineLatest([
       this.$shop.get(this.options.shopname),
@@ -257,8 +263,8 @@ export class ProductListComponent implements OnInit {
   }
 
   productsByCategory() {
-    this.options.hub = this.config.shared.hub && this.config.shared.hub.slug;
-    this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.store);
+    this.options.hub = this.store;
+    this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub);
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
