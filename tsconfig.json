@@ -4,26 +4,23 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "allowSyntheticDefaultImports":true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
     "declaration": false,
     "downlevelIteration": true,
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports":true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "resolveJsonModule": true,
     "target": "es2015",
     "module": "es2020",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
     "lib": [
       "es2018",
       "dom"
     ]
   },
   "angularCompilerOptions": {
-    "enableIvy": false,
+    "enableIvy": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "enableI18nLegacyMessageIdFormat": false

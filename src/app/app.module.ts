@@ -155,6 +155,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   exports: [
     Kng2CoreModule,
     KngCommonModule,
+    RouterModule
   ],
   imports: [
     BrowserModule,
@@ -167,7 +168,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     }),
     KngCommonModule.forRoot(),
     RouterModule.forRoot(appRoutes, {
-      enableTracing: false,
+      enableTracing: true,
       scrollPositionRestoration: 'disabled'
     }),
     ServiceWorkerModule.register('ngsw-worker.js', { 
