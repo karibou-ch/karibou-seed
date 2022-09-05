@@ -57,7 +57,7 @@
 <div [hidden]="!isAppReady()" class="navbar">
 
   <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar [fixed]="!$navigation.isMobile()" >
+  <mdc-top-app-bar [fixed]="!$navigation.isMobile()" [scrollTarget]="scrollContent">
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
@@ -77,16 +77,16 @@
       <mdc-top-app-bar-section align="end" class="actions">        
 
         <!-- LOGIN / REGISTER -->
-        <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
+        <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcTopAppBarNavIcon>
           <span mdcTopAppBarActionItem class="material-icons secondary-text" >account_circle</span><!-- <div >{{$i18n.label().nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
         </a>
-        <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
+        <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcTopAppBarNavIcon>
           <span mdcTopAppBarActionItem class="material-icons secondary-text">account_circle</span><!-- <div >{{$i18n.label().nav_login2}}</div> -->
         </a>
 
-        <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
+        <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcTopAppBarNavIcon [routerLink]="'.'+menu.url"
           routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
           <span  mdcTopAppBarActionItem class="secondary-text" [innerHTML]="menu.name[locale]"></span>
         </a>
@@ -120,7 +120,7 @@
   </mdc-top-app-bar>
 
   <!-- CONTENT APP -->
-  <div class="mdc-content">
+  <div class="mdc-content" #scrollContent>
     <ng-content></ng-content>
   </div>
 
