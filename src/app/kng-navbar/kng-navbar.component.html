@@ -7,7 +7,7 @@
 </kng-nav-calendar>
 <kng-news [config]="config"></kng-news>
 
-<mdc-drawer drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
+<mdc-drawer hidden drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
   <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/store',store,'home']">
   </mdc-drawer-header>
