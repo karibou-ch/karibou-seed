@@ -31,7 +31,7 @@
   <ng-container  *ngSwitchCase="'text'">
     <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
     <div class="input">
-      <mdc-text-field  i18n-label [label]="label" type="text" [(ngModel)]="value" >
+      <mdc-text-field   [label]="label" type="text" [(ngModel)]="value" >
       </mdc-text-field>
     </div>
     <div class="check" [hidden]="!withCheck">
@@ -44,7 +44,7 @@
   <ng-container  *ngSwitchCase="'area'">
     <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
     <div class="input">
-      <mdc-textarea i18n-label 
+      <mdc-textarea  
                     [label]="label" 
                     kng-autosize 
                     rows="6" 

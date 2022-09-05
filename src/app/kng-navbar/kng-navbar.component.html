@@ -17,10 +17,10 @@
       <mdc-list>
 
         <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
-          <span i18n>{{$i18n.label().nav_account}}</span>
+          <span >{{$i18n.label().nav_account}}</span>
         </mdc-list-item>
         <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
-          <span i18n>{{$i18n.label().nav_login}}</span>
+          <span >{{$i18n.label().nav_login}}</span>
         </mdc-list-item>
 
         <mdc-list-item>
@@ -78,12 +78,12 @@
 
         <!-- LOGIN / REGISTER -->
         <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcAppBarActionItem>
-          <span mdcTopAppBarActionItem class="material-icons secondary-text" >account_circle</span><!-- <div i18n>{{$i18n.label().nav_account}}</div>-->
+          <span mdcTopAppBarActionItem class="material-icons secondary-text" >account_circle</span><!-- <div >{{$i18n.label().nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
         </a>
         <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcAppBarActionItem>
-          <span mdcTopAppBarActionItem class="material-icons secondary-text">account_circle</span><!-- <div i18n>{{$i18n.label().nav_login2}}</div> -->
+          <span mdcTopAppBarActionItem class="material-icons secondary-text">account_circle</span><!-- <div >{{$i18n.label().nav_login2}}</div> -->
         </a>
 
         <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcAppBarActionItem [routerLink]="'.'+menu.url"
@@ -101,7 +101,7 @@
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_shops}}</div>
         <div class="kng-chip" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
         <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
-          <div i18n> <span class="cart-items-count"></span></div>
+          <div > <span class="cart-items-count"></span></div>
           <span  class="end material-icons secondary-text" >shopping_cart</span>          
         </div>
 

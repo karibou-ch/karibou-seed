@@ -1,9 +1,9 @@
 <div>
   <div [hidden]="!getUser().addresses.length">
-    <h2 MdcHeadline1 i18n [hidden]="!user.addresses.length" i18n>
+    <h2 [hidden]="!user.addresses.length" >
       {{i18n[locale].list_title}} 
     </h2>
-    <p class="help-block" i18n>
+    <p class="help-block" >
         {{i18n[locale].list_select}}
     </p>
               
@@ -16,7 +16,7 @@
               <span>{{address.name}}</span>                 
               <button [hidden]="!isSelectedAddress(address,idx)" 
               (click)="removeAddress(address,idx)"
-                      mdc-button [outlined]="true" i18n>{{$i18n[locale].action_del}}</button>
+                      mdc-button [outlined]="true" >{{$i18n[locale].action_del}}</button>
               <mdc-list-item-secondary>
                   {{address.streetAdress}}
                   {{address.postalCode}}/{{address.region}}                          
@@ -39,25 +39,25 @@
     <h2 MdcHeadline1>{{i18n[locale].list_add}}</h2>
     <form [formGroup]="$address" (submit)="onSave()">
 
-        <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
+        <mdc-text-field fullwidth  [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
           <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
         </mdc-text-field>
 
 
-        <mdc-text-field autocomplete="false" fullwidth i18n-label [label]="i18n[locale].address_street" type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
+        <mdc-text-field autocomplete="false" fullwidth  [label]="i18n[locale].address_street" type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
         </mdc-text-field>
 
         <!-- <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75"  (selectionChange)="onGeloc($event)">
           <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
         </mdc-select> -->
           
-        <mdc-text-field fullwidth i18n-label [label]="i18n[locale].address_floor"  type="text" formControlName="floor" class="width-25 floor">
+        <mdc-text-field fullwidth  [label]="i18n[locale].address_floor"  type="text" formControlName="floor" class="width-25 floor">
         </mdc-text-field>
   
-        <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_phone"  type="text" formControlName="phone" >
+        <mdc-text-field fullwidth  [label]="$i18n[locale].user_phone"  type="text" formControlName="phone" >
         </mdc-text-field>
   
-        <p class="help-block" i18n>
+        <p class="help-block" >
           {{i18n[locale].address_postalcode_title}}
         </p>
           
@@ -67,34 +67,32 @@
         </mdc-select>
         
           
-        <!-- <mdc-text-field fullwidth i18n-label label="Code postal"  type="text" formControlName="postalCode" class="width-50">
+        <!-- <mdc-text-field fullwidth  label="Code postal"  type="text" formControlName="postalCode" class="width-50">
         </mdc-text-field> -->
         <mdc-select [placeholder]="i18n[locale].address_postalcode" formControlName="postalCode" class="width-50"  (selectionChange)="onGeloc($event)">
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
         </mdc-select>
         
-        <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">
+        <mdc-text-field fullwidth  [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">
           <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
         </mdc-text-field>
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
         <button mdc-button 
                 type="button"
-                [primary]="true"
                 [unelevated]="true" 
                 [disabled]="idx==null||idx==undefined" 
                 (click)="idx=null;"
-                class="align-left">
-          <span i18n>{{$i18n[locale].action_cancel}}</span>
+                class="align-left primary">
+          <span >{{$i18n[locale].action_cancel}}</span>
         </button>            
         
         <button mdc-button 
-                [primary]="true"
                 [unelevated]="true" 
                 [disabled]="!$address.valid||isLoading" 
-                class="align-right">
+                class="align-right primary">
           <mdc-icon>account_circle</mdc-icon>              
-          <span i18n>{{$i18n[locale].action_save}}</span>
+          <span >{{$i18n[locale].action_save}}</span>
         </button>            
 
     </form>

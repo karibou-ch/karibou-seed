@@ -118,7 +118,7 @@
 
           <!-- BILL TOTAL DISCOUNT -->
           <div class="bill" [hidden]="getTotalDiscount()==0">
-            <div class="label" i18n>{{label.cart_info_discount}}</div>
+            <div class="label" >{{label.cart_info_discount}}</div>
             <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
           </div>
 
@@ -160,7 +160,7 @@
           <div class="bill">
             <div class="overflow">
               <input type="checkbox" [(ngModel)]="cgAccepted" >
-              <label i18n class="link">        
+              <label class="link">        
                 <a href="javascript:;" class="link"
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
             </div>

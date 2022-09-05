@@ -76,16 +76,16 @@
     <span class="title">{{item.title}} <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span></span>
     <div class="message" >{{item.error}}</div>          
     <mdc-list-item-secondary>
-      <a href="javascript:;" class="gray" i18n (click)="removeAll(item,item.variant)">
+      <a href="javascript:;" class="gray" (click)="removeAll(item,item.variant)">
         <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>{{i18n[locale].cart_remove}}
       </a>
 
       <!-- NOTE -->
-      <a href="javascript:;" class="note" i18n [hidden]="!item.note&&!item.audio">
+      <a href="javascript:;" class="note" [hidden]="!item.note&&!item.audio">
         <i class="material-icons">mail</i>&nbsp;message
       </a>
 
-      <span [hidden]="!getVendorDiscount(item).threshold" i18n class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                
+      <span [hidden]="!getVendorDiscount(item).threshold" class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                
 
     </mdc-list-item-secondary>
   </mdc-list-item-text>

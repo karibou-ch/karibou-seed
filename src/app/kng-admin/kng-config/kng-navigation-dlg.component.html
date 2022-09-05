@@ -4,26 +4,26 @@
   >
   <mdc-dialog-surface class="mdc-dialog-min-width(640)">
     <mdc-dialog-title>
-      <span i18n>{{menu?.group||'Create'}}<b>/</b> {{menu?.name[$i18n.locale]||'Navigation'}}</span>
+      <span >{{menu?.group||'Create'}}<b>/</b> {{menu?.name[$i18n.locale]||'Navigation'}}</span>
     </mdc-dialog-title>
   <mdc-dialog-content *ngIf="menu">
       <form [formGroup]="form" (submit)="askSave()" >
           <!-- CHECK -->
           <div>
-            <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="menu.weight" formControlName="weight">
+            <mdc-text-field  label="Poid" type="number" [ngModel]="menu.weight" formControlName="weight">
             </mdc-text-field>                
-            <mdc-text-field i18n-label label="Groupe" type="text" [ngModel]="menu.group" formControlName="group">
+            <mdc-text-field  label="Groupe" type="text" [ngModel]="menu.group" formControlName="group">
             </mdc-text-field>                
             <mdc-form-field class="align-end">
               <mdc-checkbox [ngModel]="menu.active" formControlName="active" ></mdc-checkbox>
-              <span i18n>Actif</span>
+              <span >Actif</span>
             </mdc-form-field>
         </div>
 
         <div>                      
-          <mdc-text-field style="flex:1" i18n-label label="Nom" type="text" [ngModel]="menu.name[$i18n.locale]" formControlName="name" >
+          <mdc-text-field style="flex:1"  label="Nom" type="text" [ngModel]="menu.name[$i18n.locale]" formControlName="name" >
           </mdc-text-field>
-          <mdc-text-field style="flex:1" i18n-label label="lien" type="text" [ngModel]="menu.url" formControlName="url" >
+          <mdc-text-field style="flex:1"  label="lien" type="text" [ngModel]="menu.url" formControlName="url" >
           </mdc-text-field>
         </div>
       </form>

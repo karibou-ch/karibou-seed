@@ -5,7 +5,7 @@
  
     <mdc-dialog-surface>
       <mdc-dialog-title>  <!--  TOFIX anciennement  mdc dialog header title -->
-          <span i18n>{{category?.type}}<b>/</b> {{category?.name}}</span>
+          <span >{{category?.type}}<b>/</b> {{category?.name}}</span>
       </mdc-dialog-title>
       <mdc-dialog-content *ngIf="category">
           <form [formGroup]="form" (submit)="askSave()">
@@ -29,12 +29,12 @@
 
                 <mdc-form-field>
                     <mdc-checkbox [ngModel]="category.active" formControlName="active"></mdc-checkbox>
-                    <span i18n>Actif</span>
+                    <span >Actif</span>
                 </mdc-form-field>
 
                 <mdc-form-field>
                     <mdc-checkbox [ngModel]="category.home" formControlName="home"></mdc-checkbox>
-                    <span i18n>Page d'accueil</span>
+                    <span >Page d'accueil</span>
                 </mdc-form-field>
 
                 <!-- TYPE -->
@@ -54,29 +54,29 @@
             </div>
             <div class="-between">
               <!-- GROUP -->
-              <mdc-text-field i18n-label label="Group" type="text" [ngModel]="category.group" formControlName="group" style="width: 80px">
+              <mdc-text-field  label="Group" type="text" [ngModel]="category.group" formControlName="group" style="width: 80px">
               </mdc-text-field>
 
               <!-- WEIGHT -->
-              <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="category.weight" formControlName="weight" style="width: 80px">
+              <mdc-text-field  label="Poid" type="number" [ngModel]="category.weight" formControlName="weight" style="width: 80px">
               </mdc-text-field>
 
               <!-- ICON -->
-              <mdc-text-field i18n-label label="Icon" type="text" [ngModel]="category.image" formControlName="image" style="width: 80px">
+              <mdc-text-field  label="Icon" type="text" [ngModel]="category.image" formControlName="image" style="width: 80px">
               </mdc-text-field>
 
               <!-- COLOR -->
-              <mdc-text-field i18n-label label="Color" type="text" [ngModel]="category.color" formControlName="color" style="width: 110px">
+              <mdc-text-field  label="Color" type="text" [ngModel]="category.color" formControlName="color" style="width: 110px">
               </mdc-text-field>
       
             </div>
 
             <div>                      
               <!-- NAME/DESC -->
-              <mdc-text-field fullwidth i18n-label label="Nom" type="text" [ngModel]="category.name" formControlName="name" >
+              <mdc-text-field fullwidth  label="Nom" type="text" [ngModel]="category.name" formControlName="name" >
               </mdc-text-field>
 
-              <mdc-text-field fullwidth class="double" i18n-label label="Description" type="text" [ngModel]="category.description" formControlName="description" >
+              <mdc-text-field fullwidth class="double"  label="Description" type="text" [ngModel]="category.description" formControlName="description" >
               </mdc-text-field>
             </div>
 
@@ -103,7 +103,7 @@
                       <mdc-icon class="size-large">playlist_add</mdc-icon>
                     </mdc-list-item-graphic>
                     <mdc-list-item-text >                  
-                      <mdc-list-item-secondary i18n >Ajouter une nouvelle catégorie enfant</mdc-list-item-secondary>
+                      <mdc-list-item-secondary >Ajouter une nouvelle catégorie enfant</mdc-list-item-secondary>
                     </mdc-list-item-text>        
                 </mdc-list-item>          
               </mdc-list>

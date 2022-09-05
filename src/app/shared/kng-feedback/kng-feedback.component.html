@@ -1,8 +1,8 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
-  <h3 i18n>{{i18n[locale].title_order_open}}</h3>
+  <h3 >{{i18n[locale].title_order_open}}</h3>
 
-  <p i18n class="help-block">
+  <p class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
       <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b><br/>
       {{i18n[locale].title_order_shipping}} <b class="text-capitalize">{{order.shipping.name}}</b>
@@ -82,8 +82,8 @@
         <span class="size-xlarge  material-icons">close</span>
     </button>
     <div class="feedback-container" >
-      <h3 i18n>{{i18n[locale].title_issue_title}}</h3>
-      <p i18n class="help-block" [innerHtml]="i18n[locale].title_issue_header"></p>
+      <h3 >{{i18n[locale].title_issue_title}}</h3>
+      <p class="help-block" [innerHtml]="i18n[locale].title_issue_header"></p>
 
       <!-- ORDER ITEMS -->
       <mdc-list twoLine interactive="false">

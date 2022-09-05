@@ -1,10 +1,10 @@
 <div class="container-orders">
   <!-- LAST ORDERS -->
-  <p class="no-orders" [hidden]="!isReady||orders.length" i18n>
+  <p class="no-orders" [hidden]="!isReady||orders.length" >
     {{i18n[locale].title_no_order}} &#9785;
   </p>
     
-  <h3 [hidden]="!orders.length" i18n>{{i18n[locale].title_last_order}}</h3>
+  <h3 [hidden]="!orders.length" >{{i18n[locale].title_last_order}}</h3>
 
   <!-- LAST ORDERS -->
   <mdc-list twoLine interactive="false" [hidden]="!orders.length">
@@ -23,12 +23,12 @@
               </li>
               <li [hidden]="!isPending(order)">
                 <a href="javascript:;" class="black smaller "                    
-                  (click)="cancel(order)" i18n>
+                  (click)="cancel(order)" >
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
               <li [hidden]="isPending(order)">                
                 <a href="javascript:;" class="black smaller "                    
-                (click)="addAllToCart(order)" i18n>
+                (click)="addAllToCart(order)" >
                 <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
               </li>
             </ul>  
@@ -41,12 +41,12 @@
               </li>
               <li [hidden]="!isPending(complement)">
                 <a href="javascript:;" class="black smaller "                    
-                  (click)="cancel(complement)" i18n>
+                  (click)="cancel(complement)" >
                   <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
               <li [hidden]="isPending(complement)">
                 <a href="javascript:;" class="black smaller "                    
-                (click)="addAllToCart(complement)" i18n>
+                (click)="addAllToCart(complement)" >
                 <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
               </li>
             </ul>  
@@ -67,7 +67,7 @@
 
 
   <!-- LAST PRODUCTS -->
-  <!-- <h3 [hidden]="!getItems().length" i18n>Mes produits préférés</h3>
+  <!-- <h3 [hidden]="!getItems().length" >Mes produits préférés</h3>
   <mdc-list [twoLine]="true" avatar="true" interactive="false">
     <mdc-list-item *ngFor="let rank of getItems()">
       <div class="avatar" mdcListItemGraphic
@@ -77,7 +77,7 @@
       <mdc-list-item-text>
         {{rank.item.title}}
         <mdc-list-item-secondary>            
-            <a href="javascript:;" class="text-secondary  small" i18n (click)="addToCard(rank.item)">
+            <a href="javascript:;" class="text-secondary  small"  (click)="addToCard(rank.item)">
               <i class="material-icons " style="transform: translateY(5px);font-size:16px;">shopping_cart</i>ajouter dans le panier
             </a>            
         </mdc-list-item-secondary>      

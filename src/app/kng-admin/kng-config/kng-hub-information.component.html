@@ -2,14 +2,14 @@
     <h1>Saving</h1>
   </div>
   <div class="container" *ngIf="currentHub">    
-    <h3 i18n>Informations principales</h3>
+    <h3 >Informations principales</h3>
     <hr class="dashed"/>
     <kng-config-input clazz="config" format="menu"></kng-config-input>
     <kng-config-input clazz="config" format="hub"></kng-config-input>
   
 
   <!-- HUB maintenance -->
-  <h3 i18n>Maintenance <span class="gray"> top destination</span></h3>
+  <h3 >Maintenance <span class="gray"> top destination</span></h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Maintenance message" name="header.maintenance" format="area" [withCheck]="true"
                     [(ngModel)]="currentHub.maintenance.reason[$i18n.locale]"
@@ -20,7 +20,7 @@
   <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
 
   <!-- HUB Content associated a target (home,cellar,grocery, ...) -->
-  <h3 i18n>
+  <h3 >
     Content <span class="gray">top destination (home,cellar,grocery, ...)</span>
     <button class="float-right" mdc-button outlined    (click)="addContent()"><mdc-icon>add</mdc-icon></button>
   </h3>
@@ -58,7 +58,7 @@
   </div>    
 
   <!-- HUB Header -->
-  <h3 i18n>Header <span class="gray">home middle</span></h3>  
+  <h3 >Header <span class="gray">home middle</span></h3>  
   <hr class="dashed"/>
 
   <kng-config-input clazz="config run-codemirror" label="Header message" name="header.message" format="area" [withCheck]="true"
@@ -70,14 +70,14 @@
   <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
 
   <!-- HUB Selection -->
-  <h3 i18n>Selection </h3>
+  <h3 >Selection </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config run-codemirror" label="Selection title" name="home.selection.t" format="text" 
                     [(ngModel)]="currentHub.home.selection.t[$i18n.locale]"></kng-config-input>
 
 
   <!-- HUB Checkout -->
-  <h3 i18n>Checkout</h3>
+  <h3 >Checkout</h3>
   <hr class="dashed"/>
   <!-- switch Lang -->
   <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>

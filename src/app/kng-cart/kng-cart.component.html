@@ -7,14 +7,14 @@
 
   <!-- VOS PANIER -->
   <section class="cart" [hidden]="!items.length">
-    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>    
+    <div [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>    
   </section>
 
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- PANIER PARTAGER -->
   <section [hidden]="!isSharedCart()" class="block-cart">
-    <h2 i18n>{{i18n[locale].cart_shared_title1}} <span class="material-icons">share</span>
+    <h2 >{{i18n[locale].cart_shared_title1}} <span class="material-icons">share</span>
     </h2>
     <h3 class="" [hidden]="user.isAuthenticated()">
       {{i18n[locale].cart_shared_title2}}
