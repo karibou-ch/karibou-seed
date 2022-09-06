@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "4.0.4",
+  "version": "4.0.6",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -14,8 +14,8 @@
   "private": true,
   "dependencies": {
     "@angular-mdc/web": "^3.2.1",
-    "@angular/cdk": "^10.2.5",
     "@angular/animations": "^10.2.5",
+    "@angular/cdk": "^10.2.5",
     "@angular/common": "~10.2.5",
     "@angular/compiler": "~10.2.5",
     "@angular/core": "~10.2.5",
@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "~10.2.5",
     "@angular/router": "~10.2.5",
     "@angular/service-worker": "~10.2.5",
-    "@sentry/browser": "^6.16.1",
+    "@sentry/browser": "^7.12.1",
     "@stripe/stripe-js": "^1.11.0",
     "@uploadcare/upload-client": "^3.1.1",
     "codemirror": "^5.55.0",
