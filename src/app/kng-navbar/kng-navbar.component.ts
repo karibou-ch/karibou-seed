@@ -156,6 +156,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
           this.hubImage = this.config.shared.hub.logo;
     
+          this.$cart.setContext(this.config, this.user,this.shops,this.orders);
           this.$cdr.markForCheck();
         }
   
@@ -185,11 +186,11 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.cartItemCountElem = this.$cart.getItems().length;
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
           this.updateDomPrice();
-          setTimeout(()=>this.isReady=true,100);
   
           //
           // update shipping date
           if (!emit.state.item) {
+            this.isReady = true;
             return;
           }
   
@@ -210,6 +211,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
             }
   
           }
+          this.isReady = true;
         }
       })  
     );
