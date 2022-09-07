@@ -389,7 +389,8 @@ export class UserSignComponent {
     };
     this.$user.register(user).subscribe(
       (user) => {
-        this.$metric.event(EnumMetrics.metric_account_create);
+        const hub = this.config.shared.hub.slug;
+        this.$metric.event(EnumMetrics.metric_account_create,{hub});
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {
           timeoutMs: 9000
         });

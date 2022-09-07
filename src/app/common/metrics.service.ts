@@ -31,6 +31,7 @@ export class MetricsService {
 
 
   isAdmin: boolean;
+  currentSource: string;
 
   constructor(
     private $loader: LoaderService,
@@ -92,8 +93,7 @@ export class MetricsService {
         //
         // AddToProducts
         if (ctx.state && ctx.state.action === CartAction.ITEM_ADD) {
-          console.log('-- metrics.AddToProducts', ctx.state);
-          this.event(EnumMetrics.metric_add_to_card, {'amount': ctx.state.item.price});
+          this.event(EnumMetrics.metric_add_to_card, {'amount': ctx.state.item.price,hub:ctx.state.item.hub});
         }
 
         //
@@ -131,7 +131,7 @@ export class MetricsService {
     }
     const origin = window.location.origin;
     // FIMXE use config instead of hardcodedw
-    return (origin.indexOf('evaletolab.ch') == -1) || (origin.indexOf('localhost') == -1);
+    return true;//(origin.indexOf('evaletolab.ch') == -1) || (origin.indexOf('localhost') == -1);
   }
 
   getHost(name: string): any {
@@ -139,7 +139,7 @@ export class MetricsService {
     const _default: any = {
       fbq: function() {},
       ga: function() {},
-      gtag: function() {console.log('--- DBG gtag',arguments)},
+      gtag: function() {},
       _kmq: {push: function() {}}
     };
     return ((<any>window)[name]) || _default[name];
@@ -177,14 +177,28 @@ export class MetricsService {
     }
     const params: any = {};
     const metrics:Metrics = {} as Metrics;
-
     // item:name
     // amount: CHF
     // plan: pro,normal,guest,vendor
+    // hub
     if (options) {
       Object.assign(params, options);
     }
 
+    if(this.currentSource) {
+      metrics.source = this.currentSource;
+    }
+
+    //
+    // memory store of current source
+    else if(params.source) {
+      metrics.source = this.currentSource = params.source;
+    }
+
+    if(params.hub) {
+      metrics.hub = params.hub;
+    }
+    console.log('---- DBG metrics',EnumMetrics[metric],metrics)
 
     //
     // sent event
@@ -201,20 +215,13 @@ export class MetricsService {
         fbq('track', 'ViewContent');
         gtag('event', 'page_view', { page_location: params.path, page_title: params.title });
         if(options.action) {
-          metrics.hub=options.hub;
           metrics.action=options.action;
-          metrics.source=options.source;
           this.$analytics.push(metrics);  
         }
         break;
       case EnumMetrics.metric_view_home:
-        metrics.hub=options.hub;
         metrics.action='home';
-        metrics.source=options.source;
         this.$analytics.push(metrics);
-        break;
-      case EnumMetrics.metric_order_payment:
-        gtag('event', 'checkout_progress');
         break;
       case EnumMetrics.metric_account_login:
         gtag('event', 'login');
@@ -222,18 +229,28 @@ export class MetricsService {
       case EnumMetrics.metric_account_create:
         fbq('track', 'CompleteRegistration');
         gtag('event', 'sign_up');
+        metrics.action='signup';
+        this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_add_to_card:
         fbq('track', 'AddToCart', params.amount);
         gtag('event', 'add_to_cart',{ currency:'CHF', value:params.amount });
+        metrics.action='cart';
+        metrics.amount = params.amount;
+        this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_order_sent:
         fbq('track', 'Purchase', {value: params.amount, currency: 'CHF'});
         gtag('event', 'purchase',  {value: params.amount, currency: 'CHF'});        
+        // INFO
+        // this.$analytics is made server side
         break;
       case EnumMetrics.metric_order_payment:
         fbq('track', 'InitiateCheckout');
         gtag('event', 'begin_checkout', {value: params.amount, currency: 'CHF'});
+        metrics.action='checkout';
+        metrics.amount=params.amount;
+        this.$analytics.push(metrics);
         break;
         case EnumMetrics.metric_error:
         case EnumMetrics.metric_exception:

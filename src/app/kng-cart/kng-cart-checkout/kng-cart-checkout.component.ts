@@ -208,6 +208,11 @@ export class KngCartCheckoutComponent implements OnInit {
     this.itemsAmount = this.$cart.subTotal(hub.slug);
 
     this.buildDiscountLabel();
+    
+    //
+    // Metric ORDER
+    this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
+
   }
 
 
@@ -286,14 +291,15 @@ export class KngCartCheckoutComponent implements OnInit {
       this.open = false;
       return;
     }
+    //console.log(' --- DBG checkPaymentMethod',this._user.payments.map(p=>p.alias))
     this.$user.checkPaymentMethod(this._user).subscribe(user => {
       //
       // set default payment
       // FIXME me this.orders[0].payment.issue is crashing 
-      const lastIssuer = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.issuer:null;
+      const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
-      const previousPayment = payments.find(payment => payment.issuer == lastIssuer);
+      const previousPayment = payments.find(payment => payment.alias == lastAlias);
       if(previousPayment) {
         payments.unshift(currentPayment);
       }
@@ -403,10 +409,7 @@ export class KngCartCheckoutComponent implements OnInit {
       return;
     }
     this.$cart.setPaymentMethod(payment);
-
-    //
-    // Metric ORDER
-    this.$metric.event(EnumMetrics.metric_order_payment);
+    console.log('---DBG payment',payment.alias);
   }
 
   subTotal() {
@@ -477,7 +480,7 @@ export class KngCartCheckoutComponent implements OnInit {
     const shipping = new OrderShipping(
       this.currentShipping(),
       this.currentShippingDay(),
-      (this.isCartDeposit() ? '0' : 14)
+      (this.isCartDeposit() ? '0' : 16)
     );
 
     const hub = this._currentHub.slug;
