@@ -28,8 +28,6 @@ import { CommonModule } from '@angular/common';
 import { Kng2CoreModule } from 'kng2-core';
 import { KngSharedMdcModule } from './shared.mdc.module';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { KngFeedbackComponent } from './kng-feedback/kng-feedback.component';
 
 import { appRoutes } from './shared.routes';
 import { NgxStripeModule } from 'ngx-stripe';
@@ -38,7 +36,6 @@ import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component
 import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
-import { KngSearchBarComponent, KngSearchComponent } from '../kng-search-bar/kng-search-bar.component';
 
 
 @NgModule({
