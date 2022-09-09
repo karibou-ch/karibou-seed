@@ -123,7 +123,7 @@
 
       <!-- VENDOR-->
       <div class="vendor" *ngIf="product.vendor.photo">
-        <a class="link" [routerLink]="['/store',store,'shops',product.vendor.urlpath]">
+        <a class="link" [routerLink]="['/store',store,'home','shops',product.vendor.urlpath]">
           <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
                class="thumbnail-owner photo-owner">
         </a>
