@@ -420,13 +420,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
-    this.$navigation.back();
     setTimeout(() => {
       if (!this.scrollCallback) {
         return;
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });
-    }, 200);
+    }, 500);
+    this.$navigation.back();
   }
 
   removeToCart($event, product: Product) {
