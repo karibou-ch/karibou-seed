@@ -55,6 +55,7 @@ export const appRoutes: Routes = [
   },
 
 
+  { path: 'store/:store/crocery', pathMatch: 'full', redirectTo: '/store/:store/home' },
   { path: 'store/:store/shop/:slug', pathMatch: 'full', redirectTo: '/store/:store/home/shops/:slug' },
 
   { path: 'products/:sku/:title', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku/:title' },
