@@ -204,6 +204,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.scrollCallback = null;
+
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');

@@ -185,6 +185,7 @@ export class ProductListComponent implements OnInit {
   }
 
   clean() {
+    this.isReady = false;
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
@@ -307,12 +308,12 @@ export class ProductListComponent implements OnInit {
 
   onClose(closedialog) {
     setTimeout(() => {
-      this.clean();
-      if(this.$navigation.hasHistory()){
-        return this.$navigation.back();
+      if (!this.isReady) {
+        return;
       }
-      this.$router.navigate(['../../'], {relativeTo: this.$route});
-    }, 200);
+      this.$router.navigate(['../../'], { relativeTo: this.$route });
+    }, 500);
+    this.$navigation.back();
   }
 
   //
