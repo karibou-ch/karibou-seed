@@ -78,6 +78,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant maximum de',
       cart_amount_2: 'pour permettre des modifications de commande (prix au poids, ou ajout de produits en dernière minute).',
       cart_nextshipping: 'Livraison',
+      cart_shared_copy: 'Vous pouvez partager vos paniers avec quelqu\'un avant de valider la commande',
       cart_shared_title1: 'Vous utilisez un panier partagé',
       cart_shared_title2: 'Identifiez-vous pour partager vos modifications!',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
@@ -117,6 +118,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve the max amount of',
       cart_amount_2: 'to allow order changes (price by weight, or a last minute addition of products).',
       cart_nextshipping: 'Next delivery',
+      cart_shared_copy: 'You can share this cart with someone before to checkout',
       cart_shared_title1: 'You are using a shared basket',
       cart_shared_title2: 'You must be logged to share your changes.',
       cart_error: 'Your cart has to be modified!',
@@ -184,7 +186,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   get sharedCart(){
     const uuid = this.$cart.getCID();    
-    return this.$dom.bypassSecurityTrustUrl(window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/cart/' + uuid);
+    // this.$dom.bypassSecurityTrustUrl()
+    return (window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/home/cart/' + uuid);
   }
 
   get lockedHUB() {
@@ -271,6 +274,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
       const cathError = true;
       this.$order.findOrdersByUser(this.user,{limit:4},cathError).subscribe(orders=>this.orders=orders);        
     }
+  }
+
+  onCopy($event){
+    $event.stopPropagation();
+    navigator.clipboard.writeText(this.sharedCart).then(()=>{
+      //alert('DONE')
+    })
+    return false;
   }
 
 
