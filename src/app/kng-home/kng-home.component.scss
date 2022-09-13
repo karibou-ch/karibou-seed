@@ -236,6 +236,11 @@ kng-nav-marketplace {
     display: none;
   }
 
+  /* iPad/Iphone Landscape  https://stackoverflow.com/a/10360310 */
+  @media (orientation:landscape) {
+    display: none;
+  }  
+
   ul{
     list-style: none;
     padding: 0;
