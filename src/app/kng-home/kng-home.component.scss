@@ -237,7 +237,10 @@ kng-nav-marketplace {
   }
 
   /* iPad/Iphone Landscape  https://stackoverflow.com/a/10360310 */
-  @media (orientation:landscape) {
+  @media  only screen and (-webkit-min-device-pixel-ratio: 1.5) and (orientation:landscape),
+          only screen and (-o-min-device-pixel-ratio: 3/2) and (orientation:landscape),
+          only screen and (min--moz-device-pixel-ratio: 1.5) and (orientation:landscape),
+          only screen and (min-device-pixel-ratio: 1.5) and (orientation:landscape) {
     display: none;
   }  
 
