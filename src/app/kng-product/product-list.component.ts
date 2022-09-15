@@ -23,6 +23,7 @@ import { combineLatest, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MdcChipSet, MdcChip } from '@angular-mdc/web';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
 @Component({
   selector: 'kng-product-list',
@@ -77,6 +78,7 @@ export class ProductListComponent implements OnInit {
     public $i18n: i18n,
     public $cart: CartService,
     public $navigation: KngNavigationStateService,
+    public $metric: MetricsService,
     public $shop: ShopService,
     public $product: ProductService,
     public $router: Router,
@@ -232,6 +234,27 @@ export class ProductListComponent implements OnInit {
 
 
   productsByShop() {
+    //
+    // update metrics
+    const source =  this.$route.snapshot.queryParamMap.get('target')||
+                    this.$route.snapshot.queryParamMap.get('source') ||
+                    this.$route.snapshot.queryParamMap.get('ad') ||
+                    this.$route.snapshot.queryParamMap.get('umt_source')
+
+    if (source) {
+      //
+      // publish metrics
+      const metric ={
+        path:window.location.pathname,
+        title: 'Shop',
+        action:'home',
+        hub:this.store,
+        source
+      }
+      this.$metric.event(EnumMetrics.metric_view_page,metric);
+    }
+
+
     this.options.hub = this.store;
     this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
 
