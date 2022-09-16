@@ -375,17 +375,12 @@ export class KngCartCheckoutComponent implements OnInit {
     return this._user.payments.every(payment => payment.isValid());
   }
 
-  isOrderReady() {
-    const payment = this.$cart.getCurrentGateway();
-    const address = this.$cart.getCurrentShippingAddress();
-    return this._user.isReady() && (payment.label !== 'Aucun') && address.name && this.items.length;
-  }
 
   setShippingAddress(address: UserAddress) :boolean {
     if(!address || !address.streetAdress) {
       return false;
     }
-    const isDone = this.$cart.setShippingAddress(address);
+    const isDone = this.selectAddressIsDone = this.$cart.setShippingAddress(address);
 
     //
     // copy note
