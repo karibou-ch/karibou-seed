@@ -307,16 +307,6 @@ export class UserSignComponent {
       return this.$router.navigate([this.mandatory.referrer]);
     }
 
-    if (document['referrer']) {
-      // const url = document['referrer'].split('/store');
-      // if (url.length === 2) {
-      //   return this.$router.navigateByUrl('/store' + url[1]);
-      // }
-
-      // return window.location.href = document['referrer'];
-      return this.$location.back();
-    }
-
     //
     // last case, HOME
     this.$location.back();

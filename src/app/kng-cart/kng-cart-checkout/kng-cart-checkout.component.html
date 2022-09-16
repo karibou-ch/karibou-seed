@@ -39,7 +39,7 @@
           </div>
           <!-- NEW ADDRESS -->
           <div class="profile-action"  >
-            <button [routerLink]="['/store/'+store+'/home/me/login-or-address']">              
+            <button [routerLink]="['./user/login-or-address']" >              
               {{labell.user_address_add}} 
             </button>
           </div>
@@ -66,7 +66,7 @@
               </label>
           </div>
           <div class="profile-action"  >
-            <button [routerLink]="['/store/'+store+'/home/me/login-or-payment']">
+            <button [routerLink]="['./user/login-or-payment']">
               {{labell.user_payment_add}} 
             </button>
           </div>      
@@ -75,7 +75,7 @@
       </div>
         
       <!-- RESUME -->
-      <div class="order-resume " *ngIf="isOrderReady && isOpen">
+      <div class="order-resume " *ngIf="isOpen">
 
         <div class="order-resume-block">
           <section  [class.deposit]="isCartDeposit()" 
@@ -198,4 +198,6 @@
 
 
   </div>
+
+
 </div>
