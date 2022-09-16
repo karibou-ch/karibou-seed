@@ -195,6 +195,11 @@ export class MetricsService {
       metrics.source = this.currentSource = params.source;
     }
 
+    if (window.matchMedia('(display-mode: standalone)').matches) {  
+      // PWA mode
+      metrics.source = metrics.source || 'pwa';
+    }      
+
     if(params.hub) {
       metrics.hub = params.hub;
     }
