@@ -57,7 +57,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
       cart_info_payment: 'Méthode de paiement',
       cart_info_discount: 'Rabais',
-      cart_info_hub_not_active:'Le marché <b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
+      cart_info_hub_not_active:'<b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
       cart_info_one_date: 'Pas de livraison le __DAY__ pour ce marché.',
       cart_info_one_date_more: 'Changer de date pour tout recevoir en une livraison.',
       cart_info_limit: `Nos créneaux de livraison sont tous occupés. Toutefois, vous pouvez préparer votre panier et valider votre commande
