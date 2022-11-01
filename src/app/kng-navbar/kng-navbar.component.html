@@ -97,7 +97,7 @@
       <!-- APPBAR-SECTION-START HUB AND DATE -->
       <mdc-top-app-bar-section align="start" class="hide-sm">
         <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-icons start">roofing</i>{{$i18n.label().nav_bottom_home}}</div>
-        <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_market}} {{hubTitle}} </div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}} </div>
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_shops}}</div>
         <div class="kng-chip" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
         <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
@@ -112,7 +112,7 @@
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-top-app-bar-section  class="title hide-md hide-lg">
-        <span class="start">{{$i18n.label().nav_market}} {{hubTitle}} </span>
+        <span class="start">{{hubTitle}} </span>
         <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
 
