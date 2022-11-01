@@ -198,9 +198,6 @@ export class KngCartCheckoutComponent implements OnInit {
       }  
     }
 
-
-
-
     //
     // FIXME currently only one shipping time!
     this.shipping = this.config.shared.shipping;
@@ -388,8 +385,11 @@ export class KngCartCheckoutComponent implements OnInit {
 
     //
     // update shipping time
-    const time = (this.isCartDeposit() ? 0 : 14);
-    this.shippingTime = this.config.shared.hub.shippingtimes[time];
+    const shippingDay = this.currentShippingDay();
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+
+    this.shippingTime = this.config.shared.hub.shippingtimes[shippingHours];
     return isDone;
   }
 
@@ -472,10 +472,13 @@ export class KngCartCheckoutComponent implements OnInit {
     //
     // prepare shipping
     // FIXME hour selection should be better
+    const shippingDay = this.currentShippingDay();
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
     const shipping = new OrderShipping(
       this.currentShipping(),
-      this.currentShippingDay(),
-      (this.isCartDeposit() ? '0' : 16)
+      shippingDay,
+      shippingHours
     );
 
     const hub = this._currentHub.slug;
