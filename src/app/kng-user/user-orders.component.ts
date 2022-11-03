@@ -114,10 +114,12 @@ export class UserOrdersComponent implements OnInit {
   addAllToCart(order: Order) {
     //
     // FIXME, replace load N products in N calls BY N products in one call
+    const hub = this.config.shared.hubs.find( hub => hub.id == order.hub);
     forkJoin(order.items.map(item => this.$products.get(item.sku))).subscribe((products) => {
       const items = products.map((product,i) => {
         const variant = (order.items[i].variant) ? order.items[i].variant.title : null;
-        return CartItem.fromProduct(product, this.config.shared.hub.slug, variant);
+        const quantity = order.items[i].quantity || 1;
+        return CartItem.fromProduct(product, hub.slug, variant, quantity);
       });
       this.$cart.addAll(items);
     });
