@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Config } from 'kng2-core';
 import { i18n } from '../i18n.service';
 
@@ -33,6 +34,7 @@ export class KngNewsComponent implements OnInit {
 
   constructor(
     private $i18n: i18n,
+    private $route: Router
   ) {
   }
 
@@ -40,6 +42,10 @@ export class KngNewsComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    //
+    // avoid open news when landing on product, category or vendor
+    const canOpen = (this.$route.url.split('/').length - 1) < 4;
     //
     // already stored news
     try {
@@ -47,7 +53,7 @@ export class KngNewsComponent implements OnInit {
       this.content = this.getContent('p');
       const hacha = this.hacha(this.content);
       if(this.stored.indexOf(this.hacha(this.content))==-1){
-        this.open = TO_DISPLAY && true;
+        this.open = TO_DISPLAY && canOpen;
         TO_DISPLAY = false;
       }
     } catch (err) {
