@@ -135,7 +135,7 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.isReady = true;
-
+    
     if(this.$route.snapshot.params['category']){
       this.category.slug = this.$route.snapshot.params['category'];
       this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
@@ -330,8 +330,15 @@ export class ProductListComponent implements OnInit {
 
 
   onClose(closedialog) {
+    //
+    // case of onboarding from ad clic
+    const query = this.$route.snapshot.queryParams;
+    const shouldNavigate = query.source || query.fbclid;
+    if(shouldNavigate) {
+      return this.$router.navigate(['../../'], { relativeTo: this.$route });
+    }
     setTimeout(() => {
-      if (!this.isReady) {
+      if (!this.isReady|| query.source) {
         return;
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });

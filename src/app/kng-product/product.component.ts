@@ -421,6 +421,15 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
+    //
+    // case of onboarding from ad clic
+    const query = this.$route.snapshot.queryParams;
+    const shouldNavigate = query.source || query.fbclid;
+    if(shouldNavigate) {
+      return this.$router.navigate(['../../'], { relativeTo: this.$route });
+    }
+
+
     setTimeout(() => {
       if (!this.scrollCallback) {
         return;
