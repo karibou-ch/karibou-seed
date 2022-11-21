@@ -36,7 +36,7 @@ export class KngRootComponent implements OnInit {
     this.currentShippingDay = new Date();
     this.selected = [];
     this.subscription = new Subscription();
-    console.log('---- ROOT',this.orders)
+    console.log('---- ROOT component orders:',this.orders)
   }
 
 
