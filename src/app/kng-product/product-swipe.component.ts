@@ -92,12 +92,14 @@ export class ProductSwipeComponent implements OnInit {
       return;
     }
 
-    if(this.hub) {
+    if(this.hub && this.config.shared.mailchimp) {
       const mailchimp = this.config.shared.mailchimp[this.hub] || [];
       if(mailchimp.length){
         this.options.skus = mailchimp.map(media=>media.sku).filter(sku=>!!sku);    
       }
       this.options.hub=this.hub;
+    } else {
+      this.options.home = true;
     }
 
     this.$product.select(this.options).subscribe((products: Product[]) => {
