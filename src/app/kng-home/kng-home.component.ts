@@ -192,10 +192,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       const site = this.config.shared.hub.siteName[this.locale];
       const tag =  this.config.shared.hub.tagLine.t[this.locale];
       const hub = this.config.shared.hub.slug;
-      const source = this.$route.snapshot.queryParamMap.get('target')||
-                      this.$route.snapshot.queryParamMap.get('source') ||
-                      this.$route.snapshot.queryParamMap.get('ad') ||
-                      this.$route.snapshot.queryParamMap.get('umt_source')
       document.title = site + ' - ' + tag;
       //
       // publish metrics
@@ -203,8 +199,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         path:window.location.pathname,
         title: 'Home',
         action:'home',
-        hub,
-        source
+        hub
       }
       this.$metric.event(EnumMetrics.metric_view_page,metric);
     }

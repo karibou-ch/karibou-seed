@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { UserService, LoaderService, CartAction, AnalyticsService, Metrics, Hub } from 'kng2-core';
 import { timer } from 'rxjs';
 import { map, debounce } from 'rxjs/operators';
@@ -33,35 +34,48 @@ export class MetricsService {
   isAdmin: boolean;
   currentSource: string;
 
+  //
+  //fbc => url from meta link ?="...."
+  fbclid: string;
+
+  //
+  // fbp => fb.1.DATE.RND, build a custom FB unique identifier
+  // https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/fbp-and-fbc
+  fbp ="fb.1."+Date.now()+"."+(Math.random()*1000000000|0);
+
+
   constructor(
     private $loader: LoaderService,
     private $user: UserService,
+    private $route: ActivatedRoute,
     private $analytics: AnalyticsService
   ) { }
 
-  initFB() {
-    if (!this.isEnable() || (<any>window).fbq) {
-      return;
+
+  parseUrlIdentifiers(){
+    //
+    // build a custom pixel marker for Meta (FB)
+    try {
+      this.fbp = localStorage.getItem('meta-fbp') || this.fbp;
+      localStorage.setItem('meta-fbp',(this.fbp));
+    } catch (err) {
     }
 
-    //
-    // FB
-    (function (f?: any, b?: any, e?: any, v?: any, n?: any, t?: any, s?) {
-      if (f.fbq) { return; } n = f.fbq = function () {
-        n.callMethod ?
-        n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-      }; if (!f._fbq) { f._fbq = n; }
-      n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
-      t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
-    })(window,
-      document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
-    console.log('Metrics -- load FB', this.getHost('fbq'));
+    this.currentSource = this.$route.snapshot.queryParamMap.get('target')||
+                         this.$route.snapshot.queryParamMap.get('source') ||
+                         this.$route.snapshot.queryParamMap.get('umt_source') || this.currentSource;
+
+    this.fbclid = this.$route.snapshot.queryParamMap.get('fbclid') || this.fbclid;
+    if(this.fbclid) {
+      this.fbclid = this.fbp.split('.').slice(0, -1).join('.')+this.fbclid;
+    }
 
 
-    this.getHost('fbq')('init', this.FB_PIXEL);
-    this.getHost('fbq')('track', 'PageView');
+    console.log('---DBG identifiers',this.fbclid,this.fbp)
+
   }
+
 
   initGA() {
     if (!this.isEnable() || (<any>window).ga) {
@@ -85,8 +99,6 @@ export class MetricsService {
     timer(when || 50).pipe(map(ctx => {
 
       console.log('Metrics -- init');
-      // this.initKissmetrics();
-      this.initFB();
       this.initGA();
 
       this.$loader.update().subscribe((ctx) => {
@@ -171,10 +183,13 @@ export class MetricsService {
   event(metric: EnumMetrics, options?) {
     const gtag = this.getHost('gtag');
     const fbq = this.getHost('fbq');
+    this.parseUrlIdentifiers();
 
     if (!this.isEnable() || this.isAdmin) {
-      return;
+//      return;
     }
+
+
     const params: any = {};
     const metrics:Metrics = {} as Metrics;
     // item:name
@@ -203,6 +218,16 @@ export class MetricsService {
     if(params.hub) {
       metrics.hub = params.hub;
     }
+
+    //
+    // server side tracking
+    metrics.extra = {
+      url:location.href,
+      fbc:this.fbclid,
+      fbp:this.fbp,
+      user_agent: window.navigator.userAgent
+    }
+
     console.log('---- DBG metrics',EnumMetrics[metric],metrics)
 
     //
@@ -217,8 +242,8 @@ export class MetricsService {
 
     switch (metric) {      
       case EnumMetrics.metric_view_page:
-        fbq('track', 'ViewContent');
         gtag('event', 'page_view', { page_location: params.path, page_title: params.title });
+        metrics.extra.event='ViewContent';
         if(options.action) {
           metrics.action=options.action;
           this.$analytics.push(metrics);  
@@ -226,40 +251,43 @@ export class MetricsService {
         break;
       case EnumMetrics.metric_view_home:
         metrics.action='home';
+        metrics.extra.event='PageView';
         this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_account_login:
         gtag('event', 'login');
         break;
       case EnumMetrics.metric_account_create:
-        fbq('track', 'CompleteRegistration');
         gtag('event', 'sign_up');
+        metrics.extra.event='CompleteRegistration';
         metrics.action='signup';
         this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_add_to_card:
-        fbq('track', 'AddToCart', params.amount);
         gtag('event', 'add_to_cart',{ currency:'CHF', value:params.amount });
+        metrics.extra.event='AddToCart';
         metrics.action='cart';
         metrics.amount = params.amount;
         this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_order_sent:
-        fbq('track', 'Purchase', {value: params.amount, currency: 'CHF'});
         gtag('event', 'purchase',  {value: params.amount, currency: 'CHF'});        
-        // INFO
-        // this.$analytics is made server side
+        metrics.action='order';
+        metrics.amount=params.amount;
+        metrics.extra.event='Purchase';
+        this.$analytics.push(metrics);
+
         break;
       case EnumMetrics.metric_order_payment:
-        fbq('track', 'InitiateCheckout');
         gtag('event', 'begin_checkout', {value: params.amount, currency: 'CHF'});
         metrics.action='checkout';
         metrics.amount=params.amount;
+        metrics.extra.event='InitiateCheckout';
         this.$analytics.push(metrics);
         break;
         case EnumMetrics.metric_error:
         case EnumMetrics.metric_exception:
-            gtag('event', 'exception', {
+          gtag('event', 'exception', {
           'description': params.message||params.error,
           'fatal': false
         });

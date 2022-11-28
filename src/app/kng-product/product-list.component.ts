@@ -165,6 +165,15 @@ export class ProductListComponent implements OnInit {
       this.isReady = false;
     }
     
+    //
+    // publish metrics
+    const metric ={
+      path:window.location.pathname,
+      hub:this.store,
+      action:'home',
+      title:document.title
+    }
+    this.$metric.event(EnumMetrics.metric_view_page,metric);
 
     //
     // DIALOG INIT HACK
@@ -236,24 +245,6 @@ export class ProductListComponent implements OnInit {
   productsByShop() {
     //
     // update metrics
-    const source =  this.$route.snapshot.queryParamMap.get('target')||
-                    this.$route.snapshot.queryParamMap.get('source') ||
-                    this.$route.snapshot.queryParamMap.get('ad') ||
-                    this.$route.snapshot.queryParamMap.get('umt_source')
-
-    if (source) {
-      //
-      // publish metrics
-      const metric ={
-        path:window.location.pathname,
-        title: 'Shop',
-        action:'home',
-        hub:this.store,
-        source
-      }
-      this.$metric.event(EnumMetrics.metric_view_page,metric);
-    }
-
 
     this.options.hub = this.store;
     this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
