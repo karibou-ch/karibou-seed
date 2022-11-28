@@ -21,7 +21,7 @@
 
   
           <div class="market">{{i18n.label().nav_market}}</div>
-          <div class="title">{{hub.name}}</div>
+          <div class="title">{{hub.siteName[locale]}}</div>
           <div class="description">{{hub.description[locale]}}</div>
           <div class="cart">
              {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-icons icon">shopping_cart</span>
@@ -31,7 +31,7 @@
             <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;besoin d'aide?</a>  
         
           </div>
-          <div class="calendar hide-sm">
+          <div class="calendar hide-">
             <div class="schedule">
               <span class="material-icons icon" >schedule</span>
               <span class="txt">ouvert  </span>
