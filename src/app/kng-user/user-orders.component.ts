@@ -158,13 +158,14 @@ export class UserOrdersComponent implements OnInit {
   getOrderStatusIcon(order: Order) {
     // "pending","authorized","partially_paid","paid","partially_refunded","refunded","voided"
     switch (order.payment.status) {
+      case 'invoice':
       case 'pending':
         return 'more_horiz';
       case 'authorized':
         return 'radio_button_unchecked';
       case 'paid':
-      case 'invoice':
-        return 'check_circle';
+      case 'invoice_paid':
+            return 'check_circle';
       case 'partially_refunded':
       case 'manually_refunded':
         return 'check_circle';
@@ -182,7 +183,7 @@ export class UserOrdersComponent implements OnInit {
   }
 
   isPaidOrRefund(order: Order) {
-    return ['invoice','paid', 'manually_refund', 'partially_refunded'].indexOf(order.payment.status) > -1;
+    return ['invoice','invoice_paid','paid', 'manually_refund', 'partially_refunded'].indexOf(order.payment.status) > -1;
   }
 
   isInvoiceOpen(order: Order) {
