@@ -1,7 +1,11 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Config, User, Order, UserService, OrderService, EnumFinancialStatus, CartService } from 'kng2-core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem } from 'kng2-core';
 import { i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
+
+import { SVG } from "swissqrbill/lib/node/esm/node/svg.js"; // ESM. Tree-shakeable
+import { forkJoin } from 'rxjs';
+
 
 @Component({
   selector: 'kng-feedback',
@@ -12,8 +16,6 @@ import { MdcSnackbar } from '@angular-mdc/web';
 })
 export class KngFeedbackComponent implements OnInit {
 
-  private _user:User;
-
   i18n: any = {
     fr: {
       title_order_prepare: 'Votre commande est en cours de préparation pour',
@@ -21,6 +23,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
+      title_order_payment_done: 'Valider le payment!',
       title_evaluation: 'Votre note',
       title_evaluation_quick: 'Evaluez votre satisfaction',
       title_evaluation_save: 'Votre note',
@@ -30,7 +33,8 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_subtitle: 'Chaque retour est précieux pour améliorer la qualité du service',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.<br/>Ne vous inquiétez pas, vous serez remboursé.',
       title_issue_send: 'Enregistrez la note',
-      title_invoice_open:'(Vous avez une facture ouverte)',
+      title_invoice_open:'Vous avez une ou plusieurs factures ouvertes',
+      title_add_all_to_cart: 'Tout ajouter dans le panier',
       form_text_label: 'Note concernant le service?'
     },
     en: {
@@ -39,6 +43,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_shipping: 'Delivery is expected at',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
+      title_order_payment_done: 'Validate paid',
       title_evaluation: 'Your rating',
       title_evaluation_quick: 'Rate your Satisfaction',
       title_evaluation_save: 'Your rating',
@@ -48,31 +53,43 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_header: 'Select the product(s) below to inform the vendor.<br/>We are really sorry but don\'t worry you will get your money back!',
       title_issue_hub: 'If you have a more general comment please write here',
       title_issue_send: 'Save your rating',
-      title_invoice_open:'(You have an open invoice)',
+      title_invoice_open:'You have open invoices',
+      title_add_all_to_cart: 'Add all to cart',
       form_text_label: 'Add a comment about our service'
     }
   };
 
+  private _user:User;
+  private _orders:Order[];
+
   askFeedback = false;
   isReady = false;
   order: Order;
+  childOrder: { [key: number]: Order[]};
   selected: any = {};
   score: number;
   feedbackText: string;
+  invoices: Order[];
+  HUBS:any = {};
 
   currentLimit: number;
   premiumLimit: number;
 
+  @ViewChild('qrbill') svg: ElementRef;
+
+
   @Input() config: Config;
   @Input() boxed: boolean;
-  @Input() orders: Order[] = [];
-  @Input() child: Order[] = [];
   @Input() forceload: boolean;
   @Input() set user(u:User){
     this._user = u;
     setTimeout(()=>{
-      this.loadOrders();
+      this.prepareOrders();
     },1)
+  }
+  @Input() set orders(orders: Order[]){
+    this._orders = (orders||[]);
+    this.prepareOrders();
   }
 
   get hubName() {
@@ -83,8 +100,8 @@ export class KngFeedbackComponent implements OnInit {
     return this.$i18n.locale;
   }
 
-  get childOrders() {
-    return this.child||[];
+  get childOrderLength() {
+    return this.childOrder[this.order.oid].length;
   }
 
 
@@ -104,14 +121,78 @@ export class KngFeedbackComponent implements OnInit {
     return this.$i18n.label();
   }  
 
+  get orders(){
+    return this._orders;
+  }
+
+
+  get qrbill() {
+    //      reference: "210000000003139471430009017",
+    // const prefix = '10000000000';
+    // const reference = prefix+this.user.id+''+Utils.mod10(prefix+this.user.id);
+    const ordersTxt = 'Karibou-QRBILL: '+this.invoices.map(order => order.oid).join('-');
+    const amount = this.invoices.reduce((sum,order)=>sum+order.getTotalPrice(),0);
+
+    if(!this.invoices.length){
+      return false;
+    }
+    const content = {
+      currency: "CHF",
+      amount: amount,
+      message: ordersTxt,
+      creditor: {
+        name: "Karibou Delphine Cluzel E.",
+        address: "5 ch. du 23-Aout",
+        zip: 1205,
+        city: "Geneve",
+        account: "CH7904835110368481000",
+        country: "CH"
+      },
+      debtor: {
+        name: this.user.displayName,
+        address: this.order.shipping.streetAdress,
+        zip: this.order.shipping.postalCode,
+        city: this.order.shipping.region,
+        country: "CH"
+      }
+    } as any;    
+    if (this.svg && this.svg.nativeElement) {
+      this.svg.nativeElement.innerHTML = new SVG(content, { language: 'EN' });
+    }
+
+    return true;
+  }
 
   constructor(
+    public $products: ProductService,
     public $cart: CartService,
     public  $i18n: i18n,
     private $snack: MdcSnackbar,
     private $order: OrderService,
     private $cdr: ChangeDetectorRef
   ) {
+    this._orders = [];
+    this.invoices = [];
+  }
+
+
+  ngOnDestroy() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
+    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+  }
+  ngOnChanges() {
+
+  }
+
+  ngOnInit() {
+
+    this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+    this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+
+    this.config.shared.hubs.forEach(hub => this.HUBS[hub.id]=hub.name);
+
+    this.prepareOrders();
+
   }
 
   displayEvaluate() {
@@ -127,6 +208,10 @@ export class KngFeedbackComponent implements OnInit {
       return false;
     }
     this.score = score;
+  }
+
+  getOrderHUB(order) {
+    return this.HUBS[order.hub];
   }
 
   //
@@ -165,6 +250,10 @@ export class KngFeedbackComponent implements OnInit {
       return EnumFinancialStatus[EnumFinancialStatus.paid];
     }
 
+    if (this.order.payment.status === 'invoice_paid') {
+      return EnumFinancialStatus[EnumFinancialStatus.paid];
+    }
+
   }
 
   isOpen(order: Order) {    
@@ -193,54 +282,52 @@ export class KngFeedbackComponent implements OnInit {
     return this.$cart.hasPotentialShippingReductionMultipleOrder();
   }
 
-  ngOnDestroy() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
-  }
-  ngOnChanges() {
+  prepareOrders() {
+    const localInit = () => {
+      this.invoices = this.orders.filter(order => order.payment&&order.payment.status=='invoice');
+      this.prepareChildOrder();
+      // FIXME order.shipping should not be Null
+      const mains = this.orders.filter(order => order.shipping).filter(order => !order.shipping.parent);
+      if (mains && mains.length) {
+        this.order = mains[0];
+        this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
+        this.score = this.order.score;
+      }  
+    };
 
-  }
-
-  ngOnInit() {
-
-    this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-    this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-
-    if (this.orders && this.orders.length) {
-      this.order = this.orders[0];
-      this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
-      this.score = this.order.score;
-    }
-    if (this.forceload) {
-      //this.loadOrders();
-    }
-
-
-  }
-
-  loadOrders() {
     if (!this.user.id) {
-      this.orders = [];
       this.order = null;
       return;
     }
 
+    this._orders = this.orders.sort((a,b)=> b.oid-a.oid);
+
+
     if(this.orders.length){
+      localInit();
       return;
     }
 
-    const hub = this.config ? this.config.shared.hub.slug : '';
     this.$order.findOrdersByUser(this.user, {limit: 4}).subscribe(orders => {
-      if (!orders.length) {
-        return;
-      }
-      this.orders = orders || [];
-      this.order = this.orders[0];
-      this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
-      this.score = this.order.score;
+      this._orders = orders || [];
+      
+      localInit();
       this.$cdr.markForCheck();
     });
   }
+
+  prepareChildOrder() {
+    this.childOrder = {};
+    this.orders.forEach(order => {
+      const parentoid = order.shipping && order.shipping.parent;
+      this.childOrder[order.oid] = this.childOrder[order.oid] || [];
+      if(parentoid) {
+        this.childOrder[parentoid] = this.childOrder[parentoid] || [];
+        this.childOrder[parentoid].push(order);
+      }  
+    });
+  }
+
 
   openIssue() {
     //
@@ -250,13 +337,45 @@ export class KngFeedbackComponent implements OnInit {
     this.askFeedback = true;
   }
 
+
+  onAddAllToCart() {
+    let items = this.order.items;
+    items.forEach(item => item.hub = this.HUBS[this.order.hub])    
+    this.childOrder[this.order.oid].forEach(order => {
+      order.items.forEach(item => item.hub = this.HUBS[order.hub])
+      items = items.concat(order.items);
+    })
+    //
+    // FIXME, replace load N products in N calls BY N products in one call
+    forkJoin(items.map(item => this.$products.get(item.sku))).subscribe((products) => {
+      const cartItems = products.map((product,i) => {
+        const item = items.find(itm => itm.sku == product.sku);
+        if (!item) {
+          return;
+        }
+        const variant = (item.variant) ? item.variant.title : null;
+        const quantity = item.quantity || 1;
+        return CartItem.fromProduct(product, item.hub, variant, quantity);
+      });
+      this.$cart.addAll(cartItems);
+    });
+
+  }
+
   onBack() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     this.askFeedback = false;
   }
 
-  saveEvaluate() {
+  onUpdateInvoices() {
+    this.$order.updateInvoices().subscribe((result)=>{
+      this.$snack.open('Merci pour votre paiement!');
+      this.invoices = [];
+    })
+  } 
+
+  onEvaluate() {
     //
     // available issues:
     //  - issue_no_issue,
@@ -267,11 +386,12 @@ export class KngFeedbackComponent implements OnInit {
     //  - issue_wrong_packing
     // all selected sku => issue_wrong_product_quality
     // all items.fulfillment.request NOT IN (selected sku) => issue_no_issue
-    const skus = Object.keys(this.selected),
-        items = [];
+    const skus = Object.keys(this.selected);
+    const items = [];
+    const orders:Order[] = this.childOrder[this.order.oid].concat([this.order])
 
     //
-    // remove issue
+    // clean items first
     this.order.items.filter(item => item.fulfillment.request && skus.indexOf(item.sku + '') === -1).forEach(item => {
       item.fulfillment.request = 'issue_no_issue';
       items.push(item);
