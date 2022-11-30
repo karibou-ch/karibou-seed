@@ -139,7 +139,9 @@ export class ProductListComponent implements OnInit {
     if(this.$route.snapshot.params['category']){
       this.category.slug = this.$route.snapshot.params['category'];
       this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
-      this.category.current.child = this.category.current.child.sort((a, b) => {
+      //
+      // old google reference goes wrong
+      this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
         return a.weight - b.weight;
       });
 
