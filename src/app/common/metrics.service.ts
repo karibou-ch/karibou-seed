@@ -28,11 +28,11 @@ export enum EnumMetrics {
 })
 export class MetricsService {
 
-  FB_PIXEL = '1633129600094162';
 
 
   isAdmin: boolean;
   currentSource: string;
+  uid:string;
 
   //
   //fbc => url from meta link ?="...."
@@ -98,7 +98,6 @@ export class MetricsService {
     // delay the loading to avoid bad user experience
     timer(when || 50).pipe(map(ctx => {
 
-      console.log('Metrics -- init');
       this.initGA();
 
       this.$loader.update().subscribe((ctx) => {
@@ -122,6 +121,7 @@ export class MetricsService {
   }
 
   identitySet(uid) {
+    this.uid = uid;
     if (!this.isEnable()) {
       return;
     }
@@ -151,8 +151,7 @@ export class MetricsService {
     const _default: any = {
       fbq: function() {},
       ga: function() {},
-      gtag: function() {},
-      _kmq: {push: function() {}}
+      gtag: function() {}
     };
     return ((<any>window)[name]) || _default[name];
   }
