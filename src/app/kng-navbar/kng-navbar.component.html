@@ -16,10 +16,10 @@
     <mdc-list-group subheader="">
       <mdc-list>
 
-        <mdc-list-item [routerLink]="['/store',store,'me']" [hidden]="!user.isAuthenticated()" class="">
+        <mdc-list-item [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" class="">
           <span i18n>{{$i18n.label().nav_account}}</span>
         </mdc-list-item>
-        <mdc-list-item [routerLink]="['/store',store,'me','login']" [hidden]="user.isAuthenticated()">
+        <mdc-list-item [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()">
           <span i18n>{{$i18n.label().nav_login}}</span>
         </mdc-list-item>
 
