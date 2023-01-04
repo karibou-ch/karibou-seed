@@ -138,11 +138,11 @@
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
           <div class="bill">
-            <h2 class="full ">4. {{label.cart_info_shipping_title}} <b>{{shippingTime}}</b></h2>            
+            <h2 class="full ">4. {{label.cart_info_shipping_title}}</h2>            
           </div>  
 
           <div class="bill shipping" >
-            <div class="bold text-capitalize">{{currentShippingDay()|date:'EEE dd/M':'':locale}}, {{currentShipping().name}}</div>
+            <div class="bold text-capitalize">{{currentShipping().name}}</div>
             <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
             <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
           </div>
@@ -158,6 +158,7 @@
                   
         
           <div class="bill">
+            <h2 class="full text-capitalize">5. {{currentShippingDay()|date:'EEEE dd MMMM':'':locale}} ({{shippingTime}})</h2>            
             <div class="overflow">
               <input type="checkbox" [(ngModel)]="cgAccepted" >
               <label i18n class="link">        
@@ -168,7 +169,7 @@
               <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
             </div>
             <div class="bill error" [hidden]="!errorMessage">
-              <b>Oops:</b> {{errorMessage}}
+              {{errorMessage}}
             </div>
           </div>
 

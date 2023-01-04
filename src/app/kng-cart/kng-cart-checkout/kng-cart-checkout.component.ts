@@ -179,7 +179,6 @@ export class KngCartCheckoutComponent implements OnInit {
     this.open = true;
     this.checkPaymentMethod();
 
-
     const address = this.$cart.getCurrentShippingAddress();
     this.selectAddressIsDone = this.setShippingAddress(address);
 
@@ -325,7 +324,7 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   getDepositAddress() {
-    return this.config.shared.hub.deposits;
+    return this.hub.deposits;
   }
 
 
@@ -415,13 +414,6 @@ export class KngCartCheckoutComponent implements OnInit {
   //
   // payment stuffs
   createPaymentConfirmation(order: Order) {
-    //
-    // Metric ORDER
-    this.$metric.event(EnumMetrics.metric_order_sent, {
-      'shipping': order.getShippingPrice(),
-      'amount': order.getSubTotal()
-    });
-
     this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
     this._items = [];
     this.$cart.clear(this.store,order);
@@ -513,6 +505,14 @@ export class KngCartCheckoutComponent implements OnInit {
 
           return;
         }
+
+        //
+        // Metric ORDER
+        this.$metric.event(EnumMetrics.metric_order_sent, {
+          shipping: order.getShippingPrice(),
+          amount: order.getSubTotal(),
+          hub:hub
+        });
 
         //
         // validate

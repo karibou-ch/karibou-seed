@@ -51,7 +51,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_total: 'Total provisoire',
       cart_info_subtotal: 'Sous total (service karibou inclus)',
       cart_info_shipping: 'Livraison 100% cycliste',
-      cart_info_shipping_title: 'Livraison/Collecte ',
+      cart_info_shipping_title: 'Adresse de livraison ',
       cart_info_shipping_group: 'Vous complétez une commande en cours',
       cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
       cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
