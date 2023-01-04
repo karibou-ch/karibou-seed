@@ -23,7 +23,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
-      title_order_payment_done: 'Valider le payment!',
+      title_order_payment_done: 'Valider après le payment!',
       title_evaluation: 'Votre note',
       title_evaluation_quick: 'Evaluez votre satisfaction',
       title_evaluation_save: 'Votre note',
@@ -43,7 +43,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_shipping: 'Delivery is expected at',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
-      title_order_payment_done: 'Validate paid',
+      title_order_payment_done: 'Validate after payment',
       title_evaluation: 'Your rating',
       title_evaluation_quick: 'Rate your Satisfaction',
       title_evaluation_save: 'Your rating',
@@ -78,6 +78,7 @@ export class KngFeedbackComponent implements OnInit {
   @ViewChild('qrbill') svg: ElementRef;
 
 
+  @Input() child: Order[];
   @Input() config: Config;
   @Input() boxed: boolean;
   @Input() forceload: boolean;
@@ -308,7 +309,7 @@ export class KngFeedbackComponent implements OnInit {
       return;
     }
 
-    this.$order.findOrdersByUser(this.user, {limit: 4}).subscribe(orders => {
+    this.$order.findOrdersByUser(this.user, {limit: 8}).subscribe(orders => {
       this._orders = orders || [];
       
       localInit();
@@ -318,7 +319,7 @@ export class KngFeedbackComponent implements OnInit {
 
   prepareChildOrder() {
     this.childOrder = {};
-    this.orders.forEach(order => {
+    this.orders.concat(this.child||[]).forEach(order => {
       const parentoid = order.shipping && order.shipping.parent;
       this.childOrder[order.oid] = this.childOrder[order.oid] || [];
       if(parentoid) {
@@ -369,7 +370,10 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   onUpdateInvoices() {
-    this.$order.updateInvoices().subscribe((result)=>{
+    const oids = this.invoices.map(order => order.oid);
+    const amount = this.invoices.reduce((sum,order)=>sum+order.getTotalPrice(),0);
+
+    this.$order.updateInvoices(oids, amount).subscribe((result)=>{
       this.$snack.open('Merci pour votre paiement!');
       this.invoices = [];
     })

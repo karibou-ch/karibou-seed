@@ -1,6 +1,6 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
-  <h3 i18n>{{i18n[locale].title_order_open}}</h3>
+  <h3 i18n>{{i18n[locale].title_order_open}} {{order.oid}}</h3>
 
   <p i18n class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
