@@ -84,10 +84,14 @@
 </div>
 
 <!--- DISPLAY INVOICES -->
-<div class="qrbill" *ngIf="qrbill && !boxed">
+<div class="qrbill" *ngIf="qrbill && !boxed" [class.qr-fullscreen]="printQr">
   <h3 >{{i18n[locale].title_invoice_open}}</h3>
   <div class="svg" #qrbill></div> 
-  <button (click)="onUpdateInvoices()">{{i18n[locale].title_order_payment_done}}</button>
+  <div class="actions">
+    <button (click)="onUpdateInvoices()">{{i18n[locale].title_order_payment_done}}</button>
+    <button class="close" (click)="printQr=false">FERMETURE</button>
+    <button class="print" (click)="printQr=true">PRINT</button>  
+  </div>
 </div>
 
 <ng-container *ngIf="askFeedback">

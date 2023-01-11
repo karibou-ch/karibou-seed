@@ -72,6 +72,7 @@ export class KngFeedbackComponent implements OnInit {
   invoices: Order[];
   HUBS:any = {};
 
+  printQr = false;
   currentLimit: number;
   premiumLimit: number;
 
