@@ -179,7 +179,7 @@ body{
     color: #999;
     letter-spacing: 4px;
     position: relative;
-    top: -8px;    
+    top: -16px;    
     font-size: 26px;
   }
   height: 1px;
@@ -190,6 +190,14 @@ body{
   }
   &.small{
     margin: 2rem auto;
+  }
+  &.big{
+    margin: 1rem auto;
+    &:before{
+      top: -22px;    
+      font-size: 40px;
+    }
+  
   }
 }
 

@@ -39,7 +39,14 @@
         <mdc-list-item-text >
             <span class="title" [routerLink]="['/store',store,'home','products',product.sku]">{{product.title}}</span>
             <mdc-list-item-secondary>
-              {{product.pricing.part}} - {{product.pricing.price|currency:'CHF'}}
+              {{product.pricing.part}} - 
+              <span [hidden]="product.attributes.discount" >
+                Fr {{product.pricing.price| number:'1.2-2'}}
+              </span>
+              <span [hidden]="!product.attributes.discount">
+                <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+              </span>
+  
               <a href="javascript:;" class="gray" i18n (click)="addToCard(product)" [hidden]="product.variants.length">
                   <i class="material-icons" style="transform: translateY(5px);font-size:20px">add</i>ajouter</a>
             </mdc-list-item-secondary>

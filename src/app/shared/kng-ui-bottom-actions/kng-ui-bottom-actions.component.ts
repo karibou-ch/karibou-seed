@@ -54,12 +54,13 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // FIXME release subscribe
     this.$navigation.search$().subscribe((keyword)=>{
-      if(keyword == 'favoris') {
+      if(keyword == 'favoris'||keyword == 'discount') {
         this.doClear();
-        this.doPreferred();
+        this.doPreferred((keyword == 'discount'));
         this.show = true;
         return;
       }
+
       if(keyword == 'clear') {
         this.doClear();
         return;
@@ -155,14 +156,17 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  doPreferred() {
+  doPreferred(discountOnly?:boolean) {
     const options: any = {
       discount: true,
-      popular: true,
       status: true,
       available: true,
       when : this.$cart.getCurrentShippingDay()
     };
+
+    if(!discountOnly) {
+      options.popular=true;
+    }
     //
     // case of multihub
     if (this.config && this.config.shared.hub) {

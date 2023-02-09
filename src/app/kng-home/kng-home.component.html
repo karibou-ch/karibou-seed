@@ -10,11 +10,14 @@
 
 <!-- MOBILE SEARCH  -->
 <kng-search class="home"></kng-search>
-<button (click)="doSearch('favoris')" class="kng-chip show-sm" [innerHtml]="label.action_favorites"></button>
 
 
 <!-- SELECTION -->
-<kng-product-swipe [hub]="store" ></kng-product-swipe>
+<kng-product-swipe mailchimp="true" [hub]="store" ></kng-product-swipe>
+
+
+<!-- DISCOUNT -->
+<kng-product-swipe discount="true" [hub]="store" ></kng-product-swipe>
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->

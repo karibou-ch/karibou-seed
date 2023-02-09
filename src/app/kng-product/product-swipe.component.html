@@ -1,15 +1,9 @@
 <div class="selected">
   <ng-content></ng-content>
   <section>
-    <div class="pink hide">
-        <span class="material-icons">star</span>
-        <span class="material-icons">star</span>
-        <span class="material-icons">star</span>
-    </div>
-    <h2 class="">{{getSelectedContent('t')}}</h2>
-    <h3 [innerHtml]="getSelectedContent('h')"></h3>
+    <h2 class="">{{title}}</h2>
   </section>
-  <div class="content" >
+  <div class="content" #scrollEl >
       <div class="mdc-layout-grid">
         <kng-product-thumbnail 
           [selected]="true"
@@ -18,6 +12,13 @@
           *ngFor="let section of products;let j=index"
           class="">
         </kng-product-thumbnail>
+        <div class="button">
+          <div class="ribbon top-left" ></div>
+          <div class="icon"><i class="material-icons">playlist_add</i></div>
+          <div class="title" (click)="doSearch(action)">{{actionLabel}} </div>
+        </div>
+  
       </div>      
   </div>
+
 </div>
