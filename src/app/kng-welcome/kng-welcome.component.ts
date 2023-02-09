@@ -73,9 +73,6 @@ export class KngWelcomeComponent implements OnInit {
     // publish metrics
     // FIXME default HUB should not be Artamis!
     // window.location.host
-    const source = this.$route.snapshot.queryParamMap.get('target')||
-                   this.$route.snapshot.queryParamMap.get('ad') ||
-                   this.$route.snapshot.queryParamMap.get('umt_source');
     const hub = (this.config.shared.hub && this.config.shared.hub.slug)||'artamis';
 
     const metric ={
@@ -83,7 +80,6 @@ export class KngWelcomeComponent implements OnInit {
       title: 'Landing',
       action:'landing',
       hub,
-      source
     };
     console.log('---DBG metrics',metric);
     this.$metric.event(EnumMetrics.metric_view_page,metric);

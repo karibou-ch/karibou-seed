@@ -15,7 +15,10 @@ import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.
 //
 // define routes module
 const routes: Routes = [
-  { path: ':name', component: KngCartComponent, resolve: { loader: LoaderResolve } },
+
+  { path: ':name', component: KngCartComponent, resolve: { loader: LoaderResolve } , children:[
+    {path: 'user', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule)}
+  ]},
   { path: '', pathMatch: 'full', redirectTo: 'default' }
 ];
 

@@ -184,11 +184,20 @@ kng-product-swipe{
   margin-top:10px;
 }
 
-button.kng-chip{
-  margin-left: 15px;
-  width: calc(100% - 30px);
-  color: #555;
-  display: none;
+.button-container{
+  display: flex;  
+  button.kng-chip{
+    margin: auto;
+    @media (max-width:429px) {
+      width: calc(100% - 30px);
+    }
+    color: #555;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--mdc-theme-primary);
+    text-align: center;
+    display: block;    
+  }  
 }
 
 //
@@ -213,13 +222,13 @@ kng-nav-marketplace {
   transition: all 200ms;
   position: fixed;
   overflow-x: visible;
-  top: 100px;
+  top: 125px;
   background: linear-gradient(#f7f9f9, rgba(255, 255, 255,0.30));
   width: 300px;
   padding: 0;
   left: 0;
   height: calc(100% - 300px);
-  scale: .9;
+  /* scale:.9 broke naviation and pointer on some devices */
 
   &.display{
     opacity: 0;
@@ -235,6 +244,14 @@ kng-nav-marketplace {
   @media (max-width:1024px){
     display: none;
   }
+
+  /* iPad/Iphone Landscape  https://stackoverflow.com/a/10360310 */
+  @media  only screen and (-webkit-min-device-pixel-ratio: 1.5) and (orientation:landscape),
+          only screen and (-o-min-device-pixel-ratio: 3/2) and (orientation:landscape),
+          only screen and (min--moz-device-pixel-ratio: 1.5) and (orientation:landscape),
+          only screen and (min-device-pixel-ratio: 1.5) and (orientation:landscape) {
+    display: none;
+  }  
 
   ul{
     list-style: none;
@@ -257,17 +274,19 @@ kng-nav-marketplace {
         display: inline-block;
       }
       cursor: pointer;
-      padding: 6px 18px;
+      padding: 4px 18px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;      
-      font-size: 1.05em;
+      font-size: 1.0em;
     }
   }
 }
 h2.root{
   display: none;
   margin-left: 20px;  
+  margin-top: 40px;
+  margin-bottom: 40px;  
 }
 
 div.product-container{

@@ -7,7 +7,10 @@
 
   <!-- VOS PANIER -->
   <section class="cart" [hidden]="!items.length">
-    <div [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>    
+    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>    
+    <p class="block-link" [hidden]="!user.isReady()">
+      {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
+    </p>
   </section>
 
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
@@ -33,6 +36,7 @@
   </mdc-list>
 
   
+  <router-outlet></router-outlet>
 
 
 </div>

@@ -3,14 +3,16 @@ import { Component,
          ViewEncapsulation,
          ChangeDetectorRef,
          Input,
-         ElementRef} from '@angular/core';
+         ElementRef,
+         ViewChildren,
+         ViewChild} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import {
   ProductService,
   Product
 } from 'kng2-core';
-import { i18n } from '../common';
+import { i18n, KngNavigationStateService } from '../common';
 
 @Component({
   selector: 'kng-product-swipe',
@@ -27,12 +29,14 @@ export class ProductSwipeComponent implements OnInit {
   @Input() hub: string;
   @Input() limit: number;
   @Input() config: any;
+  @Input() mailchimp: boolean;
+  @Input() discount: boolean;
   @Input() set products(products: Product[]){
     const native: HTMLElement =this.$elem.nativeElement;
     this._products = products;
     //
     // hide if empty
-    if (!this._products || this._products.length < 3){
+    if (!this._products || this._products.length < 1|| this.hideIfEmpty){
       native.setAttribute('hidden', '');
     } else{
       native.removeAttribute('hidden');
@@ -43,18 +47,38 @@ export class ProductSwipeComponent implements OnInit {
     this.loadProducts();
   }
 
+  @ViewChild('scrollEl') $scrollEl:ElementRef<HTMLElement>;
+
+
   hideIfEmpty: boolean;
   options:any = {    
-    _home: true,
     available: true,
     status: true,
     when: true,
-    limit: 6
+    limit: 8
   };
+
+  i18n: any = {
+    fr: {
+      action_favorites:'Tous les produits populaires',
+      action_discount:'Toutes les offres du moment',  
+      title_discount: 'Offres du moment (ړײ)',
+      title_mailchimp:'Les populaires `ღ´',
+      title_select:'Les populaires'
+    },
+    en: {
+      action_favorites:'All most popular',
+      action_discount:'All current offers',
+      title_discount: 'Current offers (ړײ)',
+      title_mailchimp: 'Most popular `ღ´',
+      title_select:'Most Popular'
+    }
+  }
 
   constructor(
     private $elem: ElementRef<HTMLElement>,
     private $i18n: i18n,
+    private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $cdr: ChangeDetectorRef
@@ -67,15 +91,39 @@ export class ProductSwipeComponent implements OnInit {
     this.products = [];
   }
 
+  get action() {
+    if(this.mailchimp) {
+      return 'favoris';
+    }
+
+    return 'discount';
+  }
+
+  get actionLabel() {
+    if(this.mailchimp) {
+      return this.i18n[this.$i18n.locale].action_favorites;
+    }
+
+    if(this.discount){
+      return this.i18n[this.$i18n.locale].action_discount;
+    }
+
+    return 'click';
+  }
+
   get products() {
     return this._products;
   }
 
-  getSelectedContent(elem: string) {
-    if (!this.config || !this.config.shared.hub.home) {
-      return '';
+  get title() {
+    if(this.mailchimp) {
+      return this.i18n[this.$i18n.locale].title_mailchimp;
     }
-    return this.config.shared.hub.home.selection[elem][this.$i18n.locale];
+
+    if(this.discount){
+      return this.i18n[this.$i18n.locale].title_discount;
+    }
+    return this.i18n[this.$i18n.locale].title_select;
   }
 
   ngOnDestroy() {
@@ -87,27 +135,43 @@ export class ProductSwipeComponent implements OnInit {
   }
 
 
+  doSearch(link){
+    this.$navigation.searchAction(link);    
+  }  
+
   loadProducts() {    
     if(this.products && this.products.length) {
       return;
     }
-
     if(this.hub) {
+      this.options.hub=this.hub;
+    }
+
+    if(this.mailchimp && this.config.shared.mailchimp) {
       const mailchimp = this.config.shared.mailchimp[this.hub] || [];
       if(mailchimp.length){
         this.options.skus = mailchimp.map(media=>media.sku).filter(sku=>!!sku);    
       }
-      this.options.hub=this.hub;
+    } else if(this.discount) {
+      this.options.discount = true;
+    } else {
+      this.options.home = true;
     }
 
+    const divider = this.$navigation.isMobile() ? 1 : (
+      (window.innerWidth < 1025)? 4:5
+    );
+
+
     this.$product.select(this.options).subscribe((products: Product[]) => {
-      this.products = products.sort(this.sortByDate);
+      this.hideIfEmpty = (products.length<4);
+      this.products = products.sort(this.sortByDate).slice(0, divider);
       this.$cdr.markForCheck();
-      setTimeout(()=>{
-        try {
-          document.querySelector('kng-product-swipe > div > div.content').scrollLeft = 75;
-        } catch (e) {}    
-      },100);
+      // setTimeout(()=>{
+      //   try {
+      //     this.$scrollEl.nativeElement.scrollLeft = 75;
+      //   } catch (e) {}    
+      // },100);
     });
   }
 

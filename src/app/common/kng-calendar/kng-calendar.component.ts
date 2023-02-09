@@ -98,7 +98,10 @@ export class KngCalendarComponent implements OnInit {
 
     //
     // check manager message
-    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
+    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => {
+      return shipping.equalsDate(this.currentShippingDay) && shipping.message;
+    });
+
     return noshipping && noshipping.message[this.locale];
   }  
 

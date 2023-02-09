@@ -307,16 +307,6 @@ export class UserSignComponent {
       return this.$router.navigate([this.mandatory.referrer]);
     }
 
-    if (document['referrer']) {
-      // const url = document['referrer'].split('/store');
-      // if (url.length === 2) {
-      //   return this.$router.navigateByUrl('/store' + url[1]);
-      // }
-
-      // return window.location.href = document['referrer'];
-      return this.$location.back();
-    }
-
     //
     // last case, HOME
     this.$location.back();
@@ -389,7 +379,8 @@ export class UserSignComponent {
     };
     this.$user.register(user).subscribe(
       (user) => {
-        this.$metric.event(EnumMetrics.metric_account_create);
+        const hub = this.config.shared.hub.slug;
+        this.$metric.event(EnumMetrics.metric_account_create,{hub});
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {
           timeoutMs: 9000
         });

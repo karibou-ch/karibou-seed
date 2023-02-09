@@ -217,6 +217,7 @@ div.navbar{
     /** top-right navigation */
     .actions {
       min-width: 180px;      
+      z-index: 0;
     }
 
     .shopping-cart {

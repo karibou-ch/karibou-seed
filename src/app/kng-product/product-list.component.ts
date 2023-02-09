@@ -23,6 +23,7 @@ import { combineLatest, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MdcChipSet, MdcChip } from '@angular-mdc/web';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
 @Component({
   selector: 'kng-product-list',
@@ -77,6 +78,7 @@ export class ProductListComponent implements OnInit {
     public $i18n: i18n,
     public $cart: CartService,
     public $navigation: KngNavigationStateService,
+    public $metric: MetricsService,
     public $shop: ShopService,
     public $product: ProductService,
     public $router: Router,
@@ -111,8 +113,13 @@ export class ProductListComponent implements OnInit {
   }
 
   get store(){
-    return this.config && this.config.shared.hub.slug;
+    return this.hub && this.config.shared.hub.slug;
   }
+
+  get hub(){
+    return this.config && this.config.shared.hub;
+  }
+
 
   get locale() {
     return this.$i18n.locale;
@@ -128,11 +135,13 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.isReady = true;
-
+    
     if(this.$route.snapshot.params['category']){
       this.category.slug = this.$route.snapshot.params['category'];
       this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
-      this.category.current.child = this.category.current.child.sort((a, b) => {
+      //
+      // old google reference goes wrong
+      this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
         return a.weight - b.weight;
       });
 
@@ -158,6 +167,15 @@ export class ProductListComponent implements OnInit {
       this.isReady = false;
     }
     
+    //
+    // publish metrics
+    const metric ={
+      path:window.location.pathname,
+      hub:this.store,
+      action:'home',
+      title:document.title
+    }
+    this.$metric.event(EnumMetrics.metric_view_page,metric);
 
     //
     // DIALOG INIT HACK
@@ -180,6 +198,7 @@ export class ProductListComponent implements OnInit {
   }
 
   clean() {
+    this.isReady = false;
     document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
@@ -226,7 +245,11 @@ export class ProductListComponent implements OnInit {
 
 
   productsByShop() {
-    this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.store);
+    //
+    // update metrics
+
+    this.options.hub = this.store;
+    this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
 
     combineLatest([
       this.$shop.get(this.options.shopname),
@@ -257,8 +280,8 @@ export class ProductListComponent implements OnInit {
   }
 
   productsByCategory() {
-    this.options.hub = this.config.shared.hub && this.config.shared.hub.slug;
-    this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.store);
+    this.options.hub = this.store;
+    this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub);
 
     this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
@@ -300,13 +323,20 @@ export class ProductListComponent implements OnInit {
 
 
   onClose(closedialog) {
+    //
+    // case of onboarding from ad clic
+    const query = this.$route.snapshot.queryParams;
+    const shouldNavigate = query.source || query.fbclid;
+    if(shouldNavigate) {
+      return this.$router.navigate(['../../'], { relativeTo: this.$route });
+    }
     setTimeout(() => {
-      this.clean();
-      if(this.$navigation.hasHistory()){
-        return this.$navigation.back();
+      if (!this.isReady|| query.source) {
+        return;
       }
-      this.$router.navigate(['../../'], {relativeTo: this.$route});
-    }, 200);
+      this.$router.navigate(['../../'], { relativeTo: this.$route });
+    }, 500);
+    this.$navigation.back();
   }
 
   //

@@ -204,6 +204,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.scrollCallback = null;
+
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
@@ -231,10 +232,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       $event.stopPropagation();
     }
     //
-    // FIXME should not be possible
+    // FIXME Null product.variants should not be possible!
     if (!product.variants) {
       console.log('DEBUG variation hang', variant, JSON.stringify(product));
-      this.$util.trackError('Error variation not available: ' + variant);
 
       //
       // Should reload the page
@@ -421,13 +421,22 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onClose(closedialog) {
-    this.$navigation.back();
+    //
+    // case of onboarding from ad clic
+    const query = this.$route.snapshot.queryParams;
+    const shouldNavigate = query.source || query.fbclid;
+    if(shouldNavigate) {
+      return this.$router.navigate(['../../'], { relativeTo: this.$route });
+    }
+
+
     setTimeout(() => {
       if (!this.scrollCallback) {
         return;
       }
       this.$router.navigate(['../../'], { relativeTo: this.$route });
-    }, 200);
+    }, 500);
+    this.$navigation.back();
   }
 
   removeToCart($event, product: Product) {

@@ -51,13 +51,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_total: 'Total provisoire',
       cart_info_subtotal: 'Sous total (service karibou inclus)',
       cart_info_shipping: 'Livraison 100% cycliste',
-      cart_info_shipping_title: 'Livraison/Collecte ',
+      cart_info_shipping_title: 'Adresse de livraison ',
       cart_info_shipping_group: 'Vous complétez une commande en cours',
       cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
       cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
       cart_info_payment: 'Méthode de paiement',
       cart_info_discount: 'Rabais',
-      cart_info_hub_not_active:'Le marché <b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
+      cart_info_hub_not_active:'<b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
       cart_info_one_date: 'Pas de livraison le __DAY__ pour ce marché.',
       cart_info_one_date_more: 'Changer de date pour tout recevoir en une livraison.',
       cart_info_limit: `Nos créneaux de livraison sont tous occupés. Toutefois, vous pouvez préparer votre panier et valider votre commande
@@ -78,6 +78,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant maximum de',
       cart_amount_2: 'pour permettre des modifications de commande (prix au poids, ou ajout de produits en dernière minute).',
       cart_nextshipping: 'Livraison',
+      cart_shared_copy: 'Vous pouvez partager vos paniers avec quelqu\'un avant de valider la commande',
       cart_shared_title1: 'Vous utilisez un panier partagé',
       cart_shared_title2: 'Identifiez-vous pour partager vos modifications!',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
@@ -117,6 +118,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve the max amount of',
       cart_amount_2: 'to allow order changes (price by weight, or a last minute addition of products).',
       cart_nextshipping: 'Next delivery',
+      cart_shared_copy: 'You can share this cart with someone before to checkout',
       cart_shared_title1: 'You are using a shared basket',
       cart_shared_title2: 'You must be logged to share your changes.',
       cart_error: 'Your cart has to be modified!',
@@ -137,8 +139,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     private $order: OrderService,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $stripe: StripeService,
-    public $snack: MdcSnackbar,
+    private $stripe: StripeService
   ) {
     //
     // initialize loader
@@ -185,7 +186,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   get sharedCart(){
     const uuid = this.$cart.getCID();    
-    return this.$dom.bypassSecurityTrustUrl(window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/cart/' + uuid);
+    // this.$dom.bypassSecurityTrustUrl()
+    return (window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/home/cart/' + uuid);
   }
 
   get lockedHUB() {
@@ -272,6 +274,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
       const cathError = true;
       this.$order.findOrdersByUser(this.user,{limit:4},cathError).subscribe(orders=>this.orders=orders);        
     }
+  }
+
+  onCopy($event){
+    $event.stopPropagation();
+    navigator.clipboard.writeText(this.sharedCart).then(()=>{
+      //alert('DONE')
+    })
+    return false;
   }
 
 

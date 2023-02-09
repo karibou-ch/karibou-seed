@@ -112,18 +112,18 @@
           <a href="https://admin.karibou.ch/vendor/{{product.vendor.urlpath}}">la boutique</a>
         </div>
         <hr/>
-        <div>Photos formats bruts</div>
+        <div>Photos formats</div>
         <div>
-          <a target="_blank" href="{{product.photo.url}}">fullwidth</a>&nbsp;
-          <a target="_blank" href="{{product.photo.url}}-/resize/300x/">300x(resize)</a>&nbsp;
-          <a target="_blank" href="{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
+          <a target="_blank" href="https:{{product.photo.url}}">fullwidth</a>&nbsp;
+          <a target="_blank" href="https:{{product.photo.url}}-/resize/300x/">300x(resize)</a>&nbsp;
+          <a target="_blank" href="https:{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
         </div>
         <hr/>
       </div>
 
       <!-- VENDOR-->
       <div class="vendor" *ngIf="product.vendor.photo">
-        <a class="link" [routerLink]="['/store',store,'shops',product.vendor.urlpath]">
+        <a class="link" [routerLink]="['/store',store,'home','shops',product.vendor.urlpath]">
           <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
                class="thumbnail-owner photo-owner">
         </a>

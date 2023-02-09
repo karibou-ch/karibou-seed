@@ -3,11 +3,12 @@ kng-product-swipe{
   min-height: 280px !important;
   overflow: hidden;
   display: block;
-  margin: 10px 10px;
+  margin: 20px 10px;
+  border-bottom: 1px solid #eee;
 
   @media (max-width:425px) {
     width: calc(100vw - 30px );    
-    margin: 10px 15px;
+    margin: 15px 15px;
   }
 
   .selected{
@@ -50,21 +51,52 @@ kng-product-swipe{
         margin: 20px 0;
         padding: 0;
       
-        kng-product-thumbnail,
-        .selected-card {
-          width: 160px;
-          max-width: 160px;
-          flex: 1 0 160px;
-          margin: 0 6px;
-          box-shadow: 0px 0px 20px #ddd;
-          border-radius: 10px;
-          overflow: hidden;
-          
+        kng-product-thumbnail{
+          flex: 1 0 137px;
+          min-width: 137px;
+          margin: 8px;
+          margin-bottom: 0;
+          max-width: 163px;
+          @media (max-width: 429px) {
+            flex: 1 0;
+            min-width: 29vw;
+            margin: 4px 4px 0;
+            flex: 0 0 43%;
+            min-width: 39vw;
+            margin: 4px 11px 0;
+          }
         }
-        
+              
+      
       
       }
       
+    }
+
+    .button{
+      cursor: pointer;
+      margin-top: 6px;
+      height: 9rem;
+      max-width: 160px;
+      background: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
+      position: relative;
+      border-radius: 12px;
+      margin-bottom: auto;
+      display: flex;
+      flex-direction: column;      
+      .icon{
+        align-self: flex-start;
+        margin-top: 0;
+        margin-bottom: auto;
+        padding: 10px;        
+      }
+      .title{
+        padding: 0px 15px  20px;
+        font-size: 20px;
+        margin-bottom: 0;
+        margin-top: auto;        
+      }
     }
   }  
 }

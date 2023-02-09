@@ -171,7 +171,9 @@ export class KngCartItemsComponent implements OnInit {
       return this.$i18n[this.locale].nav_no_shipping_long;
     }
 
-    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => !!shipping.message);
+    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => {
+      return shipping.equalsDate(this.currentShippingDay) && shipping.message;
+    });
     return noshipping && noshipping.message[this.locale];
   }
 
@@ -199,8 +201,9 @@ export class KngCartItemsComponent implements OnInit {
   //
   // multiple markets with one delivery
   isCrossMarketShippingDate(){
+    const now = new Date();
     const currentDay = this.$cart.getCurrentShippingDay();
-    if(!currentDay) { return 0; }
+    if(!currentDay || currentDay<now) { return 0; }
     const week = this.config.potentialShippingWeek(this.currentHub);
     const available =week.some(day => day.getDay() == currentDay.getDay());
     return available;
@@ -209,7 +212,8 @@ export class KngCartItemsComponent implements OnInit {
   //
   // used for order limitation
   isNotShippingLimit() {
-    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active){
+    const ranks = Object.keys(this.currentRanks);
+    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active || !ranks.length){
       return true;
     }
     const day = this.currentShippingDay;

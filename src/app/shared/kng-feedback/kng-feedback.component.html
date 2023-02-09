@@ -1,12 +1,12 @@
 <!-- ORDER OPEN -->
 <div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
-  <h3 >{{i18n[locale].title_order_open}}</h3>
+  <h3 i18n>{{i18n[locale].title_order_open}} {{order.oid}}</h3>
 
   <p class="help-block">
       {{i18n[locale].title_order_prepare}}&nbsp;
       <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b><br/>
       {{i18n[locale].title_order_shipping}} <b class="text-capitalize">{{order.shipping.name}}</b>
-      &nbsp;<span [hidden]="!childOrders.length" class="ita">//{{childOrders.length}} {{i18n[locale].title_order_grouped}} </span>
+      &nbsp;<span [hidden]="!childOrderLength" class="ita">//{{childOrderLength}} {{i18n[locale].title_order_grouped}} </span>
   </p>
   <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
 </div>
@@ -45,10 +45,9 @@
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
   <ng-content></ng-content>
   <div class="details" >
-      <span class="red" [hidden]="!isInvoiceOpen(order)">{{i18n[locale].title_invoice_open}}&nbsp;</span>
-      <span class="bold">{{hubName}} </span>
+      <span class="bold">{{getOrderHUB(order)}} </span>
       <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</span>
-      <b>{{order.items.length}}</b> articles
+      <b>{{order.items.length}}</b> articles 
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
   </div>                   
                    
@@ -59,7 +58,7 @@
     <span class="stars material-icons" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
     <span class="stars material-icons" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
     <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-    <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>
+    <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
   </div>
   <div class="evaluate" [hidden]="!displayEvaluate()" [class.boxed]="boxed">
       <div class="label">
@@ -68,10 +67,30 @@
         <span class="stars material-icons" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
         <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
         <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
+        <button (click)="onEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>      
       </div>
-      <p class="block-info" [innerHtml]="i18n[locale].title_issue_subtitle"></p>
-      <button (click)="saveEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>    
-      <button (click)="openIssue()" class="issue">{{i18n[locale].title_issue_question}}</button>    
+      <p class="block-info">
+        <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
+      </p>
+      <button (click)="openIssue()" class="issue" [hidden]="!displayEvaluate()">{{i18n[locale].title_issue_question}}</button>    
+    </div>
+
+  <!-- ORDER ITEMS -->
+  <!-- <ng-container 
+    [ngTemplateOutlet]="orderItems"
+    [ngTemplateOutletContext]="{ $implicit: order }">
+  </ng-container> -->
+
+</div>
+
+<!--- DISPLAY INVOICES -->
+<div class="qrbill" *ngIf="qrbill && !boxed" [class.qr-fullscreen]="printQr">
+  <h3 >{{i18n[locale].title_invoice_open}}</h3>
+  <div class="svg" #qrbill></div> 
+  <div class="actions">
+    <button (click)="onUpdateInvoices()">{{i18n[locale].title_order_payment_done}}</button>
+    <button class="close" (click)="printQr=false">FERMETURE</button>
+    <button class="print" (click)="printQr=true">PRINT</button>  
   </div>
 </div>
 
@@ -82,37 +101,70 @@
         <span class="size-xlarge  material-icons">close</span>
     </button>
     <div class="feedback-container" >
-      <h3 >{{i18n[locale].title_issue_title}}</h3>
-      <p class="help-block" [innerHtml]="i18n[locale].title_issue_header"></p>
+      <h2>{{i18n[locale].title_issue_title}}</h2>
+      <p [innerHtml]="i18n[locale].title_issue_header"></p>
 
       <!-- ORDER ITEMS -->
-      <mdc-list twoLine interactive="false">
-        <mdc-list-item *ngFor="let item of order.items"
-                        [selected]="selected[item.sku]">
-  
-          <mdc-list-item-text>
-            {{item.quantity}}x {{item.title}} ({{item.part}})
-            <!-- ORDER FEEDBACK -->
-            <mdc-list-item-secondary>
-              <label for="story">Description/Describe:</label>
-              <textarea id="story" class="" 
-                  [hidden]="!selected[item.sku]" rows="2" [(ngModel)]="item.note" kng-autosize>
-              </textarea>                              
-            </mdc-list-item-secondary>
-          </mdc-list-item-text>                        
-          <input type="checkbox" mdcListItemMeta [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]">
-        </mdc-list-item>
-      </mdc-list>   
+      <ng-container 
+        [ngTemplateOutlet]="orderItems"
+        [ngTemplateOutletContext]="{ $implicit: order }">
+      </ng-container>
 
-      <div class="breaker"></div>
+
+      <div class="breaker small"></div>
+
       <!-- ORDER FEEDBACK -->
+
       <label for="feedback">{{i18n[locale].title_issue_hub}}</label>
 
       <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>                  
 
       <!-- FEEDBACK ACTIONS -->
-      <button  (click)="saveEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>
+      <button  (click)="onEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>
 
     </div>
   </div>    
 </ng-container>
+
+
+<ng-template #orderItems let-order>
+  <ul>
+    <li *ngFor="let item of order.items"
+        [class.selected]="selected[item.sku]" >
+        <div class="header"(click)="selected[item.sku]=!selected[item.sku]">
+          <input type="checkbox" [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]">
+          {{item.quantity}}x {{item.title}} ({{item.part}})  
+        </div>
+        <div class="content" [hidden]="!selected[item.sku]">
+          <label for="story">Description/Describe:</label>
+          <textarea id="story" class=""  rows="2" [(ngModel)]="item.note" kng-autosize>
+          </textarea>
+        </div>
+    </li>
+  </ul>
+  <ul *ngFor="let complement of childOrder[order.oid]">
+    <li class="bold">En complément</li>
+    <li *ngFor="let item of complement.items"
+        [class.selected]="selected[item.sku]">
+
+        <div class="header"(click)="selected[item.sku]=!selected[item.sku]">
+          <input type="checkbox" [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]">
+          {{item.quantity}}x {{item.title}} ({{item.part}})  
+        </div>
+        <div class="content" [hidden]="!selected[item.sku]">
+          <label for="story">Description/Describe:</label>
+          <textarea id="story" class=""  rows="2" [(ngModel)]="item.note" kng-autosize>
+          </textarea>
+        </div>
+    </li>
+  </ul>
+  <ul hidden>
+    <li class="add-to-cart">                
+      <a href="javascript:;" class="black smaller "                    
+      (click)="onAddAllToCart()" i18n>
+      <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+    </li>
+
+  </ul>
+
+</ng-template>

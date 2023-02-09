@@ -179,7 +179,6 @@ export class KngCartCheckoutComponent implements OnInit {
     this.open = true;
     this.checkPaymentMethod();
 
-
     const address = this.$cart.getCurrentShippingAddress();
     this.selectAddressIsDone = this.setShippingAddress(address);
 
@@ -198,9 +197,6 @@ export class KngCartCheckoutComponent implements OnInit {
       }  
     }
 
-
-
-
     //
     // FIXME currently only one shipping time!
     this.shipping = this.config.shared.shipping;
@@ -208,6 +204,11 @@ export class KngCartCheckoutComponent implements OnInit {
     this.itemsAmount = this.$cart.subTotal(hub.slug);
 
     this.buildDiscountLabel();
+    
+    //
+    // Metric ORDER
+    this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
+
   }
 
 
@@ -286,14 +287,15 @@ export class KngCartCheckoutComponent implements OnInit {
       this.open = false;
       return;
     }
+    //console.log(' --- DBG checkPaymentMethod',this._user.payments.map(p=>p.alias))
     this.$user.checkPaymentMethod(this._user).subscribe(user => {
       //
       // set default payment
       // FIXME me this.orders[0].payment.issue is crashing 
-      const lastIssuer = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.issuer:null;
+      const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
-      const previousPayment = payments.find(payment => payment.issuer == lastIssuer);
+      const previousPayment = payments.find(payment => payment.alias == lastAlias);
       if(previousPayment) {
         payments.unshift(currentPayment);
       }
@@ -322,7 +324,7 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   getDepositAddress() {
-    return this.config.shared.hub.deposits;
+    return this.hub.deposits;
   }
 
 
@@ -369,17 +371,12 @@ export class KngCartCheckoutComponent implements OnInit {
     return this._user.payments.every(payment => payment.isValid());
   }
 
-  isOrderReady() {
-    const payment = this.$cart.getCurrentGateway();
-    const address = this.$cart.getCurrentShippingAddress();
-    return this._user.isReady() && (payment.label !== 'Aucun') && address.name && this.items.length;
-  }
 
   setShippingAddress(address: UserAddress) :boolean {
     if(!address || !address.streetAdress) {
       return false;
     }
-    const isDone = this.$cart.setShippingAddress(address);
+    const isDone = this.selectAddressIsDone = this.$cart.setShippingAddress(address);
 
     //
     // copy note
@@ -387,8 +384,11 @@ export class KngCartCheckoutComponent implements OnInit {
 
     //
     // update shipping time
-    const time = (this.isCartDeposit() ? 0 : 14);
-    this.shippingTime = this.config.shared.hub.shippingtimes[time];
+    const shippingDay = this.currentShippingDay();
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+
+    this.shippingTime = this.config.shared.hub.shippingtimes[shippingHours];
     return isDone;
   }
 
@@ -403,10 +403,7 @@ export class KngCartCheckoutComponent implements OnInit {
       return;
     }
     this.$cart.setPaymentMethod(payment);
-
-    //
-    // Metric ORDER
-    this.$metric.event(EnumMetrics.metric_order_payment);
+    console.log('---DBG payment',payment.alias);
   }
 
   subTotal() {
@@ -417,13 +414,6 @@ export class KngCartCheckoutComponent implements OnInit {
   //
   // payment stuffs
   createPaymentConfirmation(order: Order) {
-    //
-    // Metric ORDER
-    this.$metric.event(EnumMetrics.metric_order_sent, {
-      'shipping': order.getShippingPrice(),
-      'amount': order.getSubTotal()
-    });
-
     this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
     this._items = [];
     this.$cart.clear(this.store,order);
@@ -474,10 +464,13 @@ export class KngCartCheckoutComponent implements OnInit {
     //
     // prepare shipping
     // FIXME hour selection should be better
+    const shippingDay = this.currentShippingDay();
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
     const shipping = new OrderShipping(
       this.currentShipping(),
-      this.currentShippingDay(),
-      (this.isCartDeposit() ? '0' : 14)
+      shippingDay,
+      shippingHours
     );
 
     const hub = this._currentHub.slug;
@@ -512,6 +505,14 @@ export class KngCartCheckoutComponent implements OnInit {
 
           return;
         }
+
+        //
+        // Metric ORDER
+        this.$metric.event(EnumMetrics.metric_order_sent, {
+          shipping: order.getShippingPrice(),
+          amount: order.getSubTotal(),
+          hub:hub
+        });
 
         //
         // validate

@@ -6,12 +6,12 @@
     </div>
   </div>      
   <div class="text text-overflow" [hidden]="!isReady">
-    <span class="title large"><span class="">{{label.nav_market}}</span> {{hub.name}} </span>
+    <span class="title large">{{hub.siteName[locale]}} </span>
     <div class="text-overflow title-subtitle">
       <span class="checkout-disabled-title" 
             [innerHtml]="cart_info_one_date" 
-            [hidden]="isCrossMarketShippingDate()"></span>
-      <span [hidden]="!isCrossMarketShippingDate()">
+            [hidden]="isCrossMarketShippingDate() && !noshippingMsg"></span>
+      <span [hidden]="!isCrossMarketShippingDate() || noshippingMsg">
         {{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
       </span>
       <div class="subtitle" (click)="doToggleFees=!doToggleFees">
@@ -33,7 +33,7 @@
 </div>
 <!-- WARNING MESSAGE -->
 <!-- No more window for delivery -->
-<div class="list-item auto-line" [hidden]="isNotShippingLimit() || !isReady">    
+<div class="list-item auto-line" [hidden]="isNotShippingLimit()">    
   <p class="block-info" [innerHtml]="i18n[locale].cart_info_limit|safeHtml"></p>
 </div>
 

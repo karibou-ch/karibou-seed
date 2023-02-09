@@ -39,7 +39,7 @@
           </div>
           <!-- NEW ADDRESS -->
           <div class="profile-action"  >
-            <button [routerLink]="['/store/'+store+'/home/me/login-or-address']">              
+            <button [routerLink]="['./user/login-or-address']" >              
               {{labell.user_address_add}} 
             </button>
           </div>
@@ -66,7 +66,7 @@
               </label>
           </div>
           <div class="profile-action"  >
-            <button [routerLink]="['/store/'+store+'/home/me/login-or-payment']">
+            <button [routerLink]="['./user/login-or-payment']">
               {{labell.user_payment_add}} 
             </button>
           </div>      
@@ -75,7 +75,7 @@
       </div>
         
       <!-- RESUME -->
-      <div class="order-resume " *ngIf="isOrderReady && isOpen">
+      <div class="order-resume " *ngIf="isOpen">
 
         <div class="order-resume-block">
           <section  [class.deposit]="isCartDeposit()" 
@@ -138,11 +138,11 @@
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
           <div class="bill">
-            <h2 class="full ">4. {{label.cart_info_shipping_title}} <b>{{shippingTime}}</b></h2>            
+            <h2 class="full ">4. {{label.cart_info_shipping_title}}</h2>            
           </div>  
 
           <div class="bill shipping" >
-            <div class="bold text-capitalize">{{currentShippingDay()|date:'EEE dd/M':'':locale}}, {{currentShipping().name}}</div>
+            <div class="bold text-capitalize">{{currentShipping().name}}</div>
             <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
             <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
           </div>
@@ -158,6 +158,7 @@
                   
         
           <div class="bill">
+            <h2 class="full text-capitalize">5. {{currentShippingDay()|date:'EEEE dd MMMM':'':locale}} ({{shippingTime}})</h2>            
             <div class="overflow">
               <input type="checkbox" [(ngModel)]="cgAccepted" >
               <label class="link">        
@@ -168,7 +169,7 @@
               <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
             </div>
             <div class="bill error" [hidden]="!errorMessage">
-              <b>Oops:</b> {{errorMessage}}
+              {{errorMessage}}
             </div>
           </div>
 
@@ -198,4 +199,6 @@
 
 
   </div>
+
+
 </div>

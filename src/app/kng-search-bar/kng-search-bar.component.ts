@@ -49,7 +49,7 @@ export class KngSearchBarComponent implements OnInit {
     public $navigation: KngNavigationStateService
   ) { 
     this.$navigation.search$().subscribe((keyword)=>{
-      if(keyword == 'clear'||keyword == 'favoris') {
+      if(keyword == 'clear'||keyword == 'favoris'||keyword == 'discount') {
         this.search.nativeElement.value = '';
         this.stats.nativeElement.innerText = '';
         this.searchLastValue = null;

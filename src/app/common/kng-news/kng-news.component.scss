@@ -32,7 +32,7 @@
   .k-brand{
     position: absolute;
     left: 20px;
-    bottom: 20px;
+    bottom: 10px;
     font-size: 11px;
     z-index: 100;
     opacity: .5;
@@ -79,7 +79,7 @@
     overflow-y: auto;
     height: max-content;
     @media (max-width: 769px) {
-      height: calc(100vh - 2 * 170px );
+      height: calc(100vh - 2 * 130px );
     }
   
   }
@@ -90,14 +90,14 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    padding-top: 20px;
+    padding-top: 15px;
     border-top: 1px solid #eee;
     padding-bottom: 20px;
 
     button{        
       width: 100%;
       max-width: 400px;
-      padding: 18px 10px;
+      padding: 16px 10px;
       border-radius: 10px;
       margin: auto;
       margin-bottom: 10px;
@@ -132,6 +132,8 @@
     @media (max-width:1024px){
       padding: 10px 10px;
       width: calc( 100% - 20px );
+      padding-top: 0;
+      margin-top: 0;      
     }
 
 
@@ -146,6 +148,7 @@
       >div{
         display: flex;
         flex-flow: row wrap;
+        justify-content: center;
         padding: 0px;
         font-size: 20px;
         overflow: hidden; 
@@ -155,9 +158,15 @@
         }
         .left-half{
           max-width: 40%;        
-          height: 300px;
+          height: 300px;          
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           img{
-            height: 100%;          
+            width: 100%;          
+            object-fit: cover;
+            object-position: center center;
           }
           @media (max-width:429px) {
             max-width:100%;

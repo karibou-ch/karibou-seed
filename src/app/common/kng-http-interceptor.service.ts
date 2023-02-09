@@ -53,8 +53,14 @@ export class KngHttpInterceptorService {
         // OK
       }, (err: HttpErrorResponse) => {
         //
+        // on logout error
+        if(err.status == 0 && 
+           err.url && err.url.indexOf('logout')>-1) {
+          return;
+        }
+        //
         // on Unknow ERROR (Caused by Network ERROR or CORS error)
-        if (err.status === 0) {
+        else if(err.status == 0) {
           const label_error = this.$i18n.label().action_error_reload;
           console.log('ERROR(0)', err.message, 'ERROR:', err);
           this.error$.next({message: err.message, status: err.status, url: err.url} as ErrorState );
