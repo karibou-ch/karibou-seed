@@ -1,0 +1,49 @@
+@use '@material/theme'  with (
+  $primary: rgba(0, 0, 50, 0.9),
+  $secondary: #388e3c,
+  $background: #efefef,
+  $on-primary: #efefef,
+  $on-secondary: #442b2d
+);
+
+// MDC Typography
+@use '@material/typography/mdc-typography';
+
+// Angular MDC
+@use '@angular-mdc/theme/material';
+
+
+// styles/_body.scss
+
+// MDC Button
+//@use './styles/button';
+// styles/_button.scss
+
+@use '@material/button/mdc-button';
+@use '@material/button';
+
+
+
+@use '@material/top-app-bar/mdc-top-app-bar';
+@use '@material/top-app-bar/_index' as top-app-bar;
+@use '@material/icon-button/mdc-icon-button';
+
+@use '@material/tab-bar/mdc-tab-bar';
+@use '@material/tab-bar/_index' as tab-bar;
+@use '@material/tab-scroller/mdc-tab-scroller';
+@use '@material/tab-scroller/_index' as tab-scroller;
+@use '@material/tab-indicator/mdc-tab-indicator';
+@use '@material/tab-indicator/_index' as tab-indicator;
+@use '@material/tab/mdc-tab';
+@use '@material/tab/_index' as tab;
+
+@use '@material/textfield/mdc-text-field';
+@use '@material/textfield/_index' as textfield;
+
+@use '@material/form-field/_index' as form-field;
+
+@use '@material/snackbar/mdc-snackbar';
+@use '@material/snackbar/_index' as snackbar;
+
+@use '@material/theme/color-palette' as material-color;
+@use '@material/theme/_mixins' as root;

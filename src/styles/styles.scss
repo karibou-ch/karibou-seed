@@ -7,7 +7,8 @@ body{
 }
 
 
-@import "~@angular-mdc/theme/material";
+// @import "~@angular-mdc/theme/material";
+@import 'kng-custom-mdc-theme.scss';
 
 @import 'kng-theme.scss';
 @import 'kng-root.scss';

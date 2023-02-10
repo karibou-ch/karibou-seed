@@ -1,7 +1,5 @@
 @import "colors.scss";
-@use '@material/top-app-bar/mdc-top-app-bar';
-@use '@material/top-app-bar';
-@use '@material/icon-button/mdc-icon-button';
+@import 'kng-custom-mdc-theme.scss';
 
 mdc-snackbar{
   z-index: 5;
