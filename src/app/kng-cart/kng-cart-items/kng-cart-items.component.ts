@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Order } from 'kng2-core';
 import { CartAction } from 'kng2-core';
 import { Config, CartItem, CartService, LoaderService, Hub, User } from 'kng2-core';
@@ -44,6 +44,7 @@ export class KngCartItemsComponent implements OnInit {
     private $cart:CartService,
     private $i18n:i18n,
     private $loader: LoaderService,
+    private $route: ActivatedRoute,
     private $router: Router
   ) { 
     this.items = [];
@@ -142,13 +143,14 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   doCheckout(){
+    const token = this.$route.snapshot.queryParams['token'];
     const ctx = {
       hub:this.currentHub,
       items: this.items,
       totalDiscount: this.getTotalDiscount(),
     };
     if(!this.user.isAuthenticated()) {
-      return this.$router.navigate(['/store/'+this.currentHub.slug+'/home/me/login-or-register']);
+      return this.$router.navigate(['/store/'+this.currentHub.slug+'/home/me/login-or-register'],{queryParams:{token}});
     }
     this.checkout.emit(ctx);
   }
