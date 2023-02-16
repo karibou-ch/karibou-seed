@@ -38,9 +38,8 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src",
                 "src/styles",
-                "src/app/styles/"
+                "node_modules/"
               ]
             },
             "scripts": [

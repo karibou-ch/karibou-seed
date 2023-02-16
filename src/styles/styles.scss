@@ -6,9 +6,13 @@ body{
   background: white;
 }
 
+@import '@angular-mdc/theme/material';
+@use '@material/top-app-bar/mdc-top-app-bar';
+@use '@material/top-app-bar';
+@use '@material/icon-button/mdc-icon-button';
 
-// @import "~@angular-mdc/theme/material";
-@import 'kng-custom-mdc-theme.scss';
+//@import 'kng-custom-mdc-theme.scss';
+@import 'kng-custom-mdc-admin-theme.scss';
 
 @import 'kng-theme.scss';
 @import 'kng-root.scss';
