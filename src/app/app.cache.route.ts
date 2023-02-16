@@ -45,23 +45,24 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    * @param future The route the user is going to, as triggered by the router
    * @param curr The route the user is currently on
    * @returns boolean basically indicating true if the user intends to leave the current route
+   * @issue https://github.com/angular/angular/issues/41012
    */
-  shouldReuseRoute(before: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     //
     // ONLY AVAILABLE FOR /HOME/
-    const result = (before.routeConfig === curr.routeConfig);
+    const result = (future.routeConfig === curr.routeConfig);
     const path = this.getPath(curr);
 
 
 
-    this.allowRetriveCache['category/:category'] = (this.getPath(before) === 'products/:sku/:title' &&
+    this.allowRetriveCache['category/:category'] = (this.getPath(future) === 'products/:sku/:title' &&
                                                     path === 'category/:category');
 
-    this.allowRetriveCache['category/:category/:child'] = (this.getPath(before) === 'products/:sku/:title' &&
+    this.allowRetriveCache['category/:category/:child'] = (this.getPath(future) === 'products/:sku/:title' &&
                                                            path === 'category/:category/:child');
 
     // if(this.allowRetriveCache['category/:category/:child'] || this.allowRetriveCache['category/:category']) {
-    //   console.log('--DEBUG shouldReuseRoute', this.getPath(before), ' current', path);
+    //   console.log('--DEBUG shouldReuseRoute', this.getPath(future), ' current', path);
     // }
 
     //

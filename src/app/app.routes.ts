@@ -15,7 +15,7 @@ import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.co
 
 // FIXME redirect routes based on unknown store name
 export const appRoutes: Routes = [
-  { path: 'me', loadChildren: './kng-user/user.module#UserModule' },
+  { path: 'me', loadChildren: () => import('./kng-user/user.module').then(m => m.UserModule) },
   {
     path: 'validate/:uid/:mail',
     component: KngValidateMailComponent,
