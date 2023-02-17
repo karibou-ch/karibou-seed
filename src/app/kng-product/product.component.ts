@@ -45,6 +45,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
 
+  isSearching: boolean;
   isRedirect: boolean;
   isReady: boolean;
   isDialog = false;
@@ -147,7 +148,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isReady = false;
+    this.isSearching = this.isReady = false;
 
 
     //

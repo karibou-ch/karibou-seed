@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { i18n, KngNavigationStateService } from 'src/app/common';
 import { Shop } from '../../../../../kng2-core/dist';
@@ -14,17 +14,16 @@ export class KngProductLinkComponent implements OnInit {
 
   @Input() config: any;
   @Input() shops: Shop[];
-
-  hideIfEmpty: boolean;
+  @Input() links: string[];
+  @Input() hightop: boolean;
+  @Output() click: EventEmitter<string> = new EventEmitter<string>();
 
   options = {
-    discount: true,
     available: true,
     status: true,
     when: true
   };
 
-  links: any[];
 
   constructor(
     private $i18n: i18n,
@@ -44,9 +43,11 @@ export class KngProductLinkComponent implements OnInit {
     // this.links.push('confiture');
     // this.links.push('truffe');
     // this.links.push('chocolat');
-    this.hideIfEmpty = (this.links.length == 0);
   }
 
+  get hideIfEmpty() {
+    return (this.links.length == 0);
+  }
   get i18n(){
     return this.$i18n;
   }
@@ -56,6 +57,7 @@ export class KngProductLinkComponent implements OnInit {
 
   searchAction(link){
     this.$navigation.searchAction(link);    
+    this.click.emit(link)
   }
 
   trackByShop(index,shop) {
