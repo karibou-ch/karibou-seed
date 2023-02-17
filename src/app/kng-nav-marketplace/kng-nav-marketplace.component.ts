@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ElementRef } from '@angular/core';
 import { i18n, KngNavigationStateService } from '../common';
 import { CartService, Config, LoaderService, Order } from 'kng2-core';
-import { version } from '../../../package.json';
+import pkgInfo from '../../../package.json';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
-  VERSION = version;
+  VERSION = pkgInfo.version;
   labelTime: string;
   currentRanks: any;
   currentLimit: number;

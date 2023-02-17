@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } fro
 import { ActivatedRoute } from '@angular/router';
 import { User, Config, UserService } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '..';
-import { version } from '../../../../package.json';
+import pkgInfo from '../../../../package.json';
 
 @Component({
   selector: 'kng-footer',
@@ -19,7 +19,7 @@ export class KngFooterComponent implements OnInit {
     this.main(config);
   }
 
-  VERSION: string = version;
+  VERSION: string = pkgInfo.version;
   shared: any;
   store: string;
 

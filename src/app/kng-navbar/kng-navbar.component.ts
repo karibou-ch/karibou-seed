@@ -66,6 +66,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   premiumLimit: number;
   isReady: boolean;
 
+
+
+
   constructor(
     public $cart: CartService,
     public $i18n: i18n,
@@ -182,9 +185,17 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         //
         // update cart
         if (emit.state) {
-          this.cardItemsSz = this.$cart.subTotal(this.store);
-          this.cartItemCountElem = this.$cart.getItems().length;
+          this.cardItemsSz = 0;
+          this.cartItemCountElem = 0;
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
+          //
+          // update cart for all market (hub)
+          (this.config.shared||[]).hubs.forEach(hub => {
+            this.cardItemsSz += this.$cart.subTotal(hub.slug);
+            this.cartItemCountElem += this.$cart.getItems().filter(item=> item.hub == hub.slug).length;
+          });
+  
+
           this.updateDomPrice();
   
           //

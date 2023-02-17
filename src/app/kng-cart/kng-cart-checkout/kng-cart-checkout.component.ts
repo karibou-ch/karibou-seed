@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { i18n, KngUtils } from '../../common';
 import { CartItem, CartService, Config, Hub, Order, OrderService, OrderShipping, User, UserAddress, UserCard, UserService } from 'kng2-core';
-import { version } from '../../../../package.json';
+import pkgInfo from '../../../../package.json';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { MdcSnackbar } from '@angular-mdc/web';
@@ -31,7 +31,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
-  VERSION = version;
+  VERSION = pkgInfo.version;
   cgAccepted = false;
   shipping;
   shippingTime;

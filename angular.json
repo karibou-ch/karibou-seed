@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "preserveSymlinks": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -97,7 +98,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,

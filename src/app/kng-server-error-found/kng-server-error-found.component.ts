@@ -3,7 +3,7 @@ import { UserService } from 'kng2-core';
 import { i18n } from '../common';
 
 import { environment } from '../../environments/environment';
-import { version } from '../../../package.json';
+import pkgInfo from '../../../package.json';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -12,7 +12,7 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./kng-server-error-found.component.scss']
 })
 export class KngServerErrorFoundComponent implements OnInit {
-  APP_VERSION = version;
+  APP_VERSION = pkgInfo.version;
 
   i18n: any = {
     fr: {
