@@ -61,17 +61,19 @@
           {{i18n[locale].address_postalcode_title}}
         </p>
           
-        <mdc-select  [placeholder]="i18n[locale].address_region" formControlName="region" class="width-50"  (selectionChange)="onGeloc($event)">
+        <select formControlName="region" class="width-50"  (change)="onGeloc($event)">
           <!-- <option value="" selected></option> -->
+          <option value="" disabled selected>{{i18n[locale].address_region}}</option>
           <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
-        </mdc-select>
+        </select>
         
           
         <!-- <mdc-text-field fullwidth  label="Code postal"  type="text" formControlName="postalCode" class="width-50">
         </mdc-text-field> -->
-        <mdc-select [placeholder]="i18n[locale].address_postalcode" formControlName="postalCode" class="width-50"  (selectionChange)="onGeloc($event)">
+        <select  formControlName="postalCode" class="width-50"  (change)="onGeloc($event)">
+          <option value="" disabled selected>{{i18n[locale].address_postalcode}}</option>
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
-        </mdc-select>
+        </select>
         
         <mdc-text-field fullwidth  [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">
           <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>

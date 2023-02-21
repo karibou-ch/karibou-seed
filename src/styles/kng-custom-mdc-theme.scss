@@ -2028,8 +2028,9 @@ a.mdc-list-item {
 }
 
 .mdc-text-field--no-label:not(.mdc-text-field--outlined):not(.mdc-text-field--textarea) .mdc-text-field__input {
-  padding-top: 16px;
-  padding-bottom: 16px
+  padding-top: 18px;
+  padding-left: 15px;
+  padding-bottom: 0px;
 }
 
 .mdc-text-field__input:-webkit-autofill+.mdc-floating-label {

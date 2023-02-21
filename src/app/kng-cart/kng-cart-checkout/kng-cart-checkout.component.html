@@ -140,7 +140,7 @@
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
           <section class="bill bill-title">
-            <h2 class="full ">4. {{currentShippingDay()|date:'EEEE dd MMMM':'':locale}} ({{shippingTime}})</h2>            
+            <h2 class="full ">{{currentShippingDay()|date:'EEEE dd MMMM':'':locale}} ({{shippingTime}})</h2>            
           </section>  
 
           <div class="bill shipping" >
