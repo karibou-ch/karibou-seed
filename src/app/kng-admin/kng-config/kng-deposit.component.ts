@@ -27,7 +27,7 @@ export class KngDepositDlgComponent {
     @Inject(MDC_DIALOG_DATA) public data: any
   ) {
 
-      this.address = data.edit ? data.edit.address : null;
+      this.address = data.edit ? data.edit.address : {};
       this.idx = data.edit ? data.edit.idx : null;
       this.pubMap = data.pubMap;
   }
@@ -54,7 +54,7 @@ export class KngDepositDlgComponent {
     this.updateMap();
 
     this.$util.getGeoCode().subscribe((result) => {
-      if (!result.geo.location) {return; }
+      if (!result.geo.location ) {return; }
       this.address.geo = {
         lat: result.geo.location.lat,
         lng: result.geo.location.lng
