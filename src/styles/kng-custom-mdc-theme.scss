@@ -2516,7 +2516,9 @@ a.mdc-list-item {
   height: auto;
   margin: 8px 1px 1px 0;
   padding: 0 16px 16px;
-  border: none
+  border: none;
+  border: 1px solid #aaa;
+  border-radius: 4px;  
 }
 
 .mdc-text-field--textarea .mdc-text-field-character-counter+.mdc-text-field__input {
