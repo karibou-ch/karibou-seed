@@ -35,9 +35,9 @@ const routes: Routes = [
   { path: 'shop', component: KngShopComponent, resolve: { loader: LoaderResolve } },
   { path: 'navigation', component: KngNavigationComponent , data: {menu: true}, resolve: { loader: LoaderResolve }},
   { path: 'deposit', component: KngDepositComponent , data: {deposit: true}, resolve: { loader: LoaderResolve }},
-  { path: 'page', component: KngPageContentComponent, children: [{
-    path: '', loadChildren: () => import('../kng-document/kng-document.module').then(m => m.KngDocumentModule)
-  }] },
+  { path: 'page', component: KngPageContentComponent, children: [
+    { path: 'list', loadChildren: () => import('../kng-document/kng-document.module').then(m => m.KngDocumentModule)}
+  ]},
   { path: '**', redirectTo: 'config'}
 
 ];
