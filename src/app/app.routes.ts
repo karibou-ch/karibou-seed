@@ -8,7 +8,6 @@ import { KngServerErrorFoundComponent } from './kng-server-error-found/kng-serve
 import { KngPageNotFoundComponent } from './kng-page-not-found/kng-page-not-found.component';
 import { KngRootComponent } from './kng-root/kng-root.component';
 import { KngNavigationStoreResolve } from './common/navigation.store.service';
-import { KngHomeComponent } from './kng-home/kng-home.component';
 import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
 
 
