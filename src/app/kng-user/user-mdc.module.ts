@@ -10,7 +10,6 @@ import {
   MdcIconModule,
   MdcMenuModule,
   MdcRippleModule,
-  MdcSelectModule,
   MdcTabBarModule,
   MdcTextFieldModule
 } from '@angular-mdc/web';
@@ -25,7 +24,6 @@ import {
     MdcElevationModule,
     MdcMenuModule,
     MdcRippleModule,
-    MdcSelectModule,
     MdcTextFieldModule,
     MdcTabBarModule
   ],

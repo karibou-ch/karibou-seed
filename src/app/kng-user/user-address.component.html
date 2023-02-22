@@ -46,10 +46,6 @@
 
         <mdc-text-field autocomplete="false" fullwidth  [label]="i18n[locale].address_street" type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
         </mdc-text-field>
-
-        <!-- <mdc-select placeholder="Adresse et N°" formControlName="street" class="width-75"  (selectionChange)="onGeloc($event)">
-          <option *ngFor="let address of addresses" [value]="address" >{{address}}</option>
-        </mdc-select> -->
           
         <mdc-text-field fullwidth  [label]="i18n[locale].address_floor"  type="text" formControlName="floor" class="width-25 floor">
         </mdc-text-field>

@@ -26,10 +26,10 @@
               <mdc-switch [ngModel]="document.published" formControlName="published"></mdc-switch>
               <label >Publié</label>
           </mdc-form-field>        
-          <mdc-select placeholder="Type" floatLabel="false" [ngModel]="document.type" formControlName="type"   >
+          <select placeholder="Type"  [ngModel]="document.type" formControlName="type" >
             <option [value]="null"></option>
             <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
-          </mdc-select>
+          </select>
 
           <button mdc-button (click)="onShow()" >Apperçu</button>    
         </div>
