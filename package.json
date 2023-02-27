@@ -26,7 +26,7 @@
     "@sentry/browser": "^7.12.1",
     "@stripe/stripe-js": "^1.11.0",
     "@uploadcare/upload-client": "^3.1.1",
-    "kng2-core": "file:../kng2-core/dist",
+    "kng2-core": "^4.0.1",
     "ngx-stripe": "^10.3.0",
     "rxjs": "~6.6.0",
     "sass": "^1.58.1",
