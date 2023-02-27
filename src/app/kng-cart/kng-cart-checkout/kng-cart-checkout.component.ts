@@ -401,7 +401,7 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   setPaymentMethod(payment: UserCard) {
-    this.selectPaymentIsDone = !!payment;
+    this.selectPaymentIsDone = false;
     if (!payment) {
       return;
     }
@@ -411,6 +411,7 @@ export class KngCartCheckoutComponent implements OnInit {
       return;
     }
     this.$cart.setPaymentMethod(payment);
+    this.selectPaymentIsDone = true;
     console.log('---DBG payment',payment.alias);
   }
 
