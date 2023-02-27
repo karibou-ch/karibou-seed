@@ -241,11 +241,12 @@ a > .mdc-icon-button {
 
 
 .mdc-drawer {
+
   background-color: #fff;
   border-radius: 0 0 0 0;
   z-index: 6;
   width: 256px;
-  display: flex;
+  display: none;
   flex-direction: column;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -463,7 +464,7 @@ a > .mdc-icon-button {
 }
 
 .mdc-drawer--dismissible.mdc-drawer--open {
-  display: flex
+  display: flex;
 }
 
 .mdc-drawer-app-content {
