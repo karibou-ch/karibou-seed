@@ -22,7 +22,7 @@
         <!--               [hidden]="payment.issuer=='wallet'"-->
         <section class="payments">
           <div class="payment" *ngFor="let payment of user.payments" 
-            [hidden]="payment.issuer=='wallet'"
+            [hidden]="payment.issuer=='wallet'" [class.error]="!payment.isValid()"
             (click)="setPaymentMethod(payment)">
 
             <input type="radio"  name="payment" [id]="payment.issuer" [checked]="isSelectedPayment(payment)">
@@ -144,7 +144,7 @@
           </section>  
 
           <div class="bill shipping" >
-            <div>{{issuer[currentPaymentMethod().issuer].label}}</div>
+            <div>{{currentPaymentMethodLabel()}}</div>
             <div class="">{{currentShipping().name}}</div>
             <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
             <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>

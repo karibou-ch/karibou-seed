@@ -262,6 +262,14 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.$cart.getCurrentPaymentMethod();
   }
 
+  currentPaymentMethodLabel() {
+    const method = this.currentPaymentMethod();
+    if(!method){
+      return '';
+    }
+    return this.issuer[method.issuer].label;
+  }
+
   currentGatewayLabel() {
     return (this.$cart.getCurrentGateway().label);
   }

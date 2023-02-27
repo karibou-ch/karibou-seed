@@ -168,6 +168,17 @@
       flex-direction: row;
       align-content: flex-start;
 
+      .payment.error,
+      .address.error{
+        label{
+          .name,
+          .note{
+            color: red!important;
+          }
+  
+        }
+
+      }
 
       .payment,
       .address{
