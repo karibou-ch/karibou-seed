@@ -42,11 +42,11 @@
                   <!-- FIXME upgrade mdc angular 6 -->
                   <mdc-radio-group formControlName="type" [(ngModel)]="category.type">
                     <mdc-form-field>
-                      <mdc-radio class="radio-primary" value="Category"  (change)="onTypeChange($event,'Category')" ></mdc-radio>
+                      <mdc-radio class="radio-primary" [value]="'Category'"  (change)="onTypeChange($event,'Category')" ></mdc-radio>
                       <label>Category</label>
                     </mdc-form-field>
                     <mdc-form-field>
-                      <mdc-radio class="radio-primary" value="Catalog"  (change)="onTypeChange($event,'Catalog')" ></mdc-radio>
+                      <mdc-radio class="radio-primary" [value]="'Catalog'"  (change)="onTypeChange($event,'Catalog')" ></mdc-radio>
                       <label>Catalog</label>
                     </mdc-form-field>
                   </mdc-radio-group>

@@ -61,7 +61,6 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     KngNavigationDlgComponent,
     KngDepositDlgComponent,
     KngCategoryDlgComponent
-
   ],
   declarations: [
     KngConfigInputComponent,

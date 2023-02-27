@@ -1,6 +1,6 @@
 import { Component, Inject} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Config, UserAddress, User, Hub, HubService, DepositAddress } from 'kng2-core';
+import { UserAddress, Hub, DepositAddress } from 'kng2-core';
 import { i18n, KngUtils } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
 import { MDC_DIALOG_DATA, MdcDialogRef, MdcSnackbar } from '@angular-mdc/web';
@@ -8,8 +8,7 @@ import { KngHUBComponent } from './kng-hub.component';
 
 @Component({
   templateUrl: './kng-deposit-dlg.component.html',
-  styleUrls: ['./kng-config-dlg.component.scss'],
-
+  styleUrls: ['./kng-config-dlg.component.scss']
 })
 export class KngDepositDlgComponent {
 
