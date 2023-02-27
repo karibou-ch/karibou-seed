@@ -51,18 +51,18 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
     //
     // ONLY AVAILABLE FOR /HOME/
     const result = (future.routeConfig === curr.routeConfig);
-    const path = this.getPath(curr);
+    const path = this.getPath(future);
 
 
 
-    this.allowRetriveCache['category/:category'] = (this.getPath(future) === 'products/:sku/:title' &&
+    this.allowRetriveCache['category/:category'] = (this.getPath(curr) === 'products/:sku/:title' &&
                                                     path === 'category/:category');
 
-    this.allowRetriveCache['category/:category/:child'] = (this.getPath(future) === 'products/:sku/:title' &&
+    this.allowRetriveCache['category/:category/:child'] = (this.getPath(curr) === 'products/:sku/:title' &&
                                                            path === 'category/:category/:child');
 
     // if(this.allowRetriveCache['category/:category/:child'] || this.allowRetriveCache['category/:category']) {
-    //   console.log('--DEBUG shouldReuseRoute', this.getPath(future), ' current', path);
+    //   console.log('--DEBUG shouldReuseRoute', this.getPath(curr), ' current', path);
     // }
 
     //
