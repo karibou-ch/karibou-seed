@@ -7,51 +7,45 @@
 </kng-nav-calendar>
 <kng-news [config]="config"></kng-news>
 
-<mdc-drawer  drawer="modal" #navigation (click)="navigation.open = !navigation.open"> 
+<div class="mdc-drawer"  drawer="modal" #navigation 
+    [class.mdc-drawer--modal]="navigation.open"
+    [class.mdc-drawer--open]="navigation.open" (click)="navigation.open = !navigation.open"> 
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
-  <mdc-drawer-header [title]="getTagline('t')" [routerLink]="['/store',store,'home']">
-  </mdc-drawer-header>
-  <mdc-drawer-content>
+  <div class="mdc-drawer__header" [routerLink]="['/store',store,'home']">
+    <h3 class="mdc-drawer__title" [innerHtml]="getTagline('t')"></h3>
+  </div>
+  <div mdc-drawer-content>
 
-    <mdc-list-group subheader="">
-      <mdc-list>
+    <ul class="mdc-list">
+      <li [hidden]="!user.isAuthenticated()" class="">
+        <a [routerLink]="['/store',store,'home','me','orders']">{{$i18n.label().nav_account}}</a>
+      </li>
+      <li [hidden]="user.isAuthenticated()">
+        <a [routerLink]="['/store',store,'home','me','login']">{{$i18n.label().nav_login}}</a>
+      </li>
 
-        <mdc-list-item [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" class="">
-          <span >{{$i18n.label().nav_account}}</span>
-        </mdc-list-item>
-        <mdc-list-item [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()">
-          <span >{{$i18n.label().nav_login}}</span>
-        </mdc-list-item>
+      <li>
+        {{$i18n.label().nav_i18n}}
+        <input type="radio" class="radio-primary align-right" value="en"  name="lang" id="lang-en" [checked]="$i18n.locale=='en'" (click)="onLang($event,'en')">
+        <label for="lang-en">En</label>
+        <input type="radio" class="radio-primary" value="fr" name="lang" id="lang-fr" [checked]="$i18n.locale=='fr'" (click)="onLang($event,'fr')">
+        <label for="lang-en">Fr</label>
+      </li>
 
-        <mdc-list-item>
-          {{$i18n.label().nav_i18n}}
-          <input type="radio" class="radio-primary align-right" value="en"  name="lang" id="lang-en" [checked]="$i18n.locale=='en'" (click)="onLang($event,'en')">
-          <label for="lang-en">En</label>
-          <input type="radio" class="radio-primary" value="fr" name="lang" id="lang-fr" [checked]="$i18n.locale=='fr'" (click)="onLang($event,'fr')">
-          <label for="lang-en">Fr</label>
-        </mdc-list-item>
-
-        <mdc-list-item *ngFor="let elem of getMenuItems('links')" [routerLink]="['/store',store,elem.url]">
-          <span [innerHtml]="elem.name[locale]"></span>
-        </mdc-list-item>
-        <mdc-list-divider></mdc-list-divider>
-
-      </mdc-list>
-    </mdc-list-group>
+      <li *ngFor="let elem of getMenuItems('links')">
+        <a [routerLink]="['/store',store,elem.url]" [innerHtml]="elem.name[locale]"></a>
+      </li>
+    </ul>
     <!-- ADMIN -->
-    <mdc-list-group class="" [hidden]="!user.isAdmin()">
-      <mdc-list>
-        <mdc-list-divider></mdc-list-divider>
-        <h3 mdcListGroupSubheader>Administration</h3>
-        <h6 mdcListGroupSubheader>Config</h6>
-        <mdc-list-item [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;"
-          [routerLink]="getRouterLink(menu.url)">
-          {{menu.name[locale]}}
-        </mdc-list-item>
-      </mdc-list>
-    </mdc-list-group>
-  </mdc-drawer-content>
-</mdc-drawer>
+    <ul class="mdc-list" [hidden]="!user.isAdmin()">
+      <h3 mdcListGroupSubheader>Administration/Config</h3>
+      <li [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;">
+        <a [routerLink]="getRouterLink(menu.url)">{{menu.name[locale]}}</a>        
+      </li>
+
+    </ul>
+  </div>
+</div>
 
 <!-- MAIN LAYOUT -->
 <div [hidden]="!isAppReady()" class="navbar">
@@ -86,7 +80,7 @@
           <span mdcTopAppBarActionItem class="material-icons secondary-text">account_circle</span><!-- <div >{{$i18n.label().nav_login2}}</div> -->
         </a>
 
-        <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcTopAppBarNavIcon [routerLink]="'.'+menu.url"
+        <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcTopAppBarNavIcon [routerLink]="'/store/'+store+menu.url" 
           routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
           <span  mdcTopAppBarActionItem class="secondary-text" [innerHTML]="menu.name[locale]"></span>
         </a>

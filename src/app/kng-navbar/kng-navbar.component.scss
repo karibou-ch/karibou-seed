@@ -1,8 +1,6 @@
 
-mdc-drawer{
-  &.mdc-drawer{
-    width: 300px!important;
-  }
+div.mdc-drawer{
+  width: 300px!important;
   
   a{
     color: #0a072b;
@@ -13,7 +11,7 @@ mdc-drawer{
     margin: auto;
   }
 
-  mdc-drawer-header{
+  .mdc-drawer__header{
     outline: 0;
     img{
       padding: 15% 35%;
@@ -27,9 +25,8 @@ mdc-drawer{
   }
 
 
-  mdc-list{
 
-
+  div{
     .align-days{
       display: flex;
       flex-direction: row;

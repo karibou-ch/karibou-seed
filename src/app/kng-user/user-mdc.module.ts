@@ -9,6 +9,7 @@ import {
   MdcElevationModule,
   MdcIconModule,
   MdcMenuModule,
+  MdcListModule,
   MdcRippleModule,
   MdcTabBarModule,
   MdcTextFieldModule
@@ -22,6 +23,7 @@ import {
     MdcCheckboxModule,
     MdcDialogModule,
     MdcElevationModule,
+    MdcListModule,
     MdcMenuModule,
     MdcRippleModule,
     MdcTextFieldModule,
