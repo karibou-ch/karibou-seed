@@ -3,7 +3,6 @@ import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Ut
 import { i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
-import { SVG } from "swissqrbill/lib/node/esm/node/svg.js"; // ESM. Tree-shakeable
 import { forkJoin } from 'rxjs';
 
 
@@ -159,7 +158,11 @@ export class KngFeedbackComponent implements OnInit {
       }
     } as any;    
     if (this.svg && this.svg.nativeElement) {
-      this.svg.nativeElement.innerHTML = new SVG(content, { language: 'EN' });
+      import('swissqrbill/lib/node/esm/node/svg.js').then((SVG:any) => {
+        
+        this.svg.nativeElement.innerHTML = new SVG(content, { language: 'EN' });
+      })
+      
     }
 
     return true;
