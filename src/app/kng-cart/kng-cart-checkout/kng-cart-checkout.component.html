@@ -140,13 +140,13 @@
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
           <section class="bill bill-title">
-            <h2 class="full ">{{currentShippingDay()|date:'EEEE dd MMMM':'':locale}} ({{shippingTime}})</h2>            
+            <h2 class="full ">{{currentShippingDay()|date:'EEEE dd MMMM':'':locale|titlecase}} ({{shippingTime}})</h2>            
           </section>  
 
           <div class="bill shipping" >
             <div>{{currentPaymentMethodLabel()}}</div>
             <div class="">{{currentShipping().name}}</div>
-            <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
+            <div class="text-overflow bold">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
             <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
           </div>
 

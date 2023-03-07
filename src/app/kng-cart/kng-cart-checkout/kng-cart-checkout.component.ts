@@ -264,7 +264,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   currentPaymentMethodLabel() {
     const method = this.currentPaymentMethod();
-    if(!method){
+    if(!method || !method.issuer){
       return '';
     }
     return this.issuer[method.issuer].label;
