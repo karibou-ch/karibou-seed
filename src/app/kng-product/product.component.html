@@ -1,4 +1,4 @@
-<div class="product-dialog fadeout" #dialog>
+<div class="product-dialog fadeout" [class.is-searching]="isSearching" #dialog>
   <div class="product-backdrop"></div>
   <div class="product-dialog__surface">
     <div class="product-wide" [class.incart]="cartItemQuantity">
@@ -69,6 +69,7 @@
       <kng-audio-note 
           class="product-note"
           [hidden]="!cartItemQuantity"
+          [fileName]="audioFileName"
           [key]="config.shared.keys.pubUpcare"
           [amount]="product.pricing.price * cartItemQuantity"
           [src]="cartItemAudio" 
@@ -101,6 +102,15 @@
         </div>
     
       </div>
+
+      <!-- RECEIPE -->
+      <div class="recipe hide">
+        <div class="content bold">
+          Trouver les produits associés 
+        </div>
+        <kng-product-link (click)="isSearching=true" [links]="['tomate cerise','origan','sauce tomate']"></kng-product-link>
+      </div>
+
 
       <div class="breaker small"></div>
 

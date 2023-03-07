@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { i18n } from '../common';
 import { Config } from 'kng2-core';
-import { version } from '../../../package.json';
+import pkgInfo from '../../../package.json';
 
 @Component({
   selector: 'kng-nav-calendar',
@@ -18,7 +18,7 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
 
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
-  VERSION = version;
+  VERSION = pkgInfo.version;
   labelTime: string;
   currentRanks: any;
   currentLimit: number;

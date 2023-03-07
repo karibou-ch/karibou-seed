@@ -117,7 +117,7 @@ div.lang{
 mdc-textarea{
   font-size: 14px;
   width: 98%;
-  border-color: #ddd;  
+  border: 1px solid #ddd;  
 }
 
 .mdc-chip--selected {
@@ -133,7 +133,7 @@ mdc-textarea{
   }  
 }
 
-:host /deep/  textarea{
+:host ::ng-deep  textarea{
   font-size: 14px!important;
   .mdc-text-field__input,
   input{
@@ -141,17 +141,17 @@ mdc-textarea{
   }
 }
 
-:host /deep/ .mdc-text-field__input{
+:host ::ng-deep .mdc-text-field__input{
   color: inherit!important;
 }
 
 
-:host /deep/ .uploadcare--widget__text {
+:host ::ng-deep .uploadcare--widget__text {
   font-size: 11px;
   padding: 0;
   ;
 }
 
-:host /deep/ .uploadcare--widget {
+:host ::ng-deep .uploadcare--widget {
   margin-top: -20px;
 }

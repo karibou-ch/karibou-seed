@@ -9,6 +9,8 @@ kng-ui-bottom-actions{
   bottom: 0;
   height: 70px;
 
+
+
   &.show{
     top: 0;
     background: rgba(0, 0, 0, 0.65);
@@ -43,8 +45,8 @@ kng-ui-bottom-actions{
       top: 40px;
       right: calc(( 100vw - 860px ) / 2 );;      
       z-index: 1;
-      mdc-icon{
-        font-size: 40px;
+      .large{
+        font-size: 48px;
       }
       @media (max-width: 769px) {
         top: 10px;
@@ -64,21 +66,21 @@ kng-ui-bottom-actions{
       margin-left: auto;
       width: 100vw;
       padding-top: 20px;
-      mdc-list {
+      .mdc-list {
         min-width: 600px;
       }
     }
 
     //
     // search content
-    mdc-list{
+    .mdc-list{
       background: white;
       width: auto;
       max-width: 100vw;
       height: 100%;
       margin: auto;
 
-      mdc-list-item{
+      li{
         max-width: 740px;
         margin-left: auto;
         margin-right: auto;
@@ -93,25 +95,13 @@ kng-ui-bottom-actions{
         }
         
   
-        mdc-list-item-text{
+        .text{
           div.title{
             display: block;        
           }
           max-width: 100%;
         }
       
-        mdc-list-item-graphic{
-          width: 56px!important;
-          .avatar{
-            min-width: 66px;
-            width: 66px;
-            height: 66px;
-            border-radius: 5px;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position-y: 50%;    
-          }
-        }
       
       }    
   

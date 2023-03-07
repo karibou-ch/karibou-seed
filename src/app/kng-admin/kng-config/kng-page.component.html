@@ -5,7 +5,7 @@
 
 <div class="container" >
 
-  <h3 i18n>Pages</h3>
+  <h3 >Pages</h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" format="menu"></kng-config-input>
 
@@ -23,7 +23,7 @@
     <!-- LIST OF PAGES -->
     <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let content of contents" 
-                    [routerLink]="['./',content.slug[0]]"
+                    [routerLink]="['./list',content.slug[0]]"
                     [class.disabled]="!content.available">
       <mdc-icon mdcListItemGraphic class="size-large">folder</mdc-icon>
       <mdc-list-item-text>

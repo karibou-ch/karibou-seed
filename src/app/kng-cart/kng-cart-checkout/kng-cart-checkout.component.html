@@ -12,9 +12,37 @@
   <!-- CHECKOUT-->
   <div class="checkout" *ngIf="isReady">
     <div class="cart-container">
+
+      <!-- PAYMENT-->
+      <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady() && isOpen()">      
+        <section class="payment-title"  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
+
+
+        <!-- FIXME hide wallet method -->
+        <!--               [hidden]="payment.issuer=='wallet'"-->
+        <section class="payments">
+          <div class="payment" *ngFor="let payment of user.payments" 
+            [hidden]="payment.issuer=='wallet'" [class.error]="!payment.isValid()"
+            (click)="setPaymentMethod(payment)">
+
+            <input type="radio"  name="payment" [id]="payment.issuer" [checked]="isSelectedPayment(payment)">
+              <label [for]="payment.issuer">
+                <div class="name">{{issuer[payment.issuer].label}}</div>
+                <div class="note">{{payment.expiryToDate()|date:'MM/y'}}</div>  
+              </label>
+          </div>
+          <div class="profile-action"  >
+            <button [routerLink]="['./user/login-or-payment']">
+              {{labell.user_payment_add}} 
+            </button>
+          </div>      
+        </section>
+    
+      </div>
+
       <!-- ADDRESS IFF isAuth()-->
       <div class="order-address " [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isOpen()">      
-        <section  [innerHtml]="config?.shared.hub.checkout.address[locale]" ></section>
+        <section class="address-title"  [innerHtml]="config?.shared.hub.checkout.address[locale]" ></section>
           
         <!-- USER ADDRESS -->
         <section class="addresses">
@@ -47,38 +75,12 @@
         </section>
       </div>
 
-      <!-- PAYMENT-->
-      <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady() && isOpen()">      
-        <section  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
-
-
-        <!-- FIXME hide wallet method -->
-        <!--               [hidden]="payment.issuer=='wallet'"-->
-        <section class="payments">
-          <div class="payment" *ngFor="let payment of user.payments" 
-            [hidden]="payment.issuer=='wallet'"
-            (click)="setPaymentMethod(payment)">
-
-            <input type="radio"  name="payment" [id]="payment.issuer" [checked]="isSelectedPayment(payment)">
-              <label [for]="payment.issuer">
-                <div class="name">{{issuer[payment.issuer].label}}</div>
-                <div class="note">{{payment.expiryToDate()|date:'MM/y'}}</div>  
-              </label>
-          </div>
-          <div class="profile-action"  >
-            <button [routerLink]="['./user/login-or-payment']">
-              {{labell.user_payment_add}} 
-            </button>
-          </div>      
-        </section>
-    
-      </div>
         
       <!-- RESUME -->
       <div class="order-resume " *ngIf="isOpen">
 
         <div class="order-resume-block">
-          <section  [class.deposit]="isCartDeposit()" 
+          <section class="resume-title" [class.deposit]="isCartDeposit()" 
                     [innerHtml]="config?.shared.hub.checkout.resume[locale]">
           </section>  
   
@@ -118,7 +120,7 @@
 
           <!-- BILL TOTAL DISCOUNT -->
           <div class="bill" [hidden]="getTotalDiscount()==0">
-            <div class="label" i18n>{{label.cart_info_discount}}</div>
+            <div class="label" >{{label.cart_info_discount}}</div>
             <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
           </div>
 
@@ -137,13 +139,14 @@
         </div>
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
-          <div class="bill">
-            <h2 class="full ">4. {{label.cart_info_shipping_title}}</h2>            
-          </div>  
+          <section class="bill bill-title">
+            <h2 class="full ">{{currentShippingDay()|date:'EEEE dd MMMM':'':locale|titlecase}} ({{shippingTime}})</h2>            
+          </section>  
 
           <div class="bill shipping" >
-            <div class="bold text-capitalize">{{currentShipping().name}}</div>
-            <div class="text-overflow">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
+            <div>{{currentPaymentMethodLabel()}}</div>
+            <div class="">{{currentShipping().name}}</div>
+            <div class="text-overflow bold">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
             <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
           </div>
 
@@ -157,11 +160,10 @@
 
                   
         
-          <div class="bill">
-            <h2 class="full text-capitalize">5. {{currentShippingDay()|date:'EEEE dd MMMM':'':locale}} ({{shippingTime}})</h2>            
+          <div class="bill bill-title">
             <div class="overflow">
               <input type="checkbox" [(ngModel)]="cgAccepted" >
-              <label i18n class="link">        
+              <label class="link">        
                 <a href="javascript:;" class="link"
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
             </div>

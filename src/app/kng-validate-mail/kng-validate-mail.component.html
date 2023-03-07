@@ -1,7 +1,7 @@
 <div class="container">
   <div class="alert alert-success" role="alert" *ngIf="validate" >
-      <strong i18n>{{i18n[locale].title1}}</strong> <br/>
-      <span i18n>{{i18n[locale].title2}}</span>
+      <strong >{{i18n[locale].title1}}</strong> <br/>
+      <span >{{i18n[locale].title2}}</span>
       <div>
           <i class="material-icons primary">check_circle_outline</i>        
       </div>
@@ -9,9 +9,9 @@
 
 
   <div class="alert alert-error" role="alert" *ngIf="error">
-      <strong i18n>{{i18n[locale].warning}}</strong> <br/>
+      <strong >{{i18n[locale].warning}}</strong> <br/>
       <div class="primary">{{error}}</div>
-      <div i18n><span [innerHtml]="i18n[locale].warning"></span></div>
+      <div ><span [innerHtml]="i18n[locale].warning"></span></div>
       <div>
         <i class="material-icons">error_outline</i>
       </div>

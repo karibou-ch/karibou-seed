@@ -21,14 +21,16 @@
   width: 100vw;
   height: 100vh;
   visibility:visible;
-  -transition: opacity .5s ease-in-out;
-  -opacity: 1;
   z-index: 3;
+
   background: white;
   @media (min-width: 1025px) {
     background-color: rgba(0, 0, 0, 0.57);
   }
 
+  &.is-searching{
+    z-index: 2;
+  }
   &.fadeout{
     opacity: 0;
   }
@@ -371,6 +373,7 @@
   .header,
   .admin-actions,
   .quick-stock,
+  .recipe,
   .availability,
   .certified,
   .description{
@@ -431,6 +434,23 @@
       flex:1 0 100%;
       line-height: 40px;
       margin-top: 0;      
+    }
+  }
+
+  .recipe{
+    margin: 40px 0;
+    .content{
+      margin: 5px 0;
+      padding: 5px;
+    }
+
+    kng-product-link{
+      margin: 5px 0;
+      margin-left: -10px;
+      .kng-chip{
+        background-color: var(--mdc-theme-primary) !important;        
+        color: var(--mdc-theme-primary-text) !important;        
+      }
     }
   }
 

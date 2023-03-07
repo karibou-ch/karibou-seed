@@ -21,9 +21,9 @@
     </h3>
     <hr class="dashed"/>
     <div class="config-custom row-form" *ngFor="let noshipping of currentHub.noshipping;let idx=index;">
-      <mdc-text-field class="large" fullwidth  i18n-label label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
-      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
-      <mdc-text-field fullwidth  i18n-label label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
+      <mdc-text-field class="large" fullwidth   label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
+      <mdc-text-field fullwidth   label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
+      <mdc-text-field fullwidth   label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
       <button class="small" mdc-button outlined primary (click)="currentHub.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
     </div>  
   </div>
@@ -50,7 +50,7 @@
       </div>  
     </div>
     <div class="config-custom row-form">
-      <mdc-text-field fullwidth  i18n-label label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
+      <mdc-text-field fullwidth   label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
       <button mdc-button outlined primary  (click)="addManager()"><mdc-icon>verified</mdc-icon></button>
     </div>  
   </div>
@@ -71,7 +71,7 @@
       </div>  
     </div>
     <div class="config-custom row-form">
-      <mdc-text-field fullwidth  i18n-label label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
+      <mdc-text-field fullwidth   label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
       <button mdc-button outlined primary  (click)="addLogistic()"><mdc-icon>verified</mdc-icon></button>
     </div>  
   </div>

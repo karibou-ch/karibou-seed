@@ -17,87 +17,87 @@
 
     <!-- LOGIN -->
     <div class="inner" *ngIf="!askAction">
-      <h3 i18n>{{i18n[locale].login_title}}</h3>
-      <p class="help-block" i18n [innerHtml]="i18n[locale].login_why">
+      <h3 >{{i18n[locale].login_title}}</h3>
+      <p class="help-block" [innerHtml]="i18n[locale].login_why">
       </p>
 
       <form [formGroup]="sign" (submit)="onSign()">
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_email" autocomplete fullwidth  type="email" formControlName="email">
+          <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete fullwidth  type="email" formControlName="email">
             <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
           
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
+          <mdc-text-field  [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
             <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
             
           <button primary mdc-button unelevated  [disabled]="!sign.valid" class="align-center">
             <mdc-icon>account_circle</mdc-icon>              
-            <span i18n>Login</span>
+            <span >Login</span>
           </button>            
       </form>
-      <div class="signup-vs-login black" i18n><a class="link" (click)="askAction='signup'">{{i18n[locale].login_create_account}}</a></div>
-      <div class="signup-vs-login black" i18n><a class="link black" [routerLink]="['/store',getHubSlug(),'home']">{{i18n[locale].login_skip}}</a></div>
-      <div class="signup-vs-login light" i18n><a class="link" (click)="askAction='recover'">{{i18n[locale].login_forgot_password}}</a></div>
+      <div class="signup-vs-login black" ><a class="link" (click)="askAction='signup'">{{i18n[locale].login_create_account}}</a></div>
+      <div class="signup-vs-login black" ><a class="link black" [routerLink]="['/store',getHubSlug(),'home']">{{i18n[locale].login_skip}}</a></div>
+      <div class="signup-vs-login light" ><a class="link" (click)="askAction='recover'">{{i18n[locale].login_forgot_password}}</a></div>
     </div>
       
     <!-- RECOVER -->
     <div class="inner" *ngIf="askAction=='recover'">
-      <h3 i18n>{{i18n[locale].login_reset_password}}</h3>
+      <h3 >{{i18n[locale].login_reset_password}}</h3>
       <form [formGroup]="recover" (submit)="onRecover()">
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_email" fullwidth formControlName="email">
+          <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
             <mdc-icon mdcTextFieldIcon trailing>email</mdc-icon>
           </mdc-text-field>
-          <kng-control-messages [control]="recover.controls.email"><span i18n>{{i18n[locale].login_wait_msg}}</span></kng-control-messages>
+          <kng-control-messages [control]="recover.controls.email"><span >{{i18n[locale].login_wait_msg}}</span></kng-control-messages>
           <button primary  mdc-button unelevated  [disabled]="!recover.valid || sendRecover" class="align-center">
             <mdc-icon>account_circle</mdc-icon>              
-            <span i18n>{{sendRecover ? i18n[locale].action_reset_done : i18n[locale].action_reset}}</span>
+            <span >{{sendRecover ? i18n[locale].action_reset_done : i18n[locale].action_reset}}</span>
           </button>            
       </form>
-      <div class="signup-vs-login" i18n><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>
+      <div class="signup-vs-login" ><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>
     </div>
 
     <!-- SIGNUP -->
     <div class="inner" *ngIf="askAction=='signup'">
       <form [formGroup]="signup" (submit)="onSignup()">
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_name" fullwidth type="text" formControlName="name">
+          <mdc-text-field  [label]="$i18n[locale].user_name" fullwidth type="text" formControlName="name">
             <mdc-icon mdcTextFieldIcon trailing>name</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.name"></kng-control-messages>
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_firstname" fullwidth type="text" formControlName="forname">
+          <mdc-text-field  [label]="$i18n[locale].user_firstname" fullwidth type="text" formControlName="forname">
             <mdc-icon mdcTextFieldIcon trailing>name</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_phone" fullwidth  type="text" formControlName="phone" >
+          <mdc-text-field  [label]="$i18n[locale].user_phone" fullwidth  type="text" formControlName="phone" >
             </mdc-text-field>
-          <p class="help-block" i18n>
+          <p class="help-block" >
             {{i18n[locale].signup_phone}}
           </p>
               
 
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_email" fullwidth formControlName="email">
+          <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
             <mdc-icon mdcTextFieldIcon trailing>email</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
 
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_password" fullwidth type="password" formControlName="password">
+          <mdc-text-field  [label]="$i18n[locale].user_password" fullwidth type="password" formControlName="password">
             <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
 
-          <mdc-text-field i18n-label [label]="$i18n[locale].user_repassword" fullwidth type="password" formControlName="confirm">
+          <mdc-text-field  [label]="$i18n[locale].user_repassword" fullwidth type="password" formControlName="confirm">
             <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 
           <button primary  mdc-button unelevated  [disabled]="!signup.valid" class="align-center">
             <mdc-icon>account_circle</mdc-icon>              
-            <span i18n>{{i18n[locale].signup_create}}</span>
+            <span >{{i18n[locale].signup_create}}</span>
           </button>            
       </form>
-      <div class="signup-vs-login" i18n><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>      
+      <div class="signup-vs-login" ><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>      
     </div>
 
     <!-- ADDRESS -->
@@ -112,8 +112,8 @@
       
     <!-- LOGOUT -->
     <div class="inner" *ngIf="askAction=='logout'">
-      <h3 i18n>{{i18n[locale].login_ok}}</h3>
-      <div class="signup-vs-login" i18n><a class="link" (click)="askAction='login'">{{i18n[locale].login_back_login}}</a></div>
+      <h3 >{{i18n[locale].login_ok}}</h3>
+      <div class="signup-vs-login" ><a class="link" (click)="askAction='login'">{{i18n[locale].login_back_login}}</a></div>
     </div>
       
   </div>

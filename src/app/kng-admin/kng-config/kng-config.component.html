@@ -2,7 +2,7 @@
     <h1>Saving</h1>
   </div>
   <div class="container">  
-  <h3 i18n>Configuration du système</h3>  
+  <h3 >Configuration du système</h3>  
   <hr class="dashed"/>
   <kng-config-input clazz="config" format="menu"></kng-config-input>
 
@@ -29,7 +29,7 @@
                     [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
 
   <!-- HUB Footer -->
-  <h3 i18n>Footer <span class="gray">(welcome bottom)</span></h3>
+  <h3 >Footer <span class="gray">(welcome bottom)</span></h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
                     [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
@@ -42,7 +42,7 @@
 
                     
   <hr class="dashed"/>
-  <h3 i18n>Configuration des clés publiques (API tiers)</h3>
+  <h3 >Configuration des clés publiques (API tiers)</h3>
   <kng-config-input clazz="config" label="Connect public key (stripe)" name="key.connect" format="text" 
                     [(ngModel)]="config?.shared.keys.pubConnect"></kng-config-input>
   <kng-config-input clazz="config" label="Gateway public key (stripe)" name="key.api" format="text" 

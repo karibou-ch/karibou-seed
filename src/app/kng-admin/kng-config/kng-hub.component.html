@@ -2,7 +2,7 @@
   <h1>Saving</h1>
 </div>
 <div class="container" *ngIf="currentHub">
-  <h3 i18n>{{currentHub.name}}</h3>
+  <h3 >{{currentHub.name}}</h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" format="menu"></kng-config-input>
 
@@ -11,7 +11,7 @@
   <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
 
   <!-- HUB Status -->
-  <h3 i18n>Status</h3>
+  <h3 >Status</h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Active/Inactive Hub" name="hub.status" format="text" [withCheck]="true"
                       [(ngModel)]="currentHub.status.reason[$i18n.locale]"
@@ -24,7 +24,7 @@
   </button>    
                     
   <!-- HUB Address -->
-  <h3 i18n>Adresse </h3>
+  <h3 >Adresse </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Adresse rue" name="address.stree" format="text" 
                     [address]="currentHub.address"
@@ -47,7 +47,7 @@
                     [(ngModel)]="currentHub.address"></kng-config-input>
 
   <!-- HUB Schedule -->
-  <h3 i18n>Core informations</h3>
+  <h3 >Core informations</h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Order qty limit" name="currentLimit" format="text" 
                     [(ngModel)]="currentHub.currentLimit"></kng-config-input>
@@ -66,14 +66,14 @@
                   
   <hr class="dashed"/>
   <section class="shippingtime">
-    <h3 i18n>Shipping Time</h3>
+    <h3 >Shipping Time</h3>
     <kng-config-input *ngFor="let time of [0,12,14,16,18]"
                   clazz="config" label="Boundaries for start time: {{time}}h" name="shippingtime-{{time}}" format="text" 
                   [(ngModel)]="currentHub.shippingtimes[time+'']"></kng-config-input>
   </section>
 
   <!-- HUB Mail -->
-  <h3 i18n>Mail informations</h3>
+  <h3 >Mail informations</h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Subject" name="mail.subject" format="text" 
                     [(ngModel)]="currentHub.mail.subject"></kng-config-input>
@@ -82,7 +82,7 @@
                     [(ngModel)]="currentHub.mail.signature"></kng-config-input>
 
   <!-- HUB SiteName -->
-  <h3 i18n>Colors </h3>
+  <h3 >Colors </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text" 
                     [style.color]="currentHub.colors.primaryText"
@@ -115,13 +115,13 @@
                     [(ngModel)]="currentHub.colors.appbarText"></kng-config-input>
 
   <!-- HUB Links -->
-  <h3 i18n>Links </h3>
+  <h3 >Links </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Links" name="links" format="area" 
                     [(ngModel)]="currentHub.defaultTags"></kng-config-input>
 
   <!-- HUB SiteName -->
-  <h3 i18n>Site Name </h3>
+  <h3 >Site Name </h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Hub Name" name="site.name" format="text" 
                     [(ngModel)]="currentHub.name"></kng-config-input>
@@ -142,7 +142,7 @@
 
 
   <!-- HUB Tagline -->
-  <h3 i18n>Tagline <span class="gray">(welcome top)</span></h3>
+  <h3 >Tagline <span class="gray">(welcome top)</span></h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Titre tagLine" name="tagLine.titre" format="text" 
                     [(ngModel)]="currentHub.tagLine.t[$i18n.locale]"></kng-config-input>
@@ -159,7 +159,7 @@
 
 
   <!-- HUB About -->
-  <h3 i18n>About <span class="gray">(welcome middle)</span></h3>
+  <h3 >About <span class="gray">(welcome middle)</span></h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text" 
                     [(ngModel)]="currentHub.about.t[$i18n.locale]"></kng-config-input>
@@ -175,7 +175,7 @@
                     [(ngModel)]="currentHub.about.image"></kng-config-input>
 
   <!-- HUB Footer -->
-  <h3 i18n>Footer <span class="gray">(welcome bottom)</span></h3>
+  <h3 >Footer <span class="gray">(welcome bottom)</span></h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
                     [(ngModel)]="currentHub.footer.t[$i18n.locale]"></kng-config-input>

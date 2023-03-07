@@ -155,6 +155,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   exports: [
     Kng2CoreModule,
     KngCommonModule,
+    RouterModule
   ],
   imports: [
     BrowserModule,

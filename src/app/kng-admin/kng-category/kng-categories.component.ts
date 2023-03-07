@@ -16,8 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   templateUrl: './kng-category-dlg.component.html',
-  styleUrls: ['./kng-categories.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./kng-categories.component.scss']
 })
 export class KngCategoryDlgComponent {
   constructor(
@@ -76,8 +75,8 @@ export class KngCategoryDlgComponent {
     this.$dlgRef.close();
   }
 
-   // FIXME radio button is not working
-   onTypeChange(evt: MdcRadioChange, value: string): void {
+  // FIXME radio button is not working
+  onTypeChange(evt: MdcRadioChange, value: string): void {
     this.category.type = value;
   }
 

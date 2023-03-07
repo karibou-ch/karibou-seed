@@ -62,16 +62,16 @@ export class ProductSwipeComponent implements OnInit {
     fr: {
       action_favorites:'Tous les produits populaires',
       action_discount:'Toutes les offres du moment',  
-      title_discount: 'Offres du moment (ړײ)',
-      title_mailchimp:'Les populaires `ღ´',
-      title_select:'Les populaires'
+      title_discount: 'Les offres du moment %',
+      title_mailchimp:'Les plus prisés `ღ´',
+      title_select:'Les plus prisés'
     },
     en: {
       action_favorites:'All most popular',
       action_discount:'All current offers',
-      title_discount: 'Current offers (ړײ)',
-      title_mailchimp: 'Most popular `ღ´',
-      title_select:'Most Popular'
+      title_discount: 'Current offers %',
+      title_mailchimp: 'Best sellers `ღ´',
+      title_select:'Best sellers'
     }
   }
 

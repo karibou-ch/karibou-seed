@@ -1,38 +1,38 @@
 <div class="container">
-  <!-- <h3 i18n>Modifier votre mot de passe</h3>
-  <h4 i18n>{{user.display()}}</h4> -->
+  <!-- <h3 >Modifier votre mot de passe</h3>
+  <h4 >{{user.display()}}</h4> -->
   <form [formGroup]="$profile" (submit)="onChange()">
-      <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_name" type="text" formControlName="name" [ngModel]="user.name.familyName">
+      <mdc-text-field fullwidth  [label]="$i18n[locale].user_name" type="text" formControlName="name" [ngModel]="user.name.familyName">
         <mdc-icon mdcTextFieldIcon trailing class="primary">face</mdc-icon>
       </mdc-text-field>
 
-      <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_firstname" type="text" formControlName="forname" [ngModel]="user.name.givenName">
+      <mdc-text-field fullwidth  [label]="$i18n[locale].user_firstname" type="text" formControlName="forname" [ngModel]="user.name.givenName">
       </mdc-text-field>
 
-      <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_phone" type="text" formControlName="phone" [ngModel]="phone">
+      <mdc-text-field fullwidth  [label]="$i18n[locale].user_phone" type="text" formControlName="phone" [ngModel]="phone">
         <mdc-icon mdcTextFieldIcon trailing class="primary">phone</mdc-icon>
       </mdc-text-field>
       
-      <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_email" type="email" formControlName="email" [ngModel]="user.email.address">
+      <mdc-text-field fullwidth  [label]="$i18n[locale].user_email" type="email" formControlName="email" [ngModel]="user.email.address">
       </mdc-text-field>
         
       
-      <mdc-text-field fullwidth i18n-label [label]="$i18n[locale].user_confirm_password"  type="password" formControlName="password">
+      <mdc-text-field fullwidth  [label]="$i18n[locale].user_confirm_password"  type="password" formControlName="password">
         <mdc-icon mdcTextFieldIcon trailing class="primary">vpn_key</mdc-icon>
       </mdc-text-field>
         
       <button mdc-button unelevated="true" [disabled]="!$profile.valid">
         <mdc-icon>account_circle</mdc-icon>              
-        <span i18n>{{$i18n[locale].action_save}}</span>
+        <span >{{$i18n[locale].action_save}}</span>
       </button>            
 
       <div class="breaker small"></div>
       
       <button [routerLink]="['/store/' + store + '/home/me/login-or-address']"
-        mdc-button [outlined]="true" i18n>{{$i18n[locale].user_address_add}}</button>     
+        mdc-button [outlined]="true" >{{$i18n[locale].user_address_add}}</button>     
 
       <button [routerLink]="['/store/' + store + '/home/me/login-or-payment']"
-        mdc-button [outlined]="true" i18n>{{$i18n[locale].user_payment_add}}</button>     
+        mdc-button [outlined]="true" >{{$i18n[locale].user_payment_add}}</button>     
 
 
   </form>

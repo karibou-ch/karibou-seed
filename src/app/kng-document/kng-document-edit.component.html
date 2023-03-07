@@ -10,7 +10,7 @@
   <div class="container ">
 
 
-      <h3 class="byline" i18n>
+      <h3 class="byline" >
         Publié le <time>{{document?.created| date: 'mediumDate'}}</time> par <span class="author">{{document?.signature}} </span>        
       </h3>
 
@@ -20,18 +20,18 @@
         <div class="check">
           <mdc-form-field>
               <mdc-switch [ngModel]="document.available" formControlName="available"></mdc-switch>
-              <label i18n>Actif</label>
+              <label >Actif</label>
           </mdc-form-field>
           <mdc-form-field>
               <mdc-switch [ngModel]="document.published" formControlName="published"></mdc-switch>
-              <label i18n>Publié</label>
+              <label >Publié</label>
           </mdc-form-field>        
-          <mdc-select placeholder="Type" floatLabel="false" [ngModel]="document.type" formControlName="type"   >
+          <select placeholder="Type"  [ngModel]="document.type" formControlName="type" >
             <option [value]="null"></option>
             <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
-          </mdc-select>
+          </select>
 
-          <button mdc-button (click)="onShow()" i18n>Apperçu</button>    
+          <button mdc-button (click)="onShow()" >Apperçu</button>    
         </div>
         <!-- TOP SLUGS ACTION -->
         <mdc-list dense="true" interactive="false" border="true">
@@ -60,7 +60,7 @@
         </div>
         <!-- SIGNATURE -->
         <div class="signature">
-          <mdc-text-field i18n-label label="Signature"  type="text" [ngModel]="document.signature||user.display()" formControlName="signature">
+          <mdc-text-field  label="Signature"  type="text" [ngModel]="document.signature||user.display()" formControlName="signature">
           </mdc-text-field>                
         </div>
 
@@ -69,15 +69,15 @@
               
         <!-- TITLE -->
         <h1>
-          <mdc-text-field i18n-label label="Titre"  type="text" [ngModel]="document.title[locale]" formControlName="title">
+          <mdc-text-field  label="Titre"  type="text" [ngModel]="document.title[locale]" formControlName="title">
           </mdc-text-field>                
         </h1>
-        <mdc-textarea i18n-label label="En tête" formControlName="header"
+        <mdc-textarea  label="En tête" formControlName="header"
                       kng-autosize rows="3" outline="false"
                       [ngModel]="document.header[locale]">
         </mdc-textarea>                    
         <br />   
-        <mdc-textarea i18n-label label="Que souhaitez vous écrire?" 
+        <mdc-textarea  label="Que souhaitez vous écrire?" 
                       kng-autosize rows="4" formControlName="body"
                       [ngModel]="document.content[locale]">
         </mdc-textarea>                              

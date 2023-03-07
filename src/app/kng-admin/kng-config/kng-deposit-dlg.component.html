@@ -3,7 +3,7 @@
     (decline)="askDecline()">
     <mdc-dialog-surface>
       <mdc-dialog-title>       
-          <span i18n>{{address?.name||'Nouvelle Addresse'}}</span>
+          <span >{{address?.name||'Nouvelle Addresse'}}</span>
       </mdc-dialog-title>
       <mdc-dialog-content>
           <form [formGroup]="form" (submit)="askSave()">
@@ -12,31 +12,31 @@
                   [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}">
               </div>
               <div>
-                <mdc-text-field i18n-label label="Poid" type="number" [ngModel]="address?.weight" formControlName="weight">
+                <mdc-text-field  label="Poid" type="number" [ngModel]="address?.weight" formControlName="weight">
                 </mdc-text-field>                
-                <mdc-text-field i18n-label label="Prix" type="number" [required]="true" [ngModel]="address?.fees" formControlName="fees">
+                <mdc-text-field  label="Prix" type="number" [required]="true" [ngModel]="address?.fees" formControlName="fees">
                 </mdc-text-field>                
                   
-                <mdc-text-field i18n-label label="Nom" type="text" [ngModel]="address?.name" formControlName="name">
+                <mdc-text-field  label="Nom" type="text" [ngModel]="address?.name" formControlName="name">
                 </mdc-text-field>                
-                <mdc-text-field i18n-label label="Rue/N°" type="text" [ngModel]="address?.streetAdress" formControlName="streetAddress" style="width: 50%">
+                <mdc-text-field  label="Rue/N°" type="text" [ngModel]="address?.streetAdress" formControlName="streetAddress" style="width: 50%">
                 </mdc-text-field>                
-                <mdc-text-field i18n-label label="Étage" type="text" [ngModel]="address?.floor" formControlName="floor" style="width: 20%">
+                <mdc-text-field  label="Étage" type="text" [ngModel]="address?.floor" formControlName="floor" style="width: 20%">
                 </mdc-text-field>                
                 
-                <mdc-text-field i18n-label label="Note" type="text" [ngModel]="address?.note" formControlName="note" style="width: 50%">
+                <mdc-text-field  label="Note" type="text" [ngModel]="address?.note" formControlName="note" style="width: 50%">
                 </mdc-text-field>                
                 
                 <mdc-form-field class="align-end">
                   <mdc-checkbox [ngModel]="address?.active" formControlName="active" ></mdc-checkbox>
-                  <span i18n>Actif</span>
+                  <span >Actif</span>
                 </mdc-form-field>
             </div>
     
             <div>                      
-              <mdc-text-field style="flex:1" i18n-label label="Code Postal" type="text" [ngModel]="address?.postalCode" formControlName="postalCode" >
+              <mdc-text-field style="flex:1"  label="Code Postal" type="text" [ngModel]="address?.postalCode" formControlName="postalCode" >
               </mdc-text-field>
-              <mdc-text-field style="flex:1" i18n-label label="Région" type="text" [ngModel]="address?.region" formControlName="region" >
+              <mdc-text-field style="flex:1"  label="Région" type="text" [ngModel]="address?.region" formControlName="region" >
               </mdc-text-field>
             </div>
           </form>
