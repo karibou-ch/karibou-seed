@@ -125,6 +125,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
 
+  get audioFileName() {
+    const name = this.user && this.user.displayName || ''
+    return this.product.sku + '-' + name.toLowerCase();
+  }
 
   get cartItemQuantity(){
     const qty= this.$cart.getItemsQtyMap(this.product.sku,this.config.shared.hub.slug);

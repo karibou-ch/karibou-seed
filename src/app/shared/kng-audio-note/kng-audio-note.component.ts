@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { KngAudioRecorderService, OutputFormat, RecorderState } from '../kng-audio-recorder.service';
-import {UploadClient} from '@uploadcare/upload-client';
+import {UploadClient, base} from '@uploadcare/upload-client';
 
 import { i18n } from '../../common';
 
@@ -24,6 +24,7 @@ export class KngAudioNoteComponent implements OnInit {
 
   onContextMenu:any;
 
+  @Input() filename:string;
   @Input() set amount(value: number){
     this._amount = (value).toFixed(2); 
   };
@@ -100,7 +101,9 @@ export class KngAudioNoteComponent implements OnInit {
       this.onCartItemAudioLoading.emit(true);
       const audio = output as string;
       const client = new UploadClient({ publicKey: this.key});
-      client.uploadFile(audio).then(file => {
+      const options:any = {};
+      this.filename && (options.fileName = this.filename);
+      client.uploadFile(audio,options).then(file => {
         this.onCartItemAudioLoading.emit(false);
         const url = file.cdnUrl.replace('https:', '');
         this.cartItemAudioLoading = false;
