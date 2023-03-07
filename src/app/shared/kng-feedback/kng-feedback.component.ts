@@ -71,6 +71,9 @@ export class KngFeedbackComponent implements OnInit {
   invoices: Order[];
   HUBS:any = {};
 
+  //
+  // qrbill component
+  module:any;
   printQr = false;
   currentLimit: number;
   premiumLimit: number;
@@ -157,12 +160,11 @@ export class KngFeedbackComponent implements OnInit {
         country: "CH"
       }
     } as any;    
-    if (this.svg && this.svg.nativeElement) {
-      import('swissqrbill/lib/node/esm/node/svg.js').then((SVG:any) => {
-        
-        this.svg.nativeElement.innerHTML = new SVG(content, { language: 'EN' });
-      })
-      
+
+    //
+    // check validity of SVG component (lazy loaded) and svg element
+    if (this.module && this.module.SVG && this.svg && this.svg.nativeElement) {        
+      this.svg.nativeElement.innerHTML = new this.module.SVG(content, { language: 'EN' });
     }
 
     return true;
@@ -190,7 +192,6 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.currentLimit = this.config.shared.hub.currentLimit || 1000;
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
@@ -297,7 +298,16 @@ export class KngFeedbackComponent implements OnInit {
         this.order = mains[0];
         this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
         this.score = this.order.score;
-      }  
+      } 
+      
+      //
+      // load qr generator if needed
+      if(!this.module && this.invoices.length) {
+        this.module = true; //avoid reentrency
+        import('swissqrbill/lib/node/esm/node/svg.js').then((module:any) => {
+          this.module = module;
+        });
+      }
     };
 
     if (!this.user.id) {
