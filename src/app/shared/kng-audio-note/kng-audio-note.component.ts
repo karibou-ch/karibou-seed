@@ -70,19 +70,6 @@ export class KngAudioNoteComponent implements OnInit {
     const state = this.$audio.getRecorderState();
     return state == RecorderState.RECORDING|| state == RecorderState.PAUSED;
   }
-
-  audioToggle() {
-    const state = this.$audio.getRecorderState();
-    if(state == RecorderState.RECORDING){
-      this.$audio.pause();
-    }
-    if(state == RecorderState.PAUSED){
-      this.$audio.resume();
-    }
-    if(state == RecorderState.STOPPED){
-      this.$audio.startRecording();
-    }
-  }
   audioRecord($event) {
     $event.preventDefault();
     if(this.audioIsRecording) {
@@ -91,19 +78,20 @@ export class KngAudioNoteComponent implements OnInit {
     this.$audio.startRecording();
   }
 
-  audioStopAndSave() {
+  async audioStopAndSave() {
     if(!this.audioIsRecording||this.$audio.recordTime<1) {
       return;
     }
     const format = OutputFormat.WEBM_BLOB;
     this.$audio.stopRecording(format).then((output) => {
+      console.log('---DBG stop',output)
       this.cartItemAudioLoading = true;
       this.onCartItemAudioLoading.emit(true);
-      const audio = output as string;
+      //const audio = output as string;
       const client = new UploadClient({ publicKey: this.key});
       const options:any = {};
       this.filename && (options.fileName = this.filename);
-      client.uploadFile(audio,options).then(file => {
+      client.uploadFile(output,options).then(file => {
         this.onCartItemAudioLoading.emit(false);
         const url = file.cdnUrl.replace('https:', '');
         this.cartItemAudioLoading = false;
