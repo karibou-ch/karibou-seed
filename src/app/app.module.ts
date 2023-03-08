@@ -105,14 +105,8 @@ export class GlobalErrorHandler implements ErrorHandler {
     import('./sentry/sentry.module').then(m => {
       const Sentry = window['Sentry'];
       const extractedError = this.extractError(error) || "Handled unknown error";
-      //
-      // IMPORTANT: Rethrow the error otherwise it gets swallowed
-      // if (error.statusText === 'Unknown Error' ||
-      //     error.rejection && error.rejection.status === 0) {
-      //   console.log('--- Network error');
-      //   window.location.href = '/oops';
-      //   return m.SentryModule;
-      // }
+      const email = window['sentry.id']||'anonymous@k.ch';
+      Sentry.setUser({ email });
 
       //
       // POST ERROR
