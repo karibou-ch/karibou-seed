@@ -168,6 +168,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         if (emit.user) {
           this.user = this.user || {} as User;
           Object.assign(this.user, emit.user);
+          window['sentry.id'] = this.user.email.address;
   
           //
           // FIXME avoid multiple update of same value 
