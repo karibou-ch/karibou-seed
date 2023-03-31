@@ -24,6 +24,7 @@ export class KngNavigationStateService  {
   private agent: string;
   private cached: any = {};
   static forceLockedHub: string;
+  static forceLandingHub: string;
 
   private _search$: Subject<string>;
   private _logout$: Subject<void>;
@@ -73,9 +74,16 @@ export class KngNavigationStateService  {
     this.menu = {};
     this.cached = {};
 
-    //
-    // set theme
     const hub = this.config.shared.hub;
+
+    //
+    // set Landing HUB
+    if(!this.landingHubSlug && hub) {
+      KngNavigationStateService.forceLandingHub = hub.slug;
+    }
+
+    //
+    // set HUB theme
     if (hub && hub.colors && hub.colors.primary) {
       try {
         const style = document.documentElement.style;
@@ -83,7 +91,9 @@ export class KngNavigationStateService  {
         if (hub.colors.primaryText) { style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText); }
         if (hub.colors.action) { style.setProperty('--mdc-theme-secondary', hub.colors.action); }
         if (hub.colors.actionText) { style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText); }
-        if (hub.colors.action) { style.setProperty('--mdc-theme-karibou-pink', hub.colors.action); }
+        //
+        // remove pink 
+        //if (hub.colors.action) { style.setProperty('--mdc-theme-karibou-pink', hub.colors.action); }
 
         //
         // force appBar to Null if not exists
@@ -115,6 +125,10 @@ export class KngNavigationStateService  {
     if(!this.store && hub && hub.slug) {
       this.store = hub.slug;
     }
+  }
+
+  get landingHubSlug() {
+    return KngNavigationStateService.forceLandingHub;
   }
 
   get HUBs() {

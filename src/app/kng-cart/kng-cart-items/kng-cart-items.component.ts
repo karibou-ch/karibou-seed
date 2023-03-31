@@ -62,6 +62,11 @@ export class KngCartItemsComponent implements OnInit {
     return this.currentHub;
   }
 
+  get isActiveHub() {
+    const hub = this.config.shared && this.config.shared.hub;
+    return this.currentHub.slug == hub.slug;
+  }
+
   get hubLogo() {
     return this.hub.siteName.image;
   }

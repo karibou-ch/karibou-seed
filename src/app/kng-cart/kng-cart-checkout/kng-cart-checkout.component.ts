@@ -251,7 +251,9 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   currentShipping() {
-    return this.$cart.getCurrentShippingAddress();
+    const address = this.$cart.getCurrentShippingAddress();
+
+    return address;
   }
 
   currentShippingFees() {
@@ -304,14 +306,21 @@ export class KngCartCheckoutComponent implements OnInit {
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
       const previousPayment = payments.find(payment => payment.alias == lastAlias);
+
+      //
+      // use last order as default 
       if(previousPayment) {
-        payments.unshift(currentPayment);
+        payments.unshift(previousPayment);
       }
 
+      //
+      // use last selected as default 
       if(currentPayment && !currentPayment.error) {
         payments.unshift(currentPayment);
       }
 
+      //
+      // update default payment 
       if(payments.length){
         this.setPaymentMethod(payments[0]);
       }
@@ -384,7 +393,7 @@ export class KngCartCheckoutComponent implements OnInit {
     if(!address || !address.streetAdress) {
       return false;
     }
-    const isDone = this.selectAddressIsDone = this.$cart.setShippingAddress(address);
+    const isDone = this.$cart.setShippingAddress(address);
 
     //
     // copy note
@@ -397,6 +406,8 @@ export class KngCartCheckoutComponent implements OnInit {
     const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
 
     this.shippingTime = this.config.shared.hub.shippingtimes[shippingHours];
+
+
     return isDone;
   }
 

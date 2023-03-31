@@ -175,11 +175,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   get hubs() {
     //return this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
-    const _current = this.config.shared.hubs.find(hub => hub.slug == this.currentHub);
+    const defaultHub = this.$navigation.landingHubSlug || this.currentHub;
+    const _current = this.config.shared.hubs.find(hub => hub.slug == defaultHub);
     if(this.lockedHUB){
       return [_current];
     }
-    const _hubs = this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
+    const _hubs = this.config.shared.hubs.filter(hub => hub.slug != defaultHub);
     _hubs.unshift(_current)
     return _hubs;
   }
@@ -225,7 +226,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for user
       if (emit.user) {
         this.user = emit.user;       
-        this.$cart.setContext(this.config,this.user);
+        // this.$cart.setContext(this.config,this.user);
         //this.loadOrders(); 
       }
       // emit signal for cart

@@ -28,8 +28,9 @@
     &.action-line {
       height: auto;
       padding: 0px 14px 15px;
-      margin-bottom: 20px;
-      -background-color: var(--mdc-theme-appbar);
+      margin-bottom: 30px;
+      margin-top: 20px;
+      flex-flow:wrap;
     }
 
 
@@ -222,7 +223,7 @@
       margin-top: 15px;
       margin-bottom: auto;      
       color: black;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
     }
   }
   .text{
@@ -348,19 +349,26 @@
   }  
 
   button.continue{
-    border: 1px solid var(--mdc-theme-secondary);
+    -border: 1px solid var(--mdc-theme-secondary);
     border-radius: 8px;
     padding: 4px 10px;
     width: auto;
     max-width: 400px;
-    margin-left: auto;
+    margin-right: 0;
     font-size: 17px;
-    height: 35px;    
+    height: 45px;    
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     display: flex;
     align-items: center;    
+    @media (max-width:429px) {
+      margin-right: auto;
+      width: 100%;
+      margin-top: 10px;      
+      height: 35px;
+      font-size: 15px;
+    }
   }
   button.order{
     border: 1px solid var(--mdc-theme-appbar);
@@ -370,9 +378,15 @@
     max-width: 400px;
     margin-right: auto;
     font-size: 17px;
-    height: 35px;
-    color: var(--mdc-theme-secondary-text);
-    background-color: var(--mdc-theme-secondary);
+    height: 45px;
+    -color: var(--mdc-theme-secondary-text);
+    -background-color: var(--mdc-theme-secondary);
+    font-weight: bold;
+    margin-left: 0;    
+    @media (max-width:429px) {
+      width: 100%;
+    }
+
   }
   button[disabled]{
     background: #eee!important;

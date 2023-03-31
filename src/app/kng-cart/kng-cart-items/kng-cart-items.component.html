@@ -1,6 +1,6 @@
 <!-- DISPLAY HUBS -->
 <div  class="hub-item list-item selected" [hidden]="!isReady">
-  <div class="graphic">
+  <div class="hide graphic">
     <div class="avatar round"
           [ngStyle]="{'background-image': 'url(' + hub.siteName.image + '/-/resize/300x/fb.jpg' + ')'}">
     </div>
@@ -25,11 +25,12 @@
   </div>
 
 </div>
-<!-- DISPLAY HUB ORDER -->
+<!-- DISPLAY ACTION HUB ORDER -->
 <div class="list-item action-line border-bottom">
   <button class="order" (click)="doCheckout()" 
           [disabled]="!isCheckoutEnabled()">{{i18n[locale].cart_signin}} </button>
-  <button class="continue" [routerLink]="['/store',hub.slug,'home']"><span class="hide-sm">{{label.nav_store_continue}}</span> <span class="material-icons icon hide-lg">arrow_forward</span></button>
+
+  <button class="continue"  [routerLink]="['/store',hub.slug,'home']"><span class="">{{label.nav_store_continue}}</span> <span class="material-icons icon">arrow_forward</span></button>
 </div>
 <!-- WARNING MESSAGE -->
 <!-- No more window for delivery -->
