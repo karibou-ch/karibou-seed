@@ -162,14 +162,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.$cart.setContext(this.config, this.user,this.shops,this.orders);
           this.$cdr.markForCheck();
         }
-  
+
         //
         // update user
         if (emit.user) {
           this.user = this.user || {} as User;
           Object.assign(this.user, emit.user);
           window['sentry.id'] = this.user.email.address;
-  
           //
           // FIXME avoid multiple update of same value 
           this.$cart.setContext(this.config, this.user,this.shops,this.orders);
@@ -192,7 +191,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           //
           // update cart for all market (hub)
           (this.config.shared||[]).hubs.forEach(hub => {
-            this.cardItemsSz += this.$cart.subTotal(hub.slug);
+            this.cardItemsSz = parseFloat ((this.cardItemsSz + this.$cart.subTotal(hub.slug)).toFixed(2));
             this.cartItemCountElem += this.$cart.getItems().filter(item=> item.hub == hub.slug).length;
           });
   
