@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "4.2.19",
+  "version": "4.2.22",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
@@ -26,7 +26,7 @@
     "@sentry/angular-ivy": "^7.39.0",
     "@stripe/stripe-js": "^1.11.0",
     "@uploadcare/upload-client": "^3.1.1",
-    "kng2-core": "^4.0.5",
+    "kng2-core": "^4.0.6",
     "mic-recorder-to-mp3": "^2.2.2",
     "ngx-stripe": "v12-lts",
     "rxjs": "~6.6.0",
