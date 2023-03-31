@@ -254,7 +254,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     // Open variant UI
     const hub = this.config.shared.hub.slug;
     const isOnCart = this.$cart.getItemsQtyMap(product.sku,hub);
-    if (!isOnCart && product.variants.length && !variant) {
+    if (!isOnCart && !variant  && product.variants && product.variants.length) {
       this.openVariant = true;
       return;
     }
