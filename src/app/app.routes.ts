@@ -53,14 +53,15 @@ export const appRoutes: Routes = [
   loadChildren: () => import('./kng-document/kng-document.module').then(m => m.KngDocumentModule) 
   },
 
+  /* ALIAS */ 
 
   { path: 'store/:store/cellar', pathMatch: 'full', redirectTo: '/store/:store/home' },
   { path: 'store/:store/grocery', pathMatch: 'full', redirectTo: '/store/:store/home' },
-  { path: 'store/:store/shop/:slug', pathMatch: 'full', redirectTo: '/store/:store/home/shops/:slug' },
+  { path: 'store/:store/shops/:slug', pathMatch: 'full', redirectTo: '/store/:store/home/shops/:slug' },
 
   { path: 'products/:sku/:title', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku/:title' },
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/artamis/home/products/:sku' },
-  { path: 'shop/:slug', pathMatch: 'full', redirectTo: '/store/artamis/shops/:slug' },
+  { path: 'shop/:slug', pathMatch: 'full', redirectTo: '/store/artamis/home/shops/:slug' },
   { path: 'account/login', pathMatch: 'full', redirectTo: '/store/artamis/home/me/login' },
   { path: 'account/orders', pathMatch: 'full', redirectTo: '/store/artamis/home/me/orders' },
   { path: 'account/reminder', pathMatch: 'full', redirectTo: '/store/artamis/home/me/reminder' },
