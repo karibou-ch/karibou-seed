@@ -236,7 +236,8 @@ div.navbar{
       >.end{
         position: absolute;
         right: 5px;
-        scale: .8;        
+        -scale: .8;        
+        font-weight: 600;
       }
     }    
   }
