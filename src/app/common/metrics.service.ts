@@ -72,7 +72,7 @@ export class MetricsService {
     }
 
 
-    console.log('---DBG identifiers',this.fbclid,this.fbp)
+    //console.log('---DBG identifiers',this.fbclid,this.fbp)
 
   }
 
@@ -111,7 +111,7 @@ export class MetricsService {
         // User metrics
         const user = ctx.user || this.$user.currentUser;
         if (user && user.id) {
-          console.log('-- metrics.identitySet', user.id);
+          // console.log('-- metrics.identitySet', user.id);
           this.isAdmin = user.isAdmin();
           return this.identitySet(user.id);
         }
