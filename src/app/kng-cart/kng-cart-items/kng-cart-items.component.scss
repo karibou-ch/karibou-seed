@@ -326,11 +326,17 @@
 
   .subtitle{
     color: #999;
-    margin-top: -4px;    
     font-size: 14px;
     .link{
       border-color: #ccc;
     }
+  }
+
+  .cart-price {
+    font-size: 1.1em;
+    text-align: right;
+    margin-top: -7px;
+    min-width: 110px;
   }
 
   button.action{
