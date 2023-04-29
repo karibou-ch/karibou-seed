@@ -36,7 +36,7 @@ Please follow the rules, and start your commit description with:
 
 ## Publish code
 * ng build --prod  -c=auto
-* rsync -avu --delete -e 'ssh -p22' dist/* <server>:www/<directory>
+* rsync -avu --delete-after  dist/* nd1.karibou.ch:www/(devel|production)/
 
 ## Code scaffolding
 

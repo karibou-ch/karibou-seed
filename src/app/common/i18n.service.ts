@@ -18,6 +18,9 @@ export class i18n  {
 
 
   public fr: any = {
+    audio_recording:'Enregistrement en cours, patientez...',
+    audio_error:'Désolé, le micro n\'est pas activé pour un enregistrement!',
+    audio_silent:'Merci de vérifier votre micro, aucun son a été enregistré',
     action_ko: 'À, corriger!',
     action_save: 'Enregistrer',
     action_del: 'Supprimer',
@@ -101,6 +104,9 @@ export class i18n  {
   };
 
   public en: any = {
+    audio_recording:'Recording in progress, wait ...',
+    audio_error:'Sorry, the microphone is not available',
+    audio_silent:'Please check your microphone, no sound has been saved',
     action_ko: 'Retry!',
     action_save: 'Save!',
     action_del: 'Delete',
