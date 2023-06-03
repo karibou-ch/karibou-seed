@@ -19,7 +19,7 @@ export class i18n  {
 
   public fr: any = {
     audio_recording:'Enregistrement en cours, patientez...',
-    audio_error:'Désolé, le micro n\'est pas activé pour un enregistrement!',
+    audio_error:'Désolé, le micro n\'est pas activé ou autorisé pour un enregistrement!',
     audio_silent:'Merci de vérifier votre micro, aucun son a été enregistré',
     action_ko: 'À, corriger!',
     action_save: 'Enregistrer',
@@ -66,6 +66,8 @@ export class i18n  {
     nav_store_continue:'J\'ai oublié un produit de ce marché',
     nav_contactus: 'Contactez-nous!',
     nav_installapp: 'Installer karibou.ch',
+    nav_subscription:'Les paniers',
+    nav_subscription_continue:'J\'ai oublié un produit',
     e404: 'Cette page n\'existe pas :-(',
     eSession: '<b>Info!</b> Votre session est restée inactive trop longtemps. Veuillez recharger la page',
     img_max_sz: 'Attention, la taille maximum d\'une image est limitée à 150kb',
@@ -105,7 +107,7 @@ export class i18n  {
 
   public en: any = {
     audio_recording:'Recording in progress, wait ...',
-    audio_error:'Sorry, the microphone is not available',
+    audio_error:'Sorry, the microphone seems not allowed for recording',
     audio_silent:'Please check your microphone, no sound has been saved',
     action_ko: 'Retry!',
     action_save: 'Save!',
@@ -153,6 +155,8 @@ export class i18n  {
     nav_store_continue:'Continue shopping in this market',
     nav_contactus: 'Contact-us!',
     nav_installapp: 'Install karibou.ch',
+    nav_subscription:'Les paniers',
+    nav_subscription_continue:'Continue shopping',
     e404: 'We couldn\'t find this page :-(',
     eSession: '<b>Psst!</b> Your session has been inactive for too long. Please reload the page.',
     img_max_sz: 'Warning, the maximum image size is 150kb',

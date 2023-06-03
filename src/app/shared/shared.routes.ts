@@ -7,6 +7,7 @@ import { KngShopsComponent } from '../kng-shops/kng-shops.component';
 
 
 export const childrenRoute: Route[] = [
+  { path: 'subscription', data: { subscription: true }, component: ProductListComponent },
   { path: 'products/:sku/:title', component: ProductComponent },
   { path: 'products/:sku', component: ProductComponent },
   { path: 'products', pathMatch: 'full', component: ProductComponent, data: { redirect: true } },

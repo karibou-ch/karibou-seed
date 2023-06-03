@@ -1,41 +1,57 @@
 <kng-cart-checkout (updated)="onCheckout($event)" [config]="config" [i18n]="i18n" [orders]="orders" #checkout>  </kng-cart-checkout>
 
-<div class="cart-container">
+<div class="cart-container" *ngIf="isValid">
   <section class="cart" [hidden]="items.length">
     <h2>{{i18n[locale].cart_empty}}</h2>
   </section>
 
   <!-- VOS PANIER -->
   <section class="cart" [hidden]="!items.length">
-    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml"></div>    
-    <p class="block-link" [hidden]="!user.isAdmin() ||isSharedCart()">
-      {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
-    </p>
+    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml" hidden></div>    
   </section>
+
+  <div class="cart-selector">
+    <div class="elem">
+      <div class="item" [class.selected]="currentCartView" (click)="doSelectCart(true)">
+        Votre panier de {{currentShippingDay|date:'EEEE'}}
+      </div>
+      <div class="item" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
+        Votre abonnement &nbsp;<i class="material-symbols-outlined ">star</i>
+      </div>
+    </div>
+  </div>
+
 
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- PANIER PARTAGER -->
   <section [hidden]="!isSharedCart()" class="block-cart">
-    <h2 hidden>{{i18n[locale].cart_shared_title1}} <span class="material-icons">share</span>
+    <h2 hidden>{{i18n[locale].cart_shared_title1}} <span class="material-symbols-outlined">share</span>
     </h2>
     <h3 class="" [hidden]="user.isAuthenticated()">
       {{i18n[locale].cart_shared_title2}}
     </h3>
   </section>
+
+
   <div class="pending-order" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
     <p class="shipping-grouped block-info" [innerHtml]="label.cart_order_grouped_info">
   </div>
+
+
   
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
 
     <!-- DISPLAY HUB ITEMS -->
-    <kng-cart-items (checkout)="doInitateCheckout($event)" [i18n]="i18n" [config]="config" [currentHub]="hub" [showSeparator]="idx>0" [showFooter]="!last"></kng-cart-items>
+    <kng-cart-items (checkout)="doInitateCheckout($event)" [showCartItems]="currentCartView" [i18n]="i18n" [config]="config" [currentHub]="hub" [showSeparator]="idx>0" [showFooter]="!last"></kng-cart-items>
     </ng-container>
   </mdc-list>
 
-  
+  <p class=" block-link" [hidden]="isSharedCart()">
+    {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
+  </p>
+
   <router-outlet></router-outlet>
 
 

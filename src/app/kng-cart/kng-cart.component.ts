@@ -11,11 +11,11 @@ import { CartService,
          Order,
          ConfigService} from 'kng2-core';
 
-import { MdcSnackbar } from '@angular-mdc/web';
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
+
 
 
 @Component({
@@ -27,6 +27,8 @@ import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.
 export class KngCartComponent implements OnInit, OnDestroy {
 
   private _sharedCart: string;
+  static  defaultCartView: boolean
+
 
   @ViewChild('checkout') checkout: KngCartCheckoutComponent;
 
@@ -37,16 +39,18 @@ export class KngCartComponent implements OnInit, OnDestroy {
   config: Config;
   currentHub: string;
   items: CartItem[];
-  isRunning = false;
+  isValid = false;
   hasOrderError = false;
   noshippingMsg: string;
+  currentCartView:boolean = true;
   currentShippingDay: Date;
-  subscription;
+  subscription$;
 
 
   i18n: any = {
     fr: {
-      cart_deposit: '«à emporter»',
+      cart_deposit: 'Commande à collecter',
+      cart_info_note:'Note:',
       cart_info_help:'besoin d\'aide?',
       cart_info_total: 'Total provisoire',
       cart_info_subtotal: 'Sous total (service karibou inclus)',
@@ -71,7 +75,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais de ',
-      cart_signin: 'Finaliser la commande',
+      cart_checkout: 'Finaliser la commande',
+      cart_checkout_subscription: 'Activer la souscription',
       cart_login: 'Pour finaliser votre commande, vous devez vous connecter',
       cart_empty: 'Vos paniers sont vides',
       cart_error: 'Vous devez corriger votre panier!',
@@ -86,8 +91,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_order: 'Commander pour',
     },
     en: {
-      cart_deposit: '«to take away»',
+      cart_deposit: 'Order to collect',
       cart_info_help:'Need help?',
+      cart_info_note:'Note:',
       cart_info_total: 'Provisional total',
       cart_info_subtotal: 'Subtotal (service fee included)',
       cart_info_shipping: 'shipping guaranteed <span class="bold">200%</span> ecological ',
@@ -112,7 +118,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
       cart_discount_title: 'delivery discout ',
-      cart_signin: 'Go to checkout',
+      cart_checkout: 'Go to checkout',
+      cart_checkout_subscription: 'Activate your subscription',
       cart_login: 'Please sign in before the checkout',
       cart_empty: 'Your carts are empty',
       cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve the max amount of',
@@ -186,7 +193,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   get sharedCart(){
-    const uuid = this.$cart.getCID();    
+    const uuid = this.$cart.getCID(); 
+    if(!uuid) {
+      return;
+    }
     // this.$dom.bypassSecurityTrustUrl()
     return (window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/home/cart/' + uuid);
   }
@@ -197,8 +207,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    if(this.subscription) {
-      this.subscription.unsubscribe();
+    if(this.subscription$) {
+      this.subscription$.unsubscribe();
     }
   }
 
@@ -207,7 +217,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.store = this.$navigation.store;
     this.currentHub = this.config.shared.hub;
 
-    this.subscription = this.$loader.update().subscribe(emit => {
+    this.subscription$ = this.$loader.update().subscribe(emit => {
       // if (emit.state) {
       //   console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
       // }
@@ -217,6 +227,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
         // set the stripe key
         if (this.config.shared && this.config.shared.keys) {
           this.$stripe.setKey(this.config.shared.keys.pubStripe);
+
         }
         //
         // update local config
@@ -231,8 +242,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
       }
       // emit signal for cart
       if (emit.state) {
-        this.items = this.$cart.getItems();      
+        this.items = this.$cart.getItems();  
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
+
+        //
+        // display subscription or cart 
+        this.currentCartView = (KngCartComponent.defaultCartView == undefined)? !this.items.some(item => item.frequency):KngCartComponent.defaultCartView;
+        this.isValid = true;
       }
 
     }, error => {
@@ -250,9 +266,19 @@ export class KngCartComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+
+  doSelectCart(viewcart:boolean) {
+    this.currentCartView = viewcart;
+    this.items = this.$cart.getItems();  
+
+    //
+    // set the default view
+    KngCartComponent.defaultCartView = viewcart;
+  }
+
   doInitateCheckout(ctx){
     this.hasOrderError = false;
-    this.checkout.doInitateCheckout(this.user,ctx.hub,ctx.items,ctx.totalDiscount);
+    this.checkout.doInitateCheckout(this.user,ctx.hub,ctx.items,ctx.totalDiscount, this.currentCartView);
   }  
 
   goBack(): void {

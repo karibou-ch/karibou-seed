@@ -1,12 +1,119 @@
 //
-// innerHtml CASE
+// Select Cart or Subscription
+
+.cart-selector{
+    
+  padding: 0 0px;
+  flex-basis: 50%;
+  padding-bottom:30px;
+  max-width: calc(100% - 20px);
+  flex: auto;
+  margin: auto;
+
+  @media (max-width:429px) {
+    width: calc(100% + 0px);
+    max-width: calc(100% + 0px);
+    margin-left: 0px;
+  }
+
+
+  .elem{
+    display: flex;
+    align-items:center;
+    min-height: 56px;
+    background-color: #efefef;
+    border-radius: 42px;    
+    width: 100%;    
+    position: relative;
+    div.item1:first-child {
+      border-radius: 23px 0px 0px 23px!important;
+    }
+    div.item1:last-child {
+      border-radius: 0px 23px 23px 0px!important;
+    }
+
+    @media (max-width:429px) {
+      border-radius: 0;    
+    }
+
+
+    div.item{
+      &.selected{
+        color: #fff;
+        background-color: var(--mdc-theme-secondary);
+        border: 2px solid var(--mdc-theme-secondary);
+        height: 36px;
+        margin: 0 8px;
+        border-radius:23px;
+        z-index: 1;
+        span{
+          display: none;
+        }
+      }
+
+      // icon color
+      span{
+        color: #007aff;
+        display: inline;
+        font-size: 15px;
+        padding: 8px;        
+      }
+      flex:1 1 auto;  
+      cursor: pointer;
+      width: 50%;
+      vertical-align: text-bottom;
+      text-decoration: none;
+      letter-spacing: normal;
+      color: #333;      
+      font-weight: 400;
+      overflow-wrap: break-word;
+      text-align: center;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      height: 41px;
+      padding: 0px 3px !important;
+      font-size: 20px;
+      @media (max-width:429px) {
+        font-size: 15px;
+        font-weight: bold;
+      }
+    }
+
+    div.new{      
+      position: absolute;
+      top: 2px;
+      right: 7px;
+      border-radius: 25px;
+      transform: rotateY(0deg) rotate(-90deg);
+      font-size: 13px;
+      width: 45px;
+      height: 45px;
+      text-align: center;
+      line-height: 43px;
+      color: #aaa;
+      font-weight: 800;      
+      @media (max-width:429px) {
+        right: -16px;
+      }
+
+    }
+  }
+}
+
+
+
+
 section.cart{
+  margin-top: 15px;
   h2,h3{
     font-weight: 500;
     color: #333;
     font-size: 1.875rem;
     text-transform: uppercase;    
-    padding-top: 20px;
+    padding-top: 0px;
     text-align: center;
   }
   h3{
@@ -53,7 +160,7 @@ section.cart{
       }
     }  
     p.block-info{
-      color: #aaa;
+      color: #333;
       border-radius: 8px;
       background-color: #fafafa;
     }    

@@ -7,7 +7,7 @@ import { User,
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { StripeService } from 'ngx-stripe';
 import { i18n } from '../common';
-import { StripeCardElement, StripeCardElementOptions, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
+import { StripeCardElement, StripeCardElementOptions, StripeElementLocale, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
 
 
 export interface PaymentEvent {
@@ -129,16 +129,13 @@ export class CardComponent {
     this.isLoading = false;
   }
 
+
+  get label() {
+    return this.i18n[this.$i18n.locale];
+  }  
+
   get locale() {
-    const locale = this.$i18n.locale;
-    switch (locale) {
-      case 'fr':
-      this.elementsOptions.locale = 'fr';
-      break;
-      default:
-      this.elementsOptions.locale = 'en';
-    }
-    return locale;
+    return this.$i18n.locale;
   }
   //
   // entry point
@@ -156,6 +153,7 @@ export class CardComponent {
       });
     }
 
+    this.elementsOptions.locale = this.locale as StripeElementLocale;
     this.$stripe.elements(this.elementsOptions).subscribe(elements => {
       this.elements = elements;
 

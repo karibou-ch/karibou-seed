@@ -33,6 +33,7 @@ h2{
   margin: 0 10px 30px;
 }
 
+kng-subscription-option,
 kng-nav-marketplace,
 kng-feedback,
 kng-calendar{
@@ -49,7 +50,7 @@ button{
   color: var(--mdc-theme-primary);
   border: 1px solid var(--mdc-theme-primary-text) !important;
   display: inline;
-  .material-icons{
+  .material-symbols-outlined{
     transform: translateY(5px);
   }
   cursor: pointer;

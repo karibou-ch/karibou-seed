@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Order } from 'kng2-core';
-import { CartAction } from 'kng2-core';
-import { Config, CartItem, CartService, LoaderService, Hub, User } from 'kng2-core';
+import { Config, CartItem, CartAction, CartService, LoaderService, Hub, User, Order } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
 
@@ -14,8 +12,19 @@ import { i18n } from 'src/app/common';
 export class KngCartItemsComponent implements OnInit {
   private _config: Config;
   private _subscription: Subscription;
+  private _showCartItems: boolean;
 
   @Input() i18n: any;
+  @Input() set showCartItems(value: boolean){
+    this._showCartItems = value;
+    if(!this.currentHub) {
+      return;
+    }
+    this.items = this.$cart.getItems().filter(item=> item.hub == this.currentHub.slug && (!item.frequency)== value);
+    this.itemsAmount = this.$cart.subTotal(this.currentHub.slug,!value);
+
+    
+  }
   @Input() showFooter: boolean;
   @Input() showSeparator: boolean;
   @Input() currentHub: Hub;
@@ -102,6 +111,13 @@ export class KngCartItemsComponent implements OnInit {
     return this.i18n[this.locale].cart_info_hub_not_active.replace('__HUB__',this.currentHub.name);
   }
 
+  get cart_info_checkout_or_subscription() {
+    return (this.showCartItems)?this.labell.cart_checkout:this.labell.cart_checkout_subscription
+  }
+
+  get showCartItems() {
+    return this._showCartItems;
+  }
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
@@ -138,8 +154,11 @@ export class KngCartItemsComponent implements OnInit {
         this.currentShippingDay = Order.nextShippingDay(this.user,this.currentHub);
       }
 
-      this.items = this.$cart.getItems().filter(item=> item.hub == this.currentHub.slug);
-      this.itemsAmount = this.$cart.subTotal(this.currentHub.slug);
+      //
+      // select items for Cart or for Subscription
+      this.items = this.$cart.getItems().filter(item=> item.hub == this.currentHub.slug && (!!item.frequency)== !this.showCartItems);
+      this.itemsAmount = this.$cart.subTotal(this.currentHub.slug, !this.showCartItems);
+
       this.noshippingMsg = this.getNoShippingMessage();
       this.hasOrderError = this.$cart.hasError(this.currentHub.slug);
       this.isReady = true;
@@ -236,7 +255,7 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   subTotal() {
-    return this.$cart.subTotal(this.currentHub.slug);
+    return this.$cart.subTotal(this.currentHub.slug,!this.showCartItems);
   }
 
   sortedItems(hub?) {

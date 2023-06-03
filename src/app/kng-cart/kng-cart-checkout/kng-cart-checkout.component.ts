@@ -5,6 +5,7 @@ import pkgInfo from '../../../../package.json';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { MdcSnackbar } from '@angular-mdc/web';
+import { StripeAddressElementOptions, StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
 
 @Component({
   selector: 'kng-cart-checkout',
@@ -12,6 +13,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
   styleUrls: ['./kng-cart-checkout.component.scss']
 })
 export class KngCartCheckoutComponent implements OnInit {
+
 
   private _open: boolean;
   private _config: Config;
@@ -43,10 +45,12 @@ export class KngCartCheckoutComponent implements OnInit {
   currentCart:any;
   itemsAmount:number;
   doToggleFees: boolean;
+  userAddressSelection:boolean;
+  userPaymentSelection:boolean;
+  useCartView:boolean;
 
 
   selectPaymentIsDone: boolean;
-  selectAddressIsDone: boolean;
 
   // FIXME remove hardcoded reserved value 0.11!
   amountReserved = 1.11;
@@ -126,6 +130,37 @@ export class KngCartCheckoutComponent implements OnInit {
     return this._items;
   }
 
+  get selectAddressIsDone(){
+    return !!this.currentAddress.streetAdress
+  }
+
+  get currentAddress() {
+    return this.currentShipping();
+  }  
+
+  get userAddresses() {
+    const address = [... this._user.addresses];
+    const idx = address.findIndex(add => this.currentAddress.isEqual(add));
+    if(idx>-1){
+      address.splice(idx,1);
+    }
+    return address; 
+  }
+
+  get currentPayment() {
+    return this.currentPaymentMethod();
+  }  
+
+  get userPayments() {
+    const pasments = [... this._user.payments];
+    if(this.currentPayment && this.currentPayment.number) {
+      const idx = pasments.findIndex(payment => payment.isEqual(this.currentPayment));
+      pasments.splice(idx,1);  
+    }
+    return pasments; 
+  }
+
+
   get user() {
     return this._user;
   }
@@ -169,7 +204,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   //
   // entry point
-  doInitateCheckout(user: User,hub: Hub,items: CartItem[], totalDiscount: number ){
+  doInitateCheckout(user: User,hub: Hub,items: CartItem[], totalDiscount: number, useCartView:boolean ){
     this._currentHub = hub;
     this._items = items;
     this._totalDiscount = totalDiscount;
@@ -177,10 +212,11 @@ export class KngCartCheckoutComponent implements OnInit {
     this._isReady = true;
     this._user = user;
     this.open = true;
+    this.useCartView = useCartView;
     this.checkPaymentMethod();
 
     const address = this.$cart.getCurrentShippingAddress();
-    this.selectAddressIsDone = this.setShippingAddress(address);
+    this.setShippingAddress(address);
 
     //
     // check if address is already set
@@ -188,12 +224,12 @@ export class KngCartCheckoutComponent implements OnInit {
       if(this.orders.length) {
         //content.name,content.streetAdress,content.floor,content.region,content.postalCode,content.note,false,geo
         const address = UserAddress.from(this.orders[0].shipping);
-        this.selectAddressIsDone = this.setShippingAddress(address);
+        this.setShippingAddress(address);
       }
 
       if(!this.selectAddressIsDone){
         const address = this._user.addresses[0];
-        this.selectAddressIsDone = this.setShippingAddress(address);  
+        this.setShippingAddress(address);  
       }  
     }
 
@@ -201,14 +237,68 @@ export class KngCartCheckoutComponent implements OnInit {
     // FIXME currently only one shipping time!
     this.shipping = this.config.shared.shipping;
 
-    this.itemsAmount = this.$cart.subTotal(hub.slug);
+    this.itemsAmount = this.$cart.subTotal(hub.slug,!useCartView);
 
     this.buildDiscountLabel();
-    
+
     //
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
 
+  }
+
+
+  //
+  // stripe documentation
+  // https://stripe.com/docs/elements/address-element/collect-addresses?platform=web#web-retrieve-address
+  // https://stripe.com/docs/js/elements_object/create_address_element#address_element_create-options
+
+
+  async buildStripeCard() {
+
+    const elementsOptions = {
+      locale: this.$i18n.locale
+    } as StripeElementsOptions;
+    const elements = await this.$stripe.elements(elementsOptions).toPromise()
+
+      // Only mount the element the first time
+      // if (this.card) {
+      //   return;
+      // }
+      const cardOptions = {
+
+        hidePostalCode: true,
+        style: {
+          base: {
+            iconColor: '#444',
+            color: '#31325F',
+            lineHeight: '40px',
+            fontWeight: "300",
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSize: '18px',
+            '::placeholder': {
+              color: '#666'
+            }
+          }
+        }
+      } as StripeCardElementOptions;
+
+      const card = await elements.create("card", cardOptions);
+
+
+      setTimeout(() => {
+        card.on('change', (event) => {
+          // event.brand=> "mastercard"
+          // event.complete=> true|false
+          // event.elementType=> "card"
+          // event.empty=> false
+          // event.error=> undefined
+          // event.value=> {postalCode: ""}
+          // console.log('--- DEBUG event',event);
+        });
+
+        card.mount('#card-element');
+      }, 0);
   }
 
 
@@ -393,7 +483,10 @@ export class KngCartCheckoutComponent implements OnInit {
     if(!address || !address.streetAdress) {
       return false;
     }
+
+    this.userAddressSelection = false;
     const isDone = this.$cart.setShippingAddress(address);
+
 
     //
     // copy note
@@ -416,6 +509,8 @@ export class KngCartCheckoutComponent implements OnInit {
     if (!payment) {
       return;
     }
+
+    this.userPaymentSelection = false;
 
     if (!payment.isValid()) {
       this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');

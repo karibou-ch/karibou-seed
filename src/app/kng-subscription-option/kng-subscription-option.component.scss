@@ -1,0 +1,142 @@
+:host{
+  background: #f2f2f2;
+  background: #fff;
+  min-height: 120px;
+  border-radius: 15px;
+  color: #333;  
+  overflow: visible;
+}
+
+.arrow-up {
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 25px solid #f2f2f2;
+  position: absolute;
+  right: 40%;
+  top: -24px;
+}
+
+.arrow-down {
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-top: 25px solid #eee;
+  position: absolute;
+  right: 70%;
+  top: 0px;
+}
+
+
+.subscription{
+  display: flex;
+  flex: 1 1 0%;
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  padding: 10px 0;
+  h1{
+    font-size: 28px;
+    line-height: 32px;
+    font-weight: bold;
+    margin-top: 10px;    
+  }
+  p{
+    font-size: 17px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-top: 0px;
+  }
+
+  .selector{
+    
+    padding-right: 10px;
+    flex-basis: 50%;
+    padding-bottom:5px;
+    max-width: calc(50% - 10px);
+    flex: auto;
+
+    @media (max-width:429px) {
+      padding-right: 0px;
+      width: calc(100% - 0px);
+      max-width: calc(100% - 0px);
+    }
+
+
+    label{
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      display: none;
+    }
+
+
+    .elem{
+      display: flex;
+      padding-top: 5px;
+      -webkit-box-align: baseline;
+      align-items: baseline;
+      width: 100%;    
+      div.item:first-child {
+        border-radius: 8px 0px 0px 8px!important;
+      }
+      div.item:last-child {
+        border-radius: 0px 8px 8px 0px!important;
+      }
+
+
+      div.item{
+        &.selected{
+          border-radius: 0;
+          color: white;
+          font-weight: 700;
+          background-color: var(--mdc-theme-secondary);
+          border: 1px solid var(--mdc-theme-secondary);
+        }
+
+        flex:1 1 auto;  
+        cursor: pointer;
+        min-width: 100px;
+        vertical-align: text-bottom;
+        text-decoration: none;
+        letter-spacing: normal;
+        color: #999;
+        font-weight: 400;
+        background-color: #fafafa;
+        border: 1px solid #ccc;
+        margin-left: -1px;
+        overflow-wrap: break-word;
+        text-align: center;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        height: 36px;
+        padding: 0px 3px !important;
+      }
+
+    }
+  }
+
+  .items{
+    width: 100%;
+  }
+  table{
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    thead{
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    .th-title{
+    }
+    .th-iteration{
+      min-width: 150px;
+    }
+    td.description{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: calc(100vw - 100px);
+    }
+  }
+}

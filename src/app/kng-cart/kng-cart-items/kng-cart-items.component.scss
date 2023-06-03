@@ -76,15 +76,28 @@
 
 
     mdc-list-item-meta.icon {
-      .material-icons{
+      .material-symbols-outlined{
         margin-right: 7px;
       }
     }
 
+
+    .action-delete{
+      color: #aaa;
+      i{
+        transform: translateY(5px);
+        font-size:20px;
+        width: 22px;
+        padding: 0;
+      }
+    }
+  
+
     .note{
-      padding-left: 20px;
+      padding-left: 10px;
       color:var(--mdc-theme-secondary);
-      .material-icons{
+      .material-symbols-outlined{
+        width: 22px;
         font-size: 18px;
       }      
     }
@@ -262,13 +275,28 @@
   align-items: center;
   justify-content: flex-start;
   height: 90px;
-  padding: 0 16px;
+  padding: 0 10px;
   overflow: hidden;
+  &.subscription-item{
+    background: #eee;
+  }
+
+  &.subscription{
+    background: #fff;
+    font-weight: 600;
+    margin: 15px 0 50px;    
+
+  }
   &.separator {
     background: #f9f9f9;
     font-weight: 600;
     border-bottom: 2px solid #aaa;
     margin: 15px 0 50px;    
+  }
+
+  &.auto-height {
+    height: auto;
+    overflow: visible;
   }
 
   &.separator.hide-title{

@@ -24,7 +24,7 @@ export interface AddressEvent {
 })
 export class AddressComponent implements OnDestroy{
 
-  defaultUser: User = new User();
+  private _defaultUser: User = new User();
 
   @Output() updated: EventEmitter<AddressEvent> = new EventEmitter<AddressEvent>();
 
@@ -39,8 +39,9 @@ export class AddressComponent implements OnDestroy{
   i18n: any = {
     fr: {
       list_title: 'Vos adresses actives',
-      list_select: 'Sélectionner une adresse pour l\'éditer',
-      list_add: 'Ajouter une adresse de livraison ci-dessous',
+      list_select: 'Éditer une adresse',
+      list_add: 'Ajouter ou éditer une adresse',
+      address_edit: 'Modifer',
       address_street: 'Adresse*',
       address_floor: 'Étage*',
       address_postalcode_title: 'Aujourd\'hui nous livrons uniquement les code postaux proposés.',
@@ -49,8 +50,9 @@ export class AddressComponent implements OnDestroy{
     },
     en: {
       list_title: 'Your active shipping addresses',
-      list_select: 'Select an address for edition',
-      list_add: 'Below add a new shipping address',
+      list_select: 'Edit an address',
+      list_add: 'Add a new shipping address',
+      address_edit: 'Update',
       address_street: 'Street, number*',
       address_floor: 'Floor*',
       address_postalcode_title: 'Today we deliver only the postal codes below.',
@@ -97,6 +99,14 @@ export class AddressComponent implements OnDestroy{
     }
   }
 
+  get defaultUser() {
+    return this.user || this._defaultUser;
+  }
+
+
+  get label() {
+    return this.i18n[this.$i18n.locale];
+  }  
   get locale() {
     return this.$i18n.locale;
   }
@@ -144,16 +154,6 @@ export class AddressComponent implements OnDestroy{
        }
     );
     this.collector$.add(_g$);
-  }
-
-  // validPassword(control: AbstractControl) {
-  //   return observableOf('12345678910' === control.value).pipe(
-  //     map(result => result ? { invalid: true } : null)
-  //   );
-  // }
-
-  getUser() {
-    return this.user || this.defaultUser;
   }
 
   getStaticMap(address: UserAddress) {
