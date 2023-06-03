@@ -49,6 +49,7 @@
   box-shadow: inherit;
   cursor: pointer;
  
+  margin-bottom: 20px;
 
   div.media{
     position: relative;
@@ -147,7 +148,7 @@
   .action-add,.action-remove{
     background-color: var(--mdc-theme-primary) !important;
     color: var(--mdc-theme-primary-text) !important;
-    opacity: 0.9;
+    -opacity: 0.9;
     border: 0;
     font-weight: bold;
     border-radius: 25px;
@@ -170,19 +171,21 @@
   }
   
   .info-quantity{
-    font-size: 30px;
-    line-height: 32px;
-    width: 35px;
+    visibility:hidden;
+    font-size: 38px;
+    line-height: 40px;
+    width: 100%;
+    height: 100%;
     position: absolute;
-    top: 20%;
-    margin: 0 auto;
-    right: 3px;
-    left: auto;
-    z-index: 1;
+    top: 0;
+    margin: auto;
+    z-index: 0;
     text-shadow: 0 0 6px rgba(0,0,0,0.9);
     color: white;
-    visibility: hidden;
     font-weight: 600;
+    background-color: rgba(0,0,0,0.5);
+    text-align: center;
+    padding: 30% 0;
   }
 
   .info-score{
@@ -195,6 +198,7 @@
   }
 
   .media{
+    position: relative;
     height: 9rem;
     background-color:#ddd;
 
@@ -209,10 +213,23 @@
   .product-card__vendor{
     display: flex;
     padding: 0;
-    font-size: 11px;
     align-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 600;
+    color: #343538;    
+    overflow: hidden;
+    width: 100%;
+    div{
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+  
+    }
   }
 
   .product-header{
@@ -234,7 +251,7 @@
     }
 
     .product-price{
-      width: 64%;
+      width: 61%;
       text-align: right;
       margin-right: 5px;
       margin-left: auto;
@@ -255,12 +272,30 @@
     .product-part{
       margin-left: 0px;
       margin-right: auto;
-      width: 30%;
+      width: 35%;
       font-size: 12px;
       line-height: 18px;
       font-weight: 600;
       color: rgb(114, 118, 126);
-    }    
+    }   
+    .product-subscription {
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 600;
+      color: #8f9092;
+      overflow: hidden;
+      width: 100%;
+      margin-top: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 4px;
+      min-height: 25px;
+      div{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;        
+      }
+            
+    } 
   }
 
 }

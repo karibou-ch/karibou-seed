@@ -15,16 +15,16 @@
   <!-- FERMETURE -->
   <div class="block">
     <h3>
-      <mdc-icon>directions_bike</mdc-icon>
+      <span class="material-symbols-outlined">directions_bike</span>
       Interrompre les dates de livraisons suivantes
-      <button class="float-right" mdc-button outlined primary  (click)="addDate()"><mdc-icon>add_alarm</mdc-icon></button>
+      <button class="float-right" mdc-button outlined primary  (click)="addDate()"><span class="material-symbols-outlined">add_alarm</span></button>
     </h3>
     <hr class="dashed"/>
     <div class="config-custom row-form" *ngFor="let noshipping of currentHub.noshipping;let idx=index;">
       <mdc-text-field class="large" fullwidth   label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
       <mdc-text-field fullwidth   label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
       <mdc-text-field fullwidth   label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
-      <button class="small" mdc-button outlined primary (click)="currentHub.noshipping.splice(idx, 1)"><mdc-icon>delete</mdc-icon></button>
+      <button class="small" mdc-button outlined primary (click)="currentHub.noshipping.splice(idx, 1)"><span class="material-symbols-outlined">delete</span></button>
     </div>  
   </div>
 
@@ -36,7 +36,7 @@
 
   <!-- ADMINs-->
   <div class="block">
-    <h3><mdc-icon>face</mdc-icon> Administrateurs</h3>
+    <h3><span class="material-symbols-outlined">face</span> Administrateurs</h3>
     <hr class="dashed"/>
     <div class="config-custom row-form">
       <div class="menu">
@@ -51,13 +51,13 @@
     </div>
     <div class="config-custom row-form">
       <mdc-text-field fullwidth   label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
-      <button mdc-button outlined primary  (click)="addManager()"><mdc-icon>verified</mdc-icon></button>
+      <button mdc-button outlined primary  (click)="addManager()"><span class="material-symbols-outlined">verified</span></button>
     </div>  
   </div>
 
   <!-- LOGISTIC -->
   <div class="block">
-    <h3><mdc-icon>face</mdc-icon>Logistique</h3>
+    <h3><span class="material-symbols-outlined">face</span>Logistique</h3>
     <hr class="dashed"/>
     <div class="config-custom row-form">
       <div class="menu">
@@ -72,7 +72,7 @@
     </div>
     <div class="config-custom row-form">
       <mdc-text-field fullwidth   label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
-      <button mdc-button outlined primary  (click)="addLogistic()"><mdc-icon>verified</mdc-icon></button>
+      <button mdc-button outlined primary  (click)="addLogistic()"><span class="material-symbols-outlined">verified</span></button>
     </div>  
   </div>
 
@@ -130,7 +130,7 @@
 
   <!-- VENDORS -->
   <div class="block">
-    <h3><mdc-icon>supervisor_account</mdc-icon>Vendeurs : {{currentHub.name}}</h3>
+    <h3><span class="material-symbols-outlined">supervisor_account</span>Vendeurs : {{currentHub.name}}</h3>
     <hr class="dashed"/>
     <div class="config-custom row-form">
       <div class="menu">
@@ -144,7 +144,7 @@
       </div>  
     </div>
     <h3>
-      <mdc-icon>supervisor_account</mdc-icon>Ajouter un vendeur 
+      <span class="material-symbols-outlined">supervisor_account</span>Ajouter un vendeur 
     </h3>
     <div>
     
@@ -166,7 +166,7 @@
 
   <!-- CATEGORIES -->
   <div class="block">
-    <h3><mdc-icon>supervisor_account</mdc-icon>Categories </h3>
+    <h3><span class="material-symbols-outlined">supervisor_account</span>Categories </h3>
     <hr class="dashed"/>
     <div class="config-custom row-form">
       <div class="menu">
@@ -180,7 +180,7 @@
       </div>  
     </div>
     <h3>
-      <mdc-icon>supervisor_account</mdc-icon>Ajouter une categorie 
+      <span class="material-symbols-outlined">supervisor_account</span>Ajouter une categorie 
     </h3>
     <div>
     
@@ -203,7 +203,7 @@
 
   <button raised mdc-button (click)="onHubSaveManager()" class="primary">
     <span mdcButtonLabel>Sauver vos modifications</span>
-    <mdc-icon>save</mdc-icon>
+    <span class="material-symbols-outlined">save</span>
   </button>    
 
 </div>

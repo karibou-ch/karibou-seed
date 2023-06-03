@@ -92,7 +92,7 @@
                     </mdc-list-item-text>
                     <mdc-list-item-meta>
                       <mdc-form-field>
-                          <button mdc-button (click)="category.child.splice(idx,1)"><mdc-icon >delete</mdc-icon></button>
+                          <button mdc-button (click)="category.child.splice(idx,1)"><span class="material-symbols-outlined" >delete</span></button>
                       </mdc-form-field>
                     </mdc-list-item-meta>
                 </mdc-list-item>
@@ -100,7 +100,7 @@
               
                 <mdc-list-item  (click)="category.child.push({name:'',weight:0})">
                     <mdc-list-item-graphic>
-                      <mdc-icon class="size-large">playlist_add</mdc-icon>
+                      <span class="material-symbols-outlined size-large">playlist_add</span>
                     </mdc-list-item-graphic>
                     <mdc-list-item-text >                  
                       <mdc-list-item-secondary >Ajouter une nouvelle catégorie enfant</mdc-list-item-secondary>

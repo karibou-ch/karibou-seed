@@ -12,7 +12,7 @@
                     [selected]="selected?.oid==order.oid"
                     [class.autoHeight]="selected?.oid==order.oid"
                     (click)="selectedOrder(order)">
-      <mdc-icon class="hide-sm" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</mdc-icon>                    
+      <span class="material-symbols-outlined hide-sm" mdcListItemGraphic [class.primary-text]="isPaidOrRefund(order)">{{getOrderStatusIcon(order)}}</span>                    
       <mdc-list-item-text >        
           <kng-feedback [config]="config" [user]="user" [orders]="[order]" [child]="childOrder[order.oid]" boxed="true"></kng-feedback>     
           <mdc-list-item-secondary *ngIf="selected?.oid==order.oid">
@@ -24,12 +24,12 @@
               <li [hidden]="!isPending(order)">
                 <a href="javascript:;" class="black smaller "                    
                   (click)="cancel(order)" >
-                  <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
+                  <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
               <li [hidden]="isPending(order)">                
                 <a href="javascript:;" class="black smaller "                    
                 (click)="addAllToCart(order)" >
-                <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+                <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
               </li>
             </ul>  
             <!--- ORDER COMPLEMENT -->
@@ -42,12 +42,12 @@
               <li [hidden]="!isPending(complement)">
                 <a href="javascript:;" class="black smaller "                    
                   (click)="cancel(complement)" >
-                  <i class="material-icons " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
+                  <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
               </li>
               <li [hidden]="isPending(complement)">
                 <a href="javascript:;" class="black smaller "                    
                 (click)="addAllToCart(complement)" >
-                <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+                <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
               </li>
             </ul>  
   
@@ -62,7 +62,7 @@
     <mdc-list-divider></mdc-list-divider>
   </mdc-list>
   <div class="more-orders" [hidden]="orders.length<4||orders.length<=limitTo">
-      <mdc-icon class="size-large"  (click)="getMoreOrders()">keyboard_arrow_down</mdc-icon>             
+      <span class="material-symbols-outlined hide-sm"  (click)="getMoreOrders()">keyboard_arrow_down</span>             
   </div>
 
 
@@ -78,7 +78,7 @@
         {{rank.item.title}}
         <mdc-list-item-secondary>            
             <a href="javascript:;" class="text-secondary  small"  (click)="addToCard(rank.item)">
-              <i class="material-icons " style="transform: translateY(5px);font-size:16px;">shopping_cart</i>ajouter dans le panier
+              <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">shopping_cart</i>ajouter dans le panier
             </a>            
         </mdc-list-item-secondary>      
       

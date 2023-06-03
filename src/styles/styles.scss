@@ -4,6 +4,7 @@
 body{
   margin-top: 0;
   background: white;
+  font-size: 17px;
 }
 
 
@@ -38,6 +39,13 @@ body{
   --mdc-theme-secondary-light: #{$mdc-theme-secondary-light};
   --mdc-theme-secondary-dark: #{$mdc-theme-secondary-dark};
   --mdc-theme-secondary-text: #{$mdc-theme-secondary-text};
+}
+
+
+.StripeElement {
+  >div {
+    width: 100%;
+  }
 }
 
 

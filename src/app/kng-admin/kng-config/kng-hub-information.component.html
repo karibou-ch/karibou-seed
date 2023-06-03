@@ -22,7 +22,7 @@
   <!-- HUB Content associated a target (home,cellar,grocery, ...) -->
   <h3 >
     Content <span class="gray">top destination (home,cellar,grocery, ...)</span>
-    <button class="float-right" mdc-button outlined    (click)="addContent()"><mdc-icon>add</mdc-icon></button>
+    <button class="float-right" mdc-button outlined    (click)="addContent()"><span class="material-symbols-outlined">add</span></button>
   </h3>
   <hr class="dashed"/>
   <div class="hub-content" *ngFor="let content of currentHub.home.content;let $idx=index">
@@ -31,7 +31,7 @@
                       [(ngModel)]="content.target">
 
     <button class="small" mdc-button outlined primary (click)="currentHub.home.content.splice($idx, 1)">
-      <mdc-icon>delete</mdc-icon>
+      <span class="material-symbols-outlined">delete</span>
     </button>
                   
     </kng-config-input>
@@ -103,7 +103,7 @@
 
   <button raised mdc-button (click)="onHubSave()" class="primary">
     <span mdcButtonLabel>Sauver vos modifications</span>
-    <mdc-icon>save</mdc-icon>
+    <span class="material-symbols-outlined">save</span>
   </button>    
                 
 </div>

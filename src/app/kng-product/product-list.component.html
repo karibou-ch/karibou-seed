@@ -1,20 +1,27 @@
-<div class="product-dialog " #dialog (scroll)="onScroll($event)">
+<div class="product-dialog " #dialog (scroll)="onScroll($event)" >
   <div class="product-backdrop"></div>
-  <div class="product-dialog__surface">
+  <div class="product-dialog__surface" *ngIf="isReady">
     <div class="category-wide" >
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close" >
-        <span class="material-icons size-large">arrow_back</span>
+        <span class="material-symbols-outlined size-large">arrow_back</span>
       </button>
 
+
       <!-- TITLE -->
-      <h4 class="title" [innerHtml]="category.current.name"></h4>
-      <p class="subtitle" [innerHtml]="category.current.description"></p>
+      <div class="banner" >
+        <h1 [innerHtml]="category.current.name"></h1>
+        <h2 [innerHtml]="category.current.description"></h2>  
+      </div>
+      
+      <!-- SUBSCRITION OPTIONS -->
+      <!-- <kng-subscription-option *ngIf="options.subscription"></kng-subscription-option> -->
+
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
-      <div class="toolbox " [class.exited]="scrollDirection < -15 || scrollDirection > 15 || !scrollDirection">
+      <div class="toolbox " [class.exited]="scrollDirection < -15 || scrollDirection > 15 || !scrollDirection" [hidden]="options.subscription">
         <ul  #subcategory>
           <li class="kng-chip" (click)="scrollTo($event,child.name)"
                     [id]="'child'+j"                    
@@ -35,13 +42,13 @@
     <!-- FURTHER -->
     <div class="further-product-container mdc-layout-grid" >
       <kng-product-grouped-list class="kng-layout-card"        
+      *ngIf="products.length"
         alphasort="true"
         showSection="true"
+        [displaySubscription]="options.subscription"
         [config]="config" 
         [user]="user"         
-        [filterByVendor]="filterVendor && filterVendor.urlpath"
         [scrollContainer]="getDialog()"
-        [scrollToSlug]="scrollToCategory"
         [contentCategories]="getChildCategory(category.current)" 
         [contentProducts]="getProducts()"
         (currentCategory)="filterChild=$event"

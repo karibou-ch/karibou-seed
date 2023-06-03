@@ -14,7 +14,7 @@
 
   <!--- HUB -->
   <ng-container  *ngSwitchCase="'hub'">
-    <mdc-icon>language</mdc-icon> 
+    <span class="material-symbols-outlined ">language</span> 
     <div class="lang">Changer de HUB</div>   
     <div class="menu">
       <mdc-chip-set choice  [value]="store">
@@ -29,7 +29,7 @@
 
   <!--- TEXT -->
   <ng-container  *ngSwitchCase="'text'">
-    <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+    <span class="material-symbols-outlined" mdcListItemGraphic>folder_special</span>
     <div class="input">
       <mdc-text-field   [label]="label" type="text" [(ngModel)]="value" >
       </mdc-text-field>
@@ -42,7 +42,7 @@
 
   <!-- AREA -->
   <ng-container  *ngSwitchCase="'area'">
-    <mdc-icon mdcListItemGraphic>folder_special</mdc-icon>
+    <span class="material-symbols-outlined" mdcListItemGraphic>folder_special</span>
     <div class="input">
       <mdc-textarea  
                     [label]="label" 
@@ -62,7 +62,7 @@
     <div class="image ">
       <img [src]="value" [hidden]="!value" />
       <button mdc-button outlined="true" class="align-right" [hidden]="!value" (click)="value=null">
-        <mdc-icon>delete</mdc-icon>
+        <span class="material-symbols-outlined ">delete</span>
       </button>   
       <ngx-uploadcare-widget images-only="true" 
         [value]="value" 
@@ -86,7 +86,7 @@
 
   <!--- GEO -->
   <ng-container  *ngSwitchCase="'geo'">
-    <mdc-icon>map</mdc-icon> 
+    <span class="material-symbols-outlined ">map</span> 
     <div class="label">{{label}}</div>
     <div class="image ">
       <img [src]="getStaticMap()"  />

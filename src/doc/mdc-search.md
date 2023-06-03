@@ -4,7 +4,7 @@ https://github.com/touficbatache/material-components-web-wordpress/blob/master/c
 <section class="mdc-toolbar__section mat-search--desktop mdc-ripple-surface mdc-ripple-upgraded">
 <div class="mat-search--desktop__wrapper">
   <form role="search" method="get" id="searchform" class="searchform" action="https://mdcwp.ml/" >
-    <label class="mat-search--desktop__icon mat-search--desktop__content material-icons" for="mat-search--desktop__input">search</label>
+    <label class="mat-search--desktop__icon mat-search--desktop__content material-symbols-outlined" for="mat-search--desktop__input">search</label>
     <input class="mat-search--desktop__input mat-search--desktop__content mdc-typography" id="mat-search--desktop__input" value="" name="s" placeholder="Search">
   </form>
 </div>
@@ -85,7 +85,7 @@ if(document.querySelector('.clear-search-query')) {
 		   Material Design Icons
 		==============================
 	*/
-	.material-icons{
+	.material-symbols-outlined{
 		cursor: pointer;
 		text-decoration: none;
 	}

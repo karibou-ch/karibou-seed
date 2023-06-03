@@ -257,7 +257,6 @@ body{
 .gray-1           {color:         #999!important;}
 .black            {color:         black!important;}
 .pink             {color:         #da1c5c!important;}
-.pink             {color:         var(--mdc-theme-secondary)!important;}
 .light            {color:           #aaa!important;}
 .white            {color:         white!important;}
 .gold            {color:         gold!important;}
@@ -541,7 +540,7 @@ body{
   margin-bottom: 10px;
   margin-left: 0px;
 
-  .material-icons{
+  .material-symbols-outlined{
     transform: translateY(4px);
   }
 }

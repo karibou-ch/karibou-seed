@@ -5,7 +5,6 @@ import {
   OnDestroy,
   Input,
   ViewChild,
-  ChangeDetectorRef,
   ViewEncapsulation
 } from '@angular/core';
 
@@ -17,7 +16,7 @@ import {
   ProductService,
   Product,
   User,
-  CartItem,
+  CartItem,  
 } from 'kng2-core';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
@@ -42,6 +41,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   @Input() categories: Category[];
   @Input() selected: boolean;
   @Input() user: User = new User();
+  @Input() displaySubscription: boolean;
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
 
@@ -203,12 +203,19 @@ export class ProductComponent implements OnInit, OnDestroy {
       };
       document.addEventListener('keyup', escape);
 
+      //
+      // Alerts when navigating away from a web page
+      // https://stackoverflow.com/questions/1289234/alerts-when-navigating-away-from-a-web-page/1289260#1289260
+      window.onbeforeunload = function() {
+        return false;
+      }      
 
     }
   }
 
   ngOnDestroy() {
     this.scrollCallback = null;
+    window.onbeforeunload = null;
 
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
@@ -261,7 +268,18 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.openVariant = false;
 
+    //
+    // create item from product
     const item = CartItem.fromProduct(product,hub, variant);
+
+    //
+    // manage subscription
+    if(this.displaySubscription && product.attributes.subscription){
+      item.frequency = 1;//FIXME CartItemFrequency.ITEM_WEEK;
+    }
+
+    //
+    // manage audio note
     item.note = this.cartItemNote;
     item.audio = this.cartItemAudio;
     if(audio){
@@ -508,7 +526,6 @@ export class ProductThumbnailComponent extends ProductComponent {
 
   hidden = true;
   @Input() large: boolean;
-  @Input() displayVendor: boolean;
   @Input('visibility') set visibility(value: boolean) {
     this.hidden = (!value);
   }

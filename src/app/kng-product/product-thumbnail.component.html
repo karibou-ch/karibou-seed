@@ -35,26 +35,32 @@
 				</div>
 				<!-- LABEL -->				
 				<div class="bio">
-					<span [hidden]="!hasLabel(product,'bio')"><i class="material-icons green">eco</i> bio</span>
-					<span [hidden]="!hasLabel(product,'bioconvertion')"><i class="material-icons green">eco</i> bioconversion</span>
-					<span [hidden]="!hasLabel(product,'biodynamics')"><i class="material-icons green">eco</i> biodynamie</span>
-					<span [hidden]="!hasLabel(product,'natural')"><i class="material-icons green">eco</i> 100% naturel</span>
+					<span [hidden]="!hasLabel(product,'bio')"><i class="material-symbols-outlined green">eco</i> bio</span>
+					<span [hidden]="!hasLabel(product,'bioconvertion')"><i class="material-symbols-outlined green">eco</i> bioconversion</span>
+					<span [hidden]="!hasLabel(product,'biodynamics')"><i class="material-symbols-outlined green">eco</i> biodynamie</span>
+					<span [hidden]="!hasLabel(product,'natural')"><i class="material-symbols-outlined green">eco</i> 100% naturel</span>
 					<span [hidden]="!hasLabel(product,'grta')" class="text-right"> GRTA</span>
 				</div>
 
+				<!-- quantité -->
+				<div class="info-quantity">{{cartItemQuantity}}</div>
 			</div>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
-				<span class="material-icons size-medium">add</span>
+				<span class="material-symbols-outlined size-medium">add</span>
 			</button>
 			<button class="action-remove " (click)="removeToCart($event,product)">
-				<span class="material-icons size-medium">remove</span>
+				<span class="material-symbols-outlined size-medium">remove</span>
 			</button>
-			<div class="info-quantity">{{cartItemQuantity}}</div>
-			<div class="info-score"><i class="material-icons">favorite</i></div>
+			<div class="info-score"><i class="material-symbols-outlined">favorite</i></div>
 		
 			<!-- TITLE -->
 			<div class="product-header">
+				<div class="product-card__vendor" *ngIf="displaySubscription && product.vendor.photo">
+					<img [src]="product.vendor.photo?.owner"alt="160x160" class="photo-owner hide" />
+					<div>{{product.vendor.name}}</div>
+				</div>
+	
 				<div class="product-title">{{product.title}}</div>
 				<div class="product-part">
 					{{product.pricing.part}}
@@ -70,12 +76,13 @@
 
 				</div>
 
+        <div class="product-subscription " [hidden]="!displaySubscription || !product.attributes.subscription ">
+          <div>{{product.quantity.comment}}</div>
+        </div>
+
 			</div>
+
 			<div class="product-card__secondary">
-			</div>
-			<div class="product-card__vendor" *ngIf="displayVendor && product.vendor.photo">
-				<img [src]="product.vendor.photo?.owner"alt="160x160" class="photo-owner" />
-				<div>{{product.vendor.name}}</div>
 			</div>
 		</section>
 	</article>

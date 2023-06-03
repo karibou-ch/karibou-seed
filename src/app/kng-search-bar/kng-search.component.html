@@ -1,11 +1,11 @@
 <form class="search" >
-  <i class="left material-icons">search</i>
+  <i class="left material-symbols-outlined">search</i>
   <span #stats class="stats"></span>
   <input type="text" #search
         (input)="doInput($event.target.value)"
         (change)="doInput($event.target.value)" 
         (focus)="onFocus()" 
         [placeholder]="label.search_placeholder" >    
-  <i class="hide right-favorite material-icons" (click)="doFavorite()">favorite</i>
-  <i class="right material-icons" [class.cleared]="isCleared" (click)="doClear()">close</i>
+  <i class="hide right-favorite material-symbols-outlined" (click)="doFavorite()">favorite</i>
+  <i class="right material-symbols-outlined" [class.cleared]="isCleared" (click)="doClear()">close</i>
 </form>  
