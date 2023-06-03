@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { i18n } from '../common';
 
 declare var MediaRecorder: any;
 
@@ -13,7 +14,9 @@ export class KngAudioRecorderService {
   private _recorderState = RecorderState.INITIALIZING;
   private _recordTime = 0;
 
-  constructor() {
+  constructor(
+    private $i18n:i18n
+  ) {
   }
 
   private recorder: any;
@@ -67,17 +70,22 @@ export class KngAudioRecorderService {
       this.recorderError.emit(ErrorCase.ALREADY_RECORDING);
     }
 
-    this._recordTime = Date.now();
-    this._recorderState = RecorderState.INITIALIZED;
-
-    const module = await import('mic-recorder-to-mp3');
-    this.recorder = new module.default({
-      startRecordingAt:0,
-      bitRate: 190
-    });
-
-    await this.recorder.start();
-    this._recorderState = RecorderState.RECORDING;
+    try{
+      this._recordTime = Date.now();
+      this._recorderState = RecorderState.INITIALIZED;
+  
+      const module = await import('mic-recorder-to-mp3');
+      this.recorder = new module.default({
+        startRecordingAt:0,
+        bitRate: 190
+      });
+  
+      await this.recorder.start();
+      this._recorderState = RecorderState.RECORDING;  
+    }catch(err){
+      console.log('---- DBG audio-record',err);
+      alert(this.$i18n.label().audio_error)
+    }
   }
 
 

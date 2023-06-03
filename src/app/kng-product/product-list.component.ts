@@ -249,7 +249,9 @@ export class ProductListComponent implements OnInit {
     // update metrics
 
     this.options.hub = this.store;
-    this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
+    //this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
+    delete this.options.available;
+    delete this.options.when;
 
     combineLatest([
       this.$shop.get(this.options.shopname),
@@ -327,7 +329,7 @@ export class ProductListComponent implements OnInit {
     // case of onboarding from ad clic
     const query = this.$route.snapshot.queryParams;
     const shouldNavigate = query.source || query.fbclid;
-    if(shouldNavigate) {
+    if(shouldNavigate ||!this.$navigation.hasHistory) {
       return this.$router.navigate(['../../'], { relativeTo: this.$route });
     }
     setTimeout(() => {

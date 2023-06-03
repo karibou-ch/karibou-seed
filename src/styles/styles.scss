@@ -40,7 +40,9 @@ body{
   --mdc-theme-secondary-text: #{$mdc-theme-secondary-text};
 }
 
-
+kng-news a {
+  text-decoration: none;
+}
 //
 // input iOS
 textarea,
