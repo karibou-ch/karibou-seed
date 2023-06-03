@@ -1,5 +1,5 @@
 <!-- NAVIGATION  -->
-<div class="kng-drawer" [class.kng-drawer-open]="open" >
+<div class="kng-drawer" [class.kng-drawer-open]="open" *ngIf="isReady">
   <!-- brand -->
   <div class="k-brand">
     <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp;{{i18n[locale].karibou_project}} 
@@ -9,8 +9,7 @@
   <!-- NEWS-->
   <div class="content">
     <!-- INFORMATION -->
-    <div class="header" [hidden]="!hasContent('p')" 
-        [class.cover-lg]="hasBackgroundContent()" 
+    <div class="header" [class.cover-lg]="hasBackgroundContent()" 
         [ngStyle]="getContentStyle()">
       
       <div class="maintenance" *ngIf="config.shared.hub.maintenance.active" 

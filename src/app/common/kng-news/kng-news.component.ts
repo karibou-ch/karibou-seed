@@ -2,8 +2,9 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Config } from 'kng2-core';
 import { i18n } from '../i18n.service';
+import { KngNavigationStateService } from '../navigation.service';
 
-let TO_DISPLAY=true;
+
 @Component({
   selector: 'kng-news',
   templateUrl: './kng-news.component.html',
@@ -12,6 +13,7 @@ let TO_DISPLAY=true;
 })
 export class KngNewsComponent implements OnInit {
 
+  static  KNG_TO_DISPLAY = true;
   private KNG_STORE_NEWS = "kng2-stored-news";
   private _open: boolean;
 
@@ -19,7 +21,7 @@ export class KngNewsComponent implements OnInit {
   @Input() config: Config;
 
 
-
+  isReady = false;
   content = "";
   stored= [];
   
@@ -34,6 +36,7 @@ export class KngNewsComponent implements OnInit {
 
   constructor(
     private $i18n: i18n,
+    private $navigation: KngNavigationStateService,
     private $route: Router
   ) {
   }
@@ -45,7 +48,7 @@ export class KngNewsComponent implements OnInit {
 
     //
     // avoid open news when landing on product, category or vendor
-    const canOpen = (this.$route.url.split('/').length - 1) < 4;
+    this.isReady = this.hasContent('p');
     //
     // already stored news
     try {
@@ -53,8 +56,8 @@ export class KngNewsComponent implements OnInit {
       this.content = this.getContent('p');
       const hacha = this.hacha(this.content);
       if(this.stored.indexOf(this.hacha(this.content))==-1){
-        this.open = TO_DISPLAY && canOpen;
-        TO_DISPLAY = false;
+        this.open = KngNewsComponent.KNG_TO_DISPLAY && this.isReady;
+        KngNewsComponent.KNG_TO_DISPLAY = false;
       }
     } catch (err) {
     }
@@ -86,6 +89,14 @@ export class KngNewsComponent implements OnInit {
     return this._open;
   }
 
+  //
+  // content belongs on navigation position (home,shops,cart,products,etc)
+  get contentFromNavigation() {
+    const target = this.$navigation.currentContentType;
+    const content = this.config.shared.hub.home.content.find(elem => elem.target == target);
+    return content;
+  }
+
   doClose() {
     this.stored.unshift(this.hacha(this.content));
     this.stored = this.stored.filter((v, i, a) => a.indexOf(v) === i).slice(0,5);
@@ -113,7 +124,10 @@ export class KngNewsComponent implements OnInit {
   // HUB information
   getContent(elem: string) {
     try {
-      const content = this.config.shared.hub.home.content[0];
+      //
+      // content belongs on type
+      const content = this.contentFromNavigation;
+      if(!content) false;
       return this.content = content[elem][this.$i18n.locale];
     } catch (err) {
       return '';
@@ -124,7 +138,7 @@ export class KngNewsComponent implements OnInit {
   //
   // HUB information
   getContentStyle() {
-    const content = this.config.shared.hub.home.content[0];
+    const content = this.contentFromNavigation;
     // {'background-image': 'url(' + getStaticMap(edit.address) + ')'}
     if (!content || !content.image) {
       return {};
@@ -141,7 +155,11 @@ export class KngNewsComponent implements OnInit {
 
   hasContent(elem: string) {
     try {
-      const content = this.config.shared.hub.home.content[0];
+      //
+      // content belongs on type
+      const content = this.contentFromNavigation;
+      if(!content) false;
+
       const value = content[elem][this.$i18n.locale];
       return value !== '' && (!!value);
     } catch (err) {

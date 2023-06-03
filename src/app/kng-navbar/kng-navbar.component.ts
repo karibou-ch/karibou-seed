@@ -28,6 +28,10 @@ import { formatDate } from '@angular/common';
 })
 export class KngNavbarComponent implements OnInit, OnDestroy {
 
+  //
+  // used top open login form ones
+  static ASK_FOR_LOGIN: boolean;
+
 
   //
   // howto
@@ -38,8 +42,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   categories: Category[];
   shops: Shop[];
   orders: Order[];
-  private route$: any;
-
+  
   //
   // content
   currentTab: number;
@@ -174,6 +177,20 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.$cart.setContext(this.config, this.user,this.shops,this.orders);
           this.$cdr.markForCheck();
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
+
+
+          //
+          // If the user is known, we open ONE TIME the login form
+          if(!this.user.isAuthenticated() && 
+             !KngNavbarComponent.ASK_FOR_LOGIN &&
+             this.user.email.address) {
+            
+            KngNavbarComponent.ASK_FOR_LOGIN = true;
+            setTimeout(()=>{
+              this.$router.navigate(['/store',this.store,'home','me','login']);
+            },2000)
+          }
+
         }
   
         // FIXME use appropriate place to setup $cart

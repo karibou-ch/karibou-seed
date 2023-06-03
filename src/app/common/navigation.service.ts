@@ -14,9 +14,8 @@ import { BehaviorSubject, fromEvent, Observable, ReplaySubject, Subject } from '
 @Injectable()
 export class KngNavigationStateService  {
 
-  private history: string[] = [];
-  public timestamp: number;
-  public TTL = 200000;
+  private _historyCursor ="";
+  private _history: string[] = [];
 
   private config: Config;
   private menu: any;
@@ -55,8 +54,10 @@ export class KngNavigationStateService  {
 
     this.$router.events
       .pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
-        this.history.push(event.urlAfterRedirects);
-        this.timestamp = Date.now();
+        this._history.push(event.urlAfterRedirects);
+        // get position in site
+        const elem = event.urlAfterRedirects.split('/home').pop()|| '/home';
+        this._historyCursor = elem.split('/')[1];
       });
 
     this.$config.config$.subscribe(config =>{
@@ -127,6 +128,15 @@ export class KngNavigationStateService  {
     }
   }
 
+
+  get currentContentType() {
+    return this._historyCursor;
+  }  
+
+
+  get hasHistory() {
+    return this._history.length>1;
+  }  
   get landingHubSlug() {
     return KngNavigationStateService.forceLandingHub;
   }
@@ -150,6 +160,9 @@ export class KngNavigationStateService  {
   }
 
   back() {
+    if(!this.hasHistory) {
+      // use unique code HERE to go back
+    }
     this.$location.back();
   }
 
@@ -178,9 +191,6 @@ export class KngNavigationStateService  {
     return this.cached[group];
   }
 
-  hasHistory() {
-    return this.history.length>0;
-  }
 
   isLocked(): boolean {
 
