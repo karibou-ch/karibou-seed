@@ -5,7 +5,7 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close">
-        <span class="material-icons size-large">arrow_back</span>
+        <span class="material-symbols-outlined size-large">arrow_back</span>
       </button>
 
       <article class="product-card card-skeleton" 
@@ -24,10 +24,10 @@
           </div>
       
           <button class="action-add right " (click)="addToCart($event,product)">
-            <span class="material-icons size-medium">add</span>
+            <span class="material-symbols-outlined size-medium">add</span>
           </button>
           <button class="action-remove " (click)="removeToCart($event,product)">
-            <span class="material-icons size-medium">remove</span>
+            <span class="material-symbols-outlined size-medium">remove</span>
           </button>
           <div class="info-quantity">{{cartItemQuantity}}</div>
       
@@ -154,31 +154,31 @@
           <li>
             <div>Lun.</div>
             <div class="indicator">
-              <span class="material-icons size-small">{{getAvailability(product,1)}}</span>
+              <span class="material-symbols-outlined size-small">{{getAvailability(product,1)}}</span>
             </div>
           </li>
           <li>
             <div>Mar.</div>
             <div class="indicator">
-              <span class="material-icons size-small">{{getAvailability(product,2)}}</span>
+              <span class="material-symbols-outlined size-small">{{getAvailability(product,2)}}</span>
             </div>
           </li>
           <li>
             <div>Mer.</div>
             <div class="indicator">
-              <span class="material-icons size-small">{{getAvailability(product,3)}}</span>
+              <span class="material-symbols-outlined size-small">{{getAvailability(product,3)}}</span>
             </div>
           </li>
           <li>
             <div>Jeu.</div>
             <div class="indicator">
-              <span class="material-icons size-small">{{getAvailability(product,4)}}</span>
+              <span class="material-symbols-outlined size-small">{{getAvailability(product,4)}}</span>
             </div>
           </li>
           <li>
             <div>Ven.</div>
             <div class="indicator">
-              <span class="material-icons size-small">{{getAvailability(product,5)}}</span>
+              <span class="material-symbols-outlined size-small">{{getAvailability(product,5)}}</span>
             </div>
           </li>
         </ul>

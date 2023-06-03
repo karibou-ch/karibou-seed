@@ -2,7 +2,7 @@
 <div class="container top">
 
   <button (click)="onBack()" class="close">
-      <mdc-icon class="size-large">close</mdc-icon>
+      <span class="material-symbols-outlined size-large">close</span>
   </button>
   <div class="sign" >
   <div class="k-brand">
@@ -23,17 +23,17 @@
 
       <form [formGroup]="sign" (submit)="onSign()">
           <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete fullwidth  type="email" formControlName="email">
-            <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>person</span>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
           
           <mdc-text-field  [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
-            <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
             
           <button primary mdc-button unelevated  [disabled]="!sign.valid" class="align-center">
-            <mdc-icon>account_circle</mdc-icon>              
+            <span class="material-symbols-outlined">account_circle</span>              
             <span >Login</span>
           </button>            
       </form>
@@ -47,11 +47,11 @@
       <h3 >{{i18n[locale].login_reset_password}}</h3>
       <form [formGroup]="recover" (submit)="onRecover()">
           <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <mdc-icon mdcTextFieldIcon trailing>email</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>email</span>
           </mdc-text-field>
           <kng-control-messages [control]="recover.controls.email"><span >{{i18n[locale].login_wait_msg}}</span></kng-control-messages>
           <button primary  mdc-button unelevated  [disabled]="!recover.valid || sendRecover" class="align-center">
-            <mdc-icon>account_circle</mdc-icon>              
+            <span class="material-symbols-outlined">account_circle</span>              
             <span >{{sendRecover ? i18n[locale].action_reset_done : i18n[locale].action_reset}}</span>
           </button>            
       </form>
@@ -62,11 +62,11 @@
     <div class="inner" *ngIf="askAction=='signup'">
       <form [formGroup]="signup" (submit)="onSignup()">
           <mdc-text-field  [label]="$i18n[locale].user_name" fullwidth type="text" formControlName="name">
-            <mdc-icon mdcTextFieldIcon trailing>name</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>name</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.name"></kng-control-messages>
           <mdc-text-field  [label]="$i18n[locale].user_firstname" fullwidth type="text" formControlName="forname">
-            <mdc-icon mdcTextFieldIcon trailing>name</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>name</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
@@ -78,22 +78,22 @@
               
 
           <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <mdc-icon mdcTextFieldIcon trailing>email</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>email</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
 
           <mdc-text-field  [label]="$i18n[locale].user_password" fullwidth type="password" formControlName="password">
-            <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
 
           <mdc-text-field  [label]="$i18n[locale].user_repassword" fullwidth type="password" formControlName="confirm">
-            <mdc-icon mdcTextFieldIcon trailing>vpn_key</mdc-icon>
+            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 
           <button primary  mdc-button unelevated  [disabled]="!signup.valid" class="align-center">
-            <mdc-icon>account_circle</mdc-icon>              
+            <span class="material-symbols-outlined">account_circle</span>              
             <span >{{i18n[locale].signup_create}}</span>
           </button>            
       </form>

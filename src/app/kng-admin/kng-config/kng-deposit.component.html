@@ -22,11 +22,11 @@
   <hr class="dashed"/>
   <mdc-list  avatar="true"  [interactive]="false">
     <mdc-list-item (click)="onAddressCreate()">
-        <mdc-icon mdcListItemGraphic>save</mdc-icon>
+        <span class="material-symbols-outlined" mdcListItemGraphic>save</span>
         <mdc-list-item-text>Ajouter une nouvelle adresse de collecte
           <mdc-list-item-secondary>Cliquer ici pour ajouter</mdc-list-item-secondary>
         </mdc-list-item-text>        
-        <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
+        <span class="material-symbols-outlined"  mdcListItemMeta>favorite</span>  
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let address of currentHub.deposits; let i = index" 
@@ -49,7 +49,7 @@
             </mdc-form-field>
               
             <mdc-chip>
-              <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+              <mdc-chip-icon leading><span class="material-symbols-outlined" >sort</span></mdc-chip-icon>
               <mdc-chip-text>{{address.fees|currency:'CHF'}}</mdc-chip-text>
             </mdc-chip>
             

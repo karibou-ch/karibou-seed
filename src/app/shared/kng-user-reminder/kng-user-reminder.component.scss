@@ -27,14 +27,14 @@
     justify-content: left;  
     padding: 10px 0;
     .kng-chip{
-      .material-icons{
+      .material-symbols-outlined{
         display: none;
       }
     }
     .kng-chip.selected {
       background-color: var(--mdc-theme-secondary)!important;
       color:var(--mdc-theme-secondary-text)!important;
-      .material-icons{
+      .material-symbols-outlined{
         display: initial;
       }
     }

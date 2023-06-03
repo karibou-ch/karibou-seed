@@ -1,15 +1,12 @@
 <div class="user-container">
   <section>
       <h1 class="text-capitalize">{{user.display()}} 
-        <span [hidden]="!user.isPremium()"><i class="material-icons text-secondary">grade</i><i class="material-icons text-secondary large">grade</i></span>
+        <span [hidden]="!user.isPremium()"><i class="material-symbols-outlined text-secondary">grade</i><i class="material-symbols-outlined text-secondary large">grade</i></span>
       </h1>      
       <div class="title" >{{i18n[locale].profile_title}} {{user.created|date:'MMM d, y':'':$i18n.locale}}</div>
       <p class="resume ">
         <!-- 34 commandes, 5 problèmes, X X X X -->        
         &nbsp;
-        <!-- <button mdc-button outlined="true"  icon="true" (click)="doLogout()" >        
-          <mdc-icon>person</mdc-icon>Fermer votre session
-        </button> -->
         <a href="javascript:;" (click)="doLogout()" style="float:left" class="text-primary-dark" >        
           {{$i18n[locale].user_logout}}
         </a>
