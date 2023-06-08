@@ -135,7 +135,7 @@ export class UserSignComponent {
     private $router: Router,
     private $fb: FormBuilder,
     private $location: Location,
-    private $nav: KngNavigationStateService,
+    private $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
     private $metric: MetricsService
   ) {
@@ -176,16 +176,10 @@ export class UserSignComponent {
     // check existance on token
     let defaultEmail = '';
     let defaultPassword = '';
-    const token = this.$route.snapshot.queryParams['token'];
-    if (token && token.length) {
-      // FIXME split char is hardcoded
-      try{
-        const fields = atob(token).split('::');
-        if (fields.length === 2) {
-          defaultEmail = fields[0];
-          defaultPassword = fields[1];
-        }  
-      }catch(e) {}
+    if (this.$navigation.currentToken.length) {
+      const fields = this.$navigation.currentToken;
+        defaultEmail = fields[0];
+        defaultPassword = fields[1];
     }
 
     //
@@ -240,7 +234,7 @@ export class UserSignComponent {
     const hasAddress = this.user.hasPrimaryAddress() !== false;
     const hasValidMail = this.user.isReady();
     const hasValidPayment = this.user.payments.every(p => p.isValid());
-    this.store  = this.$nav.store;
+    this.store  = this.$navigation.store;
 
     //
     // mandatory add,payment
@@ -314,7 +308,7 @@ export class UserSignComponent {
       if (!this.config) {
         return;
       }
-      this.$router.navigate(['/store', this.$nav.store, 'home']);
+      this.$router.navigate(['/store', this.$navigation.store, 'home']);
     }, 400);
   }
 
