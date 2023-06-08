@@ -16,6 +16,7 @@ export class KngNavigationStateService  {
 
   private _historyCursor ="";
   private _history: string[] = [];
+  private _token:string[];
 
   private config: Config;
   private menu: any;
@@ -50,6 +51,14 @@ export class KngNavigationStateService  {
     this.agent = navigator.userAgent || navigator.vendor || window['opera'];
     this.$route.queryParams.subscribe(params => {
       KngNavigationStateService.forceLockedHub = params.locked || KngNavigationStateService.forceLockedHub;
+
+      //
+      // stored sign-in 
+      const token = params.token;
+      if (token && token.length) {
+        try{ this._token = atob(token).split('::') }catch(e) {}
+      }
+  
     });
 
     this.$router.events
@@ -63,6 +72,11 @@ export class KngNavigationStateService  {
     this.$config.config$.subscribe(config =>{
       this.updateConfig(config);
     });   
+
+    //
+    // UX for easy login 
+    this._token = [];
+
   }
 
   //
@@ -128,6 +142,9 @@ export class KngNavigationStateService  {
     }
   }
 
+  get currentToken() {
+    return this._token; 
+  }
 
   get currentContentType() {
     return this._historyCursor;
