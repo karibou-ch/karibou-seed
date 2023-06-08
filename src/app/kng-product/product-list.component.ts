@@ -250,7 +250,7 @@ export class ProductListComponent implements OnInit {
 
     this.options.hub = this.store;
     //this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
-    delete this.options.available;
+    //delete this.options.available;
     delete this.options.when;
 
     combineLatest([
