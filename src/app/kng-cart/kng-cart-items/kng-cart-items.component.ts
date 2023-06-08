@@ -148,14 +148,13 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   doCheckout(){
-    const token = this.$route.snapshot.queryParams['token'];
     const ctx = {
       hub:this.currentHub,
       items: this.items,
       totalDiscount: this.getTotalDiscount(),
     };
     if(!this.user.isAuthenticated()) {
-      return this.$router.navigate(['/store/'+this.currentHub.slug+'/home/me/login-or-register'],{queryParams:{token}});
+      return this.$router.navigate(['/store/'+this.currentHub.slug+'/home/me/login-or-register']);
     }
     this.checkout.emit(ctx);
   }
