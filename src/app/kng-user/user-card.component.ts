@@ -162,7 +162,7 @@ export class CardComponent {
         return;
       }
       const cardOptions: StripeCardElementOptions = {
-
+        disableLink:true,
         hidePostalCode: true,
         style: {
           base: {
