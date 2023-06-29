@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserService, LoaderService, CartAction, AnalyticsService, Metrics, Hub } from 'kng2-core';
+import { UserService, LoaderService, CartAction, AnalyticsService, Metrics } from 'kng2-core';
 import { timer } from 'rxjs';
-import { map, debounce } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export enum EnumMetrics {
   metric_error,
@@ -27,9 +27,6 @@ export enum EnumMetrics {
   providedIn: 'root'
 })
 export class MetricsService {
-
-
-
   isAdmin: boolean;
   currentSource: string;
   uid:string;
