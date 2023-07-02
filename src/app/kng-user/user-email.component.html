@@ -3,14 +3,14 @@
   <h4 >{{user.display()}}</h4> -->
   <form [formGroup]="$profile" (submit)="onChange()">
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_name" type="text" formControlName="name" [ngModel]="user.name.familyName">
-        <mdc-icon mdcTextFieldIcon trailing class="primary">face</mdc-icon>
+        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >face</span>
       </mdc-text-field>
 
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_firstname" type="text" formControlName="forname" [ngModel]="user.name.givenName">
       </mdc-text-field>
 
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_phone" type="text" formControlName="phone" [ngModel]="phone">
-        <mdc-icon mdcTextFieldIcon trailing class="primary">phone</mdc-icon>
+        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing>phone</span>
       </mdc-text-field>
       
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_email" type="email" formControlName="email" [ngModel]="user.email.address">
@@ -18,11 +18,11 @@
         
       
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_confirm_password"  type="password" formControlName="password">
-        <mdc-icon mdcTextFieldIcon trailing class="primary">vpn_key</mdc-icon>
+        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >vpn_key</span>
       </mdc-text-field>
         
       <button mdc-button unelevated="true" [disabled]="!$profile.valid">
-        <mdc-icon>account_circle</mdc-icon>              
+        <span class="material-symbols-outlined">account_circle</span>              
         <span >{{$i18n[locale].action_save}}</span>
       </button>            
 

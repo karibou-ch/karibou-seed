@@ -11,7 +11,7 @@
 
   <button raised mdc-button (click)="onMenuCreate()" class="primary">
     <span mdcButtonLabel>Ajouter un nouveau menu</span>
-    <mdc-icon class="pink">save</mdc-icon>
+    <span class="material-symbols-outlined">save</span>
   </button>    
   
   <mdc-list avatar="true" border="true"  *ngFor="let group of groups" >
@@ -20,7 +20,7 @@
     <mdc-list-item *ngFor="let menu of getMenuByGroup(group)" 
                     [class.disabled]="!menu.active"
                     (click)="onMenuSelect($event,menu)">
-        <mdc-icon mdcListItemGraphic>folder</mdc-icon>
+        <span class="material-symbols-outlined"mdcListItemGraphic>folder</span>
         <mdc-list-item-text>
           <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name[$i18n.locale]"></span>
           <mdc-list-item-secondary>
@@ -34,7 +34,7 @@
             </mdc-form-field>
               
             <mdc-chip>
-              <mdc-chip-icon leading><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+              <mdc-chip-icon leading><span class="material-symbols-outlined">sort</span></mdc-chip-icon>
               <mdc-chip-text>{{menu.weight}}</mdc-chip-text>
             </mdc-chip>
             

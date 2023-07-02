@@ -6,7 +6,7 @@
   </div>
 
   <button class="close " (click)="open = false">
-    <span class="size-large material-icons" >close</span>
+    <span class="size-large material-symbols-outlined" >close</span>
   </button>
 
   <!-- CHECKOUT-->
@@ -21,20 +21,26 @@
         <!-- FIXME hide wallet method -->
         <!--               [hidden]="payment.issuer=='wallet'"-->
         <section class="payments">
-          <div class="payment" *ngFor="let payment of user.payments" 
-            [hidden]="payment.issuer=='wallet'" [class.error]="!payment.isValid()"
-            (click)="setPaymentMethod(payment)">
-
-            <input type="radio"  name="payment" [id]="payment.issuer" [checked]="isSelectedPayment(payment)">
-              <label [for]="payment.issuer">
-                <div class="name">{{issuer[payment.issuer].label}}</div>
-                <div class="note">{{payment.expiryToDate()|date:'MM/y'}}</div>  
-              </label>
+          <div class="payment checked" 
+            *ngIf="currentPayment?.issuer" 
+            (click)="selectPaymentIsDone=!selectPaymentIsDone"
+            [class.error]="!currentPayment.isValid()">
+            <label [hidden]="!selectPaymentIsDone"> Changer </label>
+            <div class="method name">{{issuer[currentPayment.issuer].label}}  **{{currentPayment.last4}}</div>
+            <div class="note">{{currentPayment.expiryToDate()|date:'MM/y'}}</div>  
           </div>
-          <div class="profile-action"  >
-            <button [routerLink]="['./user/login-or-payment']">
-              {{labell.user_payment_add}} 
-            </button>
+
+          <div class="payment" *ngFor="let payment of userPayments" 
+            [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
+            (click)="setPaymentMethod(payment)">
+            <label> Choisir </label>
+            <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
+            <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>  
+          </div>
+          <div class="profile-action"  [hidden]="selectPaymentIsDone && currentPayment" [routerLink]="['./user/login-or-payment']">
+            <div class="button">
+              <span class="material-symbols-outlined black">add_box</span>  {{labell.user_payment_add}} 
+            </div>
           </div>      
         </section>
     
@@ -46,36 +52,46 @@
           
         <!-- USER ADDRESS -->
         <section class="addresses">
-          <div class="address" *ngFor="let address of user.addresses"  (click)="setShippingAddress(address)">
-            <input type="radio"  name="address" [id]="address.name" [checked]="isSelectedAddress(address)">
-              <label [for]="address.name">
-                <div class="name">{{address.name}}</div>
-                <div class="street text-overflow">{{address.streetAdress}}</div>
-                <div class="note text-overflow">{{address.note}}</div>  
-                <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
-              </label>
+          <div class="address checked" 
+              (click)="userAddressSelection=!userAddressSelection"
+              [hidden]="!currentShipping()||!currentAddress.streetAdress">
+              <label  [hidden]="userAddressSelection"> Changer </label>
+
+              <div class="name">{{currentAddress.name}}</div>
+              <div class="street text-overflow">{{currentAddress.streetAdress}} / {{currentAddress.postalCode}}</div>
+              <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{currentAddress.note}}</div>  
+              <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
           </div>
-          <div class="address deposit" *ngFor="let address of getDepositAddress()" [hidden]="!address.active" 
-              (click)="setShippingAddress(address)">
-              <input type="radio"  name="address" [id]="address.name" [checked]="isSelectedAddress(address)">
-              <label [for]="address.name">
-                <div class="collect">{{address.name}}</div>
-                <div class="street text-overflow">{{address.streetAdress}}</div>
-                <div class="pink text-center">{{label.cart_deposit}}</div>  
-                <div class="shipping-amount">Fr  {{(address.fees)|number:'1.2-2'}}</div>
-              </label>
+
+
+          <div class="address" *ngFor="let address of userAddresses"  
+              (click)="setShippingAddress(address)" [hidden]="!userAddressSelection && currentAddress.streetAdress">
+              <label> Choisir </label>
+              <div class="name">{{address.name}}</div>
+              <div class="street text-overflow">{{address.streetAdress}} / {{address.postalCode}}</div>
+              <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>  
+              <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
           </div>
+          <div class="address deposit" *ngFor="let address of getDepositAddress()" 
+              [hidden]="!userAddressSelection && currentAddress.streetAdress || !address.active" 
+              (click)="setShippingAddress(address)" >
+              <label> Choisir </label>
+              <div class="name collect">{{address.name}}</div>
+              <div class="street text-overflow">{{address.streetAdress}}</div>
+              <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{label.cart_deposit}}</div>  
+              <div class="shipping-amount">Fr  {{(address.fees)|number:'1.2-2'}}</div>
+        </div>
           <!-- NEW ADDRESS -->
-          <div class="profile-action"  >
-            <button [routerLink]="['./user/login-or-address']" >              
-              {{labell.user_address_add}} 
+          <div class="profile-action"  [hidden]="!userAddressSelection && currentAddress.streetAdress">
+            <button class="" [routerLink]="['./user/login-or-address']" >              
+              <span class="material-symbols-outlined black">add_box</span> {{labell.user_address_add}} 
             </button>
           </div>
 
         </section>
       </div>
 
-        
+          
       <!-- RESUME -->
       <div class="order-resume " *ngIf="isOpen">
 
@@ -87,7 +103,7 @@
           <!-- BILL GROUPED -->
           <div class="bill grouped" [hidden]="!hasShippingReductionMultipleOrder()">
             <div>
-              <i class="material-icons black">info</i>&nbsp;{{label.cart_info_shipping_group}}
+              <i class="material-symbols-outlined black">info</i>&nbsp;{{label.cart_info_shipping_group}}
             </div>  
           </div>
 
@@ -95,14 +111,21 @@
           <div class="bill">
             <div class="label">
               <span [innerHtml]="label.cart_info_subtotal"></span>
-              <i class="material-icons gray" (click)="doToggleFees=!doToggleFees">info</i>
+              &nbsp;<i class="material-symbols-outlined gray" (click)="doToggleFees=!doToggleFees">info</i>
             </div>
             <div class="amount">{{itemsAmount|currency:'CHF'}}</div>
+          </div>
+
+          <div class="bill border">
+            <div class="label">              
+              <span [innerHtml]="label_cart_info_subtotal_fees"></span>              
+
+            </div>
+            <div class="amount-light">{{currentFeesAmount|currency:'CHF'}}</div>
           </div>
           <div class="bill" [hidden]="!doToggleFees">
             <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
           </div>
-
 
           <div class="bill">
             <div class="label">
@@ -124,35 +147,38 @@
             <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
           </div>
 
+          <div class="bill wallet">
+            <div class="label">
+              {{label.cart_info_wallet}}              
+            </div>
+            <div class="amount" >{{userBalance|currency:'CHF'}}</div>
+          </div>
+          
           <div class="bill total">
             <div class="label">
               {{label.cart_info_total}}              
             </div>
-            <div class="amount" >{{currentTotal()|currency:'CHF'}}</div>
+            <div class="amount" >{{currentTotal()-userBalance|currency:'CHF'}}</div>
           </div>
 
           <!-- INFO HELP MOBILE -->
           <div class="bill help hide-sm">
-            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
           </div>
 
         </div>
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
-          <section class="bill bill-title">
-            <h2 class="full ">{{currentShippingDay()|date:'EEEE dd MMMM':'':locale|titlecase}} ({{shippingTime}})</h2>            
+          <section class="resume-title">
+            <p class="bold block-info">              
+              Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} ({{shippingTime}} heures)
+            </p>
           </section>  
 
-          <div class="bill shipping" >
-            <div>{{currentPaymentMethodLabel()}}</div>
-            <div class="">{{currentShipping().name}}</div>
-            <div class="text-overflow bold">{{currentShipping().streetAdress}} / E:{{currentShipping().floor}}</div>
-            <section class="image" [hidden]="isCartDeposit()"><img src="/assets/img/k-shipping.png" /></section>
-          </div>
 
           <!-- INFO SHIPPING NOTE -->
           <div class="bill" [hidden]="isCartDeposit()">
-            <div>{{labell.user_address_note}}</div>
+            <div class="small">{{labell.user_address_note}}</div>
             <div class="input-text">
               <input type="text" placeholder="code, note, etc" [(ngModel)]="shippingNote" />
             </div>            
@@ -167,8 +193,15 @@
                 <a href="javascript:;" class="link"
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
             </div>
+            <div class="overflow">
+              <input type="checkbox" [(ngModel)]="cg18Accepted" >
+              <label class="link">        
+                <a href="javascript:;" class="link"
+                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a></label>    
+            </div>
+
             <div>
-              <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
+              <button [disabled]="!cgAccepted||!cg18Accepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
             </div>
             <div class="bill error" [hidden]="!errorMessage">
               {{errorMessage}}
@@ -185,7 +218,7 @@
           </div>
           <!-- INFO HELP MOBILE -->
           <div class="bill help hide-md hide-lg">
-            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
           </div>
         </div>
           

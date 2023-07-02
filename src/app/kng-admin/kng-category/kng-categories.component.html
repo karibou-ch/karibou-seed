@@ -11,20 +11,20 @@
   
   <mdc-list twoLine avatar="true" border>
     <mdc-list-item  (click)="onCategoryCreate()">
-        <mdc-icon mdcListItemGraphic>save</mdc-icon>
+        <span class="material-symbols-outlined" mdcListItemGraphic>save</span>
         <mdc-list-item-text>Ajouter une nouvelle catégorie
           <mdc-list-item-secondary >Cliquer ici</mdc-list-item-secondary>
         </mdc-list-item-text>
-        <mdc-icon class="pink" mdcListItemMeta>favorite</mdc-icon>  
+        <span class="material-symbols-outlined" mdcListItemMeta>favorite</span>  
     </mdc-list-item>
     <mdc-list-divider></mdc-list-divider>
     <mdc-list-item *ngFor="let category of categories" 
                    [class.disabled]="!category.active"
                    (click)="onCategorySelect($event,category)">
         <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
-        <mdc-icon mdcListItemGraphic [hidden]="category.cover" class="size-large">folder</mdc-icon>
+        <span class="material-symbols-outlined" mdcListItemGraphic [hidden]="category.cover" class="size-large">folder</span>
         <mdc-list-item-text>
-          <span>{{category.type}}/{{category.name}} ({{category.usedBy?.lenght||0}})</span>
+          <span>{{category.type}}/{{category.name}} ({{category.usedBy?.length||0}})</span>
           <mdc-list-item-secondary>
               {{category.description||'«pas de desciption»'}} // 
               <i class="{{category.image}}"></i> {{category.image}}  
@@ -41,7 +41,7 @@
               </mdc-chip>
               <mdc-chip>
                 <mdc-chip-text>{{category.weight}}</mdc-chip-text>
-                <mdc-chip-icon trailing><mdc-icon >sort</mdc-icon></mdc-chip-icon>
+                <mdc-chip-icon trailing><span class="material-symbols-outlined" >sort</span></mdc-chip-icon>
               </mdc-chip>
             </mdc-chip-set>                      
             

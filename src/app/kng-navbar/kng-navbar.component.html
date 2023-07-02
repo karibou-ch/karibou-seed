@@ -72,12 +72,12 @@
 
         <!-- LOGIN / REGISTER -->
         <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcTopAppBarNavIcon>
-          <span mdcTopAppBarActionItem class="material-icons secondary-text" >account_circle</span><!-- <div >{{$i18n.label().nav_account}}</div>-->
+          <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text" >account_circle</span><!-- <div >{{$i18n.label().nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
         </a>
         <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcTopAppBarNavIcon>
-          <span mdcTopAppBarActionItem class="material-icons secondary-text">account_circle</span><!-- <div >{{$i18n.label().nav_login2}}</div> -->
+          <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text">account_circle</span><!-- <div >{{$i18n.label().nav_login2}}</div> -->
         </a>
 
         <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcTopAppBarNavIcon [routerLink]="'/store/'+store+menu.url" 
@@ -90,13 +90,14 @@
     <mdc-top-app-bar-row class="navigation ">      
       <!-- APPBAR-SECTION-START HUB AND DATE -->
       <mdc-top-app-bar-section align="start" class="hide-sm">
-        <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-icons start">roofing</i>{{$i18n.label().nav_bottom_home}}</div>
+        <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-symbols-outlined start">roofing</i>{{$i18n.label().nav_bottom_home}}</div>
         <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}} </div>
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{$i18n.label().nav_shops}}</div>
-        <div class="kng-chip bold" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
+        <div class="kng-chip" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i class="material-symbols-outlined start bold pink">magic_button</i>  {{$i18n.label().nav_subscription}}</div>
+        <div class="kng-chip bold" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
         <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
           <div > <span class="cart-items-count"></span></div>
-          <span  class="end material-icons secondary-text" >shopping_cart</span>          
+          <span  class="end material-symbols-outlined secondary-text" >shopping_cart</span>          
         </div>
 
 
@@ -107,7 +108,7 @@
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
       <mdc-top-app-bar-section  class="title hide-md hide-lg">
         <span class="start">{{hubTitle}} </span>
-        <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-icons start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-icons end">keyboard_arrow_down</i></div>
+        <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
       </mdc-top-app-bar-section>
 
     </mdc-top-app-bar-row>
@@ -132,7 +133,7 @@
           Tap the share icon and then<br/>
           <b>Add to homescreen.</b>
         </div>
-        <div class="install-ios material-icons" >arrow_downward</div>
+        <div class="install-ios material-symbols-outlined" >arrow_downward</div>
       </div>          
     </div>
   </div>

@@ -9,7 +9,7 @@
   width: 100%;
   min-height: 300px;
   @media (max-width: 769px) {
-    height: 95vh;
+    height: 100vh;
   }
 
   transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
@@ -87,7 +87,7 @@
 
   .checkout{
     color:var(--mdc-theme-text-primary-on-background);
-    min-height: calc(100vh - 110px);
+    min-height: calc(100vh - 80px);
     background: white;  
     margin: 0; 
     margin-top: 70px;
@@ -95,7 +95,7 @@
     padding: 0 5px;
 
     overflow-y: auto;
-    height: calc(100vh - 2 * 170px );
+    height: calc(100vh - 80px );
     @media print  {
       height: 100vh;
     }
@@ -125,12 +125,14 @@
     padding-left: 4px;
     padding-right: 4px;    
   }
+
+
   
   .bill-title ::ng-deep ,
   .address-title ::ng-deep ,
   .payment-title ::ng-deep ,
   .resume-title ::ng-deep {
-  h2, h3 {
+    h2, h3 {
       font-weight: 600;
       color: #333;
       font-size: 1.075rem;
@@ -142,8 +144,12 @@
       }
     }      
   }
+  .resume-title ::ng-deep h2{
+    padding-left: 15px;
+  }
+  
   .order-address{
-    margin: 10px auto;
+    margin: 0px auto;
     width:auto;
     display: flex;
     justify-content: center;
@@ -151,7 +157,6 @@
     flex-direction:row;
     position: relative;
     padding: 2px  0;
-    border-bottom: 1px solid #ddd;
 
 
 
@@ -164,31 +169,46 @@
       align-items: flex-start;
       justify-content: flex-start;
       width: 100%;
-      margin: 10px auto;
-      flex-direction: row;
+      margin: 5px auto;
+      flex-direction: column;
       align-content: flex-start;
 
       .payment.error,
       .address.error{
-        label{
-          .name,
-          .note{
-            color: red!important;
-          }
-  
+        .name,
+        .note{
+          color: red!important;
         }
-
+        span.payment{
+          display: inline;
+        }
       }
 
       .payment,
       .address{
-        display: flex;
+        display: block;
         position: relative;
         min-width: 165px;
         margin-right: 15px;
         margin-bottom: 10px;
+        width: calc( 100% - 30px);
+
+        border: 2px solid #eee;
+        border-radius: 14px;
+        padding: 15px;
+        background-color: #efefef;
+        &.checked{          
+          border: 2px solid var(--mdc-theme-primary);
+          border: 2px solid #ccc;
+          background-color: white;
+        }
+
+        &:last-child{
+          margin-bottom: 0px;
+        }
+
         @media (max-width:429px) {
-          width: 165px;
+          width: calc( 100% - 40px );
           margin-right: 0px;
         }
 
@@ -205,56 +225,84 @@
           margin-right: 5px;
         }
 
+        .name:first-letter {
+          text-transform: uppercase;
+        }
+        .method.name{
+          font-family: monospace;
+          color: #666;
+          font-size: 15px;
+        }
+      
+        .name{
+          line-height: 24px;
+          font-weight: 700;
+          font-size: 17px;            
+          span{
+            font-weight: 300;
+          }
+        }
+        .street, .note{
+          font-size: 15px;
+          font-weight: 400;
+          letter-spacing: .01785714em;
+          color: #666;
+          margin: 2px 0;
+          
+        }
+        .note{
+          max-width: 80%;          
+        }
+        span.payment{
+          display: none;
+        }
+        .shipping-amount{
+          position: absolute;
+          right: 20px;
+          bottom: 15px;
+        }
+
         label{
+          position: absolute;
+          right: 20px;
+          font-weight: 600;
+          color: var(--mdc-theme-primary,#007aff);
+          color: #007aff;
+          
           .collect{
             line-height: 20px;
           }
-          .name{
-            line-height: 20px;
-            text-transform: capitalize;
-            font-weight: 600;
-            font-size: 15px;            
-          }
-          .street, .note{
-            font-size: 13px;
-            font-weight: 400;
-            letter-spacing: .01785714em;
-            color: #888;
-          }
-          .shipping-amount{
-            text-align: center;
-            margin-top: 10px;
-            font-size: 12px;
-            border-top: 1px solid #eee;
-            padding-top: 5px;          }
         }
       }
 
       .profile-action {
-        display: flex;
+        display: block;
         padding: 0px 0;
-        min-width: 165px;
-        max-width: 320px;
-        margin-right: 0;
-        -margin-left: auto;
-    
-        .material-icons {
+        width: calc( 100% - 30px);
+        cursor: pointer;
+
+        border: 2px solid #eee;
+        border-radius: 14px;
+        padding: 15px;
+        background-color: #efefef;
+        margin-bottom: 10px;
+        @media (max-width:429px) {
+          width: calc( 100% - 40px );
+          margin-right: 0px;
+        }
+
+        .material-symbols-outlined {
           transform: translateY(7px);      
         }
-        @media (max-width:429px) {
-          margin: auto;
-          margin-top: 0;
-          margin-left: 0px;
-        }
-        button {          
-          color: black;
-          padding: 0px 16px;
-          vertical-align: bottom;
-          line-height: 37px;
-          font-size: 14px;
-          max-width: 300px;
-          border-radius: 8px;
-          border: 1px solid #ddd;      
+        div.button,
+        button{          
+          border: 0;
+          font-size: 16px;
+          font-weight: 600;
+          color: #007aff!important;
+          span{
+            color: #007aff!important;
+          }
         }
       }
     
@@ -269,8 +317,10 @@
     justify-content: space-between;
     flex-wrap: wrap;
     flex-direction:row;
-    padding: 0;
-
+    padding: 14px;
+    margin: 10px 0;
+    border:2px solid #ccc;
+    border-radius: 14px;
     h3{
       font-weight: 200;
       font-size: 1.275rem;
@@ -279,10 +329,19 @@
       margin-top: -10px;      
     }
 
+    .order-resume-block:first-child{
+      .resume-title ::ng-deep h2{
+        margin-top: -15px;
+        padding-left: 5px;
+        border-bottom: 2px solid #eee;
+      }
+    }
+
     .order-resume-block{
       position: relative;
       width: calc(50% - 20px);
       padding: 10px 0px;
+      margin: 15px 0;
       &.border-left{
         border-left: 4px solid #eee;
         margin-left: -19px;
@@ -290,11 +349,11 @@
       }
 
       @media (max-width:429px) {
-        width: calc(100% - 20px);
+        width: calc(100% - 00px);
       }
 
 
-      .material-icons {
+      .material-symbols-outlined {
         font-size: 19px;
         transform: translateY(3px);        
       }
@@ -302,21 +361,32 @@
         display: flex;
         flex-wrap: wrap;
         padding-left: 5px;
-        &.total{
+        &.border{
+          border-bottom: 1px solid #aaa;
+
+        }
+        &.wallet{
           border-top: 4px solid black;
-          padding-top: 10px;
+          padding: 5px auto;
           margin-top: 10px;
+          font-weight: normal;
+        }
+
+        &.total{
+          padding-top: 0px;
+          margin-top: 0px;
           font-weight: bold;
         }
         &.grouped{
-          background-color: var(--mdc-theme-appbar);
+          background-color: #f6f6f6;
           padding: 5px 8px;
           border-radius: 0px;
           margin-top: -5px;
           margin-bottom: 10px;
-          color: #555;
+          color: #333;
           width: calc(100% - 10px);
           margin-left: 0;
+          font-size: 90%;
         }
         &.error{
           font-weight: 400;
@@ -346,7 +416,10 @@
           line-height: 30px;
           width: 100%;
         }
-  
+        .label:first-letter {
+          text-transform: uppercase;
+        }
+
         .label,
         .overflow {
           overflow: hidden;
@@ -356,6 +429,11 @@
         .label{
           width: 70%;          
         }
+        .amount-light{
+          width: 30%;
+          text-align: right;
+        }
+
         .amount{
           width: 30%;
           text-align: right;
@@ -364,6 +442,9 @@
         .full{
           width: 100%;
           margin-left: 0;
+        }
+        .small{
+          font-size: 14px!important;
         }
         .info{
           line-height: 18px;
@@ -380,10 +461,8 @@
           padding: 15px 5px;
           border-radius: 4px;        
 
-          margin-left: -5px;
-          margin-right: -5px;
           font-size: 1em;
-          width: calc( 100% + 10px);
+          width: calc( 100% - 10px);
           color: var(--mdc-theme-primary);          
         }
         input[type="checkbox"] {
@@ -391,6 +470,7 @@
           margin: 4px;
           width: 15px;
           height: 15px;          
+          margin-right: 15px;
         }
         button{
           width: 100%;

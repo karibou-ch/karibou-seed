@@ -19,23 +19,25 @@
 <!-- DISCOUNT -->
 <kng-product-swipe discount="true" [hub]="store" ></kng-product-swipe>
 
+
+<!-- LISTED CATEGORIES -->
+<h2 class="root -show-sm">{{label.category_title}}</h2>  
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
 <!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
-<div class="toolbox home" >
+<div class="home" [class.toolbox]="!isMobile" [class.mobile-categories]="isMobile">
   <ul>
     <li (click)="scrollToSlug(category.slug)"
               [id]="'category-'+j"                    
               [class.selected]="category.slug == displaySlug"
               *ngFor="let category of getCategories();let j=index">
-      <i [class]="category.image" class="icon"></i>              
+      <img [src]="category.cover" class="show-sm">
+      <i [class]="category.image" class="icon hide-sm hide-md"></i>              
       <span>{{getCategoryI18n(category)}}</span>
     </li>
   </ul>
 </div>
 
-<!-- LISTED CATEGORIES -->
-<h2 class="root show-sm">{{label.category_title}}</h2>  
 <div class="product-container mdc-layout-grid" *ngIf="products.length" >
   <kng-product-grouped-list 
        useMaxCat="true"  showMore="on" offsetTop="500" clazz="home-header"       

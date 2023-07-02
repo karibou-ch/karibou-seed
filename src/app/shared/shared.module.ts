@@ -36,6 +36,7 @@ import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component
 import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
+import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-subscription-option.component';
 
 
 @NgModule({

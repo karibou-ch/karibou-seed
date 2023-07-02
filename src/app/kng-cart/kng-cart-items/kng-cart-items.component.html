@@ -1,123 +1,130 @@
 <!-- DISPLAY HUBS -->
-<div  class="hub-item list-item selected" [hidden]="!isReady">
-  <div class="hide graphic">
-    <div class="avatar round"
-          [ngStyle]="{'background-image': 'url(' + hub.siteName.image + '/-/resize/300x/fb.jpg' + ')'}">
+  <div  class="hub-item list-item selected" [hidden]="!isReady">
+    <div class="text text-overflow" [hidden]="!isReady">
+      <span class="title large">{{hub.siteName[locale]}} </span>
+      <div class="text-overflow title-subtitle">
+        <span class="checkout-disabled-title" 
+              [innerHtml]="cart_info_one_date" 
+              [hidden]="isCrossMarketShippingDate() && !noshippingMsg"></span>
+        <span [hidden]="!isCrossMarketShippingDate() || noshippingMsg">
+          {{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
+        </span>
+        <div class="subtitle" (click)="doToggleFees=!doToggleFees">
+          <span [innerHtml]="cart_info_service_k" class="link "></span>
+        </div>      
+      </div>
+    
     </div>
-  </div>      
-  <div class="text text-overflow" [hidden]="!isReady">
-    <span class="title large">{{hub.siteName[locale]}} </span>
-    <div class="text-overflow title-subtitle">
-      <span class="checkout-disabled-title" 
-            [innerHtml]="cart_info_one_date" 
-            [hidden]="isCrossMarketShippingDate() && !noshippingMsg"></span>
-      <span [hidden]="!isCrossMarketShippingDate() || noshippingMsg">
-        {{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
-      </span>
-      <div class="subtitle" (click)="doToggleFees=!doToggleFees">
-        <span [innerHtml]="cart_info_service_k" class="link "></span>
-      </div>      
+    <div class="end cart-price" *ngIf="items.length">
+      {{items.length}} articles<br/> <b>{{itemsAmount}} fr</b>
     </div>
+  </div>
+
+  <div class="list-item auto-line" [hidden]="!doToggleFees">
+    <p class="block-info" [innerHtml]="labell.cart_info_service_k_plus"></p>
+  </div>
   
+  <!-- SUBSCRIPTION OPTIONS  -->
+  <div class="list-item one-line subscrition auto-height"   [hidden]="showCartItems || !items.length">
+    <kng-subscription-option quiet></kng-subscription-option>
   </div>
-  <div class="end cart-price" *ngIf="items.length">
-    {{items.length}} articles<br/> <b>{{itemsAmount}} fr</b>
+  
+  
+  <!-- DISPLAY ACTION HUB ORDER -->
+  <div class="list-item action-line border-bottom">
+    <button class="order" (click)="doCheckout()" 
+            [disabled]="!isCheckoutEnabled()">{{cart_info_checkout_or_subscription}} </button>
+  
+    <button class="continue" [hidden]="!showCartItems"  [routerLink]="['/store',hub.slug,'home']"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
+    <button class="continue" [hidden]="showCartItems"  [routerLink]="['/store',hub.slug,'home','subscription']"><span class="">{{label.nav_subscription_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
   </div>
 
-</div>
-<!-- DISPLAY ACTION HUB ORDER -->
-<div class="list-item action-line border-bottom">
-  <button class="order" (click)="doCheckout()" 
-          [disabled]="!isCheckoutEnabled()">{{i18n[locale].cart_signin}} </button>
-
-  <button class="continue"  [routerLink]="['/store',hub.slug,'home']"><span class="">{{label.nav_store_continue}}</span> <span class="material-icons icon">arrow_forward</span></button>
-</div>
-<!-- WARNING MESSAGE -->
-<!-- No more window for delivery -->
-<div class="list-item auto-line" [hidden]="isNotShippingLimit()">    
-  <p class="block-info" [innerHtml]="i18n[locale].cart_info_limit|safeHtml"></p>
-</div>
-
-<div class="list-item auto-line" [hidden]="!doToggleFees">
-  <p class="block-info" [innerHtml]="labell.cart_info_service_k_plus"></p>
-</div>
-
-
-<!-- Hub is not available for checkout -->
-<div class="list-item auto-line" [hidden]="hub.status?.active || !isReady">    
-  <p class="block-info" [innerHtml]="cart_info_hub_not_active|safeHtml"></p>
-</div>
-
-<!-- Not a shipping day -->
-<div class="list-item auto-line slim-item" *ngIf="noshippingMsg ">
-  <p class="block-warning">
-    <i class="material-icons">info</i> {{noshippingMsg}} 
-  </p>
-</div>
-
-<!-- WARNING DISPLAY ERRORS -->
-<div class="list-item auto-line slim-item " [hidden]="!hasOrderError || !isReady">
-  <p class="block-warning" [innerHtml]="i18n[locale].cart_error">
-</div>
-
-<!-- WARNING DISPLAY HUB DATE -->
-<div class="list-item auto-line slim-item pending-date" [class.display-message]="!isCrossMarketShippingDate()">
-  <p class="shipping-grouped text-overflow block-warning" [innerHtml]="i18n[locale].cart_info_one_date_more">
-</div>
-
-<!-- DISPLAY HUB ITEMS -->
-<div class="list-item one-line" *ngFor="let item of items" (click)="onSelect($event,item)">
-  <mdc-list-item-graphic>
-  <div class="avatar"
-        [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}">
-
+  <!-- WARNING MESSAGE -->
+  <!-- No more window for delivery -->
+  <div class="list-item auto-line" [hidden]="isNotShippingLimit()">    
+    <p class="block-info" [innerHtml]="i18n[locale].cart_info_limit|safeHtml"></p>
   </div>
-  </mdc-list-item-graphic>
-  <mdc-list-item-text [class.error]="item.error" class="item">
-    <span class="title">{{item.title}} <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span></span>
-    <div class="message" >{{item.error}}</div>          
-    <mdc-list-item-secondary>
-      <a href="javascript:;" class="gray" (click)="removeAll(item,item.variant)">
-        <i class="material-icons" style="transform: translateY(5px);font-size:20px">close</i>{{i18n[locale].cart_remove}}
-      </a>
+  
 
-      <!-- NOTE -->
-      <a href="javascript:;" class="note" [hidden]="!item.note&&!item.audio">
-        <i class="material-icons">mail</i>&nbsp;message
-      </a>
+  
+  
+  <!-- Hub is not available for checkout -->
+  <div class="list-item auto-line" [hidden]="hub.status?.active || !isReady">    
+    <p class="block-info" [innerHtml]="cart_info_hub_not_active|safeHtml"></p>
+  </div>
+  
+  <!-- Not a shipping day -->
+  <div class="list-item auto-line slim-item" *ngIf="noshippingMsg ">
+    <p class="block-warning">
+      <i class="material-symbols-outlined">info</i> {{noshippingMsg}} 
+    </p>
+  </div>
+  
+  <!-- WARNING DISPLAY ERRORS -->
+  <div class="list-item auto-line slim-item " [hidden]="!hasOrderError || !isReady">
+    <p class="block-warning" [innerHtml]="i18n[locale].cart_error">
+  </div>
+  
+  <!-- WARNING DISPLAY HUB DATE -->
+  <div class="list-item auto-line slim-item pending-date" [class.display-message]="!isCrossMarketShippingDate()">
+    <p class="shipping-grouped text-overflow block-warning" [innerHtml]="i18n[locale].cart_info_one_date_more">
+  </div>
+  
+  <!-- DISPLAY HUB ITEMS -->
+  <div class="list-item one-line " *ngFor="let item of items" (click)="onSelect($event,item)">
+    <mdc-list-item-graphic>
+    <div class="avatar"
+          [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}">
+  
+    </div>
+    </mdc-list-item-graphic>
+    <mdc-list-item-text [class.error]="item.error" class="item">
+      <span class="title">{{item.title}} <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span></span>
+      <div class="message" >{{item.error}}</div>          
+      <mdc-list-item-secondary>
+        <!-- DELETE -->
+        <a href="javascript:;" class="action-delete" (click)="removeAll(item,item.variant)">
+          <i class="material-symbols-outlined" >close</i>{{i18n[locale].cart_remove}}
+        </a>
+  
+        <!-- NOTE -->
+        <a href="javascript:;" class="note" [hidden]="!item.note&&!item.audio">
+          <i class="material-symbols-outlined">mail</i>&nbsp;message
+        </a>
+  
+        <!-- DISCOUNT -->
+        <span [hidden]="!getVendorDiscount(item).threshold" class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                
+  
+      </mdc-list-item-secondary>
+    </mdc-list-item-text>
+  
+    <mdc-list-item-meta>
+    <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
+        <b>🛈</b> {{i18n[locale].cart_discount_title}} {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
+    </div>
+    <div class="label action" [hidden]="!item.selected">
+      <!-- FIXME: opening item from other hub is wrong and inconsistant -->
+      <button [routerLink]="['../products',item.sku]"><span class="material-symbols-outlined">visibility</span></button> 
+    </div>
+    <div class="action left" [hidden]="!item.selected">
+      <button (click)="remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button> 
+    </div>
+    <div class="quantity">
+        {{item.quantity}}
+    </div>
+    <div class="action right" [hidden]="!item.selected">
+        <button (click)="add(item,item.variant)"><span class="material-symbols-outlined">add</span></button> 
+    </div>
+    <div class="price" [class.hidden]="item.selected">
+        {{item.price*item.quantity|currency:'CHF'}}
+    </div>
+    </mdc-list-item-meta>
+  </div>
+  
+  
+  <!-- MORE SHOPPING CART  -->
+  <div class="list-item one-line separator" [class.hide-title]="showSeparator"  [hidden]="!showFooter">
+    <div class="info" >{{label.cart_others}}</div> 
+  </div>
 
-      <span [hidden]="!getVendorDiscount(item).threshold" class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                
-
-    </mdc-list-item-secondary>
-  </mdc-list-item-text>
-
-  <mdc-list-item-meta>
-  <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
-      <b>🛈</b> {{i18n[locale].cart_discount_title}} {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
-  </div>
-  <div class="label action" [hidden]="!item.selected">
-    <!-- FIXME: opening item from other hub is wrong and inconsistant -->
-    <button [routerLink]="['../products',item.sku]"><span class="material-icons">visibility</span></button> 
-  </div>
-  <div class="action left" [hidden]="!item.selected">
-    <button (click)="remove(item,item.variant)"><span class="material-icons">remove</span></button> 
-  </div>
-  <div class="quantity">
-      {{item.quantity}}
-  </div>
-  <div class="action right" [hidden]="!item.selected">
-      <button (click)="add(item,item.variant)"><span class="material-icons">add</span></button> 
-  </div>
-  <div class="price" [class.hidden]="item.selected">
-      {{item.price*item.quantity|currency:'CHF'}}
-  </div>
-  </mdc-list-item-meta>
-</div>
-
-<!-- DISPLAY HUB FEES -->
-
-<!-- MORE SHOPPING CART  -->
-<div class="list-item one-line separator" [class.hide-title]="showSeparator"  [hidden]="!showFooter">
-  <div class="info" >{{label.cart_others}}</div>
-</div>
 

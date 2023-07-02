@@ -22,14 +22,14 @@ export class KngMailConfirmationComponent implements OnInit, OnDestroy {
   i18n: any = {
     fr: {
       title_h3: 'En attente de confirmation de votre adresse email',
-      title_h2: 'Votre adresse email n\'a toujours pas été confirmée. Vérifiez votre boîte de réception!',
+      title_h2: 'Votre adresse e-mail doit être confirmée. Vérifiez votre boîte de réception!',
       action_1: 'Une demande de confirmation vous a été envoyée par email le',
       action_2: 'Vous pouvez aussi demander un nouveau email de confirmation',
       action_2_done:'Email envoyé, veuillez vérifier votre boîte de réception!'
     },
     en: {
       title_h3: 'Waiting for email confirmation',
-      title_h2: 'Your email addresse must be valided before to continue. Please check your mailbox!',
+      title_h2: 'Your e-mail must be confirmed before to continue. Please check your mailbox!',
       action_1: 'A confirmation email has been sent in your inbox on the ',
       action_2: 'Send a new confirmation email ',
       action_2_done:'Email sent!'

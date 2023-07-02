@@ -33,10 +33,10 @@
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
     <span>{{i18n[locale].title_evaluation}}</span>&nbsp;
-    <span class="stars material-icons" [class.scored]="score>=0">star_rate</span> 
-    <span class="stars material-icons" [class.scored]="score>=1">star_rate</span> 
-    <span class="stars material-icons" [class.scored]="score>=2">star_rate</span>
-    <span class="stars material-icons" [class.scored]="score>=3">star_rate</span>
+    <span class="stars material-symbols-outlined" [class.scored]="score>=0">star_rate</span> 
+    <span class="stars material-symbols-outlined" [class.scored]="score>=1">star_rate</span> 
+    <span class="stars material-symbols-outlined" [class.scored]="score>=2">star_rate</span>
+    <span class="stars material-symbols-outlined" [class.scored]="score>=3">star_rate</span>
   </div>
 </div>
 
@@ -45,28 +45,28 @@
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
   <ng-content></ng-content>
   <div class="details" >
-      <span class="bold">{{getOrderHUB(order)}} </span>
       <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</span>
       <b>{{order.items.length}}</b> articles 
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
+      <button hidden class="action right">les article</button>
   </div>                   
                    
   <div class="form">
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
     <span>{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
-    <span class="stars material-icons" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
-    <span class="stars material-icons" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
-    <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-    <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
+    <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
+    <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+    <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
+    <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
   </div>
   <div class="evaluate" [hidden]="!displayEvaluate()" [class.boxed]="boxed">
       <div class="label">
         <span>{{i18n[locale].title_evaluation_save}}</span>
-        <span class="stars material-icons" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
-        <span class="stars material-icons" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
-        <span class="stars material-icons" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-        <span class="stars material-icons" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
+        <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
+        <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+        <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
+        <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
         <button (click)="onEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>      
       </div>
       <p class="block-info">
@@ -83,6 +83,12 @@
 
 </div>
 
+<!-- WALLET -->
+<div class="wallet">
+  <div class="label">{{llabel.title_wallet}} </div>
+  <div class="cash">{{balance}} CHF</div>
+</div>
+
 <!--- DISPLAY INVOICES -->
 <div class="qrbill" *ngIf="qrbill && !boxed" [class.qr-fullscreen]="printQr">
   <h3 >{{i18n[locale].title_invoice_open}}</h3>
@@ -94,11 +100,12 @@
   </div>
 </div>
 
+<!-- FEEDBACK POPUP -->
 <ng-container *ngIf="askFeedback">
   <div class="blured" ></div>
   <div class="container top">
     <button (click)="onBack()" class="close">
-        <span class="size-xlarge  material-icons">close</span>
+        <span class="size-xlarge  material-symbols-outlined">close</span>
     </button>
     <div class="feedback-container" >
       <h2>{{i18n[locale].title_issue_title}}</h2>
@@ -126,6 +133,37 @@
   </div>    
 </ng-container>
 
+<!-- ITEMS POPUP -->
+
+<ng-container *ngIf="selectedOrder">
+
+  <div class="blured" ></div>
+  <div class="container top">
+    <button (click)="onBack()" class="close">
+        <span class="size-xlarge  material-symbols-outlined">close</span>
+    </button>
+    <div class="feedback-container" >
+      <h2>Commande</h2>
+      <p> commande </p>
+
+      <!-- ORDER ITEMS -->
+      <ng-container 
+        [ngTemplateOutlet]="orderItems"
+        [ngTemplateOutletContext]="{ $implicit: selectedOrder }">
+      </ng-container>
+
+
+      <div class="breaker small"></div>
+
+      <!-- ORDER FEEDBACK -->
+
+      <!-- FEEDBACK ACTIONS -->
+      <button  (click)="onEvaluate()" [disabled]="">pouet</button>
+
+    </div>
+  </div>    
+
+</ng-container>
 
 <ng-template #orderItems let-order>
   <ul>
@@ -162,7 +200,7 @@
     <li class="add-to-cart">                
       <a href="javascript:;" class="black smaller "                    
       (click)="onAddAllToCart()" i18n>
-      <i class="material-icons " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+      <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
     </li>
 
   </ul>

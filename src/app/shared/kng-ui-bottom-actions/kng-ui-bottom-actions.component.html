@@ -2,12 +2,13 @@
   <kng-search-bar class="force-display" [hidden]="!show"></kng-search-bar>
 
   <div class="bottom-bar hide-lg" [hidden]="show">
-    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-icons icon">home</span><div>{{label.nav_bottom_home}}</div></button>  
-    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-icons icon">manage_search</span><div>{{label.nav_bottom_browse}}</div></button>  
-    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLink]="['/store',store,'home','shops']"><span class="material-icons icon">storefront</span><div>{{label.nav_bottom_shops}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store]"><span class="material-symbols-outlined icon">home</span><div>{{label.nav_bottom_home}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home']"><span class="material-symbols-outlined icon">manage_search</span><div>{{label.nav_bottom_browse}}</div></button>  
+    <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLink]="['/store',store,'home','shops']"><span class="material-symbols-outlined icon">storefront</span><div>{{label.nav_bottom_shops}}</div></button>  
+    <button class="action hide" routerLinkActive="active" (click)="doClearScroll()" [routerLink]="['/store',store,'home','subscription']"><span class="material-symbols-outlined icon pink bold">magic_button</span><div>{{label.nav_subscription}}</div></button>  
     <button class="action" routerLinkActive="active" (click)="doClearScroll()" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/store',store,'home','cart','default']">
       <div class="cart-items-count-mobile"></div>
-      <span class="material-icons icon">shopping_cart</span>
+      <span class="material-symbols-outlined icon">shopping_cart</span>
       <div>{{label.nav_bottom_cart}}</div>
     </button>    
   </div>
@@ -15,7 +16,7 @@
 
 <div class="results" [hidden]="!show">
   <button  (click)="doToggle()" class="close">
-    <span class="material-icons large" >{{show?'close':'menu'}}</span>
+    <span class="material-symbols-outlined large" >{{show?'close':'menu'}}</span>
   </button>  
 
   <!-- CATS -->
@@ -46,7 +47,7 @@
           </span>
     
           <a href="javascript:;" class="gray" i18n (click)="addToCard(product)" [hidden]="product.variants.length">
-            <i class="material-icons" style="transform: translateY(5px);font-size:20px">add</i>ajouter</a>
+            <i class="material-symbols-outlined" style="transform: translateY(5px);font-size:20px">add</i>ajouter</a>
         </div>
   
       </div>

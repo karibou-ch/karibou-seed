@@ -58,6 +58,7 @@ export class ProductListComponent implements OnInit {
   vendor: Shop;
   vendors: Shop[];
 
+  showSubCategory:boolean;
   filterVendor: Shop;
   filterChild: string;
   childSub$;
@@ -72,6 +73,7 @@ export class ProductListComponent implements OnInit {
     when: Date|boolean;
     reload?: number;
     shopname?: string;
+    subscription?: boolean;
   };
 
   constructor(
@@ -135,8 +137,21 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.isReady = true;
-    
-    if(this.$route.snapshot.params['category']){
+
+    //
+    // list product available for subscription
+    if(this.$route.snapshot.data.subscription) {
+      this.options.subscription  = true;
+      this.category.current = this.category.categories[0];
+      this.category.current.name =this.config.shared.subscription.t[this.locale];
+      this.category.current.description =this.config.shared.subscription.h[this.locale];
+      this.category.current.child = [];
+      this.productsBySubscription();
+
+    } 
+    //
+    // list product available from category
+    else if(this.$route.snapshot.params['category']){
       this.category.slug = this.$route.snapshot.params['category'];
       this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
       //
@@ -151,6 +166,8 @@ export class ProductListComponent implements OnInit {
       this.bgStyle = 'url(' + this.category.current.cover + ')';  
       this.productsByCategory();
     } 
+    //
+    // list product available from one shop
     else if(this.$route.snapshot.params['shop']){
       delete this.options.status;
       this.options.shopname  = this.$route.snapshot.params['shop'];
@@ -187,6 +204,9 @@ export class ProductListComponent implements OnInit {
   // FIXME: when using cache route component
   // -> ngOnInit and ngOnDestroy are never called when app.cache.route is activated
   ngAfterViewChecked() {
+    if (!this.dialog || !this.dialog.nativeElement){
+      return;
+    }
     const diff = Math.abs(this.dialog.nativeElement.scrollTop - ProductListComponent.SCROLL_CACHE);
     if(diff < 100) {
       return;
@@ -213,9 +233,13 @@ export class ProductListComponent implements OnInit {
     return this.dialog;
   }
 
+
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
+    if(this.options.subscription) {
+      return (this.products.length)? (this.category.categories as Category[]):[];
+    }
     const child = category.child || [];
     return child.filter(child => this.childMap[child.name]).sort((a,b) => a.weight - b.weight);
   }
@@ -281,6 +305,37 @@ export class ProductListComponent implements OnInit {
     });
   }
 
+
+  productsBySubscription() {
+    this.options.hub = this.store;
+    delete this.options.when;
+
+    this.$product.findByDetails('subscription', this.options).subscribe((products: Product[]) => {
+      this.products = products.sort(this.sortProducts);
+
+
+
+      //
+      // makes categories
+      const categories = this.products.map(product => product.categories)
+                                    .filter((item,pos,arr)=>   arr.findIndex(idx => idx.slug == item.slug)== pos);
+
+      this.category.categories = this.category.categories.filter(cat => categories.find(c => c.slug==cat.slug));
+
+
+      this.products.forEach(product => {
+        if (!this.childMap[product.belong.name]) {
+          this.childMap[product.belong.name] = 0;
+        }
+        this.childMap[product.belong.name]++;
+      });
+      //
+      // set vendors after toggle of child category
+      this.setVendors();
+      this.cdr.markForCheck();
+    });
+  }
+
   productsByCategory() {
     this.options.hub = this.store;
     this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub);
@@ -323,21 +378,19 @@ export class ProductListComponent implements OnInit {
     this.filterChild = child;
   }
 
+  onMOnbileShowMore(){
+    this.showSubCategory=!this.showSubCategory;
+  }
 
   onClose(closedialog) {
+    this.clean();
     //
     // case of onboarding from ad clic
     const query = this.$route.snapshot.queryParams;
-    const shouldNavigate = query.source || query.fbclid;
-    if(shouldNavigate ||!this.$navigation.hasHistory) {
+    const landing = query.source || query.fbclid;
+    if(landing ||!this.$navigation.hasHistory) {
       return this.$router.navigate(['../../'], { relativeTo: this.$route });
     }
-    setTimeout(() => {
-      if (!this.isReady|| query.source) {
-        return;
-      }
-      this.$router.navigate(['../../'], { relativeTo: this.$route });
-    }, 500);
     this.$navigation.back();
   }
 
@@ -351,9 +404,10 @@ export class ProductListComponent implements OnInit {
   scrollTo($event, name) {
     this.scrollToCategory = name;
     this.filterChild = name;
-    this.scrollDirection = 0;    
+    this.scrollDirection = 0;
+    this.showSubCategory = false;    
     $event.stopPropagation();
-    $event.preventDefault();
+    $event.preventDefault();    
   }
 
   //

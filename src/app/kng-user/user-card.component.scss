@@ -1,6 +1,6 @@
 div{
   h1,h2,h3,h4{
-    margin-top: 50px;
+    margin-top: 20px;
     font-weight: 400!important;
   }
 
@@ -9,46 +9,76 @@ div{
     text-shadow: 1px 1px 0 white;
     margin-top: -15px;    
   }
-  mdc-list-item:nth-child(1n+2){
-    border-top: 1px solid #ddd;
-  }
 
-  .mdc-list-item__graphic{
-    width: 52px;
-    margin-right:12px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 35px;    
-  }
-  mdc-list-item-text{
-    max-width: 70vw;
-    
-    @media screen and (max-width:376px) {
-      max-width: 50vw;        
-    }
-      
-    text-align: left;
-    .error{
-      color: red;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transform: translateY(-5px);
-    }
-    button{
-      position: absolute;
-      top: 15px;
-      right: 5px;
-      bottom: 5px;
-      background: var(--mdc-theme-secondary);
-      color: var(--mdc-theme-secondary-text);
-
-    }
-  }
   div.invalid{
     color: red;
   }
 
+
+  ul.payment{
+    list-style: none;
+    padding: 0;
+    cursor: pointer;
+    li{
+      min-height: 50px;
+      position: relative;
+      padding: 10px 15px;
+      background: #efefef;
+      border-radius: 14px;
+      margin: 10px 0;   
+      padding-left:90px;
+      text-align: left;
+      .image{
+        width: 59px;
+        overflow: hidden;
+        position: absolute;
+        top: 18px;
+        left: 15px;
+        img{
+          object-fit: cover;
+          width: 100%;
+        }        
+      }
+      label{
+        position: absolute;
+        right: 20px;
+        bottom: 9px;
+        font-weight: bold;
+        font-size: 14px;
+        color: #aaa;        
+      }
+      .name::first-letter{
+        text-transform: capitalize;
+      }
+
+      .name{
+        font-weight: bold;
+      }   
+      button{
+        border: 0;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+        padding: 5px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        color: red;        
+        background-color: white;
+      }
+    }
+  }
+
+
+  form{
+    width: calc(100% - 36px);
+    padding: 15px;
+    border: 3px solid #eee;
+    border-radius: 14px;    
+
+  }
+
+  //
+  // STRIPE 
   .stripe-error {
     color: red;
     padding: 20px 10px;

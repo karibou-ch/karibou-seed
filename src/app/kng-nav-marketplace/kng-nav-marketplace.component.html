@@ -1,13 +1,13 @@
   <!-- MARKETPLACE -->
   <h2>{{i18n.label().nav_store}}</h2>
-  <h3 class="hide-sm">{{i18n.label().nav_store_sub}}</h3>
+  <h3 class="hide">{{i18n.label().nav_store_sub}}</h3>
   <div class="marketplace">
     <div class="container">
       <div class="hub"  
         *ngFor="let hub of config.shared.hubs;let idx=index" 
         (click)="toggleStore(hub)"
         [class.selected]="hub.slug === currentHub.slug">
-        <div class="logo"  >
+        <div class="logo hide-sm"  >
           <img [src]="hub.siteName.image + '/-/resize/400x/home.jpg'" />
         </div>
 
@@ -21,16 +21,16 @@
           <div class="title">{{hub.siteName[locale]}}</div>
           <div class="description">{{hub.description[locale]}}</div>
           <div class="cart">
-             {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-icons icon">shopping_cart</span>
+             {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-symbols-outlined icon">shopping_cart</span>
           </div>
           <div class="options">
             <span class="shops">{{hub.vendors}} Vendeurs </span>          
-            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-icons icon">phone</i>&nbsp;besoin d'aide?</a>  
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;besoin d'aide?</a>  
         
           </div>
           <div class="calendar hide-">
             <div class="schedule">
-              <span class="material-icons icon" >schedule</span>
+              <span class="material-symbols-outlined icon" >schedule</span>
               <span class="txt">ouvert  </span>
             </div>              
 
@@ -38,8 +38,8 @@
               <li *ngFor="let day of [1,2,3,4,5]" >
                 <div>{{getWeekDay(day)}}</div>
                 <div class="indicator">
-                  <span class="material-icons icon" [hidden]="hub.weekdays.indexOf(day)>-1">radio_button_unchecked</span>
-                  <span class="material-icons icon" [hidden]="hub.weekdays.indexOf(day)==-1">radio_button_checked</span>
+                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)==-1">radio_button_unchecked</span>
+                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)>-1">radio_button_checked</span>
                 </div>
               </li>
             </ul>

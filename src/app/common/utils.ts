@@ -54,6 +54,16 @@ export class KngUtils {
     );
   }
 
+  // simple hash function with SDBM algo
+  static hacha (str:string) {
+    const hash = Array.from(str).reduce((hash, char) => {
+      return (hash << BigInt(6)) + BigInt(char.charCodeAt(0)) + (hash << BigInt(16)) - hash ;
+    }, BigInt(0));
+    // return 8 bytes!
+    return (hash & BigInt("0xffffffffffffffff")).toString(16).padStart(16, '0') ;      
+  }
+  
+
   //
   // TODO share staticmap generator
   // https://developers.google.com/maps/documentation/static-maps/intro?hl=fr

@@ -4,6 +4,7 @@
 body{
   margin-top: 0;
   background: white;
+  font-size: 17px;
 }
 
 
@@ -40,9 +41,18 @@ body{
   --mdc-theme-secondary-text: #{$mdc-theme-secondary-text};
 }
 
+
+.StripeElement {
+  >div {
+    width: 100%;
+  }
+}
+
 kng-news a {
   text-decoration: none;
 }
+
+
 //
 // input iOS
 textarea,

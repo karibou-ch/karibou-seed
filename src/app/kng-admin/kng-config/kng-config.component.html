@@ -7,7 +7,14 @@
   <kng-config-input clazz="config" format="menu"></kng-config-input>
 
   <!-- SITE Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <!-- TITLE/DESC -->
+  <kng-config-input clazz="config" label="Ttre principal" name="site.title" format="text" 
+                    [(ngModel)]="config?.shared.name[$i18n.locale]"></kng-config-input>
+  <kng-config-input clazz="config" label="Description principale" name="site.description" format="area" 
+                    [(ngModel)]="config?.shared.description[$i18n.locale]"></kng-config-input>
+
 
   <!-- EMAIL -->
   <kng-config-input clazz="config" label="Mail de contact" name="mail" format="text" 
@@ -27,6 +34,23 @@
   <!-- SIGNATURE -->
   <kng-config-input clazz="config" label="Signature des mails" name="mail.signature" format="area" 
                     [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
+
+  <!-- HUB Footer -->
+  <h3 >Subscription <span class="gray">(subscription header)</span></h3>
+  <hr class="dashed"/>
+  <!-- SITE Lang -->
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Titre subscription" name="subscription.titre" format="text" 
+                    [(ngModel)]="config?.shared.subscription.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Subtitle subscription" name="subscription.subtitre" format="text" 
+                    [(ngModel)]="config?.shared.subscription.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe subscription" name="subscription.p" format="area" 
+                    [(ngModel)]="config?.shared.subscription.p[$i18n.locale]"></kng-config-input>
+
+  
 
   <!-- HUB Footer -->
   <h3 >Footer <span class="gray">(welcome bottom)</span></h3>
@@ -74,7 +98,7 @@
 
   <button raised mdc-button (click)="onConfigSave()" class="primary">
     <span mdcButtonLabel>Sauver vos modifications</span>
-    <mdc-icon>save</mdc-icon>
+    <span class="material-symbols-outlined">save</span>
   </button>    
                                     
 </div>

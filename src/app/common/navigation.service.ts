@@ -176,11 +176,23 @@ export class KngNavigationStateService  {
     return this.currentStore;
   }
 
+  //
+  // FIXME implement 100% complete back
   back() {
     if(!this.hasHistory) {
       // use unique code HERE to go back
     }
     this.$location.back();
+
+    //
+    // check if back is going no where
+    // setTimeout(() => {
+    //   if (!this.isReady|| query.source) {
+    //     return;
+    //   }
+    //   this.$router.navigate(['../../'], { relativeTo: this.$route });
+    // }, 500);    
+
   }
 
   debounceLogout() {

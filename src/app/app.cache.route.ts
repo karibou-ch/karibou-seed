@@ -18,7 +18,7 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
     'home': false,
     'grocery': false,
     'cellar': false,
-    'wellness': false,
+    'subscription': true,
     'selection': false
   };
 
@@ -28,7 +28,7 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
       'home': false,
       'grocery': false,
       'cellar': false,
-      'wellness': false,
+      'subscription': true,
       'selection': false
     };
   

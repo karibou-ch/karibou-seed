@@ -1,46 +1,35 @@
 <div>
-  <div [hidden]="!getUser().addresses.length">
+  <div [hidden]="!defaultUser.addresses.length">
     <h2 [hidden]="!user.addresses.length" >
-      {{i18n[locale].list_title}} 
+      {{label.list_select}}
     </h2>
-    <p class="help-block" >
-        {{i18n[locale].list_select}}
-    </p>
               
-    <mdc-list twoLine>
-        <mdc-list-item *ngFor="let address of getUser().addresses;let idx=index" 
+    <ul class="address">
+      <li *ngFor="let address of defaultUser.addresses;let idx=index" 
         (click)="setAddress(address,idx)"
         [class.selected]="isSelectedAddress(address,idx)">
-          <div [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}" mdcListItemGraphic></div>
-          <mdc-list-item-text >             
-              <span>{{address.name}}</span>                 
-              <button [hidden]="!isSelectedAddress(address,idx)" 
-              (click)="removeAddress(address,idx)"
-                      mdc-button [outlined]="true" >{{$i18n[locale].action_del}}</button>
-              <mdc-list-item-secondary>
-                  {{address.streetAdress}}
-                  {{address.postalCode}}/{{address.region}}                          
-              </mdc-list-item-secondary>               
-          </mdc-list-item-text>  
-          <div [class.primary]="address.primary" mdcListItemMeta></div>                    
-      </mdc-list-item>
-    </mdc-list>
-
-    <div class="breaker small"></div>
+          <label for="">{{label.address_edit}}</label>
+          <div class="name">{{address.name}}</div>                 
+          <div class="street">{{address.streetAdress}}</div>
+          <div class="postal">{{address.postalCode}}/{{address.region}}</div>
+          <button (click)="removeAddress(address,idx)" 
+                  [hidden]="!isSelectedAddress(address,idx)" >{{$i18n[locale].action_del}}</button>
+      </li>
+    </ul>
   </div>
 
   <!-- <div [hidden]="!small" *ngIf="idx">
-    <h2 MdcHeadline1>{{getUser().addresses[idx]}}</h2>
-    <div [ngStyle]="{'background-image': 'url(' + getStaticMap(getUser().addresses[idx]) + ')'}"></div>
+    <h2 MdcHeadline1>{{defaultUser.addresses[idx]}}</h2>
+    <div [ngStyle]="{'background-image': 'url(' + getStaticMap(defaultUser.addresses[idx]) + ')'}"></div>
   </div> -->
 
 
   <div [hidden]="small">
-    <h2 MdcHeadline1>{{i18n[locale].list_add}}</h2>
+    <h2 MdcHeadline1>{{label.list_add}}</h2>
     <form [formGroup]="$address" (submit)="onSave()">
 
         <mdc-text-field fullwidth  [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
-          <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
+          <span class="material-symbols-outlined" mdcTextFieldIcon trailing>person</span>
         </mdc-text-field>
 
 
@@ -54,12 +43,12 @@
         </mdc-text-field>
   
         <p class="help-block" >
-          {{i18n[locale].address_postalcode_title}}
+          {{label.address_postalcode_title}}
         </p>
           
         <select formControlName="region" class="width-50"  (change)="onGeloc($event)">
           <!-- <option value="" selected></option> -->
-          <option value="" disabled selected>{{i18n[locale].address_region}}</option>
+          <option value="" disabled selected>{{label.address_region}}</option>
           <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
         </select>
         
@@ -67,12 +56,11 @@
         <!-- <mdc-text-field fullwidth  label="Code postal"  type="text" formControlName="postalCode" class="width-50">
         </mdc-text-field> -->
         <select  formControlName="postalCode" class="width-50"  (change)="onGeloc($event)">
-          <option value="" disabled selected>{{i18n[locale].address_postalcode}}</option>
+          <option value="" disabled selected>{{label.address_postalcode}}</option>
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
         </select>
         
-        <mdc-text-field fullwidth  [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">
-          <mdc-icon mdcTextFieldIcon trailing>person</mdc-icon>
+        <mdc-text-field fullwidth  [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">          
         </mdc-text-field>
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
@@ -89,7 +77,7 @@
                 [unelevated]="true" 
                 [disabled]="!$address.valid||isLoading" 
                 class="align-right primary">
-          <mdc-icon>account_circle</mdc-icon>              
+          <span class="material-symbols-outlined">account_circle</span>              
           <span >{{$i18n[locale].action_save}}</span>
         </button>            
 

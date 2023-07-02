@@ -5,6 +5,7 @@ import pkgInfo from '../../../../package.json';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { MdcSnackbar } from '@angular-mdc/web';
+import { StripeAddressElementOptions, StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
 
 @Component({
   selector: 'kng-cart-checkout',
@@ -12,6 +13,7 @@ import { MdcSnackbar } from '@angular-mdc/web';
   styleUrls: ['./kng-cart-checkout.component.scss']
 })
 export class KngCartCheckoutComponent implements OnInit {
+
 
   private _open: boolean;
   private _config: Config;
@@ -33,6 +35,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   VERSION = pkgInfo.version;
   cgAccepted = false;
+  cg18Accepted = false;
   shipping;
   shippingTime;
   shippingNote: string;
@@ -43,10 +46,12 @@ export class KngCartCheckoutComponent implements OnInit {
   currentCart:any;
   itemsAmount:number;
   doToggleFees: boolean;
+  userAddressSelection:boolean;
+  userPaymentSelection:boolean;
+  useCartView:boolean;
 
 
   selectPaymentIsDone: boolean;
-  selectAddressIsDone: boolean;
 
   // FIXME remove hardcoded reserved value 0.11!
   amountReserved = 1.11;
@@ -113,6 +118,10 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.i18n[this.locale];
   }
 
+  get label_cart_info_subtotal_fees(){
+    return this.i18n[this.locale].cart_info_subtotal_fees.replace('__FEES__',this.currentFeesName);
+  }
+
   get labell() {
     return this.$i18n.label();
   }
@@ -125,6 +134,50 @@ export class KngCartCheckoutComponent implements OnInit {
   get items() {
     return this._items;
   }
+
+  get selectAddressIsDone(){
+    return !!(this.currentAddress && this.currentAddress.streetAdress)
+  }
+
+  get currentAddress() {
+    return this.currentShipping();
+  }  
+
+  get userBalance() {
+    return this._user.balance>0? this._user.balance:0;
+  }
+
+  get userAddresses() {
+    const addresses = [... this.user.addresses];
+    if(!this.currentAddress || !this.currentAddress.name) {
+      return addresses;
+    }
+
+    // const idx = addresses.findIndex(add => this.currentAddress.isEqual(add));
+    // if(idx>-1){
+    //   addresses.splice(idx,1);
+    // }
+    return addresses; 
+  }
+
+  get currentPayment() {
+    return this.currentPaymentMethod();
+  }  
+
+  get userPayments() {
+    const payments = [... this.user.payments];
+    if(!this.currentPayment || !this.currentPayment.alias) {
+      return payments;
+    }
+
+    // const idx = payments.findIndex(payment => payment.isEqual(this.currentPayment));
+    // if(idx>-1){
+    //   payments.splice(idx,1);  
+    // }
+
+    return payments; 
+  }
+
 
   get user() {
     return this._user;
@@ -164,12 +217,45 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
 
+  get currentFeesName() {
+    if(!this._currentHub){
+      return '0%'
+    }
+    const fees = this._currentHub.serviceFees;
+    return Math.floor(fees*100) + '%';
+  }
+
+  get currentFeesAmount() {
+    if(!this._currentHub){
+      return 0;
+    }
+
+    const hub = this._currentHub.slug;
+    const amount = this.$cart.getItems().filter(item => (!hub || hub == item.hub)).reduce((total,item) =>{
+      return total += (item.price * item.quantity);
+    },0);
+    const fees = this._currentHub.serviceFees;
+    return Math.floor(amount*fees*100)/100;
+  }
+
+
   ngOnInit(): void {
+    this.$user.user$.subscribe(user => {      
+      this._user = user;
+      if(!this._isReady){
+        this.selectPaymentIsDone = false;
+        this.$cart.setPaymentMethod(null);
+        return;
+      }
+      //
+      // if user i
+      this.checkPaymentMethod();
+    });
   }
 
   //
   // entry point
-  doInitateCheckout(user: User,hub: Hub,items: CartItem[], totalDiscount: number ){
+  doInitateCheckout(user: User,hub: Hub,items: CartItem[], totalDiscount: number, useCartView:boolean ){
     this._currentHub = hub;
     this._items = items;
     this._totalDiscount = totalDiscount;
@@ -177,10 +263,12 @@ export class KngCartCheckoutComponent implements OnInit {
     this._isReady = true;
     this._user = user;
     this.open = true;
+    this.useCartView = useCartView;
     this.checkPaymentMethod();
 
+    console.log('---DBG doInitateCheckout',user)
     const address = this.$cart.getCurrentShippingAddress();
-    this.selectAddressIsDone = this.setShippingAddress(address);
+    this.setShippingAddress(address);
 
     //
     // check if address is already set
@@ -188,12 +276,12 @@ export class KngCartCheckoutComponent implements OnInit {
       if(this.orders.length) {
         //content.name,content.streetAdress,content.floor,content.region,content.postalCode,content.note,false,geo
         const address = UserAddress.from(this.orders[0].shipping);
-        this.selectAddressIsDone = this.setShippingAddress(address);
+        this.setShippingAddress(address);
       }
 
       if(!this.selectAddressIsDone){
-        const address = this._user.addresses[0];
-        this.selectAddressIsDone = this.setShippingAddress(address);  
+        const address = UserAddress.from(this._user.addresses[0]);
+        this.setShippingAddress(address);  
       }  
     }
 
@@ -201,10 +289,10 @@ export class KngCartCheckoutComponent implements OnInit {
     // FIXME currently only one shipping time!
     this.shipping = this.config.shared.shipping;
 
-    this.itemsAmount = this.$cart.subTotal(hub.slug);
+    this.itemsAmount = this.$cart.subTotal(hub.slug,!useCartView);
 
     this.buildDiscountLabel();
-    
+
     //
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
@@ -302,10 +390,12 @@ export class KngCartCheckoutComponent implements OnInit {
       //
       // set default payment
       // FIXME me this.orders[0].payment.issue is crashing 
+      this._user = user;
       const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
       const previousPayment = payments.find(payment => payment.alias == lastAlias);
+
 
       //
       // use last order as default 
@@ -393,7 +483,10 @@ export class KngCartCheckoutComponent implements OnInit {
     if(!address || !address.streetAdress) {
       return false;
     }
+
+    this.userAddressSelection = false;
     const isDone = this.$cart.setShippingAddress(address);
+
 
     //
     // copy note
@@ -416,6 +509,7 @@ export class KngCartCheckoutComponent implements OnInit {
     if (!payment) {
       return;
     }
+
 
     if (!payment.isValid()) {
       this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');

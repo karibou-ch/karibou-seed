@@ -18,6 +18,7 @@ import {
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { i18n } from '../common';
+import { SubscriptionFrequency } from '../kng-subscription-option/kng-subscription-option.component';
 
 export interface CategoryView {
   name: string;
@@ -47,20 +48,23 @@ export class ProductGroupedListComponent implements OnInit {
 
 
   //
-  // replace default score sort
-  @Input() displayVendor: boolean;
+  // dislpay more details on each product
+  @Input() displaySubscription: boolean;
   @Input() alphasort: boolean;
   @Input() offsetTop: number;
   @Input() config: any;
   @Input() user: User;
   @Input() hub: string;
-  @Input() showMore: boolean;
   @Input() useMaxCat: boolean;
 
+  //
+  // display more button 
+  @Input() showMore: boolean;
   @Input() showSection: boolean;
   @Input() contentIf: boolean;
   @Input() clazz: string;
   @Input() filterByVendor: string;
+  @Input() defaultFrequency: SubscriptionFrequency; 
   @Input() scrollContainer; 
 
   @Input() set contentCategories(categories: any[]) {
@@ -69,7 +73,7 @@ export class ProductGroupedListComponent implements OnInit {
       return { 
         name: cat.name, 
         slug: (cat.slug || cat.name),
-        description: cat.description,
+        description: cat.description||'',
         active: !isCategory || cat.active,
         child: !isCategory,
         weight: cat.weight
@@ -146,6 +150,7 @@ export class ProductGroupedListComponent implements OnInit {
   get isMobile() {
     return (window.innerWidth < 426);
   }
+
 
   ngOnDestroy() {
   }
@@ -248,9 +253,12 @@ export class ProductGroupedListComponent implements OnInit {
       this.group[catName].push(product);
     });
 
+    
 
     const cats = Object.keys(this.group);
-    const sortByAlphaOrScore = (!this.alphasort) ? this.sortProductsByScore:this.sortProductsByTitle;
+    const sortByAlphaOrScore = (!this.alphasort) ? this.sortProductsByScore:(
+      (this.displaySubscription)? this.sortProductsByVendorAndTitle:this.sortProductsByTitle
+    );
     cats.forEach(cat => {
       // console.log('--- DEBUG cat',cat, this.group[cat].length);
       this.group[cat] = this.group[cat].sort(sortByAlphaOrScore).slice(0, maxcat);
@@ -259,6 +267,7 @@ export class ProductGroupedListComponent implements OnInit {
       }
 
     });
+
     //
     // display middle message when category list is small
     if(cats.length<3){
@@ -266,6 +275,8 @@ export class ProductGroupedListComponent implements OnInit {
     }
 
     this.categories = this.categories.filter (cat => cats.indexOf(cat.name)>-1).sort(this.sortByWeight);
+
+
     // FIXME avoid this test 
     if(!this.categories || !this.categories.length) {
       return;
@@ -330,7 +341,7 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
-    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
+    el.scrollIntoView(<any>{ behavior: 'smooth', block: 'start' });
   }
 
 
@@ -342,6 +353,17 @@ export class ProductGroupedListComponent implements OnInit {
     const score = a.title.localeCompare(b.title);
     return score;
   }
+
+  //
+  // sort products by:
+  //  - vendor and title
+  sortProductsByVendorAndTitle(a, b) {
+    // sort : Title
+    const vendor = a.vendor.urlpath.localeCompare(b.vendor.urlpath);
+    if(vendor!==0) return vendor;
+    return a.title.localeCompare(b.title);
+  }
+
 
   //
   // sort products by:

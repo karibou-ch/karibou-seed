@@ -257,7 +257,6 @@ body{
 .gray-1           {color:         #999!important;}
 .black            {color:         black!important;}
 .pink             {color:         #da1c5c!important;}
-.pink             {color:         var(--mdc-theme-secondary)!important;}
 .light            {color:           #aaa!important;}
 .white            {color:         white!important;}
 .gold            {color:         gold!important;}
@@ -541,7 +540,7 @@ body{
   margin-bottom: 10px;
   margin-left: 0px;
 
-  .material-icons{
+  .material-symbols-outlined{
     transform: translateY(4px);
   }
 }
@@ -553,9 +552,7 @@ body{
   border: 1px solid #eee;
   padding: 10px;
   border-radius: 10px;
-  background: var(--mdc-theme-background);
-  -background: var(--mdc-theme-primary);
-  -color: var(--mdc-theme-primary-text);
+  background: #fbfbfb;
   margin-top: 0px;
   margin-bottom: 10px;
   margin-left: 0px;

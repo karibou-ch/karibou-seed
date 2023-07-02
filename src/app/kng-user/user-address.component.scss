@@ -19,47 +19,55 @@ div{
     text-align: center;
     padding: 0 20px;
   }
-  
-  mdc-list-item:nth-child(odd){
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-  }
 
-  mdc-list-item{
+  ul.address{
+    list-style: none;
     padding: 0;
-    .mdc-list-item__graphic{
-      width: 72px;
-      height: 72px;
-      margin-right:6px;
-      background-size: cover;          
-      background-repeat:no-repeat;
-    }
-    mdc-list-item-text{
-      text-align: left;
-      .error{
-        color: red;
-      }
-      button{
+    cursor: pointer;
+    li{
+      position: relative;
+      padding: 10px 15px;
+      background: #efeffe;
+      border-radius: 14px;
+      margin: 10px 0;   
+      label{
         position: absolute;
+        right: 20px;
+        bottom: 9px;
+        font-weight: bold;
+        font-size: 14px;
+        color: #aaa;        
+      }
+      .name::first-letter{
+        text-transform: capitalize;
+      }
+
+      .name{
+        font-weight: bold;
+      }   
+      button{
+        border: 0;
+        position: absolute;
+        right: 15px;
         top: 15px;
-        right: 5px;
-        bottom: 5px;
-        background: var(--mdc-theme-secondary);
-  
+        padding: 5px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        color: red;        
+        background-color: white;
       }
     }
-    div.invalid{
-      color: red;
-    }
-  
   }
 
   form{
     display: flex;
-    width: 100%;
     flex-flow: row wrap;
     justify-content:space-between;
-    
+    width: calc(100% - 36px);
+    padding: 15px;
+    border: 3px solid #eee;
+    border-radius: 14px;    
+
     mdc-text-field,
     select,
     kng-control-messages {

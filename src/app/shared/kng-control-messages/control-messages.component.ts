@@ -5,7 +5,7 @@ import { i18n } from '../../common/i18n.service';
 
 @Component({
   selector: 'kng-control-messages',
-  template: `<div *ngIf="errorMessage !== null">{{errorMessage}}</div>`,
+  template: `<div *ngIf="errorMessage !== null" class="error-control">{{errorMessage}}</div>`,
   encapsulation: ViewEncapsulation.None
 })
 export class KngControlMessagesComponent {

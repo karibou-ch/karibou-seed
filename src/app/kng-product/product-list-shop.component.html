@@ -5,7 +5,7 @@
 
       <!-- CLOSE -->
       <button (click)="onClose(true)" class="close" >
-        <span class="material-icons size-large">arrow_back</span>
+        <span class="material-symbols-outlined size-large">arrow_back</span>
       </button>
 
 
@@ -21,7 +21,7 @@
         <div class="contact">      
           <a class="kng-chip" [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
 
-          <a class="kng-chip" href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-icons start">phone</i> {{vendor.address.phone}}</a>      
+          <a class="kng-chip" href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-symbols-outlined start">phone</i> {{vendor.address.phone}}</a>      
         </div>
         <!-- MARQUE -->
         <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">

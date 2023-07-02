@@ -6,7 +6,7 @@
   <div class="kng-chip-content">
     <div class="kng-chip" *ngFor="let day of weekdays"  [class.selected]="selectedNotification==day.value" (click)="doUpdate(day.value)">
       {{ day.label }}
-      <i class="material-icons end" >alarm</i>
+      <i class="material-symbols-outlined end" >alarm</i>
     </div>
   </div>
 <div class="info" mdcBody1 >

@@ -19,6 +19,7 @@
           "/**/*.map"
         ],
         "urls":[             
+          "https://fonts.gstatic.com/**",
           "https://cdnjs.cloudflare.com/**"
         ]
       }
@@ -33,6 +34,7 @@
         ],
         "urls":[             
           "https://fonts.googleapis.com/**",
+          "https://fonts.gstatic.com/**",
           "https://ucarecdn.com/**",
           "https://use.fontawesome.com/**"
         ]
