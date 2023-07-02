@@ -24,7 +24,7 @@
         <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
         <span class="material-symbols-outlined" mdcListItemGraphic [hidden]="category.cover" class="size-large">folder</span>
         <mdc-list-item-text>
-          <span>{{category.type}}/{{category.name}} ({{category.usedBy?.lenght||0}})</span>
+          <span>{{category.type}}/{{category.name}} ({{category.usedBy?.length||0}})</span>
           <mdc-list-item-secondary>
               {{category.description||'«pas de desciption»'}} // 
               <i class="{{category.image}}"></i> {{category.image}}  
