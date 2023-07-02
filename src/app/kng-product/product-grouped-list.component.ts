@@ -341,7 +341,7 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
-    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
+    el.scrollIntoView(<any>{ behavior: 'smooth', block: 'start' });
   }
 
 
