@@ -18,7 +18,7 @@
           {{issuer[payment.issuer].label}} {{payment.expiryToDate()|date:'MM/y'}}
         </div>                 
         <div>
-          {{payment.number}}          
+          {{payment.number||payment.last4}}          
         </div>              
         <div class="error" [hidden]="!payment.error" [class.invalid]="!payment.isValid()">{{payment.error}}</div>   
         
