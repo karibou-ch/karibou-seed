@@ -35,6 +35,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   VERSION = pkgInfo.version;
   cgAccepted = false;
+  cg18Accepted = false;
   shipping;
   shippingTime;
   shippingNote: string;
@@ -117,6 +118,10 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.i18n[this.locale];
   }
 
+  get label_cart_info_subtotal_fees(){
+    return this.i18n[this.locale].cart_info_subtotal_fees.replace('__FEES__',this.currentFeesName);
+  }
+
   get labell() {
     return this.$i18n.label();
   }
@@ -131,20 +136,28 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   get selectAddressIsDone(){
-    return !!this.currentAddress.streetAdress
+    return !!(this.currentAddress && this.currentAddress.streetAdress)
   }
 
   get currentAddress() {
     return this.currentShipping();
   }  
 
+  get userBalance() {
+    return this._user.balance>0? this._user.balance:0;
+  }
+
   get userAddresses() {
-    const address = [... this._user.addresses];
-    const idx = address.findIndex(add => this.currentAddress.isEqual(add));
-    if(idx>-1){
-      address.splice(idx,1);
+    const addresses = [... this.user.addresses];
+    if(!this.currentAddress || !this.currentAddress.name) {
+      return addresses;
     }
-    return address; 
+
+    // const idx = addresses.findIndex(add => this.currentAddress.isEqual(add));
+    // if(idx>-1){
+    //   addresses.splice(idx,1);
+    // }
+    return addresses; 
   }
 
   get currentPayment() {
@@ -152,12 +165,17 @@ export class KngCartCheckoutComponent implements OnInit {
   }  
 
   get userPayments() {
-    const pasments = [... this._user.payments];
-    if(this.currentPayment && this.currentPayment.number) {
-      const idx = pasments.findIndex(payment => payment.isEqual(this.currentPayment));
-      pasments.splice(idx,1);  
+    const payments = [... this.user.payments];
+    if(!this.currentPayment || !this.currentPayment.alias) {
+      return payments;
     }
-    return pasments; 
+
+    // const idx = payments.findIndex(payment => payment.isEqual(this.currentPayment));
+    // if(idx>-1){
+    //   payments.splice(idx,1);  
+    // }
+
+    return payments; 
   }
 
 
@@ -199,7 +217,40 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
 
+  get currentFeesName() {
+    if(!this._currentHub){
+      return '0%'
+    }
+    const fees = this._currentHub.serviceFees;
+    return Math.floor(fees*100) + '%';
+  }
+
+  get currentFeesAmount() {
+    if(!this._currentHub){
+      return 0;
+    }
+
+    const hub = this._currentHub.slug;
+    const amount = this.$cart.getItems().filter(item => (!hub || hub == item.hub)).reduce((total,item) =>{
+      return total += (item.price * item.quantity);
+    },0);
+    const fees = this._currentHub.serviceFees;
+    return Math.floor(amount*fees*100)/100;
+  }
+
+
   ngOnInit(): void {
+    this.$user.user$.subscribe(user => {      
+      this._user = user;
+      if(!this._isReady){
+        this.selectPaymentIsDone = false;
+        this.$cart.setPaymentMethod(null);
+        return;
+      }
+      //
+      // if user i
+      this.checkPaymentMethod();
+    });
   }
 
   //
@@ -215,6 +266,7 @@ export class KngCartCheckoutComponent implements OnInit {
     this.useCartView = useCartView;
     this.checkPaymentMethod();
 
+    console.log('---DBG doInitateCheckout',user)
     const address = this.$cart.getCurrentShippingAddress();
     this.setShippingAddress(address);
 
@@ -228,7 +280,7 @@ export class KngCartCheckoutComponent implements OnInit {
       }
 
       if(!this.selectAddressIsDone){
-        const address = this._user.addresses[0];
+        const address = UserAddress.from(this._user.addresses[0]);
         this.setShippingAddress(address);  
       }  
     }
@@ -245,60 +297,6 @@ export class KngCartCheckoutComponent implements OnInit {
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
 
-  }
-
-
-  //
-  // stripe documentation
-  // https://stripe.com/docs/elements/address-element/collect-addresses?platform=web#web-retrieve-address
-  // https://stripe.com/docs/js/elements_object/create_address_element#address_element_create-options
-
-
-  async buildStripeCard() {
-
-    const elementsOptions = {
-      locale: this.$i18n.locale
-    } as StripeElementsOptions;
-    const elements = await this.$stripe.elements(elementsOptions).toPromise()
-
-      // Only mount the element the first time
-      // if (this.card) {
-      //   return;
-      // }
-      const cardOptions = {
-
-        hidePostalCode: true,
-        style: {
-          base: {
-            iconColor: '#444',
-            color: '#31325F',
-            lineHeight: '40px',
-            fontWeight: "300",
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSize: '18px',
-            '::placeholder': {
-              color: '#666'
-            }
-          }
-        }
-      } as StripeCardElementOptions;
-
-      const card = await elements.create("card", cardOptions);
-
-
-      setTimeout(() => {
-        card.on('change', (event) => {
-          // event.brand=> "mastercard"
-          // event.complete=> true|false
-          // event.elementType=> "card"
-          // event.empty=> false
-          // event.error=> undefined
-          // event.value=> {postalCode: ""}
-          // console.log('--- DEBUG event',event);
-        });
-
-        card.mount('#card-element');
-      }, 0);
   }
 
 
@@ -392,10 +390,12 @@ export class KngCartCheckoutComponent implements OnInit {
       //
       // set default payment
       // FIXME me this.orders[0].payment.issue is crashing 
+      this._user = user;
       const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
       const previousPayment = payments.find(payment => payment.alias == lastAlias);
+
 
       //
       // use last order as default 
@@ -510,7 +510,6 @@ export class KngCartCheckoutComponent implements OnInit {
       return;
     }
 
-    this.userPaymentSelection = false;
 
     if (!payment.isValid()) {
       this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');

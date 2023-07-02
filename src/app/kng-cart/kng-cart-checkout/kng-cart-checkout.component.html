@@ -22,23 +22,25 @@
         <!--               [hidden]="payment.issuer=='wallet'"-->
         <section class="payments">
           <div class="payment checked" 
-            *ngIf="currentPayment?.issuer" [class.error]="!currentPayment.isValid()">
-            <label (click)="userPaymentSelection=!userPaymentSelection"> Modifier </label>
-            <div class="name">{{issuer[currentPayment.issuer].label}}</div>
+            *ngIf="currentPayment?.issuer" 
+            (click)="selectPaymentIsDone=!selectPaymentIsDone"
+            [class.error]="!currentPayment.isValid()">
+            <label [hidden]="!selectPaymentIsDone"> Changer </label>
+            <div class="method name">{{issuer[currentPayment.issuer].label}}  **{{currentPayment.last4}}</div>
             <div class="note">{{currentPayment.expiryToDate()|date:'MM/y'}}</div>  
-        </div>
+          </div>
 
           <div class="payment" *ngFor="let payment of userPayments" 
-            [class.error]="!payment.isValid()" [hidden]="!userPaymentSelection && currentPayment?.issuer"
+            [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
             (click)="setPaymentMethod(payment)">
             <label> Choisir </label>
-            <div class="name">{{issuer[payment.issuer].label}}</div>
+            <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
             <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>  
           </div>
-          <div class="profile-action"  [hidden]="!userPaymentSelection && currentPayment">
-            <button [routerLink]="['./user/login-or-payment']">
+          <div class="profile-action"  [hidden]="selectPaymentIsDone && currentPayment" [routerLink]="['./user/login-or-payment']">
+            <div class="button">
               <span class="material-symbols-outlined black">add_box</span>  {{labell.user_payment_add}} 
-            </button>
+            </div>
           </div>      
         </section>
     
@@ -53,7 +55,7 @@
           <div class="address checked" 
               (click)="userAddressSelection=!userAddressSelection"
               [hidden]="!currentShipping()||!currentAddress.streetAdress">
-              <label> Modifier </label>
+              <label  [hidden]="userAddressSelection"> Changer </label>
 
               <div class="name">{{currentAddress.name}}</div>
               <div class="street text-overflow">{{currentAddress.streetAdress}} / {{currentAddress.postalCode}}</div>
@@ -73,6 +75,7 @@
           <div class="address deposit" *ngFor="let address of getDepositAddress()" 
               [hidden]="!userAddressSelection && currentAddress.streetAdress || !address.active" 
               (click)="setShippingAddress(address)" >
+              <label> Choisir </label>
               <div class="name collect">{{address.name}}</div>
               <div class="street text-overflow">{{address.streetAdress}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{label.cart_deposit}}</div>  
@@ -108,14 +111,21 @@
           <div class="bill">
             <div class="label">
               <span [innerHtml]="label.cart_info_subtotal"></span>
-              <i class="material-symbols-outlined gray" (click)="doToggleFees=!doToggleFees">info</i>
+              &nbsp;<i class="material-symbols-outlined gray" (click)="doToggleFees=!doToggleFees">info</i>
             </div>
             <div class="amount">{{itemsAmount|currency:'CHF'}}</div>
+          </div>
+
+          <div class="bill border">
+            <div class="label">              
+              <span [innerHtml]="label_cart_info_subtotal_fees"></span>              
+
+            </div>
+            <div class="amount-light">{{currentFeesAmount|currency:'CHF'}}</div>
           </div>
           <div class="bill" [hidden]="!doToggleFees">
             <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
           </div>
-
 
           <div class="bill">
             <div class="label">
@@ -137,11 +147,18 @@
             <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
           </div>
 
+          <div class="bill wallet">
+            <div class="label">
+              {{label.cart_info_wallet}}              
+            </div>
+            <div class="amount" >{{userBalance|currency:'CHF'}}</div>
+          </div>
+          
           <div class="bill total">
             <div class="label">
               {{label.cart_info_total}}              
             </div>
-            <div class="amount" >{{currentTotal()|currency:'CHF'}}</div>
+            <div class="amount" >{{currentTotal()-userBalance|currency:'CHF'}}</div>
           </div>
 
           <!-- INFO HELP MOBILE -->
@@ -154,7 +171,7 @@
         <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
           <section class="resume-title">
             <p class="bold block-info">              
-              {{currentShippingDay()|date:'EEEE dd MMMM':'':locale|titlecase}} ({{shippingTime}})
+              Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} ({{shippingTime}} heures)
             </p>
           </section>  
 
@@ -176,8 +193,15 @@
                 <a href="javascript:;" class="link"
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
             </div>
+            <div class="overflow">
+              <input type="checkbox" [(ngModel)]="cg18Accepted" >
+              <label class="link">        
+                <a href="javascript:;" class="link"
+                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a></label>    
+            </div>
+
             <div>
-              <button [disabled]="!cgAccepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
+              <button [disabled]="!cgAccepted||!cg18Accepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
             </div>
             <div class="bill error" [hidden]="!errorMessage">
               {{errorMessage}}

@@ -1,5 +1,9 @@
   //
   // cart content
+.mdc-list{
+  display: block;
+}
+
 .list-item{
     display: flex;
     position: relative;
@@ -236,7 +240,7 @@
       margin-top: 15px;
       margin-bottom: auto;      
       color: black;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
     }
   }
   .text{
@@ -275,7 +279,7 @@
   align-items: center;
   justify-content: flex-start;
   height: 90px;
-  padding: 0 10px;
+  padding: 0 14px;
   overflow: hidden;
   &.subscription-item{
     background: #eee;
@@ -288,10 +292,16 @@
 
   }
   &.separator {
-    background: #f9f9f9;
-    font-weight: 600;
-    border-bottom: 2px solid #aaa;
-    margin: 15px 0 50px;    
+    background: #f7f7f7;
+    border-bottom: 1px solid #eee;
+    margin: 0px 0 30px;    
+    color: #888;
+    div{
+      text-align: center;
+      width: 100%!important;
+      font-weight: 400;
+  
+    }
   }
 
   &.auto-height {
@@ -383,7 +393,8 @@
   }  
 
   button.continue{
-    -border: 1px solid var(--mdc-theme-secondary);
+    border: 1px solid #eee;
+    background-color: #fbfbfb;
     border-radius: 8px;
     padding: 4px 10px;
     width: auto;

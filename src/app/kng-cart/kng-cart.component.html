@@ -2,7 +2,6 @@
 
 <div class="cart-container" *ngIf="isValid">
   <section class="cart" [hidden]="items.length">
-    <h2>{{i18n[locale].cart_empty}}</h2>
   </section>
 
   <!-- VOS PANIER -->
@@ -13,9 +12,9 @@
   <div class="cart-selector">
     <div class="elem">
       <div class="item" [class.selected]="currentCartView" (click)="doSelectCart(true)">
-        Votre panier de {{currentShippingDay|date:'EEEE'}}
+        {{llabel.cart_info_title}} {{currentShippingDay|date:'EEEE':'':locale}}
       </div>
-      <div class="item" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
+      <div hidden class="item" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
         Votre abonnement &nbsp;<i class="material-symbols-outlined ">star</i>
       </div>
     </div>
@@ -48,9 +47,11 @@
     </ng-container>
   </mdc-list>
 
-  <p class=" block-link" [hidden]="isSharedCart()">
-    {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
-  </p>
+  <div class="pending-order display-message">
+    <p class=" block-link" [hidden]="isSharedCart()">
+      {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
+    </p>  
+  </div>
 
   <router-outlet></router-outlet>
 

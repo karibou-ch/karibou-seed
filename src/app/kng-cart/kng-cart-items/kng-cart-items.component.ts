@@ -248,7 +248,9 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   isCheckoutEnabled() {
-    return this.isCrossMarketShippingDate() && 
+    // user is created but not ready 
+    const userAlmostReady = (this.user.isReady()||!this.user.isAuthenticated())
+    return this.isCrossMarketShippingDate() && userAlmostReady &&
            this.isNotShippingLimit() && 
            this.items.length && !this.noshippingMsg;
   }

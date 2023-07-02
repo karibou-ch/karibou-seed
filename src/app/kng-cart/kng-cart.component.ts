@@ -50,10 +50,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
   i18n: any = {
     fr: {
       cart_deposit: 'Commande à collecter',
+      cart_info_title:'Paniers de',
       cart_info_note:'Note:',
       cart_info_help:'besoin d\'aide?',
+      cart_info_wallet:'Votre portefeuille',
       cart_info_total: 'Total provisoire',
-      cart_info_subtotal: 'Sous total (service karibou inclus)',
+      cart_info_subtotal: 'Sous total (service inclus)',
+      cart_info_subtotal_fees: '__FEES__ de Service ',
       cart_info_shipping: 'Livraison 100% cycliste',
       cart_info_shipping_title: 'Adresse de livraison ',
       cart_info_shipping_group: 'Vous complétez une commande en cours',
@@ -68,7 +71,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       lorsque de nouvelles fenêtres de livraison seront disponibles.
        Merci beaucoup pour votre compréhension.`,
       cart_info_service_k: `Service <span class=" ">__FEES__%</span> inclus`,
-      cart_info_service_k_plus: `Sur karibou.ch, le prix de chaque produit = le prix pratiqué en boutique/sur le marché!<br/> Ce coût finance la collecte, la préparation et la vérification de votre commande ainsi que notre service au client 5🌟.`,
+      cart_info_service_k_plus: `Ce coût finance notre travail pour organiser, collecter, préparer les marchés en ligne, ainsi que notre service au client 5🌟.`,
       cart_remove: 'enlever',
       cart_modify_add: 'Choisir une autre adresse de livraison',
       cart_modify_payment: 'Choisir un autre mode de paiement',
@@ -88,14 +91,18 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_shared_title2: 'Identifiez-vous pour partager vos modifications!',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
+      cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
       cart_order: 'Commander pour',
     },
     en: {
       cart_deposit: 'Order to collect',
+      cart_info_title:'Carts for ',
       cart_info_help:'Need help?',
       cart_info_note:'Note:',
       cart_info_total: 'Provisional total',
+      cart_info_wallet:'Supported by your wallet',
       cart_info_subtotal: 'Subtotal (service fee included)',
+      cart_info_subtotal_fees:'Service fee  __FEES__ ',
       cart_info_shipping: 'shipping guaranteed <span class="bold">200%</span> ecological ',
       cart_info_shipping_title: 'Shipping between',
       cart_info_shipping_group: 'You are close to complete an order in progress',
@@ -109,7 +116,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_limit: `Our delivery slots are all full. However, you can prepare your basket and confirm your order when
        new delivery windows become available. Thank you very much for your understanding.`,
       cart_info_service_k: 'Service fee <span class="gray ">__FEES__%</span> included',
-      cart_info_service_k_plus: `On Karibou.ch, the price of each product = the price charged in the store/market!<br/> This fee covers a broad range of operating costs including pickup, packaging, background checks of your order and our 5🌟 customer support`,
+      cart_info_service_k_plus: `This fee covers a broad range of operating costs including pickup, packaging, background checks of your order and our 5🌟 customer support`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
       cart_modify_add: 'Select another shipping address',
@@ -130,6 +137,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_shared_title2: 'You must be logged to share your changes.',
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
+      cart_cg_18: 'I am of legal age to purchase alcohol',
       cart_order: 'Order now  for ',
     }
   };
@@ -171,6 +179,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
   get locale() {
     return this.$i18n.locale;
   }
+  get llabel() {
+    return this.i18n[this.$i18n.locale];
+  }
+
 
   get label() {
     return this.$i18n.label();
@@ -237,7 +249,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // emit signal for user
       if (emit.user) {
         this.user = emit.user;       
-        // this.$cart.setContext(this.config,this.user);
+        //this.$cart.setContext(this.config,this.user);
         //this.loadOrders(); 
       }
       // emit signal for cart
