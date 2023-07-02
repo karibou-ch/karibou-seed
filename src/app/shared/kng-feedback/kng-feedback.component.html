@@ -45,10 +45,10 @@
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
   <ng-content></ng-content>
   <div class="details" >
-      <span class="bold">{{getOrderHUB(order)}} </span>
       <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</span>
       <b>{{order.items.length}}</b> articles 
       <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
+      <button hidden class="action right">les article</button>
   </div>                   
                    
   <div class="form">
@@ -83,6 +83,12 @@
 
 </div>
 
+<!-- WALLET -->
+<div class="wallet">
+  <div class="label">{{llabel.title_wallet}} </div>
+  <div class="cash">{{balance}} CHF</div>
+</div>
+
 <!--- DISPLAY INVOICES -->
 <div class="qrbill" *ngIf="qrbill && !boxed" [class.qr-fullscreen]="printQr">
   <h3 >{{i18n[locale].title_invoice_open}}</h3>
@@ -94,6 +100,7 @@
   </div>
 </div>
 
+<!-- FEEDBACK POPUP -->
 <ng-container *ngIf="askFeedback">
   <div class="blured" ></div>
   <div class="container top">
@@ -126,6 +133,37 @@
   </div>    
 </ng-container>
 
+<!-- ITEMS POPUP -->
+
+<ng-container *ngIf="selectedOrder">
+
+  <div class="blured" ></div>
+  <div class="container top">
+    <button (click)="onBack()" class="close">
+        <span class="size-xlarge  material-symbols-outlined">close</span>
+    </button>
+    <div class="feedback-container" >
+      <h2>Commande</h2>
+      <p> commande </p>
+
+      <!-- ORDER ITEMS -->
+      <ng-container 
+        [ngTemplateOutlet]="orderItems"
+        [ngTemplateOutletContext]="{ $implicit: selectedOrder }">
+      </ng-container>
+
+
+      <div class="breaker small"></div>
+
+      <!-- ORDER FEEDBACK -->
+
+      <!-- FEEDBACK ACTIONS -->
+      <button  (click)="onEvaluate()" [disabled]="">pouet</button>
+
+    </div>
+  </div>    
+
+</ng-container>
 
 <ng-template #orderItems let-order>
   <ul>

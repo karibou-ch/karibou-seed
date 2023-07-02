@@ -17,12 +17,13 @@ export class KngFeedbackComponent implements OnInit {
 
   i18n: any = {
     fr: {
+      title_wallet:'Votre Portefeuille',
       title_order_prepare: 'Votre commande est en cours de préparation pour',
       title_order_open: 'Vous avez une commande en cours ...',
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
-      title_order_payment_done: 'Valider après le payment!',
+      title_order_payment_done: 'Valider après le virement bancaire!',
       title_evaluation: 'Votre note',
       title_evaluation_quick: 'Evaluez votre satisfaction',
       title_evaluation_save: 'Votre note',
@@ -32,17 +33,18 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_subtitle: 'Chaque retour est précieux pour améliorer la qualité du service',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.<br/>Ne vous inquiétez pas, vous serez remboursé.',
       title_issue_send: 'Enregistrez la note',
-      title_invoice_open:'Vous avez une ou plusieurs factures ouvertes',
+      title_invoice_open:'Vous avez des factures ouvertes',
       title_add_all_to_cart: 'Tout ajouter dans le panier',
       form_text_label: 'Note concernant le service?'
     },
     en: {
+      title_wallet:'Your Wallet',
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
-      title_order_payment_done: 'Validate after payment',
+      title_order_payment_done: 'Validate after bank transfer',
       title_evaluation: 'Your rating',
       title_evaluation_quick: 'Rate your Satisfaction',
       title_evaluation_save: 'Your rating',
@@ -64,6 +66,7 @@ export class KngFeedbackComponent implements OnInit {
   askFeedback = false;
   isReady = false;
   order: Order;
+  selectedOrder: Order;
   childOrder: { [key: number]: Order[]};
   selected: any = {};
   score: number;
@@ -125,24 +128,40 @@ export class KngFeedbackComponent implements OnInit {
     return this.$i18n.label();
   }  
 
+  get llabel(){
+    return this.i18n[this.locale];
+  }  
+
   get orders(){
     return this._orders;
   }
 
+  get balance(){
+    return this._user.balance||0;
+  }
 
   get qrbill() {
     //      reference: "210000000003139471430009017",
     // const prefix = '10000000000';
     // const reference = prefix+this.user.id+''+Utils.mod10(prefix+this.user.id);
-    const ordersTxt = 'Karibou-QRBILL: '+this.invoices.map(order => order.oid).join('-');
-    const amount = this.invoices.reduce((sum,order)=>sum+order.getTotalPrice(),0);
+    const ordersTxt = 'K-ch-QRBILL: '+this.invoices.map(order => order.oid).join('-');
+
+    const orderAmount = this.invoices.reduce((sum,order)=>{
+      const amount = order.getTotalPriceForBill();
+      return sum+amount;
+    },0);
+
+    let amount = -this._user.balance; 
+    if(orderAmount!=amount) {
+      amount = Math.max(orderAmount,amount);
+    };
 
     if(!this.invoices.length){
       return false;
     }
     const content = {
       currency: "CHF",
-      amount: amount,
+      amount: orderAmount,
       message: ordersTxt,
       creditor: {
         name: "Karibou Delphine Cluzel E.",
