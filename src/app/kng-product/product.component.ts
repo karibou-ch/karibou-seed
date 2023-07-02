@@ -275,7 +275,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // manage subscription
     if(this.displaySubscription && product.attributes.subscription){
-      item.frequency = 1;//FIXME CartItemFrequency.ITEM_WEEK;
+      //item.frequency = 1;//FIXME CartItemFrequency.ITEM_WEEK;
     }
 
     //

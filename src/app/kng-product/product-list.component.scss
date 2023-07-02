@@ -110,7 +110,7 @@
       position: fixed;
       top: 60px;
       left: calc(( 100vw - 860px ) / 2 );      
-      z-index: 1;
+      z-index: 4;
       @media (min-width: 1640px) {
         left: calc(( 100vw - 945px ) / 2 );      
       }
@@ -119,11 +119,11 @@
         top: 30px;
         left: -10px;
         padding: 2px 3px;
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.9);
         color: #222;
-        width: 45px;
-        height: 45px;
-        border-radius: 22px;
+        width: 55px;
+        height: 55px;
+        border-radius: 30px;
       }
         
     }
@@ -180,23 +180,26 @@
   .toolbox{
     transform: translateY(0);
     transition: all 200ms;
-    z-index: 2;
+    z-index: 3;
     background: transparent;
     position: fixed;
     left: -5px;
     height: 100vh;
     width: 10px;
     overflow-x: visible;
+    top:300px;
     /* display sub category on product list screen */
     opacity: 1;
-    display: block;
+    display: flex;
     margin-bottom: 0;
     margin-top: 20%;
+    flex-direction: column;
+    align-items: flex-start;
 
     @media (min-width: 1025px) {
       transform:none!important;
       left:calc( (100vw - 865px) / 2);
-      top: 30px;
+      top: 40px;
       margin-top: 0;
       margin-left: -200px;
       opacity: 1!important;
@@ -222,18 +225,50 @@
       opacity: 0;
     }
 
+    &.extend-all{
+      top:40px;
+      ul{
+        margin-left: 0;
+      }
+
+    }
+
+
     font-size: smaller;
     // display: flex!important;
     // height: auto;
     // flex-flow: row wrap; 
+    .show-more{
+      width: 64px;
+      height: 64px;
+      color: #000;
+      background: #fff;
+      border-radius: 32px;
+      text-align: center;
+      min-width: 64px;
+      transform: translateX(-22px);      
+      box-shadow: 0 0 3px 0px #646464cf;
+      display: flex;
+      justify-content: center;
+      align-items: center;      
+      span{
+        font-size: 27px;
+        font-weight: bolder;
+      }
+    }
     ul{
       display: block;
+      transition: all 200ms;
+      @media (max-width: 429px) {
+        margin-left: -300px;
+      }
       li.kng-chip{
         margin: 7px 4px;
         box-shadow: 0 0 1px 1px rgba(100, 100, 100, 0.4);            
         color: #000;
+        font-size: 1.1em;
         &.selected{
-          background-color: var(--mdc-theme-primary)!important;
+          background-color: black!important;
           color: var(--mdc-theme-primary-text, #fff)!important;      
         }
       }

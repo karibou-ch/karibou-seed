@@ -221,6 +221,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.$i18n.label();    
   }
 
+  get isMobile(){
+    return this.$navigation.isMobile();
+  }
+
   add(product: Product) {
     this.$cart.add(product);
   }
@@ -296,6 +300,17 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
     options.maxcat = this.$navigation.isMobile()? 2:options.maxcat;
 
+
+    //
+    // with new navigation, we dont need to load products on mobile/tablet
+    //
+
+    if(this.$navigation.isMobile()) {
+      this.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+      this.isReady = true;
+      this.isLoading = false;
+      return;
+    }
 
     if (hub) {
       options.hub = hub;

@@ -21,7 +21,10 @@
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
-      <div class="toolbox " [class.exited]="scrollDirection < -15 || scrollDirection > 15 || !scrollDirection" [hidden]="options.subscription">
+      <div class="toolbox " [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="options.subscription">
+        <div class="show-more hide-lg" (click)="onMOnbileShowMore()" >
+          <span class="material-symbols-outlined size-medium">density_small</span>
+        </div>
         <ul  #subcategory>
           <li class="kng-chip" (click)="scrollTo($event,child.name)"
                     [id]="'child'+j"                    
@@ -49,6 +52,7 @@
         [config]="config" 
         [user]="user"         
         [scrollContainer]="getDialog()"
+        [scrollToSlug]="scrollToCategory"
         [contentCategories]="getChildCategory(category.current)" 
         [contentProducts]="getProducts()"
         (currentCategory)="filterChild=$event"

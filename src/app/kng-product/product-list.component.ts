@@ -58,6 +58,7 @@ export class ProductListComponent implements OnInit {
   vendor: Shop;
   vendors: Shop[];
 
+  showSubCategory:boolean;
   filterVendor: Shop;
   filterChild: string;
   childSub$;
@@ -377,21 +378,19 @@ export class ProductListComponent implements OnInit {
     this.filterChild = child;
   }
 
+  onMOnbileShowMore(){
+    this.showSubCategory=!this.showSubCategory;
+  }
 
   onClose(closedialog) {
+    this.clean();
     //
     // case of onboarding from ad clic
     const query = this.$route.snapshot.queryParams;
-    const shouldNavigate = query.source || query.fbclid;
-    if(shouldNavigate ||!this.$navigation.hasHistory) {
+    const landing = query.source || query.fbclid;
+    if(landing ||!this.$navigation.hasHistory) {
       return this.$router.navigate(['../../'], { relativeTo: this.$route });
     }
-    setTimeout(() => {
-      if (!this.isReady|| query.source) {
-        return;
-      }
-      this.$router.navigate(['../../'], { relativeTo: this.$route });
-    }, 500);
     this.$navigation.back();
   }
 
@@ -405,9 +404,10 @@ export class ProductListComponent implements OnInit {
   scrollTo($event, name) {
     this.scrollToCategory = name;
     this.filterChild = name;
-    this.scrollDirection = 0;    
+    this.scrollDirection = 0;
+    this.showSubCategory = false;    
     $event.stopPropagation();
-    $event.preventDefault();
+    $event.preventDefault();    
   }
 
   //
