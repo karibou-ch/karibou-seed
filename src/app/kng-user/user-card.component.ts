@@ -127,6 +127,7 @@ export class CardComponent {
     });
 
     this.isLoading = false;
+    
   }
 
 

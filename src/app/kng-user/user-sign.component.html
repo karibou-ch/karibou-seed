@@ -4,10 +4,11 @@
   <button (click)="onBack()" class="close">
       <span class="material-symbols-outlined size-large">close</span>
   </button>
-  <div class="sign" >
   <div class="k-brand">
     <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp; {{$i18n[locale].karibou_project}}
   </div>  
+
+  <div class="sign" >
 
     <div class="logo" 
          [ngStyle]="getTaglineLogo()"
@@ -28,7 +29,7 @@
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
           
           <mdc-text-field  [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>vpn_key</span>
+            <span class="material-symbols-outlined"  trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
             
@@ -62,13 +63,16 @@
     <div class="inner" *ngIf="askAction=='signup'">
       <form [formGroup]="signup" (submit)="onSignup()">
           <mdc-text-field  [label]="$i18n[locale].user_name" fullwidth type="text" formControlName="name">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>name</span>
+            <span tabindex="-1" class="material-symbols-outlined "  trailing>person</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.name"></kng-control-messages>
           <mdc-text-field  [label]="$i18n[locale].user_firstname" fullwidth type="text" formControlName="forname">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>name</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
+
+          <mdc-text-field  [label]="$i18n[locale].user_postalcode" fullwidth type="text" formControlName="postalcode">
+          </mdc-text-field>
+          <kng-control-messages [control]="signup.controls.postalcode"></kng-control-messages>
 
           <mdc-text-field  [label]="$i18n[locale].user_phone" fullwidth  type="text" formControlName="phone" >
             </mdc-text-field>
@@ -78,22 +82,22 @@
               
 
           <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>email</span>
+            <span tabindex="-1" class="material-symbols-outlined "   trailing>email</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
 
           <mdc-text-field  [label]="$i18n[locale].user_password" fullwidth type="password" formControlName="password">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>vpn_key</span>
+            <span tabindex="-1" class="material-symbols-outlined "  trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
 
           <mdc-text-field  [label]="$i18n[locale].user_repassword" fullwidth type="password" formControlName="confirm">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>vpn_key</span>
+            <span tabindex="-1" class="material-symbols-outlined "  trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 
           <button primary  mdc-button unelevated  [disabled]="!signup.valid" class="align-center">
-            <span class="material-symbols-outlined">account_circle</span>              
+            <span tabindex="-1" class="material-symbols-outlined">account_circle</span>              
             <span >{{i18n[locale].signup_create}}</span>
           </button>            
       </form>

@@ -8,27 +8,32 @@
     flex-flow: row nowrap;
     justify-content:center; /*halign*/
     align-items:center; /*valign*/
-    padding-top: 4vh!important;
     padding-bottom: 10vh!important;
     min-height: 80%;
     box-sizing: border-box;    
     position: fixed;top: 0;z-index: 4;margin: auto;left: 0;right: 0;bottom:0;
     overflow: hidden;
+    border-radius: 15px;
 
     @media (min-width: 767px) {
       margin: 10px auto;
       max-width: 900px;
       overflow-y: auto;
-      zoom: 0.9;
+      margin-top: 30px;
     }
+
+    @media (max-width: 429px) {
+      padding-top: 0!important;
+      padding-bottom: 0!important;
+      overflow-y: auto;
+    }    
 
     .k-brand{
       position: absolute;
       top: 10px;
-      left: 5px;
+      left: 15px;
       font-size: 13px;
       z-index: 100;
-      opacity: .6;
       img {
         width: 20px;
         transform: translateY(7px);
@@ -55,17 +60,13 @@
   
 
     kng-control-messages{
-      color:#999;
-      font-size: 80%;
+      font-size: 85%;
       width: 100%;
       text-align: left;      
-    }
+      color:blue;
+      padding: 8px 15px;
 
-    @media (max-width: 429px) {
-      padding-top: 0!important;
-      padding-bottom: 0!important;
-      overflow-y: auto;
-    }    
+    }
 
     .sign{
       display: block;
@@ -78,7 +79,7 @@
       transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
       max-height:700px; // still have to hard-code a value!
       top:0;
-      padding-top: 30px;
+      padding-top: 40px;
       .signup-vs-login{
         line-height: 30px;
       }
@@ -86,6 +87,14 @@
       @media (max-width: 429px) {
         box-shadow: none;
         position: absolute;        
+      }
+
+      .icon{
+        left:auto;
+        right: 16px;
+        position: absolute;
+        bottom: 16px;
+        cursor: pointer;        
       }
       
       .logo{
@@ -97,7 +106,7 @@
         background-position: center;
         background-size: contain;
         display: block;
-        height: 250px;
+        height: 140px;
         margin: 10px 70px;  
         margin-bottom: 20px;
         cursor:pointer;

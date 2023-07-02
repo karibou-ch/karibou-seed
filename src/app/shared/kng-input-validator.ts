@@ -10,15 +10,27 @@ export class KngInputValidator {
     //
     // TODO/FIXME use runtime $i18n translation service  here
     const config = {
-      'required': 'Required',
-      'invalidCreditCard': 'Is invalid credit card number',
-      'invalidEmailAddress': 'Invalid email address',
-      'invalidPassword': 'Password must be at least 6 characters',
-      'MatchPassword': 'Password dont match',
-      'minlength': `Minimum length ${validatorValue.requiredLength}`
+      fr:{
+        'required': 'Requis',
+        'invalidPostalcode':'Désolé, le code postal n\'est pas encore disponible pour la livraison',
+        'invalidCreditCard': 'Le numéro de carte de crédit n\'est pas valide',
+        'invalidEmailAddress': 'Adresse e-mail invalide',
+        'invalidPassword': 'Mot de passe doit être d\'au moins 8 caractères',
+        'MatchPassword': 'Le mot de passe ne correspond pas',
+        'minlength': `La longueure minimale est ${validatorValue.requiredLength}`
+      },
+      en:{
+        'required': 'Required',
+        'invalidPostalcode':'Sorry, the postal code is not yet available for delivery.',
+        'invalidCreditCard': 'Is invalid credit card number',
+        'invalidEmailAddress': 'Invalid email address',
+        'invalidPassword': 'Password must be at least 8 characters',
+        'MatchPassword': 'Password dont match',
+        'minlength': `Minimum length ${validatorValue.requiredLength}`
+      }
     };
 
-    return config[validatorName];
+    return config[$i18n.locale][validatorName];
   }
 
   static creditCardValidator(control) {
@@ -39,6 +51,12 @@ export class KngInputValidator {
       return { 'invalidEmailAddress': true };
     }
   }
+
+
+  static postalCodeValidator(control) {
+    // RFC 2822 compliant regex
+  }
+
 
   static passwordValidator(control) {
     // {6,100}           - Assert password is between 6 and 100 characters

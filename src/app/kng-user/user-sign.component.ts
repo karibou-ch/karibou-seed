@@ -73,7 +73,7 @@ export class UserSignComponent {
       login_ko: 'L\'utilisateur ou le mot de passe est incorrect',
       login_skip: 'je veux visiter les marchés sans m\'identifier',
       signup_create: 'Créer votre compte',
-      signup_phone: 'Le téléphone est essentiel pour pouvoir vous contacter lors d\'une commande',
+      signup_phone: 'Le téléphone mobile est essentiel pour pouvoir vous contacter lors d\'une commande',
       password_change_ok: 'Votre mot de passe à été modifié',
       profil_ok: 'Profil enregistré',
       register_ok: 'Votre compte à été créé! Une demande de confirmation vous a été envoyée à votre adresse email',
@@ -94,7 +94,7 @@ export class UserSignComponent {
       login_ko: 'Username or password are not correct',
       login_skip: 'Visit the marketplace without identification',
       signup_create: 'Continue',
-      signup_phone: 'The phone is mandatory to contact you when ordering',
+      signup_phone: 'Mobile phone is mandatory to contact you when ordering',
 
       password_change_ok: 'Votre mot de passe à été modifié',
       profil_ok: 'Profil enregistré',
@@ -160,6 +160,13 @@ export class UserSignComponent {
       referrer: this.$route.snapshot.data.referrer
     };
 
+    const postalCodeValidator= (control) => {
+
+      if(this.config.shared.user.location.list.indexOf(control.value)==-1){
+        return {invalidPostalcode:true};
+      }    
+      return null;
+    }
 
     //
     // create account
@@ -169,6 +176,7 @@ export class UserSignComponent {
       'email': ['', [Validators.required, KngInputValidator.emailValidator]],
       'password': ['', [Validators.required, KngInputValidator.passwordValidator]],
       'confirm': ['', [Validators.required, KngInputValidator.passwordValidator]],
+      'postalcode':['',[Validators.required, postalCodeValidator]],
       'phone': ['', [Validators.required, Validators.minLength(9)]]
     });
 
@@ -280,8 +288,8 @@ export class UserSignComponent {
   }
 
   getTaglineLogo() {
-    const defaultImg = (this.config.shared.hub && this.config.shared.hub.tagLine) ?
-          this.config.shared.hub.tagLine.image : this.K_BRAND;
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.logo) ?
+          this.config.shared.hub.logo : this.K_BRAND;
 
     const bgStyle = 'url(' + defaultImg + ')';
     return {'background-image': bgStyle};

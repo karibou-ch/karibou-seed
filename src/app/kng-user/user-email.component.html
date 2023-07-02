@@ -3,14 +3,14 @@
   <h4 >{{user.display()}}</h4> -->
   <form [formGroup]="$profile" (submit)="onChange()">
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_name" type="text" formControlName="name" [ngModel]="user.name.familyName">
-        <span class="material-symbols-outlined" mdcTextFieldIcon trailing class="primary">face</span>
+        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >face</span>
       </mdc-text-field>
 
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_firstname" type="text" formControlName="forname" [ngModel]="user.name.givenName">
       </mdc-text-field>
 
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_phone" type="text" formControlName="phone" [ngModel]="phone">
-        <span class="material-symbols-outlined" mdcTextFieldIcon trailing class="primary">phone</span>
+        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing>phone</span>
       </mdc-text-field>
       
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_email" type="email" formControlName="email" [ngModel]="user.email.address">
@@ -18,7 +18,7 @@
         
       
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_confirm_password"  type="password" formControlName="password">
-        <span class="material-symbols-outlined" mdcTextFieldIcon trailing class="primary">vpn_key</span>
+        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >vpn_key</span>
       </mdc-text-field>
         
       <button mdc-button unelevated="true" [disabled]="!$profile.valid">
