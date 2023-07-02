@@ -79,7 +79,7 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
   }
 
   doSetCurrentShippingDay(day: Date) {
-    if (!this.isDayAvailable(day)) {
+    if (!day || !this.isDayAvailable(day)) {
       return;
     }
     // this.dialogRef.close(day);
