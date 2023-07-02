@@ -1,13 +1,13 @@
   <!-- MARKETPLACE -->
   <h2>{{i18n.label().nav_store}}</h2>
-  <h3 class="hide-sm">{{i18n.label().nav_store_sub}}</h3>
+  <h3 class="hide">{{i18n.label().nav_store_sub}}</h3>
   <div class="marketplace">
     <div class="container">
       <div class="hub"  
         *ngFor="let hub of config.shared.hubs;let idx=index" 
         (click)="toggleStore(hub)"
         [class.selected]="hub.slug === currentHub.slug">
-        <div class="logo"  >
+        <div class="logo hide-sm"  >
           <img [src]="hub.siteName.image + '/-/resize/400x/home.jpg'" />
         </div>
 
@@ -38,7 +38,7 @@
               <li *ngFor="let day of [1,2,3,4,5]" >
                 <div>{{getWeekDay(day)}}</div>
                 <div class="indicator">
-                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)==1">radio_button_unchecked</span>
+                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)==-1">radio_button_unchecked</span>
                   <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)>-1">radio_button_checked</span>
                 </div>
               </li>
