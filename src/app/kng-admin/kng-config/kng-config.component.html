@@ -7,7 +7,14 @@
   <kng-config-input clazz="config" format="menu"></kng-config-input>
 
   <!-- SITE Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <!-- TITLE/DESC -->
+  <kng-config-input clazz="config" label="Ttre principal" name="site.title" format="text" 
+                    [(ngModel)]="config?.shared.name[$i18n.locale]"></kng-config-input>
+  <kng-config-input clazz="config" label="Description principale" name="site.description" format="area" 
+                    [(ngModel)]="config?.shared.description[$i18n.locale]"></kng-config-input>
+
 
   <!-- EMAIL -->
   <kng-config-input clazz="config" label="Mail de contact" name="mail" format="text" 
@@ -32,7 +39,7 @@
   <h3 >Subscription <span class="gray">(subscription header)</span></h3>
   <hr class="dashed"/>
   <!-- SITE Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
 
   <kng-config-input clazz="config" label="Titre subscription" name="subscription.titre" format="text" 
                     [(ngModel)]="config?.shared.subscription.t[$i18n.locale]"></kng-config-input>
