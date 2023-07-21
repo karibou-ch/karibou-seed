@@ -7,9 +7,6 @@
         *ngFor="let hub of config.shared.hubs;let idx=index" 
         (click)="toggleStore(hub)"
         [class.selected]="hub.slug === currentHub.slug">
-        <div class="logo hide-sm"  >
-          <img [src]="hub.siteName.image + '/-/resize/400x/home.jpg'" />
-        </div>
 
         <div class="content">
           <div class="selected " >
@@ -17,8 +14,8 @@
           </div>
 
   
-          <div class="market">{{i18n.label().nav_market}}</div>
-          <div class="title">{{hub.siteName[locale]}}</div>
+          <div class="market">{{hub.siteName[locale]}}</div>
+          <div class="title hide"></div>
           <div class="description">{{hub.description[locale]}}</div>
           <div class="cart">
              {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-symbols-outlined icon">shopping_cart</span>
