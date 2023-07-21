@@ -19,8 +19,15 @@ body{
 @import 'kng-card-skeleton.scss';
 
 :root {
-  --mdc-theme-karibou-pink: #{$mdc-theme-secondary};
-  --mdc-theme-primary: #{$mdc-theme-primary};
+  --mdc-theme-karibou-pink: #da1c5c;
+  --mdc-theme-primary: #32b0a0;
+  --mdc-theme-primary-text: white;
+  --mdc-theme-secondary: #028b7a;
+  --mdc-theme-secondary-text: white;
+  --mdc-theme-appbar: rgba(227,236, 235, 0.97);
+  --mdc-theme-appbar-text: rgba(19, 83, 20, 0.97);  
+
+  
   --mdc-theme-primary-light: #{$mdc-theme-primary-light};
   --mdc-theme-primary-dark: #{$mdc-theme-primary-dark};
   --mdc-theme-primary-text: #{$mdc-theme-primary-text};
