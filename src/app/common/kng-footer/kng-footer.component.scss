@@ -15,7 +15,8 @@ div.footer{
   background-position-y: 8%;
   background-position-x: 40%;
   background-repeat: repeat-x;
-  background-color: #f3f3f3;
+  background-color: var(--mdc-theme-appbar);
+  background-color: #fff;
   padding-top: 120px;
 
   @media (max-width:429px) {

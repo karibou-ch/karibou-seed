@@ -217,6 +217,9 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
 
+  get currentTotalMinusBalance(){
+    return Math.max(this.currentTotal()-this.userBalance,0);
+  }
   get currentFeesName() {
     if(!this._currentHub){
       return '0%'

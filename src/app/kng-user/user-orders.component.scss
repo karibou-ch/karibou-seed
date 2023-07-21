@@ -48,6 +48,7 @@
       mdc-list-item-text{
         width: 100%;
         color: var(--mdc-theme-primary-on-background);
+        margin-left: 10px;
         @media screen and (max-width:425px){
           max-width: 95%;          
         }
@@ -95,6 +96,10 @@
       }
     }
 
+    mdc-list li {
+      margin-left: 0;
+    }
+    
     mdc-dialog{
       .mdc-dialog__surface{
         background: white;

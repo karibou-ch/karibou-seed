@@ -226,7 +226,7 @@ export class KngNavigationStateService  {
     if(KngNavigationStateService.forceLockedHub == this.store) {
       return true;
     }
-    return !!this.config.shared.hub.domainOrigin;
+    return !this.config.shared.hub ||!!this.config.shared.hub.domainOrigin;
   }
 
   isMobile(): boolean {
