@@ -324,6 +324,9 @@ export class UserSignComponent {
   onUpdateAddress($result) {
     const msg = ($result.error) ? ($result.error.message || $result.error) : 'OK';
     this.$snack.open(msg, this.$i18n.label().thanks, this.$i18n.snackOpt);
+    if($result.error){
+      return;
+    }
     this.onBack();
   }
 
