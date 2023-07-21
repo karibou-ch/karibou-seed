@@ -3,8 +3,9 @@ button{
   margin-left: auto;
 
   border: 0;
-  padding: 7px 10px;
-  background-color: var(--mdc-theme-primary);
+  padding: 7px 20px;
+  background-color: var(--mdc-theme-primary);      
+  font-weight: bold;
   color: white;
   border-radius: 20px;
   font-size: inherit;  
@@ -16,6 +17,10 @@ button{
     margin-top: 15px!important;
     font-size: 80%;    
   }
+}
+button[disabled]{
+  opacity: .4;
+  background-color: var(--mdc-theme-primary-light);      
 }
 
 button.action{
@@ -74,24 +79,99 @@ p.block-info{
 .order-view{
 }
 
-.wallet{
-  margin: 10px 5px;
-  padding: 20px 10px;
-  background: #eee;
-  border-radius: 14px;
-  color: gray;
-  .label{
+.customer{
+  display: flex;
+  flex-wrap: wrap;
+
+  >div{
+    margin: 10px 5px;
+    padding: 20px 10px;
+    background: #eee;
+    border-radius: 14px;
     color: gray;
-    font-size: 14px;
-    margin-top: -5px;
-    margin-bottom: 5px;    
-    font-weight: 600;
-  }  
-  .cash{
-    font-size: 24px;
-    font-weight: 600;
-    font-family: monospace;    
-    color: black;
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(50% - 30px);
+    min-height: 80px;
+    overflow: hidden;
+    &.boxed {
+      display: none;    
+    }
+
+    @media (max-width: 429px) {
+      width: 100%;
+      
+    }
+
+    .label{
+      color: gray;
+      font-size: 14px;
+      margin-top: -5px;
+      margin-bottom: 5px;    
+      font-weight: 600;
+      width: 100%;
+    }  
+    .content{
+      color: #555;
+      width: 100%;
+      font-size: 15px;
+      button{
+        width: 100%;
+      }
+    }
+
+  }
+  .favorite{
+
+  }
+
+
+  .history{
+
+  }
+  .subscription{
+
+  }
+  .wallet{  
+    .boxed{
+      display: none;
+    }
+    .cash{
+      font-size: 24px;
+      font-weight: 600;
+      font-family: monospace;    
+      width: calc(100% - 205px);
+      color: black;    
+    }
+    .gift{
+      width: calc(200px);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      input{
+        border: 0;
+        height: 34px;
+        padding-left: 10px;
+        outline: 0;
+        font-weight: bold;
+        font-size: 18px;
+        width: 145px;
+      }
+      button{
+        margin: 0 !important;
+        width: 34px!important;
+        height: 36px!important;
+        border-radius: 0 8px 8px 0;
+        flex: auto;
+        background: var(--mdc-theme-primary-light);
+        padding: 0;      
+      }
+    }
+  }
+  .bill{
+    button{
+      width: 100%;
+    }
   }
 }
 
@@ -214,6 +294,8 @@ p.block-info{
   }
 }
 
+  //
+  // FEEDBACK
 .container.top{
   color: #424242;
   background-color:rgba(255,255,255,0.99);
@@ -351,6 +433,8 @@ p.block-info{
   }
 }
 
+//
+// print 
 .qrbill{  
   &.qr-fullscreen {
     position: fixed;
@@ -363,23 +447,42 @@ p.block-info{
     overflow: visible;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
     .svg{
       max-height: 100%;
-      margin: 0;
+      margin: 10px;
       padding: 0;
     } 
-    h3,
-    button{
-      display: none;
-    }   
-    button.close{
-      display: block!important;
-      margin: auto;
-      @media print {
-        display: none!important;
-      }
-  
+    h3{
+      margin: 40px 25px 10px;
     }
+    p{
+      font-size: 18px;
+      margin: 40px 25px;
+    }
+  
+    .actions{
+      display: flex;
+      margin: 40px 25px;
+      margin-top: auto;
+      button{
+        margin-left: 5px;
+        text-transform: uppercase;
+        font-weight: bold;
+        background-color: var(--mdc-theme-primary-light);      
+      }
+      button.print{
+        margin-left: 5px;
+        width: 100%;
+      }
+    
+      button.close{
+        margin-left: auto;
+      }
+    
+    }
+  
   }
   border-bottom: 3px dotted #aaa;
   padding:0 10px;
@@ -388,30 +491,5 @@ p.block-info{
   overflow: hidden;
   h3{
     margin-bottom: 0;
-  }
-  p{
-    font-size: 15px;
-    margin-top: 5px;
-  }
-  .svg{
-    max-height: 300px;
-    overflow: hidden;
-    margin-left: -250px;
-    zoom: 0.9;
-  }
-  button{
-    width: calc( 100% - 105px);
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-  button.print{
-    margin-left: 5px;
-    width: 100px;
-    background-color: var(--mdc-theme-secondary);
-  }
-
-  button.close{
-    display: none;
-  }
-
+  }  
 }

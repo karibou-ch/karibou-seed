@@ -61,19 +61,18 @@
     <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
   </div>
   <div class="evaluate" [hidden]="!displayEvaluate()" [class.boxed]="boxed">
-      <div class="label">
-        <span>{{i18n[locale].title_evaluation_save}}</span>
-        <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
-        <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
-        <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-        <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
-        <button (click)="onEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>      
-      </div>
-      <p class="block-info">
-        <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
-      </p>
-      <button (click)="openIssue()" class="issue" [hidden]="!displayEvaluate()">{{i18n[locale].title_issue_question}}</button>    
+    <div class="label">
+      <span>{{i18n[locale].title_evaluation_save}}</span>
+      <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
+      <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+      <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
+      <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
+      <button (click)="onEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>      
     </div>
+    <p class="block-info">
+      <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
+    </p>
+  </div>
 
   <!-- ORDER ITEMS -->
   <!-- <ng-container 
@@ -83,20 +82,57 @@
 
 </div>
 
-<!-- WALLET -->
-<div class="wallet">
-  <div class="label">{{llabel.title_wallet}} </div>
-  <div class="cash">{{balance}} CHF</div>
-</div>
+<div class="customer">
+  <div class="wallet" [class.boxed]="boxed">
+    <div class="label">{{llabel.title_wallet}} </div>
+    <div class="cash">{{balance}} CHF</div>
+    <div class="gift">
+      <input type="text" [placeholder]="llabel.title_code" [(ngModel)]="applyCode">
+      <button (click)="onRedeem()" [disabled]="!applyCode"><span class="stars material-symbols-outlined">done</span></button>
+    </div>
+  </div>
 
+  <div class="bill" [hidden]="!hasInvoice" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_invoice_open}}</div>
+    <div class="content">
+      <p>{{qrbillContent|| 'Aucune facture ouverte'}}</p>
+      <button class="print" [disabled]="!qrbillContent" (click)="printQr=true">Imprimer</button>  
+    </div>
+  </div>
+
+  <div class="subscription" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_favorite}}</div>
+    <div class="content">
+      <p>{{i18n[locale].title_favorite_p}}</p>
+      <button (click)="onFavorites()">OPEN</button>
+    </div>
+  </div>
+
+
+  <div class="history" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
+    <div class="label">La commande {{order.shipping.when|date:'d MMM'}}, {{order.getTotalPrice()|currency:'CHF'}}</div>
+    <div class="content">
+      <p>
+        <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
+      </p>
+      <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>    
+    </div>
+  </div>
+
+  <div class="subscription" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_subscription}}</div>
+    <div class="content">--</div>
+  </div>
+      
+</div>
 <!--- DISPLAY INVOICES -->
-<div class="qrbill" *ngIf="qrbill && !boxed" [class.qr-fullscreen]="printQr">
-  <h3 >{{i18n[locale].title_invoice_open}}</h3>
+<div class="qrbill" [hidden]="!printQr" [class.qr-fullscreen]="printQr">
+  <h3>La facture à immprimer</h3>
   <div class="svg" #qrbill></div> 
+  <p>Les code des commandes: {{qrbillContent}}</p>
   <div class="actions">
     <button (click)="onUpdateInvoices()">{{i18n[locale].title_order_payment_done}}</button>
     <button class="close" (click)="printQr=false">FERMETURE</button>
-    <button class="print" (click)="printQr=true">PRINT</button>  
   </div>
 </div>
 
@@ -109,6 +145,11 @@
     </button>
     <div class="feedback-container" >
       <h2>{{i18n[locale].title_issue_title}}</h2>
+
+      <div class="stars">
+
+      </div>
+
       <p [innerHtml]="i18n[locale].title_issue_header"></p>
 
       <!-- ORDER ITEMS -->

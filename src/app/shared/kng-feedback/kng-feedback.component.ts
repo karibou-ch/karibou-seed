@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem } from 'kng2-core';
-import { i18n } from '../../common';
+import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService } from 'kng2-core';
+import { KngNavigationStateService, i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 import { forkJoin } from 'rxjs';
@@ -17,7 +17,11 @@ export class KngFeedbackComponent implements OnInit {
 
   i18n: any = {
     fr: {
+      title_code:'Code $$',
       title_wallet:'Votre Portefeuille',
+      title_favorite:'Les suggestions pour vous',
+      title_favorite_p:'Un rapide coup d\'oeil de la sélection',
+      title_subscription:'Vos abonemments',
       title_order_prepare: 'Votre commande est en cours de préparation pour',
       title_order_open: 'Vous avez une commande en cours ...',
       title_order_grouped: 'complément(s)',
@@ -30,7 +34,7 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_question: 'Avez-vous rencontré un problème?',
       title_issue_hub: 'Si vous souhaitez faire un commentaire plus général c\'est ici',
       title_issue_title: 'Vous avez rencontré un problème avec un produit',
-      title_issue_subtitle: 'Chaque retour est précieux pour améliorer la qualité du service',
+      title_issue_subtitle: 'Aider nousà améliorer la qualitédu service',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.<br/>Ne vous inquiétez pas, vous serez remboursé.',
       title_issue_send: 'Enregistrez la note',
       title_invoice_open:'Vous avez des factures ouvertes',
@@ -38,7 +42,11 @@ export class KngFeedbackComponent implements OnInit {
       form_text_label: 'Note concernant le service?'
     },
     en: {
+      title_code:'Code $$',
       title_wallet:'Your Wallet',
+      title_favorite:'Suggestions mades for you',
+      title_favorite_p:'A quick glance of goods',
+      title_subscription:'Your subscriptions',
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
@@ -50,7 +58,7 @@ export class KngFeedbackComponent implements OnInit {
       title_evaluation_save: 'Your rating',
       title_issue_question: 'An issue with your order ?',
       title_issue_title: 'You have an issue with a product',
-      title_issue_subtitle: 'Each feedback helps us to improve the quality',
+      title_issue_subtitle: 'Helps us to improve the quality',
       title_issue_header: 'Select the product(s) below to inform the vendor.<br/>We are really sorry but don\'t worry you will get your money back!',
       title_issue_hub: 'If you have a more general comment please write here',
       title_issue_send: 'Save your rating',
@@ -71,6 +79,7 @@ export class KngFeedbackComponent implements OnInit {
   selected: any = {};
   score: number;
   feedbackText: string;
+  applyCode: string;
   invoices: Order[];
   HUBS:any = {};
 
@@ -78,6 +87,7 @@ export class KngFeedbackComponent implements OnInit {
   // qrbill component
   module:any;
   printQr = false;
+  contentSVG = "";
   currentLimit: number;
   premiumLimit: number;
 
@@ -140,7 +150,11 @@ export class KngFeedbackComponent implements OnInit {
     return this._user.balance||0;
   }
 
-  get qrbill() {
+  get hasInvoice() {
+    return this.user.payments.some(payment => payment.issuer == 'invoice');
+  }
+
+  get qrbillContent() {
     //      reference: "210000000003139471430009017",
     // const prefix = '10000000000';
     // const reference = prefix+this.user.id+''+Utils.mod10(prefix+this.user.id);
@@ -159,7 +173,8 @@ export class KngFeedbackComponent implements OnInit {
     if(!this.invoices.length){
       return false;
     }
-    const content = {
+
+    this.contentSVG = {
       currency: "CHF",
       amount: orderAmount,
       message: ordersTxt,
@@ -180,25 +195,23 @@ export class KngFeedbackComponent implements OnInit {
       }
     } as any;    
 
-    //
-    // check validity of SVG component (lazy loaded) and svg element
-    if (this.module && this.module.SVG && this.svg && this.svg.nativeElement) {        
-      this.svg.nativeElement.innerHTML = new this.module.SVG(content, { language: 'EN' });
-    }
 
-    return true;
+    return ordersTxt;
   }
 
   constructor(
     public $products: ProductService,
     public $cart: CartService,
     public  $i18n: i18n,
+    private $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
+    private $user: UserService,
     private $order: OrderService,
     private $cdr: ChangeDetectorRef
   ) {
     this._orders = [];
     this.invoices = [];
+    this.applyCode = "";
   }
 
 
@@ -216,7 +229,6 @@ export class KngFeedbackComponent implements OnInit {
 
     this.config.shared.hubs.forEach(hub => this.HUBS[hub.id]=hub.name);
 
-    this.prepareOrders();
 
   }
 
@@ -308,8 +320,9 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   prepareOrders() {
-    const localInit = () => {
+    const localInit = async () => {
       this.invoices = this.orders.filter(order => order.payment&&order.payment.status=='invoice');
+      console.log('---- feedback',this.invoices)
       this.prepareChildOrder();
       // FIXME order.shipping should not be Null
       const mains = this.orders.filter(order => order.shipping).filter(order => !order.shipping.parent);
@@ -322,11 +335,13 @@ export class KngFeedbackComponent implements OnInit {
       //
       // load qr generator if needed
       if(!this.module && this.invoices.length) {
-        this.module = true; //avoid reentrency
-        import('swissqrbill/lib/node/esm/node/svg.js').then((module:any) => {
-          this.module = module;
-        });
+        this.module = await import('swissqrbill/lib/node/esm/node/svg.js');
       }
+
+      if (this.svg && this.svg.nativeElement && this.module && this.module.SVG) {        
+        this.svg.nativeElement.innerHTML = new this.module.SVG(this.contentSVG, { language: 'EN' });
+      }          
+
     };
 
     if (!this.user.id) {
@@ -371,6 +386,9 @@ export class KngFeedbackComponent implements OnInit {
     this.askFeedback = true;
   }
 
+  onFavorites(){
+    this.$navigation.searchAction('favoris');    
+  }
 
   onAddAllToCart() {
     let items = this.order.items;
@@ -451,5 +469,13 @@ export class KngFeedbackComponent implements OnInit {
         this.$snack.open(http.error);
       }
     );
+  }
+
+  onRedeem(){
+    this.$user.applyCode(this.applyCode).subscribe(user => {
+      this._user = user;
+    },err => {
+      alert(err.error||err.message)
+    })
   }
 }
