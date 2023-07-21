@@ -35,7 +35,38 @@
   <kng-config-input clazz="config" label="Signature des mails" name="mail.signature" format="area" 
                     [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
 
-  <!-- HUB Footer -->
+
+  <!-- FAQ -->
+  <h3 >FAQ de karibou.ch</h3>  
+  <hr class="dashed"/>
+  <!-- SITE Lang -->
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <div class="faq-title">
+    <kng-config-input clazz="config" label="FAQ titre" name="faq.title" format="text" 
+                    [(ngModel)]="config?.shared.faq_title[$i18n.locale]"></kng-config-input>
+
+    <button (click)="onCreateFAQ()">Ajouter une Question</button>
+  </div>
+
+  <div class="faq">
+    <div *ngFor="let faq of config?.shared.faq;let idx=index" class="faq-separator">
+      
+      <div class="faq-question">
+        <kng-config-input clazz="config" label="FAQ question {{idx + 1}}" name="faq.question" format="text" [(ngModel)]="faq.q[$i18n.locale]"></kng-config-input>
+      </div>
+      <div class="faq-reponse">
+        <kng-config-input clazz="config" label="FAQ réponse" name="faq.réponse" format="area" 
+        [(ngModel)]="faq.a[$i18n.locale]"></kng-config-input>
+      </div>      
+      <div class="faq-actions">
+        <button  (click)="config?.shared.faq.splice(idx, 1)">Supprimer</button>
+      </div>
+    </div>
+  </div>      
+
+
+  <!-- Subscription text -->
   <h3 >Subscription <span class="gray">(subscription header)</span></h3>
   <hr class="dashed"/>
   <!-- SITE Lang -->
@@ -52,8 +83,8 @@
 
   
 
-  <!-- HUB Footer -->
-  <h3 >Footer <span class="gray">(welcome bottom)</span></h3>
+  <!-- Karibou.ch Footer -->
+  <h3 >Main Footer <span class="gray">(welcome bottom)</span></h3>
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
                     [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>

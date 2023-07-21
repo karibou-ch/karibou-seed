@@ -120,6 +120,7 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     // this.config.shared.checkout.payment = this.config.shared.checkout.payment || {};
     // this.config.shared.checkout.message = this.config.shared.checkout.message || {};
     this.config.shared.welcome.message = this.config.shared.welcome.message || {};
+    this.config.shared.faq_title = this.config.shared.faq_title || {fr:'',en:''};
 
     //
     // used by child classes
@@ -183,15 +184,22 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
-
-  onDialogOpen(dialog) {
-    dialog.done(dlg => {
-      if (dlg.state() === 'rejected') {
-        this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
-        return;
-      }
-      this.onConfigSave();
+  onCreateFAQ() {
+    this.config.shared.faq = this.config.shared.faq || [];
+    this.config.shared.faq.push({
+      q: {en:'',fr:''},
+      a: {en:'',fr:''}
     });
+  }
+
+
+
+  onDialogOpen(url) {
+    if(url== 'rejected') {
+      this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
+      return;
+    }
+    // this.onConfigSave();
   }
 
 

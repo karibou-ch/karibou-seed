@@ -112,10 +112,15 @@ export class KngConfigInputComponent implements ControlValueAccessor {
 
   onUpload($event) {
     this.value = $event.cdnUrl;
+    this.imageChange.emit(this.value);
   }
 
   onDialogOpen(dialog) {
-    this.imageChange.emit(dialog);
+    dialog.done(async dlg => {
+      if (dlg.state() === 'rejected') {
+        this.imageChange.emit('rejected');
+      }
+    });
   }
 
   onLang($event, lang) {

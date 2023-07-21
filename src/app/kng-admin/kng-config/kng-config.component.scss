@@ -26,6 +26,44 @@
     align-items: center;    
     margin-bottom: 10px;
   }
+  div.faq-title{
+    display: flex;
+    align-items: center;    
+  }
+
+  div.faq{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    .faq-separator{
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      padding: 5px;
+      background: var(--mdc-theme-appbar);
+      border-radius: 14px;
+      margin-top: 10px;      
+      .faq-question{
+        width: 100%;
+      }      
+      .faq-reponse{
+        width: 80%;
+        .mdc-text-field__input{
+          background: var(--mdc-theme-appbar)!important;
+        }
+      }
+      .faq-actions{
+        width: 100%;
+        margin: 5px 20px;
+        button{
+          width: 100%;
+        }
+  
+      }
+    }
+  }
 
   div.block{
     background: #eee;
