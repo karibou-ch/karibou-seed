@@ -120,9 +120,8 @@
           display: flex;
           flex-flow: column;
           height: 100%;
-          font-size: 14px;
+          font-size: 15px;
           .market{
-            -color: var(--mdc-theme-primary);
             text-transform: uppercase;
             font-weight: 600;
           }
@@ -211,8 +210,8 @@
         padding-left: 4px;
         text-align: center;      
         .icon{
-          font-size: 11px;
-          color: rgb(4, 158, 4);
+          font-size: 10px;
+          color: var(--mdc-theme-primary);
         }
       }
     }
