@@ -61,9 +61,9 @@ export class KngCartCheckoutComponent implements OnInit {
   isRunning = false;  
 
   issuer = {
-    wallet: {
+    cash: {
       img: '/assets/img/payment/wallet.jpg',
-      label: 'Votre compte privé'
+      label: 'Votre portefeuille'
     },
     invoice: {
       img: '/assets/img/payment/invoice.jpg',
