@@ -151,7 +151,7 @@
             <div class="label">
               {{label.cart_info_wallet}}              
             </div>
-            <div class="amount" >{{userBalance|currency:'CHF'}}</div>
+            <div class="amount-light" >{{userBalance|currency:'CHF'}}</div>
           </div>
           
           <div class="bill total">
@@ -159,6 +159,13 @@
               {{label.cart_info_total}}              
             </div>
             <div class="amount" >{{currentTotalMinusBalance|currency:'CHF'}}</div>
+          </div>
+
+          <div class="bill reserved">
+            <div class="label">
+              {{label.cart_info_reserved}}              
+            </div>
+            <div class="amount-light" >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</div>
           </div>
 
           <!-- INFO HELP MOBILE -->
@@ -212,7 +219,7 @@
           <div class="bill info-amount">
             <div class="info">
               {{label.cart_amount_1}} 
-              <b >{{currentTotal()*amountReserved|currency:'CHF'}}</b>
+              <b >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</b>
               {{label.cart_amount_2}}              
             </div>
           </div>

@@ -407,6 +407,10 @@
           padding: 10px 0;
           a{
             color: #333;
+            background: #eee;
+            padding: 5px 20px;
+            width: 100%;
+            border-radius: 8px;            
           }
         }
 
@@ -448,7 +452,7 @@
         }
         .info{
           line-height: 18px;
-          color: #aaa;
+          color: #888;
           font-size: 14px;
           margin-top: 10px;
           height: fit-content;
