@@ -29,15 +29,16 @@ export class KngFeedbackComponent implements OnInit {
       title_order_cancel: 'la commande a été annulée ',
       title_order_payment_done: 'Valider après le virement bancaire!',
       title_evaluation: 'Votre note',
-      title_evaluation_quick: 'Evaluez votre satisfaction',
+      title_evaluation_quick: 'Combien d\'étoiles ?',
       title_evaluation_save: 'Votre note',
       title_issue_question: 'Avez-vous rencontré un problème?',
-      title_issue_hub: 'Si vous souhaitez faire un commentaire plus général c\'est ici',
-      title_issue_title: 'Vous avez rencontré un problème avec un produit',
-      title_issue_subtitle: 'Aider nousà améliorer la qualitédu service',
-      title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.<br/>Ne vous inquiétez pas, vous serez remboursé.',
+      title_issue_hub: 'Vous pouvez aussi laisser un commentaire à notre équipe',
+      title_issue_title: 'N\hésitez pas d\'informer le commerçant si nécessaire',
+      title_issue_subtitle: 'Aider nousà améliorer la qualité du service',
+      title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.',
       title_issue_send: 'Enregistrez la note',
       title_invoice_open:'Vous avez des factures ouvertes',
+      title_invoice_paid:'Un virement bancaire en attente',
       title_add_all_to_cart: 'Tout ajouter dans le panier',
       form_text_label: 'Note concernant le service?'
     },
@@ -54,15 +55,16 @@ export class KngFeedbackComponent implements OnInit {
       title_order_cancel: 'Your order has been cancelled',
       title_order_payment_done: 'Validate after bank transfer',
       title_evaluation: 'Your rating',
-      title_evaluation_quick: 'Rate your Satisfaction',
+      title_evaluation_quick: 'Rate your Satisfaction for this order',
       title_evaluation_save: 'Your rating',
       title_issue_question: 'An issue with your order ?',
       title_issue_title: 'You have an issue with a product',
       title_issue_subtitle: 'Helps us to improve the quality',
-      title_issue_header: 'Select the product(s) below to inform the vendor.<br/>We are really sorry but don\'t worry you will get your money back!',
+      title_issue_header: 'Select the product(s) below to inform the vendor.',
       title_issue_hub: 'If you have a more general comment please write here',
       title_issue_send: 'Save your rating',
       title_invoice_open:'You have open invoices',
+      title_invoice_paid:'Bank transfer pending',
       title_add_all_to_cart: 'Add all to cart',
       form_text_label: 'Add a comment about our service'
     }
@@ -81,6 +83,7 @@ export class KngFeedbackComponent implements OnInit {
   feedbackText: string;
   applyCode: string;
   invoices: Order[];
+  invoicesPaid: Order[];
   HUBS:any = {};
 
   //
@@ -150,8 +153,21 @@ export class KngFeedbackComponent implements OnInit {
     return this._user.balance||0;
   }
 
-  get hasInvoice() {
+  get hasInvoiceMethod() {
     return this.user.payments.some(payment => payment.issuer == 'invoice');
+  }
+
+  get hasInvoiceTransfer() {
+    return this.invoicesPaid.length;
+  }
+
+  get qrbillTransfer(){
+    const orders = this.invoicesPaid.map(order => order.oid).join('-');
+    const orderAmount = this.invoicesPaid.reduce((sum,order)=>{
+      const amount = order.getTotalPrice();
+      return sum+amount;
+    },0).toFixed(2);
+    return `Le montant de <b>${orderAmount} CHF</b> <i>(refs. ${orders})</i> sera actualisé dans votre portefeuille après la vérification de notre compte bancaire`;
   }
 
   get qrbillContent() {
@@ -161,7 +177,7 @@ export class KngFeedbackComponent implements OnInit {
     const ordersTxt = 'K-ch-QRBILL: '+this.invoices.map(order => order.oid).join('-');
 
     const orderAmount = this.invoices.reduce((sum,order)=>{
-      const amount = order.getTotalPriceForBill();
+      const amount = order.getTotalPriceForBill();      
       return sum+amount;
     },0);
 
@@ -322,7 +338,9 @@ export class KngFeedbackComponent implements OnInit {
   prepareOrders() {
     const localInit = async () => {
       this.invoices = this.orders.filter(order => order.payment&&order.payment.status=='invoice');
-      console.log('---- feedback',this.invoices)
+      this.invoicesPaid = this.orders.filter(order => order.payment&&order.payment.status=='invoice_paid');
+      // console.log('---- invoices',this.invoices)
+      // console.log('---- invoices paid',this.invoicesPaid)
       this.prepareChildOrder();
       // FIXME order.shipping should not be Null
       const mains = this.orders.filter(order => order.shipping).filter(order => !order.shipping.parent);
@@ -378,12 +396,15 @@ export class KngFeedbackComponent implements OnInit {
   }
 
 
-  openIssue() {
+  openIssue(score?) {
     //
     // DIALOG INIT HACK
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.askFeedback = true;
+    if(score>=0) {
+      this.score=score;
+    }
   }
 
   onFavorites(){

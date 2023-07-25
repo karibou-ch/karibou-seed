@@ -55,23 +55,10 @@
     <!-- Annulation {{order.getFulfilledFailure()}} - 
     Problème {{order.getFulfilledIssue().length}} -->
     <span>{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
-    <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
-    <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
-    <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-    <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
-  </div>
-  <div class="evaluate" [hidden]="!displayEvaluate()" [class.boxed]="boxed">
-    <div class="label">
-      <span>{{i18n[locale].title_evaluation_save}}</span>
-      <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
-      <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
-      <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-      <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>      
-      <button (click)="onEvaluate()" class="">{{i18n[locale].title_issue_send}} </button>      
-    </div>
-    <p class="block-info">
-      <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
-    </p>
+    <span class="stars material-symbols-outlined" (click)="openIssue(0)" [class.scored]="score>=0">star_rate</span> 
+    <span class="stars material-symbols-outlined" (click)="openIssue(1)" [class.scored]="score>=1">star_rate</span> 
+    <span class="stars material-symbols-outlined" (click)="openIssue(2)" [class.scored]="score>=2">star_rate</span>
+    <span class="stars material-symbols-outlined" (click)="openIssue(3)" [class.scored]="score>=3">star_rate</span>    
   </div>
 
   <!-- ORDER ITEMS -->
@@ -92,19 +79,18 @@
     </div>
   </div>
 
-  <div class="bill" [hidden]="!hasInvoice" [class.boxed]="boxed">
+  <div class="bill" [hidden]="!hasInvoiceTransfer" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_invoice_paid}}</div>
+    <div class="content">
+      <p><span [innerHtml]="qrbillTransfer"></span></p>
+    </div>
+  </div>
+
+  <div class="bill" [hidden]="!hasInvoiceMethod" [class.boxed]="boxed">
     <div class="label">{{i18n[locale].title_invoice_open}}</div>
     <div class="content">
       <p>{{qrbillContent|| 'Aucune facture ouverte'}}</p>
       <button class="print" [disabled]="!qrbillContent" (click)="printQr=true">Imprimer</button>  
-    </div>
-  </div>
-
-  <div class="favorite" [class.boxed]="boxed">
-    <div class="label">{{i18n[locale].title_favorite}}</div>
-    <div class="content">
-      <p>{{i18n[locale].title_favorite_p}}</p>
-      <button (click)="onFavorites()">OPEN</button>
     </div>
   </div>
 
@@ -116,6 +102,14 @@
         <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
       </p>
       <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>    
+    </div>
+  </div>
+
+  <div class="favorite" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_favorite}}</div>
+    <div class="content">
+      <p>{{i18n[locale].title_favorite_p}}</p>
+      <button (click)="onFavorites()">OPEN</button>
     </div>
   </div>
 
@@ -144,7 +138,9 @@
         <span class="size-xlarge  material-symbols-outlined">close</span>
     </button>
     <div class="feedback-container" >
-      <h2>{{i18n[locale].title_issue_title}}</h2>
+
+
+      <h3>{{i18n[locale].title_issue_title}}</h3>
 
       <div class="stars">
 
@@ -159,13 +155,22 @@
       </ng-container>
 
 
-      <div class="breaker small"></div>
-
+      <p>
+  
+        <label for="feedback">{{i18n[locale].title_issue_hub}}</label>
+        <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>                  
+  
+      </p>
       <!-- ORDER FEEDBACK -->
-
-      <label for="feedback">{{i18n[locale].title_issue_hub}}</label>
-
-      <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>                  
+      <div class="form">
+        <!-- Annulation {{order.getFulfilledFailure()}} - 
+        Problème {{order.getFulfilledIssue().length}} -->
+        <span class="">{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
+        <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
+        <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+        <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
+        <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
+      </div>
 
       <!-- FEEDBACK ACTIONS -->
       <button  (click)="onEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>

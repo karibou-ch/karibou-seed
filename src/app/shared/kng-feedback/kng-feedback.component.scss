@@ -12,11 +12,6 @@ button{
   span{
     font-size: 40px;
   }    
-  @media (max-width:429px) {
-    flex:1 0 95%;
-    margin-top: 15px!important;
-    font-size: 80%;    
-  }
 }
 button[disabled]{
   opacity: .4;
@@ -327,7 +322,7 @@ p.block-info{
     z-index: 4;
     text-shadow: 0px 2px 0px #eee;
     @media (max-width: 429px) {
-      top: -20px;
+      top: 10px;
       right: -10px;
     }
   }
@@ -356,6 +351,23 @@ p.block-info{
       display: none; 
     }    
 
+    .form{
+      padding: 5px 5px 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      .stars{
+        width: 25px;
+        color: #aaa;
+        transform: translateY(3px);
+        cursor: pointer;
+        &.scored,
+        &:hover{
+          color:var(--mdc-theme-karibou-pink);
+        }      
+    
+      }
+    }
+
     label{
       padding: 5px;
       padding-left:0;
@@ -364,9 +376,11 @@ p.block-info{
     textarea,h2,h3{
       padding: 0 5px;
       margin-bottom: 0;
+      color: #333;
     }
     p{
-      margin-top: 0;
+      border-top: 1px solid #eee;
+      margin-top: 30px;
       white-space: pre-wrap;
       padding: 5px;
     }
