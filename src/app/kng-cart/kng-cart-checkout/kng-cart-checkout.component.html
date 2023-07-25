@@ -151,7 +151,7 @@
             <div class="label">
               {{label.cart_info_wallet}}              
             </div>
-            <div class="amount-light" >{{userBalance|currency:'CHF'}}</div>
+            <div class="amount-light" >{{userBalance*-1|currency:'CHF'}}</div>
           </div>
           
           <div class="bill total">
@@ -168,14 +168,19 @@
             <div class="amount-light" >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</div>
           </div>
 
-          <!-- INFO HELP MOBILE -->
-          <div class="bill help hide-sm">
-            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+
+          <!-- INFO AMOUNT -->
+          <div class="bill info-amount">
+            <div class="info">
+              {{label.cart_amount_1}} 
+              <b >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</b>
+              {{label.cart_amount_2}}              
+            </div>
           </div>
 
         </div>
         <!-- BLOCK DE DROITE -->
-        <div class="order-resume-block border-left" [hidden]="!selectAddressIsDone || !selectPaymentIsDone">
+        <div class="order-resume-block border-left" >
           <section class="resume-title">
             <p class="bold block-info">              
               Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} ({{shippingTime}} heures)
@@ -214,17 +219,8 @@
               {{errorMessage}}
             </div>
           </div>
-
-          <!-- INFO AMOUNT -->
-          <div class="bill info-amount">
-            <div class="info">
-              {{label.cart_amount_1}} 
-              <b >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</b>
-              {{label.cart_amount_2}}              
-            </div>
-          </div>
           <!-- INFO HELP MOBILE -->
-          <div class="bill help hide-md hide-lg">
+          <div class="bill help hide-sm">
             <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
           </div>
         </div>

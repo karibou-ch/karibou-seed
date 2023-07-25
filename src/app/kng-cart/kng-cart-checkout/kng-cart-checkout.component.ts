@@ -388,8 +388,8 @@ export class KngCartCheckoutComponent implements OnInit {
       this.open = false;
       return;
     }
-    //console.log(' --- DBG checkPaymentMethod',this._user.payments.map(p=>p.alias))
-    this.$user.checkPaymentMethod(this._user).subscribe(user => {
+    const total = this.currentTotal() + this.currentServiceFees();
+    this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
       //
       // set default payment
       // FIXME me this.orders[0].payment.issue is crashing 
@@ -520,13 +520,7 @@ export class KngCartCheckoutComponent implements OnInit {
     }
     this.$cart.setPaymentMethod(payment);
     this.selectPaymentIsDone = true;
-    console.log('---DBG payment',payment.alias);
   }
-
-  subTotal() {
-    return this.$cart.subTotal(this._currentHub.slug);
-  }  
-
 
   //
   // payment stuffs
@@ -618,6 +612,7 @@ export class KngCartCheckoutComponent implements OnInit {
           );
           this.updated.emit({ errors: order.errors });
           this.$cart.broadcastState();
+          this.$user.me().subscribe();
           this.open = false;
 
           return;
