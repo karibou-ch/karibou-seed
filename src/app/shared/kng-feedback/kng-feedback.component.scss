@@ -94,6 +94,7 @@ p.block-info{
     width: calc(50% - 30px);
     min-height: 80px;
     overflow: hidden;
+    align-content: flex-start;
     &.boxed {
       display: none;    
     }
@@ -107,7 +108,7 @@ p.block-info{
       color: gray;
       font-size: 14px;
       margin-top: -5px;
-      margin-bottom: 5px;    
+      margin-bottom: 10px;    
       font-weight: 600;
       width: 100%;
     }  
@@ -115,8 +116,12 @@ p.block-info{
       color: #555;
       width: 100%;
       font-size: 15px;
+      p{
+        margin-top: 0;
+      }
       button{
         width: 100%;
+        cursor: pointer;
       }
     }
 
@@ -164,7 +169,8 @@ p.block-info{
         border-radius: 0 8px 8px 0;
         flex: auto;
         background: var(--mdc-theme-primary-light);
-        padding: 0;      
+        padding: 0;   
+        cursor: pointer;   
       }
     }
   }

@@ -474,6 +474,7 @@ export class KngFeedbackComponent implements OnInit {
   onRedeem(){
     this.$user.applyCode(this.applyCode).subscribe(user => {
       this._user = user;
+      this.applyCode = "";
     },err => {
       alert(err.error||err.message)
     })
