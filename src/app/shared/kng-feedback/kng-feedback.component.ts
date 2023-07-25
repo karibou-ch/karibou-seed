@@ -227,6 +227,7 @@ export class KngFeedbackComponent implements OnInit {
   ) {
     this._orders = [];
     this.invoices = [];
+    this.invoicesPaid = [];
     this.applyCode = "";
   }
 
