@@ -28,6 +28,7 @@ div.home-header{
     padding: 12px 16px 0;
     font-weight: normal;    
     max-width: 100%;
+    border:2px solid var(--mdc-theme-appbar);
     @media (max-width:427px){
       max-width: calc( 100% - 32px);
     }

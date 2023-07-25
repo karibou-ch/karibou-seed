@@ -225,6 +225,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.$navigation.isMobile();
   }
 
+  get hub(){
+    return this.config.shared.hub ||{};
+  }
+
   add(product: Product) {
     this.$cart.add(product);
   }
@@ -292,6 +296,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.mountOverlay(!!overlay);
     }, 400);
   }
+
+
 
 
   productsGroupByCategory() {

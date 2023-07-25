@@ -1,12 +1,18 @@
 
       
-<div class="home-header">
+<div class="home-header" [hidden]="hub.header.active">
   <!-- HUB -->
   <div class="banner" >
     <h1>{{config.shared.hub.siteName[locale]}}</h1>
     <h2>{{config.shared.hub.description[locale]}}</h2>  
   </div>
 </div>
+
+<!-- INFORMATION -->
+<div class="home-header" [hidden]="!hub.header.active">
+  <div class="banner " [innerHtml]="hub.header.message[locale]"></div>
+</div>
+
 
 <!-- MOBILE SEARCH  -->
 <kng-search class="home"></kng-search>
@@ -18,6 +24,8 @@
 
 <!-- DISCOUNT -->
 <kng-product-swipe discount="true" [hub]="store" ></kng-product-swipe>
+
+
 
 
 <!-- LISTED CATEGORIES -->
@@ -47,19 +55,7 @@
        [contentProducts]="products"       
        [scrollToSlug]="categorySlug" 
        (currentCategory)="displaySlug=($event || displaySlug)"
-       (direction)="scrollDirection=$event">
-    <!-- INFORMATION FOR HOME ONLY-->
-    <div class="home-header hide-sm">
-      <!-- HUB -->
-      <div class="banner hide" >
-        <h1>{{config.shared.hub.name}}</h1>
-        <h2>{{config.shared.hub.description[locale]}}</h2>  
-        <img hidden [src]="config.shared.hub.tagLine.image" />
-      </div>
-    
-      <div class="welcome" [innerHtml]="config.shared.hub.header.message[locale]"></div>
-    </div>
-
+       (direction)="scrollDirection=$event">    
   </kng-product-grouped-list>
 </div>
   
