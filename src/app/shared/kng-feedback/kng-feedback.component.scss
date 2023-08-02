@@ -15,7 +15,7 @@ button{
 }
 button[disabled]{
   opacity: .4;
-  background-color: var(--mdc-theme-primary-light);      
+  background-color: var(--mdc-theme-primary-light);     
 }
 
 button.action{
@@ -117,6 +117,9 @@ p.block-info{
       button{
         width: 100%;
         cursor: pointer;
+        &.print{
+          background-color: black;      
+        }
       }
     }
 
@@ -163,7 +166,7 @@ p.block-info{
         height: 36px!important;
         border-radius: 0 8px 8px 0;
         flex: auto;
-        background: var(--mdc-theme-primary-light);
+        background: var(--mdc-theme-primary-light);        
         padding: 0;   
         cursor: pointer;   
       }
@@ -187,6 +190,9 @@ p.block-info{
 
   .details{
     display: flex;
+    div{
+      margin-right: 10px;
+    }
   }
 
   ul{
@@ -409,10 +415,11 @@ p.block-info{
         }
         .header{
           cursor: pointer;
+          width: 100%;
         }
 
         color: #999;
-        margin: 20px 0;
+        margin: 8px 0;
         font-size: 1.1rem;
   
         text-overflow: ellipsis;
@@ -422,6 +429,7 @@ p.block-info{
           display: flex;
           flex-direction: column;
           margin: 20px 0;
+          width: 100%;
           label{
             color: #777;
           }
@@ -436,6 +444,12 @@ p.block-info{
           margin-right: 10px;
           margin-left: 0;          
         }
+        padding: 10px 8px;
+        border-radius: 4px;
+        position: relative;
+        background-color: #efefef;
+        height: auto;    
+        flex-wrap: wrap;
       }
 
     }
@@ -469,28 +483,99 @@ p.block-info{
     margin: 0;
     display: flex;
     flex-direction: column;
+    align-items: center;
+
+
+    @media print {
+      .actions{
+        display: none!important;
+      }      
+    }
+        
+    @media screen {
+      zoom: .8;
+      background-color: #eee;    
+    }
+
+
+    .page{
+      width: 21cm;
+      height: 29.7cm;
+      margin: 30mm 45mm 30mm 45mm;       
+      margin-top: 10mm;
+      background-color: #fff;    
+      display: flex;
+      flex-direction: column;
+    }
+
     .svg{
       max-height: 100%;
       margin: 10px;
       padding: 0;
+      overflow: hidden;
+      margin-bottom: 0;
+      margin-top: auto;      
     } 
+  
+    .karibou-header{
+      height: 50px;
+      overflow: hidden;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+      img{
+        padding: 5px;
+        height: 40px;
+      }      
+    }
+    address.customer-bill{
+      margin-left: 65%;
+      margin-top: 70px;
+      margin-bottom: 70px;
+    }
+
+    .bill-title{
+      margin: 10px 5%;
+    }
+
+    ul.items{
+      list-style: none;
+      margin: 10px 5%;
+      padding: 0;
+      li{
+        display: flex;
+        padding: 1px 0;
+        div{
+          margin-right: 20px;
+          min-width: 30px;
+        }
+      }
+    }
+
     h3{
-      margin: 40px 25px 10px;
+      margin: 40px 5% 10px;
+      border-bottom: 2px dotted #aaa;
+      padding-bottom: 10px;
     }
     p{
       font-size: 18px;
-      margin: 40px 25px;
+      margin: 40px 5%;
     }
-  
+
     .actions{
       display: flex;
-      margin: 40px 25px;
+      margin: 20px ;
       margin-top: auto;
+      background-color: red;
+      padding: 20px 100px;      
       button{
         margin-left: 5px;
+        margin-right: 20px;
         text-transform: uppercase;
         font-weight: bold;
-        background-color: var(--mdc-theme-primary-light);      
+        background-color: black;      
       }
       button.print{
         margin-left: 5px;

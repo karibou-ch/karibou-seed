@@ -45,9 +45,9 @@
 <div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
   <ng-content></ng-content>
   <div class="details" >
-      <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</span>
-      <b>{{order.items.length}}</b> articles 
-      <span>{{order.getTotalPrice()|currency:'CHF'}}</span>
+      <div class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</div>
+      <div><b>{{order.items.length}}</b> articles </div>
+      <div>{{order.getTotalPrice()|currency:'CHF'}}</div>
       <button hidden class="action right">les article</button>
   </div>                   
                    
@@ -79,22 +79,6 @@
     </div>
   </div>
 
-  <div class="bill" [hidden]="!hasInvoiceTransfer" [class.boxed]="boxed">
-    <div class="label">{{i18n[locale].title_invoice_paid}}</div>
-    <div class="content">
-      <p><span [innerHtml]="qrbillTransfer"></span></p>
-    </div>
-  </div>
-
-  <div class="bill" [hidden]="!hasInvoiceMethod" [class.boxed]="boxed">
-    <div class="label">{{i18n[locale].title_invoice_open}}</div>
-    <div class="content">
-      <p>{{qrbillContent|| 'Aucune facture ouverte'}}</p>
-      <button class="print" [disabled]="!qrbillContent" (click)="printQr=true">Imprimer</button>  
-    </div>
-  </div>
-
-
   <div class="history" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
     <div class="label">La commande {{order.shipping.when|date:'d MMM'}}, {{order.getTotalPrice()|currency:'CHF'}}</div>
     <div class="content">
@@ -102,6 +86,22 @@
         <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
       </p>
       <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>    
+    </div>
+  </div>
+
+  <div class="bill" [hidden]="!hasInvoiceTransfer" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_invoice_paid}}</div>
+    <div class="content">
+      <p>{{qrbillTransfer|| 'Aucune facture en attente'}}</p>
+      <button class="print" (click)="prepareInvoice(true)">Afficher</button>  
+    </div>
+  </div>
+
+  <div class="bill" [hidden]="!hasInvoiceMethod" [class.boxed]="boxed">
+    <div class="label">{{i18n[locale].title_invoice_open}}</div>
+    <div class="content">
+      <p>{{qrbillContent|| 'Aucune facture ouverte'}}</p>
+      <button class="print" [disabled]="!qrbillContent" (click)="prepareInvoice(false)">Imprimer</button>  
     </div>
   </div>
 
@@ -121,11 +121,38 @@
 </div>
 <!--- DISPLAY INVOICES -->
 <div class="qrbill" [hidden]="!printQr" [class.qr-fullscreen]="printQr">
-  <h3>La facture à immprimer</h3>
-  <div class="svg" #qrbill></div> 
-  <p>Les code des commandes: {{qrbillContent}}</p>
+  <div class="page">
+    <address class="karibou-header">
+      <img [src]="headerImg"  />
+      <div class="text-underline bold" >Karibou.ch SA</div> 
+      <div class="gray"> | 5 chemin du 23 Août | 1205 | Genève</div> 
+    </address>
+  
+    <address class="customer-bill">
+      <strong class="name" >{{invoice.name}}</strong><br> 
+      <div class="street" >{{invoice.address}}</div>
+      <div class="street">{{invoice.postalCode}}</div>
+    </address>
+    <div class="bill-title">
+      <b>Facture des commandes :</b> {{invoice.from|date:"d MMM y"}} au {{invoice.to|date:"d MMM y"}}
+    </div>
+  
+    <ul class="items">
+      <li *ngFor="let order of invoice.invoices">
+        <div class="qty bold">1x</div> 
+        <div class="title"> {{order.oid}} {{order.shipping.when|date:"d MMM y"}}</div>
+        <div class="price">{{order.amount|currency:'CHF'}}</div>
+       </li>
+    </ul>
+    <p>
+      <span class="bold">Avec nos meilleures salutations,</span><br/>
+      Karibou.ch<br/>
+    </p>  
+    <div class="svg" #qrbill></div>   
+  </div>
+
   <div class="actions">
-    <button (click)="onUpdateInvoices()">{{i18n[locale].title_order_payment_done}}</button>
+    <button (click)="onUpdateInvoices()" [hidden]="!invoices.length">{{i18n[locale].title_order_payment_done}}</button>
     <button class="close" (click)="printQr=false">FERMETURE</button>
   </div>
 </div>
@@ -180,7 +207,6 @@
 </ng-container>
 
 <!-- ITEMS POPUP -->
-
 <ng-container *ngIf="selectedOrder">
 
   <div class="blured" ></div>
@@ -220,7 +246,7 @@
           {{item.quantity}}x {{item.title}} ({{item.part}})  
         </div>
         <div class="content" [hidden]="!selected[item.sku]">
-          <label for="story">Description/Describe:</label>
+          <label for="story">{{i18n[locale].title_issue_item}}</label>
           <textarea id="story" class=""  rows="2" [(ngModel)]="item.note" kng-autosize>
           </textarea>
         </div>
@@ -236,7 +262,7 @@
           {{item.quantity}}x {{item.title}} ({{item.part}})  
         </div>
         <div class="content" [hidden]="!selected[item.sku]">
-          <label for="story">Description/Describe:</label>
+          <label for="story">{{i18n[locale].title_issue_item}}</label>
           <textarea id="story" class=""  rows="2" [(ngModel)]="item.note" kng-autosize>
           </textarea>
         </div>
