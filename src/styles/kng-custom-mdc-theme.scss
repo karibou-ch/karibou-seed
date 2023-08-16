@@ -1020,7 +1020,8 @@ a > .material-symbols-outlined {
 
 .mdc-tab-indicator .mdc-tab-indicator__content--underline {
   border-color: #423f3b;
-  border-color: var(--mdc-theme-primary,#423f3b)
+  border-color: var(--mdc-theme-primary,#423f3b);
+  border-color: transparent;
 }
 
 .mdc-tab-indicator .mdc-tab-indicator__content--icon {

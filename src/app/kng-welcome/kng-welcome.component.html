@@ -1,49 +1,76 @@
-
-<!-- 
-<ng-container *ngIf="!(loading$ | async); else loadingTpl">
-</ng-container>
-<ng-template #loadingTpl>...</ng-template> -->
-<div class="container top">
-  <div class="welcome" [class.exited]="exited">
-    <div class="logo" [ngStyle]="getTaglineImage()"></div>
-    <!-- WELCOME -->
-    <div class="inner" >
-      <h1>{{getTagline('t')}}</h1>
-      <h2 [hidden]="!getTagline('h')" 
-        [innerHtml]="getTagline('h')">
-      </h2>
-      <div [hidden]="!getTagline('p')" 
-            [innerHtml]="getTagline('p')">
-      </div>
-      <div class="i18n-switch" (click)="doLangSwitch()">
-        <span>{{_('action_lang_switch')}}</span>
-      </div>
-      <div class="postalcode" [hidden]="isValidPostalCode || true">
-        <p>Entrez votre code postal afin de valider votre zone de livraison</p>
-        <input type="text" placeholder="Votre code postal" pattern="^[0-9]{4}$" (change)="onChange($event)" [class.red]="!isValidPostalCode">
-      </div>
+<!-- TOP -->
+<div class="container welcome-top">
+  <div class="message" [hidden]="!isMessageActive">
+    <span [innerHtml]="welcomeMessage"></span>
+  </div>
+  <div class="menu">
+    <div class="logo" >
+      <img [src]="K_BRAND" alt=""> Karibou.ch
+    </div>
+    <div class="menu-item" (click)="doLangSwitch()">
+      <span class="button-primary">{{_('action_lang_switch')}}</span>
     </div>
 
-    <a  hidden href="https://www.facebook.com/sharer/sharer.php?u=karibou-ch">
-      <div class="spread"></div>  
-    </a>
-    
+
+  </div>
+  <div class="welcome" [class.exited]="exited">
+    <canvas  #background ></canvas>
+    <h1 [innerHtml]="tagline.h[locale]"></h1>
+    <div class="content" [innerHtml]="tagline.p[locale]">
+    </div>
+    <div class="actions">
+      <button class="CTA" [routerLink]="homeDestination">{{_('nav_store_change')}}</button>
+    </div>
   </div>
 
-</div>
+  <!-- BOXES -->
+  <div class="how-it-works" [innerHtml]="about.p[locale]"></div>
 
-<div class="container middle">
-  <div class="how-it-works" [innerHTML]="getAbout('p')">
-              
+  <div class="brands">
+    <img [src]="about.image" alt="">
+
+    <h3 [innerHtml]="about.h[locale]"></h3>
   </div>
-  <div class="favorite-products" hidden [ngStyle]="getAboutImage()">
-    <div class="elem" [innerHTML]="getAbout('h')"></div>
-    <!-- <div class="elem"></div> -->
-  </div>
+
 </div>
 <div class="container separator"></div>
 
+<!-- FAQ -->
+<div class="container faq">
+  <div class="content-main">
+
+    <h1>Questions</h1>
+    <div class="faq-box" *ngFor="let faq of faqs;let idx=index">
+      <div class="title">
+        {{faq.q[locale]}}
+      </div>
+      <div class="content" [innerHtml]="faq.a[locale]">
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="container fees">
+  <div class="content-main">
+    <div class="postalcode">
+      <p>{{i18n[locale].title_postal}}</p>
+      <input type="text" placeholder="Code Postal" pattern="^[0-9]{4}$" type="number"  [(ngModel)]="postalCode">
+      <div class="price">
+        {{shippingLabel}} <b [hidden]="!shippingPrice">{{shippingPrice}} fr</b><br/>
+        <div [innerHtml]="getShippingDiscount('A')"></div>
+        <div [innerHtml]="getShippingDiscount('B')"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button  class="CTA" [routerLink]="homeDestination">{{_('nav_store_discover')}}</button>
+    </div>
+
+  </div>
+</div>
+
 <kng-footer [config]="config" ></kng-footer>
+<!-- 
 <div class="background-grid" [class.large]="photos.length < 20">
   <div class="items-list-wrap">
     <ul class="items-list" >
@@ -51,4 +78,4 @@
         [ngStyle]="{'background-image': 'url(' + photo + '-/preview/350x350/)'}"></li>
     </ul>        
   </div>
-</div>  
+-->

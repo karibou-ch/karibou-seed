@@ -33,7 +33,7 @@
   <kng-config-input clazz="config" label="Image tagline" name="tagline-p" format="image"
                     [config]="config"
                     (imageChange)="onDialogOpen($event)"
-                    [(ngModel)]="config.shared.tagLine.image"></kng-config-input>
+                    [(ngModel)]="config?.shared.tagLine.image"></kng-config-input>
 
   <!-- SITE About -->
   <h3 >About <span class="gray">(welcome middle)</span></h3>

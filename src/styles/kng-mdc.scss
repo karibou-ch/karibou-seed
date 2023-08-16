@@ -91,6 +91,7 @@ mdc-list{
 .mdc-dialog-scroll-lock{
   overflow: hidden!important;
   position: relative;  
+  height: 100vh;
 }
 
 .mdc-dialog-scroll-lock .toolbox.home {
