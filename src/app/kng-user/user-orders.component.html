@@ -14,7 +14,7 @@
                     (click)="selectedOrder(order)">
       <mdc-list-item-text >        
           <kng-feedback [config]="config" [user]="user" [orders]="[order]" [child]="childOrder[order.oid]" boxed="true"></kng-feedback>     
-          <mdc-list-item-secondary *ngIf="selected?.oid==order.oid">
+          <div *ngIf="selected?.oid==order.oid">
             <ul>
               <li *ngFor="let item of order.items" [class.strike]="item.fulfillment.status=='failure'">
                 {{item.quantity}}x {{item.title}} ({{item.part}}) 
@@ -49,8 +49,7 @@
                 <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
               </li>
             </ul>  
-  
-        </mdc-list-item-secondary>                           
+        </div>                           
 
       </mdc-list-item-text>  
       <div class="hide-sm" mdcListItemMeta>

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem } from 'kng2-core';
+import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem, OrderCustomerInvoices } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
-import { forkJoin } from 'rxjs';
+import { combineLatest, forkJoin } from 'rxjs';
 
 
 @Component({
@@ -27,7 +27,6 @@ export class KngFeedbackComponent implements OnInit {
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
-      title_order_payment_done: 'Valider après le virement bancaire!',
       title_evaluation: 'Votre note',
       title_evaluation_quick: 'Votre sentiment en étoiles ?',
       title_evaluation_save: 'Votre note',
@@ -38,7 +37,8 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_item:'Message à transmettre au commerçant:',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.',
       title_issue_send: 'Enregistrez la note',
-      title_invoice_open:'Vous avez une facture ouverte',
+      title_invoice:'Vous avez une facture ouverte',
+      title_invoice_open:'Ouvrir l\'espace facture',
       title_invoice_paid:'Facture payée, en attente du virement bancaire',
       title_add_all_to_cart: 'Tout ajouter dans le panier',
       form_text_label: 'Note concernant le service?'
@@ -54,7 +54,6 @@ export class KngFeedbackComponent implements OnInit {
       title_order_shipping: 'Delivery is expected at',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
-      title_order_payment_done: 'Validate after bank transfer',
       title_evaluation: 'Your feeling in stars ?',
       title_evaluation_quick: 'Rate your Satisfaction for this order',
       title_evaluation_save: 'Your rating',
@@ -65,7 +64,8 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_header: 'Select the product(s) below to inform the vendor.',
       title_issue_hub: 'If you have a more general comment please write here',
       title_issue_send: 'Save your rating',
-      title_invoice_open:'You have open invoices',
+      title_invoice:'You have open invoices',
+      title_invoice_open:'View all invoices',
       title_invoice_paid:'Invoice paid, waiting for Bank transfer',
       title_add_all_to_cart: 'Add all to cart',
       form_text_label: 'Add a comment about our service'
@@ -84,41 +84,13 @@ export class KngFeedbackComponent implements OnInit {
   score: number;
   feedbackText: string;
   applyCode: string;
-  invoices: Order[];
-  invoicesPaid: Order[];
   HUBS:any = {};
 
-  headerImg = '/assets/img/k-puce-v.png';
-
-  creditor = {
-    name: "Karibou Delphine Cluzel E.",
-    address: "5 ch. du 23-Aout",
-    zip: 1205,
-    city: "Geneve",
-    account: "CH7904835110368481000",
-    country: "CH"
-  };
-
-  invoice:{
-    from:Date;
-    to:Date;
-    items:OrderItem[];
-    name:string;
-    address: string;
-    postalCode: string;
-    amount:number;
-    invoices:Order[];
-  }
-
-  //
-  // qrbill component
-  module:any;
-  printQr = false;
-  contentSVG = "";
   currentLimit: number;
   premiumLimit: number;
 
-  @ViewChild('qrbill') svg: ElementRef;
+  invoices: OrderCustomerInvoices[];
+
 
 
   @Input() child: Order[];
@@ -182,21 +154,27 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   get hasInvoiceTransfer() {
-    return this.invoicesPaid.length;
+    return this.invoices.some(invoice => invoice.transfers.length)
   }
 
   get qrbillTransfer(){
-    if(!this.invoicesPaid.length){
+    if(!this.hasInvoiceTransfer){
       return false;
     }
-    return 'K-ch-QRBILL: '+this.invoicesPaid.map(order => order.oid).join('-')
+    const oids = this.invoices.map(invoice => invoice.transfers.map(order => order.oid)).flat();
+    return 'K-ch-QRBILL: '+oids.join('-');
   }
 
-  get qrbillContent() {
-    if(!this.invoices.length){
+  get hasInvoice() {
+    return this.invoices.some(invoice => invoice.invoices.length)
+  }
+
+  get qrbillInvoice() {
+    if(!this.hasInvoice){
       return false;
     }
-    return 'K-ch-QRBILL: '+this.invoices.map(order => order.oid).join('-')
+    const oids = this.invoices.map(invoice => invoice.invoices.map(order => order.oid)).flat();
+    return 'K-ch-QRBILL: '+oids.join('-')
   }
 
   constructor(
@@ -211,9 +189,7 @@ export class KngFeedbackComponent implements OnInit {
   ) {
     this._orders = [];
     this.invoices = [];
-    this.invoicesPaid = [];
     this.applyCode = "";
-    this.invoice = { from: new Date(),items:[],name:"",invoices:[]} as any;
   }
 
 
@@ -302,9 +278,6 @@ export class KngFeedbackComponent implements OnInit {
     return !!(order.oid && !order.closed);
   }
 
-  isInvoiceOpen(order: Order) {
-    return order.payment.status == 'invoice';
-  }
 
   isEvaluable(order: Order) {
     if (!order) {
@@ -321,71 +294,10 @@ export class KngFeedbackComponent implements OnInit {
     return this.$cart.hasPotentialShippingReductionMultipleOrder();
   }
 
-  async prepareInvoice(pending:boolean) {
-    const invoices = (pending)? this.invoicesPaid:this.invoices;
-    if(!invoices.length) {
-      return;
-    }
-    invoices.forEach((order:any) => {
-      order.amount = order.getTotalPrice();
-    });
-
-    const last =  invoices[invoices.length-1];
-    const order = invoices[0];
-    const items = invoices.map(order => order.items).flat()
-    const amount = invoices.reduce((sum,order:any)=>{
-      const amount = order.amount;      
-      return sum+amount;
-    },0);
-
-    const ordersTxt = 'K-ch-QRBILL: '+invoices.map(order => order.oid).join('-');
-    
-    this.invoice = {
-      from:order.shipping.when,
-      to: last.shipping.when,
-      name: this.user.displayName,
-      address: order.shipping.streetAdress,
-      postalCode: order.shipping.postalCode,
-      items,
-      amount,
-      invoices,
-    }
-
-    this.contentSVG = {
-      currency: "CHF",
-      amount: this.invoice.amount,
-      message: ordersTxt,
-      creditor: {...this.creditor},
-      debtor: {
-        name: this.user.displayName,
-        address: this.order.shipping.streetAdress,
-        zip: this.order.shipping.postalCode,
-        city: this.order.shipping.region,
-        country: "CH"
-      }
-    } as any;    
-
-    //
-    // load qr generator if needed
-    if(!this.module) {
-      this.module = await import('swissqrbill/lib/node/esm/node/svg.js');
-    }
-
-    if (this.svg && this.svg.nativeElement && this.module && this.module.SVG) {     
-      this.svg.nativeElement.innerHTML = new this.module.SVG(this.contentSVG, { language: 'EN' });
-    }          
-
-    this.printQr = true;
-  }
 
   prepareOrders() {
     const localInit = async () => {
-      this.invoices = this.orders.filter(order => order.payment&&order.payment.status=='invoice').sort((a,b)=>{
-        return a.oid-b.oid;
-      });
-      this.invoicesPaid = this.orders.filter(order => order.payment&&order.payment.status=='invoice_paid');
-      // console.log('---- invoices',this.invoices)
-      // console.log('---- invoices paid',this.invoicesPaid)
+
       this.prepareChildOrder();
       // FIXME order.shipping should not be Null
       const mains = this.orders.filter(order => order.shipping).filter(order => !order.shipping.parent);
@@ -405,16 +317,27 @@ export class KngFeedbackComponent implements OnInit {
     this._orders = this.orders.sort((a,b)=> b.oid-a.oid);
 
 
+    //
+    // only needed to display latest order in boxed way
     if(this.orders.length){
       localInit();
+      this.boxed = true;
       return;
     }
 
-    this.$order.findOrdersByUser(this.user, {limit: 10}).subscribe(orders => {
+    combineLatest([
+      this.$order.customerInvoices(),
+      this.$order.findOrdersByUser(this.user, {limit: 5})
+    ]).subscribe(([invoices,orders]) => {
+      this.invoices = invoices;
       this._orders = orders || [];
       
       localInit();
       this.$cdr.markForCheck();
+    });
+
+
+    this.$order.findOrdersByUser(this.user, {limit: 5}).subscribe(orders => {
     });
   }
 
@@ -475,16 +398,6 @@ export class KngFeedbackComponent implements OnInit {
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     this.askFeedback = false;
   }
-
-  onUpdateInvoices() {
-    const oids = this.invoices.map(order => order.oid);
-    const amount = this.invoices.reduce((sum,order)=>sum+order.getTotalPrice(),0);
-
-    this.$order.updateInvoices(oids, amount).subscribe((result)=>{
-      this.$snack.open('Merci pour votre paiement!');
-      this.invoices = [];
-    })
-  } 
 
   onEvaluate() {
     //

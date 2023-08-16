@@ -52,23 +52,21 @@
         @media screen and (max-width:425px){
           max-width: 95%;          
         }
-        mdc-list-item-secondary{
-          div.info{
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-            white-space: normal;
-            margin: 20px 0;          
-          }
-            
-          ul{
-            padding-left: 0;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-            margin-top: 5px;            
-            li{
-              &.strike{
-                text-decoration: line-through;
-              }
+        div.info{
+          border-top: 1px solid #eee;
+          padding-top: 10px;
+          white-space: normal;
+          margin: 20px 0;          
+        }
+          
+        ul{
+          padding-left: 0;
+          border-top: 1px solid #eee;
+          padding-top: 10px;
+          margin-top: 5px;            
+          li{
+            &.strike{
+              text-decoration: line-through;
             }
           }
         }

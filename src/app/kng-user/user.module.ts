@@ -22,6 +22,7 @@ import { IsAuthenticatedGard } from '../common';
 import { KngCommonModule } from '../common/common.module';
 import { KngUserReminderComponent } from '../shared/kng-user-reminder/kng-user-reminder.component';
 import { MdcChipsModule } from '@angular-mdc/web';
+import { UserInvoicesComponent } from './user-invoices.component';
 //
 // define routes module
 // get an EmptyError: no elements in sequence with this route
@@ -33,6 +34,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'orders', pathMatch: 'full'},
       { path: 'orders', component: UserOrdersComponent, resolve: { loader: LoaderResolve } },
+      { path: 'invoices', component: UserInvoicesComponent, resolve: { loader: LoaderResolve } },
       { path: 'reminder', component: KngUserReminderComponent, resolve: { loader: LoaderResolve }  },
       { path: 'email', component: UserEmailComponent, resolve: { loader: LoaderResolve }  },
       { path: 'password', component: UserPasswordComponent, resolve: { loader: LoaderResolve }  }
@@ -75,6 +77,7 @@ const routes: Routes = [
   declarations: [
     AddressComponent,
     CardComponent,
+    UserInvoicesComponent,
     UserOrdersComponent,
     UserEmailComponent,
     UserPasswordComponent,
