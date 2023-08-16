@@ -5,7 +5,6 @@ import { Component,
          ViewEncapsulation,
          ChangeDetectionStrategy,
          ChangeDetectorRef,
-         NgZone,
          HostListener} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -16,12 +15,14 @@ import {
   Category,
   Shop,
   CartService,
+  CartAction,
   ShopService,
+  CartSubscriptionContext,
   Order
 } from 'kng2-core';
+
 import { combineLatest, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MdcChipSet, MdcChip } from '@angular-mdc/web';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
@@ -35,7 +36,6 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 export class ProductListComponent implements OnInit {
   static SCROLL_CACHE = 0;
 
-  @ViewChild('subcategory', { static: true }) subcategory: MdcChipSet;
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';
@@ -58,6 +58,7 @@ export class ProductListComponent implements OnInit {
   vendor: Shop;
   vendors: Shop[];
 
+  activeSubscription:boolean = false;
   showSubCategory:boolean;
   filterVendor: Shop;
   filterChild: string;
@@ -127,6 +128,10 @@ export class ProductListComponent implements OnInit {
     return this.$i18n.locale;
   }
 
+  get label_souscription(){
+    return this.activeSubscription? 
+           this.$i18n[this.locale].subscription_status_on:this.$i18n[this.locale].subscription_status_off
+  }
 
   ngOnDestroy() {
     this.clean();
@@ -137,6 +142,16 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.isReady = true;
+
+    this.childSub$ = this.$cart.cart$.subscribe(state => {
+      if(!state.action){
+        return;
+      }
+
+      const context = this.$cart.getCartSubscriptionContext();
+      this.activeSubscription = context.active;
+      this.cdr.markForCheck();
+    });
 
     //
     // list product available for subscription
@@ -378,6 +393,12 @@ export class ProductListComponent implements OnInit {
     this.filterChild = child;
   }
 
+  toggleSubscription() {
+    const active = this.activeSubscription = !this.activeSubscription;
+    const context = {active} as CartSubscriptionContext
+    this.$cart.setCartSubscriptionContext(context);
+  }
+
   onMOnbileShowMore(){
     this.showSubCategory=!this.showSubCategory;
   }
@@ -452,7 +473,6 @@ export class ProductListComponent implements OnInit {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KngProductListByShopComponent extends ProductListComponent{
-  @ViewChild('subcategory', { static: true }) subcategory: MdcChipSet;
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
   i18n: any = {
     fr: {

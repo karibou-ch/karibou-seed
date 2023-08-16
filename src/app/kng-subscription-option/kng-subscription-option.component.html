@@ -12,7 +12,7 @@
       <div class="item " 
           *ngFor="let iteration of iterations;let idx=index" 
           (click)="selectedIteration = idx"
-          [class.selected]="selectedIteration == idx">{{iteration}}</div>
+          [class.selected]="selectedIteration == idx">{{iteration.label}}</div>
         
     </div>
   </div>
@@ -22,26 +22,8 @@
       <div class="item " 
           *ngFor="let day of dayOfWeek;let idx=index" 
           (click)="selectedDayOfWeek = idx"
-          [class.selected]="selectedDayOfWeek == idx">{{day}}</div>
+          [class.selected]="selectedDayOfWeek == idx">{{day.label}}</div>
     </div>
-  </div>
-
-  <!-- ITEMS -->
-  <div class="items hide" [hidden]="!items.length">
-    <table>
-      <thead><tr>
-        <th class="th-title">Articles pour {{selectedIterationLabel}}/{{selectedDayOfWeekLabel}}</th>
-        <th>status</th>
-      </tr></thead>
-      <tbody>
-        <tr *ngFor="let item of items;let idx = index">
-          
-          <td class="description">{{item.quantity}}x {{item.title}} ({{item.part}})</td>
-          <td>Activé</td>
-        </tr>
-  
-      </tbody>
-    </table>
   </div>
 
 

@@ -88,7 +88,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       cart_nextshipping: 'Livraison',
       cart_shared_copy: 'Vous pouvez partager vos paniers avec quelqu\'un avant de valider la commande',
-      cart_shared_title1: 'Vous utilisez un panier partagé',
+      cart_shared_title1: 'Vous décourez un panier partagé',
       cart_shared_title2: 'Identifiez-vous pour partager vos modifications!',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',

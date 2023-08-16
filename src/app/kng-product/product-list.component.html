@@ -14,6 +14,20 @@
         <h1 [innerHtml]="category.current.name"></h1>
         <h2 [innerHtml]="category.current.description"></h2>  
       </div>
+
+      <div class="subscription hide" *ngIf="options.subscription">
+        <div class="label">
+          Activer pour recevoir les articles en commandes récurrentes {{activeSubscription}}
+          <div class="sublabel"><span [innerHtml]="label_souscription"></span></div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" (click)="toggleSubscription()" [(ngModel)]="activeSubscription" ngDefaultControl>
+          <span class="slider">
+           <svg class="slider-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation"><path fill="none" d="m4 16.5 8 8 16-16"></path></svg> 
+          </span>
+        </label>
+
+      </div>
       
       <!-- SUBSCRITION OPTIONS -->
       <!-- <kng-subscription-option *ngIf="options.subscription"></kng-subscription-option> -->
@@ -48,7 +62,7 @@
       *ngIf="products.length"
         alphasort="true"
         showSection="true"
-        [displaySubscription]="options.subscription"
+        [displaySubscription]="activeSubscription"
         [config]="config" 
         [user]="user"         
         [scrollContainer]="getDialog()"

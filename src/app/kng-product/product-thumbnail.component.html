@@ -47,7 +47,8 @@
 			</div>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
-				<span class="material-symbols-outlined size-medium">add</span>
+				<span [hidden]="!displaySubscription" class="material-symbols-outlined size-medium">more_time</span>
+				<span [hidden]="displaySubscription" class="material-symbols-outlined size-medium">add</span>
 			</button>
 			<button class="action-remove " (click)="removeToCart($event,product)">
 				<span class="material-symbols-outlined size-medium">remove</span>

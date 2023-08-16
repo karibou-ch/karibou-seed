@@ -14,8 +14,9 @@
       <div class="item" [class.selected]="currentCartView" (click)="doSelectCart(true)">
         {{llabel.cart_info_title}} {{currentShippingDay|date:'EEEE':'':locale}}
       </div>
-      <div hidden class="item" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
-        Votre abonnement &nbsp;<i class="material-symbols-outlined ">star</i>
+      <div  class="item hide" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
+
+        Votre abonnement &nbsp;<i class="material-symbols-outlined ">done_outline</i>
       </div>
     </div>
   </div>
