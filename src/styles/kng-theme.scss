@@ -11,7 +11,11 @@ body{
   font-family: Roboto, Helvetica, Arial, sans-serif !important; 
   margin: 0;
   margin-bottom: 0px!important;
+  @media (prefers-color-scheme: dark) {
+    background-color: black;      
+  }
 }
+
 
 
 .width-full {
@@ -55,7 +59,10 @@ body{
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
+.flyer-color{
+  background: #ffe83d!important;
+  border-color: #ffe83d!important;
+}
 
 .ribbon{
   width: 12.1em;
@@ -318,8 +325,11 @@ body{
 }
 
 .link{
-  border-bottom: 2px dotted #efefef;
   cursor: pointer;
+  color: var(--mdc-theme-primary-dark);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--mdc-theme-primary-dark);  
   text-decoration:none;
   &.gray{
     border-color:#ddd !important;

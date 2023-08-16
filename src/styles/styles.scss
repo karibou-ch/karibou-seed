@@ -13,13 +13,14 @@ body{
 
 @import 'kng-theme.scss';
 @import 'kng-root.scss';
-@import 'kng-search.scss';
+@import 'kng-widgets.scss';
 @import 'kng-responsive.scss';
 @import 'kng-mdc.scss';
 @import 'kng-card-skeleton.scss';
 
 :root {
   --mdc-theme-karibou-pink: #da1c5c;
+  --mdc-theme-karibou-green: #62dd2a;
   --mdc-theme-primary: #32b0a0;
   --mdc-theme-primary-text: white;
   --mdc-theme-secondary: #028b7a;
