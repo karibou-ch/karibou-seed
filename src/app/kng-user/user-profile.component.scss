@@ -18,6 +18,10 @@ div.user-container{
     padding-right: 15px;    
   }
 
+  .active{
+    border-bottom: 2px solid var(--mdc-theme-primary);    
+  }
+
   section{
     position: relative;
     margin-top: 30px;

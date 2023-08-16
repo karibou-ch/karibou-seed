@@ -1,0 +1,196 @@
+:host {
+
+  .qr-fullscreen {
+    position: fixed;
+    background: white;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    left: 0;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+    @media print {
+      -position: absolute;
+      min-height: 100%;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      .actions {
+        display: none !important;
+      }
+    }
+
+    @media screen {
+      zoom: .8;
+      background-color: #eee;
+    }
+
+
+    .page {
+      width: 21cm;
+      height: 29.7cm;
+      margin: 30mm 45mm 30mm 45mm;
+      margin-top: 10mm;
+      margin-bottom: 10mm;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+
+      .svg {
+        max-height: 100%;
+        margin: 10px;
+        padding: 5%;
+        overflow: hidden;
+        margin-bottom: 0;
+        margin-top: auto;
+      }
+
+      .karibou-header {
+        height: 50px;
+        overflow: hidden;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60px;
+
+        img {
+          padding: 5px;
+          height: 40px;
+        }
+      }
+
+      address.customer {
+        margin-left: 58%;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        .name:first-letter{
+          text-transform: uppercase;
+        }
+        .date{
+          margin-top: 20px;          
+        }
+      }
+
+      .bill-title {
+        margin: 10px 5%;
+      }
+
+      ul.items {
+        &.invoices {
+          border: 1px dotted red;
+          border-radius: 8px;
+        }
+
+        &.transfers {
+          border: 1px dotted green;
+          border-radius: 8px;
+        }
+
+        list-style: none;
+        margin: 10px 5%;
+        padding: 5px;
+
+        li {
+          display: flex;
+          padding: 1px 0;
+          justify-content: space-between;
+          &.note{
+            margin-top: -1px;
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: #555;  
+          }
+
+          div {
+            margin-right: 20px;
+            min-width: 30px;
+          }
+
+          div.title {
+            margin-left: 10px;
+            margin-right: auto;
+          }
+          div.qty{
+            margin-left: 0 ;
+
+          }
+        }
+
+        li.total {
+          background-color: #eee;
+        }
+      }
+
+      h3 {
+        margin: 40px 5% 10px;
+        border-bottom: 2px dotted #aaa;
+        padding-bottom: 10px;
+      }
+
+      p {
+        font-size: 18px;
+        margin: 40px 5%;
+      }
+
+      .separator{
+        border-top:2px dotted #aaa;
+        padding: 0 5%;
+        height: 0;
+      }
+    }
+
+    .actions {
+      display: flex;
+      margin: 20px;
+      margin-top: auto;
+      background-color: rgba(255, 0, 0, 0.15);
+      padding: 20px 100px;
+      position: absolute;
+      bottom: 10px;
+      height: 40px;
+      button {
+        margin-left: 5px;
+        margin-right: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        background-color: var(--mdc-theme-primary);
+        color: var(--mdc-theme-primary-text);
+        border: 1px solid var(--mdc-theme-secondary);
+        border-radius: 8px;
+        padding: 5px 20px;
+
+      }
+
+      button.close, button.print {
+        margin-left: auto;
+        background-color: #eee;
+        color: #333;
+      }
+
+    }
+
+  }
+
+
+  border-bottom: 3px dotted #aaa;
+  padding:0 10px;
+  padding-bottom: 20px;
+  margin-top: 20px;
+  overflow: hidden;
+
+  h3 {
+    margin-bottom: 0;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after:always;
+  }  
+}

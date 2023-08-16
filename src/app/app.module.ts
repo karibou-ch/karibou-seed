@@ -156,6 +156,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     HttpClientModule,
     Kng2CoreModule.forRoot({
       API_SERVER: environment.API_SERVER,
+      preloadOrders: 5,
       loader: [
         'categories'
       ]

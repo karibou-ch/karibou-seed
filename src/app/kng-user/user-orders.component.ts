@@ -81,14 +81,14 @@ export class UserOrdersComponent implements OnInit {
   //
   // https://stackoverflow.com/questions/49698640/flatmap-mergemap-switchmap-and-concatmap-in-rxjs
   ngOnInit() {
-    this.$order.findOrdersByUser(this.user, {limit: 10}).pipe(
+    this.$order.findOrdersByUser(this.user, {limit: 20}).pipe(
       switchMap((orders:Order[]) => {
         this.processOrders(orders);
         if (!this.items.length) {
           return [];
         }
         return this.$photos.products({
-          skus: this.items.slice(1, 20).map(rank => rank.item.sku + ''),
+          skus: this.items.slice(1, 5).map(rank => rank.item.sku + ''),
           active: true
         });
       })

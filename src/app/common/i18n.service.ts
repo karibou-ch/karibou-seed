@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Config, ConfigService, CartAction } from 'kng2-core';
+import { Config, ConfigService } from 'kng2-core';
 import { MdcSnackbarConfig } from '@angular-mdc/web';
 
 
@@ -62,7 +62,7 @@ export class i18n  {
     nav_store: 'Informations ',
     nav_store_sub: 'Vous souhaitez des produits de différents marchés? Pas de problème ! Recevez tous vos paniers en une seule livraison ​​​​​​​​​​​​​​​​​​​​​​​​😉​',
     nav_store_change: 'Faire ses courses',
-    nav_store_shops_list: 'Les boutiques',
+    nav_store_discover: 'Découvrir les produits',
     nav_store_continue:'J\'ai oublié un produit de ce marché',
     nav_contactus: 'Contactez-nous!',
     nav_installapp: 'Installer karibou.ch',
@@ -103,7 +103,9 @@ export class i18n  {
     ITEM_ADD: 'ajouté: ',
     ITEM_REMOVE: 'supprimé: ',
     ITEM_MAX: 'Impossible de commander d\'avantage de ce produit',
-    category_title:'Les catégories'
+    category_title:'Les catégories',
+    subscription_status_on:'Le panier récurrent est activé  pour les articles suivants',
+    subscription_status_off:'Le panier récurrent n\'est pas activé',
   };
 
   public en: any = {
@@ -152,7 +154,7 @@ export class i18n  {
     nav_store: 'Informations',
     nav_store_sub: 'You want products from different markets ? No problem ! You are entitled to multiple baskets 😉',
     nav_store_change: 'Go shopping',
-    nav_store_shops_list: 'All stores',
+    nav_store_discover: 'Discover all products',
     nav_store_continue:'Continue shopping in this market',
     nav_contactus: 'Contact-us!',
     nav_installapp: 'Install karibou.ch',
@@ -193,7 +195,9 @@ export class i18n  {
     ITEM_ADD: 'Add: ',
     ITEM_REMOVE: 'Remove: ',
     ITEM_MAX: 'Oops reach the order limit of this product',
-    category_title:'Categories',
+    subscription_status_on:'Le panier récurrent est activé  pour les articles suivants',
+    subscription_status_off:'Le panier récurrent n\'est pas activé',
+    category_title:'Categories',    
     category_name_champagnes:'Champagne',
     category_name_fruits_legumes:'Fruits & Vegetables',
     category_name_boucherie_artisanale:'Meat Shop',

@@ -25,20 +25,26 @@
     <mdc-tab-scroller>
           <!-- mdcRouter -->          
     <mdc-tab [routerLink]="['./orders']"
-              routerLinkActive #rla="routerLinkActive">
+              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
               {{i18n[locale].profile_order}}
     </mdc-tab>
+
+    <mdc-tab [routerLink]="['./invoices']" [hidden]="!hasInvoiceMethod"
+              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
+              {{i18n[locale].profile_invoices}}
+    </mdc-tab>
+
     <mdc-tab [routerLink]="['./reminder']"
-              routerLinkActive #rla="routerLinkActive">
+              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
               {{i18n[locale].profile_reminder}} 
     </mdc-tab>
 
     <mdc-tab [routerLink]="['./email']"
-              routerLinkActive #rla="routerLinkActive">
+              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
               {{i18n[locale].profile_account}} 
     </mdc-tab>
     <mdc-tab [routerLink]="['./password']"
-              routerLinkActive #rla="routerLinkActive">
+              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
               {{i18n[locale].profile_password}} 
     </mdc-tab>
     </mdc-tab-scroller>

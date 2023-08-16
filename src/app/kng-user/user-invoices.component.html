@@ -1,0 +1,29 @@
+<div class="container-invoices">
+  <!-- LAST ORDERS -->
+  <p class="no-orders" [hidden]="!isReady||invoices.length">
+    {{i18n[locale].title_no_order}} &#9785;
+  </p>
+
+  <!-- LAST ORDERS -->
+  <div class="invoices-content">
+    <div class="invoices-elem" *ngFor="let invoice of invoices" >
+        <div class="info">
+          {{i18n[locale].title_invoive_month}} {{invoice.month + 1 }}/{{invoice.year}}
+          <button class="open" (click)="onOpenInvoice(invoice)">{{i18n[locale].title_open_invoive}}</button>
+        </div>
+        <ul>
+          <li *ngFor="let order of invoice.invoices" class="invoice">
+            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class="red tag">{{i18n[locale].title_invoice}}</span>              
+          </li>
+          <li *ngFor="let order of invoice.transfers" class="transfer">
+            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class="green tag">{{i18n[locale].title_transfer}}</span>              
+          </li>
+
+          <li *ngFor="let order of invoice.paids">
+            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class=" tag">{{i18n[locale].title_paid}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  <kng-invoice *ngIf="currentInvoice" (closed)="currentInvoice=null" [invoice]="currentInvoice" [order]="order"></kng-invoice>
+</div>

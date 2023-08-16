@@ -1,0 +1,102 @@
+  .container-invoices {
+    margin-top: 0px;
+
+    h2,
+    h3 {
+      margin-top: 40px;
+      font-weight: 400;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .no-orders {
+      text-align: center;
+      padding-top: 20px;
+      color: #333;
+    }
+
+    //
+    // cart content
+    .invoices-content {
+
+      margin-top: 20px;
+      padding: 0;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+
+
+      height: auto;
+
+      border-bottom: 1px solid #eee;
+
+      @media screen and (max-width:429px) {
+        padding: 1px;
+      }
+
+      .invoices-elem {
+        width: 100%;
+        color: var(--mdc-theme-primary-on-background);
+        margin-left: 10px;
+
+        @media screen and (max-width:425px) {
+          max-width: 95%;
+        }
+
+        div.info {
+          margin-top: 20px;
+          font-weight: 400;
+          border-bottom: 1px solid #ddd;
+          padding-bottom: 10px;
+          font-size: 19px;
+          font-weight: 500;
+          color: #333;
+          display: flex;
+          button{
+            margin-left: auto;
+            margin-right: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--mdc-theme-primary);
+            padding: 2px 20px;
+            font-weight: 700; 
+            background-color: var(--mdc-theme-primary);           
+            color: var(--mdc-theme-primary-text);           
+          }
+        }
+
+        ul {
+          padding-left: 0;
+          padding-top: 10px;
+          margin-top: 5px;
+
+          li {
+            font-size: .875rem;
+            line-height: 1.375rem;
+            font-weight: 500;
+            letter-spacing: .00714286em;
+            height: calc(48px - 2 * 4px);
+            margin: 8px;
+            margin-left: 0;
+            padding: 0 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #efefef;
+            &.strike {
+              text-decoration: line-through;
+            }
+            .tag{
+              border: 1px dotted #888;
+              padding: 0px 5px;
+              border-radius: 5px;
+              font-size: 13px;
+            }
+          }
+        }
+      }
+
+    }
+
+
+  }

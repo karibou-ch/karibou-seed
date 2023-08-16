@@ -10,14 +10,15 @@ Help us to build the futur of food distribution,
 
 ## Prerequisites
 * git
-* node/npm stable
-* angular >=7
+* node/npm lts/*
+* angular >=11
 * npm -g install @angular/cli
 
 ```bash
 git clone https://github.com/karibou-ch/karibou-seed
 cd karibou-seed
 npm install
+export NODE_OPTIONS=--openssl-legacy-provider
 ng serve -c=devel
 ```
 

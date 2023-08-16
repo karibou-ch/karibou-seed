@@ -37,6 +37,7 @@ import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
 import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-subscription-option.component';
+import { KngInvoiceComponent } from './kng-invoice/kng-invoice.component';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-s
     ProductThumbnailComponent,
     ProductSwipeComponent,
     UcWidgetComponent,
+    KngInvoiceComponent
   ],
   declarations: [
     KngAudioNoteComponent,
@@ -79,7 +81,8 @@ import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-s
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    KngProductLinkComponent
+    KngProductLinkComponent,
+    KngInvoiceComponent
   ],
 })
 export class KngSharedModule {

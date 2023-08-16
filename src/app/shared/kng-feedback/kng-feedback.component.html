@@ -89,19 +89,19 @@
     </div>
   </div>
 
-  <div class="bill" [hidden]="!hasInvoiceTransfer" [class.boxed]="boxed">
+  <div class="bill" [hidden]="!hasInvoiceTransfer || hasInvoice" [class.boxed]="boxed">
     <div class="label">{{i18n[locale].title_invoice_paid}}</div>
     <div class="content">
       <p>{{qrbillTransfer|| 'Aucune facture en attente'}}</p>
-      <button class="print" (click)="prepareInvoice(true)">Afficher</button>  
+      <div><button class="" routerLink="/store/artamis/home/me/invoices">{{i18n[locale].title_invoice_open}}</button> </div>
     </div>
   </div>
 
   <div class="bill" [hidden]="!hasInvoiceMethod" [class.boxed]="boxed">
-    <div class="label">{{i18n[locale].title_invoice_open}}</div>
+    <div class="label">{{i18n[locale].title_invoice}}</div>
     <div class="content">
-      <p>{{qrbillContent|| 'Aucune facture ouverte'}}</p>
-      <button class="print" [disabled]="!qrbillContent" (click)="prepareInvoice(false)">Imprimer</button>  
+      <p>{{qrbillInvoice|| 'Aucune facture ouverte'}}</p>
+      <div><button class="" routerLink="/store/artamis/home/me/invoices">{{i18n[locale].title_invoice_open}}</button> </div>
     </div>
   </div>
 
@@ -118,43 +118,6 @@
     <div class="content">Aucun abonnement actif</div>
   </div>
       
-</div>
-<!--- DISPLAY INVOICES -->
-<div class="qrbill" [hidden]="!printQr" [class.qr-fullscreen]="printQr">
-  <div class="page">
-    <address class="karibou-header">
-      <img [src]="headerImg"  />
-      <div class="text-underline bold" >Karibou.ch SA</div> 
-      <div class="gray"> | 5 chemin du 23 Août | 1205 | Genève</div> 
-    </address>
-  
-    <address class="customer-bill">
-      <strong class="name" >{{invoice.name}}</strong><br> 
-      <div class="street" >{{invoice.address}}</div>
-      <div class="street">{{invoice.postalCode}}</div>
-    </address>
-    <div class="bill-title">
-      <b>Facture des commandes :</b> {{invoice.from|date:"d MMM y"}} au {{invoice.to|date:"d MMM y"}}
-    </div>
-  
-    <ul class="items">
-      <li *ngFor="let order of invoice.invoices">
-        <div class="qty bold">1x</div> 
-        <div class="title"> {{order.oid}} {{order.shipping.when|date:"d MMM y"}}</div>
-        <div class="price">{{order.amount|currency:'CHF'}}</div>
-       </li>
-    </ul>
-    <p>
-      <span class="bold">Avec nos meilleures salutations,</span><br/>
-      Karibou.ch<br/>
-    </p>  
-    <div class="svg" #qrbill></div>   
-  </div>
-
-  <div class="actions">
-    <button (click)="onUpdateInvoices()" [hidden]="!invoices.length">{{i18n[locale].title_order_payment_done}}</button>
-    <button class="close" (click)="printQr=false">FERMETURE</button>
-  </div>
 </div>
 
 <!-- FEEDBACK POPUP -->
