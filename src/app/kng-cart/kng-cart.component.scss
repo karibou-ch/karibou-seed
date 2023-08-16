@@ -44,9 +44,10 @@
         margin: 0 8px;
         z-index: 1;
         font-weight: 500;
-        border: none;
-        background-color: transparent;
-        span{
+        background-color: var(--mdc-theme-appbar);
+        border: 2px solid var(--mdc-theme-appbar);
+        border-radius:23px;
+          span{
           display: none;
         }
       }
@@ -59,9 +60,8 @@
         padding: 8px;        
       }
 
-      background-color: var(--mdc-theme-appbar);
-      border: 2px solid var(--mdc-theme-appbar);
-      border-radius:23px;
+      border: none;
+      background-color: transparent;
 
       flex:1 1 auto;  
       cursor: pointer;
@@ -82,7 +82,7 @@
       padding: 0px 3px !important;
       font-size: 20px;
       @media (max-width:429px) {
-        font-weight: bold;
+        font-size: 16px;
       }
     }
 

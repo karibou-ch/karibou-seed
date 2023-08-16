@@ -167,7 +167,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       // CART_SAVE_ERROR= 7,
       // CART_ADDRESS   = 8,
       // CART_PAYMENT   = 9,
-      // CART_SHPPING   =10,
+      // CART_SHIPPING   =10,
       if (!emit.state) {
         return;
       }
@@ -175,7 +175,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
       //
       // update shipping day
-      if (CartAction.CART_SHPPING === emit.state.action) {
+      if (CartAction.CART_SHIPPING === emit.state.action) {
         this.productsGroupByCategory();
       }
 
@@ -277,7 +277,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     const href = target.getAttribute('href');
     //
     // verify if it's a routerLink
-    if(href && href.length > 2 && href.indexOf('http') === -1) {
+    if(href && href.length > 2 && 
+      (href.indexOf('http') === -1&&href.indexOf('mailto:') === -1&&href.indexOf('tel:') === -1)) {
       $event.stopPropagation();
       $event.preventDefault();
       this.$router.navigateByUrl(href);

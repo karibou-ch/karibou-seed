@@ -10,6 +10,7 @@
   visibility:visible;
   z-index: 3;
   background: white;
+
   @media (min-width: 1025px) {
     background-color: rgba(0, 0, 0, 0.57);
   }
@@ -23,6 +24,12 @@
     .product-backdrop {      
     }  
   }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: black!important;
+    color: white!important;
+  }
+
   .product-dialog__surface{
     /* see overflow in mdc-style.scss */
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
@@ -42,6 +49,11 @@
     margin-right: auto;    
     padding-bottom: 100px;
 
+    @media (prefers-color-scheme: dark) {
+      background-color: black!important;
+      color: white!important;
+    }
+  
     @media (max-width: 769px) {
       margin-top: 0px;
     }
@@ -65,12 +77,39 @@
 
     }
 
+    .subscription{
+      display: flex;
+      padding: 12px 16px;
+      max-width: calc(740px - 32px);
+      width: calc(95% - 32px);
+      margin: auto;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 18px;      
+      color: #333;
+      font-weight: 500;
+      background: #f6f6f6;
+      border-radius: 15px;
+      @media (prefers-color-scheme: dark) {
+        background-color: #333!important;
+        color: #f6f6f6!important;
+      }
+
+      .sublabel{
+        color: #333;
+        font-weight: 400;
+        font-size: 17px;
+        margin-top: 5px;        
+      }
+    }
+
     .banner{
       position: relative;
       background: #f6f6f6;
       min-height: 120px;
       border-radius: 15px;
-      color: #333;
+      color: #333;      
       font-weight: normal;    
       padding: 12px 16px 0;
       max-width: calc(740px - 32px);
@@ -78,7 +117,11 @@
       margin: auto;
       margin-top: 20px;
       margin-bottom: 20px;
-  
+      @media (prefers-color-scheme: dark) {
+        background-color: #333!important;
+        color: #f6f6f6!important;
+      }
+    
       @media (max-width:427px){
         max-width: calc( 100% - 32px);
       }
@@ -111,6 +154,10 @@
       top: 60px;
       left: calc(( 100vw - 860px ) / 2 );      
       z-index: 4;
+      @media (prefers-color-scheme: dark) {
+        color: #f6f6f6!important;
+      }
+
       @media (min-width: 1640px) {
         left: calc(( 100vw - 945px ) / 2 );      
       }

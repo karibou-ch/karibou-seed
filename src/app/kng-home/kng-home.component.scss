@@ -42,7 +42,7 @@ div.home-header{
     h2{
       font-size: 16px;
       line-height: 20px;
-      font-weight: 400;
+      font-weight: 500;
       margin-top: 0px;      
     }
     h1,h2,h3,h4,p{
@@ -308,6 +308,7 @@ kng-nav-marketplace {
     border-radius: 14px;
     overflow: hidden;
     margin-top: 20px;
+    -background:#ffe83d33!important;
 
     @media (max-width:429px) {
       background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
@@ -320,6 +321,7 @@ kng-nav-marketplace {
   
       &.selected{
         background-color: #eee;
+        background-color: #ffe83d!important;
       }
       .fa{
         scale: .9;
@@ -377,7 +379,6 @@ div.product-container{
 
   .mdc-layout-grid__inner,
   .kng-layout-card{
-    background-color: #fff;
     padding: 10px 10px 0px 10px;    
     @media (max-width: 429px) {
       padding: 0 10px;

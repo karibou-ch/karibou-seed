@@ -41,7 +41,6 @@
 
   }
   height: auto;
-  background: white;
   position: relative;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.04), 
               0px 2px 2px 0px rgba(0, 0, 0, 0.04), 
@@ -50,6 +49,12 @@
   cursor: pointer;
  
   margin-bottom: 20px;
+  background: white;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: transparent;
+    color: white;      
+  }
 
   div.media{
     position: relative;
@@ -83,6 +88,19 @@
           padding: 5px 0px;
           border-bottom: 1px solid #666;
         }          
+      }
+
+    }
+    .icon-subscription{
+      position: absolute;
+      left: 7px;
+      top: 7px;
+      i{
+        font-weight: 500;
+        font-size: 28px;  
+        color: var(--mdc-theme-primary-text);
+        text-shadow: 0 0 6px rgba(0,0,0,0.9);
+
       }
 
     }
@@ -148,7 +166,6 @@
   .action-add,.action-remove{
     background-color: var(--mdc-theme-primary) !important;
     color: var(--mdc-theme-primary-text) !important;
-    -opacity: 0.9;
     border: 0;
     font-weight: bold;
     border-radius: 25px;
@@ -157,6 +174,7 @@
     position: absolute;
     top: 5px;
     padding: 0px;
+    padding-top: 3px;
     outline: 0;
     cursor: pointer;
     &.right{
@@ -201,7 +219,7 @@
     position: relative;
     height: 9rem;
     background-color:#ddd;
-
+  
     background-repeat: no-repeat;
     background-size: cover;  
     background-position-y: 50%;
@@ -222,6 +240,10 @@
     color: #343538;    
     overflow: hidden;
     width: 100%;
+    @media (prefers-color-scheme: dark) {
+      color: white;      
+    }
+  
     div{
       width: 100%;
       overflow: hidden;
@@ -248,6 +270,10 @@
       font-weight: normal;
       color: rgb(52, 53, 56);    
       padding: 2px 0;
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
+    
     }
 
     .product-price{
@@ -260,12 +286,21 @@
       line-height: 22px;
       font-weight: 600;
       color: rgb(52, 53, 56);
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
+
       .discount {
         margin-right: 5px;
         text-decoration: line-through;
         color: #999;
         font-size: small;      
         background: white;
+        @media (prefers-color-scheme: dark) {
+          color: white;
+          background-color: black;
+        }
+  
       }
     }
   
@@ -277,6 +312,10 @@
       line-height: 18px;
       font-weight: 600;
       color: rgb(114, 118, 126);
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
+
     }   
     .product-subscription {
       font-size: 13px;
@@ -289,6 +328,10 @@
       border-top: 1px solid #eee;
       padding-top: 4px;
       min-height: 25px;
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
+
       div{
         overflow: hidden;
         text-overflow: ellipsis;

@@ -315,4 +315,15 @@ export class KngNavigationStateService  {
     );
   }
 
+  toggleDarkMode() {
+    try{
+      // screen.prefers-color-scheme = "dark"; //or
+      // window.prefers-color-scheme = "dark"; //or
+      // navigator.prefers-color-scheme = "dark"; 
+      
+    }catch(err) {
+
+    }
+  }
+
 }

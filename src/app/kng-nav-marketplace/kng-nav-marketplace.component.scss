@@ -2,9 +2,6 @@
 // MARKETPLACE selection
 :host {
   h2,h3{
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.87);      
-    color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
     font-size: 1.4675rem;
     margin-top: 20px;
     margin-left: 10px;
@@ -57,7 +54,11 @@
         cursor: pointer;
         display: flex;
         flex-flow: column nowrap;   
-        
+        @media (prefers-color-scheme: dark) {
+          color: #555;
+        }
+              
+
         @media (max-width:3429px) {
           max-height: 320px;
           margin: 10px 5px;

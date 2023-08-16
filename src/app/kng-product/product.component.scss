@@ -554,6 +554,12 @@
       margin-top: 20px;
       margin-left: 10px;
       margin-right: 10px;      
+
+      @media (prefers-color-scheme: dark) {
+        background-color:black!important;
+        color: #f6f6f6!important;
+      }
+            
     }
     h3{
       font-weight: 200;

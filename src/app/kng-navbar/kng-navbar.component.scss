@@ -88,7 +88,11 @@ div.navbar{
     margin-left: auto;  
     margin-top: 135px;
     background-color: white;
-
+    @media (prefers-color-scheme: dark) {
+      background-color: black;
+      color: white;      
+    }
+  
     @media (max-width: 429px) {
       padding: 0px;
       margin-top: 105px;
