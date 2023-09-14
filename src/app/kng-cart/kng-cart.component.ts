@@ -3,13 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { CartService,
          CartItem,
+         CartItemsContext,
          Config,
          LoaderService,
          User,
          OrderService,
          Shop,
          Order,
-         ConfigService} from 'kng2-core';
+         ConfigService } from 'kng2-core';
 
 import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
@@ -27,7 +28,6 @@ import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.
 export class KngCartComponent implements OnInit, OnDestroy {
 
   private _sharedCart: string;
-  static  defaultCartView: boolean
 
 
   @ViewChild('checkout') checkout: KngCartCheckoutComponent;
@@ -55,6 +55,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_help:'besoin d\'aide?',
       cart_info_wallet:'Débit de votre portefeuille',
       cart_info_total: 'Estimation total à facturer',
+      cart_info_total_subscription: 'Total facturé',
       cart_info_reserved: 'Montant réservé',
       cart_info_subtotal: 'Sous total (service inclus)',
       cart_info_subtotal_fees: '__FEES__ de Service ',
@@ -72,7 +73,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       lorsque de nouvelles fenêtres de livraison seront disponibles.
        Merci beaucoup pour votre compréhension.`,
       cart_info_service_k: `Service <span class=" ">__FEES__%</span> inclus`,
-      cart_info_service_k_plus: `Ce coût finance notre travail pour organiser, collecter, préparer les marchés en ligne, ainsi que notre service au client 5🌟.`,
+      cart_info_service_k_plus: `C'est ce que vous payez pour permettre aux marchés d'être en ligne avec un service client 5🌟.`,
       cart_remove: 'enlever',
       cart_modify_add: 'Choisir une autre adresse de livraison',
       cart_modify_payment: 'Choisir un autre mode de paiement',
@@ -84,7 +85,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_login: 'Pour finaliser votre commande, vous devez vous connecter',
       cart_empty: 'Vos paniers sont vides',
       cart_error: 'Vous devez corriger votre panier!',
-      cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons le montant maximum de',
+      cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
       cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       cart_nextshipping: 'Livraison',
       cart_shared_copy: 'Vous pouvez partager vos paniers avec quelqu\'un avant de valider la commande',
@@ -94,6 +95,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
       cart_order: 'Commander pour',
+      cart_subscription: 'Activer votre abonnement'
     },
     en: {
       cart_deposit: 'Order to collect',
@@ -101,6 +103,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_help:'Need help?',
       cart_info_note:'Note:',
       cart_info_total: 'Total estimate to be billed',
+      cart_info_total_subscription: 'Total billed',
       cart_info_reserved: 'Amount reserved',
       cart_info_wallet:'Debit from your wallet',
       cart_info_subtotal: 'Subtotal (service fee included)',
@@ -118,7 +121,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_limit: `Our delivery slots are all full. However, you can prepare your basket and confirm your order when
        new delivery windows become available. Thank you very much for your understanding.`,
       cart_info_service_k: 'Service fee <span class="gray ">__FEES__%</span> included',
-      cart_info_service_k_plus: `This fee covers a broad range of operating costs including pickup, packaging, background checks of your order and our 5🌟 customer support`,
+      cart_info_service_k_plus: `This is what you're paying for - to keep the markets up and running, and to provide you a 5🌟 customer support`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
       cart_modify_add: 'Select another shipping address',
@@ -131,7 +134,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_checkout_subscription: 'Activate your subscription',
       cart_login: 'Please sign in before the checkout',
       cart_empty: 'Your carts are empty',
-      cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve the max amount of',
+      cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
       cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
       cart_nextshipping: 'Next delivery',
       cart_shared_copy: 'You can share this cart with someone before to checkout',
@@ -141,6 +144,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_cg: 'I read and I agree to the general selling conditions',
       cart_cg_18: 'I am of legal age to purchase alcohol',
       cart_order: 'Order now  for ',
+      cart_subscription: 'Activate your subscription'
     }
   };
 
@@ -230,7 +234,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store = this.$navigation.store;
     this.currentHub = this.config.shared.hub;
-
+    const view = this.$route.snapshot.queryParams.view
+    this.currentCartView = (view != "subscription");
     this.subscription$ = this.$loader.update().subscribe(emit => {
       // if (emit.state) {
       //   console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
@@ -256,13 +261,28 @@ export class KngCartComponent implements OnInit, OnDestroy {
       }
       // emit signal for cart
       if (emit.state) {
-        this.items = this.$cart.getItems();  
-        this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
         //
         // display subscription or cart 
-        this.currentCartView = (KngCartComponent.defaultCartView == undefined)? !this.items.some(item => item.frequency):KngCartComponent.defaultCartView;
         this.isValid = true;
+
+        //
+        // only items for order!
+        const ctx:CartItemsContext = {
+          forSubscription:!this.currentCartView,
+          hub:this.currentHub
+        }    
+        this.items = this.$cart.getItems(ctx);  
+        this.currentShippingDay = this.$cart.getCurrentShippingDay();
+
+
+        //
+        // if customer have only one valid payment method, 
+        // and payment is not set
+        const payment = this.user.payments.find((method,idx,all) => method.isValid && all.length==1 && method.isValid());
+        if(!this.$cart.getCurrentPaymentMethod() && payment) {
+          this.$cart.setPaymentMethod(payment);
+        }
       }
 
     }, error => {
@@ -283,16 +303,21 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   doSelectCart(viewcart:boolean) {
     this.currentCartView = viewcart;
-    this.items = this.$cart.getItems();  
 
     //
-    // set the default view
-    KngCartComponent.defaultCartView = viewcart;
+    // viewcart determine items for subscription
+    const ctx:CartItemsContext = {
+      forSubscription:!viewcart,
+      hub:this.currentHub
+    }    
+    this.items = this.$cart.getItems(ctx);  
+
+
   }
 
   doInitateCheckout(ctx){
     this.hasOrderError = false;
-    this.checkout.doInitateCheckout(this.user,ctx.hub,ctx.items,ctx.totalDiscount, this.currentCartView);
+    this.checkout.doInitateCheckout(this.user,ctx.hub,ctx.items,ctx.totalDiscount, !this.currentCartView);
   }  
 
   goBack(): void {

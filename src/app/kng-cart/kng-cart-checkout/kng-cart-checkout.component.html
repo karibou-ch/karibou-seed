@@ -52,12 +52,12 @@
           
         <!-- USER ADDRESS -->
         <section class="addresses">
-          <div class="address checked" 
+          <div class="address checked"               
               (click)="userAddressSelection=!userAddressSelection"
               [hidden]="!currentShipping()||!currentAddress.streetAdress">
               <label  [hidden]="userAddressSelection"> Changer </label>
 
-              <div class="name">{{currentAddress.name}}</div>
+              <div class="name" [class.deposit]="currentAddressIsDeposit">{{currentAddress.name}}</div>
               <div class="street text-overflow">{{currentAddress.streetAdress}} / {{currentAddress.postalCode}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{currentAddress.note}}</div>  
               <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
@@ -91,17 +91,17 @@
         </section>
       </div>
 
-          
+      
       <!-- RESUME -->
       <div class="order-resume " *ngIf="isOpen">
 
-        <div class="order-resume-block">
-          <section class="resume-title" [class.deposit]="isCartDeposit()" 
+        <div class="order-resume-block" >
+          <section class="resume-title" [hidden]="useCartSubscriptionView" [class.deposit]="isCartDeposit()" 
                     [innerHtml]="config?.shared.hub.checkout.resume[locale]">
           </section>  
   
           <!-- BILL GROUPED -->
-          <div class="bill grouped" [hidden]="!hasShippingReductionMultipleOrder()">
+          <div class="bill grouped" [hidden]="!hasShippingReductionMultipleOrder() || useCartSubscriptionView">
             <div>
               <i class="material-symbols-outlined black">info</i>&nbsp;{{label.cart_info_shipping_group}}
             </div>  
@@ -147,45 +147,60 @@
             <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
           </div>
 
-          <div class="bill wallet">
+          <!-- BILL TOTAL WITH WALLET -->
+          <div class="bill wallet" [hidden]="useCartSubscriptionView">
             <div class="label">
               {{label.cart_info_wallet}}              
             </div>
-            <div class="amount-light" >{{userBalance*-1|currency:'CHF'}}</div>
+            <div class="amount-light" >{{currentTotalUserBalance*-1|currency:'CHF'}}</div>
           </div>
           
-          <div class="bill total">
+          <div class="bill total" [hidden]="useCartSubscriptionView">
             <div class="label">
               {{label.cart_info_total}}              
             </div>
             <div class="amount" >{{currentTotalMinusBalance|currency:'CHF'}}</div>
           </div>
 
-          <div class="bill reserved">
+          <div class="bill total" [hidden]="!useCartSubscriptionView">
             <div class="label">
-              {{label.cart_info_reserved}}              
+              {{label.cart_info_total_subscription}}              
+            </div>
+            <div class="amount" >{{currentTotalSubscription|currency:'CHF'}}</div>
+          </div>
+
+
+          <div class="bill reserved" [hidden]="useCartSubscriptionView">
+            <div class="label">
+              {{label.cart_info_reserved}} ({{currentPayment?.issuer}})
             </div>
             <div class="amount-light" >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</div>
           </div>
 
 
           <!-- INFO AMOUNT -->
-          <div class="bill info-amount">
+          <div class="bill info-amount" [hidden]="useCartSubscriptionView">
             <div class="info">
-              {{label.cart_amount_1}} 
-              <b >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</b>
+              {{label.cart_amount_1}}               
               {{label.cart_amount_2}}              
             </div>
           </div>
 
         </div>
         <!-- BLOCK DE DROITE -->
-        <div class="order-resume-block border-left" >
-          <section class="resume-title">
+        <div class="order-resume-block border-left">
+          <section class="resume-title" [hidden]="useCartSubscriptionView">
             <p class="bold block-info">              
               Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} ({{shippingTime}} heures)
             </p>
           </section>  
+
+          <div class="bill" [hidden]="!useCartSubscriptionView">
+            <kng-subscription-option [checkout]="true"  [quiet]="true" [hub]="hub" *ngIf="useCartSubscriptionView"></kng-subscription-option>
+          </div>
+          
+            
+
 
 
           <!-- INFO SHIPPING NOTE -->
@@ -212,9 +227,15 @@
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a></label>    
             </div>
 
-            <div>
+            <!-- DO ORDER -->
+            <div [hidden]="useCartSubscriptionView">
               <button [disabled]="!cgAccepted||!cg18Accepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
             </div>
+            <!-- DO SUBSCRIPTION --> 
+            <div [hidden]="!useCartSubscriptionView">
+              <button [disabled]="!cgAccepted||!cg18Accepted||isRunning" (click)="doSubscription()" >{{label.cart_subscription}}</button>    
+            </div>
+
             <div class="bill error" [hidden]="!errorMessage">
               {{errorMessage}}
             </div>

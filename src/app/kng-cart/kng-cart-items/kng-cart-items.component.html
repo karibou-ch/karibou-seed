@@ -26,7 +26,7 @@
   
   <!-- SUBSCRIPTION OPTIONS  -->
   <div class="list-item one-line subscrition auto-height"   [hidden]="showCartItems || !items.length">
-    <kng-subscription-option quiet></kng-subscription-option>
+    <kng-subscription-option [hub]="hub" quiet></kng-subscription-option>
   </div>
   
   
@@ -71,19 +71,21 @@
   </div>
   
   <!-- DISPLAY HUB ITEMS -->
-  <div class="list-item one-line " *ngFor="let item of items" (click)="onSelect($event,item)">
+  <div class="list-item one-line " [class.subscription-active]="item.active" *ngFor="let item of items" (click)="onSelect($event,item)">
     <mdc-list-item-graphic>
     <div class="avatar"
           [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}">
   
     </div>
     </mdc-list-item-graphic>
-    <mdc-list-item-text [class.error]="item.error" class="item">
-      <span class="title">{{item.title}} <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span></span>
+    <mdc-list-item-text [class.error]="item.error"  class="item">
+      <span class="title">{{item.title}} 
+        <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span>
+      </span>
       <div class="message" >{{item.error}}</div>          
       <mdc-list-item-secondary>
         <!-- DELETE -->
-        <a href="javascript:;" class="action-delete" (click)="removeAll(item,item.variant)">
+        <a href="javascript:;" class="action-delete" [hidden]="item.active" (click)="removeAll(item,item.variant)">
           <i class="material-symbols-outlined" >close</i>{{i18n[locale].cart_remove}}
         </a>
   
@@ -91,28 +93,29 @@
         <a href="javascript:;" class="note" [hidden]="!item.note&&!item.audio">
           <i class="material-symbols-outlined">mail</i>&nbsp;message
         </a>
-  
+        <span class="cart-frequency" [hidden]="!item.frequency">» {{item.frequency}}</span>
         <!-- DISCOUNT -->
-        <span [hidden]="!getVendorDiscount(item).threshold" class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                
+        <!-- <span [hidden]="!getVendorDiscount(item).threshold" class="">&nbsp;- 🛈 {{i18n[locale].cart_discount}}</span>                 -->
   
       </mdc-list-item-secondary>
     </mdc-list-item-text>
   
     <mdc-list-item-meta>
-    <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
+    <!-- FIXME VENDOR DISCOUNT -->
+    <!-- <div class="label" [hidden]="!item.selected||!getVendorDiscount(item).threshold">
         <b>🛈</b> {{i18n[locale].cart_discount_title}} {{getVendorDiscount(item).total+getVendorDiscount(item).amount }} fr
-    </div>
+    </div> -->
     <div class="label action" [hidden]="!item.selected">
       <!-- FIXME: opening item from other hub is wrong and inconsistant -->
       <button [routerLink]="['../products',item.sku]"><span class="material-symbols-outlined">visibility</span></button> 
     </div>
-    <div class="action left" [hidden]="!item.selected">
+    <div class="action left" [hidden]="!item.selected ||item.active" >
       <button (click)="remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button> 
     </div>
     <div class="quantity">
         {{item.quantity}}
     </div>
-    <div class="action right" [hidden]="!item.selected">
+    <div class="action right" [hidden]="!item.selected || item.active">
         <button (click)="add(item,item.variant)"><span class="material-symbols-outlined">add</span></button> 
     </div>
     <div class="price" [class.hidden]="item.selected">

@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { i18n, KngUtils } from '../../common';
-import { CartItem, CartService, Config, Hub, Order, OrderService, OrderShipping, User, UserAddress, UserCard, UserService } from 'kng2-core';
-import pkgInfo from '../../../../package.json';
+import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, Config, Hub, Order, OrderService, OrderShipping, User, UserAddress, UserCard, UserService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { MdcSnackbar } from '@angular-mdc/web';
-import { StripeAddressElementOptions, StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
+import pkgInfo from '../../../../package.json';
 
 @Component({
   selector: 'kng-cart-checkout',
@@ -48,7 +47,8 @@ export class KngCartCheckoutComponent implements OnInit {
   doToggleFees: boolean;
   userAddressSelection:boolean;
   userPaymentSelection:boolean;
-  useCartView:boolean;
+  useCartSubscriptionView:boolean;
+  subscriptionParams:CartSubscriptionParams
 
 
   selectPaymentIsDone: boolean;
@@ -143,8 +143,15 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.currentShipping();
   }  
 
-  get userBalance() {
-    return this._user.balance>0? this._user.balance:0;
+  get currentAddressIsDeposit() {
+    if(!this.config.shared.hub || !this.config.shared.hub.deposits) {
+      false;
+    }
+    const address = this.currentAddress;
+    return this.config.shared.hub.deposits.some(add => {
+      return UserAddress.isEqual(address,add) && add.fees >= 0;
+    });
+
   }
 
   get userAddresses() {
@@ -153,10 +160,6 @@ export class KngCartCheckoutComponent implements OnInit {
       return addresses;
     }
 
-    // const idx = addresses.findIndex(add => this.currentAddress.isEqual(add));
-    // if(idx>-1){
-    //   addresses.splice(idx,1);
-    // }
     return addresses; 
   }
 
@@ -169,12 +172,6 @@ export class KngCartCheckoutComponent implements OnInit {
     if(!this.currentPayment || !this.currentPayment.alias) {
       return payments;
     }
-
-    // const idx = payments.findIndex(payment => payment.isEqual(this.currentPayment));
-    // if(idx>-1){
-    //   payments.splice(idx,1);  
-    // }
-
     return payments; 
   }
 
@@ -217,32 +214,51 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
 
-  get currentTotalMinusBalance(){
-    return Math.max(this.currentTotal()-this.userBalance,0);
+  get currentTotalUserBalance() {
+    const userBalance = this._user.balance>0? this._user.balance:0;
+    return Math.min(this.currentTotal(),userBalance);
   }
+
+  get currentTotalMinusBalance(){
+    const userBalance = this._user.balance>0? this._user.balance:0;
+    return Math.max(this.currentTotal()-userBalance,0);
+  }
+
+  get subscriptionNextShippingDay() {
+    const oneWeek = Order.fullWeekShippingDays(this.hub);
+    return oneWeek.find(date => date.getDay() == this.subscriptionParams.dayOfWeek);
+  }
+
+  get currentTotalSubscription(){
+    return this.currentTotal();
+  }
+
   get currentFeesName() {
     if(!this._currentHub){
       return '0%'
     }
-    const fees = this._currentHub.serviceFees;
-    return Math.floor(fees*100) + '%';
+    //
+    // adding gateway fees
+    const gateway = this.$cart.getCurrentGateway();
+    const fees = this._currentHub.serviceFees + gateway.fees;
+    return Math.round(fees*100) + '%';
   }
 
   get currentFeesAmount() {
     if(!this._currentHub){
       return 0;
     }
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }
 
-    const hub = this._currentHub.slug;
-    const amount = this.$cart.getItems().filter(item => (!hub || hub == item.hub)).reduce((total,item) =>{
-      return total += (item.price * item.quantity);
-    },0);
-    const fees = this._currentHub.serviceFees;
-    return Math.floor(amount*fees*100)/100;
+    return this.$cart.totalHubFees(ctx);
   }
 
 
   ngOnInit(): void {
+
     this.$user.user$.subscribe(user => {      
       this._user = user;
       if(!this._isReady){
@@ -256,20 +272,182 @@ export class KngCartCheckoutComponent implements OnInit {
     });
   }
 
+
+
+  doOrder(intent?) {
+    //
+    // prepare shipping
+    // FIXME hour selection should be better
+    const shippingDay = this.currentShippingDay();
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+    const shipping = new OrderShipping(
+      this.currentShipping(),
+      shippingDay,
+      shippingHours
+    );
+
+    const payment = intent||this.currentPayment;
+    const hub = this._currentHub.slug;
+    const items = this.items.map(item => item.toDEPRECATED());
+
+    //
+    // update shipping note
+    shipping.note = this.shippingNote || shipping.note;
+
+    this.isRunning = true;
+
+    this.$order.create(
+      hub,
+      shipping,
+      items,
+      payment
+    ).subscribe((order) => {
+        this.isRunning = false;
+
+        //
+        // check order errors
+        if (order.errors) {
+          this.$cart.setError(order.errors, hub);
+          this.$snack.open(
+            this.$i18n.label().cart_corrected,
+            this.$i18n.label().thanks,
+            this.$i18n.snackOpt
+          );
+          this.updated.emit({ errors: order.errors });
+          this.$cart.broadcastState();
+          this.$user.me().subscribe();
+          this.open = false;
+
+          return;
+        }
+
+        //
+        // Metric ORDER
+        this.$metric.event(EnumMetrics.metric_order_sent, {
+          shipping: order.getShippingPrice(),
+          amount: order.getSubTotal(),
+          hub:hub
+        });
+
+        //
+        // validate
+        this.createPaymentConfirmation(order);
+      },
+      status => {
+
+        //
+        // SCA request payment confirmation
+        if (status.error.client_secret) {
+          return this.confirmPaymenIntent(status.error, {oid:status.error.oid});
+        }
+        this.errorMessage = status.error;
+        this.isRunning = false;
+        this.$snack.open(
+          status.error,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+      );
+      }
+    );
+  }
+  doSubscriptionPaymentUpdate(sid,intent) {
+
+  }
+
+  doSubscriptionPaymentConfirm(sid,intent) {
+
+  }
+
+
+
+  doSubscription() {
+    this.subscriptionParams = this.$cart.subscriptionGetParams();
+
+    const shippingDay = this.subscriptionNextShippingDay;
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+    const shipping = new OrderShipping(
+      this.currentShipping(),
+      shippingDay,
+      shippingHours
+    );
+    const payment = this.currentPayment;
+    const items = this.items.map(item => item.toDEPRECATED());
+    const hub = this._currentHub.slug;
+    this.isRunning = true;
+    this.$cart.subscriptionCreate(hub,shipping, items, payment.alias,this.subscriptionParams.frequency, this.subscriptionParams.dayOfWeek).subscribe(
+      subscription=> {
+        this.isRunning = false;
+        console.log('----- subscription running',subscription);
+
+        //
+        // check order errors
+        if (subscription.errors) {
+          this.$cart.setError(subscription.errors, hub);
+          this.$snack.open(
+            this.$i18n.label().cart_corrected,
+            this.$i18n.label().thanks,
+            this.$i18n.snackOpt
+          );
+          this.updated.emit({ errors: subscription.errors });
+          this.open = false;          
+        }
+
+        //
+        // confirm payment intent (3ds)
+        if(subscription.latestPaymentIntent && 
+           subscription.latestPaymentIntent.status=='requires_action') {
+
+            return this.confirmPaymenIntent(subscription.latestPaymentIntent, {subscription:subscription.id});
+
+        }
+
+        //
+        // update payment method (invalid card)
+        if(subscription.latestPaymentIntent && 
+          subscription.latestPaymentIntent.status=='requires_payment_method') {
+          this.errorMessage = "La carte est ne fonctionne pas";
+
+        }
+    
+      },status =>{
+        //
+        // SCA request payment confirmation
+        if (status.error && status.error.client_secret) {
+          return this.confirmPaymenIntent(status.error, {oid: status.error.oid});
+        }
+        console.log('----- payment error',status.error);
+        this.errorMessage = status.error;
+        this.isRunning = false;
+        this.$snack.open(
+          status.error,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+      );
+
+      }
+    )
+    
+  }
+
   //
   // entry point
-  doInitateCheckout(user: User,hub: Hub,items: CartItem[], totalDiscount: number, useCartView:boolean ){
+  doInitateCheckout(user: User,hub: Hub,items: CartItem[], totalDiscount: number, useCartSubscriptionView:boolean ){
     this._currentHub = hub;
     this._items = items;
     this._totalDiscount = totalDiscount;
     this.errorMessage = null;
-    this._isReady = true;
     this._user = user;
     this.open = true;
-    this.useCartView = useCartView;
+    this.useCartSubscriptionView = useCartSubscriptionView;
     this.checkPaymentMethod();
+    this.subscriptionParams = useCartSubscriptionView? this.$cart.subscriptionGetParams():{
+      dayOfWeek: 0,
+      frequency: undefined,
+      activeForm:false
+    }
 
-    console.log('---DBG doInitateCheckout',user)
     const address = this.$cart.getCurrentShippingAddress();
     this.setShippingAddress(address);
 
@@ -289,41 +467,49 @@ export class KngCartCheckoutComponent implements OnInit {
     }
 
     //
-    // FIXME currently only one shipping time!
+    // FIXME we provide only one shipping time!
     this.shipping = this.config.shared.shipping;
 
-    this.itemsAmount = this.$cart.subTotal(hub.slug,!useCartView);
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:hub.slug
+    }    
+
+    this.itemsAmount = this.$cart.subTotal(ctx);
 
     this.buildDiscountLabel();
 
     //
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
-
   }
 
 
   buildDiscountLabel() {
-    const address = this.currentShipping();
-    const price = this.$cart.estimateShippingFees(address, this.store);
-    const dA = this.$cart.hasShippingReduction();
-    const dB = this.$cart.hasShippingReductionB();
-    const dC = this.$cart.hasShippingReductionMultipleOrder(address);
+    const ctx:CartItemsContext = {
+      address:this.currentShipping(),
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }
+    const address = this.currentShipping();    
+    const {price, status} = this.$cart.estimateShippingFeesWithoutReduction(address);
+    const {multiple, discountA,discountB, deposit} = this.$cart.hasShippingReduction(ctx);
+
     const label = this.i18n[this.locale]['cart_info_shipping_discount'];
 
     //
-    // grouped discount
-    if(dC || address['fees'] >= 0){ 
+    // grouped discount or deposit
+    if(multiple || deposit){ 
       return  this.shippingDiscount = '';
     } 
 
     //
     // Maximum discount
-    if(dB) {
+    if(discountB) {
       return this.shippingDiscount = this.i18n[this.locale]['cart_info_shipping_applied'];
     //
     // Minimum discount
-    } else if (dA) {
+    } else if (discountA) {
       return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',Math.max(price - this.shipping.priceB,0).toFixed(2));
     //
     // Missing amount
@@ -334,7 +520,13 @@ export class KngCartCheckoutComponent implements OnInit {
 
 
   computeShippingByAddress(address: UserAddress) {
-    return this.$cart.computeShippingFees(address,this.store);
+    const ctx:CartItemsContext = {
+      address,
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }
+
+    return this.$cart.computeShippingFees(ctx);
   }
 
   currentShippingDay() {
@@ -348,7 +540,12 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   currentShippingFees() {
-    return this.$cart.getCurrentShippingFees(this.store);
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+    return this.$cart.computeShippingFees(ctx);
+
   }
 
   currentPaymentMethod() {
@@ -371,16 +568,34 @@ export class KngCartCheckoutComponent implements OnInit {
     return (this.$cart.getCurrentGateway().fees * 100).toFixed(1);
   }
 
+  //
+  // (total + shipping - totalDiscount) * fees
   currentGatewayAmount() {
-    return this.$cart.gatewayAmount(this.store);
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+    
+    const fees = this.$cart.getCurrentGateway().fees;
+    return (this.$cart.total(ctx)*fees).toFixed(2);
   }
 
   currentServiceFees() {
-    return this.$cart.totalHubFees(this.store);
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+
+    return this.$cart.totalHubFees(ctx);
   }
 
   currentTotal() {
-    return this.$cart.total(this.store);
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+
+    return this.$cart.total(ctx);
   }  
   
   checkPaymentMethod(force?:boolean) {
@@ -417,6 +632,7 @@ export class KngCartCheckoutComponent implements OnInit {
       if(payments.length){
         this.setPaymentMethod(payments[0]);
       }
+      this._isReady = true;
 
     }, error => {
       if (error.status === 401) {
@@ -439,19 +655,13 @@ export class KngCartCheckoutComponent implements OnInit {
 
 
 
-
+  //
+  // FIXME refactor, use shipping reduction enum as 'multiple,deposit,discountA,discountB'
   hasShippingReductionMultipleOrder(){
     const address = this.currentShipping();
     return this.$cart.hasShippingReductionMultipleOrder(address);
   }
 
-  hasShippingDiscount() {
-    return this.$cart.hasShippingReduction();
-  }
-
-  hasShippingDiscountB() {
-    return this.$cart.hasShippingReductionB();
-  }
 
 
   // available day for order,
@@ -527,14 +737,22 @@ export class KngCartCheckoutComponent implements OnInit {
   createPaymentConfirmation(order: Order) {
     this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
     this._items = [];
-    this.$cart.clear(this.store,order);
+    this.$cart.clearAfterOrder(this.store,order);
     this.updated.emit({ order });
     this.open = false;
   }
 
-  confirmPaymenIntent(intent: any) {
+  //
+  // subscription stuffs 
+  createSubscriptionConfirmation(shipping) {
+    this.$snack.open(this.$i18n.label().cart_save_deliver + shipping.when.toDateString());
+    this._items = [];
+    this.open = false;
+  }
+
+  confirmPaymenIntent(intent: any, target:any) {
     const intentOpt: any = {
-      payment_method: intent.source
+      payment_method: intent.source 
     };
 
     this.errorMessage = null;
@@ -553,99 +771,20 @@ export class KngCartCheckoutComponent implements OnInit {
         this.$cart.broadcastState();
         return;
       }
-      // The payment has been processed!
-      if (['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+      // The payment must be confirmed for an order
+      if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
         const payment = this.$cart.getCurrentPaymentMethod();
-        payment.intent_id = result.paymentIntent.id;
-        this.$cart.setPaymentMethod(payment);
+        // 
+        // include oid reference as payment DATA
+        result.paymentIntent['oid'] = target.oid;
 
-        this.doOrder();
-        //setTimeout(() => this.doOrder(), 10);
-        // Show a success message to your customer
-        // There's a risk of the customer closing the window before callback
-        // execution. Set up a webhook or plugin to listen for the
-        // payment_intent.succeeded event that handles any business critical
-        // post-payment actions.
+        this.doOrder(result.paymentIntent);
       }
+      if(target.subscription&& ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+        this.doSubscriptionPaymentConfirm(target.subscription,result.paymentIntent);
+      }
+
     });
-  }
-
-
-  doOrder() {
-    //
-    // prepare shipping
-    // FIXME hour selection should be better
-    const shippingDay = this.currentShippingDay();
-    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
-    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
-    const shipping = new OrderShipping(
-      this.currentShipping(),
-      shippingDay,
-      shippingHours
-    );
-
-    const hub = this._currentHub.slug;
-    const items = this.items;
-
-    //
-    // update shipping note
-    shipping.note = this.shippingNote || shipping.note;
-
-    this.isRunning = true;
-
-    this.$order.create(
-      hub,
-      shipping,
-      items.map(item => item.toDEPRECATED()),
-      this.$cart.getCurrentPaymentMethod()
-    ).subscribe((order) => {
-        this.isRunning = false;
-
-        //
-        // check order errors
-        if (order.errors) {
-          this.$cart.setError(order.errors, hub);
-          this.$snack.open(
-            this.$i18n.label().cart_corrected,
-            this.$i18n.label().thanks,
-            this.$i18n.snackOpt
-          );
-          this.updated.emit({ errors: order.errors });
-          this.$cart.broadcastState();
-          this.$user.me().subscribe();
-          this.open = false;
-
-          return;
-        }
-
-        //
-        // Metric ORDER
-        this.$metric.event(EnumMetrics.metric_order_sent, {
-          shipping: order.getShippingPrice(),
-          amount: order.getSubTotal(),
-          hub:hub
-        });
-
-        //
-        // validate
-        this.createPaymentConfirmation(order);
-      },
-      status => {
-
-        //
-        // SCA request payment confirmation
-        if (status.error.client_secret) {
-          return this.confirmPaymenIntent(status.error);
-        }
-        this.errorMessage = status.error;
-        this.isRunning = false;
-        this.$snack.open(
-          status.error,
-          this.$i18n.label().thanks,
-          this.$i18n.snackOpt
-      );
-      }
-    );
   }
 
 

@@ -46,6 +46,10 @@
       border:1px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
     }
 
+    &.subscription-active{
+      background-color: yellow;
+    }
+
     color: #333;
     button{
       width: 31px;
@@ -95,7 +99,11 @@
         padding: 0;
       }
     }
-  
+
+    .cart-frequency{
+      margin-left: 10px;
+      color: var(--mdc-theme-karibou-pink);      
+    }
 
     .note{
       padding-left: 10px;

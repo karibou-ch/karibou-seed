@@ -118,6 +118,11 @@
   max-width: 900px;
   margin: auto;
 
+  @media (prefers-color-scheme: dark) {
+    background: #fff!important;
+    color: #333;
+  }
+
   @media (max-width:429px) {
     width: calc( 100% - 8px );
     margin-left: 0px;
@@ -126,8 +131,6 @@
     padding-right: 4px;    
   }
 
-
-  
   .bill-title ::ng-deep ,
   .address-title ::ng-deep ,
   .payment-title ::ng-deep ,
@@ -235,6 +238,11 @@
         }
       
         .name{
+          &.deposit {
+            background-color: yellow;
+            width: fit-content;
+          }
+  
           line-height: 24px;
           font-weight: 700;
           font-size: 17px;            
@@ -340,7 +348,7 @@
     .order-resume-block{
       position: relative;
       width: calc(50% - 20px);
-      padding: 10px 0px;
+      padding: 10px 0px 0;
       margin: 15px 0;
       &.border-left{
         border-left: 4px solid #eee;
@@ -420,6 +428,10 @@
           line-height: 30px;
           width: 100%;
         }
+        .block-info{
+          margin-left: -5px;
+          margin-top: 3px;
+        }
         .label:first-letter {
           text-transform: uppercase;
         }
@@ -458,7 +470,7 @@
           height: fit-content;
         }
         .input-text{
-          height: 60px;
+          height: 52px;
         }
         input[type="text"]{
           border: 1px solid #eee;
@@ -467,7 +479,8 @@
 
           font-size: 1em;
           width: calc( 100% - 10px);
-          color: var(--mdc-theme-primary);          
+          color: var(--mdc-theme-primary);         
+          font-weight: bold; 
         }
         input[type="checkbox"] {
           transform: translateY(3px);

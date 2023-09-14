@@ -1,5 +1,13 @@
 //
 // Select Cart or Subscription
+.cart-container{
+  background: var(--mdc-theme-background-container);
+ 
+  @media (prefers-color-scheme: dark) {
+    background: #fff!important;
+    color: #333;
+  }
+}
 
 .cart-selector{
     
@@ -106,8 +114,6 @@
     }
   }
 }
-
-
 
 
 section.cart{

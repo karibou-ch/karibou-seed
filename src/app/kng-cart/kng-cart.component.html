@@ -14,7 +14,7 @@
       <div class="item" [class.selected]="currentCartView" (click)="doSelectCart(true)">
         {{llabel.cart_info_title}} {{currentShippingDay|date:'EEEE':'':locale}}
       </div>
-      <div  class="item hide" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
+      <div  class="item" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
 
         Votre abonnement &nbsp;<i class="material-symbols-outlined ">done_outline</i>
       </div>
@@ -39,7 +39,7 @@
   </div>
 
 
-  
+  test{{currentCartView}}
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
 

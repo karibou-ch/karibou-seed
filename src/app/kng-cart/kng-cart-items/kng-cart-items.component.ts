@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CartItemsContext } from 'kng2-core';
 import { Config, CartItem, CartAction, CartService, LoaderService, Hub, User, Order } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
@@ -20,8 +21,16 @@ export class KngCartItemsComponent implements OnInit {
     if(!this.currentHub) {
       return;
     }
-    this.items = this.$cart.getItems().filter(item=> item.hub == this.currentHub.slug && (!item.frequency)== value);
-    this.itemsAmount = this.$cart.subTotal(this.currentHub.slug,!value);
+
+    //
+    // _showCartItems determine items for subscription
+    const ctx:CartItemsContext = {
+      forSubscription:!this._showCartItems,
+      hub:this.currentHub.slug
+    }    
+
+    this.items = this.$cart.getItems(ctx);
+    this.itemsAmount = this.$cart.subTotal(ctx);
 
     
   }
@@ -103,8 +112,20 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get cart_info_service_k() {
-    const label = this.i18n[this.locale].cart_info_service_k.replace('__FEES__',(this.currentHub.serviceFees*100).toFixed(0));
-    return  label + ' ('+this.$cart.totalHubFees(this.currentHub.slug)+' fr)';
+
+      //
+      // _showCartItems determine items for subscription
+      const ctx:CartItemsContext = {
+        forSubscription:!this.showCartItems,
+        onSubscription:!this.showCartItems,
+        hub:this.currentHub.slug
+      }    
+    //
+    // adding gateway fees
+    const gateway = this.$cart.getCurrentGateway();
+    const fees = this.currentHub.serviceFees + gateway.fees;
+    const label = this.i18n[this.locale].cart_info_service_k.replace('__FEES__',(fees*100).toFixed(0));
+    return  label + ' ('+this.$cart.totalHubFees(ctx)+' fr)';
   }
 
   get cart_info_hub_not_active() {
@@ -155,14 +176,23 @@ export class KngCartItemsComponent implements OnInit {
       }
 
       //
+      // _showCartItems determine items for subscription
+      // onSubscription:!this.showCartItems,
+      const ctx:CartItemsContext = {
+        forSubscription:!this.showCartItems,
+        hub:this.currentHub.slug
+      }    
+
+      //
       // select items for Cart or for Subscription
-      this.items = this.$cart.getItems().filter(item=> item.hub == this.currentHub.slug && (!!item.frequency)== !this.showCartItems);
-      this.itemsAmount = this.$cart.subTotal(this.currentHub.slug, !this.showCartItems);
+      this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
+      this.itemsAmount = this.$cart.subTotal(ctx);
+
 
       this.noshippingMsg = this.getNoShippingMessage();
       this.hasOrderError = this.$cart.hasError(this.currentHub.slug);
       this.isReady = true;
-      //console.log('---- DBG cart-items', CartAction[emit.state.action],this.currentHub.slug, 'items',this.items.length);
+      //console.log('---- DBG cart-items', emit.state.action,this.currentHub.slug, 'items',this.items.length);
     }));
   }
 
@@ -184,7 +214,14 @@ export class KngCartItemsComponent implements OnInit {
 
 
   currentServiceFees() {
-    return this.$cart.totalHubFees(this.currentHub.slug);
+    //
+    // _showCartItems determine items for subscription
+    const ctx:CartItemsContext = {
+      forSubscription:!this.showCartItems,
+      onSubscription:!this.showCartItems,
+      hub:this.currentHub.slug
+    }    
+    return this.$cart.totalHubFees(ctx);
   }
 
   // FIXME remove repeated code
@@ -204,11 +241,11 @@ export class KngCartItemsComponent implements OnInit {
 
 
   getDiscount(item: CartItem) {
-    const discount = this.$cart.getVendorDiscount(item);
+    // const discount = this.$cart.getVendorDiscount(item);
 
-    if (discount.threshold) {
-      return discount.needed;
-    }
+    // if (discount.threshold) {
+    //   return discount.needed;
+    // }
     return '';
   }
 
@@ -256,7 +293,15 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   subTotal() {
-    return this.$cart.subTotal(this.currentHub.slug,!this.showCartItems);
+    //
+    // _showCartItems determine items for subscription
+    const ctx:CartItemsContext = {
+      forSubscription:!this.showCartItems,
+      onSubscription:!this.showCartItems,
+      hub:this.currentHub.slug
+    }    
+
+    return this.$cart.subTotal(ctx);
   }
 
   sortedItems(hub?) {
