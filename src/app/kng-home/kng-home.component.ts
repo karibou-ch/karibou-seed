@@ -33,7 +33,7 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
 
   shops: Shop[];
   pendingOrders: Order[];
@@ -181,7 +181,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
       //
       // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
-      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || !this.isLoading)) {
+      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || this.isLoading)) {
+        console.log('----load products 2',CartAction.CART_LOADED,emit.state.action)
         this.productsGroupByCategory();
       }
     }));
