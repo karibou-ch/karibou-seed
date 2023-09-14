@@ -28,10 +28,12 @@ body{
   --mdc-theme-appbar: rgba(227,236, 235, 0.97);
   --mdc-theme-appbar-text: rgba(19, 83, 20, 0.97);  
 
+  --mdc-theme-primary-dark:#000;
+  --mdc-theme-primary-dark-text:#eee;
   
-  --mdc-theme-primary-light: #{$mdc-theme-primary-light};
-  --mdc-theme-primary-dark: #{$mdc-theme-primary-dark};
-  --mdc-theme-primary-text: #{$mdc-theme-primary-text};
+  --mdc-theme-secondary-dark: #444;
+  --mdc-theme-secondary-dark-text: white;
+  
   // FIXME remove this hardcoding
   --mdc-theme-text-hint-on-background:#{$mdc-theme-text-hint-on-background};
   --mdc-theme-text-secondary-on-background:#{$mdc-theme-text-hint-on-background};  
@@ -43,10 +45,6 @@ body{
   --mdc-theme-background-container: #{$mdc-theme-background-container};
 
 
-  --mdc-theme-secondary: #{$mdc-theme-secondary};
-  --mdc-theme-secondary-light: #{$mdc-theme-secondary-light};
-  --mdc-theme-secondary-dark: #{$mdc-theme-secondary-dark};
-  --mdc-theme-secondary-text: #{$mdc-theme-secondary-text};
 }
 
 

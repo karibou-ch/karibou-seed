@@ -55,7 +55,8 @@
         display: flex;
         flex-flow: column nowrap;   
         @media (prefers-color-scheme: dark) {
-          color: #555;
+          color: var(--mdc-theme-secondary-dark-text);
+          background-color: var(--mdc-theme-secondary-dark);
         }
               
 

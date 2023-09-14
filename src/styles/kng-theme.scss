@@ -64,6 +64,22 @@ body{
   border-color: #ffe83d!important;
 }
 
+.markdown {
+  blockquote {
+    background: var(--mdc-theme-appbar);
+    margin: 17px 0;
+    padding: 10px;
+    color: #333;
+    border-radius: 8px;    
+  }
+  ol,ul{
+    padding:15px;
+    li{
+      margin: 5px 0;
+    }
+  }
+}
+
 .ribbon{
   width: 12.1em;
   height: 12.1em;

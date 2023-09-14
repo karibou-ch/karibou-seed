@@ -165,6 +165,15 @@ kng-ui-bottom-actions{
     width: 100vw;
     z-index: 1;
 
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--mdc-theme-primary-dark);
+      color: var(--mdc-theme-primary-dark-text);      
+      button.action{
+        color: #eee!important;
+      }
+    }
+  
+
     .bottom-bar{
       display: flex;
       flex-flow: row;

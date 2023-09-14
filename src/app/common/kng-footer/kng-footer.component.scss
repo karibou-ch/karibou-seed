@@ -19,7 +19,8 @@ div.footer{
   background-color: #fff;  
   padding-top: 120px;
   @media (prefers-color-scheme: dark) {
-    background-color: black;      
+    background-color: var(--mdc-theme-primary-dark);
+    color: var(--mdc-theme-primary-dark-text);
   }
 
 

@@ -174,7 +174,7 @@ div.home-header{
 
 kng-search.search-mobile,
 kng-search.home{
-  margin: 35px 0 10px;
+  margin: 20px 0px;
   display: block;  
 }
 
@@ -220,7 +220,7 @@ kng-nav-marketplace {
 //
 // CATEGORY 
 .mobile-categories {
-  margin: 0 20px;
+  margin: 0 10px;
   ul{
     list-style: none;
     padding: 0;
@@ -320,7 +320,6 @@ kng-nav-marketplace {
       }      
   
       &.selected{
-        background-color: #ffe83d!important;
         background-color: #eee;
       }
       .fa{
@@ -353,10 +352,11 @@ div.product-container{
   padding-top: 0;
   padding: 0;
   width: 100%;  
-  @media (max-width:429px) {
-    width: 100vw;
+  @media (max-width:429px) {    
     padding: 0;
-    margin-left: -3px;
+    width: calc(100vw - 20px);
+    margin-left: auto;
+    margin-right: auto;
   }
   
   >div{
