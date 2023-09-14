@@ -182,7 +182,7 @@ export class MetricsService {
     this.parseUrlIdentifiers();
 
     if (!this.isEnable() || this.isAdmin) {
-//      return;
+      return;
     }
 
 
@@ -224,7 +224,7 @@ export class MetricsService {
       user_agent: window.navigator.userAgent
     }
 
-    console.log('---- DBG metrics',EnumMetrics[metric],metrics)
+    //console.log('---- DBG metrics',EnumMetrics[metric],metrics)
 
     //
     // sent event
