@@ -13,12 +13,16 @@ export const childrenRoute: Route[] = [
   { path: 'products', pathMatch: 'full', component: ProductComponent, data: { redirect: true } },
   { path: 'category/:category/:child', component: ProductListComponent },
   { path: 'category/:category', component: ProductListComponent },
-  { path: 'category', pathMatch: 'full', redirectTo: '' },
+  { path: 'category', pathMatch: 'full', redirectTo: '' },  
   { path: '', pathMatch: 'full', redirectTo: '' }
 ];
 
 // TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
+  { 
+    path: 'patreon',  loadChildren: () => import('../kng-patreon/kng-patreon.module').then( m => m.KngPatreonModule)
+  },
+
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
   { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},

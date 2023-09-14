@@ -1,0 +1,85 @@
+<div class="patreon-dialog " #dialog >
+  <div class="patreon-backdrop"></div>
+  <div class="patreon-dialog__surface" *ngIf="isReady">
+    <div class="container" >
+
+      <!-- CLOSE -->
+      <button (click)="onClose(true)" class="close" >
+        <span class="material-symbols-outlined size-large">arrow_back</span>
+      </button>
+
+
+      <!-- TITLE -->
+      <div class="banner" hidden>
+        <h1 [innerHtml]="patreon.t[locale]"></h1>
+        <h2 [innerHtml]="patreon.h[locale]"></h2>  
+      </div>
+
+      <div class="welcome">
+        <h1 [innerHtml]="patreon.t[locale]"></h1>
+        <div class="content" [innerHtml]="patreon.h[locale]">
+        </div>
+        <div class="actions">
+          <button class="CTA" [disabled]="!payment||!selectItem" [routerLink]="['./user/login-or-patreon']">Je participe <span class="sm">{{selected_box}}</span> </button>
+          <div class="info" *ngIf="payment">          
+            <div class="method name">paiement  {{payment.issuer}}  **{{payment.last4}} {{payment.expiryToDate()|date:'MM/y'}}</div>
+          </div>
+
+        </div>
+
+      </div>
+    
+
+      <div class="patreon">
+
+        <div class="menu">
+          <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">Acceuil</div>
+          <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">Information</div>
+        </div>
+  
+        <!-- INFORMATION -->
+        <div class="markdown" [hidden]="activeMenu" [kng-markdown]="patreon.p[locale]"></div> 
+
+
+        <!-- ITEMS -->
+        <div class="content-items" [hidden]="!activeMenu">
+          <section class="how-it-works">
+            <!-- <div class="box checked" 
+              *ngIf="selectItem" 
+              (click)="selectItem=null">
+              <label [hidden]="!selectItem"> Changer </label>
+              <div class="name">{{selectItem.metadata.title}}</div>
+              <div class="description">{{selectItem.description}}</div>
+              <div class="price">{{selectItem.default_price.unit_amount/100}} fr / mois</div>
+            </div> -->
+  
+            <div class="box" *ngFor="let product of products" [class.checked]="selectItem?.id == product.id" (click)="selectItem=product">
+              <div class="name">{{product.metadata.title}}</div>
+              <div class="description">{{product.description}}</div>
+              <div class="price">{{product.default_price.unit_amount/100}} fr / mois</div>
+            </div>  
+          </section>
+  
+          <!-- USER -->
+          <!-- PAYMENT -->
+          <!-- <div class="profile-action" hidden  [routerLink]="['./user/login-or-patreon']">
+            <div class="button">
+              <span class="material-symbols-outlined black">add_box</span>  {{labell.user_payment_add}} 
+            </div>
+          </div>      
+          <div class="profile-action" *ngIf="payment">          
+            <div class="method name">{{payment.issuer}}  **{{payment.last4}}</div>
+            <div class="note">{{payment.expiryToDate()|date:'MM/y'}}</div>  
+          </div>
+          <div class="profile-action" *ngIf="payment && selectItem">
+            <button>Valider</button>
+          </div>   -->
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
+
