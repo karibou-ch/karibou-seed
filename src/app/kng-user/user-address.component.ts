@@ -64,7 +64,6 @@ export class AddressComponent implements OnDestroy{
   $address: FormGroup;
   locations: string[];
   regions: string[];
-  pubkeyMap: string;
   idx: number;
   geo: any;
   isLoading: boolean;
@@ -116,7 +115,6 @@ export class AddressComponent implements OnDestroy{
   main(config: Config) {
     this.locations = config.shared.user.location.list.sort();
     this.regions = config.shared.user.region.list;
-    this.pubkeyMap = config.shared.keys.pubMap || '';
 
 
     //
@@ -125,15 +123,6 @@ export class AddressComponent implements OnDestroy{
       this.$address.patchValue({
         phone: this.user.phoneNumbers[0].number
       });
-    }
-
-    //
-    // FIXME this line for universal app
-    if (!window['google'] && config.shared.keys.pubMap) {
-      const _m$ = this.$util.loadMap(config).subscribe(() => {
-        // DONE!
-      });
-      this.collector$.add(_m$);
     }
 
     const _g$ = this.$util.getGeoCode().subscribe(
@@ -157,7 +146,7 @@ export class AddressComponent implements OnDestroy{
   }
 
   getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address, this.pubkeyMap);
+    return KngUtils.getStaticMap(address);
   }
 
   isSelectedAddress(address: UserAddress, idx: number) {

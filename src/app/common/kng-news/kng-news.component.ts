@@ -139,7 +139,6 @@ export class KngNewsComponent implements OnInit {
   // HUB information
   getContentStyle() {
     const content = this.contentFromNavigation;
-    // {'background-image': 'url(' + getStaticMap(edit.address) + ')'}
     if (!content || !content.image) {
       return {};
     }

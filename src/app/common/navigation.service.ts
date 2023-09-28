@@ -1,12 +1,12 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { Router, NavigationEnd, Route, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 import { Location } from '@angular/common';
 
 import { Config, ConfigService, ShopService, UserService } from 'kng2-core';
 
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
-import { BehaviorSubject, fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 
 /**
  *

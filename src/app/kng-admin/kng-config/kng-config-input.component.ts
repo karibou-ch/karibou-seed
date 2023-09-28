@@ -138,8 +138,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
     if (!this.config || !this._value) {
       return;
     }
-    const pubkeyMap = this.config.shared.keys.pubMap || '';
-    return KngUtils.getStaticMap(this._value, pubkeyMap);
+    return KngUtils.getStaticMap(this._value);
   }
 
   // onGeloc(address) {

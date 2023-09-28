@@ -16,7 +16,7 @@ export class KngSafeHtmlPipe implements PipeTransform  {
 
 @Injectable()
 export class KngUtils {
-  static STATIC_MAP = 'https://maps.googleapis.com/maps/api/staticmap?';
+  static STATIC_MAP = '/v1/staticmap?';
 
   private _result$: Observable<any>;
   private _geo$: ReplaySubject<any>;
@@ -64,10 +64,11 @@ export class KngUtils {
   }
   
 
+
   //
   // TODO share staticmap generator
   // https://developers.google.com/maps/documentation/static-maps/intro?hl=fr
-  static getStaticMap(address: UserAddress, key: string, size?: string) {
+  static getStaticMap(address: UserAddress, size?: string) {
     // TODO use this.config.shared.keys.pubMap
     if (!address || !address.geo) {
       return 'https://image.flaticon.com/icons/svg/235/235861.svg';
@@ -76,19 +77,14 @@ export class KngUtils {
     // default value for name
     const name = (address.name) ? address.name : '-';
     const params = {
-      key: key,
-      center: address.geo.lat + ',' + address.geo.lng,
-      maptype: 'roadmap',
+      lat: address.geo.lat,
+      lng:address.geo.lng,
+      name,
       zoom: '14',
       scale: '2',
-      size: (size || '200x200'),
-      markers: 'color:0x5fea89|label:' + name[0].toUpperCase() + '|' + address.geo.lat + ',' + address.geo.lng
+      size: (size || '400x200')
     };
-    return KngUtils.STATIC_MAP + Utils.encodeQuery(params);
-  }
-
-  loadMap(config: Config) {
-    return Utils.script('https://maps.googleapis.com/maps/api/js?libraries=places&key=' + config.shared.keys.pubMap, 'maps');
+    return config.API_SERVER + KngUtils.STATIC_MAP + Utils.encodeQuery(params);
   }
 
   //

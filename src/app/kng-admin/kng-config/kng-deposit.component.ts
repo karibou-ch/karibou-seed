@@ -86,7 +86,7 @@ export class KngDepositDlgComponent {
   }
 
   getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address, this.pubMap);
+    return KngUtils.getStaticMap(address);
   }
 
 
@@ -172,7 +172,7 @@ export class KngDepositComponent extends KngHUBComponent {
   }
 
   getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address, this.pubMap);
+    return KngUtils.getStaticMap(address);
   }
 
   onDelete($event) {
