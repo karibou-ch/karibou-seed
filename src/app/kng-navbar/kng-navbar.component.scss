@@ -228,8 +228,11 @@ div.navbar{
     }
 
     .shopping-cart {
-      margin-left: auto;
+      font-weight: 500;
       margin-right: 10px;
+      &.first{
+        margin-left: auto;
+      }
     }
     
     .title{

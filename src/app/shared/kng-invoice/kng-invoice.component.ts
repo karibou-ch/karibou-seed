@@ -68,6 +68,14 @@ export class KngInvoiceComponent implements OnInit {
     document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.prepareInvoice();
+    import('swissqrbill/lib/node/esm/node/svg.js').then(module => {
+      this.module = module;       
+      if (this.svg && this.svg.nativeElement && this.module && this.module.SVG) {     
+        this.svg.nativeElement.innerHTML = new this.module.SVG(this.contentSVG, { language: 'EN' });
+      }
+      this.printQr = true;
+    })
+
   }
 
   ngOnDestroy() {
@@ -138,22 +146,12 @@ export class KngInvoiceComponent implements OnInit {
       }
     } as any;    
 
-    //
-    // load qr generator if needed
-    if(!this.module) {
-      this.module = await import('swissqrbill/lib/node/esm/node/svg.js');
-    }
     console.log('--create invoice QR',this.svg )
 
-    if (this.svg && this.svg.nativeElement && this.module && this.module.SVG) {     
-      this.svg.nativeElement.innerHTML = new this.module.SVG(this.contentSVG, { language: 'EN' });
-    }          
-
-    this.printQr = true;
   }
 
-  roundCHF(value) {
-    return parseFloat((Math.round(value*20)/20).toFixed(2))
+  round1cts(value) {
+    return parseFloat((Math.round(value*100)/100).toFixed(2))
   }
   
 
@@ -168,7 +166,7 @@ export class KngInvoiceComponent implements OnInit {
       return sum;
     },0);
   
-    return this.roundCHF(total + order.fees.shipping);
+    return this.round1cts(total + order.fees.shipping);
   }
 
   onPrint(){

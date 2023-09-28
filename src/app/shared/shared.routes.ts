@@ -7,6 +7,7 @@ import { KngShopsComponent } from '../kng-shops/kng-shops.component';
 
 
 export const childrenRoute: Route[] = [
+  { path: 'business', data: { business:true }, component: ProductListComponent },
   { path: 'subscription', data: { subscription: true }, component: ProductListComponent },
   { path: 'products/:sku/:title', component: ProductComponent },
   { path: 'products/:sku', component: ProductComponent },

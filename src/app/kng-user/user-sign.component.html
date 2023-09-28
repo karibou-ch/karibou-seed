@@ -70,9 +70,9 @@
           </mdc-text-field>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
-          <mdc-text-field  [label]="$i18n[locale].user_postalcode" fullwidth type="text" formControlName="postalcode">
+          <mdc-text-field  [label]="$i18n[locale].user_postalcode" fullwidth type="text" formControlName="postalcode" [hidden]="mandatory.minimal">
           </mdc-text-field>
-          <kng-control-messages [control]="signup.controls.postalcode"></kng-control-messages>
+          <kng-control-messages [hidden]="mandatory.minimal" [control]="signup.controls.postalcode"></kng-control-messages>
 
           <mdc-text-field  [label]="$i18n[locale].user_phone" fullwidth  type="text" formControlName="phone" >
             </mdc-text-field>
@@ -111,7 +111,7 @@
 
     <!-- PAYMENT -->
     <div class="inner" *ngIf="askAction=='payment'">
-      <kng-user-payment [user]="user" [config]="config" (updated)="onUpdatePayment($event)"></kng-user-payment>
+      <kng-user-payment [user]="user" [minimal]="mandatory.minimal" [config]="config" (updated)="onUpdatePayment($event)"></kng-user-payment>
     </div>
       
     <!-- LOGOUT -->

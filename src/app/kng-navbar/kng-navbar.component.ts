@@ -17,6 +17,7 @@ import { MdcSnackbar, MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';
+import { CartItemsContext } from 'kng2-core';
 
 
 @Component({
@@ -116,6 +117,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     this.isReady = false;
   }
 
+  get label() {
+    return this.$i18n.label();
+  }
 
   ngOnDestroy() {
     // FIXME, better to use declarative pipe(takeUntil(destroyed$))
@@ -187,6 +191,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
             
             KngNavbarComponent.ASK_FOR_LOGIN = true;
             setTimeout(()=>{
+              console.log('---- KngNavbarComponent.ASK_FOR_LOGIN')
               this.$router.navigate(['/store',this.store,'home','me','login']);
             },2000)
           }
@@ -208,8 +213,15 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           //
           // update cart for all market (hub)
           (this.config.shared||[]).hubs.forEach(hub => {
-            this.cardItemsSz = parseFloat ((this.cardItemsSz + this.$cart.subTotal(hub.slug)).toFixed(2));
-            this.cartItemCountElem += this.$cart.getItems().filter(item=> item.hub == hub.slug).length;
+            // never display subscription item in cart
+            const ctx:CartItemsContext = {
+              forSubscription:false,
+              hub:hub.slug
+            }    
+            const items = this.$cart.getItems(ctx);
+              
+            this.cardItemsSz = parseFloat ((this.cardItemsSz + this.$cart.subTotal(ctx)).toFixed(2));
+            this.cartItemCountElem += items.length;
           });
   
 

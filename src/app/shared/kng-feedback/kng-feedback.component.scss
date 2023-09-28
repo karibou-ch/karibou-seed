@@ -4,9 +4,9 @@ button{
 
   border: 0;
   padding: 7px 20px;
-  background-color: var(--mdc-theme-primary);      
+  background-color: #ffffffcf;      
   font-weight: bold;
-  color: white;
+  color: #333;
   border-radius: 20px;
   font-size: inherit;  
   span{
@@ -61,13 +61,25 @@ p.block-info{
 .processing{
   background-color: white;
   padding-top: 5px;
-
+  margin: 5px;
   >p,
   >h3{
     padding: 10px 10px;
     margin-bottom: 5px;
     margin-top: 5px;
   }
+
+  @media (prefers-color-scheme: dark) {
+    border: 0;
+    border-radius: 14px;
+    background-color: var(--mdc-theme-secondary-dark);
+    color: var(--mdc-theme-secondary-dark-text);      
+
+    p.help-block{
+      color: var(--mdc-theme-secondary-dark-text);      
+    }
+  }
+
 }
 
 
@@ -78,63 +90,6 @@ p.block-info{
   display: flex;
   flex-wrap: wrap;
 
-  >div{
-    margin: 10px 5px;
-    padding: 20px 10px;
-    background: #eee;
-    border-radius: 14px;
-    color: gray;
-    display: flex;
-    flex-wrap: wrap;
-    width: calc(50% - 30px);
-    min-height: 80px;
-    overflow: hidden;
-    align-content: flex-start;
-    &.boxed {
-      display: none;    
-    }
-
-    @media (max-width: 429px) {
-      width: 100%;
-      
-    }
-
-    .label{
-      color: gray;
-      font-size: 14px;
-      margin-top: -5px;
-      margin-bottom: 10px;    
-      font-weight: 600;
-      width: 100%;
-    }  
-    .content{
-      color: #555;
-      width: 100%;
-      font-size: 15px;
-      p{
-        margin-top: 0;
-      }
-      button{
-        width: 100%;
-        cursor: pointer;
-        &.print{
-          background-color: black;      
-        }
-      }
-    }
-
-  }
-  .favorite{
-
-  }
-
-
-  .history{
-
-  }
-  .subscription{
-
-  }
   .wallet{  
     .boxed{
       display: none;
@@ -166,7 +121,8 @@ p.block-info{
         height: 36px!important;
         border-radius: 0 8px 8px 0;
         flex: auto;
-        background: var(--mdc-theme-primary-light);        
+        background: var(--mdc-theme-secondary);        
+        color: var(--mdc-theme-secondary-text);        
         padding: 0;   
         cursor: pointer;   
       }
@@ -217,10 +173,11 @@ p.block-info{
   font-weight: 200;
 
   @media (prefers-color-scheme: dark) {
-    background-color: #555;
     border: 0;
     border-radius: 14px;
-    color: white;      
+    background-color: var(--mdc-theme-secondary-dark);
+    color: var(--mdc-theme-secondary-dark-text);      
+
   }
 
   button{
@@ -417,6 +374,14 @@ p.block-info{
       margin: 0;
 
       li{
+
+        padding: 10px 8px;
+        border-radius: 4px;
+        position: relative;
+        background-color: var(--mdc-theme-appbar);
+        height: auto;    
+        flex-wrap: wrap;
+
         &.selected{
           color: var(--mdc-theme-primary);
         }
@@ -451,12 +416,6 @@ p.block-info{
           margin-right: 10px;
           margin-left: 0;          
         }
-        padding: 10px 8px;
-        border-radius: 4px;
-        position: relative;
-        background-color: #efefef;
-        height: auto;    
-        flex-wrap: wrap;
       }
 
     }
@@ -464,6 +423,7 @@ p.block-info{
     button{
       margin: 10px auto;
       display: flex;      
+      background-color: #ddd;
     }
 
     @media (max-width: 429px) {
@@ -474,136 +434,3 @@ p.block-info{
   }
 }
 
-//
-// print 
-.qrbill{  
-  &.qr-fullscreen {
-    position: fixed;
-    background: white;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    left: 0;
-    overflow: visible;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-
-    @media print {
-      .actions{
-        display: none!important;
-      }      
-    }
-        
-    @media screen {
-      zoom: .8;
-      background-color: #eee;    
-    }
-
-
-    .page{
-      width: 21cm;
-      height: 29.7cm;
-      margin: 30mm 45mm 30mm 45mm;       
-      margin-top: 10mm;
-      background-color: #fff;    
-      display: flex;
-      flex-direction: column;
-    }
-
-    .svg{
-      max-height: 100%;
-      margin: 10px;
-      padding: 0;
-      overflow: hidden;
-      margin-bottom: 0;
-      margin-top: auto;      
-    } 
-  
-    .karibou-header{
-      height: 50px;
-      overflow: hidden;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 60px;
-      img{
-        padding: 5px;
-        height: 40px;
-      }      
-    }
-    address.customer-bill{
-      margin-left: 65%;
-      margin-top: 70px;
-      margin-bottom: 70px;
-    }
-
-    .bill-title{
-      margin: 10px 5%;
-    }
-
-    ul.items{
-      list-style: none;
-      margin: 10px 5%;
-      padding: 0;
-      li{
-        display: flex;
-        padding: 1px 0;
-        div{
-          margin-right: 20px;
-          min-width: 30px;
-        }
-      }
-    }
-
-    h3{
-      margin: 40px 5% 10px;
-      border-bottom: 2px dotted #aaa;
-      padding-bottom: 10px;
-    }
-    p{
-      font-size: 18px;
-      margin: 40px 5%;
-    }
-
-    .actions{
-      display: flex;
-      margin: 20px ;
-      margin-top: auto;
-      background-color: red;
-      padding: 20px 100px;      
-      button{
-        margin-left: 5px;
-        margin-right: 20px;
-        text-transform: uppercase;
-        font-weight: bold;
-        background-color: var(--mdc-theme-primary); 
-        color: var(--mdc-theme-primary-text);
-      }
-      button.print{
-        margin-left: 5px;
-        width: 100%;
-      }
-    
-      button.close{
-        margin-left: auto;
-      }
-    
-    }
-  
-  }
-
-  border-bottom: 3px dotted #aaa;
-  padding:0 10px;
-  padding-bottom: 20px;
-  margin-top: 20px;
-  overflow: hidden;
-  h3{
-    margin-bottom: 0;
-  }  
-}

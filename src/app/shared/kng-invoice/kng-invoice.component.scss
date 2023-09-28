@@ -18,7 +18,7 @@
 
     @media print {
       -position: absolute;
-      min-height: 100%;
+      min-height: fit-content;
       overflow-y: hidden;
       overflow-x: hidden;
       .actions {
@@ -45,7 +45,7 @@
       .svg {
         max-height: 100%;
         margin: 10px;
-        padding: 5%;
+        padding: 10mm;
         overflow: hidden;
         margin-bottom: 0;
         margin-top: auto;
@@ -79,7 +79,7 @@
       }
 
       .bill-title {
-        margin: 10px 5%;
+        margin: 10px 15mm;
       }
 
       ul.items {
@@ -94,7 +94,7 @@
         }
 
         list-style: none;
-        margin: 10px 5%;
+        margin: 10px 15mm;
         padding: 5px;
 
         li {
@@ -129,19 +129,19 @@
       }
 
       h3 {
-        margin: 40px 5% 10px;
+        margin: 15mm 10px;
         border-bottom: 2px dotted #aaa;
         padding-bottom: 10px;
       }
 
       p {
         font-size: 18px;
-        margin: 40px 5%;
+        margin: 40px 15mm;
       }
 
       .separator{
         border-top:2px dotted #aaa;
-        padding: 0 5%;
+        padding: 0 15mm;
         height: 0;
       }
     }

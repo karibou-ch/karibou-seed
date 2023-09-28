@@ -24,94 +24,17 @@
     margin-left: 0px;
   }
 
-
-  .elem{
-    display: flex;
-    align-items:center;
-    min-height: 56px;
-    background-color: #fff;
-    border-radius: 42px;    
-    width: 100%;    
-    position: relative;
-    div.item1:first-child {
-      border-radius: 23px 0px 0px 23px!important;
-    }
-    div.item1:last-child {
-      border-radius: 0px 23px 23px 0px!important;
-    }
-
+  .elem .item{
+    font-weight: 400;
+    font-size: 29px;
+    margin: 30px auto 10px;
+    margin-left: auto;
+    text-align: center;    
     @media (max-width:429px) {
-      border-radius: 0;    
+      margin-left: 15px!important;
+      text-align: left;    
     }
-
-
-    div.item{
-      &.selected{
-        color: #333;
-        height: 36px;
-        margin: 0 8px;
-        z-index: 1;
-        font-weight: 500;
-        background-color: var(--mdc-theme-appbar);
-        border: 2px solid var(--mdc-theme-appbar);
-        border-radius:23px;
-          span{
-          display: none;
-        }
-      }
-
-      // icon color
-      span{
-        color: #007aff;
-        display: inline;
-        font-size: 15px;
-        padding: 8px;        
-      }
-
-      border: none;
-      background-color: transparent;
-
-      flex:1 1 auto;  
-      cursor: pointer;
-      width: 50%;
-      vertical-align: text-bottom;
-      text-decoration: none;
-      letter-spacing: normal;
-      color: #333;      
-      font-weight: 400;
-      overflow-wrap: break-word;
-      text-align: center;
-      line-height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      height: 41px;
-      padding: 0px 3px !important;
-      font-size: 20px;
-      @media (max-width:429px) {
-        font-size: 16px;
-      }
-    }
-
-    div.new{      
-      position: absolute;
-      top: 2px;
-      right: 7px;
-      border-radius: 25px;
-      transform: rotateY(0deg) rotate(-90deg);
-      font-size: 13px;
-      width: 45px;
-      height: 45px;
-      text-align: center;
-      line-height: 43px;
-      color: #aaa;
-      font-weight: 800;      
-      @media (max-width:429px) {
-        right: -16px;
-      }
-
-    }
+  
   }
 }
 

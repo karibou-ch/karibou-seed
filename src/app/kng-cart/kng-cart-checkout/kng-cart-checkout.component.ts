@@ -257,6 +257,22 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
 
+  get currentShippingFees() {
+    if(!this._currentHub){
+      return 0;
+    }
+
+    const address = this.currentShipping();
+    const ctx:CartItemsContext = {
+      address,
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+    return this.$cart.computeShippingFees(ctx);
+  }
+
+
+
   ngOnInit(): void {
 
     this.$user.user$.subscribe(user => {      
@@ -351,6 +367,7 @@ export class KngCartCheckoutComponent implements OnInit {
       }
     );
   }
+
   doSubscriptionPaymentUpdate(sid,intent) {
 
   }
@@ -363,7 +380,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   doSubscription() {
     this.subscriptionParams = this.$cart.subscriptionGetParams();
-
+    console.log('---dbug',this.subscriptionParams)
     const shippingDay = this.subscriptionNextShippingDay;
     const specialHours = ((shippingDay.getDay() == 6)? 12:16);
     const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
@@ -410,13 +427,9 @@ export class KngCartCheckoutComponent implements OnInit {
           this.errorMessage = "La carte est ne fonctionne pas";
 
         }
+        this.createSubscriptionConfirmation(shipping,subscription)
     
       },status =>{
-        //
-        // SCA request payment confirmation
-        if (status.error && status.error.client_secret) {
-          return this.confirmPaymenIntent(status.error, {oid: status.error.oid});
-        }
         console.log('----- payment error',status.error);
         this.errorMessage = status.error;
         this.isRunning = false;
@@ -539,15 +552,6 @@ export class KngCartCheckoutComponent implements OnInit {
     return address;
   }
 
-  currentShippingFees() {
-    const ctx:CartItemsContext = {
-      forSubscription: this.useCartSubscriptionView,
-      hub:this.store
-    }    
-    return this.$cart.computeShippingFees(ctx);
-
-  }
-
   currentPaymentMethod() {
     return this.$cart.getCurrentPaymentMethod();
   }
@@ -646,7 +650,7 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address, this.config.shared.keys.pubMap || '');
+    return KngUtils.getStaticMap(address);
   }
 
   getDepositAddress() {
@@ -744,8 +748,9 @@ export class KngCartCheckoutComponent implements OnInit {
 
   //
   // subscription stuffs 
-  createSubscriptionConfirmation(shipping) {
+  createSubscriptionConfirmation(shipping, contract) {
     this.$snack.open(this.$i18n.label().cart_save_deliver + shipping.when.toDateString());
+    this.$cart.clearAfterOrder(this.store,null,contract);
     this._items = [];
     this.open = false;
   }

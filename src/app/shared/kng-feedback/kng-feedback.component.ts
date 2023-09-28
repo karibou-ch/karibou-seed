@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem, OrderCustomerInvoices } from 'kng2-core';
+import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem, OrderCustomerInvoices, CartSubscription } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
@@ -21,7 +21,6 @@ export class KngFeedbackComponent implements OnInit {
       title_wallet:'Votre Portefeuille',
       title_favorite:'Les suggestions pour vous',
       title_favorite_p:'Un rapide coup d\'oeil de la sélection',
-      title_subscription:'Vos abonemments',
       title_order_prepare: 'Votre commande est en cours de préparation pour',
       title_order_open: 'Vous avez une commande en cours ...',
       title_order_grouped: 'complément(s)',
@@ -36,8 +35,8 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_subtitle: 'Aider nousà améliorer la qualité du service',
       title_issue_item:'Message à transmettre au commerçant:',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.',
-      title_issue_send: 'Enregistrez la note',
-      title_invoice:'Vous avez une facture ouverte',
+      title_issue_send: 'Envoyez la note',
+      title_invoice:'Vos factures',
       title_invoice_open:'Ouvrir l\'espace facture',
       title_invoice_paid:'Facture payée, en attente du virement bancaire',
       title_add_all_to_cart: 'Tout ajouter dans le panier',
@@ -48,7 +47,6 @@ export class KngFeedbackComponent implements OnInit {
       title_wallet:'Your Wallet',
       title_favorite:'Suggestions mades for you',
       title_favorite_p:'A quick glance of goods',
-      title_subscription:'Your subscriptions',
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
@@ -63,8 +61,8 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_subtitle: 'Helps us to improve the quality',
       title_issue_header: 'Select the product(s) below to inform the vendor.',
       title_issue_hub: 'If you have a more general comment please write here',
-      title_issue_send: 'Save your rating',
-      title_invoice:'You have open invoices',
+      title_issue_send: 'Send your feedback',
+      title_invoice:'Your invoices',
       title_invoice_open:'View all invoices',
       title_invoice_paid:'Invoice paid, waiting for Bank transfer',
       title_add_all_to_cart: 'Add all to cart',
@@ -201,7 +199,7 @@ export class KngFeedbackComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.currentLimit = this.config.shared.hub.currentLimit || 1000;
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
@@ -269,6 +267,10 @@ export class KngFeedbackComponent implements OnInit {
       return EnumFinancialStatus[EnumFinancialStatus.paid];
     }
 
+  }
+
+  getDayOfWeek(idx){
+    return this.label.weekdays.split('_')[idx];
   }
 
   isOpen(order: Order) {    

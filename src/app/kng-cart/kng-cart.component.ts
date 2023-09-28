@@ -95,7 +95,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
       cart_order: 'Commander pour',
-      cart_subscription: 'Activer votre abonnement'
+      cart_subscription: 'Activer votre abonnement',
+      cart_subscription_title: 'Votre abonnement'
     },
     en: {
       cart_deposit: 'Order to collect',
@@ -144,7 +145,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_cg: 'I read and I agree to the general selling conditions',
       cart_cg_18: 'I am of legal age to purchase alcohol',
       cart_order: 'Order now  for ',
-      cart_subscription: 'Activate your subscription'
+      cart_subscription: 'Activate your subscription',
+      cart_subscription_title: 'Your subscription'
     }
   };
 

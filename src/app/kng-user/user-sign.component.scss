@@ -64,7 +64,7 @@
       width: 100%;
       text-align: left;      
       color:blue;
-      padding: 8px 15px;
+      padding: 4px 15px;
 
     }
 
@@ -79,7 +79,7 @@
       transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
       max-height:700px; // still have to hard-code a value!
       top:0;
-      padding-top: 40px;
+      padding-top: 60px;
       border-radius: 15px;
       .signup-vs-login{
         line-height: 30px;
@@ -107,9 +107,9 @@
         background-position: center;
         background-size: contain;
         display: block;
-        height: 140px;
+        height: 100px;
         margin: 10px 70px;  
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         cursor:pointer;
         @media (max-width: 429px) {
           margin: 30px;
@@ -124,6 +124,7 @@
         position: relative;
         z-index: 2;
         width: 540px;  
+        zoom: .9;
         @media (max-width: 429px) {
           width: 100%;
         }
@@ -134,7 +135,7 @@
           font-size: 30px;  
         }
         p{
-          padding: 10px 70px;  
+          padding: 10px 50px;  
           @media (max-width: 429px) {
             padding: 10px 40px;
             font-size: 14px;
@@ -146,7 +147,7 @@
           background: white;
           display: flex;
           flex-flow:row wrap;
-          margin: 20px auto;
+          margin: 10px auto;
           padding: 8px 70px;  
           min-height:150px;
           width: auto;

@@ -83,6 +83,7 @@ button.CTA {
 .container.welcome-top {
   background-image: linear-gradient(to right top,#e3eceb,#fff,#fff,#e3eceb);
   .welcome{
+    font-family: 'Gentium Plus';
     padding-top: 20px;
     padding-bottom: 50px;
     display: flex;
@@ -215,6 +216,8 @@ button.CTA {
       line-height: 32px;
       font-weight: 400;
       color: #666;
+      font-family: 'Gentium Plus';
+
     }
   }
 }
@@ -251,6 +254,8 @@ button.CTA {
     text-align: center;
     padding: 10px;
     width: 100%;
+    font-family: 'Gentium Plus';
+
   }
   .faq-box{
     width: calc(33% - 20px);    

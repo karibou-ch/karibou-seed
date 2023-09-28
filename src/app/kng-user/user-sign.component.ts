@@ -73,7 +73,7 @@ export class UserSignComponent {
       login_ko: 'L\'utilisateur ou le mot de passe est incorrect',
       login_skip: 'je veux visiter les marchés sans m\'identifier',
       signup_create: 'Créer votre compte',
-      signup_phone: 'Le téléphone mobile est essentiel pour pouvoir vous contacter lors d\'une commande',
+      signup_phone: 'Le téléphone mobile est essentiel si vous souhaitez passer une commande',
       password_change_ok: 'Votre mot de passe à été modifié',
       profil_ok: 'Profil enregistré',
       register_ok: 'Votre compte à été créé! Une demande de confirmation vous a été envoyée à votre adresse email',
@@ -93,8 +93,8 @@ export class UserSignComponent {
       login_ok: '1000 Thanks, you are now connected',
       login_ko: 'Username or password are not correct',
       login_skip: 'Visit the marketplace without identification',
-      signup_create: 'Continue',
-      signup_phone: 'Mobile phone is mandatory to contact you when ordering',
+      signup_create: 'Continue', 
+      signup_phone: 'Mobile phone is essential if you want to place an order',
 
       password_change_ok: 'Votre mot de passe à été modifié',
       profil_ok: 'Profil enregistré',
@@ -121,6 +121,7 @@ export class UserSignComponent {
     address: boolean;
     payment: boolean;
     validation: boolean;
+    minimal: boolean;
     referrer: string;
   };
 
@@ -157,11 +158,14 @@ export class UserSignComponent {
       address: this.$route.snapshot.data.address,
       payment: this.$route.snapshot.data.payment,
       validation: this.$route.snapshot.data.validation,
+      minimal: this.$route.snapshot.data.minimal,
       referrer: this.$route.snapshot.data.referrer
     };
 
     const postalCodeValidator= (control) => {
-
+      if(this.mandatory.minimal){
+        return;
+      }
       if(this.config.shared.user.location.list.indexOf(control.value)==-1){
         return {invalidPostalcode:true};
       }    
@@ -176,7 +180,7 @@ export class UserSignComponent {
       'email': ['', [Validators.required, KngInputValidator.emailValidator]],
       'password': ['', [Validators.required, KngInputValidator.passwordValidator]],
       'confirm': ['', [Validators.required, KngInputValidator.passwordValidator]],
-      'postalcode':['',[Validators.required, postalCodeValidator]],
+      'postalcode':['',[postalCodeValidator]],
       'phone': ['', [Validators.required, Validators.minLength(9)]]
     });
 
@@ -239,9 +243,6 @@ export class UserSignComponent {
   //  - address:payment:validation
   updateState() {
     const isAuth = this.user.isAuthenticated();
-    const hasAddress = this.user.hasPrimaryAddress() !== false;
-    const hasValidMail = this.user.isReady();
-    const hasValidPayment = this.user.payments.every(p => p.isValid());
     this.store  = this.$navigation.store;
 
     //
@@ -254,14 +255,23 @@ export class UserSignComponent {
           ok => this.signoutOk = true,
           err => this.$snack.open(err.error)
         );
+
+        //
+        // we are ok
+        return this.onBack();
       }
 
+      //
+      // keep form active if more is needed
       if (this.mandatory.address) {
+        this.mandatory.address = false;
         return this.askAction = 'address';
       }
       if (this.mandatory.payment) {
+        this.mandatory.payment = false;
         return this.askAction = 'payment';
       }
+
       //
       // we are ok
       return this.onBack();
@@ -366,7 +376,7 @@ export class UserSignComponent {
         return this.$snack.open(this.$i18n.label().user_login_ko, this.$i18n.label().thanks, this.$i18n.snackOpt);
       }
       this.$snack.open(this.$i18n.label().user_login_ok, this.$i18n.label().thanks, this.$i18n.snackOpt);
-      this.onBack();
+      this.updateState();
     }, (err) => this.$snack.open(err.error, this.$i18n.label().thanks, this.$i18n.snackOpt));
   }
 
@@ -389,7 +399,7 @@ export class UserSignComponent {
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {
           timeoutMs: 9000
         });
-        this.onBack();
+        this.updateState();
       },
       (err) => {
         this.$snack.open(err.error, this.$i18n.label().thanks, {

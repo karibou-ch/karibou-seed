@@ -1,12 +1,12 @@
 <div class="subscription">
   <h1 hidden>Gérer simplement votre panier récurrent</h1>
-  <p>
+  <p [hidden]="quiet">
     Décidez de la fréquence de livraison et du jour qui vous arrange pour les produits dans votre panier.     
   </p>
 
 
   <!-- SUBSCRIPTION OPTIONS -->
-  <div class="selector iteration">
+  <div class="selector iteration" [class.quiet]="quiet">
     <label for="iteration">Vous souhaitez un panier</label>
     <div class="elem" id="iteration">
       <div class="item " 
@@ -16,7 +16,7 @@
         
     </div>
   </div>
-  <div class="selector day-of-week">
+  <div class="selector day-of-week" [class.quiet]="quiet">
     <label for="day-of-week">Vous souhaitez être livré</label>
     <div class="elem" id="day-of-week">
       <div class="item " 
@@ -25,6 +25,10 @@
           [class.selected]="selectedDayOfWeek == idx">{{day.label}}</div>
     </div>
   </div>
+  <p [class.checkout]="checkout">
+    la prochaine livraison pour votre abonnement débuttera le 
+     <b>{{nextShippingDay|date:'EEEE dd':'':locale|titlecase}} </b> 
+  </p>
 
 
 </div>

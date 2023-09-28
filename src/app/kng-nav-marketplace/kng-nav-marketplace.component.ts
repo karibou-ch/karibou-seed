@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ElementRef } from '@angular/core';
 import { i18n, KngNavigationStateService } from '../common';
-import { CartService, Config, LoaderService, Order } from 'kng2-core';
+import { CartItemsContext, CartService, Config, LoaderService, Order } from 'kng2-core';
 import pkgInfo from '../../../package.json';
 import { Router } from '@angular/router';
 
@@ -55,11 +55,15 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
     this.$loader.update().subscribe(emit=> {
       if(emit.state){
-        const items = this.$cart.getItems();
         this.config.shared.hubs.forEach(hub => {
+          const ctx:CartItemsContext = {
+            forSubscription:false,
+            hub:hub.slug
+          }    
+          const items = this.$cart.getItems(ctx);
           this.currentCart[hub.slug]={
-            count:items.filter(item=> item.hub == hub.slug).length,
-            amount:this.$cart.subTotal(hub.slug)
+            count:items.length,
+            amount:this.$cart.subTotal(ctx)
           };
         })
       }

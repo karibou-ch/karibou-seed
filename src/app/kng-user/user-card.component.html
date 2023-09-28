@@ -1,10 +1,10 @@
 <div>
-  <h2  [hidden]="!user.payments.length" >
+  <h2  [hidden]="isMinimal" >
     {{label.title_header}} 
   </h2>
 
 
-  <ul class="payment">
+  <ul class="payment" [hidden]="isMinimal">
     <li *ngFor="let payment of user.payments" 
       (click)="setPaymentMethod(payment)"
       [class.selected]="isSelectedPayment(payment)">

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { CartSubscriptionContext, CartAction, CartItem, CartService, LoaderService } from 'kng2-core';
+import { CartSubscription, CartSubscriptionParams, CartItemFrequency, CartItem, CartService, LoaderService, Order, Hub } from 'kng2-core';
 import { i18n } from '../common';
 
 
@@ -18,11 +18,13 @@ export class KngSubscriptionOptionComponent implements OnInit {
   private _iteration;
   private _dayOfWeek;
 
-  @Input() quiet = false;
+  @Input() checkout:boolean;
+  @Input() quiet:boolean;
+  @Input() hub: Hub;
 
   iterations=[
-    {label:"Semaine",id:1 },
-    {label:"Mois",id:3 },
+    {label:"Semaine",id:"week" },
+    {label:"Mois",id:"month" },
   ]
   dayOfWeek=[
     {label:"Mardi",id:2},
@@ -30,7 +32,10 @@ export class KngSubscriptionOptionComponent implements OnInit {
     {label:"Vendredi",id:5}
   ]
   items:CartItem[];
-  subscriptionContext:CartSubscriptionContext;
+  subscriptions:CartSubscription[];
+  subscriptionParams:CartSubscriptionParams;
+
+  oneWeek: Date[];
 
   constructor(
     private $i18n: i18n,
@@ -39,11 +44,19 @@ export class KngSubscriptionOptionComponent implements OnInit {
     private $cdr: ChangeDetectorRef
   ) { 
     this.items = [];
-    this.subscriptionContext = {
-      active: false, dayOfWeek: 2, frequency:1, note:""
-    }
+    this.subscriptions = [];
+    this.subscriptionParams = {
+        dayOfWeek:2,
+        frequency:'week',
+        activeForm: false
+    };
+    this.oneWeek = Order.fullWeekShippingDays(this.hub);
   }
 
+  get nextShippingDay() {
+    const day = this.selectedDayOfWeekLabel.id;
+    return this.oneWeek.find(date => date.getDay() == day);
+  }
 
   get selectedIteration() {
     return this._iteration || 0;
@@ -65,14 +78,12 @@ export class KngSubscriptionOptionComponent implements OnInit {
 
   set selectedIteration(idx) {
     this._iteration = idx;
-    this.subscriptionContext.frequency = this.iterations[idx].id;
-    this.$cart.setCartSubscriptionContext(this.subscriptionContext);
+    this.subscriptionParams.frequency = this.iterations[idx].id ;
   }
 
   set selectedDayOfWeek(idx) {
     this._dayOfWeek = idx;
-    this.subscriptionContext.dayOfWeek = this.dayOfWeek[idx].id;
-    this.$cart.setCartSubscriptionContext(this.subscriptionContext);
+    this.subscriptionParams.dayOfWeek = this.dayOfWeek[idx].id;
   }
 
   get label() {
@@ -84,8 +95,9 @@ export class KngSubscriptionOptionComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-    this.subscriptionContext = this.$cart.getCartSubscriptionContext();
+  async ngOnInit(){
+
+    //this.subscriptions = await this.$cart.subscriptionsGet().toPromise();
     this.updateContext();
 
     this.$loader.update().subscribe(emit => {
@@ -102,7 +114,7 @@ export class KngSubscriptionOptionComponent implements OnInit {
       // CART_SHIPPING   =10,
       if(emit.state && emit.state.action) {
         //this.currentShippingDay = this.$cart.getCurrentShippingDay();
-        this.subscriptionContext = this.$cart.getCartSubscriptionContext();
+        this.subscriptionParams = this.$cart.subscriptionGetParams();
         this.updateContext();
         this.$cdr.markForCheck();
 
@@ -114,7 +126,7 @@ export class KngSubscriptionOptionComponent implements OnInit {
   }
 
   updateContext() {
-    switch(this.subscriptionContext.dayOfWeek) {
+    switch(this.subscriptionParams.dayOfWeek) {
       case 3:
       this._dayOfWeek = 1;break;
       case 5:
@@ -123,9 +135,9 @@ export class KngSubscriptionOptionComponent implements OnInit {
       this._dayOfWeek = 0;break;
     }
 
-    switch(this.subscriptionContext.frequency) {
-      case 3:
-      this._iteration = 1;break;
+    switch(this.subscriptionParams.frequency) {
+      case "month":
+      this._iteration = "week";break;
       default:
       this._iteration = 0;break;
     }

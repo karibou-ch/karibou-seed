@@ -43,7 +43,7 @@ const routes: Routes = [
   { path: 'login', component: UserSignComponent, resolve: { loader: LoaderResolve }},
   { path: 'login-or-register',
     component: UserSignComponent,
-    data: {address: true, payment: true, validation: true},
+    data: {address: false, payment: false, validation: true},
     resolve: { loader: LoaderResolve } },
   { path: 'login-or-address',
     component: UserSignComponent,
@@ -53,6 +53,11 @@ const routes: Routes = [
     component: UserSignComponent,
     data: {address: false, payment: true, validation: true},
     resolve: { loader: LoaderResolve } },
+    { path: 'login-or-patreon',
+    component: UserSignComponent,
+    data: {address: false, payment: true, validation: true, minimal:true},
+    resolve: { loader: LoaderResolve } },
+
   { path: 'logout', component: UserSignComponent, data: {action: 'logout'}, resolve: { loader: LoaderResolve } },
   { path: 'register', component: UserSignComponent, data: {action: 'signup'}, resolve: { loader: LoaderResolve } },
 ];
@@ -72,7 +77,7 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   exports:[
-    MdcChipsModule,
+    MdcChipsModule, AddressComponent, CardComponent
   ],
   declarations: [
     AddressComponent,

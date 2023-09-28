@@ -109,6 +109,7 @@ export class CardComponent {
 
   @Output() updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
 
+  @Input() minimal: boolean;
   @Input() user: User;
   @Input('config') set config(config: Config) {
     this.main(config);
@@ -137,6 +138,11 @@ export class CardComponent {
 
   get locale() {
     return this.$i18n.locale;
+  }
+
+  get isMinimal(){
+    const payments = this.user&&this.user.payments||[];
+    return this.minimal || !payments.length;
   }
   //
   // entry point

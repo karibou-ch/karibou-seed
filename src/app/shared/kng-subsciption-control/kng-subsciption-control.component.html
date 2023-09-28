@@ -1,0 +1,93 @@
+<h2>{{i18n[locale].title_subscription}}</h2>
+<div class="customer">
+  <div class="kng-boxed subscription" [hidden]="contracts.length">
+    <div class="label">{{i18n[locale].title_subscription}}</div>
+    <div class="">
+      <p>Aucun abonnement actif</p>
+    </div>
+    <button routerLink="/store/artamis/home/subscription">Découvrir</button>
+  </div>
+
+  <div class="kng-boxed  subscription" *ngFor="let contract of contracts">
+    <div class="label">
+      {{i18n[locale].subtitle_subscription}} 
+      <div class="status" [class]="contract.status">{{contract.status}} / <b>{{getDayOfWeek(contract.dayOfWeek)}}</b> / <b>{{contract.frequency}}</b></div>
+    </div>
+    <div class="content">
+      <div class="items">
+        <ul>
+          <li *ngFor="let item of contract.items"><b>{{item.quantity}}x</b> {{item.title}} ({{item.part}})</li>
+        </ul>
+        <ul class="info">
+          <li>A l'adresse, {{contract.shipping.streetAdress}}</li>
+        </ul>
+      </div>
+  
+      <div class="bottom"> <button (click)="onOpen(contract)">Modifier</button></div>
+    </div>
+  </div>
+
+  <div class="kng-boxed  subscription patreon flyer-color">
+    <div class="label">Soutenez notre équipe de développement</div>
+    <div class="content">
+      <p>
+        notre écosystème numérique est rendue possible grâce au généreux soutien financier de nos sponsors et donateurs.
+      </p>
+      <div class="bottom">
+        <button routerLink="/store/artamis/home/patreon/welcome">Ca m'intérresse</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ITEMS POPUP -->
+<ng-container *ngIf="currentContract">
+
+  <div class="blured" ></div>
+  <div class="container top">
+    <button (click)="onClose()" class="close">
+        <span class=" material-symbols-outlined">close</span>
+    </button>
+    <div class="subscription-container" >
+      <h2>{{i18n[locale].subtitle_subscription}} </h2>
+
+      <h3>{{i18n[locale].subtitle_subscription_items}} </h3>
+      <ul>
+        <li class="contrasted" *ngFor="let item of currentContract.items"><b>{{item.quantity}}x</b> <span class="left">{{item.title}}</span> <b>{{item.fees|number:'1.2-2'}} fr</b></li>
+      </ul>
+      <h3>{{i18n[locale].subtitle_subscription_service}} </h3>
+      <ul>
+        <li class="contrasted" *ngFor="let item of currentContract.services"><b>{{item.quantity}}x</b> <span class="left">{{item.title}}</span> <b>{{item.fees|number:'1.2-2'}} fr</b></li>
+      </ul>
+
+      <h3>{{i18n[locale].subtitle_subscription_options}} </h3>
+
+      <ul>
+        <li>
+          <div>Votre abonnement est {{currentContract.status}}  </div>
+          <label for="subdate" class="date">
+            <b>{{getDayOfWeek(currentContract.dayOfWeek)}}</b> / <b>{{currentContract.frequency}} ✓</b> 
+          </label>      
+        </li>
+        <li>
+          <label for="subdate" class="date">
+            <span class="hide-sm">Les livraisons reprennent le&nbsp;</span>
+            <input type="date" id="subdate" (valueAsDate)="pauseUntil" [valueAsDate]="until" [min]="until| date:'yyyy-MM-dd'"  />
+          </label>      
+
+          <button  (click)="onPause(pauseUntil)">Mettre en pause</button>
+        </li>
+        <li>
+          <div >Vous souhaiter annuler</div>
+          <button class="danger"  (click)="onDelete()">Supprimer</button>
+        </li>
+      </ul>
+
+      <!-- ORDER FEEDBACK -->
+
+      <!-- FEEDBACK ACTIONS -->
+
+    </div>
+  </div>    
+
+</ng-container>

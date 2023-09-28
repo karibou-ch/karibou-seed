@@ -30,6 +30,7 @@ import { KngFeedbackComponent } from '../shared/kng-feedback/kng-feedback.compon
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
 import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-subscription-option.component';
+import { KngSubsciptionControlComponent } from '../shared/kng-subsciption-control/kng-subsciption-control.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-s
     KngNewsComponent,
     KngSafeHtmlPipe,
     KngFeedbackComponent,
-    KngSubscriptionOptionComponent
+    KngSubscriptionOptionComponent,
+    KngSubsciptionControlComponent
   ],
   declarations: [
     KngUiBottomActionsComponent,
@@ -73,7 +75,7 @@ import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-s
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-
+    KngSubsciptionControlComponent
   ],
 })
 export class KngCommonModule {

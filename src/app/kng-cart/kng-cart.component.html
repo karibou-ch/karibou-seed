@@ -5,18 +5,15 @@
   </section>
 
   <!-- VOS PANIER -->
-  <section class="cart" [hidden]="!items.length">
-    <div i18n [innerHtml]="config?.shared.hub.checkout.title[$i18n.locale]|safeHtml" hidden></div>    
-  </section>
 
   <div class="cart-selector">
     <div class="elem">
-      <div class="item" [class.selected]="currentCartView" (click)="doSelectCart(true)">
+      <div class="item" [hidden]="!currentCartView" (click)="doSelectCart(true)">
         {{llabel.cart_info_title}} {{currentShippingDay|date:'EEEE':'':locale}}
       </div>
-      <div  class="item" [class.selected]="!currentCartView" (click)="doSelectCart(false)">
+      <div  class="item" [hidden]="currentCartView" (click)="doSelectCart(false)" >
 
-        Votre abonnement &nbsp;<i class="material-symbols-outlined ">done_outline</i>
+        {{llabel.cart_subscription_title}} &nbsp;<i class="material-symbols-outlined bold">more_time</i>
       </div>
     </div>
   </div>
@@ -34,12 +31,11 @@
   </section>
 
 
-  <div class="pending-order" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
+  <div class="pending-order" [hidden]="!currentCartView" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
     <p class="shipping-grouped block-info" [innerHtml]="label.cart_order_grouped_info">
   </div>
 
 
-  test{{currentCartView}}
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
 
@@ -48,7 +44,7 @@
     </ng-container>
   </mdc-list>
 
-  <div class="pending-order display-message">
+  <div class="pending-order display-message" [hidden]="!currentCartView">
     <p class=" block-link" [hidden]="isSharedCart()">
       {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
     </p>  

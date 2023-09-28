@@ -10,7 +10,6 @@ import { KngTextfieldAutosizeDirective } from './kng-textfield-autosize.directiv
 // that should be in a specific admin module
 import { UcWidgetComponent } from './kng-uc-widget/uc-widget';
 
-import { KngUiBottomActionsComponent } from './kng-ui-bottom-actions/kng-ui-bottom-actions.component';
 import { KngUserReminderComponent } from './kng-user-reminder/kng-user-reminder.component';
 
 

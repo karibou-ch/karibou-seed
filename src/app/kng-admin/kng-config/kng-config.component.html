@@ -55,8 +55,10 @@
       <div class="faq-question">
         <kng-config-input clazz="config" label="FAQ question {{idx + 1}}" name="faq.question" format="text" [(ngModel)]="faq.q[$i18n.locale]"></kng-config-input>
       </div>
+
       <div class="faq-reponse">
         <kng-config-input clazz="config" label="FAQ réponse" name="faq.réponse" format="area" 
+        [checked]="faq.b2b" [withCheck]="true"
         [(ngModel)]="faq.a[$i18n.locale]"></kng-config-input>
       </div>      
       <div class="faq-actions">
@@ -81,7 +83,26 @@
   <kng-config-input clazz="config" label="Paragraphe subscription" name="subscription.p" format="area" 
                     [(ngModel)]="config?.shared.subscription.p[$i18n.locale]"></kng-config-input>
 
+  <kng-config-input clazz="config" label="Article subscription" name="subscription.article" format="area" 
+                    [(ngModel)]="config?.shared.subscription.article[$i18n.locale]"></kng-config-input>
   
+  <!-- patreon text -->
+  <h3 >Patreon <span class="gray">(patreon header)</span></h3>
+  <hr class="dashed"/>
+  <!-- SITE Lang -->
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Titre patreon" name="patreon.titre" format="text" 
+                    [(ngModel)]="config?.shared.patreon.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Subtitle patreon" name="patreon.subtitre" format="text" 
+                    [(ngModel)]="config?.shared.patreon.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe patreon" name="patreon.p" format="area" 
+                    [(ngModel)]="config?.shared.patreon.p[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Article patreon" name="patreon.article" format="area" 
+                    [(ngModel)]="config?.shared.patreon.article[$i18n.locale]"></kng-config-input>
 
   <!-- Karibou.ch Footer -->
   <h3 >Main Footer <span class="gray">(welcome bottom)</span></h3>

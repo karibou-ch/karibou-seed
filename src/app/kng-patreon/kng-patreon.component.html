@@ -20,7 +20,7 @@
         <div class="content" [innerHtml]="patreon.h[locale]">
         </div>
         <div class="actions">
-          <button class="CTA" [disabled]="!payment||!selectItem" [routerLink]="['./user/login-or-patreon']">Je participe <span class="sm">{{selected_box}}</span> </button>
+          <button class="CTA" [disabled]="!selectItem" [routerLink]="['./user/login-or-patreon']">Je participe <span class="sm">{{selected_box}}</span> </button>
           <div class="info" *ngIf="payment">          
             <div class="method name">paiement  {{payment.issuer}}  **{{payment.last4}} {{payment.expiryToDate()|date:'MM/y'}}</div>
           </div>
@@ -33,7 +33,7 @@
       <div class="patreon">
 
         <div class="menu">
-          <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">Acceuil</div>
+          <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">Articles</div>
           <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">Information</div>
         </div>
   

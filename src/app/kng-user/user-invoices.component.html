@@ -8,7 +8,7 @@
   <div class="invoices-content">
     <div class="invoices-elem" *ngFor="let invoice of invoices" >
         <div class="info">
-          {{i18n[locale].title_invoive_month}} {{invoice.month + 1 }}/{{invoice.year}}
+          {{i18n[locale].title_invoive_month}} {{invoice.month }}/{{invoice.year}}
           <button class="open" (click)="onOpenInvoice(invoice)">{{i18n[locale].title_open_invoive}}</button>
         </div>
         <ul>
