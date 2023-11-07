@@ -1,5 +1,4 @@
 @import "colors.scss";
-//@import 'kng-custom-mdc-theme.scss';
 
 mdc-snackbar{
   z-index: 5;
@@ -141,7 +140,6 @@ mdc-list{
   background: var(--mdc-theme-secondary)!important;    
   &.text-primary {
 //    @include mdc-fab-accessible($material-color-green-800);
-//    @include mdc-fab-accessible($mdc-theme-primary);
 //    color: var(--mdc-theme-primary-text);    
   }
   

@@ -22,6 +22,7 @@ export class UserProfileComponent implements OnInit {
   user: User;
   isReady: boolean;
   order:Order;
+  menuAction:string;
 
   i18n: any = {
     fr: {
@@ -30,7 +31,7 @@ export class UserProfileComponent implements OnInit {
       profile_invoices: 'Factures',
       profile_reminder: 'Notification',
       profile_account: 'Compte',
-      profile_password: 'mot-de-passe',
+      profile_password: 'Sécurité',
     },
     en: {
       profile_title: 'Member since',
@@ -51,12 +52,14 @@ export class UserProfileComponent implements OnInit {
     //
     // initialize loader
     const loader = this.$route.snapshot.data.loader;
+    console.log('--',this.$route.snapshot.data)
     //
     // system ready
     this.isReady = true;
     this.user   = loader[1];
     this.config = loader[0];
-    this.order = loader[2]
+    this.order = loader[2];
+    this.menuAction = 'orders';
   }
 
   doLogout() {

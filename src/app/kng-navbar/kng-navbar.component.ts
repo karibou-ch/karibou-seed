@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   CartService,
   CartAction,
+  CartItemsContext,
   Config,
   ConfigMenu,
   User,
@@ -17,7 +18,6 @@ import { MdcSnackbar, MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';
-import { CartItemsContext } from 'kng2-core';
 
 
 @Component({
@@ -182,17 +182,21 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.$cdr.markForCheck();
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
+          if(this.user.isAuthenticated()) {
+            this.$cart.load();
+          }
 
           //
           // If the user is known, we open ONE TIME the login form
-          if(!this.user.isAuthenticated() && 
-             !KngNavbarComponent.ASK_FOR_LOGIN &&
-             this.user.email.address) {
+          else if(!KngNavbarComponent.ASK_FOR_LOGIN && this.user.email.address) {
             
             KngNavbarComponent.ASK_FOR_LOGIN = true;
             setTimeout(()=>{
-              console.log('---- KngNavbarComponent.ASK_FOR_LOGIN')
-              this.$router.navigate(['/store',this.store,'home','me','login']);
+              this.$snack.open(
+                this.$i18n.label().user_ask_login,
+                this.$i18n.label().thanks,
+                {timeoutMs:10000,direction:"top"}
+              );
             },2000)
           }
 
@@ -360,7 +364,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
   setShippingDay(value: any) {
-    this.$cart.setShippingDay(value.day);
+    const hours = this.config.getDefaultTimeByDay(value.day);
+    this.$cart.setShippingDay(value.day,hours);
     this.currentShippingDay = this.$cart.getCurrentShippingDay();
     this.$cdr.markForCheck();
   }

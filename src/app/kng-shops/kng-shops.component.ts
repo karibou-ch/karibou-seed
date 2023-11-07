@@ -133,11 +133,7 @@ export class KngShopComponent implements OnInit {
   }
 
   getStaticMap(address) {
-    if (!this.config.shared || !this.config.shared.keys.pubMap) {
-      return;
-    }
-    const pubMap = this.config.shared.keys.pubMap;
-    return KngUtils.getStaticMap(address, pubMap, '400x200');
+    return KngUtils.getStaticMap(address, '400x200');
   }
 
   get locale() {

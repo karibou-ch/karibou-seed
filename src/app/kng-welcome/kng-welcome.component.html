@@ -18,19 +18,33 @@
     <h1 [innerHtml]="tagline.h[locale]"></h1>
     <div class="content" [innerHtml]="tagline.p[locale]">
     </div>
+    <div class="b2b-query"><span class="new">BÊTA</span> <a class="link" (click)="doB2B()"> {{_('title_b2b')}}</a> </div>
     <div class="actions">
-      <button class="CTA" [routerLink]="homeDestination">{{_('nav_store_change')}}</button>
+      <button class="CTA"  (click)="waiting=true" [routerLink]="homeDestination">
+        <span class="material-symbols-outlined icon" [class.waiting]="waiting"> clock_loader_10</span>
+        {{c2a}}
+      </button>
     </div>
   </div>
 
   <!-- BOXES -->
-  <div class="how-it-works" [innerHtml]="about.p[locale]"></div>
+  <div #boxes class="how-it-works" [innerHtml]="about.p[locale]"></div>
 
   <div class="brands">
     <img [src]="about.image" alt="">
 
     <h3 [innerHtml]="about.h[locale]"></h3>
+
+    <!-- CTA -->
+    <div class="actions">
+      <button  class="CTA" (click)="waiting=true" [routerLink]="homeDestination">
+        <span class="material-symbols-outlined icon" [class.waiting]="waiting"> clock_loader_10</span>
+        {{c2a}}
+      </button>
+    </div>
+
   </div>
+
 
 </div>
 <div class="container separator"></div>
@@ -63,7 +77,10 @@
     </div>
 
     <div class="actions">
-      <button  class="CTA" [routerLink]="homeDestination">{{_('nav_store_discover')}}</button>
+      <button  class="CTA"  (click)="waiting=true" [routerLink]="homeDestination">
+        <span class="material-symbols-outlined icon" [class.waiting]="waiting"> clock_loader_10</span>
+        {{c2a}}
+      </button>
     </div>
 
   </div>

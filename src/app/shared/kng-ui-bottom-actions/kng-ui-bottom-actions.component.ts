@@ -83,7 +83,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
@@ -113,7 +112,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   doClearScroll() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
@@ -127,14 +125,12 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.selected.emit(slug);
     this.doClear();
     this.show = false;
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
   doSearch(value: string) {
     const blur = !value;
     const tokens = value.split(' ').map(val => (val || '').length);
-    document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
     //
@@ -191,12 +187,10 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.show = !this.show;
     if (this.show) {
       this.products = [];
-      document.body.classList.add('mdc-dialog-scroll-lock');
       document.documentElement.classList.add('mdc-dialog-scroll-lock');
       // this.search.nativeElement.focus();
     } else {
       this.doClear();
-      document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
 

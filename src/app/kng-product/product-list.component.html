@@ -3,10 +3,38 @@
   <div class="product-dialog__surface" *ngIf="isReady">
     <div class="category-wide" >
 
-      <!-- CLOSE -->
-      <button (click)="onClose(true)" class="close" >
-        <span class="material-symbols-outlined size-large">arrow_back</span>
-      </button>
+      <!-- CLOSE OR SUBS CART -->
+      <div class="topbar" [class.sticked]="scrollStickedToolbar" [style.width.px]="clientWidth">
+        <button (click)="onClose(true)" class="close" >
+          <span class="material-symbols-outlined size-large">arrow_back</span>
+        </button>
+  
+        <div class="title text-overflow" [hidden]="isForSubscriptionList">{{category.current.name}}</div>
+        <div class="cart visible"  >
+          <div class="subscription-cart" [hidden]="!activeSubscription"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" [queryParams]="subscriptionQueryParams">            
+            <button> 
+              Votre Abo&nbsp;   
+              <span>
+                {{subscriptionAmount}} fr &nbsp; 
+                <span class="end material-symbols-outlined">shopping_cart</span>
+              </span>
+              
+            </button>
+          </div>  
+          <div class="subscription-cart" [hidden]="activeSubscription" href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >            
+            <button> 
+              
+              <span>
+                {{cartAmount}}&nbsp;fr&nbsp; 
+                <span class="end material-symbols-outlined">shopping_cart</span>
+              </span>
+              
+            </button>
+          </div>  
+
+        </div>  
+
+      </div>
 
 
       <!-- TITLE -->
@@ -15,27 +43,26 @@
         <h2 [innerHtml]="category.current.description"></h2>  
       </div>
 
-      <div class="subscription hide" *ngIf="options.subscription">
-        <div class="label">
-          Activer pour recevoir les articles en commandes récurrentes {{activeSubscription}}
-          <div class="sublabel"><span [innerHtml]="label_souscription"></span></div>
+      <!-- FOR SUBSCRIPTION -->
+      <div class="subscription colored" *ngIf="isForSubscriptionList">
+        <div class="row ">
+          <div class="label">
+            {{label.subscription_switch}}
+            <div class="sublabel"><span [innerHtml]="label_souscription"></span></div>
+          </div>
+          <label class="switch">
+            <input type="checkbox"  [(ngModel)]="activeSubscription" ngDefaultControl>
+            <span class="slider">
+             <svg class="slider-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation"><path fill="none" d="m4 16.5 8 8 16-16"></path></svg> 
+            </span>
+          </label>  
         </div>
-        <label class="switch">
-          <input type="checkbox" (click)="toggleSubscription()" [(ngModel)]="activeSubscription" ngDefaultControl>
-          <span class="slider">
-           <svg class="slider-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation"><path fill="none" d="m4 16.5 8 8 16-16"></path></svg> 
-          </span>
-        </label>
-
       </div>
-      
-      <!-- SUBSCRITION OPTIONS -->
-      <!-- <kng-subscription-option *ngIf="options.subscription"></kng-subscription-option> -->
 
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
-      <div class="toolbox " [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="options.subscription">
+      <div class="toolbox " [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="isForSubscriptionList">
         <div class="show-more hide-lg" (click)="onMOnbileShowMore()" >
           <span class="material-symbols-outlined size-medium">density_small</span>
         </div>
@@ -48,20 +75,26 @@
           </li>
         </ul>        
       </div>
+    </div>
 
-      <!-- VENDORS-->
-      <div class="vendor" >
+    <div class="kng-informations" *ngIf="label_subscriptionInformations">
+      <div class="menu">
+        <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">
+          <span class="material-symbols-outlined size-large">apps</span></div>
+        <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">
+          {{label.nav_menu_information}}
+        </div>
       </div>
-
-
+      <div class="markdown" [hidden]="activeMenu" [kng-markdown]="label_subscriptionInformations"></div> 
     </div>
 
     <!-- FURTHER -->
-    <div class="further-product-container mdc-layout-grid" >
-      <kng-product-grouped-list class="kng-layout-card"        
+    <div class="further-product-container" [hidden]="!activeMenu">
+      <kng-product-grouped-list class=""        
       *ngIf="products.length"
         alphasort="true"
         showSection="true"
+        [clazz]="isForSubscriptionBusiness?'large':''"
         [displaySubscription]="activeSubscription"
         [config]="config" 
         [user]="user"         

@@ -43,7 +43,7 @@ export class KngCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.$loader.update().subscribe(emit => {
-      if(emit.state) {
+      if(emit.state &&  this.config) {
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
         this.updated.emit(this.currentShippingDay);
       }
@@ -111,7 +111,8 @@ export class KngCalendarComponent implements OnInit {
     }
     // this.dialogRef.close(day);
 
-    this.$cart.setShippingDay(day);
+    const hours = this.config.getDefaultTimeByDay(day);
+    this.$cart.setShippingDay(day,hours);
     this.updated.emit(day);
   }
 

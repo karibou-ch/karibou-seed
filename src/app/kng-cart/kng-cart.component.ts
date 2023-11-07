@@ -43,6 +43,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   hasOrderError = false;
   noshippingMsg: string;
   currentCartView:boolean = true;
+
   currentShippingDay: Date;
   subscription$;
 
@@ -55,8 +56,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_help:'besoin d\'aide?',
       cart_info_wallet:'Débit de votre portefeuille',
       cart_info_total: 'Estimation total à facturer',
-      cart_info_total_subscription: 'Total facturé',
+      cart_info_total_subscription: 'Total de votre abonnement',
+      cart_info_total_subscription_update: 'Total ajouté à votre abo',
       cart_info_reserved: 'Montant réservé',
+      cart_info_contract_total: 'Montant de votre abo en cours',
       cart_info_subtotal: 'Sous total (service inclus)',
       cart_info_subtotal_fees: '__FEES__ de Service ',
       cart_info_shipping: 'Livraison 100% cycliste',
@@ -81,7 +84,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais de ',
       cart_checkout: 'Finaliser la commande',
-      cart_checkout_subscription: 'Activer la souscription',
+      cart_subscription: 'Activer votre abonnement',
+      cart_subscription_title: 'Votre abonnement',
+      cart_create_subscription: 'Créer votre abonnement',
+      cart_update_subscription: 'Modifier votre abonnement',
+      cart_update_subscription_payment: 'Valider votre méthode de paiement',
+      cart_update_subscription_payment_error:"Votre carte est ne fonctionne pas, utilisez une autre méthode de paiement",
       cart_login: 'Pour finaliser votre commande, vous devez vous connecter',
       cart_empty: 'Vos paniers sont vides',
       cart_error: 'Vous devez corriger votre panier!',
@@ -94,9 +102,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
-      cart_order: 'Commander pour',
-      cart_subscription: 'Activer votre abonnement',
-      cart_subscription_title: 'Votre abonnement'
+      cart_order: 'Commander pour'
     },
     en: {
       cart_deposit: 'Order to collect',
@@ -104,9 +110,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_help:'Need help?',
       cart_info_note:'Note:',
       cart_info_total: 'Total estimate to be billed',
-      cart_info_total_subscription: 'Total billed',
+      cart_info_total_subscription: 'Total for your subscription',
+      cart_info_total_subscription_update: 'Total add to your subscription',
       cart_info_reserved: 'Amount reserved',
       cart_info_wallet:'Debit from your wallet',
+      cart_info_contract_total: 'Amount of your running subscription',
       cart_info_subtotal: 'Subtotal (service fee included)',
       cart_info_subtotal_fees:'Service fee  __FEES__ ',
       cart_info_shipping: 'Delivery 100% ecological ',
@@ -127,12 +135,16 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_modify: 'Modify',
       cart_modify_add: 'Select another shipping address',
       cart_modify_payment: 'Select another payment methods',
-
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
       cart_discount_title: 'delivery discout ',
       cart_checkout: 'Go to checkout',
-      cart_checkout_subscription: 'Activate your subscription',
+      cart_subscription: 'Activate your subscription',
+      cart_subscription_title: 'Your subscription',
+      cart_create_subscription: 'Create your subscription',
+      cart_update_subscription: 'Modify your subscription',
+      cart_update_subscription_payment: 'Validate your payment method',
+      cart_update_subscription_payment_error:"Your card is not working, use another payment method",
       cart_login: 'Please sign in before the checkout',
       cart_empty: 'Your carts are empty',
       cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
@@ -144,9 +156,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
       cart_cg_18: 'I am of legal age to purchase alcohol',
-      cart_order: 'Order now  for ',
-      cart_subscription: 'Activate your subscription',
-      cart_subscription_title: 'Your subscription'
+      cart_order: 'Order now  for '
     }
   };
 
@@ -319,7 +329,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   doInitateCheckout(ctx){
     this.hasOrderError = false;
-    this.checkout.doInitateCheckout(this.user,ctx.hub,ctx.items,ctx.totalDiscount, !this.currentCartView);
+    this.checkout.doInitateCheckout(ctx);
   }  
 
   goBack(): void {

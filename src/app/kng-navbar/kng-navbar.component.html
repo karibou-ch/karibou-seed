@@ -93,11 +93,22 @@
         <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-symbols-outlined start">roofing</i>{{label.nav_bottom_home}}</div>
         <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}} </div>
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</div>
+
+
+        <div class="kng-chip" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <i class="material-symbols-outlined icon  secondary-text ">update</i> 
+          &nbsp;{{label.nav_subscription_b2b}}
+        </div>
+
+        <div class="kng-chip" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <i class="material-symbols-outlined icon  secondary-text ">update</i> 
+          &nbsp;{{label.nav_subscription}}
+        </div>
+            
+
         <div class="kng-chip bold" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
 
-        <div class="kng-chip shopping-cart first" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i class="material-symbols-outlined start bold yellow">magic_button</i>  {{label.nav_subscription_b2b}}</div>
-        <div class="kng-chip shopping-cart" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><i class="material-symbols-outlined start bold yellow">magic_button</i>  {{label.nav_subscription}}</div>
-        <div class="kng-chip "  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
+        <div class="kng-chip shopping-cart first"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
           <div > <span class="cart-items-count"></span></div>
           <span  class="end material-symbols-outlined secondary-text" >shopping_cart</span>          
         </div>

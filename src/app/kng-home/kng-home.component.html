@@ -33,14 +33,29 @@
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
 <!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
-<div class="home" [class.toolbox]="!isMobile" [class.mobile-categories]="isMobile">
+<div class="home" [class.menu-on-right]="!isMobile" [class.mobile-categories]="isMobile">
+
+</div>
+<div class="home" [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile">
+  <!-- <ul class="subs">
+    <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon   ">update</i>  
+
+      <span>{{label.nav_subscription_b2b}}</span>
+    </li>
+    <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon  ">update</i>  
+      <span>{{label.nav_subscription}}</span>
+    </li>
+  </ul> -->
+
   <ul>
     <li (click)="scrollToSlug(category.slug)"
               [id]="'category-'+j"                    
               [class.selected]="category.slug == displaySlug"
-              *ngFor="let category of getCategories();let j=index">
+              *ngFor="let category of sortedCategories;let j=index">
       <img [src]="category.cover" class="show-sm">
-      <i [class]="category.image" class="icon hide-sm hide-md"></i>              
+      <!--<i [class]="category.image" class="icon hide-sm hide-md"></i>               -->
       <span>{{getCategoryI18n(category)}}</span>
     </li>
   </ul>
@@ -48,10 +63,10 @@
 
 <div class="product-container mdc-layout-grid" *ngIf="products.length" >
   <kng-product-grouped-list 
-       useMaxCat="true"  showMore="on" offsetTop="500" clazz="home-header"       
+       useMaxCat="true"  showMore="on" offsetTop="500"       
        [config]="config" 
        [user]="user" 
-       [contentCategories]="getCategories()" 
+       [contentCategories]="sortedCategories" 
        [contentProducts]="products"       
        [scrollToSlug]="categorySlug" 
        (currentCategory)="displaySlug=($event || displaySlug)"

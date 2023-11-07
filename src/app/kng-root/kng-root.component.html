@@ -11,14 +11,14 @@
 
 
     <!-- SUBSCRITION OPTIONS -->
-    <kng-subsciption-control></kng-subsciption-control>
+    <kng-subsciption-control [config]="config"></kng-subsciption-control>
 
 
     <!-- MARKETPLACE -->
     <kng-nav-marketplace (updated)="doOpenMarket($event)"  [hidden]="lockedHUB" [config]="config" [orders]="orders"></kng-nav-marketplace>
   
     <!-- DATE -->
-    <!-- <kng-calendar (updated)="currentShippingDay=$event"></kng-calendar> -->
+    <!-- <kng-calendar [config]="config"  (updated)="currentShippingDay=$event"></kng-calendar> -->
 
 
     <!-- <h2 class="">Les coups coeur du marché</h2>  

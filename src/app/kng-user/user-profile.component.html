@@ -7,7 +7,7 @@
       <p class="resume ">
         <!-- 34 commandes, 5 problèmes, X X X X -->        
         &nbsp;
-        <a href="javascript:;" (click)="doLogout()" style="float:left" class="text-primary-dark" >        
+        <a href="javascript:;" (click)="doLogout()" style="float:left" class="link" >        
           {{$i18n[locale].user_logout}}
         </a>
           
@@ -21,34 +21,23 @@
 
   <div class="breaker small "></div>
 
-	<mdc-tab-bar   [activeTabIndex]="0">
-    <mdc-tab-scroller>
-          <!-- mdcRouter -->          
-    <mdc-tab [routerLink]="['./orders']"
-              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
-              {{i18n[locale].profile_order}}
-    </mdc-tab>
+  <div class="menu">
+    <div class="elem orders" (click)="menuAction='orders'" [routerLink]="['./orders']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_order}}</div>
+    <div class="elem invoices" (click)="menuAction='invoices'" [routerLink]="['./invoices']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_invoices}}</div>
+    <div class="elem reminder" (click)="menuAction='reminder'" [routerLink]="['./reminder']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_reminder}}</div>
+    <div class="elem email" (click)="menuAction='email'" [routerLink]="['./email']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_account}}</div>
+    <div class="elem password" (click)="menuAction='password'" [routerLink]="['./password']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_password}}</div>
+  </div>
 
-    <mdc-tab [routerLink]="['./invoices']" [hidden]="!hasInvoiceMethod"
-              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
-              {{i18n[locale].profile_invoices}}
-    </mdc-tab>
-
-    <mdc-tab [routerLink]="['./reminder']"
-              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
-              {{i18n[locale].profile_reminder}} 
-    </mdc-tab>
-
-    <mdc-tab [routerLink]="['./email']"
-              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
-              {{i18n[locale].profile_account}} 
-    </mdc-tab>
-    <mdc-tab [routerLink]="['./password']"
-              routerLinkActive="mdc-tab--active active" #rla="routerLinkActive">
-              {{i18n[locale].profile_password}} 
-    </mdc-tab>
-    </mdc-tab-scroller>
-  </mdc-tab-bar>
+  <!-- USING CONTAINER SWITCH CONTENT BASED ON MENU ACTION -->
+  <!-- 
+  <container-element [ngSwitch]="menuAction">
+    <div *ngSwitchCase="'orders'">order</div>
+    <div *ngSwitchCase="'invoices'">invoices</div>
+    <div *ngSwitchCase="'reminder'">reminder</div>
+    <div *ngSwitchCase="'email'">email</div>
+    <div *ngSwitchCase="'password'">password</div>
+  </container-element> -->
 
   <router-outlet></router-outlet>  
 

@@ -30,11 +30,15 @@
       </div>
     
 
-      <div class="patreon">
+      <div class="kng-informations">
 
         <div class="menu">
-          <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">Articles</div>
-          <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">Information</div>
+          <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">
+            <span class="material-symbols-outlined size-large">apps</span>
+          </div>
+          <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">
+            {{label.nav_menu_information}}
+          </div>
         </div>
   
         <!-- INFORMATION -->
@@ -64,7 +68,7 @@
           <!-- PAYMENT -->
           <!-- <div class="profile-action" hidden  [routerLink]="['./user/login-or-patreon']">
             <div class="button">
-              <span class="material-symbols-outlined black">add_box</span>  {{labell.user_payment_add}} 
+              <span class="material-symbols-outlined black">add_box</span>  {{label.user_payment_add}} 
             </div>
           </div>      
           <div class="profile-action" *ngIf="payment">          

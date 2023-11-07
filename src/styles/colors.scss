@@ -51,36 +51,3 @@ It can be complementary or analogous to your primary color */
 // $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
 // $mdc-theme-primary-text: #eee;
 
-// PINK
-$mdc-theme-secondary: #da1c5c;
-$mdc-theme-secondary-light: #ff5d89;
-$mdc-theme-secondary-dark: #a20033;
-$mdc-theme-secondary-text: #fff6f3;
-
-// BROWN
-$mdc-theme-primary:#423f3b;
-$mdc-theme-primary-light: #CFC3B2;
-$mdc-theme-primary-dark: #5f4339;
-$mdc-theme-primary-text: #fff6f3;
-
-//$mdc-theme-primary:rgba(0, 0, 0, 0.73);
-
-$mdc-theme-background: rgba(83, 82, 119, 0.06);
-$mdc-theme-on-primary: #fff;
-$mdc-theme-background-container: #fff;
-$mdc-theme-text-primary-on-primary: #fff;
-$mdc-theme-text-primary-on-background: #{$mdc-theme-primary};
-$mdc-theme-text-hint-on-background:rgba(21, 21, 21, 0.5);
-
-
-:root {
-  // FIXME remove this hardcoding
-  --mdc-theme-text-hint-on-background:#{$mdc-theme-text-hint-on-background}!important;
-  --mdc-theme-text-secondary-on-background:#{$mdc-theme-text-hint-on-background}!important;
-  --mdc-theme-text-primary-on-background:#{$mdc-theme-text-primary-on-background}!important;
-  --mdc-theme-text-primary-on-primary:#{$mdc-theme-text-primary-on-primary}!important;
-  --mdc-theme-text-icon-on-background:#{$mdc-theme-primary}!important;
-  --mdc-theme-on-primary:#{$mdc-theme-on-primary}!important;
-  --mdc-theme-background-container: #{$mdc-theme-background-container}!important;
-
-}

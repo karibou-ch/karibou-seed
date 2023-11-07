@@ -22,6 +22,7 @@ export class KngFeedbackComponent implements OnInit {
       title_favorite:'Les suggestions pour vous',
       title_favorite_p:'Un rapide coup d\'oeil de la sélection',
       title_order_prepare: 'Votre commande est en cours de préparation pour',
+      title_order_pending: 'La confirmation de paiement n\' a pas été effectuée ...',
       title_order_open: 'Vous avez une commande en cours ...',
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
@@ -50,6 +51,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
+      title_order_pending: 'Payment confirmation has not been made',
       title_order_open: 'You have a pending order',
       title_order_cancel: 'Your order has been cancelled',
       title_evaluation: 'Your feeling in stars ?',
@@ -77,6 +79,7 @@ export class KngFeedbackComponent implements OnInit {
   isReady = false;
   order: Order;
   selectedOrder: Order;
+  selectedOrderPopup:Order;
   childOrder: { [key: number]: Order[]};
   selected: any = {};
   score: number;
@@ -191,15 +194,56 @@ export class KngFeedbackComponent implements OnInit {
   }
 
 
+    //
+  // order state
+  // - undefined
+  // - voided(cancel)
+  // - authorized
+  // - paid
+  // - evaluated
+  get orderState() {
+    if (!this.order) {
+      return;
+    }
+    //
+    // evaluated
+    if (this.order.score) {
+      return 'evaluated';
+    }
+
+    //
+    // pedning
+    if (this.order.payment.status === 'pending') {
+      return 'pending';
+    }
+
+
+    //
+    // cancel
+    if (this.order.payment.status === 'voided') {
+      return 'voided';
+    }
+
+    //
+    // auth 
+    if (['authorized','prepaid'].indexOf(this.order.payment.status)>-1) {
+      return 'authorized';
+    }
+
+    //
+    // auth 
+    if (['partially_refunded','invoice','invoice_paid','paid'].indexOf(this.order.payment.status)>-1) {
+      return 'paid';
+    }
+  }
+
   ngOnDestroy() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
   ngOnChanges() {
-
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.currentLimit = this.config.shared.hub.currentLimit || 1000;
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
@@ -227,47 +271,6 @@ export class KngFeedbackComponent implements OnInit {
     return this.HUBS[order.hub];
   }
 
-  //
-  // order state
-  // - undefined
-  // - voided(cancel)
-  // - authorized
-  // - paid
-  // - evaluated
-  getOrderState() {
-    if (!this.order) {
-      return;
-    }
-
-    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.voided]) {
-      return EnumFinancialStatus[EnumFinancialStatus.voided];
-    }
-
-    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.authorized]) {
-      return EnumFinancialStatus[EnumFinancialStatus.authorized];
-    }
-
-    if (this.order.score) {
-      return 'evaluated';
-    }
-
-    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.paid]) {
-      return EnumFinancialStatus[EnumFinancialStatus.paid];
-    }
-
-    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.partially_refunded]) {
-      return EnumFinancialStatus[EnumFinancialStatus.paid];
-    }
-
-    if (this.order.payment.status === EnumFinancialStatus[EnumFinancialStatus.invoice]) {
-      return EnumFinancialStatus[EnumFinancialStatus.paid];
-    }
-
-    if (this.order.payment.status === 'invoice_paid') {
-      return EnumFinancialStatus[EnumFinancialStatus.paid];
-    }
-
-  }
 
   getDayOfWeek(idx){
     return this.label.weekdays.split('_')[idx];
@@ -339,8 +342,8 @@ export class KngFeedbackComponent implements OnInit {
     });
 
 
-    this.$order.findOrdersByUser(this.user, {limit: 5}).subscribe(orders => {
-    });
+    // this.$order.findOrdersByUser(this.user, {limit: 5}).subscribe(orders => {
+    // });
   }
 
   prepareChildOrder() {
@@ -359,7 +362,6 @@ export class KngFeedbackComponent implements OnInit {
   openIssue(score?) {
     //
     // DIALOG INIT HACK
-    document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
     this.askFeedback = true;
     if(score>=0) {
@@ -396,7 +398,6 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   onBack() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     this.askFeedback = false;
   }
