@@ -176,10 +176,15 @@ export class ProductListComponent implements OnInit {
   }
 
   get subscriptionQueryParams() {
+    const contractId = this.$route.snapshot.queryParams.id;
     const params:any = {view:'subscription'};
     if(this.isForSubscriptionBusiness) {
       params.plan='business'
     }
+    if(contractId) {
+      params.id=contractId;
+    }
+    
     return params;
   }
 

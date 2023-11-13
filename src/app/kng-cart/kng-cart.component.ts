@@ -46,6 +46,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   currentShippingDay: Date;
   subscription$;
+  plan:string;
 
 
   i18n: any = {
@@ -246,6 +247,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store = this.$navigation.store;
     this.currentHub = this.config.shared.hub;
+
+    //
+    // save the plan for the subscription (business, customer)
+    this.plan = this.$route.snapshot.queryParams.plan||'customer';
+
     const view = this.$route.snapshot.queryParams.view
     this.currentCartView = (view != "subscription");
     this.subscription$ = this.$loader.update().subscribe(emit => {

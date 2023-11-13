@@ -10,7 +10,8 @@ export interface CheckoutCtx {
   updated: CartSubscriptionProductItem[],
   contract:CartSubscription|undefined;
   totalDiscount: number;
-  user:User,
+  user:User;
+  plan:string;
   forSubscription: boolean;
 }
 
@@ -71,6 +72,7 @@ export class KngCartItemsComponent implements OnInit {
   subscriptionParams:CartSubscriptionParams;
   currentSubscription:CartSubscription|null;
   contracts:CartSubscription[];
+  plan: string;
 
   //
   // used for angular refresh
@@ -81,6 +83,7 @@ export class KngCartItemsComponent implements OnInit {
     private $cart:CartService,
     private $i18n:i18n,
     private $loader: LoaderService,
+    private $route: ActivatedRoute,
     private $router: Router
   ) { 
     this.items = [];
@@ -90,6 +93,11 @@ export class KngCartItemsComponent implements OnInit {
     this.contracts =[];
     this.contractItems = [];
     this.__v =0;
+
+    //
+    // save the plan for the subscription (business, customer)
+    this.plan = this.$route.snapshot.queryParams.plan||'customer';
+
   }
 
 
@@ -171,11 +179,35 @@ export class KngCartItemsComponent implements OnInit {
     if(!this.contracts||!this.subscriptionParams){
       return null;
     }
-    const contract = (this.contracts||[]).find(contract=>{
-      return contract.frequency==this.subscriptionParams.frequency&&
-             contract.dayOfWeek==this.subscriptionParams.dayOfWeek&&
-             contract.status!='canceled'      
-    });
+    let contract;
+    const contractId = this.$route.snapshot.queryParams.id;
+
+    // 
+    // when contract is specified from queryParams it must be digest
+    if(contractId && (contract = this.contracts.find(contract=> contract.id == contractId))) {
+      this.subscriptionParams = {
+        frequency: contract.frequency,
+        activeForm: true,
+        dayOfWeek: contract.dayOfWeek,
+        time:contract.shipping.hours
+      }
+      this.$cart.subscriptionSetParams(this.subscriptionParams);
+
+      //
+      // contract is selected 
+      this.$router.navigate([], {
+        queryParams: { id: null},
+        queryParamsHandling: 'merge'
+      });
+    } else {
+      contract = this.contracts.find(contract=>{
+        return contract.frequency==this.subscriptionParams.frequency&&
+               contract.dayOfWeek==this.subscriptionParams.dayOfWeek&&
+               contract.status!='canceled'      
+      });  
+    }
+
+
 
     if(!contract || contract.items[0].hub !== this.currentHub.slug) {
       return;
@@ -241,10 +273,27 @@ export class KngCartItemsComponent implements OnInit {
 
   //
   // update url to route subscription type
-  get queryParamsSKU() {
+  get routerLinkQueryParamsForSKU() {
     return (!this.showCartItems)?{view:'subscription'}:{};
   }
 
+  get routerLinkForMoreProducts() {
+    //
+    // case of order cart
+    if(this.showCartItems) {
+      return ['/store',this.hub.slug,'home'];
+    }
+
+    //
+    // case of business subs
+    if (this.plan=='business'){
+      return  ['/store',this.hub.slug,'home','business'];
+    }
+
+    //
+    // case of customer subs
+    return  ['/store',this.hub.slug,'home','subscription'];
+  }
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
@@ -329,6 +378,8 @@ export class KngCartItemsComponent implements OnInit {
         //
         // setup model to  update a subscription
         this.subscriptionParams = this.$cart.subscriptionGetParams();
+
+
         this.currentSubscription = this.hasUpdateContract;
         this.contractItems = this.currentSubscription?this.currentSubscription.items.slice():[];
 
@@ -340,6 +391,7 @@ export class KngCartItemsComponent implements OnInit {
     const contract = this.hasUpdateContract;
     const updateItems = this.contractItems.slice();
     const ctx = {
+      plan:this.plan,
       hub:this.currentHub,
       items: this.items,
       updated:updateItems,

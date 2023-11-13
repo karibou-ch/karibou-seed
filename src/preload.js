@@ -64,10 +64,6 @@
 //   }
 // })();
 
-  if(window.location.origin.indexOf('karibou.ch')>-1){
-
-  }
-
   
 
 //

@@ -69,7 +69,7 @@
 
 
   <!-- Subscription text -->
-  <h3 >Subscription <span class="gray">(customers header)</span></h3>
+  <h3 >Subscription Customer<span class="gray">(customers header)</span></h3>
   <hr class="dashed"/>
   <!-- SITE Lang -->
   <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
@@ -85,6 +85,10 @@
 
   <kng-config-input clazz="config" label="Article subscription" name="subscription.article" format="area" 
                     [(ngModel)]="config?.shared.subscription.article[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Subscription Image " name="content-subs.image" format="image" 
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="config?.shared.subscription.image"></kng-config-input>
 
   <!-- Subscription text -->
   <h3 >Subscription b2b <span class="gray">(header)</span></h3>
@@ -104,6 +108,10 @@
   <kng-config-input clazz="config" label="Article business" name="business.article" format="area" 
                     [(ngModel)]="config?.shared.business.article[$i18n.locale]"></kng-config-input>
                     
+  <kng-config-input clazz="config" label="Business Image " name="content-business.image" format="image" 
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="config?.shared.business.image"></kng-config-input>
+
   <!-- patreon text -->
   <h3 >Patreon <span class="gray">(patreon header)</span></h3>
   <hr class="dashed"/>

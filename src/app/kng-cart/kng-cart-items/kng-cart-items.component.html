@@ -25,7 +25,7 @@
   </div>
   
   <!-- SUBSCRIPTION OPTIONS  -->
-  <div class="list-item one-line subscrition auto-height"   [hidden]="showCartItems || (!items.length&&!contractItems.length)">
+  <div class="list-item one-line subscrition auto-height"   [hidden]="showCartItems">
     <kng-subscription-option [hub]="hub"  [contract]="hasUpdateContract"></kng-subscription-option>
   </div>
   
@@ -35,8 +35,7 @@
     <button class="order" (click)="doCheckout()" 
             [disabled]="!isCheckoutEnabled">{{cart_info_checkout_or_subscription}} </button>
   
-    <button class="continue" [hidden]="!showCartItems"  [routerLink]="['/store',hub.slug,'home']"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
-    <button class="continue" hidden  [routerLink]="['/store',hub.slug,'home','subscription']"><span class="">{{label.nav_subscription_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
+    <button class="continue"   [routerLink]="routerLinkForMoreProducts"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
     
   </div>
 
@@ -151,7 +150,7 @@
     <div class="item-actions end">
       <div class="label action" [hidden]="!item.selected">
         <!-- FIXME: opening item from other hub is wrong and inconsistant -->
-        <button [routerLink]="['../products',item.sku]" [queryParams]="queryParamsSKU"><span class="material-symbols-outlined icon">visibility</span></button> 
+        <button [routerLink]="['../products',item.sku]" [queryParams]="routerLinkQueryParamsForSKU"><span class="material-symbols-outlined icon">visibility</span></button> 
       </div>
       <div class="action left" [hidden]="!item.selected" >
         <button (click)="remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button> 

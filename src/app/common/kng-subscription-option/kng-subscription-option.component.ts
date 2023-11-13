@@ -43,6 +43,7 @@ export class KngSubscriptionOptionComponent implements OnInit {
 
   iterations=[
     {label:{fr:"Semaine",en:"Week"},id:"week" },
+    {label:{fr:"14 jours",en:"Biweekly"},id:"2weeks" },
     {label:{fr:"Mois", en:"month"},id:"month" },
   ]
   dayOfWeek=[

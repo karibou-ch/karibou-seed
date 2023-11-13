@@ -176,12 +176,15 @@ export class KngSubsciptionControlComponent implements OnInit {
     if(!this.currentContract) {
       return;
     }
-    const business = (this.currentContract.plan == 'business');
-    if(business){
-      this.$router.navigateByUrl('/store/artamis/home/business?id='+this.currentContract.id);
-    }else {
-      this.$router.navigateByUrl('/store/artamis/home/subscription?id='+this.currentContract.id);
-    }
+
+    const hub = this.currentContract.items[0].hub;
+    const plan = (this.currentContract.plan)?('&plan='+this.currentContract.plan):'';
+    const url = `/store/${hub}/home/cart/default?view=subscription&id=${this.currentContract.id}${plan}`;
+    this.$router.navigateByUrl(url);
+    // if(business){
+    // }else {
+    //   this.$router.navigateByUrl('/store/artamis/home/subscription?id='+this.currentContract.id);
+    // }
   }
 
   onPause(to:Date) {

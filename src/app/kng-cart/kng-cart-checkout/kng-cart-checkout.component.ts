@@ -484,7 +484,6 @@ export class KngCartCheckoutComponent implements OnInit {
       plan:this.subscriptionPlan
     }
 
-    console.log('----',subParams);
 
 
     // 

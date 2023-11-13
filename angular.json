@@ -43,7 +43,6 @@
               ]
             },
             "scripts": [
-              "src/preload.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
