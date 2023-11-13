@@ -1,16 +1,21 @@
 <div class="product-dialog fadeout" [class.is-searching]="isSearching" #dialog>
   <div class="product-backdrop"></div>
   <div class="product-dialog__surface">
-    <div class="product-wide" [class.incart]="cartItemQuantity">
+    <div class="product-wide" [class.incart]="cartItemQuantity" >
 
-      <!-- CLOSE -->
-      <button (click)="onClose(true)" class="close">
-        <span class="material-symbols-outlined size-large">arrow_back</span>
-      </button>
+      <!-- CLOSE OR SUBS CART -->
+      <div class="topbar" [class.sticked]="scrollStickedToolbar" [style.width.px]="clientWidth">
+        <button (click)="onClose(true)" class="close" >
+          <span class="material-symbols-outlined size-large">arrow_back</span>
+        </button>
+        <div class="title text-overflow">{{product.title}}</div>
+      </div>
+
 
       <article class="product-card card-skeleton" 
               [class.incart]="cartItemQuantity"
               [class.noavailable]="!isAvailableForOrder" 
+              [class.insubs]="cartSubsQuantity"
               [class.noinstock]="!isInStockForOrder">
       <section>
         <div class="media" [ngStyle]="bgStyle">
@@ -22,6 +27,12 @@
           <div class="product-available">
             non disponible
           </div>
+
+          <div class="product-in-subscription">
+            <div class="material-symbols-outlined size-medium">schedule</div>
+            <div>abo en cours</div>
+          </div>
+  
       
           <button class="action-add right " (click)="addToCart($event,product)">
             <span class="material-symbols-outlined size-medium">add</span>
@@ -78,7 +89,7 @@
 
       <!-- DESCRIPTION -->
       <div class="description">
-        <div removeRoot="true" [kng-markdown]="product.details.description"></div>
+        <div [kng-markdown]="product.details.description"></div>
         <div [hidden]="!product.details?.origin" class="light">{{product.details.origin}}</div>
       </div>
 
@@ -141,7 +152,7 @@
           alt="160x160" class="thumbnail-owner photo-owner">
 
         <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;
-        <span [kng-markdown]="product.vendor.description"></span> 
+        <span removeRoot="true" [kng-markdown]="product.vendor.description"></span> 
       </div>
 
       <!-- AVAILABLE -->

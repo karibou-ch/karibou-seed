@@ -11,6 +11,6 @@
 
   <!-- CALENDAR-->
   <div class="calendar_events">
-    <kng-calendar (updated)="doSetCurrentShippingDay($event)"></kng-calendar>
+    <kng-calendar [config]="config" (updated)="doSetCurrentShippingDay($event)"></kng-calendar>
   </div>
 </div>

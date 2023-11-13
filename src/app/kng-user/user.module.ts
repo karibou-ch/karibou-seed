@@ -23,6 +23,7 @@ import { KngCommonModule } from '../common/common.module';
 import { KngUserReminderComponent } from '../shared/kng-user-reminder/kng-user-reminder.component';
 import { MdcChipsModule } from '@angular-mdc/web';
 import { UserInvoicesComponent } from './user-invoices.component';
+import { KngInvoiceComponent } from '../kng-invoice/kng-invoice.component';
 //
 // define routes module
 // get an EmptyError: no elements in sequence with this route
@@ -43,7 +44,7 @@ const routes: Routes = [
   { path: 'login', component: UserSignComponent, resolve: { loader: LoaderResolve }},
   { path: 'login-or-register',
     component: UserSignComponent,
-    data: {address: false, payment: false, validation: true},
+    data: {address: true, payment: false, validation: true},
     resolve: { loader: LoaderResolve } },
   { path: 'login-or-address',
     component: UserSignComponent,
@@ -77,7 +78,7 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   exports:[
-    MdcChipsModule, AddressComponent, CardComponent
+    MdcChipsModule, AddressComponent, CardComponent, KngInvoiceComponent
   ],
   declarations: [
     AddressComponent,
@@ -87,7 +88,8 @@ const routes: Routes = [
     UserEmailComponent,
     UserPasswordComponent,
     UserProfileComponent,
-    UserSignComponent
+    UserSignComponent,
+    KngInvoiceComponent
   ]
 })
 export class UserModule { }

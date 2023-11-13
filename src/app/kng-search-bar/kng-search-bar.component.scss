@@ -4,7 +4,7 @@ kng-search-bar{
 	display:flex;
 	opacity: .8;	
 	margin: auto;
-	@media (max-width: 429px) {
+	@media (max-width: 541px) {
 		display:none;
 	}
 	&.force-display{
@@ -16,7 +16,7 @@ kng-search-bar{
 // display on mobile
 kng-search{
 	display:flex;	
-	@media (min-width: 429px) {
+	@media (min-width: 541px) {
 		display:none!important;
 	}
 }
@@ -59,7 +59,7 @@ kng-search{
     background-color: #eee;		
 
 	
-		@media (max-width: 429px) {
+		@media (max-width: 541px) {
 			right: 25px;
 		}
 
@@ -70,7 +70,7 @@ kng-search{
 		color: var(--mdc-theme-primary)!important;      
 		cursor: pointer;
 		margin-left:-70px;
-		@media (max-width: 429px) {
+		@media (max-width: 541px) {
 			right: 25px;
 		}
 		&.cleared{
@@ -100,7 +100,7 @@ kng-search{
 		font-size: 17px;
 		margin: 0 15px;
 	}
-	@media (max-width: 429px) {
+	@media (max-width: 541px) {
 		-margin-right:10px;
 	}
 }

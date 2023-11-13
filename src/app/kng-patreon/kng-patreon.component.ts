@@ -48,7 +48,7 @@ export class KngPatreonComponent implements OnInit {
     return this.config && this.config.shared.hub;
   }
 
-  get labell() {
+  get label() {
     return this.$i18n.label();
   }
 
@@ -72,7 +72,6 @@ export class KngPatreonComponent implements OnInit {
     this.$metric.event(EnumMetrics.metric_view_page,{});
     //
     // DIALOG INIT HACK
-    document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
     const products = await this.$cart.subscriptionGetPatreonProducts().toPromise();
@@ -92,7 +91,6 @@ export class KngPatreonComponent implements OnInit {
 
   clean() {
     this.isReady = false;
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }  
   async onSubscribe($event){
@@ -108,7 +106,7 @@ export class KngPatreonComponent implements OnInit {
     const query = this.$route.snapshot.queryParams;
     const landing = query.source || query.fbclid;
     if(landing ||!this.$navigation.hasHistory) {
-      return this.$router.navigate(['../'], { relativeTo: this.$route });
+      return this.$router.navigate(['../../'], { relativeTo: this.$route });
     }
     this.$navigation.back();
   }

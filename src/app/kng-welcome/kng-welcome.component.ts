@@ -18,6 +18,7 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 export class KngWelcomeComponent implements OnInit {
 
   @ViewChild('background') background: ElementRef;
+  @ViewChild('boxes') boxes: ElementRef;
 
   photos = [];
   exited: boolean;
@@ -36,6 +37,7 @@ export class KngWelcomeComponent implements OnInit {
       title_hypercenter: "Ville de Genève ",
       title_periphery: "Communes avoisinantes ",
       title_others: "Communes lointaines ",
+      title_b2b: "Vous êtes une entreprise ?",
       title_none: "Nous ne livrons pas encore votre commune, essayez votre lieu de travail ?",
       title_postal: "Entrez votre code postal pour afficher les tarifs de livraison",
       title_discount: "➡️ Dès chf <b>__LIMIT__</b> d'achat: livraison"
@@ -43,6 +45,7 @@ export class KngWelcomeComponent implements OnInit {
     en: {
       title_hypercenter: "Geneva city ",
       title_periphery: "Neighboring municipalities ",
+      title_b2b: "Are you a company?",
       title_others: "Distant municipalities ",
       title_none: "We don't deliver to your municipality yet, why not try your workplace?",
       title_postal: "Enter your postal code to view delivery rates",
@@ -54,7 +57,8 @@ export class KngWelcomeComponent implements OnInit {
   postalCode: string;
   image = new Image();
   pi = 50;
-
+  b2b: boolean;
+  waiting:boolean;
 
 
   constructor(
@@ -62,12 +66,13 @@ export class KngWelcomeComponent implements OnInit {
     private $navigation: KngNavigationStateService,
     private $metric: MetricsService,
     private $router: Router,
-    private $route: ActivatedRoute,
-    private $photo: PhotoService
+    private $route: ActivatedRoute
   ) {
     const loader = this.$route.snapshot.data.loader;
     this.config = loader[0];
     this.exited = false;
+    this.b2b = false;
+    this.waiting = false;
     // Object.assign(this.config, loader[0]);
 
   
@@ -82,7 +87,12 @@ export class KngWelcomeComponent implements OnInit {
   }
 
   _(id) {
-    return this.$i18n[this.locale][id];
+    return this.$i18n[this.locale][id] || this.i18n[this.locale][id];
+  }
+
+
+  get c2a() {
+    return this.b2b ? this._('nav_store_b2b'):this._('nav_store_change')
   }
 
   get faqs() {
@@ -189,7 +199,23 @@ export class KngWelcomeComponent implements OnInit {
 
   get homeDestination() {
     const market = this.store || 'artamis';
-    return ['/store',market,'home'];
+    const route = ['/store',market,'home'];
+    if(!this.b2b) {
+      return route
+    }
+
+    route.push('business');
+    return route;
+  }
+
+
+  set store(name) {
+    this.$navigation.store = name;
+    // this.$router.navigate(['/store/'+name]);
+  }
+
+  get store() {
+    return this.$navigation.store;
   }
 
   ngOnInit() {
@@ -198,6 +224,7 @@ export class KngWelcomeComponent implements OnInit {
     // FIXME default HUB should not be Artamis!
     // window.location.host
     const hub = (this.config.shared.hub && this.config.shared.hub.slug)||'artamis';
+    this.waiting = false;
 
 
 
@@ -239,9 +266,6 @@ export class KngWelcomeComponent implements OnInit {
     },80)
   }   
 
-  doLangSwitch() {
-    this.$i18n.localeSwitch();
-  }
 
   getShippingDiscount(key:"A"|"B") {
     const code = this.shippingkeyCode;
@@ -303,14 +327,30 @@ export class KngWelcomeComponent implements OnInit {
     //setTimeout(() => this.$cdr.markForCheck(),100);
   }
 
+  doB2B() {
+    this.b2b = !this.b2b;
+    if(!this.boxes||!this.boxes.nativeElement) {
+      return;
+    }
 
-  set store(name) {
-    this.$navigation.store = name;
-    // this.$router.navigate(['/store/'+name]);
+    let elems = this.boxes.nativeElement.querySelectorAll('.b2b');
+    if(!elems.length){
+      elems = this.boxes.nativeElement.querySelectorAll('.business');
+    }
+
+    elems.forEach(elem => {
+      if(this.b2b){
+        elem.classList.add('view-b2b');
+      }else{
+        elem.classList.remove('view-b2b');
+      }
+    })
+
   }
 
-  get store() {
-    return this.$navigation.store;
+  doLangSwitch() {
+    this.$i18n.localeSwitch();
   }
+
 
 }

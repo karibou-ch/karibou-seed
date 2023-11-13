@@ -41,7 +41,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   categories: Category[];
   availableCategories = {};
   cached: any = {};
-  home: Product[] = [];
   products: Product[];
   user: User;
   subscription: Subscription;
@@ -118,6 +117,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // default home target (home, delicacy, cellar)
     this.shops = [];
 
+
     this.pendingOrders = [];
     if(loader.length>3) {
       this.pendingOrders = <Order[]>loader[4];
@@ -173,15 +173,16 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       }
       //console.log('---DBG',emit.state.action==CartAction.CART_LOADED,emit);
 
+
       //
       // update shipping day
-      if (CartAction.CART_SHIPPING === emit.state.action) {
+      if (CartAction.CART_SHIPPING === emit.state.action  && this.isReady ) {
         this.productsGroupByCategory();
       }
 
       //
       // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
-      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 || this.isLoading)) {
+      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 && !this.isReady)) {
         console.log('----load products 2',CartAction.CART_LOADED,emit.state.action)
         this.productsGroupByCategory();
       }
@@ -230,15 +231,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.config.shared.hub ||{};
   }
 
-  add(product: Product) {
-    this.$cart.add(product);
-  }
 
-  doSearch(link){
-    this.$navigation.searchAction(link);    
-  }
-
-  getCategories() {
+  get sortedCategories() {
     if (!this.isReady) {
       return [];
     }
@@ -255,6 +249,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  add(product: Product) {
+    this.$cart.add(product);
+  }
+
+  doSearch(link){
+    this.$navigation.searchAction(link);    
+  }
+
   getCategoryI18n(cat){
     const key = 'category_name_'+cat.slug.replace(/-/g,'_');
     return this.label[key] || cat.name;
@@ -262,13 +265,41 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   mountOverlay(overlay) {
     if (overlay) {
-      document.body.classList.add('mdc-dialog-scroll-lock');
       document.documentElement.classList.add('mdc-dialog-scroll-lock');
     } else {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
   }
+
+
+  productsGroupByCategory() {
+    //
+    // with new navigation, we dont need to load products on mobile/tablet
+    //
+    this.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+    if(this.isMobile) {
+      this.isReady = true;
+      this.isLoading = false;
+      return;
+    }
+
+    const options = Object.assign({}, this.options, this.pageOptions.home);
+    options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
+    options.maxcat = this.isMobile? 2:options.maxcat;
+    options.hub = this.$navigation.store;
+    this.isLoading = true;
+
+
+    this.$product.select(options).subscribe((products: Product[]) => {
+      this.products = products.filter(product => product.categories && product.categories.name);
+      products.forEach((product: Product) => {        
+        this.availableCategories[product.categories.name] = true;
+      });
+      this.isReady = true;
+      this.isLoading = false;
+    });
+
+  }  
 
   //
   // catch click on innerHtml and apply navigate() behavior
@@ -300,51 +331,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
 
-
-
-  productsGroupByCategory() {
-    const hub = this.$navigation.store;
-    const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
-    options.maxcat = this.$navigation.isMobile()? 2:options.maxcat;
-
-
-    //
-    // with new navigation, we dont need to load products on mobile/tablet
-    //
-
-    if(this.$navigation.isMobile()) {
-      this.categories.forEach(cat=> this.availableCategories[cat.name] = true);
-      this.isReady = true;
-      this.isLoading = false;
-      return;
-    }
-
-    if (hub) {
-      options.hub = hub;
-    }
-
-    this.isLoading = true;
-
-
-    const shops = {};
-    this.$product.select(options).subscribe((products: Product[]) => {
-      this.products = products;
-      products.forEach((product: Product) => {        
-        shops[product.vendor.urlpath] = product.vendor;
-        this.availableCategories[product.categories && product.categories.name] = true;
-        if (product.attributes.home && !this.home.some(p => p.sku == product.sku)) {          
-          this.home.push(product);
-        }
-      });
-      this.shops = Object.keys(shops).map(slug => shops[slug]);
-      this.home = this.home.slice(0, 20);
-      this.isReady = true;
-      this.isLoading = false;
-    });
-
-  }
-
   scrollToSlug(slug: string) {
     this.categorySlug = slug;
     this.displaySlug = slug;
@@ -352,7 +338,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.scrollDirection = 0;
       this.$router.navigate(['/store', this.$navigation.store,'home', 'category',slug]);
     },500);
-
   }
 
   sortByWeight(a: Category, b: Category) {

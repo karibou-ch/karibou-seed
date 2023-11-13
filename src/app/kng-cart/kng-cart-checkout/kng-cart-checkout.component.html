@@ -14,7 +14,7 @@
     <div class="cart-container">
 
       <!-- PAYMENT-->
-      <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&items.length&&user.isReady() && isOpen()">      
+      <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&user.isReady() && isOpen()">      
         <section class="payment-title"  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
 
 
@@ -47,7 +47,7 @@
       </div>
 
       <!-- ADDRESS IFF isAuth()-->
-      <div class="order-address " [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!items.length||!user.isReady()||!isOpen()">      
+      <div class="order-address " [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!user.isReady()||!isOpen()">      
         <section class="address-title"  [innerHtml]="config?.shared.hub.checkout.address[locale]" ></section>
           
         <!-- USER ADDRESS -->
@@ -72,8 +72,8 @@
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>  
               <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
           </div>
-          <div class="address deposit" *ngFor="let address of getDepositAddress()" 
-              [hidden]="!userAddressSelection && currentAddress.streetAdress || !address.active" 
+          <div class="address deposit"  *ngFor="let address of getDepositAddress()" 
+              [hidden]="!userAddressSelection && currentAddress.streetAdress || !address.active || useCartSubscriptionView" 
               (click)="setShippingAddress(address)" >
               <label> Choisir </label>
               <div class="name collect">{{address.name}}</div>
@@ -91,9 +91,28 @@
         </section>
       </div>
 
+      <!-- SUBSCRIPTION OPTIONS -->
+      <div class="subscription" [hidden]="!useCartSubscriptionView || hasPendingSubscription">
+        <kng-subscription-option [checkout]="true" [contract]="hasUpdateContract" [quiet]="true" [hub]="hub" *ngIf="useCartSubscriptionView"></kng-subscription-option>
+      </div>
+
+      <div class="subscription" *ngIf="hasPendingSubscription">
+          <!-- DO SUBSCRIPTION --> 
+          <div [hidden]="!useCartSubscriptionView">
+            <button class="button" (click)="doSubscription()" >{{label.cart_update_subscription_payment}}</button>    
+          </div>
+
+          <div class="bill error" [hidden]="!errorMessage">
+            {{errorMessage}}
+          </div>
+          <!-- INFO HELP MOBILE -->
+          <div class="bill help hide-sm">
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+          </div>
+      </div>
       
       <!-- RESUME -->
-      <div class="order-resume " *ngIf="isOpen">
+      <div class="order-resume " *ngIf="isOpen && !hasPendingSubscription">
 
         <div class="order-resume-block" >
           <section class="resume-title" [hidden]="useCartSubscriptionView" [class.deposit]="isCartDeposit()" 
@@ -106,8 +125,15 @@
               <i class="material-symbols-outlined black">info</i>&nbsp;{{label.cart_info_shipping_group}}
             </div>  
           </div>
+          
+          <!-- INFO FEES START WITH UPDATED CONTRACT -->
+          <div class="bill border contract" *ngIf="hasUpdateContract">
+            <div class="label">
+              <span [innerHtml]="label.cart_info_contract_total"></span>              
+            </div>
+            <div class="amount-light">{{contractTotal|currency:'CHF'}}</div>
+          </div>
 
-          <!-- INFO FEES -->
           <div class="bill">
             <div class="label">
               <span [innerHtml]="label.cart_info_subtotal"></span>
@@ -127,7 +153,8 @@
             <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
           </div>
 
-          <div class="bill">
+          <!-- SHIPPING AMOUNT (HIDDEN FOR CONTRACT) -->
+          <div class="bill" [hidden]="hasUpdateContract">
             <div class="label">
               <span [innerHtml]="label.cart_info_shipping"></span>
 
@@ -135,8 +162,8 @@
             <div class="amount">{{currentShippingFees|currency:'CHF'}}</div>
           </div>
 
-          <!-- BILL SHIPPING DISCOUNT -->
-          <div class="bill shipping-discount" [hidden]="isCartDeposit()">
+          <!-- BILL SHIPPING DISCOUNT (HIDDEN FOR SUBS) -->
+          <div class="bill shipping-discount" [hidden]="isCartDeposit()||hasUpdateContract">
             <div  [innerHtml]="shippingDiscount"></div>
           </div>
 
@@ -147,7 +174,15 @@
             <div class="amount" >-{{getTotalDiscount()|currency:'CHF'}}</div>
           </div>
 
-          <!-- BILL TOTAL WITH WALLET -->
+          <!-- BILL TOTAL FOR SUBS -->
+          <div class="bill total" [hidden]="!useCartSubscriptionView">
+            <div class="label">
+              {{hasUpdateContract?label.cart_info_total_subscription_update:label.cart_info_total_subscription}}              
+            </div>
+            <div class="amount" >{{currentTotalSubscription|currency:'CHF'}}</div>
+          </div>
+
+          <!-- BILL WALLET (HIDDEN FOR SUBS) -->
           <div class="bill wallet" [hidden]="useCartSubscriptionView">
             <div class="label">
               {{label.cart_info_wallet}}              
@@ -155,6 +190,7 @@
             <div class="amount-light" >{{currentTotalUserBalance*-1|currency:'CHF'}}</div>
           </div>
           
+          <!-- BILL TOTAL (HIDDEN FOR SUBS) -->
           <div class="bill total" [hidden]="useCartSubscriptionView">
             <div class="label">
               {{label.cart_info_total}}              
@@ -162,14 +198,7 @@
             <div class="amount" >{{currentTotalMinusBalance|currency:'CHF'}}</div>
           </div>
 
-          <div class="bill total" [hidden]="!useCartSubscriptionView">
-            <div class="label">
-              {{label.cart_info_total_subscription}}              
-            </div>
-            <div class="amount" >{{currentTotalSubscription|currency:'CHF'}}</div>
-          </div>
-
-
+          <!-- AMOUNT RESERVATION (HIDDEN FOR SUBS) -->
           <div class="bill reserved" [hidden]="useCartSubscriptionView">
             <div class="label">
               {{label.cart_info_reserved}} ({{currentPayment?.issuer}})
@@ -178,7 +207,7 @@
           </div>
 
 
-          <!-- INFO AMOUNT -->
+          <!-- INFO AMOUNT (HIDDEN FOR SUBS) -->
           <div class="bill info-amount" [hidden]="useCartSubscriptionView">
             <div class="info">
               {{label.cart_amount_1}}               
@@ -194,10 +223,6 @@
               Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} ({{shippingTime}} heures)
             </p>
           </section>  
-
-          <div class="bill" [hidden]="!useCartSubscriptionView">
-            <kng-subscription-option [checkout]="true"  [quiet]="true" [hub]="hub" *ngIf="useCartSubscriptionView"></kng-subscription-option>
-          </div>
           
             
 
@@ -228,12 +253,17 @@
             </div>
 
             <!-- DO ORDER -->
-            <div [hidden]="useCartSubscriptionView">
-              <button [disabled]="!cgAccepted||!cg18Accepted||isRunning" (click)="doOrder()" >{{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}</button>    
+            <div [hidden]="useCartSubscriptionView" >
+              <button [disabled]="isFinalizeDisabled"  (click)="doOrder()" >
+                <span class="material-symbols-outlined icon" [class.waiting]="isRunning"> clock_loader_10</span>
+                {{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}
+              </button>    
             </div>
             <!-- DO SUBSCRIPTION --> 
             <div [hidden]="!useCartSubscriptionView">
-              <button [disabled]="!cgAccepted||!cg18Accepted||isRunning" (click)="doSubscription()" >{{label.cart_subscription}}</button>    
+              <button [disabled]="isFinalizeDisabled"  (click)="doSubscription()" >
+                <span class="material-symbols-outlined icon" [class.waiting]="isRunning"> clock_loader_10</span>
+                {{label.cart_subscription}}</button>    
             </div>
 
             <div class="bill error" [hidden]="!errorMessage">

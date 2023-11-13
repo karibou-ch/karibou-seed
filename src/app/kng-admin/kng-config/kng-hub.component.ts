@@ -290,6 +290,9 @@ export class KngHUBComponent implements OnInit, OnDestroy {
 
 
   onDialogOpen(dialog) {
+    if(!dialog || !dialog.done) {
+      return;
+    }
     dialog.done(dlg => {
       if (dlg.state() === 'rejected') {
         this.$snack.open(this.$i18n.label().img_max_sz, 'OK');

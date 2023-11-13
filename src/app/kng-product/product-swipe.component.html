@@ -12,8 +12,7 @@
           *ngFor="let section of products;let j=index"
           class="">
         </kng-product-thumbnail>
-        <div class="button">
-          <div class="ribbon top-left" ></div>
+        <div class="kng-product-more">
           <div class="icon"><i class="material-symbols-outlined">playlist_add</i></div>
           <div class="title" (click)="doSearch(action)">{{actionLabel}} </div>
         </div>

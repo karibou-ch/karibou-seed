@@ -13,12 +13,12 @@ import { Component,
 import {
   Product,
   User,
-  Category
+  Category,
+  CartItemFrequency
 } from 'kng2-core';
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { i18n } from '../common';
-import { SubscriptionFrequency } from '../kng-subscription-option/kng-subscription-option.component';
 
 export interface CategoryView {
   name: string;
@@ -49,7 +49,7 @@ export class ProductGroupedListComponent implements OnInit {
 
   //
   // dislpay more details on each product
-  @Input() displaySubscription: boolean;
+  @Input() displaySubscription: boolean|string;
   @Input() alphasort: boolean;
   @Input() offsetTop: number;
   @Input() config: any;
@@ -64,8 +64,9 @@ export class ProductGroupedListComponent implements OnInit {
   @Input() contentIf: boolean;
   @Input() clazz: string;
   @Input() filterByVendor: string;
-  @Input() defaultFrequency: SubscriptionFrequency; 
-  @Input() scrollContainer; 
+  @Input() defaultFrequency: string|CartItemFrequency; 
+  @Input() scrollContainer:ElementRef; 
+
 
   @Input() set contentCategories(categories: any[]) {
     this.categories = categories.map(cat => {
@@ -151,12 +152,52 @@ export class ProductGroupedListComponent implements OnInit {
     return (window.innerWidth < 426);
   }
 
+  get sortedCategories() {
+    return this.categories.sort(this.sortByWeight);
+  }
+
+
 
   ngOnDestroy() {
   }
 
   ngOnInit() {
     this.registerScrollEvent();
+  }
+
+  isInViewport(element) {
+    if(this.scrollContainer && this.scrollContainer.nativeElement) {
+      return this.isInContainer(element);
+    }
+    const rect = element.getBoundingClientRect();
+    const windowHeight = ((window.innerHeight || document.documentElement.clientHeight));
+    const windowWidth =  (window.innerWidth || document.documentElement.clientWidth);
+    const offsetTop = 80;
+
+    return (
+        rect.top >= offsetTop &&
+        rect.left >= offsetTop &&
+        rect.bottom <= windowHeight &&
+        rect.right <= windowWidth
+    );
+  }  
+
+  isInContainer(element) {
+    const container = this.scrollContainer?.nativeElement;
+
+    const eleTop = element.offsetTop;
+    const eleBottom = eleTop + element.clientHeight;
+
+    const containerTop = container.scrollTop;
+    const containerBottom = (containerTop + container.clientHeight);
+
+    // The element is fully visible in the container
+    return (
+        (eleTop >= containerTop && eleBottom <= containerBottom) ||
+        // Some part of the element is visible in the container
+        (eleTop < containerTop && containerTop < eleBottom) ||
+        (eleTop < containerBottom && containerBottom < eleBottom)
+    );        
   }
 
   updateCurrentCategory() {
@@ -173,36 +214,13 @@ export class ProductGroupedListComponent implements OnInit {
     if (!this.sections) {
       return;
     }
-    //
-    // already visible
-    // const visibilityKeys = Object.keys(this.visibility);
-    // if(this.sections.length === visibilityKeys.length){
-    //   return;
-    // }
 
 
     this.sections.forEach(container => {
-      const scrollTop = container.nativeElement.offsetTop;
-      const height = container.nativeElement.clientHeight;
       const className = container.nativeElement.getAttribute('name');
-
-      
-      //
-      // container.nativeElement.className visible! el.offsetParent
       this.current[className] = false;
-      if (scrollPosition >= scrollTop &&
-        scrollPosition < (scrollTop + height)) {
-          this.current[className] = true;
-          this.visibility[className] = true;
-      }
-      if ((scrollPosition + window.innerHeight) >= scrollTop &&
-        (scrollPosition + window.innerHeight) < (scrollTop + height)) {
-        //this.current[className] = true;
-        this.visibility[className] = true;
-      }
-      if ((scrollPosition + window.innerHeight) >= scrollTop &&
-        (scrollPosition + window.innerHeight) > (scrollTop + height)) {
-        //this.current[className] = true;
+      if(this.isInViewport(container.nativeElement)) {
+        this.current[className] = true;
         this.visibility[className] = true;
       }
     });
@@ -214,10 +232,6 @@ export class ProductGroupedListComponent implements OnInit {
 
   doDirectionDown(){
     // this.direction.emit(this.scrollDirection);
-  }
-
-  getCategories() {
-    return this.categories.sort(this.sortByWeight);
   }
 
   getCategoryI18n(cat){
@@ -292,15 +306,7 @@ export class ProductGroupedListComponent implements OnInit {
     //
     // read documentation about renderer
     // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
-    let elem = document;
-    if (this.scrollContainer) {
-      if (this.scrollContainer instanceof ElementRef) {
-        elem = this.scrollContainer.nativeElement;
-      } else {
-        elem = document.querySelector(this.scrollContainer);
-      }
-      // elem = elem || window;
-    }
+    const elem = this.scrollContainer? this.scrollContainer.nativeElement:document;
     this._scrollEvent$ = fromEvent(elem, 'scroll').subscribe(this.windowScroll.bind(this));
   }
 

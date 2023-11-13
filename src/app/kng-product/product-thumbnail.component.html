@@ -12,13 +12,14 @@
 						[class.selected]="selected"
 						[class.large]="large"
 						[class.incart]="cartItemQuantity"
+						[class.insubs]="cartSubsQuantity"
 						[class.noavailable]="!product.isAvailableForOrder()" 
 						[class.popular]="product.stats.score>0.25"
 						[class.noinstock]="!product.pricing.stock">
 
 
 
-		<section [routerLink]="['/store',store, departement,'products',product.sku,product.title]">
+		<section [routerLink]="['/store',store, departement,'products',product.sku,product.title]" [queryParams]="queryParamsSKU">
 			<!-- MEDIA -->
 			<div  class="media " [ngStyle]="bgStyle" >
 				<img [src]="bgImage" class="thumbnail" />
@@ -26,6 +27,12 @@
 				<div class="product-available">
 					non disponible
 				</div>
+
+				<div class="product-in-subscription">
+					<div class="material-symbols-outlined size-medium">schedule</div>
+					<div>abo en cours</div>
+				</div>
+
 				<!-- VARIANTS -->
 				<div *ngIf="openVariant" class="product-variants">
 					<ul>
@@ -63,7 +70,7 @@
 				</div>
 	
 				<div class="product-title">{{product.title}}</div>
-				<div class="product-part">
+				<div class="product-part text-overflow">
 					{{product.pricing.part}}
 				</div>
 				<div class="product-price ">
@@ -77,7 +84,7 @@
 
 				</div>
 
-        <div class="product-subscription " [hidden]="!displaySubscription || !product.attributes.subscription ">
+        <div class="product-subscription " [hidden]="!displaySubscription || !productActiveSubscription ">
           <div>{{product.quantity.comment}}</div>
         </div>
 

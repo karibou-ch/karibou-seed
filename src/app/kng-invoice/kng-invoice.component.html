@@ -1,0 +1,76 @@
+<!--- DISPLAY INVOICES -->
+<div class="qrbill qr-fullscreen" >
+    <div class="page" [hidden]="!printQr">
+      <address #pdfHeader class="karibou-header">
+        <img [src]="headerImgB64"  />
+        <div class="text-underline bold" >Karibou.ch SA</div> 
+        <div class="gray"> | 5 chemin du 23 Août | 1205 | Genève</div> 
+      </address>
+    
+      <address #pdfCustomer class="customer">
+        <div class="name bold" >{{shipping.name}}</div> 
+        <div class="street" >{{shipping.address}}</div>
+        <div class="street">{{shipping.postalCode}}</div>
+        <div class="date">Genève le, {{today|date:'d MMM y'}}</div>
+      </address>
+  
+
+      <div class="content" #pdfContent>
+        <h2 class="bill-title">          
+          <b>Commandes pour la période :</b> {{invoice.month}}/{{invoice.year}}
+        </h2>
+  
+
+        <ul class="items invoices" [hidden]="!invoice.invoices.length">
+          <li class="note">QR-bill ci-dessous</li>
+          <li *ngFor="let order of invoice.invoices">
+            <div class="qty bold">1x</div> 
+            <div class="title"> {{order.oid}} {{order.when|date:"d MMM y"}}</div>
+            <div class="price">{{order.amount|currency:'CHF'}}</div>
+           </li>
+           <li class="total">
+              <div class="qty bold">TOTAL</div> 
+              <div class="price bold">{{invoicesAmount|currency:'CHF'}}</div>
+          </li>
+  
+        </ul>
+        <ul class="items transfers" [hidden]="!invoice.transfers.length">
+          <li class="note">en attente du virement bancaire</li>
+          <li *ngFor="let order of invoice.transfers">
+            <div class="qty bold">1x</div> 
+            <div class="title"> {{order.oid}} {{order.when|date:"d MMM y"}}</div>
+            <div class="price">{{order.amount|currency:'CHF'}}</div>
+           </li>
+           <li class="total">
+              <div class="qty bold">TOTAL</div> 
+              <div class="price bold">{{transfersAmount|currency:'CHF'}}</div>
+          </li>
+        </ul>
+        <ul class="items" [hidden]="!invoice.paids.length">
+          <li class="note">commandes payées</li>
+          <li *ngFor="let order of invoice.paids">
+            <div class="qty bold">1x</div> 
+            <div class="title"> {{order.oid}} {{order.when|date:"d MMM y"}}</div>
+            <div class="price">{{order.amount|currency:'CHF'}}</div>
+           </li>
+           <li class="total">
+              <div class="qty bold">TOTAL</div> 
+              <div class="price bold">{{paidsAmount|currency:'CHF'}}</div>
+          </li>
+        </ul>
+        <p>
+          <span class="bold">Avec nos meilleures salutations,</span><br/>
+          Karibou.ch<br/>
+        </p>      
+      </div>
+    
+      <div class="svg " #qrbill></div>   
+    </div>
+  
+    <div class="actions">
+      <button (click)="onUpdateInvoices()" [hidden]="!invoice.invoices.length">{{i18n[locale].title_payment_done}}</button>
+      <button class="print" [hidden]="!qrbillAmount" (click)="onDownloadPDF()">PRINT</button>
+      <button class="close" (click)="onClose()">FERMETURE</button>
+    </div>
+  </div>
+  

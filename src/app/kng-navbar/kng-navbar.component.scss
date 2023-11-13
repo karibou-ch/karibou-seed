@@ -231,8 +231,15 @@ div.navbar{
       font-weight: 500;
       margin-right: 10px;
       &.first{
+        margin-right: 0px;
         margin-left: auto;
+        border-radius: 16px ;
       }
+      &.second{
+        margin-left: -10px;
+        border-radius: 16px;
+      }
+
     }
     
     .title{

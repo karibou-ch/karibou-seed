@@ -14,9 +14,24 @@ div.content{
   font-style: normal;
   letter-spacing: -.003em;
 
-  margin-top: 0px;
+  margin-top: 10px;
   margin-bottom: 100px;
   section.header{
+
+    padding-left: 10px;
+    margin: 10px auto;
+    width: 100%;
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--mdc-theme-secondary-dark);
+      color: var(--mdc-theme-secondary-dark-text);      
+      border-radius: 15px;
+    }  
+
+    @media screen and (max-width:426px){
+      width: calc( 100vw - 40px );        
+    }  
+
+
     h2{
       font-size: 1.375em;
     }
@@ -24,7 +39,7 @@ div.content{
       font-weight: 200;
       font-size: 1.275rem;
       color: #aaa;
-      text-shadow: 1px 1px 0 #fff;
+      -text-shadow: 1px 1px 0 #fff;
       margin-top: -10px;      
     }
   }

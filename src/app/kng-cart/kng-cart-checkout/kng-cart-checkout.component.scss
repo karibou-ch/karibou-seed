@@ -38,26 +38,8 @@
     opacity: 1;
     color: #333;
     background-color: white;
-    img {
-      width: 16px;
-      transform: translateY(7px);
-    }
   }
   
-  .noshipping {
-    padding: 8px;
-    color: var(--mdc-theme-primary);
-    border-radius: 4px;
-    border: 1px solid var(--mdc-theme-secondary);
-    margin: 20px;
-    width: fit-content;
-    background: pink;
-    opacity: .8;    
-    b{
-      vertical-align: super;
-      padding: 5px;      
-    }
-  }
 
   button.close{
     cursor: pointer;
@@ -131,22 +113,6 @@
     padding-right: 4px;    
   }
 
-  .bill-title ::ng-deep ,
-  .address-title ::ng-deep ,
-  .payment-title ::ng-deep ,
-  .resume-title ::ng-deep {
-    h2, h3 {
-      font-weight: 600;
-      color: #333;
-      font-size: 1.075rem;
-      padding: 5px 0px;
-      text-align: left;
-      a {
-        text-decoration: none!important;
-        color: #ddd!important;
-      }
-    }      
-  }
   .resume-title ::ng-deep h2{
     padding-left: 15px;
   }
@@ -220,12 +186,6 @@
           margin-right: 10px;
           margin-left: 0;
           margin-top: 1px;
-        }
-        input[type="radio"] {
-          width: 18px;
-          height: 18px;          
-          margin: 0;          
-          margin-right: 5px;
         }
 
         .name:first-letter {
@@ -317,6 +277,7 @@
     }    
   }  
 
+  .subscription,
   .order-resume{
     position: relative;
     text-align: left;
@@ -372,6 +333,11 @@
         &.border{
           border-bottom: 1px solid #aaa;
 
+        }
+        &.contract{
+          border-bottom: 4px double #aaa;                    
+          padding-bottom: 5px;
+          margin-bottom: 15px;
         }
         &.wallet{
           border-top: 4px solid black;
@@ -461,6 +427,7 @@
         }
         .small{
           font-size: 14px!important;
+          font-weight: bold;
         }
         .info{
           line-height: 18px;
@@ -479,23 +446,8 @@
 
           font-size: 1em;
           width: calc( 100% - 10px);
-          color: var(--mdc-theme-primary);         
+          color: var(--mdc-theme-secondary);         
           font-weight: bold; 
-        }
-        input[type="checkbox"] {
-          transform: translateY(3px);
-          margin: 4px;
-          width: 15px;
-          height: 15px;          
-          margin-right: 15px;
-        }
-        button{
-          width: 100%;
-          margin: 10px 0;
-          background-color: var(--mdc-theme-primary);
-          color: var(--mdc-theme-primary-text);
-          border: none;
-          border-radius: 8px;          
         }
         button:disabled{
           background-color: #ddd;
@@ -537,12 +489,20 @@
       max-width: wi;
       font-size: 20px;
       margin: 25px;
-      min-height: 50px;
+      min-height: 50px;      
     }
+    button{
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+      background-color: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
+      border: none;
+      border-radius: 8px;          
+    }
+
     
   }    
-
-
 
 
 }

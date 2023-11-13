@@ -1,3 +1,27 @@
+:host{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 0 solid #fff;  
+    &.large{
+      .media{
+        height: 13rem!important;
+      }
+    }
+  
+}
+
+.product-card.insubs .action-remove,
+.product-card.insubs .action-add
+{
+  visibility: hidden;
+}
+
 
 .product-card.incart .action-remove,
 .product-card.incart .action-add
@@ -20,15 +44,13 @@
   display: block!important;
 }
 
+.product-card.insubs .product-in-subscription{
+  display: block!important;
+}
+
 
 .product-card{
   &.selected{
-  }
-  &.large{
-    height: 16rem;
-    .media{
-      height: 12rem;
-    }
   }
   &.loader{
     width: auto;
@@ -50,25 +72,27 @@
  
   margin-bottom: 20px;
   background: white;
+  border-radius: 6px;
 
   @media (prefers-color-scheme: dark) {
     background-color: transparent;
-    color: white;      
-  }
+    color: var(--mdc-theme-primary-dark-text);      
+}
 
   div.media{
     position: relative;
     overflow: hidden;
+    .product-in-subscription,
     .product-available{
       position: absolute;
       top: 0;
       width: 100%;
       bottom: 0;
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(0, 0, 0, 0.55);
       z-index: 2;
       text-align: center;
-      padding-top: 80px;
-      color: #444;
+      padding-top: 35%;
+      color: white;
       font-weight: 700;
       letter-spacing: -.5px;      
       display: none;
@@ -117,6 +141,7 @@
       opacity: .8;      
     }
   }
+
   img{
     width: 58px;
     height: 58px;
@@ -229,14 +254,11 @@
   }  
 
   .product-card__vendor{
-    display: flex;
     padding: 0;
-    align-content: flex-start;
-    align-items: flex-start;
-    margin-bottom: 8px;
+    margin-bottom: 3px;
     font-size: 14px;
     line-height: 19px;
-    font-weight: 600;
+    font-weight: 300;
     color: #343538;    
     overflow: hidden;
     width: 100%;
@@ -259,25 +281,27 @@
     flex-wrap:wrap;
     width: 100%;
     padding: 5px 0 8px;
+    align-items:center;
 
     .product-title{
       width: 100%;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      -text-overflow: ellipsis;
+      -white-space: nowrap;
       font-size: 16px;
-      line-height: 22px;
+      line-height: 18px;
       font-weight: normal;
       color: rgb(52, 53, 56);    
-      padding: 2px 0;
+      padding: 0px 0 4px;
+      min-height: 36px;
       @media (prefers-color-scheme: dark) {
-        color: white;
-      }
+        color: var(--mdc-theme-primary-dark-text);      
+    }
     
     }
 
     .product-price{
-      width: 61%;
+      width: 63%;
       text-align: right;
       margin-right: 5px;
       margin-left: auto;
@@ -287,18 +311,18 @@
       font-weight: 600;
       color: rgb(52, 53, 56);
       @media (prefers-color-scheme: dark) {
-        color: white;
-      }
+        color: var(--mdc-theme-primary-dark-text);      
+    }
 
       .discount {
-        margin-right: 5px;
+        margin-right: 1px;
         text-decoration: line-through;
         color: #999;
-        font-size: small;      
+        font-size: 11px;      
         background: white;
         @media (prefers-color-scheme: dark) {
-          color: white;
-          background-color: black;
+          background-color: var(--mdc-theme-primary-dark);
+          color: var(--mdc-theme-primary-dark-text);      
         }
   
       }
@@ -307,14 +331,14 @@
     .product-part{
       margin-left: 0px;
       margin-right: auto;
-      width: 35%;
+      width: 32%;
       font-size: 12px;
       line-height: 18px;
       font-weight: 600;
       color: rgb(114, 118, 126);
       @media (prefers-color-scheme: dark) {
-        color: white;
-      }
+        color: var(--mdc-theme-secondary-dark-text);      
+    }
 
     }   
     .product-subscription {
@@ -329,8 +353,8 @@
       padding-top: 4px;
       min-height: 25px;
       @media (prefers-color-scheme: dark) {
-        color: white;
-      }
+        color: var(--mdc-theme-secondary-dark-text);      
+    }
 
       div{
         overflow: hidden;

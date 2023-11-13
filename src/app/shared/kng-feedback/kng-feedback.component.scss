@@ -1,3 +1,8 @@
+:host {
+  display: flex;
+  align-items:center;
+}
+
 button{
   margin-right: 0;
   margin-left: auto;
@@ -60,8 +65,8 @@ p.block-info{
 
 .processing{
   background-color: white;
-  padding-top: 5px;
-  margin: 5px;
+  padding-top: 0px;
+  margin: 0px;
   >p,
   >h3{
     padding: 10px 10px;
@@ -89,6 +94,7 @@ p.block-info{
 .customer{
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
 
   .wallet{  
     .boxed{
@@ -141,7 +147,6 @@ p.block-info{
     border-bottom: none;
     margin-bottom: 0;
     padding: 0;
-    margin-top: -20px;    
   }
 
   .details{
@@ -152,13 +157,17 @@ p.block-info{
   }
 
   ul{
+    margin: 0;    
     padding: 0;
     list-style: none;
     input{
       display: none;
     }    
     .add-to-cart{
-      display: block;
+    }
+    li{
+      font-size: 16px;
+      display: flex;
     }
   }
 

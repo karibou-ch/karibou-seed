@@ -1,9 +1,20 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CartItemsContext } from 'kng2-core';
-import { Config, CartItem, CartAction, CartService, LoaderService, Hub, User, Order } from 'kng2-core';
+import { Config, CartSubscription, CartItemsContext, CartItem, CartService, LoaderService, Hub, User, Order, CartSubscriptionParams, CartSubscriptionProductItem } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
+
+export interface CheckoutCtx {
+  hub:Hub;
+  items:CartItem[];
+  updated: CartSubscriptionProductItem[],
+  contract:CartSubscription|undefined;
+  totalDiscount: number;
+  user:User;
+  plan:string;
+  forSubscription: boolean;
+}
+
 
 @Component({
   selector: 'kng-cart-items',
@@ -41,10 +52,11 @@ export class KngCartItemsComponent implements OnInit {
     this._config = cfg;
   }
 
-  @Output() checkout: EventEmitter<any> = new EventEmitter<any>();
+  @Output() checkoutEvent: EventEmitter<CheckoutCtx> = new EventEmitter<CheckoutCtx>();
 
   user: User;
   items: CartItem[];
+  contractItems: CartSubscriptionProductItem[];
   itemsAmount: number;
   noshippingMsg: string;
   hasOrderError: boolean;
@@ -56,7 +68,16 @@ export class KngCartItemsComponent implements OnInit {
   currentShippingDay: Date;
   weekdays = [];
 
-  isReady: boolean
+  isReady: boolean;
+  subscriptionParams:CartSubscriptionParams;
+  currentSubscription:CartSubscription|null;
+  contracts:CartSubscription[];
+  plan: string;
+
+  //
+  // used for angular refresh
+  __v:number;
+
 
   constructor(
     private $cart:CartService,
@@ -69,6 +90,14 @@ export class KngCartItemsComponent implements OnInit {
     this._subscription = new Subscription();
     this.showFooter = true;
     this.weekdays = this.$i18n.label().weekdays.split('_');
+    this.contracts =[];
+    this.contractItems = [];
+    this.__v =0;
+
+    //
+    // save the plan for the subscription (business, customer)
+    this.plan = this.$route.snapshot.queryParams.plan||'customer';
+
   }
 
 
@@ -133,11 +162,137 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get cart_info_checkout_or_subscription() {
-    return (this.showCartItems)?this.labell.cart_checkout:this.labell.cart_checkout_subscription
+
+    if(this.hasPendingSubscription) {
+      return this.labell.cart_update_subscription_payment;
+    }
+    if(this.hasUpdateContract) {
+      return this.labell.cart_update_subscription;
+    }
+    return (this.showCartItems)?this.labell.cart_checkout:this.labell.cart_create_subscription
   }
 
   get showCartItems() {
     return this._showCartItems;
+  }
+  get hasUpdateContract() {
+    if(!this.contracts||!this.subscriptionParams){
+      return null;
+    }
+    let contract;
+    const contractId = this.$route.snapshot.queryParams.id;
+
+    // 
+    // when contract is specified from queryParams it must be digest
+    if(contractId && (contract = this.contracts.find(contract=> contract.id == contractId))) {
+      this.subscriptionParams = {
+        frequency: contract.frequency,
+        activeForm: true,
+        dayOfWeek: contract.dayOfWeek,
+        time:contract.shipping.hours
+      }
+      this.$cart.subscriptionSetParams(this.subscriptionParams);
+
+      //
+      // contract is selected 
+      this.$router.navigate([], {
+        queryParams: { id: null},
+        queryParamsHandling: 'merge'
+      });
+    } else {
+      contract = this.contracts.find(contract=>{
+        return contract.frequency==this.subscriptionParams.frequency&&
+               contract.dayOfWeek==this.subscriptionParams.dayOfWeek&&
+               contract.status!='canceled'      
+      });  
+    }
+
+
+
+    if(!contract || contract.items[0].hub !== this.currentHub.slug) {
+      return;
+    }
+    
+    return contract;
+  }
+
+  get hasPendingSubscription() {
+    if(!this.currentSubscription || !this.currentSubscription.latestPaymentIntent) {
+      return false;
+    }
+    //
+    // pending requires_payment_method
+    // pending requires_payment_method_confirm
+    return (['requires_payment_method','requires_action'].indexOf(this.currentSubscription.latestPaymentIntent.status)>-1);
+  }
+
+  //
+  // multiple markets with one delivery
+  // exception with subscription
+  get isCrossMarketShippingDate(){
+    const now = new Date();
+    const currentDay = this.$cart.getCurrentShippingDay();
+    if(this.currentSubscription||!this.isReady) {
+      return true;
+    }
+    if(!currentDay || currentDay<now) { 
+      return false; 
+    }
+    const week = this.config.potentialShippingWeek(this.currentHub);
+    const available =week.some(day => day.getDay() == currentDay.getDay());
+    return available;
+  }
+
+  //
+  // used for order limitation
+  get isNotShippingLimit() {
+    const ranks = Object.keys(this.currentRanks);
+    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active || !ranks.length){
+      return true;
+    }
+    const day = this.currentShippingDay;
+    const maxLimit = this.user.isPremium() ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
+
+    return (this.currentRanks[day.getDay()] <= maxLimit);
+  }
+
+  get isCheckoutEnabled() {
+    // user is created but not ready 
+    const userAlmostReady = (this.user.isReady()||!this.user.isAuthenticated())
+    if(this.hasPendingSubscription) {
+      return true;
+    }
+    if(this.contractItems.some(item=>item['updated'])) {
+      return true;
+    }
+    return this.isCrossMarketShippingDate && userAlmostReady &&
+           this.isNotShippingLimit && 
+           this.items.length && !this.noshippingMsg;
+  }
+
+
+  //
+  // update url to route subscription type
+  get routerLinkQueryParamsForSKU() {
+    return (!this.showCartItems)?{view:'subscription'}:{};
+  }
+
+  get routerLinkForMoreProducts() {
+    //
+    // case of order cart
+    if(this.showCartItems) {
+      return ['/store',this.hub.slug,'home'];
+    }
+
+    //
+    // case of business subs
+    if (this.plan=='business'){
+      return  ['/store',this.hub.slug,'home','business'];
+    }
+
+    //
+    // case of customer subs
+    return  ['/store',this.hub.slug,'home','subscription'];
   }
 
   ngOnDestroy() {
@@ -153,65 +308,103 @@ export class KngCartItemsComponent implements OnInit {
     }
 
     this._subscription.add(
-    this.$loader.update().subscribe(emit => {
-      if (emit.user) {
-        this.user = emit.user;
-      }
+      this.$cart.subscription$.subscribe(contracts => {
+        this.contracts = contracts;
 
-      if(emit.config){
-        this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
-        this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-        this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;      
-      }
+        //
+        // select subs when order view is False
+        if(this.showCartItems){
+          return;
+        }
+        //
+        // setup model to  update a subscription
+        this.subscriptionParams = this.$cart.subscriptionGetParams();
+        this.currentSubscription = this.hasUpdateContract;
+        this.contractItems = this.currentSubscription?this.currentSubscription.items.slice():[];
+      })  
+    );
 
-      if(!emit.state){
-        return;
-      }
+    this._subscription.add(
+      this.$loader.update().subscribe(emit => {
+        if (emit.user) {
+          this.user = emit.user;
+        }
+
+        if(emit.config){
+          this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
+          this.currentLimit = this.config.shared.hub.currentLimit || 1000;
+          this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;      
+        }
+
+        if(!emit.state){
+          return;
+        }
+
+        // WARNING
+        // there is one emit by HUB (you will see more than one on console.log)
+        //console.log(this.currentHub.slug,emit.state.action)
 
 
-      this.currentShippingDay = this.$cart.getCurrentShippingDay();
+        this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
-      if(!this.isCrossMarketShippingDate()){
-        this.currentShippingDay = Order.nextShippingDay(this.user,this.currentHub);
-      }
+        if(!this.isCrossMarketShippingDate){
+          this.currentShippingDay = Order.nextShippingDay(this.user,this.currentHub);
+        }
 
-      //
-      // _showCartItems determine items for subscription
-      // onSubscription:!this.showCartItems,
-      const ctx:CartItemsContext = {
-        forSubscription:!this.showCartItems,
-        hub:this.currentHub.slug
-      }    
+        //
+        // _showCartItems determine items for subscription
+        // onSubscription:!this.showCartItems,
+        const ctx:CartItemsContext = {
+          forSubscription:!this.showCartItems,
+          hub:this.currentHub.slug
+        }    
 
-      //
-      // select items for Cart or for Subscription
-      this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
-      this.itemsAmount = this.$cart.subTotal(ctx);
+        //
+        // select items for Cart or for Subscription
+        this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
+        this.itemsAmount = this.$cart.subTotal(ctx);
 
 
-      this.noshippingMsg = this.getNoShippingMessage();
-      this.hasOrderError = this.$cart.hasError(this.currentHub.slug);
-      this.isReady = true;
-      //console.log('---- DBG cart-items', emit.state.action,this.currentHub.slug, 'items',this.items.length);
-    }));
+        this.noshippingMsg = this.getNoShippingMessage();
+        this.hasOrderError = this.$cart.hasError(this.currentHub.slug);
+
+        //
+        // select subs when order view is False
+        this.isReady = true;
+        if(this.showCartItems){
+          return;
+        }
+
+        //
+        // setup model to  update a subscription
+        this.subscriptionParams = this.$cart.subscriptionGetParams();
+
+
+        this.currentSubscription = this.hasUpdateContract;
+        this.contractItems = this.currentSubscription?this.currentSubscription.items.slice():[];
+
+      })
+    );
   }
 
   doCheckout(){
+    const contract = this.hasUpdateContract;
+    const updateItems = this.contractItems.slice();
     const ctx = {
+      plan:this.plan,
       hub:this.currentHub,
       items: this.items,
+      updated:updateItems,
+      contract: contract, 
       totalDiscount: this.getTotalDiscount(),
-    };
+      forSubscription: !this.showCartItems,
+      user: this.user
+    } as CheckoutCtx;
     if(!this.user.isAuthenticated()) {
       return this.$router.navigate(['/store/'+this.currentHub.slug+'/home/me/login-or-register']);
     }
-    this.checkout.emit(ctx);
+    this.checkoutEvent.emit(ctx);
   }
-
-  add(item: CartItem, variant?: string) {
-    this.$cart.add(item, variant);
-  }
-
 
   currentServiceFees() {
     //
@@ -260,37 +453,6 @@ export class KngCartItemsComponent implements OnInit {
     return this.$cart.getVendorDiscount(item);
   }
 
-  //
-  // multiple markets with one delivery
-  isCrossMarketShippingDate(){
-    const now = new Date();
-    const currentDay = this.$cart.getCurrentShippingDay();
-    if(!currentDay || currentDay<now) { return 0; }
-    const week = this.config.potentialShippingWeek(this.currentHub);
-    const available =week.some(day => day.getDay() == currentDay.getDay());
-    return available;
-  }
-
-  //
-  // used for order limitation
-  isNotShippingLimit() {
-    const ranks = Object.keys(this.currentRanks);
-    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active || !ranks.length){
-      return true;
-    }
-    const day = this.currentShippingDay;
-    const maxLimit = this.user.isPremium() ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-
-    return (this.currentRanks[day.getDay()] <= maxLimit);
-  }
-
-  isCheckoutEnabled() {
-    // user is created but not ready 
-    const userAlmostReady = (this.user.isReady()||!this.user.isAuthenticated())
-    return this.isCrossMarketShippingDate() && userAlmostReady &&
-           this.isNotShippingLimit() && 
-           this.items.length && !this.noshippingMsg;
-  }
 
   subTotal() {
     //
@@ -311,12 +473,42 @@ export class KngCartItemsComponent implements OnInit {
     });
   }
 
+  add(item: CartItem, variant?: string) {
+    this.$cart.add(item, variant);
+    this.__v++;
+  }
+
   remove(item: CartItem, variant?: string) {
     this.$cart.remove(item, variant);
+    this.__v++;
   }
 
   removeAll(item: CartItem, variant?: string) {
     this.$cart.removeAll(item, variant);
+    this.__v++;
+  }
+
+  sub_add(item: CartItem, variant?: string) {
+    item.quantity++;
+    item['updated']=true;
+    delete (item.deleted);
+    this.__v++;
+  }
+
+  sub_remove(item: CartItem, variant?: string) {
+    if(item.quantity == 0) {
+      return;
+    }
+    item.quantity--;
+    item['updated']=true;
+    this.__v++;
+  }
+
+  sub_removeAll(item: CartItem, variant?: string) {
+    item.quantity=0;
+    item['updated']=true;
+    item.deleted=true;
+    this.__v++;
   }
 
   onSelect(source, item) {

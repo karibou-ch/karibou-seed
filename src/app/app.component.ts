@@ -46,7 +46,7 @@ export class AppComponent {
     this.$update.available.subscribe(event => {
       const local = this.$i18n.locale;
       alert(this.i18n[local].reload);
-      this.$update.activateUpdate().then(() => document.location.reload(true));
+      this.$update.activateUpdate().then(() =>  window.location.href=window.location.href);
     });
 
     //

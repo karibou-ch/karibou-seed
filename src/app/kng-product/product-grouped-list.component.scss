@@ -21,14 +21,13 @@
     section{
       margin-left: 0px!important;
     }
-
   }
   section{
     &.title{
       text-align:left;
       padding-top:10px;  
-      margin-bottom: 30px;
-      margin-left: 10px;
+      margin-bottom: 20px;
+      margin-left: 0px;
     }
     &.child{      
       margin: 50px 4px;
@@ -39,12 +38,12 @@
     }
 
     h2,h3{
-      font-weight: 600;
+      font-weight: 500;
       color: rgba(0, 0, 0, 0.87);      
       color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
       font-size: 1.4675rem;
       margin-top: 20px;
-      margin-left: 10px;
+      margin-left: 0px;
       margin-right: 10px;   
       @media (prefers-color-scheme: dark) {
         color: var(--mdc-theme-secondary-dark-text);      
@@ -69,69 +68,3 @@
   
   }
 
-  .kng-layout-card{
-    min-width: 100%;
-    display: flex!important;
-    justify-content: flex-start;
-    @media (max-width: 429px) {
-    }
-
-    flex-wrap: wrap;
-    align-items: center;   
-    padding-bottom:0; 
-    div.category,
-    kng-product-thumbnail{
-      flex: 1 0 137px;
-      min-width: 137px;
-      margin: 8px;
-      margin-bottom: 0;
-      max-width: 163px;
-      @media (max-width: 429px) {
-        flex: 1 0;
-        min-width: 29vw;
-        margin: 4px 4px 0;
-        flex: 0 0 43%;
-        min-width: 39vw;
-        margin: 4px 11px 0;
-      }
-    }
-  
-    div.category{
-      cursor: pointer;
-      height: 9rem;
-      max-width: 160px;
-      background: var(--mdc-theme-primary);
-      color: var(--mdc-theme-primary-text);
-      position: relative;
-      border-radius: 12px;
-      margin-bottom: auto;      
-      display: flex;
-      flex-direction: column;
-      &.loader{
-        background-color: #f1f1f1!important;
-        height: 9rem;
-        align-items: self-end;
-        margin-bottom: 0;        
-      }
-      div{
-        padding: 20px 15px;        
-        font-size: 20px;
-        margin-bottom: 0;
-        margin-top: auto;        
-        &.icon{
-          align-self: flex-start;
-          margin-top: 0;
-          margin-bottom: auto;          
-          padding: 10px;
-          i{
-            font-size: 36px;
-          }
-        
-        }
-        &:last-child{
-          padding-top: 0;
-        }
-
-      }
-    }
-  }

@@ -67,8 +67,8 @@
   <hr class="dashed"/>
   <section class="shippingtime">
     <h3 >Shipping Time</h3>
-    <kng-config-input *ngFor="let time of [0,12,14,16,18]"
-                  clazz="config" label="Boundaries for start time: {{time}}h" name="shippingtime-{{time}}" format="text" 
+    <kng-config-input *ngFor="let time of [0,10,12,16,19]"
+                  clazz="config" label="Boundaries for start time: {{time}}h {{time?'':'collect'}}" name="shippingtime-{{time}}" format="text" 
                   [(ngModel)]="currentHub.shippingtimes[time+'']"></kng-config-input>
   </section>
 

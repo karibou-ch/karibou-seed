@@ -47,11 +47,11 @@ export class UserSignComponent {
       img: '/assets/img/payment/btc.jpg',
       label: 'Bitcoin'
     },
-    bch: {
+    eth: {
       img: '/assets/img/payment/bch.jpg',
       label: 'Bitcoin Cash'
     },
-    lumen: {
+    kng: {
       img: '/assets/img/payment/xlm.jpg',
       label: 'Lumen'
     }
@@ -263,11 +263,11 @@ export class UserSignComponent {
 
       //
       // keep form active if more is needed
-      if (this.mandatory.address) {
+      if (this.mandatory.address && !this.user.addresses.length) {
         this.mandatory.address = false;
         return this.askAction = 'address';
       }
-      if (this.mandatory.payment) {
+      if (this.mandatory.payment && !this.user.payments.length) {
         this.mandatory.payment = false;
         return this.askAction = 'payment';
       }

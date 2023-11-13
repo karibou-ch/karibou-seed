@@ -17,7 +17,7 @@
           <img [src]="vendor?.photo.owner">
         </div>
 
-        <div class="description" [kng-markdown]="vendor.description"></div>  
+        <div class="description" removeRoot="true" [kng-markdown]="vendor.description"></div>  
         <div class="contact">      
           <a class="kng-chip" [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
 
@@ -34,26 +34,19 @@
     </div>
 
     <!-- FURTHER -->
-    <div class="further-product-container" *ngIf="vendor">
-      <section class="audio-chat hide">
-        <div>
-          <h2>Passer une commande avec un message audio et un budget, et le commerçant s'occupe de tout! 😮 😮 😮</h2>
-        </div>    
-      </section>
- 
-      <section class="products" >
-        <kng-product-grouped-list 
-          *ngIf="products.length"
-          alphasort="true"
-          showSection="true"
-          [config]="config" 
-          [user]="user" 
-          [scrollContainer]="getDialog()"
-          [contentCategories]="category.categories" 
-          [contentProducts]="products"
-          (direction)="scrollDirection=$event">
-        </kng-product-grouped-list>
-      </section>
+    <div class="products-container" *ngIf="vendor">
+
+      <kng-product-grouped-list 
+        *ngIf="products.length"
+        alphasort="true"
+        showSection="true"
+        [config]="config" 
+        [user]="user" 
+        [scrollContainer]="getDialog()"
+        [contentCategories]="category.categories" 
+        [contentProducts]="products"
+        (direction)="scrollDirection=$event">
+      </kng-product-grouped-list>
 
       <!-- SHOP GEO -->
       <section class="map"   [hidden]="!vendor.address.geo" >
@@ -73,7 +66,7 @@
         <ul>
           <li *ngFor="let faq of vendor.faq">
             <h4>{{faq.q}}</h4>
-            <div [kng-markdown]="faq.a" removeRoot="true" ></div>
+            <div [kng-markdown]="faq.a" ></div>
           </li>
         </ul>
       </section>      

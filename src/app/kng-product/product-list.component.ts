@@ -15,9 +15,9 @@ import {
   Category,
   Shop,
   CartService,
-  CartAction,
+  CartSubscriptionParams,
+  CartItemsContext,
   ShopService,
-  CartSubscriptionContext,
   Order
 } from 'kng2-core';
 
@@ -58,14 +58,16 @@ export class ProductListComponent implements OnInit {
   vendor: Shop;
   vendors: Shop[];
 
-  activeSubscription:boolean = false;
+  subcriptionParams:CartSubscriptionParams;
   showSubCategory:boolean;
+  activeMenu: boolean;
   filterVendor: Shop;
   filterChild: string;
   childSub$;
   childMap: any;
   scrollDirection: number;
   scrollToCategory: string;
+  scrollStickedToolbar: boolean;
 
   options: {
     hub?: string;
@@ -75,6 +77,7 @@ export class ProductListComponent implements OnInit {
     reload?: number;
     shopname?: string;
     subscription?: boolean;
+    business?: boolean;
   };
 
   constructor(
@@ -110,9 +113,22 @@ export class ProductListComponent implements OnInit {
     this.config = loader[0];
     this.user = loader[1];
     this.category.categories = loader[2];
+    this.activeMenu = true;
     this.getNextPage.bind(this);
     this.scrollDirection = 0;
+    this.subcriptionParams = {
+      activeForm:true,
+      dayOfWeek:0,
+      frequency:'week'
+    }
     ProductListComponent.SCROLL_CACHE = 0;
+  }
+
+  get clientWidth() {
+    if(!this.dialog || !this.dialog.nativeElement){
+      return 0;
+    }
+    return this.dialog.nativeElement.children[1].clientWidth    
   }
 
   get store(){
@@ -128,11 +144,82 @@ export class ProductListComponent implements OnInit {
     return this.$i18n.locale;
   }
 
+  get label() {
+    return this.$i18n.label();
+  }
   get label_souscription(){
-    return this.activeSubscription? 
+    return this.subcriptionParams.activeForm? 
            this.$i18n[this.locale].subscription_status_on:this.$i18n[this.locale].subscription_status_off
   }
 
+
+  get label_subscriptionInformations() {
+    const type = this.isForSubscriptionCustomer?'subscription':(this.isForSubscriptionBusiness?'business':'');
+
+    if(!type || !this.config.shared[type] ||!this.config.shared[type].article) {
+      return '';
+    }
+    const article = this.config.shared[type].article[this.locale];
+    return article;
+  }  
+
+  get isForSubscriptionList(){
+    return this.$route.snapshot.data.subscription || this.$route.snapshot.data.business;
+  }
+
+  get isForSubscriptionCustomer(){
+    return this.$route.snapshot.data.subscription;
+  }
+
+  get isForSubscriptionBusiness(){
+    return this.$route.snapshot.data.business;
+  }
+
+  get subscriptionQueryParams() {
+    const contractId = this.$route.snapshot.queryParams.id;
+    const params:any = {view:'subscription'};
+    if(this.isForSubscriptionBusiness) {
+      params.plan='business'
+    }
+    if(contractId) {
+      params.id=contractId;
+    }
+    
+    return params;
+  }
+
+  get activeSubscription(){
+    if(!this.isForSubscriptionList || !this.subcriptionParams.activeForm) {
+      return false;
+    }
+    return this.subcriptionParams.frequency;
+  }
+
+  set activeSubscription(value) {
+    this.subcriptionParams.activeForm = !this.subcriptionParams.activeForm;
+    this.$cart.subscriptionSetParams(this.subcriptionParams);
+  }
+
+  get subscriptionAmount() {
+    const ctx:CartItemsContext = {
+      forSubscription:true,
+      hub:this.store
+    }    
+    return this.$cart.subTotal(ctx).toFixed(2)
+  }
+
+
+  get cartAmount() {
+    const ctx:CartItemsContext = {
+      forSubscription:false,
+      hub:this.store
+    }    
+    return this.$cart.subTotal(ctx).toFixed(2)
+  }
+
+
+   
+ 
   ngOnDestroy() {
     this.clean();
     if (this.childSub$) {
@@ -140,30 +227,26 @@ export class ProductListComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.isReady = true;
-
-    this.childSub$ = this.$cart.cart$.subscribe(state => {
-      if(!state.action){
-        return;
-      }
-
-      const context = this.$cart.getCartSubscriptionContext();
-      this.activeSubscription = context.active;
-      this.cdr.markForCheck();
-    });
 
     //
     // list product available for subscription
-    if(this.$route.snapshot.data.subscription) {
-      this.options.subscription  = true;
+    if(this.isForSubscriptionList) {
+      this.isForSubscriptionCustomer && (this.options.subscription=true);
+      this.isForSubscriptionBusiness && (this.options.business=true);
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.subscription.t[this.locale];
       this.category.current.description =this.config.shared.subscription.h[this.locale];
+      if(this.$route.snapshot.data.business) {
+        this.options.business = true;
+        this.category.current.name =this.config.shared.business.t[this.locale];
+        this.category.current.description =this.config.shared.business.h[this.locale];
+      }
       this.category.current.child = [];
       this.productsBySubscription();
-
     } 
+    
     //
     // list product available from category
     else if(this.$route.snapshot.params['category']){
@@ -199,6 +282,15 @@ export class ProductListComponent implements OnInit {
       this.isReady = false;
     }
     
+    this.childSub$ = this.$cart.cart$.subscribe(state => {
+      if(!state.action||!this.isForSubscriptionList){
+        return;
+      }
+
+      this.subcriptionParams = this.$cart.subscriptionGetParams();
+      this.cdr.markForCheck();
+    });
+
     //
     // publish metrics
     const metric ={
@@ -211,7 +303,6 @@ export class ProductListComponent implements OnInit {
 
     //
     // DIALOG INIT HACK
-    document.body.classList.add('mdc-dialog-scroll-lock');
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
   }
 
@@ -222,6 +313,7 @@ export class ProductListComponent implements OnInit {
     if (!this.dialog || !this.dialog.nativeElement){
       return;
     }
+    this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40;
     const diff = Math.abs(this.dialog.nativeElement.scrollTop - ProductListComponent.SCROLL_CACHE);
     if(diff < 100) {
       return;
@@ -234,7 +326,6 @@ export class ProductListComponent implements OnInit {
 
   clean() {
     this.isReady = false;
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     document.documentElement.classList.remove('mdc-dialog-scroll-lock');
   }
 
@@ -252,7 +343,7 @@ export class ProductListComponent implements OnInit {
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    if(this.options.subscription) {
+    if(this.isForSubscriptionList) {
       return (this.products.length)? (this.category.categories as Category[]):[];
     }
     const child = category.child || [];
@@ -393,26 +484,26 @@ export class ProductListComponent implements OnInit {
     this.filterChild = child;
   }
 
-  toggleSubscription() {
-    const active = this.activeSubscription = !this.activeSubscription;
-    const context = {active} as CartSubscriptionContext
-    this.$cart.setCartSubscriptionContext(context);
-  }
-
   onMOnbileShowMore(){
     this.showSubCategory=!this.showSubCategory;
   }
 
   onClose(closedialog) {
-    this.clean();
-    //
-    // case of onboarding from ad clic
-    const query = this.$route.snapshot.queryParams;
-    const landing = query.source || query.fbclid;
-    if(landing ||!this.$navigation.hasHistory) {
-      return this.$router.navigate(['../../'], { relativeTo: this.$route });
+    // //
+    // // case of onboarding from ad clic
+    // const query = this.$route.snapshot.queryParams;
+    // const landing = query.source || query.fbclid;
+    // if(landing ||!this.$navigation.hasHistory) {
+    //   return this.$router.navigate(['..'], { relativeTo: this.$route });
+    // }
+    // this.$navigation.back();
+    if(!this.activeMenu) {
+      this.activeMenu = true;
+      return
     }
-    this.$navigation.back();
+    this.clean();
+    return this.$router.navigate(['..'], { relativeTo: this.$route });
+
   }
 
   //
@@ -490,11 +581,7 @@ export class KngProductListByShopComponent extends ProductListComponent{
   };
 
   getStaticMap(address) {
-    if (!this.config.shared || !this.config.shared.keys.pubMap) {
-      return;
-    }
-    const pubMap = this.config.shared.keys.pubMap;
-    return KngUtils.getStaticMap(address, pubMap, '400x200');
+    return KngUtils.getStaticMap(address, '400x200');
   }
 
   getCleanPhone(phone: string) {

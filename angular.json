@@ -43,7 +43,6 @@
               ]
             },
             "scripts": [
-              "src/preload.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -122,7 +121,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "8kb",
-                  "maximumError": "16kb"
+                  "maximumError": "17kb"
                 }
               ],
               "serviceWorker": true,

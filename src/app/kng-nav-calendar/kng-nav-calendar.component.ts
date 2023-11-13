@@ -61,9 +61,9 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
       return;
     }
     if(open) {
-      document.body.classList.add('mdc-dialog-scroll-lock');
+      document.documentElement.classList.add('mdc-dialog-scroll-lock');
     } else {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
+      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
 
     this._open = open;

@@ -29,8 +29,9 @@ import { KngNewsComponent } from './kng-news/kng-news.component';
 import { KngFeedbackComponent } from '../shared/kng-feedback/kng-feedback.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
-import { KngSubscriptionOptionComponent } from '../kng-subscription-option/kng-subscription-option.component';
-import { KngSubsciptionControlComponent } from '../shared/kng-subsciption-control/kng-subsciption-control.component';
+import { KngSubscriptionOptionComponent } from './kng-subscription-option/kng-subscription-option.component';
+import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
+import { KngRippleDirective } from './kng-ripple.directive';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { KngSubsciptionControlComponent } from '../shared/kng-subsciption-contro
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-    KngSubsciptionControlComponent
+    KngSubsciptionControlComponent,
+    KngRippleDirective
   ],
   declarations: [
     KngUiBottomActionsComponent,
@@ -75,7 +77,8 @@ import { KngSubsciptionControlComponent } from '../shared/kng-subsciption-contro
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-    KngSubsciptionControlComponent
+    KngSubsciptionControlComponent,
+    KngRippleDirective
   ],
 })
 export class KngCommonModule {

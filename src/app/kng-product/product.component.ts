@@ -17,13 +17,14 @@ import {
   Product,
   User,
   CartItem,  
+  CartItemFrequency
 } from 'kng2-core';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DomSanitizer, Meta } from '@angular/platform-browser';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
+import { Meta } from '@angular/platform-browser';
 
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
@@ -41,7 +42,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   @Input() categories: Category[];
   @Input() selected: boolean;
   @Input() user: User = new User();
-  @Input() displaySubscription: boolean;
+  @Input() displaySubscription: boolean|string;
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
 
@@ -71,6 +72,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   // scroll
   currentPage = 1;
   scrollCallback;
+  scrollStickedToolbar: boolean;
+  timestamp:number;
 
   //
   // variant
@@ -95,13 +98,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $metric: MetricsService,
     private $cart: CartService,
     public $i18n: i18n,
-    private $util: KngUtils,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
     private $router: Router
   ) {
 
+    this.timestamp = Date.now();
     //
     // redirect rules
     this.isRedirect = this.$route.snapshot.data.redirect;
@@ -122,19 +125,50 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
+    this.scrollStickedToolbar = false;
   }
 
+  get clientWidth() {
+    if(!this.dialog || !this.dialog.nativeElement){
+      return 0;
+    }
+
+    //
+    // container.className == "product-dialog__surface"
+    const container = this.dialog.nativeElement.children[1];
+    return container.clientWidth;
+  }  
+
+  get store() {
+    return this.$navigation.store;
+  }
 
   get audioFileName() {
     const name = this.user && this.user.displayName || ''
     return this.product.sku + '-' + name.toLowerCase();
   }
 
+  get productActiveSubscription() {
+    return this.product.attributes.subscription || this.product.attributes.business;
+  }
+
+  get queryParamsSKU() {
+    return (this.displaySubscription  && this.productActiveSubscription)?{view:'subscription'}:{};
+  }
+
+
   get cartItemQuantity(){
-    const qty= this.$cart.getItemsQtyMap(this.product.sku,this.config.shared.hub.slug);
+    const isForSubscription = (this.displaySubscription && this.productActiveSubscription);
+    const hub = this.config.shared.hub.slug;
+
+    const qty= this.$cart.getItemsQtyMap(this.product.sku,hub,isForSubscription);
     return qty;
   }
 
+  get cartSubsQuantity() {
+    const qty = this.$cart.getSubsQtyMap(this.product.sku);
+    return qty;
+  }
 
   get isAvailableForOrder(){
     return !this.isReady || this.product.isAvailableForOrder();
@@ -154,7 +188,9 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     this.isSearching = this.isReady = false;
 
-
+    //
+    // use URL state to force subscription action
+    this.displaySubscription = this.displaySubscription || (this.$route.snapshot.queryParams['view']=='subscription');
     //
     // product action belongs to a shop or a category
     this.rootProductPath = (this.$route.snapshot.params['shop']) ?
@@ -179,7 +215,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
       //
       // DIALOG INIT HACK
-      document.body.classList.add('mdc-dialog-scroll-lock');
       document.documentElement.classList.add('mdc-dialog-scroll-lock');
 
     } else {
@@ -213,18 +248,23 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewChecked() {
+    if (!this.isDialog|| !this.dialog || !this.dialog.nativeElement){
+      return;
+    }
+    //
+    // Expression has changed after it was checked
+    // https://angular.io/errors/NG0100
+    setTimeout(()=> this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40,0)
+  }
+
   ngOnDestroy() {
     this.scrollCallback = null;
     window.onbeforeunload = null;
 
     if (this.isDialog) {
-      document.body.classList.remove('mdc-dialog-scroll-lock');
       document.documentElement.classList.remove('mdc-dialog-scroll-lock');
     }
-  }
-
-  get store() {
-    return this.$navigation.store;
   }
 
   onAudioError(error) {
@@ -259,8 +299,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // check if item is already on cart
     // Open variant UI
-    const hub = this.config.shared.hub.slug;
-    const isOnCart = this.$cart.getItemsQtyMap(product.sku,hub);
+    const isOnCart = this.cartItemQuantity;
     if (!isOnCart && !variant  && product.variants && product.variants.length) {
       this.openVariant = true;
       return;
@@ -270,13 +309,14 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     //
     // create item from product
-    const item = CartItem.fromProduct(product,hub, variant);
+    const item = CartItem.fromProduct(product,this.store, variant);
+
 
     //
     // manage subscription
-    if(this.displaySubscription && product.attributes.subscription){
-      //item.frequency = 1;//FIXME CartItemFrequency.ITEM_WEEK;
-    }
+    item.frequency = (this.displaySubscription && this.productActiveSubscription) 
+
+
 
     //
     // manage audio note
@@ -418,7 +458,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       setTimeout(()=>{
         //
         // get cart value
-        const cartItem = this.$cart.findBySku(product.sku,this.config.shared.hub.slug);
+        const useFrequency = (this.displaySubscription && this.productActiveSubscription);
+        const cartItem = this.$cart.findBySku(product.sku,this.config.shared.hub.slug, useFrequency);
         if(!cartItem) {
           return
         }
@@ -464,7 +505,16 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   removeToCart($event, product: Product) {
     $event.stopPropagation();
-    this.$cart.remove(product);
+    const hub = this.store;
+
+    const isForSubscription = (this.displaySubscription && this.productActiveSubscription);
+
+
+    const item = this.$cart.findBySku(product.sku,hub,isForSubscription);
+    this.$cart.remove(item);
+    this.timestamp = Date.now();
+
+    console.log('----',item,this.cartItemQuantity)
     this.updateBackground();
   }
 

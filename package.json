@@ -1,12 +1,12 @@
 {
   "name": "karibou-seed",
-  "version": "4.3.4",
+  "version": "5.1.0",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "analyse": "source-map-explorer ./dist/*es2015*.js ./dist/*es2015*.js.map --html dist/stack.html",
+    "analyse": "source-map-explorer ./dist/*es2017*.js ./dist/*es2017*.js.map --html dist/stack.html",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -26,11 +26,14 @@
     "@sentry/angular-ivy": "^7.39.0",
     "@stripe/stripe-js": "^1.11.0",
     "@uploadcare/upload-client": "^3.1.1",
-    "kng2-core": "^4.0.18",
+    "kng2-core": "^5.0.4",
+    "markdown-it": "^13.0.1",
     "mic-recorder-to-mp3": "^2.2.2",
     "ngx-stripe": "v12-lts",
+    "pdfmake": "^0.2.7",
     "rxjs": "~6.6.0",
     "sass": "^1.58.1",
+    "source-map-explorer": "^2.5.3",
     "swissqrbill": "^3.2.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

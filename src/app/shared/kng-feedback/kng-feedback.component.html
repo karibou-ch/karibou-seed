@@ -1,5 +1,13 @@
+<!-- ORDER PENDING -->
+<div class="processing" [class.boxed]="boxed" *ngIf="orderState=='pending'" >
+  <p class="help-block">
+    {{i18n[locale].title_order_pending}} {{order.oid}}
+  </p>
+  <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
+</div>
+
 <!-- ORDER OPEN -->
-<div class="processing" [class.boxed]="boxed" *ngIf="getOrderState()=='authorized'" >
+<div class="processing" [class.boxed]="boxed" *ngIf="orderState=='authorized'" >
   <h3 i18n>{{i18n[locale].title_order_open}} {{order.oid}}</h3>
 
   <p class="help-block">
@@ -12,18 +20,17 @@
 </div>
 
 <!--- ORDER IS CANCEL -->
-<div class="feedback" [class.boxed]="boxed" *ngIf="getOrderState()=='voided'">
-  <div class="details" >
+<div class="feedback" [class.boxed]="boxed" *ngIf="orderState=='voided'">
+  <h3>
     <span class="bold">{{hubName}} </span>
     <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
       {{i18n[locale].title_order_cancel}}
       <span class="text-strike">{{order.getTotalPrice()|currency:'CHF'}}</span>
-  </div>                                      
+  </h3>                                      
 </div>
 
 <!--- ORDER IS EVALUATED -->
-<!--
-<div class="feedback " [class.boxed]="boxed" *ngIf="getOrderState()=='evaluated'">
+<div class="feedback boxed" [hidden]="!boxed" *ngIf="orderState=='evaluated'">
   <div class="details" >
     <span class="bold">{{hubName}} </span>
     <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y':'':locale}}</span>,
@@ -38,31 +45,28 @@
     <span class="stars material-symbols-outlined" [class.scored]="score>=3">star_rate</span>
   </div>
 </div>
--->
 
 <!--- ORDER IS PAID -->
-<!--
-<div class="feedback " [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
-  <h3>{{label.home_feedback_title}}</h3>
+<div class="feedback " [class.boxed]="boxed" *ngIf="orderState=='paid'">
   <div class="details" >
-      <div class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</div>
-      <div><b>{{order.items.length}}</b> articles </div>
-      <div>{{order.getTotalPrice()|currency:'CHF'}}</div>
-      <button hidden class="action right">les article</button>
+    <div class="text-capitalize">{{order.shipping.when|date:'EEE d MMM'}}</div>
+    <div><b>{{order.items.length}}</b> articles </div>
+    <div>{{order.getTotalPrice()|currency:'CHF'}}</div>
   </div>                   
-                   
-  <div class="form">
-    <span>{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
-    <span class="stars material-symbols-outlined" (click)="openIssue(0)" [class.scored]="score>=0">star_rate</span> 
-    <span class="stars material-symbols-outlined" (click)="openIssue(1)" [class.scored]="score>=1">star_rate</span> 
-    <span class="stars material-symbols-outlined" (click)="openIssue(2)" [class.scored]="score>=2">star_rate</span>
-    <span class="stars material-symbols-outlined" (click)="openIssue(3)" [class.scored]="score>=3">star_rate</span>    
-  </div>
-</div>
--->
+  <div class="more">{{order.payment.issuer}} - <button hidden class="action right" (click)="selectedOrder=order">voir</button></div>
 
-<div class="customer">
-  <div class="kng-boxed  history" [class.boxed]="boxed" *ngIf="getOrderState()=='paid'">
+  <!-- ITEMS -->
+  <!-- ORDER ITEMS -->
+  <ng-container 
+    *ngIf="selectedOrder"
+    [ngTemplateOutlet]="orderItems"
+    [ngTemplateOutletContext]="{ $implicit: selectedOrder }">
+  </ng-container>
+
+</div>
+
+<div class="customer" *ngIf="!boxed">
+  <div class="kng-boxed  history" [class.boxed]="boxed" *ngIf="orderState=='paid'">
     <div class="label">{{label.home_feedback_title}} {{order.shipping.when|date:'d MMM'}}, {{order.getTotalPrice()|currency:'CHF'}}</div>
     <div class="content">
       <p>
@@ -163,7 +167,7 @@
 </ng-container>
 
 <!-- ITEMS POPUP -->
-<ng-container *ngIf="selectedOrder">
+<ng-container *ngIf="selectedOrderPopup">
 
   <div class="blured" ></div>
   <div class="container top">
@@ -224,7 +228,7 @@
         </div>
     </li>
   </ul>
-  <ul hidden>
+  <ul >
     <li class="add-to-cart">                
       <a href="javascript:;" class="black smaller "                    
       (click)="onAddAllToCart()" i18n>

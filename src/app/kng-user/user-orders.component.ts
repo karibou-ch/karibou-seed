@@ -162,6 +162,7 @@ export class UserOrdersComponent implements OnInit {
       case 'pending':
         return 'more_horiz';
       case 'authorized':
+      case 'prepaid':
         return 'radio_button_unchecked';
       case 'paid':
       case 'invoice_paid':
@@ -192,7 +193,7 @@ export class UserOrdersComponent implements OnInit {
 
   isPending(order: Order) {
     // console.log('....',order.payment.status,order.fulfillments.status)
-    return ['authorized'].indexOf(order.payment.status) > -1 && order.fulfillments.status === EnumFulfillments[EnumFulfillments.reserved];
+    return ['authorized','prepaid'].indexOf(order.payment.status) > -1 && order.fulfillments.status === EnumFulfillments[EnumFulfillments.reserved];
   }
 
   get locale() {
@@ -209,7 +210,7 @@ export class UserOrdersComponent implements OnInit {
     this.childOrder = {};
 
     this.orders = orders.sort((o1, o2) => o2.shipping.when.getTime() - o1.shipping.when.getTime());
-    this.openOrder = this.orders.find(order => order.payment.status === 'authorized');
+    this.openOrder = this.orders.find(order =>  ['authorized','prepaid'].indexOf(order.payment.status)>-1);
     this.orders.forEach((order, idx) => {
       this.setChildOrder(order);
       order.items.forEach(item => {
