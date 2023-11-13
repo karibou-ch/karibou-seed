@@ -216,7 +216,7 @@ export class UserSignComponent {
   // release data
   ngOnDestroy() {
     this.config = null;
-    // console.log('---DEBUG ngDestroy',this.config);
+    console.log('---DEBUG ngDestroy',this.config);
 
   }
 
@@ -263,11 +263,13 @@ export class UserSignComponent {
 
       //
       // keep form active if more is needed
-      if (this.mandatory.address && !this.user.addresses.length) {
+      // FIXME for sign-in => (this.mandatory.address && !this.user.addresses.length)
+      // FIXME for account => (this.mandatory.address)
+      if (this.mandatory.address) {
         this.mandatory.address = false;
         return this.askAction = 'address';
       }
-      if (this.mandatory.payment && !this.user.payments.length) {
+      if (this.mandatory.payment) {
         this.mandatory.payment = false;
         return this.askAction = 'payment';
       }

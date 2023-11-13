@@ -231,13 +231,18 @@ body{
   }
 }
 
+
+//
+// colors
+
+.highlight {
+  background-color: yellow;
+}
 .evidence {
   background-image: linear-gradient(to bottom, rgba(39,243,106,0.15), rgba(39,243,106,0.15));
   color: #666;
 }
 
-//
-// colors
 
 .secondary-bg     {
   background:      var(--mdc-theme-secondary)!important;

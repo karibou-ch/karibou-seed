@@ -1,7 +1,12 @@
 <div class="container">
   <!-- <h3 >Modifier votre mot de passe</h3>
   <h4 >{{user.display()}}</h4> -->
+  <p class="block-info" [innerHtml]="$i18n[locale].user_nlpd">
+
   <form [formGroup]="$profile" (submit)="onChange()">
+    <fieldset>
+      <legend>Vos informations privées</legend>
+
       <mdc-text-field fullwidth  [label]="$i18n[locale].user_name" type="text" formControlName="name" [ngModel]="user.name.familyName">
         <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >face</span>
       </mdc-text-field>
@@ -21,19 +26,56 @@
         <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >vpn_key</span>
       </mdc-text-field>
         
-      <button mdc-button unelevated="true" [disabled]="!$profile.valid">
-        <span class="material-symbols-outlined">account_circle</span>              
-        <span >{{$i18n[locale].action_save}}</span>
-      </button>            
-
-      <div class="breaker small"></div>
-      
-      <button [routerLink]="['/store/' + store + '/home/me/login-or-address']"
-        mdc-button [outlined]="true" >{{$i18n[locale].user_address_add}}</button>     
-
-      <button [routerLink]="['/store/' + store + '/home/me/login-or-payment']"
-        mdc-button [outlined]="true" >{{$i18n[locale].user_payment_add}}</button>     
-
-
+      <div class="bottom">
+        <button class="button cta" [disabled]="!$profile.valid">
+          <span class="material-symbols-outlined">account_circle</span>              
+          <span >{{$i18n[locale].action_save}}</span>
+        </button>              
+      </div>
+    </fieldset>
   </form>
+
+  <div class="form">
+    <fieldset>
+      <legend>Vos adresses</legend>
+
+      <ul class="elem">
+        <li *ngFor="let address of user.addresses;let idx=index">
+            <div class="name">{{address.name}}</div>                 
+            <div class="street">{{address.streetAdress}}</div>
+            <div class="note"><span class="bold">info:</span> {{address.note}}</div>
+        </li>
+      </ul>
+  
+
+      <button class="button profile" [routerLink]="['/store/' + store + '/home/me/login-or-address']">
+        {{$i18n[locale].user_address_add}}
+      </button>       
+    </fieldset>  
+  </div>
+
+  <div class="form">
+    <fieldset>
+      <legend>Vos méthodes de paiement</legend>  
+
+      <ul class="elem">
+        <li *ngFor="let payment of user.payments;let idx=index">
+
+          <div class="name" >
+            {{payment.issuer}} {{payment.expiryToDate()|date:'MM/y'}} 
+            <span class="label">{{payment.number||payment.last4}}</span>
+          </div>                 
+          <div class="error" [hidden]="!payment.error" [class.invalid]="!payment.isValid()">{{payment.error}}</div>     
+        </li>
+      </ul>
+  
+
+      <button class="button profile" [routerLink]="['/store/' + store + '/home/me/login-or-payment']">
+        {{$i18n[locale].user_payment_add}}
+      </button>     
+  
+    </fieldset>  
+
+  </div>
+
 </div>

@@ -1,18 +1,79 @@
 div.container{
-  form{
+  form,.form{
     display: flex;
     flex-direction: column;    
+    margin-bottom: 20px;
     button{
       align-self:center;
-      margin: 10px;
+      margin: 10px 0;
       background-color: var(--mdc-theme-primary);
       border-color: var(--mdc-theme-primary-text,#423f3b);
       color: var(--mdc-theme-primary-text,#423f3b);
     }
-
   }
+  .block-info {
+    font-size: 17px;
+    line-height: 23px;
+    padding: 15px 8px;
+  }
+  fieldset{
+    border: 1px solid #ccc;
+    border-radius: 4px;    
+    ul.elem{
+      list-style: none;
+      padding: 0;
+      cursor: pointer;
+      li{
+        position: relative;
+        padding: 10px 15px;
+        background: var(--mdc-theme-appbar);
+        border-radius: 14px;
+        margin: 10px 0;   
+        label{
+          position: absolute;
+          right: 20px;
+          bottom: 9px;
+          font-weight: bold;
+          font-size: 14px;
+          color: #aaa;        
+        }
+        .name::first-letter{
+          text-transform: capitalize;
+        }
+  
+        .name{
+          font-weight: bold;
+        }   
+        .note{
+          margin-top: 3px;
+          max-width: 100%;
+          overflow: hidden;          
+        }
+        .street,.postal,.note {
+          font-size: 12px;
+        }
+      }
+    }
+  
+  }
+
   button{
-    width: 95%;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 17px;
+    margin-right: 0!important;
+    margin-left: auto!important;
+    width: 100%;
+    cursor: pointer;
+
+    &.profile{
+      width: 100%;
+
+    }
   }
 }
 
