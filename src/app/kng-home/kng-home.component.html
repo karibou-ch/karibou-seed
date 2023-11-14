@@ -37,7 +37,7 @@
 
 </div>
 <div class="home" [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile">
-  <!-- <ul class="subs">
+  <ul class="subs">
     <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <i class="material-symbols-outlined icon   ">update</i>  
 
@@ -47,7 +47,7 @@
       <i class="material-symbols-outlined icon  ">update</i>  
       <span>{{label.nav_subscription}}</span>
     </li>
-  </ul> -->
+  </ul>
 
   <ul>
     <li (click)="scrollToSlug(category.slug)"
