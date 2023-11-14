@@ -5,6 +5,7 @@
   [isPremium]="user?.isPremium()"
   (updated)="setShippingDay($event)" #calendar>
 </kng-nav-calendar>
+
 <kng-news [config]="config"></kng-news>
 
 <div class="mdc-drawer"  drawer="modal" #navigation 
@@ -51,7 +52,7 @@
 <div [hidden]="!isAppReady()" class="navbar">
 
   <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar [fixed]="!$navigation.isMobile()" >
+  <mdc-top-app-bar hidden [fixed]="!$navigation.isMobile()" >
     <mdc-top-app-bar-row >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
@@ -129,7 +130,7 @@
   </mdc-top-app-bar>
 
   <!-- CONTENT APP -->
-  <div class="mdc-content" #scrollContent>
+  <div class="main-grid-container" #scrollContent>
     <ng-content></ng-content>
   </div>
 

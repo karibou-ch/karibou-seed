@@ -71,8 +71,10 @@ div.navbar{
   display:flex;
   flex-flow: column;  
   height: 100%;
+
   //FIXME width-full goes larger than it should
-  overflow: hidden;
+  //FIXME visible for inner sticky position
+  overflow: visible;
 
 
 

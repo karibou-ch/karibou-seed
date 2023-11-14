@@ -247,10 +247,10 @@ export class ProductGroupedListComponent implements OnInit {
     // const maxcat = this.useMaxCat? (this.isMobile ? 8 : 12):100;
     // const divider = this.isMobile ? 2 : 4;
     const maxcat = this.useMaxCat? (this.isMobile ? 2 : (
-      (window.innerWidth < 1025)? 6:5
+      (window.innerWidth < 1025)? 12:11
     )):200;
     const divider = this.isMobile ? 2 : (
-          (window.innerWidth < 1025)? 6:4
+          (window.innerWidth < 1025)? 12:4
     );
 
     this.group = {};

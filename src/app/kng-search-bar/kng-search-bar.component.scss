@@ -17,7 +17,7 @@ kng-search-bar{
 kng-search{
 	display:flex;	
 	@media (min-width: 541px) {
-		display:none!important;
+		-display:none!important;
 	}
 }
 

@@ -64,7 +64,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // page content by target
   pageOptions: any = {
     home: {
-      maxcat: 8,
+      maxcat: 12,
       _home: true,
       popular: true,
       showMore: true
@@ -285,7 +285,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
     options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
-    options.maxcat = this.isMobile? 2:options.maxcat;
+    options.maxcat = this.isMobile? 4:options.maxcat;
     options.hub = this.$navigation.store;
     this.isLoading = true;
 

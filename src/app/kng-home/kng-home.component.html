@@ -1,77 +1,94 @@
 
-      
-<div class="home-header" [hidden]="hub.header.active">
-  <!-- HUB -->
-  <div class="banner" >
-    <h1>{{config.shared.hub.siteName[locale]}}</h1>
-    <h2>{{config.shared.hub.description[locale]}}</h2>  
+<div class="main-left">
+  <!-- LISTED CATEGORIES -->
+  <h2 class="root -show-sm">{{label.category_title}}</h2>  
+  <!-- CATEGORY -->
+  <!-- FIXED SIZE -->
+  <!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
+  <div class="" [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile">
+    <!-- <ul class="subs">
+      <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon   ">update</i>  
+
+        <span>{{label.nav_subscription_b2b}}</span>
+      </li>
+      <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon  ">update</i>  
+        <span>{{label.nav_subscription}}</span>
+      </li>
+    </ul> -->
+
+    <ul>
+      <li (click)="scrollToSlug(category.slug)"
+                [id]="'category-'+j"                    
+                [class.selected]="category.slug == displaySlug"
+                *ngFor="let category of sortedCategories;let j=index">
+        <img [src]="category.cover" class="show-sm">
+        <!--<i [class]="category.image" class="icon hide-sm hide-md"></i>               -->
+        <span>{{getCategoryI18n(category)}}</span>
+      </li>
+    </ul>
   </div>
-</div>
-
-<!-- INFORMATION -->
-<div class="home-header" [hidden]="!hub.header.active">
-  <div class="banner flyer-color" [innerHtml]="hub.header.message[locale]"></div>
-</div>
-
-
-<!-- MOBILE SEARCH  -->
-<kng-search class="home"></kng-search>
-
-
-<!-- SELECTION -->
-<kng-product-swipe mailchimp="true" [hub]="store" ></kng-product-swipe>
-
-
-<!-- DISCOUNT -->
-<kng-product-swipe discount="true" [hub]="store" ></kng-product-swipe>
-
-
-
-
-<!-- LISTED CATEGORIES -->
-<h2 class="root -show-sm">{{label.category_title}}</h2>  
-<!-- CATEGORY -->
-<!-- FIXED SIZE -->
-<!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
-<div class="home" [class.menu-on-right]="!isMobile" [class.mobile-categories]="isMobile">
 
 </div>
-<div class="home" [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile">
-  <!-- <ul class="subs">
-    <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon   ">update</i>  
 
-      <span>{{label.nav_subscription_b2b}}</span>
-    </li>
-    <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon  ">update</i>  
-      <span>{{label.nav_subscription}}</span>
-    </li>
-  </ul> -->
+<div class="main-content">
 
-  <ul>
-    <li (click)="scrollToSlug(category.slug)"
-              [id]="'category-'+j"                    
-              [class.selected]="category.slug == displaySlug"
-              *ngFor="let category of sortedCategories;let j=index">
-      <img [src]="category.cover" class="show-sm">
-      <!--<i [class]="category.image" class="icon hide-sm hide-md"></i>               -->
-      <span>{{getCategoryI18n(category)}}</span>
-    </li>
-  </ul>
-</div>
 
-<div class="product-container mdc-layout-grid" *ngIf="products.length" >
-  <kng-product-grouped-list 
-       useMaxCat="true"  showMore="on" offsetTop="500"       
-       [config]="config" 
-       [user]="user" 
-       [contentCategories]="sortedCategories" 
-       [contentProducts]="products"       
-       [scrollToSlug]="categorySlug" 
-       (currentCategory)="displaySlug=($event || displaySlug)"
-       (direction)="scrollDirection=$event">    
-  </kng-product-grouped-list>
-</div>
+  <div class="home-header" [hidden]="hub.header.active">
+    <!-- HUB -->
+    <div class="banner" >
+      <h1>{{config.shared.hub.siteName[locale]}}</h1>
+      <h2>{{config.shared.hub.description[locale]}}</h2>  
+    </div>
+  </div>
   
-<router-outlet ></router-outlet>
+  <!-- INFORMATION -->
+  <div class="home-header" [hidden]="!hub.header.active">
+    <div class="banner flyer-color" [innerHtml]="hub.header.message[locale]"></div>
+  </div>
+  
+  <section class="message-box">
+    <div class="profile">
+    </div>
+    <div class="message-box-content" contenteditable="true" 
+          placeholder="Cher investisseur, comment puis-je vous aider?"></div>
+
+    <nav>
+      <ul>
+        <li><button class="button-base icon-button"><span class="icon">🍿</span></button></li>
+        <li><button class="button-base icon-button"><span class="icon">💎</span></button></li>
+      </ul>
+      <button class="button-base "><span class="text">Question?</span></button>
+    </nav>          
+  </section>
+
+  
+  <!-- SELECTION -->
+  <kng-product-swipe mailchimp="true" [hub]="store" ></kng-product-swipe>
+  
+  
+  <!-- DISCOUNT -->
+  <kng-product-swipe discount="true" [hub]="store" ></kng-product-swipe>
+  
+  
+  <div class="product-container mdc-layout-grid" *ngIf="products.length" >
+    <kng-product-grouped-list 
+         useMaxCat="true"  showMore="on" offsetTop="500"       
+         [config]="config" 
+         [user]="user" 
+         [contentCategories]="sortedCategories" 
+         [contentProducts]="products"       
+         [scrollToSlug]="categorySlug" 
+         (currentCategory)="displaySlug=($event || displaySlug)"
+         (direction)="scrollDirection=$event">    
+    </kng-product-grouped-list>
+  </div>
+  
+</div>
+
+<!-- lEFT -->
+<div class="main-side">
+  <!-- MOBILE SEARCH  -->
+  <kng-search class="home"></kng-search>
+</div>

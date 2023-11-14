@@ -270,45 +270,17 @@ kng-product-swipe{
   }
 }
 
-.menu-on-right{
-  right: 5px!important;
-  left: auto!important;
-
-}
 .menu-on-right,
 .menu-on-left{
   transition: all 200ms;
-  position: fixed;
-  overflow-x: visible;
-  top: 125px;
-  width: 250px;
   padding: 0;
-  left: 10px;
-  height: calc(100% - 160px);
   /* scale:.9 broke naviation and pointer on some devices */
 
   &.display{
     opacity: 0;
   }
-  @media screen and (min-width:1600px) {
-    margin-left:-335px;
-    left: initial;   
-  }
-  @media screen and (max-width:1440px) and (min-width:1025px){
-    width: 16%;
-  }
 
-  @media (max-width:1224px){
-    display: none;
-  }
 
-  /* iPad/Iphone Landscape  https://stackoverflow.com/a/10360310 */
-  @media  only screen and (max-width:1365px) and (-webkit-min-device-pixel-ratio: 1.5) and (orientation:landscape),
-          only screen and (max-width:1365px) and (-o-min-device-pixel-ratio: 3/2) and (orientation:landscape),
-          only screen and (max-width:1365px) and (min--moz-device-pixel-ratio: 1.5) and (orientation:landscape),
-          only screen and (max-width:1365px) and (min-device-pixel-ratio: 1.5) and (orientation:landscape) {
-    display: none;
-  }  
 
   ul{
     list-style: none;
