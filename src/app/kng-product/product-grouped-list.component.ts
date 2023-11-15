@@ -165,39 +165,23 @@ export class ProductGroupedListComponent implements OnInit {
     this.registerScrollEvent();
   }
 
-  isInViewport(element) {
-    if(this.scrollContainer && this.scrollContainer.nativeElement) {
-      return this.isInContainer(element);
-    }
-    const rect = element.getBoundingClientRect();
-    const windowHeight = ((window.innerHeight || document.documentElement.clientHeight));
-    const windowWidth =  (window.innerWidth || document.documentElement.clientWidth);
-    const offsetTop = 80;
-
-    return (
-        rect.top >= offsetTop &&
-        rect.left >= offsetTop &&
-        rect.bottom <= windowHeight &&
-        rect.right <= windowWidth
-    );
-  }  
-
   isInContainer(element) {
-    const container = this.scrollContainer?.nativeElement;
+    const container = this.scrollContainer? this.scrollContainer.nativeElement:document.documentElement;
+
 
     const eleTop = element.offsetTop;
     const eleBottom = eleTop + element.clientHeight;
 
-    const containerTop = container.scrollTop;
-    const containerBottom = (containerTop + container.clientHeight);
+    const containerTop = container.scrollTop ;
+    const containerBottom = (containerTop + container.clientHeight) - 100;
+
+    const name = element.getAttribute('name');
+    const elemLen = Math.min(eleBottom,containerBottom) - Math.max(eleTop,containerTop);
+    const containerLen = (containerBottom- containerTop);
+
 
     // The element is fully visible in the container
-    return (
-        (eleTop >= containerTop && eleBottom <= containerBottom) ||
-        // Some part of the element is visible in the container
-        (eleTop < containerTop && containerTop < eleBottom) ||
-        (eleTop < containerBottom && containerBottom < eleBottom)
-    );        
+    return elemLen/containerLen>.5;        
   }
 
   updateCurrentCategory() {
@@ -219,7 +203,7 @@ export class ProductGroupedListComponent implements OnInit {
     this.sections.forEach(container => {
       const className = container.nativeElement.getAttribute('name');
       this.current[className] = false;
-      if(this.isInViewport(container.nativeElement)) {
+      if(this.isInContainer(container.nativeElement)) {
         this.current[className] = true;
         this.visibility[className] = true;
       }
