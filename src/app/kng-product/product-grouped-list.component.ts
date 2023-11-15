@@ -149,7 +149,7 @@ export class ProductGroupedListComponent implements OnInit {
   }
 
   get isMobile() {
-    return (window.innerWidth < 426);
+    return (window.innerWidth < 600);
   }
 
   get sortedCategories() {
@@ -174,18 +174,21 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // Note, those padding 100,200 are set for desktop view
-    const containerTop = container.scrollTop + 100 ;
-    const containerBottom = (containerTop + container.clientHeight) - 200;
+    const paddingTop = this.isMobile ? 0:100;
+    const paddingBottom = this.isMobile ? 0:200;
+    const containerTop = container.scrollTop + paddingTop ;
+    const containerBottom = (containerTop + container.clientHeight) - paddingBottom;
 
     const elemLen = Math.min(eleBottom,containerBottom) - Math.max(eleTop,containerTop);
-    const containerLen = (eleBottom- eleTop);
+    const elemTotLen = (eleBottom - eleTop);
+    const containerLen = (containerBottom - containerTop);
 
-    // if(elemLen/containerLen>.5){
-    //   console.log((elemLen/containerLen).toFixed(1),name);
+    // if(elemLen/containerLen>.5 || elemLen/elemTotLen>.6){
+    //   console.log((elemLen/elemTotLen).toFixed(1),(elemLen/containerLen).toFixed(1),name);
     // }
 
     // The element is fully visible in the container
-    return elemLen/containerLen>.5;
+    return elemLen/containerLen>.5 || elemLen/elemTotLen>.7;
   }
 
   updateCurrentCategory() {
