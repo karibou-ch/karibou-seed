@@ -165,23 +165,27 @@ export class ProductGroupedListComponent implements OnInit {
     this.registerScrollEvent();
   }
 
-  isInContainer(element) {
+  isInContainer(element, name) {
     const container = this.scrollContainer? this.scrollContainer.nativeElement:document.documentElement;
 
 
     const eleTop = element.offsetTop;
     const eleBottom = eleTop + element.clientHeight;
 
-    const containerTop = container.scrollTop ;
-    const containerBottom = (containerTop + container.clientHeight) - 100;
+    //
+    // Note, those padding 100,200 are set for desktop view
+    const containerTop = container.scrollTop + 100 ;
+    const containerBottom = (containerTop + container.clientHeight) - 200;
 
-    const name = element.getAttribute('name');
     const elemLen = Math.min(eleBottom,containerBottom) - Math.max(eleTop,containerTop);
-    const containerLen = (containerBottom- containerTop);
+    const containerLen = (eleBottom- eleTop);
 
+    // if(elemLen/containerLen>.5){
+    //   console.log((elemLen/containerLen).toFixed(1),name);
+    // }
 
     // The element is fully visible in the container
-    return elemLen/containerLen>.5;        
+    return elemLen/containerLen>.5;
   }
 
   updateCurrentCategory() {
@@ -202,9 +206,8 @@ export class ProductGroupedListComponent implements OnInit {
 
     this.sections.forEach(container => {
       const className = container.nativeElement.getAttribute('name');
-      this.current[className] = false;
-      if(this.isInContainer(container.nativeElement)) {
-        this.current[className] = true;
+      this.current[className] = this.isInContainer(container.nativeElement, className);
+      if(this.current[className]) {
         this.visibility[className] = true;
       }
     });
