@@ -115,15 +115,29 @@
       </div>
 
       <!-- RECEIPE -->
-      <div class="recipe hide">
+      <!-- <div class="recipe hide">
         <div class="content bold">
           Trouver les produits associés 
         </div>
         <kng-product-link (click)="isSearching=true" [links]="['tomate cerise','origan','sauce tomate']"></kng-product-link>
-      </div>
+      </div> -->
 
 
       <div class="breaker small"></div>
+
+
+      <!-- VENDOR-->
+      <div class="vendor" *ngIf="product.vendor.photo" [routerLink]="['/store',store,'home','shops',product.vendor.urlpath]">
+        <a class="link" >
+          <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
+               class="thumbnail-owner photo-owner">
+        </a>
+        <img [hidden]="!product.vendor.photo?.fg||product.vendor.photo?.owner" align="left" [src]="product.vendor.photo?.fg"
+          alt="160x160" class="thumbnail-owner photo-owner">
+
+        <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;
+        <span removeRoot="true" [kng-markdown]="product.vendor.description"></span> 
+      </div>
 
       <!-- ADMIN OR OWNER ACTIONS -->
       <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
@@ -140,19 +154,6 @@
           <a target="_blank" href="https:{{product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
         </div>
         <hr/>
-      </div>
-
-      <!-- VENDOR-->
-      <div class="vendor" *ngIf="product.vendor.photo">
-        <a class="link" [routerLink]="['/store',store,'home','shops',product.vendor.urlpath]">
-          <img [hidden]="!product.vendor.photo?.owner" [src]="product.vendor.photo?.owner" align="left" alt="160x160"
-               class="thumbnail-owner photo-owner">
-        </a>
-        <img [hidden]="!product.vendor.photo?.fg||product.vendor.photo?.owner" align="left" [src]="product.vendor.photo?.fg"
-          alt="160x160" class="thumbnail-owner photo-owner">
-
-        <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;
-        <span removeRoot="true" [kng-markdown]="product.vendor.description"></span> 
       </div>
 
       <!-- AVAILABLE -->
@@ -199,9 +200,8 @@
   </div>
 
     <!-- FURTHER -->
-    <div class="further-product-container mdc-layout-grid" >
+    <!-- <div class="further-product-container mdc-layout-grid" >
         <section [hidden]="!product.belong.name">
-          <!-- <h2>{{product.categories.name}}</h2> -->
           <h3>{{product.belong.name}}</h3>
         </section>
         <div infiniteScroller
@@ -217,10 +217,7 @@
               class="">
           </kng-product-thumbnail>
         </div>
-
-
-
-      </div>
+    </div> -->
   
   </div>
 </div>

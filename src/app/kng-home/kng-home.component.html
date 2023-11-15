@@ -24,8 +24,8 @@
                 [class.selected]="category.slug == displaySlug"
                 *ngFor="let category of sortedCategories;let j=index">
         <img [src]="category.cover" class="show-sm">
-        <!--<i [class]="category.image" class="icon hide-sm hide-md"></i>               -->
-        <span>{{getCategoryI18n(category)}}</span>
+        <i [class]="category.image" class="icon hide-sm hide-lg"></i>
+        <span class="hide-md">{{getCategoryI18n(category)}}</span>
       </li>
     </ul>
   </div>
@@ -90,5 +90,6 @@
 <!-- lEFT -->
 <div class="main-side">
   <!-- MOBILE SEARCH  -->
+  <router-outlet></router-outlet>
   <kng-search class="home"></kng-search>
 </div>

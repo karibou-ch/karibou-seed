@@ -12,9 +12,19 @@
       .media{
         height: 13rem!important;
       }
-    }
-  
+    }    
 }
+
+.loader{
+  width: 100%;
+  height: 190px;
+  margin: 0px;
+  img{
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
 
 .product-card.insubs .action-remove,
 .product-card.insubs .action-add
@@ -51,16 +61,6 @@
 
 .product-card{
   &.selected{
-  }
-  &.loader{
-    width: auto;
-    height: 190px;
-    margin: 0px;
-    background-image: url('/assets/img/k-product-placeholder.png');
-    background-repeat: repeat-x;
-    background-position: left;
-    background-size: cover;
-
   }
   height: auto;
   position: relative;

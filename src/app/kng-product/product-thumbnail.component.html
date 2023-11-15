@@ -4,7 +4,9 @@
 	https://stackoverflow.com/questions/44741936/angular-4-multiple-named-router-outlets-in-a-child-route-supported/44742481
 -->
 <ng-container *ngIf="hidden else loadingTpl">
-	<div class="product-card loader" ></div>
+	<div class="loader" >
+		<img src="/assets/img/k-product-placeholder.png" />
+	</div>
 </ng-container>
 
 <ng-template #loadingTpl>

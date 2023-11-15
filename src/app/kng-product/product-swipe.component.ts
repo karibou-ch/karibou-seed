@@ -55,7 +55,7 @@ export class ProductSwipeComponent implements OnInit {
     available: true,
     status: true,
     when: true,
-    limit: 8
+    limit: 12
   };
 
   i18n: any = {
@@ -159,7 +159,7 @@ export class ProductSwipeComponent implements OnInit {
     }
 
     const divider = this.$navigation.isMobile() ? 1 : (
-      (window.innerWidth < 1025)? 4:5
+      (window.innerWidth < 1025)? 6:7
     );
 
 

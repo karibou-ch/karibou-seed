@@ -46,8 +46,8 @@ body{
 
 /*scrolls*/
 ::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
+  width: 4px !important;
+  height: 4px !important;
   background-color: #f5f5f5;
 }
 
@@ -78,18 +78,23 @@ $end-direction: right !default;
   justify-content: center;
   min-height: 100vh;
   margin: 0 auto;
-
+  //
+  // $break1 || $break2
   @media (max-width:499px), (min-width:500px) and (max-width:1004px) {
       .main-side {
           display: none;
       }
   }
 
+  //
+  // $break2
   @media (min-width:500px) and (max-width:1004px) {
       grid-template-columns: auto minmax(auto, 600px);
       max-width: 705px;
   }
 
+  //
+  // $break3open
   @media (min-width:1005px) {
       grid-template-columns: auto 600px minmax(390px, 100%);
       padding: 0 10px;
@@ -97,7 +102,7 @@ $end-direction: right !default;
   }
 
   @media (min-width:1095px) {
-      max-width: 1435px;
+      max-width: 1635px;
   }  
 }
 
@@ -114,7 +119,9 @@ $end-direction: right !default;
       padding: 7px 0;
   }
 
-  @media #{$break1} {
+  //
+  // $break1
+  @media (max-width:499px){
       position: fixed;
       z-index: 4;
       #{$start-direction}: 0;
@@ -135,14 +142,18 @@ $end-direction: right !default;
       }
   }
 
-  @media #{$break2},
-  #{$break3},
-  #{$break4} {
+  //
+  // $break2 || $break3 || $break4
+  @media (min-width:500px) and (max-width:1004px),
+         (min-width:1005px) and (max-width:1094px),
+         (min-width:1095px) and (max-width:1281px) {
       width: 68px;
       padding: 0 10px;
   }
 
-  @media #{$break5open} {
+  //
+  // $break5open
+  @media (min-width:1282px) {
       min-width: 88px;
       width: 255px;
       padding-#{$end-direction}: 44px;
@@ -158,6 +169,12 @@ $end-direction: right !default;
   margin-#{$start-direction}: 30px;
 
   background-image: linear-gradient(45deg, #fff 90%, #fff, #fff, var(--mdc-theme-appbar));
+
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow: auto;
+  align-self: flex-start;
 
   &-searchbox {
       position: sticky;
@@ -244,7 +261,7 @@ $end-direction: right !default;
           button{
             background-color: transparent;
             color: transparent;  
-            text-shadow: 0 0 0 var(--mdc-theme-appbar);
+            text-shadow: 0 0 0 var(--mdc-theme-karibou-pink);
             border-color: transparent;
             padding: 12px 5px;
             font-size: 20px;

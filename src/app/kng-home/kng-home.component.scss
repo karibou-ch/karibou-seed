@@ -285,22 +285,13 @@ kng-product-swipe{
   ul{
     list-style: none;
     padding: 0;
-    margin-top: 0px;    
+    margin-top: 8px;    
     margin-left: 0px;    
     overflow: hidden;
-    -background: rgba(240, 240, 240, 0.6);
-    -border-radius: 14px;
+    background: rgba(240, 240, 240, 0.6);
+    border-radius: 8px;
     height: 100%;
-    overflow: auto;
-    margin-top: 20px;
-    &.subs{
-      display: none;
-      height: auto;
-      overflow: hidden;
-      background-color: var(--mdc-theme-appbar);
-      margin-top: 20px;
-
-    }
+    overflow: hidden;
 
     &::-webkit-scrollbar {
       width: 5px;
@@ -311,7 +302,7 @@ kng-product-swipe{
     /* Add a thumb */
     &::-webkit-scrollbar-thumb {
       border-radius: 8px;
-      background: #ddd;
+      background: #eee;
     }    
 
     @media (max-width:429px) {
