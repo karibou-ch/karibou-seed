@@ -149,7 +149,7 @@ export class ProductGroupedListComponent implements OnInit {
   }
 
   get isMobile() {
-    return (window.innerWidth < 426);
+    return (window.innerWidth < 600);
   }
 
   get sortedCategories() {
@@ -165,33 +165,30 @@ export class ProductGroupedListComponent implements OnInit {
     this.registerScrollEvent();
   }
 
-
-  isInContainer(element) {
+  isInContainer(element, name) {
     const container = this.scrollContainer? this.scrollContainer.nativeElement:document.documentElement;
 
 
     const eleTop = element.offsetTop;
     const eleBottom = eleTop + element.clientHeight;
 
-    const containerTop = container.scrollTop ;
-    const containerBottom = (containerTop + container.clientHeight) - 100;
+    //
+    // Note, those padding 100,200 are set for desktop view
+    const paddingTop = this.isMobile ? 0:100;
+    const paddingBottom = this.isMobile ? 0:200;
+    const containerTop = container.scrollTop + paddingTop ;
+    const containerBottom = (containerTop + container.clientHeight) - paddingBottom;
 
-    const name = element.getAttribute('name');
     const elemLen = Math.min(eleBottom,containerBottom) - Math.max(eleTop,containerTop);
-    const containerLen = (containerBottom- containerTop);
-    // if(name == 'fruits-legumes'){
-    //   console.log('',elemLen,);
+    const elemTotLen = (eleBottom - eleTop);
+    const containerLen = (containerBottom - containerTop);
+
+    // if(elemLen/containerLen>.5 || elemLen/elemTotLen>.6){
+    //   console.log((elemLen/elemTotLen).toFixed(1),(elemLen/containerLen).toFixed(1),name);
     // }
 
-
     // The element is fully visible in the container
-    return (
-        elemLen/containerLen>.5
-        // (eleTop >= containerTop && eleBottom >= containerBottom) ||
-        // // Some part of the element is visible in the container
-        // (eleTop < containerTop && containerTop < eleBottom) ||
-        // (eleTop < containerBottom && containerBottom < eleBottom)
-    );        
+    return elemLen/containerLen>.5 || elemLen/elemTotLen>.7;
   }
 
   updateCurrentCategory() {
@@ -212,9 +209,8 @@ export class ProductGroupedListComponent implements OnInit {
 
     this.sections.forEach(container => {
       const className = container.nativeElement.getAttribute('name');
-      this.current[className] = false;
-      if(this.isInContainer(container.nativeElement)) {
-        this.current[className] = true;
+      this.current[className] = this.isInContainer(container.nativeElement, className);
+      if(this.current[className]) {
         this.visibility[className] = true;
       }
     });
