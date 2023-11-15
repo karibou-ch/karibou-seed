@@ -228,7 +228,8 @@ export class ProductListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.isReady = true;
+    const category = this.$route.snapshot.params['category'];
+    const shopname = this.$route.snapshot.params['shop'];
 
     //
     // list product available for subscription
@@ -249,9 +250,9 @@ export class ProductListComponent implements OnInit {
     
     //
     // list product available from category
-    else if(this.$route.snapshot.params['category']){
-      this.category.slug = this.$route.snapshot.params['category'];
-      this.category.current = this.category.categories.find(cat => cat.slug === this.category.slug);
+    else if(category){
+      this.category.slug = category;
+      this.category.current = this.category.categories.find(cat => cat.slug == category);
       //
       // old google reference goes wrong
       this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
@@ -259,27 +260,26 @@ export class ProductListComponent implements OnInit {
       });
 
       this.category.similar = this.category.categories
-      .filter(cat => cat.group === this.category.current.group && cat.slug !== this.category.slug)
+      .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
       .sort(cat => cat.weight);
       this.bgStyle = 'url(' + this.category.current.cover + ')';  
-      this.productsByCategory();
+      this.productsByCategory(category);
     } 
     //
     // list product available from one shop
-    else if(this.$route.snapshot.params['shop']){
+    else if(shopname){
       delete this.options.status;
-      this.options.shopname  = this.$route.snapshot.params['shop'];
       this.category.current = this.category.categories[0];
       this.category.current.child = this.category.current.child.sort((a, b) => {
         return a.weight - b.weight;
       });
 
-      this.productsByShop();
+      this.productsByShop(shopname);
     } 
     //
     // this should not happends
     else {
-      this.isReady = false;
+      return;
     }
     
     this.childSub$ = this.$cart.cart$.subscribe(state => {
@@ -304,6 +304,7 @@ export class ProductListComponent implements OnInit {
     //
     // DIALOG INIT HACK
     document.documentElement.classList.add('mdc-dialog-scroll-lock');
+    this.isReady = true;
   }
 
   //
@@ -374,17 +375,18 @@ export class ProductListComponent implements OnInit {
   }
 
 
-  productsByShop() {
+  productsByShop(shopname) {
     //
     // update metrics
 
     this.options.hub = this.store;
+    this.options.shopname = shopname;
     //this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
     //delete this.options.available;
     delete this.options.when;
 
     combineLatest([
-      this.$shop.get(this.options.shopname),
+      this.$shop.get(shopname),
       this.$product.select(this.options)
     ]).subscribe(([vendor, products]: [Shop, Product[]]) => {
       document.title = vendor.name;
@@ -442,11 +444,11 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  productsByCategory() {
+  productsByCategory(category) {
     this.options.hub = this.store;
     this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub);
 
-    this.$product.findByCategory(this.category.slug, this.options).subscribe((products: Product[]) => {
+    this.$product.findByCategory(category, this.options).subscribe((products: Product[]) => {
       this.products = products.sort(this.sortProducts);
 
       //
