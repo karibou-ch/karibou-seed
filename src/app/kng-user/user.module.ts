@@ -44,7 +44,7 @@ const routes: Routes = [
   { path: 'login', component: UserSignComponent, resolve: { loader: LoaderResolve }},
   { path: 'login-or-register',
     component: UserSignComponent,
-    data: {address: true, payment: false, validation: true},
+    data: {address: false, payment: false, validation: true},
     resolve: { loader: LoaderResolve } },
   { path: 'login-or-address',
     component: UserSignComponent,
