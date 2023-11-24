@@ -168,24 +168,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       // CART_ADDRESS   = 8,
       // CART_PAYMENT   = 9,
       // CART_SHIPPING   =10,
-      if (!emit.state) {
-        return;
-      }
-      //console.log('---DBG',emit.state.action==CartAction.CART_LOADED,emit);
+      this.productsGroupByCategory(emit);
 
 
-      //
-      // update shipping day
-      if (CartAction.CART_SHIPPING === emit.state.action  && this.isReady ) {
-        this.productsGroupByCategory();
-      }
-
-      //
-      // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
-      if (([CartAction.CART_LOADED].indexOf(emit.state.action) > -1 && !this.isReady)) {
-        console.log('----load products 2',CartAction.CART_LOADED,emit.state.action)
-        this.productsGroupByCategory();
-      }
     }));
 
     //
@@ -272,7 +257,21 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
 
-  productsGroupByCategory() {
+  productsGroupByCategory(emit) {
+
+    const state = emit.state && emit.state.action;
+    if(this.products.length && !state){
+      return;
+    }
+
+    //
+    // update shipping day, or cart loading
+    // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
+    if ([CartAction.CART_SHIPPING,CartAction.CART_LOADED].indexOf(state)==-1 ) {
+      return;
+    }
+
+    console.log('----load products on',state, this.products.length);
     //
     // with new navigation, we dont need to load products on mobile/tablet
     //
@@ -282,6 +281,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       return;
     }
+
+
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
     options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
