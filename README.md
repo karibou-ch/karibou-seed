@@ -1,5 +1,8 @@
 # karibou-seed
-[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key==)](https://www.browserstack.com/automate/public-build/)
+
+[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=TWlJalpaN0djek82WllpaFgxN2JHdEdNZHU1UGgyb2tNeUJjNGY1QWllZz0tLXFiaXFkTXhJT3ZrM3AxVTB6a3U5Z3c9PQ==--ad4aa6b309d0f55e8a43ab47a468d089b5d9cb86)](https://automate.browserstack.com/public-build/TWlJalpaN0djek82WllpaFgxN2JHdEdNZHU1UGgyb2tNeUJjNGY1QWllZz0tLXFiaXFkTXhJT3ZrM3AxVTB6a3U5Z3c9PQ==--ad4aa6b309d0f55e8a43ab47a468d089b5d9cb86)
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%202.svg)](https://www.digitalocean.com/?refcode=e71158f2a644&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
 Help us to build the futur of food distribution,
 > Wherever you are, you'll see communities of farmers, foodmakers, wine merchants and grocers appearing on your screens who are committed to serving you the best food in depotit or on your doorstep.
