@@ -3,7 +3,8 @@ import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, V
 from '@angular/core';
 import { Category, ProductService, Product, CartService, Config, ConfigMenu, CartItem } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../../common';
-import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
+import { MetricsService } from 'src/app/common/metrics.service';
+import { User } from 'kng2-core';
 
 @Component({
   selector: 'kng-ui-bottom-actions',
@@ -14,6 +15,7 @@ import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 })
 export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
+  @Input() user: User;
   @Input() config: Config;
   @Input() categories: Category[];
   @Input() exited: boolean;
@@ -25,6 +27,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   show: boolean;
   findGetNull: boolean;
   products: Product[] = [];
+  autocompletes:any[];
 
 
   @HostBinding('class.show') get classShow(): boolean {
@@ -49,6 +52,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     private $cdr: ChangeDetectorRef
   ) { 
     this.exited = false;
+    this.autocompletes = [];
   }
 
   ngOnInit() {
@@ -143,6 +147,14 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.show = true;
       this.findGetNull = false;
       this.$products.search(value, options).subscribe(products => {
+        if(products['autocompletes']) {
+          this.autocompletes = products['autocompletes'];
+          return;
+        }
+        if(products['error']) {
+          return;
+        }
+
         this.$navigation.searchAction('stats:'+products.length);
 
         this.findGetNull = !products.length;

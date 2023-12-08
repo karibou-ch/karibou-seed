@@ -1,0 +1,48 @@
+<div class="chat-container" #chatroom>
+  <div class="chat-line" *ngFor="let message of messages">
+    <div class="avatar">
+      <div class="icon">
+        <span [hidden]="message.assistant" class="material-symbols-outlined">face</span>
+        <span [hidden]="!message.assistant" class="waiting material-symbols-outlined">progress_activity</span>
+      </div>
+    </div>
+    <div class="message">
+      <div class="identity bold">{{message.user}}         
+      </div>
+      <div class="content">
+        <!-- <kng-product-thumbnail *ngFor="let product of message.products"  ></kng-product-thumbnail>         -->
+        <div class=""  [innerHtml]="message.html||message.content"></div>
+        <div class="products">
+          <div *ngFor="let product of message.products" class="product">
+            <img [src]="product.photo.url + '/-/resize/250x/'" />
+          </div>
+        </div>
+
+      </div>
+      <div class="actions hide">
+          <button> <span class="material-symbols-outlined">edit_square</span> </button>
+          <button> <span class="material-symbols-outlined">favorite</span> </button>
+          <button> <span class="material-symbols-outlined">frame_inspect</span> </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- QUERY CHAT -->
+<div class="bottom" [class.running]="messages.length">
+  <form (submit)="onChat()">
+    <div>
+      <textarea [(ngModel)]="prompt" tabindex="0" [ngModelOptions]="{standalone: true}" placeholder="Message James…"></textarea>
+      <button>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-white dark:text-black">
+          <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </div>
+  </form>
+  <div class="disclaimer">
+    <span>James can make mistakes. Consider checking recipes before feeding kids</span>
+  </div>
+</div>
