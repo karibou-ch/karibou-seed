@@ -16,6 +16,7 @@ import {
   Category,
   CartItemFrequency
 } from 'kng2-core';
+
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { i18n } from '../common';

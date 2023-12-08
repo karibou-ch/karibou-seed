@@ -26,7 +26,7 @@
     "@sentry/angular-ivy": "^7.39.0",
     "@stripe/stripe-js": "^1.11.0",
     "@uploadcare/upload-client": "^3.1.1",
-    "kng2-core": "^5.0.4",
+    "kng2-core": "file:../kng2-core/dist",
     "markdown-it": "^13.0.1",
     "mic-recorder-to-mp3": "^2.2.2",
     "ngx-stripe": "v12-lts",

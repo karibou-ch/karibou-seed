@@ -4,6 +4,7 @@ import { LoaderResolve } from 'kng2-core';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngProductListByShopComponent, ProductListComponent, ProductComponent } from '../kng-product';
 import { KngShopsComponent } from '../kng-shops/kng-shops.component';
+import { KngAssistantBotComponent } from '../kng-assistant-bot/kng-assistant-bot.component';
 
 
 export const childrenRoute: Route[] = [
@@ -18,12 +19,13 @@ export const childrenRoute: Route[] = [
   { path: '', pathMatch: 'full', redirectTo: '' }
 ];
 
+
 // TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
   { 
     path: 'patreon',  loadChildren: () => import('../kng-patreon/kng-patreon.module').then( m => m.KngPatreonModule)
   },
-
+  { path: 'assistant', component:KngAssistantBotComponent , resolve: { loader: LoaderResolve }},
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
   { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},
