@@ -35,21 +35,23 @@ export class KngWelcomeComponent implements OnInit {
   i18n: any = {
     fr: {
       title_hypercenter: "Ville de Genève ",
-      title_periphery: "Communes avoisinantes ",
-      title_others: "Communes lointaines ",
+      title_periphery: "Tarif dans ma commune ",
+      title_others: "Tarif dans ma commune ",
       title_b2b: "Vous êtes une entreprise ?",
       title_none: "Nous ne livrons pas encore votre commune, essayez votre lieu de travail ?",
       title_postal: "Entrez votre code postal pour afficher les tarifs de livraison",
-      title_discount: "➡️ Dès chf <b>__LIMIT__</b> d'achat: livraison"
+      title_discount: "➡️ Dès chf <b>__LIMIT__</b> d'achat: livraison",
+      title_custom_time: "➡️ Horaire flexible pour les professionnels +<b>__AMOUNT__ fr</b> "
     },
     en: {
       title_hypercenter: "Geneva city ",
-      title_periphery: "Neighboring municipalities ",
+      title_periphery: "Rate in my municipality ",
+      title_others: "Rate in my municipality ",
       title_b2b: "Are you a company?",
-      title_others: "Distant municipalities ",
       title_none: "We don't deliver to your municipality yet, why not try your workplace?",
       title_postal: "Enter your postal code to view delivery rates",
-      title_discount: "➡️ From chf <b>__LIMIT__</b> of purchases: shipping "
+      title_discount: "➡️ From chf <b>__LIMIT__</b> of purchases: shipping ",
+      title_custom_time: "➡️ Flexible schedule for businesses +<b>__AMOUNT__ fr</b>"
     }
   };
 
@@ -174,6 +176,9 @@ export class KngWelcomeComponent implements OnInit {
   }
 
 
+  get isLocked(){
+    return this.$navigation.isLocked();
+  }
 
 
   get width(){
@@ -234,7 +239,6 @@ export class KngWelcomeComponent implements OnInit {
       action:'landing',
       hub,
     };
-    console.log('---DBG metrics',metric);
     this.$metric.event(EnumMetrics.metric_view_page,metric);
     // const url = this.tagline.image;
     // this.image.src = url;
@@ -295,6 +299,25 @@ export class KngWelcomeComponent implements OnInit {
     const center = this.config.shared.shipping.district.hypercenter || [];
     const periphery = this.config.shared.shipping.district.periphery || [];
     return center.concat(periphery,this.config.shared.shipping.district.others);
+  }
+
+  getShippingCustomHours() {
+    const code = this.shippingkeyCode;
+
+
+    if (!code||!this.config || !this.config.shared.shipping) {
+      return '';
+    }
+
+    const label = this.i18n[this.locale].title_custom_time;
+    const shipping = this.config.shared.shipping;
+
+    const time = +Object.keys(shipping.pricetime).find(time => shipping.pricetime[time]>0) as number;
+    if(!time) {
+      return '';
+    }
+
+    return label.replace('__AMOUNT__',(shipping.pricetime[time]).toFixed(1));
   }
 
   isAppReady() {

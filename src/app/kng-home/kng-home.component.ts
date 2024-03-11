@@ -3,7 +3,8 @@ import {
   OnInit,
   OnDestroy,
   ViewEncapsulation,
-  HostListener
+  HostListener,
+  ChangeDetectorRef
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -33,7 +34,7 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 })
 export class KngHomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
-  isLoading: boolean = true;
+  isLoading: boolean = false;
 
   shops: Shop[];
   pendingOrders: Order[];
@@ -47,6 +48,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   categorySlug: string;
   displaySlug: string;
   scrollDirection:number;
+
+  //
+  // search 
+  availableSearch:boolean;
+  autocompletes:any;
 
   //
   // gradient of background image
@@ -64,7 +70,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // page content by target
   pageOptions: any = {
     home: {
-      maxcat: 8,
+      maxcat: 7,
       _home: true,
       popular: true,
       showMore: true
@@ -95,7 +101,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     public $cart: CartService,
     public $i18n: i18n,
     //private $routeCache:RouteReuseStrategy,
-    //private $cdr: ChangeDetectorRef,
+    private $cdr: ChangeDetectorRef,
     private $loader: LoaderService,
     private $metric: MetricsService,
     private $navigation: KngNavigationStateService,
@@ -117,7 +123,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // default home target (home, delicacy, cellar)
     this.shops = [];
 
-
+    this.availableSearch = false;
+    
     this.pendingOrders = [];
     if(loader.length>3) {
       this.pendingOrders = <Order[]>loader[4];
@@ -135,6 +142,22 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.$navigation.store = params['store'];
     }));
     
+    // this.subscription.add(
+    //   this.$navigation.search$().subscribe((keyword)=>{
+    //     if(keyword == 'favoris'||keyword == 'discount') {
+    //       return;
+    //     }
+
+    //     if(keyword == 'clear') {
+    //       return;
+    //     }
+    //     if(keyword.indexOf('stats:')>-1) {
+    //       return;
+    //     }
+    //     this.doSearch(keyword);
+    //   })
+    // );
+
 
     this.subscription.add(this.$loader.update().subscribe(emit => {
 
@@ -170,7 +193,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       // CART_SHIPPING   =10,
       this.productsGroupByCategory(emit);
 
-
     }));
 
     //
@@ -196,6 +218,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  get currentShippingDay() {
+    return this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
+  }
+
   get store(){
     return this.$navigation.store;
   }
@@ -208,21 +234,50 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.$i18n.label();    
   }
 
+  get isLockedHUB() {
+    return this.$navigation.isLocked();
+  }
+
   get isMobile(){
     return this.$navigation.isMobile();
+  }
+
+  get isJamesAvailable() {
+    if(!this.user) {
+      return false
+    }
+
+    if(this.user.isAdmin() || this.user.isAuthenticated()) {
+      return true;
+    }
+    if(!this.user.plan) {
+      return false
+    }
+
+    if(['shareholder','team'].indexOf(this.user.plan.name)>-1 ){
+      return true;
+    }
+    return false;
   }
 
   get hub(){
     return this.config.shared.hub ||{};
   }
 
+  get subPatreon() {
+    return this.config.shared.patreon || {};
+  }
+  get subB2b() {
+    return this.config.shared.business || {};
+  }
+
+  get subCustomer() {
+    return this.config.shared.subscription || {};
+  }
 
   get sortedCategories() {
-    if (!this.isReady) {
-      return [];
-    }
     
-    if (this.cached.categories) {
+    if (this.cached.categories && this.cached.categories.length) {
       return this.cached.categories;
     }
 
@@ -234,13 +289,97 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  get userRouterLink() {
+    const target = this.user.isAuthenticated()? 'orders':'login';
+    return ['/store',this.store,'home','me',target];
+  }
 
   add(product: Product) {
     this.$cart.add(product);
   }
 
+
+  clearCategory() {
+    this.categories.forEach(cat=> this.availableCategories[cat.name] = false);
+    // this.cached.categories = [];
+  }
+
   doSearch(link){
     this.$navigation.searchAction(link);    
+  }
+
+  doSearch_NEW(value: string) {
+    const tokens = value.split(' ').map(val => (val || '').length);
+
+    if (tokens.some(len => len <= 3)) {
+      return;
+    }
+
+    //
+    // on search open window
+    const options = {
+      when: this.$cart.getCurrentShippingDay().toISOString(),
+      hub: this.config.shared.hub && this.config.shared.hub.slug
+    };
+    this.availableSearch = true;
+    this.isLoading = true;
+    this.products = [];
+    this.$product.search(value, options).subscribe(products => {
+      if(products['autocompletes']) {
+        this.autocompletes = products['autocompletes'];
+        return;
+      }
+      if(products['error']) {
+        return;
+      }
+
+
+
+      this.clearCategory();
+      this.$navigation.searchAction('stats:'+products.length);
+      this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
+      products.forEach((product: Product) => {        
+        this.availableCategories[product.categories.name] = true;
+      });
+      this.isReady = true;
+      this.isLoading = false;
+
+      this.$cdr.markForCheck();
+    });
+  }
+
+  doPreferred(discountOnly?:boolean) {
+    const options: any = {
+      discount: true,
+      status: true,
+      available: true,
+      when : this.$cart.getCurrentShippingDay().toISOString()
+    };
+
+    if(!discountOnly) {
+      options.popular=true;
+    }
+    //
+    // case of multihub
+    if (this.config && this.config.shared.hub) {
+      options.hub = this.config.shared.hub.slug;
+    }
+    this.isLoading = true;
+    //
+    // filter by group of categories
+    this.$product.select(options).subscribe((products: Product[]) => {
+      this.clearCategory();
+
+      this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
+      products.forEach((product: Product) => {        
+        this.availableCategories[product.categories.name] = true;
+      });
+      this.isReady = true;
+      this.isLoading = false;
+
+      this.$cdr.markForCheck();
+    });
+
   }
 
   getCategoryI18n(cat){
@@ -250,9 +389,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   mountOverlay(overlay) {
     if (overlay) {
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+      document.body.classList.add('mdc-dialog-scroll-lock');
     } else {
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
   }
 
@@ -260,40 +399,48 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   productsGroupByCategory(emit) {
 
     const state = emit.state && emit.state.action;
+    console.log('----init load products on',state,this.products.length);
     if(this.products.length && !state){
       return;
     }
 
+    if(this.isLoading){
+      return;
+    }
+
+    this.availableSearch = false;
+
     //
     // update shipping day, or cart loading
     // FIXME issue 2x CART_LOADED  (using isLoading to fix it )!!
-    if ([CartAction.CART_SHIPPING,CartAction.CART_LOADED].indexOf(state)==-1 ) {
-      return;
-    }
+    // if ([CartAction.CART_SHIPPING,CartAction.CART_LOADED].indexOf(state)==-1 ) {
+    //   return;
+    // }
+    this.isLoading = true;
 
-    console.log('----load products on',state, this.products.length);
     //
     // with new navigation, we dont need to load products on mobile/tablet
     //
-    this.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+    this.clearCategory();
     if(this.isMobile) {
       this.isReady = true;
       this.isLoading = false;
+      this.categories.forEach(cat=> this.availableCategories[cat.name] = true);
       return;
     }
 
+    console.log('----load products on',state, 'product count:',this.products.length);
 
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
+    options.when = this.currentShippingDay.toISOString();
     options.maxcat = this.isMobile? 2:options.maxcat;
     options.hub = this.$navigation.store;
-    this.isLoading = true;
 
 
     this.$product.select(options).subscribe((products: Product[]) => {
       this.products = products.filter(product => product.categories && product.categories.name);
-      products.forEach((product: Product) => {        
+      this.products.forEach((product: Product) => {        
         this.availableCategories[product.categories.name] = true;
       });
       this.isReady = true;
@@ -302,6 +449,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   }  
 
+  onSetCurrentShippingDay(day){
+    if(!day){
+      return;
+    }
+    const hours = this.config.getDefaultTimeByDay(day);
+
+    this.$cart.setShippingDay(day,hours);
+  }
   //
   // catch click on innerHtml and apply navigate() behavior
   @HostListener('click', ['$event'])
@@ -320,6 +475,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
 
+  onFavorites(){
+    this.$navigation.searchAction('favoris');    
+  }
 
   //
   // detect child overlay 
@@ -339,6 +497,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.scrollDirection = 0;
       this.$router.navigate(['/store', this.$navigation.store,'home', 'category',slug]);
     },500);
+  }
+
+  sortByScore(a, b) {
+    return b.stats.score - a.stats.score;
   }
 
   sortByWeight(a: Category, b: Category) {

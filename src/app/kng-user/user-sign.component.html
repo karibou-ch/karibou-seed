@@ -11,9 +11,9 @@
   <div class="sign" >
 
     <div class="logo" 
-         [ngStyle]="getTaglineLogo()"
+         [ngStyle]="taglineLogo"
          [class.small]="askAction=='signup'"
-         [routerLink]="['/store',getHubSlug(),'home']" 
+         [routerLink]="['/store',hubSlug,'home']" 
          [hidden]="askAction=='payment'||askAction=='address'"></div>
 
     <!-- LOGIN -->
@@ -23,7 +23,7 @@
       </p>
 
       <form [formGroup]="sign" (submit)="onSign()">
-          <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete fullwidth  type="email" formControlName="email">
+          <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete autofocus fullwidth  type="email" formControlName="email">
             <span class="material-symbols-outlined" mdcTextFieldIcon trailing>person</span>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
@@ -39,7 +39,7 @@
           </button>            
       </form>
       <div class="signup-vs-login black" ><a class="link" (click)="askAction='signup'">{{i18n[locale].login_create_account}}</a></div>
-      <div class="signup-vs-login black" ><a class="link black" [routerLink]="['/store',getHubSlug(),'home']">{{i18n[locale].login_skip}}</a></div>
+      <div class="signup-vs-login black" ><a class="link black" [routerLink]="['/store',hubSlug,'home']">{{i18n[locale].login_skip}}</a></div>
       <div class="signup-vs-login light" ><a class="link" (click)="askAction='recover'">{{i18n[locale].login_forgot_password}}</a></div>
     </div>
       
@@ -76,7 +76,7 @@
 
           <mdc-text-field  [label]="$i18n[locale].user_phone" fullwidth  type="text" formControlName="phone" >
             </mdc-text-field>
-          <p class="help-block" >
+          <p class="help-block phone-hide" >
             {{i18n[locale].signup_phone}}
           </p>
               

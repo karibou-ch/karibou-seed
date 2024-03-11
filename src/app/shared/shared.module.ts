@@ -29,13 +29,11 @@ import { KngSharedMdcModule } from './shared.mdc.module';
 
 
 import { appRoutes } from './shared.routes';
-import { NgxStripeModule } from 'ngx-stripe';
 import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
 import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component';
 import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
-import { KngAssistantBotComponent } from '../kng-assistant-bot/kng-assistant-bot.component';
 
 
 @NgModule({
@@ -45,7 +43,6 @@ import { KngAssistantBotComponent } from '../kng-assistant-bot/kng-assistant-bot
     Kng2CoreModule,
     KngSharedMdcModule,
     KngCommonModule,
-    NgxStripeModule.forRoot(),
     RouterModule.forChild(appRoutes),
   ],
   exports: [
@@ -59,8 +56,7 @@ import { KngAssistantBotComponent } from '../kng-assistant-bot/kng-assistant-bot
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    UcWidgetComponent,
-    KngAssistantBotComponent    
+    UcWidgetComponent,    
   ],
   declarations: [
     KngAudioNoteComponent,
@@ -80,7 +76,6 @@ import { KngAssistantBotComponent } from '../kng-assistant-bot/kng-assistant-bot
     ProductThumbnailComponent,
     ProductSwipeComponent,
     KngProductLinkComponent,
-    KngAssistantBotComponent
   ],
 })
 export class KngSharedModule {

@@ -16,8 +16,7 @@ import {
   ProductService,
   Product,
   User,
-  CartItem,  
-  CartItemFrequency
+  CartItem
 } from 'kng2-core';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
@@ -42,6 +41,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   @Input() categories: Category[];
   @Input() selected: boolean;
   @Input() user: User = new User();
+  @Input() displayVendor: boolean|string;
   @Input() displaySubscription: boolean|string;
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
@@ -177,6 +177,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     return !this.isReady || this.product.pricing.stock;
   }
 
+  get label() {
+    return this.$i18n.label();
+  }
 
   //
   // this component is shared with thumbnail, tiny, and wider product display
@@ -191,6 +194,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // use URL state to force subscription action
     this.displaySubscription = this.displaySubscription || (this.$route.snapshot.queryParams['view']=='subscription');
+    this.displayVendor = this.displaySubscription || this.displayVendor;
     //
     // product action belongs to a shop or a category
     this.rootProductPath = (this.$route.snapshot.params['shop']) ?
@@ -215,13 +219,11 @@ export class ProductComponent implements OnInit, OnDestroy {
 
       //
       // DIALOG INIT HACK
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+      document.body.classList.add('mdc-dialog-scroll-lock');
 
     } else {
       this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
     }
-
-
 
     //
     // simple animation
@@ -263,7 +265,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     window.onbeforeunload = null;
 
     if (this.isDialog) {
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
   }
 
@@ -410,7 +412,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   loadProduct(product) {
-    this.isReady = true;
     this.product = product;
 
     //
@@ -450,7 +451,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.$meta.addTag({property: 'product:category',content: category||'Market' });
       this.$metric.event(EnumMetrics.metric_view_page,{
         path:window.location.pathname,
-        title: document.title
+        title: product.title,
+        sku:[product.sku]
       });
 
       //
@@ -478,6 +480,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       });
 
     }
+
+    //
+    // master piece of angular
+    this.isReady = true
   }
 
   onEdit(product: Product) {
@@ -492,7 +498,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     if(shouldNavigate || !this.$navigation.hasHistory) {
       return this.$router.navigate(['../../'], { relativeTo: this.$route });
     }
-
 
     setTimeout(() => {
       if (!this.scrollCallback) {

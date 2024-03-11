@@ -59,6 +59,13 @@
         </div>
       </div>
 
+      <!-- SUBSCRIPTION OPTIONS  -->
+      <div class="subscription" [hidden]="!isForSubscriptionList||!activeSubscription">
+        <kng-subscription-option [hub]="hub"  [contract]="subscriptionContract"></kng-subscription-option>
+      </div>
+
+
+
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
@@ -94,10 +101,12 @@
       *ngIf="products.length"
         alphasort="true"
         showSection="true"
-        [clazz]="isForSubscriptionBusiness?'large':''"
+        [clazz]="isForSubscriptionBusiness?'':''"
+        [displayVendor]="true"
         [displaySubscription]="activeSubscription"
         [config]="config" 
         [user]="user"         
+        [useGroupedCategory]="activeSubscription"
         [scrollContainer]="getDialog()"
         [scrollToSlug]="scrollToCategory"
         [contentCategories]="getChildCategory(category.current)" 

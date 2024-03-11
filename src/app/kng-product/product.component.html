@@ -87,6 +87,7 @@
           (onCartItemAudio)="onAudioStopAndSave($event)"
           (onCartItemAudioError)="onAudioError($event)"></kng-audio-note>
 
+
       <!-- DESCRIPTION -->
       <div class="description">
         <div [kng-markdown]="product.details.description"></div>
@@ -115,11 +116,11 @@
       </div>
 
       <!-- RECEIPE -->
-      <div class="recipe hide">
+      <div class="recipe ">
         <div class="content bold">
-          Trouver les produits associés 
+          {{label.james_product_title}}
         </div>
-        <kng-product-link (click)="isSearching=true" [links]="['tomate cerise','origan','sauce tomate']"></kng-product-link>
+        <kng-product-link [product]="product">{{label.james_product_action}}</kng-product-link>
       </div>
 
 

@@ -1,14 +1,16 @@
-import { Component,
-         OnInit,
-         ElementRef,
-         ViewEncapsulation,
-         ChangeDetectionStrategy,
-         ChangeDetectorRef,
-         Input,
-         ViewChildren,
-         QueryList,
-         Output,
-         EventEmitter} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Input,
+  ViewChildren,
+  QueryList,
+  Output,
+  EventEmitter
+} from '@angular/core';
 
 import {
   Product,
@@ -24,9 +26,10 @@ import { i18n } from '../common';
 export interface CategoryView {
   name: string;
   slug: string;
+  group: string;
   description: string;
   active?: boolean;
-  child : boolean;
+  child: boolean;
   weight: number;
 }
 
@@ -45,18 +48,21 @@ export class ProductGroupedListComponent implements OnInit {
   bgStyle = '/-/resize/200x/';
   products: Product[];
   categories: CategoryView[];
+  belongs:any[];
   isChildCategory: boolean;
 
 
   //
   // dislpay more details on each product
-  @Input() displaySubscription: boolean|string;
+  @Input() displaySubscription: boolean | string;
+  @Input() displayVendor: boolean | string;
   @Input() alphasort: boolean;
   @Input() offsetTop: number;
   @Input() config: any;
   @Input() user: User;
   @Input() hub: string;
   @Input() useMaxCat: boolean;
+  @Input() useGroupedCategory: boolean;
 
   //
   // display more button 
@@ -65,31 +71,46 @@ export class ProductGroupedListComponent implements OnInit {
   @Input() contentIf: boolean;
   @Input() clazz: string;
   @Input() filterByVendor: string;
-  @Input() defaultFrequency: string|CartItemFrequency; 
-  @Input() scrollContainer:ElementRef; 
+  @Input() defaultFrequency: string | CartItemFrequency;
+  @Input() scrollContainer: ElementRef;
 
 
   @Input() set contentCategories(categories: any[]) {
     this.categories = categories.map(cat => {
       const isCategory = cat instanceof Category;
-      return { 
-        name: cat.name, 
-        slug: (cat.slug || cat.name),
-        description: cat.description||'',
+      const slug = (cat.slug || cat.name);
+      return {
+        name: cat.name,
+        slug,
+        description: cat.description || '',
         active: !isCategory || cat.active,
+        group: cat.group || 'default',
         child: !isCategory,
         weight: cat.weight
       } as CategoryView;
-    }); 
-    if(!this.categories.length){
+    });
+
+    // this.belongs = categories.map(cat => cat.child||[]).flat();
+
+    if (!this.categories.length) {
       return;
     }
+
+    //
+    // FIXME HUGLY HACK for b2b2
+    // prepare groups of category if needed 
+    this.categories.forEach(cat => {
+      this.groupedCategory[cat.slug]=cat.group||'none';
+    })
+
+
+    
 
     this.isChildCategory = this.categories[0].child;
   }
 
-  @Input() set contentProducts(prods: Product[]){
-    if(!prods.length) {
+  @Input() set contentProducts(prods: Product[]) {
+    if (!prods.length) {
       return;
     }
 
@@ -98,7 +119,7 @@ export class ProductGroupedListComponent implements OnInit {
   }
 
   @Input() set scrollToSlug(slug: string) {
-    if(!slug) {
+    if (!slug) {
       return;
     }
 
@@ -107,22 +128,25 @@ export class ProductGroupedListComponent implements OnInit {
     this.direction.emit(0);
   }
 
-  @Output() direction:EventEmitter<number> = new EventEmitter<number>();
-  @Output() currentCategory:EventEmitter<string> = new EventEmitter<string>();
+  @Output() direction: EventEmitter<number> = new EventEmitter<number>();
+  @Output() currentCategory: EventEmitter<string> = new EventEmitter<string>();
 
   cache: {
     products: Product[];
   };
 
 
-  categoryMiddle:number;
+  categoryMiddle: number;
   group: any;
+  groupedCategory:any;
+  groupedCategoryKeys:any;
+  defaultVisibleCat:string;
   visibility: any;
   current: any;
   scrollPosition: number;
   scrollDirection: number;
-  direction$ : ReplaySubject<number>;
-  category$ : ReplaySubject<string>;
+  direction$: ReplaySubject<number>;
+  category$: ReplaySubject<string>;
 
   constructor(
     private $cdr: ChangeDetectorRef,
@@ -132,10 +156,33 @@ export class ProductGroupedListComponent implements OnInit {
       products: []
     };
 
+    this.showSection = true;
     this.categoryMiddle = 2;
     this.products = [];
+    this.belongs = [];
+    this.categories = [];
     this.visibility = {};
     this.current = {};
+    this.group = {};
+    this.groupedCategory = {};
+    this.groupedCategoryKeys = {};
+
+    //
+    // FIXME HARDCODED CAT.WEIGHT FOR SUBS
+    this.defaultVisibleCat = 'fruits-legumes';
+    this.groupedCategoryKeys['fleurs'] = 2; // plaisir
+    this.groupedCategoryKeys['fruits-legumes'] = 1; // plaisir
+    this.groupedCategoryKeys['douceurs-chocolats'] = 3; // plaisir
+    this.groupedCategoryKeys['traiteur-maison'] = 5; // apero
+    this.groupedCategoryKeys['charcuterie-pates'] = 6; // apero
+    this.groupedCategoryKeys['boulangerie-artisanale'] = 7; // apero
+    this.groupedCategoryKeys['fromages-produits-frais'] = 8; // apero
+    this.groupedCategoryKeys['boissons'] = 10; // boisson
+    this.groupedCategoryKeys['bieres-artisanales'] = 11; // boisson
+    this.groupedCategoryKeys['vins-rouges'] = 12; // boisson
+    this.groupedCategoryKeys['vins-blancs-roses'] = 13; // boisson
+    this.groupedCategoryKeys['champagnes'] = 14; // boisson
+
     this.scrollPosition = 0;
     // FIXME memory leaks !
     this.direction$ = new ReplaySubject<number>();
@@ -154,7 +201,8 @@ export class ProductGroupedListComponent implements OnInit {
   }
 
   get sortedCategories() {
-    return this.categories.sort(this.sortByWeight);
+    const customSort = this.useGroupedCategory? this.sortByGroup: this.sortByWeight;
+    return this.categories.sort(customSort.bind(this));
   }
 
 
@@ -167,29 +215,41 @@ export class ProductGroupedListComponent implements OnInit {
   }
 
   isInContainer(element, name) {
-    const container = this.scrollContainer? this.scrollContainer.nativeElement:document.documentElement;
+    const container = this.scrollContainer ? this.scrollContainer.nativeElement : document.documentElement;
 
+    //
+    // use getBoundingClientRect to be relative to viewport for both elements
+    const cRect = this.scrollContainer ? container.getBoundingClientRect() : { top: 0, bottom: window.innerHeight };
+    const eRect = element.getBoundingClientRect();
 
-    const eleTop = element.offsetTop;
-    const eleBottom = eleTop + element.clientHeight;
+    const eleTop = eRect.top | 0;
+    const eleBottom = eleTop + eRect.height | 0;
 
     //
     // Note, those padding 100,200 are set for desktop view
-    const paddingTop = this.isMobile ? 0:100;
-    const paddingBottom = this.isMobile ? 0:200;
-    const containerTop = container.scrollTop + paddingTop ;
-    const containerBottom = (containerTop + container.clientHeight) - paddingBottom;
+    const paddingTop = this.isMobile ? 0 : (100);
+    const paddingBottom = this.isMobile ? 0 : 50;
+    const containerTop = (cRect.top + paddingTop) | 0;
+    const containerBottom = (cRect.bottom - paddingBottom) | 0;
 
-    const elemLen = Math.min(eleBottom,containerBottom) - Math.max(eleTop,containerTop);
-    const elemTotLen = (eleBottom - eleTop);
+
+    //
+    // give the portion inside the window
+    const elemLen = Math.max(0, Math.min(eleBottom, containerBottom) - Math.max(eleTop, containerTop)) | 0;
+    const elemTotLen = (eleBottom - eleTop) | 0;
     const containerLen = (containerBottom - containerTop);
 
+    // if(name=='pates-sauces') {
+    //   console.log('---',name,eleTop,containerTop);
+    //   //console.log('---name',name,elemLen,elemTotLen,containerLen,'L',(elemLen/containerLen).toFixed(2),(elemLen/elemTotLen).toFixed(2));
+    // }
+
     // if(elemLen/containerLen>.5 || elemLen/elemTotLen>.6){
-    //   console.log((elemLen/elemTotLen).toFixed(1),(elemLen/containerLen).toFixed(1),name);
+    // console.log((elemLen/elemTotLen).toFixed(1),(elemLen/containerLen).toFixed(1),name);
     // }
 
     // The element is fully visible in the container
-    return elemLen/containerLen>.5 || elemLen/elemTotLen>.7;
+    return elemLen / containerLen > .5 || elemLen / elemTotLen > .7;
   }
 
   updateCurrentCategory() {
@@ -207,88 +267,104 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
 
-
     this.sections.forEach(container => {
       const className = container.nativeElement.getAttribute('name');
       this.current[className] = this.isInContainer(container.nativeElement, className);
-      if(this.current[className]) {
+      if (!this.visibility[className] && this.current[className]) {
         this.visibility[className] = true;
+        this.$cdr.markForCheck();
       }
     });
   }
 
-  doDirectionUp(){ 
+  doDirectionUp() {
     // this.direction.emit(this.scrollDirection);
   }
 
-  doDirectionDown(){
+  doDirectionDown() {
     // this.direction.emit(this.scrollDirection);
   }
 
-  getCategoryI18n(cat){
-    const key = 'category_name_'+cat.slug.replace(/-/g,'_');
+  getCategoryI18n(cat) {
+    const name = cat.slug.replace(/-/g, '_');
+    const key = 'category_name_' + name;
     return this.$i18n.label()[key] || cat.name;
   }
 
 
   productsGroupByCategory() {
-    if(!this.products.length) {
+    if (!this.products.length) {
       return;
     }
     // const maxcat = this.useMaxCat? (this.isMobile ? 8 : 12):100;
     // const divider = this.isMobile ? 2 : 4;
-    const maxcat = this.useMaxCat? (this.isMobile ? 2 : (
-      (window.innerWidth < 1025)? 6:5
-    )):200;
+    const maxcat = this.useMaxCat ? (this.isMobile ? 2 : (
+      (window.innerWidth < 1025) ? 6 : 5
+    )) : 200;
+
     const divider = this.isMobile ? 2 : (
-          (window.innerWidth < 1025)? 6:4
+      (window.innerWidth < 1025) ? 6 : 4
     );
 
+    const inferedCategories = [];
     this.group = {};
     this.products.forEach((product: Product) => {
-
       //
-      // group by category
-      // FIXME Error when categories is Null 
-      product.categories = product.categories || {};
-      const catName = this.isChildCategory ? product.belong.name : product.categories.name;
-      if (!this.group[catName]) {
-        this.group[catName] = [];
+      // FIXME, which is the case of tiny products list ?
+      // if(!this.showSection && this.products.length<8) {
+      //   product.categories.slug = product.categories.name = 'none';
+      // }
+      // 
+      // grouped category is not available for Child 
+      const categoryOrGroupName = this.isChildCategory ? product.belong.name : product.categories.name; 
+      if (!this.group[categoryOrGroupName]) {
+        this.group[categoryOrGroupName] = [];
+        inferedCategories.push({
+          name: categoryOrGroupName,
+          slug: product.categories.slug,
+          active: true,
+          weight: product.categories.weight || 1
+        })
       }
-      this.group[catName].push(product);
+      this.group[categoryOrGroupName].push(product);
     });
 
-    
+
+    if (!this.categories.length && inferedCategories.length) {
+      this.categories = [].concat(inferedCategories);
+    }
 
     const cats = Object.keys(this.group);
-    const sortByAlphaOrScore = (!this.alphasort) ? this.sortProductsByScore:(
-      (this.displaySubscription)? this.sortProductsByVendorAndTitle:this.sortProductsByTitle
+    const sortByAlphaOrScore = (!this.alphasort) ? this.sortProductsByScore : (
+      (this.displayVendor && !this.displaySubscription) ? this.sortProductsByVendorCategoryAndTitle : this.sortProductsByTitle
     );
     cats.forEach(cat => {
-      // console.log('--- DEBUG cat',cat, this.group[cat].length);
       this.group[cat] = this.group[cat].sort(sortByAlphaOrScore).slice(0, maxcat);
       if (this.group[cat].length % divider === 0 && this.showMore) {
         this.group[cat].pop();
       }
-
     });
 
     //
     // display middle message when category list is small
-    if(cats.length<3){
+    if (cats.length < 3) {
       this.categoryMiddle = 1;
     }
 
-    this.categories = this.categories.filter (cat => cats.indexOf(cat.name)>-1).sort(this.sortByWeight);
+    this.categories = this.categories.filter(cat => cats.indexOf(cat.name) > -1).sort(this.sortByWeight);
 
 
     // FIXME avoid this test 
-    if(!this.categories || !this.categories.length) {
+    if (!this.categories || !this.categories.length) {
       return;
     }
-    this.visibility[this.categories[0].slug] = true;
-    if(this.categories.length>1){
-      this.visibility[this.categories[1].slug] = true;
+
+    //
+    // HARDCODED for Subs
+    if(this.useGroupedCategory) {
+      this.visibility[this.defaultVisibleCat] = true;
+    }else {
+      this.visibility[this.categories[0].slug] = true;      
     }
   }
 
@@ -297,7 +373,7 @@ export class ProductGroupedListComponent implements OnInit {
     //
     // read documentation about renderer
     // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
-    const elem = this.scrollContainer? this.scrollContainer.nativeElement:document;
+    const elem = this.scrollContainer ? this.scrollContainer.nativeElement : document;
     this._scrollEvent$ = fromEvent(elem, 'scroll').subscribe(this.windowScroll.bind(this));
   }
 
@@ -317,8 +393,6 @@ export class ProductGroupedListComponent implements OnInit {
   private findNextSection(slug: string): HTMLElement {
     const sectionNativeEls = this.getSectionsNativeElements();
     const nextIndex = sectionNativeEls.findIndex(el => el.getAttribute('name') === slug);
-
-    // console.log('----',slug,nextIndex,this.sections.toArray()[nextIndex])
     return sectionNativeEls[nextIndex];
   }
 
@@ -345,20 +419,28 @@ export class ProductGroupedListComponent implements OnInit {
   //
   // sort products by:
   //  - title
+  sortProductsByName(a, b) {
+    return a.name.localeCompare(b.name);
+  }
+
   sortProductsByTitle(a, b) {
-    // sort : Title
-    const score = a.title.localeCompare(b.title);
-    return score;
+    const category = a.belong.weight-b.belong.weight;
+    if (category !== 0) return category;
+    return (a.belong.weight+a.title).localeCompare(b.belong.weight+b.title);
   }
 
   //
   // sort products by:
   //  - vendor and title
-  sortProductsByVendorAndTitle(a, b) {
-    // sort : Title
+  sortProductsByVendorCategoryAndTitle(a, b) {
+    // sort : Vendor
     const vendor = a.vendor.urlpath.localeCompare(b.vendor.urlpath);
-    if(vendor!==0) return vendor;
-    return a.title.localeCompare(b.title);
+    if (vendor !== 0) return vendor;
+    // sort : Cat
+    const category = a.belong.weight-b.belong.weight;
+    if (category !== 0) return category;
+    // sort : Title
+    return (a.title).localeCompare(b.title);
   }
 
 
@@ -369,7 +451,11 @@ export class ProductGroupedListComponent implements OnInit {
     // sort : HighScore => LowScore
     const score = b.stats.score - a.stats.score;
     return score;
-  }  
+  }
+
+  sortByGroup(a: CategoryView, b: CategoryView) {
+    return (this.groupedCategoryKeys[a.slug]||20) - (this.groupedCategoryKeys[b.slug]||20);
+  }
 
   sortByWeight(a: CategoryView, b: CategoryView) {
     return a.weight - b.weight;
@@ -382,7 +468,7 @@ export class ProductGroupedListComponent implements OnInit {
     const scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
     //
     // initial position, event reset value
-    if(scrollPosition == 0) {
+    if (scrollPosition == 0) {
       this.direction$.next(scrollPosition);
       return;
     }
@@ -392,7 +478,6 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
 
-    // console.log(window.pageYOffset,scrollPosition,'-- > sH, sT, cH: ', $event.target.scrollHeight,$event.target.scrollTop, $event.target.clientHeight);
 
     this.detectVisibility(scrollPosition);
 
@@ -413,7 +498,7 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // @input() case
-    if(this.offsetTop && scrollPosition<this.offsetTop) {
+    if (this.offsetTop && scrollPosition < this.offsetTop) {
       this.scrollDirection = 0;
     }
 
@@ -429,13 +514,12 @@ export class ProductGroupedListComponent implements OnInit {
     //this.direction$.next(5*(Math.round( this.scrollDirection / 5)));
     this.direction$.next(this.scrollDirection);
     this.updateCurrentCategory();
-
     //
     // force repaint when parent changeDetection is onPush
-    if(!this.scrollContainer){
+    if (!this.scrollContainer) {
       this.$cdr.markForCheck();
     }
-    
+
   }
 
 }

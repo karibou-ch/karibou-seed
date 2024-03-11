@@ -25,7 +25,10 @@ export const appRoutes: Routes = [
   { 
     path: 'patreon',  loadChildren: () => import('../kng-patreon/kng-patreon.module').then( m => m.KngPatreonModule)
   },
-  { path: 'assistant', component:KngAssistantBotComponent , resolve: { loader: LoaderResolve }},
+  {
+    path: 'assistant',  loadChildren: () => import('../kng-assistant-bot/kng-assistant-bot.module').then( m => m.KngAssistantBotModule)
+
+  },
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
   { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},

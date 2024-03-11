@@ -3,17 +3,18 @@
   <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>
     <section  class="category-hide-sm" [class.display]="showSection" [ngClass]="isChildCategory ? 'child':'title'">
       <h2>{{getCategoryI18n(category)}}</h2>
-      <h3 class="hide" [innerHtml]="category.description"></h3>
+      <!-- <h3 class="hide" [innerHtml]="category.description"></h3> -->
     </section>
 
 
     <div class="kng-layout-card" [class]="clazz">
         <!-- [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor" -->
         <kng-product-thumbnail 
+        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index" 
+        [displayVendor]="displayVendor"
         [displaySubscription]="displaySubscription"
         [visibility]="visibility[category.slug]" 
-        [sku]="product.sku" 
-        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index" 
+        [sku]="product.sku"         
         [class]="clazz">
       </kng-product-thumbnail>
       <div class="kng-product-more" [hidden]="!visibility[category.slug] || !showMore" 

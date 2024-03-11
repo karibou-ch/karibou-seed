@@ -28,6 +28,7 @@ import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.
 export class KngCartComponent implements OnInit, OnDestroy {
 
   private _sharedCart: string;
+  _sharedCartName: string;
 
 
   @ViewChild('checkout') checkout: KngCartCheckoutComponent;
@@ -52,7 +53,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   i18n: any = {
     fr: {
       cart_deposit: 'Commande à collecter',
-      cart_info_title:'Paniers de',
+      cart_info_title:'Votre liste d\'achat pour ',
       cart_info_note:'Note:',
       cart_info_help:'besoin d\'aide?',
       cart_info_wallet:'Débit de votre portefeuille',
@@ -86,7 +87,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount_title: 'rabais de ',
       cart_checkout: 'Finaliser la commande',
       cart_subscription: 'Activer votre abonnement',
-      cart_subscription_title: 'Votre abonnement',
+      cart_subscription_title: 'La page de votre abonnement',
       cart_create_subscription: 'Créer votre abonnement',
       cart_update_subscription: 'Modifier votre abonnement',
       cart_update_subscription_payment: 'Valider votre méthode de paiement',
@@ -97,9 +98,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
       cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       cart_nextshipping: 'Livraison',
+      cart_shared_name:'Nommez votre panier',
       cart_shared_copy: 'Vous pouvez partager vos paniers avec quelqu\'un avant de valider la commande',
-      cart_shared_title1: 'Vous décourez un panier partagé',
-      cart_shared_title2: 'Identifiez-vous pour partager vos modifications!',
+      cart_shared_title1: 'Une liste d\'achats à été créée à votre attention',
+      cart_shared_title2: 'Finalisez votre commande en un clin d\'œil : confirmez la date de livraison, identifiez-vous, sélectionnez votre adresse et le mode de paiement. Merci et savourez votre achat !',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
@@ -107,7 +109,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     },
     en: {
       cart_deposit: 'Order to collect',
-      cart_info_title:'Carts for ',
+      cart_info_title:'Your shopping cart for ',
       cart_info_help:'Need help?',
       cart_info_note:'Note:',
       cart_info_total: 'Total estimate to be billed',
@@ -141,7 +143,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount_title: 'delivery discout ',
       cart_checkout: 'Go to checkout',
       cart_subscription: 'Activate your subscription',
-      cart_subscription_title: 'Your subscription',
+      cart_subscription_title: 'The subscription page',
       cart_create_subscription: 'Create your subscription',
       cart_update_subscription: 'Modify your subscription',
       cart_update_subscription_payment: 'Validate your payment method',
@@ -151,9 +153,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
       cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
       cart_nextshipping: 'Next delivery',
+      cart_shared_name:'Name your shopping cart',
       cart_shared_copy: 'You can share this cart with someone before to checkout',
-      cart_shared_title1: 'You are using a shared basket',
-      cart_shared_title2: 'You must be logged to share your changes.',
+      cart_shared_title1: 'A shopping cart has been created for you',
+      cart_shared_title2: 'Quickly finalize your order: confirm the delivery date, log in, select your address and payment method. Thank you and enjoy your purchase!',
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
       cart_cg_18: 'I am of legal age to purchase alcohol',
@@ -213,7 +216,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   get hubs() {
     //return this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
-    const defaultHub = this.$navigation.landingHubSlug || this.currentHub;
+    const defaultHub =  this.currentHub;//this.$navigation.landingHubSlug ||
+
     const _current = this.config.shared.hubs.find(hub => hub.slug == defaultHub);
     if(this.lockedHUB){
       return [_current];
@@ -221,6 +225,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
     const _hubs = this.config.shared.hubs.filter(hub => hub.slug != defaultHub);
     _hubs.unshift(_current)
     return _hubs;
+  }
+
+  get isSharedCart() {
+    return !!this._sharedCart;
+  }
+
+  get cartName(){
+    return this._sharedCartName ? this._sharedCartName:this.$cart.getName(); 
   }
 
   get sharedCart(){
@@ -233,7 +245,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   get lockedHUB() {
-    return this.$navigation.isLocked();
+    return this.$navigation.isLocked() || this._sharedCart;
   }
 
 
@@ -250,10 +262,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
     //
     // save the plan for the subscription (business, customer)
-    this.plan = this.$route.snapshot.queryParams.plan||'customer';
+    this.plan = this.$route.snapshot.queryParams.plan||window['subsplan']||'customer';
 
-    const view = this.$route.snapshot.queryParams.view
-    this.currentCartView = (view != "subscription");
+    this.$route.queryParams.subscribe(params => {
+      const view = params.view
+      this.currentCartView = (view != "subscription");
+
+      this.initItems();
+    })
+
     this.subscription$ = this.$loader.update().subscribe(emit => {
       // if (emit.state) {
       //   console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
@@ -264,12 +281,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
         // set the stripe key
         if (this.config.shared && this.config.shared.keys) {
           this.$stripe.setKey(this.config.shared.keys.pubStripe);
-
         }
         //
         // update local config
         this.currentHub = this.config.shared.hub.slug;
-
       }
       // emit signal for user
       if (emit.user) {
@@ -284,16 +299,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
         // display subscription or cart 
         this.isValid = true;
 
-        //
-        // only items for order!
-        const ctx:CartItemsContext = {
-          forSubscription:!this.currentCartView,
-          hub:this.currentHub
-        }    
-        this.items = this.$cart.getItems(ctx);  
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
-
+        this.initItems();
         //
         // if customer have only one valid payment method, 
         // and payment is not set
@@ -318,6 +326,22 @@ export class KngCartComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+  initItems() {
+    if(!this.isValid) {
+      return;
+    }
+
+    //
+    // only items for this view!
+    const ctx:CartItemsContext = {
+      forSubscription:!this.currentCartView,
+      hub:this.currentHub
+    }    
+    if(this.currentCartView) {
+      ctx.onSubscription = false;
+    }
+    this.items = this.$cart.getItems(ctx);      
+  }
 
   doSelectCart(viewcart:boolean) {
     this.currentCartView = viewcart;
@@ -332,6 +356,21 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   }
+  async doSharedCart(name:string){
+    const cart = await this.$cart.getShared(name).toPromise(); 
+    const uuid = cart.cid;
+    if(!uuid) {
+      return;
+    }
+    // this.$dom.bypassSecurityTrustUrl()
+    // view=subscription&plan=business
+    const plan = this.$route.snapshot.queryParamMap.get('plan');
+    const view = this.$route.snapshot.queryParamMap.get('view');
+    const params = new URLSearchParams({plan,view});
+
+    return (window.location.protocol+'//'+window.location.host + '/store/' + this.store + '/home/cart/' + uuid +'?'+params.toString());
+  }
+
 
   doInitateCheckout(ctx){
     this.hasOrderError = false;
@@ -347,10 +386,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
 
-  isSharedCart() {
-    return !!this._sharedCart;
-  }
-
   loadOrders() {
     //
     // load orders 
@@ -362,9 +397,17 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   onCopy($event){
     $event.stopPropagation();
-    navigator.clipboard.writeText(this.sharedCart).then(()=>{
-      //alert('DONE')
-    })
+    //
+    // get input name
+    const inputName:any = document.getElementById('shared-cart-name')!;
+    this.doSharedCart(inputName.value).then(sharedCart => {
+      return navigator.clipboard.writeText(sharedCart);
+    }).then(()=> {
+      alert('Merci!');
+    }).catch(status => {
+      console.log(status.error)
+      alert(status.error);
+    });
     return false;
   }
 

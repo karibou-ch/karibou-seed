@@ -17,7 +17,7 @@ div.hub-header{
     width: calc( 100% - 20px );
   }
 
-  @media (max-width:429px){
+  @media (max-width:431px){
     padding: 10px 0px;
   }
 
@@ -41,14 +41,50 @@ kng-calendar{
   margin: 5px 5px 30px;
 }
 
+.basic-setting {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
+.i18n{
+  .content{
+    flex-direction: row;
+    font-size: 17px;
+    line-height: 28px;
+    font-weight: bold;
+    padding: 10px;
+    height: fit-content;
+    min-height: 70px;    
+    align-items: center
+  }
+}
+.theme{
+  .content{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-direction: row;    
+    gap: 10px;
+    align-items: center;
+    min-height: 50px;
+    .color{
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+      outline:0;
+      background-color: #fff;
+    }
+  }
+}
 
 button{
-  margin: 10px;
   text-decoration: none;
   font-size: initial;
   background-color: var(--mdc-theme-primary-text);
   color: var(--mdc-theme-primary);
-  border: 1px solid var(--mdc-theme-primary-text) !important;
+  background-color: white;
+  color: black;  
   display: inline;
   .material-symbols-outlined{
     transform: translateY(5px);
@@ -81,68 +117,5 @@ button.goto{
 }
 
 
-//
-// products
-.products {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  margin: 0 auto;
-  padding: 0;
-
-  max-width: 1024px;
-  width: 1024px;
-  margin: auto;      
-
-  @media screen and (max-width:426px){
-    width: calc( 100vw - 20px );        
-  }  
-
-  .product{
-    margin: 10px;
-    width: 140px;
-    border-radius: 16px;
-    overflow: hidden;
-  
-    @media screen and (max-width:426px){
-      width: calc(100% / 2 - 10px);
-      margin: 5px;
-    }  
-
-    .title{
-      font-weight: 500;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      color: white;
-      background: linear-gradient(rgba(0,0,0, .37), transparent);;
-      width: 100%;
-      padding: 20px 10px;
-      top: 0;
-      font-size: 23px;
-      line-height: 30px;      
-      width: calc(100% - 20px);
-      -white-space: nowrap;
-      -overflow: hidden;
-      -text-overflow: ellipsis;      
-    }
-    .media{
-      height: 200px;
-      position: relative;
-      overflow: hidden;        
-      img{
-        object-position: center center;
-        width: 100%;
-        margin: auto;
-        object-fit: cover;
-        min-height: 100%;
-        object-position: center center;
-        padding: 0;
-      }
-    }
-
-  }
-
-}
 
 }

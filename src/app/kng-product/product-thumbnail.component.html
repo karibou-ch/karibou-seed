@@ -3,14 +3,14 @@
 	https://github.com/material-components/material-components-web/tree/master/packages/mdc-card
 	https://stackoverflow.com/questions/44741936/angular-4-multiple-named-router-outlets-in-a-child-route-supported/44742481
 -->
-<ng-container *ngIf="hidden else loadingTpl">
+<ng-container *ngIf="(hidden) else loadingTpl">
 	<div class="loader" >
 		<img src="/assets/img/k-product-placeholder.png" />
 	</div>
 </ng-container>
 
 <ng-template #loadingTpl>
-	<article class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}"  
+	<article class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}" 
 						[class.selected]="selected"
 						[class.large]="large"
 						[class.incart]="cartItemQuantity"
@@ -66,7 +66,7 @@
 		
 			<!-- TITLE -->
 			<div class="product-header">
-				<div class="product-card__vendor" *ngIf="displaySubscription && product.vendor.photo">
+				<div class="product-card__vendor" *ngIf="displayVendor && product.vendor.photo">
 					<img [src]="product.vendor.photo?.owner"alt="160x160" class="photo-owner hide" />
 					<div>{{product.vendor.name}}</div>
 				</div>

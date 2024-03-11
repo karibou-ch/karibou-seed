@@ -9,7 +9,7 @@ div.home-header{
   font-weight: 200;    
   background-size: cover;
   background-color: transparent!important;
-  margin-top: 10px; 
+  margin-top: 0px; 
   margin-bottom: 0px; 
   @media (max-width:1023px){
     padding: 10px 10px;
@@ -20,7 +20,6 @@ div.home-header{
     position: relative;
     background: var(--mdc-theme-appbar);
     background: #f6f6f6;
-    -box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 8px;
     min-height: 120px;
     border-radius: 15px;
     color: var(--mdc-theme-appbar-text);
@@ -28,8 +27,7 @@ div.home-header{
     padding: 12px 16px 0;
     font-weight: normal;    
     max-width: 100%;
-    border:2px solid var(--mdc-theme-appbar);
-    @media (max-width:427px){
+    @media (max-width:431px){
       max-width: calc( 100% - 32px);
     }
     h1{
@@ -43,7 +41,10 @@ div.home-header{
       font-size: 16px;
       line-height: 20px;
       font-weight: 500;
-      margin-top: 0px;      
+      margin-top: 0px; 
+      display: flex;
+      align-items: center;
+      gap: 8px;     
     }
     h1,h2,h3,h4,p{
       text-align: left;
@@ -58,6 +59,13 @@ div.home-header{
       position: absolute;
       right: 20px;
       top: 20%;      
+    }
+    button{
+      border: none;
+      border-radius: 15px;
+      span{
+        transform: translateY(1px);
+      }      
     }
   }
 
@@ -85,7 +93,7 @@ div.home-header{
         img{
           height: 100%;          
         }
-        @media (max-width:429px) {
+        @media (max-width:431px) {
           max-width:100%;
           overflow: hidden;
           max-height: 230px;             
@@ -103,7 +111,7 @@ div.home-header{
       .left{
         flex: 1;
         max-width: 48%;        
-        @media (max-width:429px) {
+        @media (max-width:431px) {
           flex: 1 0 100%;
           max-width:100%;
           font-size:70%;
@@ -126,7 +134,7 @@ div.home-header{
           transform: scale(.9);    
           max-height: 200px;
           padding: 0;
-          @media (max-width:429px) {
+          @media (max-width:431px) {
             max-width:100%;
             font-size:70%;
             transform: none;    
@@ -141,7 +149,7 @@ div.home-header{
         padding: 20px;
         align-self: center;
         max-width: 45%;        
-        @media (max-width:429px) {
+        @media (max-width:431px) {
           max-width:100%;
         }
       }
@@ -184,8 +192,7 @@ kng-product-swipe {
 
 kng-search.search-mobile,
 kng-search.home{
-  margin: 20px 0px;
-  display: block;  
+  margin: 20px 10px;
 }
 
 
@@ -193,6 +200,33 @@ kng-search.home{
 // HOME SELECTION
 kng-product-swipe{
   margin-top:10px;
+}
+
+.kng-boxed {
+  a {
+    color: var(--mdc-theme-appbar-text);
+    font-weight: 500;
+    font-size: 17px;      
+  }
+
+  .label{
+    h2{
+      margin: 0;
+    }
+  }
+  .items{
+    h3{
+      margin: 5px 0;
+      color: var(--mdc-theme-secondary);
+      font-weight: 400;      
+    }
+    li{
+      cursor: pointer;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  }
 }
 
 
@@ -271,27 +305,75 @@ kng-product-swipe{
 }
 
 .menu-on-right{
-  right: 5px!important;
-  left: auto!important;
+  transition: all 200ms;
+  position: fixed;
+  overflow-x: visible;
+  top: var(--mdc-theme-top-bar);
+  width: 350px;
+  padding: 0;
+  left: auto;
+  height: calc(100% - 160px);
+  right: initial;   
+  margin-left: calc(var(--mdc-theme-width-md) + 10px ) ;
+  border-left:1px dotted #ddd;
+  padding-left: 0px;
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+  padding-left: 5px;
+  @media (max-width: 430px) {
+    display: none;
+  }
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+
+  @media (min-width:1024px) and (max-width:1440px) {
+  }
+
+
+  @media (min-width:1441px) {
+  }
+
+  @media (min-width:1600px) {
+  }
+
+  >div{
+    width: calc(100% - 40px);
+    height: fit-content;
+    margin-top: 0;
+    &.premium{
+      background-color: #555;
+      color: lightyellow;
+    }
+
+    button{
+      width: fit-content!important;
+    }
+
+  
+  }
 
 }
-.menu-on-right,
+
 .menu-on-left{
   transition: all 200ms;
   position: fixed;
   overflow-x: visible;
-  top: 125px;
-  width: 250px;
+  top: var(--mdc-theme-top-bar);
+  width: 270px;
   padding: 0;
   left: 10px;
   height: calc(100% - 160px);
+
   /* scale:.9 broke naviation and pointer on some devices */
 
   &.display{
     opacity: 0;
   }
   @media screen and (min-width:1600px) {
-    margin-left:-335px;
+    margin-left:-290px;
     left: initial;   
   }
   @media screen and (max-width:1440px) and (min-width:1025px){
@@ -313,36 +395,35 @@ kng-product-swipe{
   ul{
     list-style: none;
     padding: 0;
+    padding-top: 10px;
     margin-top: 0px;    
     margin-left: 0px;    
-    overflow: hidden;
-    -background: rgba(240, 240, 240, 0.6);
-    -border-radius: 14px;
+    background: rgba(240, 240, 240, 0.6);
+    border-radius: 14px;
     height: 100%;
     overflow: auto;
-    margin-top: 20px;
+    margin-right: 10px;
     &.subs{
       display: none;
       height: auto;
       overflow: hidden;
       background-color: var(--mdc-theme-appbar);
-      margin-top: 20px;
+      margin-top: 10px;
 
     }
 
     &::-webkit-scrollbar {
-      width: 5px;
+      width: 1px;
       height: 8px;
       background-color: transparent; /* or add it to the track */
     }
     
     /* Add a thumb */
     &::-webkit-scrollbar-thumb {
-      border-radius: 8px;
       background: #ddd;
     }    
 
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
     }
 
@@ -352,15 +433,18 @@ kng-product-swipe{
       }      
   
       &.selected{
-        background-color: #343538;
-        background-color:#333;
-        border-radius: 8px;
-        color: white;
+        color:#333;
         font-weight: 500;        
+        margin-left: 0;
+        border-left: 5px solid #333;
       }
       &.subs{
         display: flex;
         padding: 8px 14px;
+      }
+      &.separator {
+        border-bottom: 1px solid #aaa;
+        margin-bottom: 3px;        
       }
       cursor: pointer;
       padding: 5px 14px;
@@ -370,8 +454,17 @@ kng-product-swipe{
       font-size: 15px;
       font-weight: 400;
       line-height: 20px;
+      margin-left: 5px;
       color: rgb(52, 53, 56);
-      
+      a{
+        text-decoration: none;
+        color: black;
+        margin-left: 0px;
+        span{
+          transform: translateY(6px);          
+        }
+      }
+
       i{
         color: var(--mdc-theme-secondary);
       }
@@ -401,7 +494,7 @@ div.product-container{
   padding-top: 0;
   padding: 0;
   width: 100%;  
-  @media (max-width:429px) {    
+  @media (max-width:431px) {    
     padding: 0;
     width: calc(100vw - 20px);
     margin-left: auto;

@@ -18,7 +18,8 @@ import {
   CartSubscriptionParams,
   CartItemsContext,
   ShopService,
-  Order
+  Order,
+  CartSubscription
 } from 'kng2-core';
 
 import { combineLatest, timer } from 'rxjs';
@@ -60,6 +61,7 @@ export class ProductListComponent implements OnInit {
 
   subcriptionParams:CartSubscriptionParams;
   showSubCategory:boolean;
+  contracts:CartSubscription[];
   activeMenu: boolean;
   filterVendor: Shop;
   filterChild: string;
@@ -73,7 +75,7 @@ export class ProductListComponent implements OnInit {
     hub?: string;
     available: boolean;
     status?: boolean;
-    when: Date|boolean;
+    when: string|boolean;
     reload?: number;
     shopname?: string;
     subscription?: boolean;
@@ -116,6 +118,7 @@ export class ProductListComponent implements OnInit {
     this.activeMenu = true;
     this.getNextPage.bind(this);
     this.scrollDirection = 0;
+    this.contracts = [];
     this.subcriptionParams = {
       activeForm:true,
       dayOfWeek:0,
@@ -138,7 +141,6 @@ export class ProductListComponent implements OnInit {
   get hub(){
     return this.config && this.config.shared.hub;
   }
-
 
   get locale() {
     return this.$i18n.locale;
@@ -176,15 +178,14 @@ export class ProductListComponent implements OnInit {
   }
 
   get subscriptionQueryParams() {
-    const contractId = this.$route.snapshot.queryParams.id;
+    const contractId = this.subscriptionId;
     const params:any = {view:'subscription'};
     if(this.isForSubscriptionBusiness) {
       params.plan='business'
     }
     if(contractId) {
       params.id=contractId;
-    }
-    
+    }    
     return params;
   }
 
@@ -200,6 +201,16 @@ export class ProductListComponent implements OnInit {
     this.$cart.subscriptionSetParams(this.subcriptionParams);
   }
 
+  get subscriptionId() {
+    return this.$route.snapshot.queryParams.id;
+  }
+
+  get subscriptionContract() {
+    const id = this.subscriptionId;
+    return this.contracts.find(contract=> contract.id == id);
+  }
+
+
   get subscriptionAmount() {
     const ctx:CartItemsContext = {
       forSubscription:true,
@@ -207,7 +218,6 @@ export class ProductListComponent implements OnInit {
     }    
     return this.$cart.subTotal(ctx).toFixed(2)
   }
-
 
   get cartAmount() {
     const ctx:CartItemsContext = {
@@ -217,9 +227,6 @@ export class ProductListComponent implements OnInit {
     return this.$cart.subTotal(ctx).toFixed(2)
   }
 
-
-   
- 
   ngOnDestroy() {
     this.clean();
     if (this.childSub$) {
@@ -231,6 +238,8 @@ export class ProductListComponent implements OnInit {
     const category = this.$route.snapshot.params['category'];
     const shopname = this.$route.snapshot.params['shop'];
 
+
+
     //
     // list product available for subscription
     if(this.isForSubscriptionList) {
@@ -239,12 +248,17 @@ export class ProductListComponent implements OnInit {
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.subscription.t[this.locale];
       this.category.current.description =this.config.shared.subscription.h[this.locale];
-      if(this.$route.snapshot.data.business) {
+      if(this.isForSubscriptionBusiness) {
         this.options.business = true;
         this.category.current.name =this.config.shared.business.t[this.locale];
         this.category.current.description =this.config.shared.business.h[this.locale];
       }
       this.category.current.child = [];
+
+      //
+      // FIXME UGLY STORAGE OF SUBS_PLAN (FOR SHARING WITH CART)
+      window['subsplan'] = this.isForSubscriptionBusiness?'business':'customer';
+
       this.productsBySubscription();
     } 
     
@@ -277,20 +291,7 @@ export class ProductListComponent implements OnInit {
       this.productsByShop(shopname);
     } 
     //
-    // this should not happends
-    else {
-      return;
-    }
-    
-    this.childSub$ = this.$cart.cart$.subscribe(state => {
-      if(!state.action||!this.isForSubscriptionList){
-        return;
-      }
-
-      this.subcriptionParams = this.$cart.subscriptionGetParams();
-      this.cdr.markForCheck();
-    });
-
+  
     //
     // publish metrics
     const metric ={
@@ -303,7 +304,7 @@ export class ProductListComponent implements OnInit {
 
     //
     // DIALOG INIT HACK
-    document.documentElement.classList.add('mdc-dialog-scroll-lock');
+    document.body.classList.add('mdc-dialog-scroll-lock');
     this.isReady = true;
   }
 
@@ -311,6 +312,10 @@ export class ProductListComponent implements OnInit {
   // FIXME: when using cache route component
   // -> ngOnInit and ngOnDestroy are never called when app.cache.route is activated
   ngAfterViewChecked() {
+    //
+    // DIALOG INIT HACK
+    document.body.classList.add('mdc-dialog-scroll-lock');
+
     if (!this.dialog || !this.dialog.nativeElement){
       return;
     }
@@ -321,13 +326,12 @@ export class ProductListComponent implements OnInit {
     }
     setTimeout(()=>{
       this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
-    },40);
-    
+    },40);    
   }
 
   clean() {
     this.isReady = false;
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
 
@@ -339,7 +343,6 @@ export class ProductListComponent implements OnInit {
   getDialog() {
     return this.dialog;
   }
-
 
   //
   // return a child category IFF a product is refers to it
@@ -417,12 +420,12 @@ export class ProductListComponent implements OnInit {
   productsBySubscription() {
     this.options.hub = this.store;
     delete this.options.when;
+    this.$cart.subscriptionsGet().subscribe(contracts => this.contracts=contracts);
+    this.subcriptionParams = this.$cart.subscriptionGetParams();
 
     this.$product.findByDetails('subscription', this.options).subscribe((products: Product[]) => {
-      this.products = products.sort(this.sortProducts);
-
-
-
+      this.cache.products = this.products = products.sort(this.sortProducts);
+      
       //
       // makes categories
       const categories = this.products.map(product => product.categories)
@@ -445,11 +448,12 @@ export class ProductListComponent implements OnInit {
   }
 
   productsByCategory(category) {
+    const when = (this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub)) as Date;
     this.options.hub = this.store;
-    this.options.when = this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub);
+    this.options.when = when.toISOString()
 
     this.$product.findByCategory(category, this.options).subscribe((products: Product[]) => {
-      this.products = products.sort(this.sortProducts);
+      this.cache.products = this.products = products.sort(this.sortProducts);
 
       //
       // count child categories
@@ -471,7 +475,6 @@ export class ProductListComponent implements OnInit {
   setVendors() {
     this.products.forEach(product => map[product.vendor.urlpath] = product.vendor);
     this.vendors = Object.keys(map).map(key => map[key]);
-    this.cache.products = this.products;
   }
 
   toggleVendor(vendor: Shop) {

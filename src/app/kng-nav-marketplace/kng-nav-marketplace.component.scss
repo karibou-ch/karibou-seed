@@ -26,7 +26,7 @@
   
     width: 100%;
     margin-left: 0px;
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       margin-left: 0px;
     }
   
@@ -34,7 +34,7 @@
       display: flex;
       flex-flow: row nowrap;
       width: 100%;
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         padding: 10px 0;
         flex-flow: row wrap;
       }
@@ -92,7 +92,7 @@
           }
         }
         .logo{
-          @media (max-width:429px) {
+          @media (max-width:431px) {
             -width: 65px;
             height:210px;
             margin: 0px auto 0;
@@ -138,7 +138,7 @@
             color: #444;
           }
           .cart{
-            @media (max-width:429px) {
+            @media (max-width:431px) {
               display: none;
             }
             margin-bottom: 0;

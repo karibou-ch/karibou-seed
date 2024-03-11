@@ -212,6 +212,24 @@ export class UserSignComponent {
     this.updateState();
   }
 
+
+  get hubSlug() {
+    if (!this.config || !this.config.shared.hub) {
+      return 'artamis';
+    }
+    return this.config.shared.hub.slug;
+  }
+
+  get taglineLogo() {
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.logo) ?
+          this.config.shared.hub.logo : this.K_BRAND;
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': bgStyle};
+
+  }
+
+
   //
   // release data
   ngOnDestroy() {
@@ -282,14 +300,6 @@ export class UserSignComponent {
 
   }
 
-
-  getHubSlug() {
-    if (!this.config || !this.config.shared.hub) {
-      return 'artamis';
-    }
-    return this.config.shared.hub.slug;
-  }
-
   getTagline(key) {
     if (!this.config || !this.config.shared.tagLine[key]) {
       return;
@@ -299,14 +309,6 @@ export class UserSignComponent {
     return (hub && hub.name) ? hub.tagLine[key][this.$i18n.locale] : shared.tagLine[key][this.$i18n.locale];
   }
 
-  getTaglineLogo() {
-    const defaultImg = (this.config.shared.hub && this.config.shared.hub.logo) ?
-          this.config.shared.hub.logo : this.K_BRAND;
-
-    const bgStyle = 'url(' + defaultImg + ')';
-    return {'background-image': bgStyle};
-
-  }
 
   // @HostListener('document:click')
   onBack() {
@@ -391,7 +393,7 @@ export class UserSignComponent {
       lastname: this.signup.value.name,
       password: this.signup.value.password,
       confirm: this.signup.value.confirm,
-      hub: this.getHubSlug(),
+      hub: this.hubSlug,
       phoneNumbers: [{number: this.signup.value.phone, what: 'mobile'}]
     };
     this.$user.register(user).subscribe(

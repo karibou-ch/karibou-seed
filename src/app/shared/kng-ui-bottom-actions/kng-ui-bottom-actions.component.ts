@@ -87,7 +87,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   get store() {
@@ -116,7 +116,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   doClearScroll() {
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   doClear() {
@@ -129,13 +129,13 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.selected.emit(slug);
     this.doClear();
     this.show = false;
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   doSearch(value: string) {
     const blur = !value;
     const tokens = value.split(' ').map(val => (val || '').length);
-    document.documentElement.classList.add('mdc-dialog-scroll-lock');
+    document.body.classList.add('mdc-dialog-scroll-lock');
 
     //
     // on search open window
@@ -158,6 +158,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
         this.$navigation.searchAction('stats:'+products.length);
 
         this.findGetNull = !products.length;
+        // FIXME products.sort is not a function
         this.products = products.sort(this.sortByScore);
         this.$cdr.markForCheck();
       });
@@ -199,11 +200,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.show = !this.show;
     if (this.show) {
       this.products = [];
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+      document.body.classList.add('mdc-dialog-scroll-lock');
       // this.search.nativeElement.focus();
     } else {
       this.doClear();
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
 
   }

@@ -38,6 +38,7 @@ export class KngSubscriptionOptionComponent implements OnInit {
   @Input() checkout:boolean;
   @Input() quiet:boolean;
   @Input() contract:CartSubscription;
+  @Input() contractId:string;
   @Input() hub: Hub;
   @Input() shippingDay: Date;
 

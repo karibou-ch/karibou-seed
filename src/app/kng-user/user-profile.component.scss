@@ -10,7 +10,7 @@ div.user-container{
   padding-left: 20px;
   padding-right: 20px;
 
-  @media (max-width:429px) {
+  @media (max-width:431px) {
     width: calc( 100% - 30px );
     margin-left: 0px;
     margin-right: 0;
@@ -45,7 +45,7 @@ div.user-container{
       top:-10px;
       width: 80px;
       height: 80px;
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         width: 60px;
         height: 60px;          
       }
@@ -66,7 +66,7 @@ div.user-container{
     .elem{
       padding: 8px 10px;
       position: relative;
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         font-size: 16px;        
       }
       &.active{

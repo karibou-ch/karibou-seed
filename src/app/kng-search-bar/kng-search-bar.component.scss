@@ -3,12 +3,19 @@
 kng-search-bar{
 	display:flex;
 	opacity: .8;	
-	margin: auto;
+	margin: 10px auto;
+	max-width: 100%;
 	@media (max-width: 541px) {
 		display:none;
 	}
 	&.force-display{
 		display:flex;
+	}
+	&.active {
+		input{
+			border: 1px solid #444;		
+			font-weight: 600;
+		}
 	}
 }
 
@@ -19,6 +26,14 @@ kng-search{
 	@media (min-width: 541px) {
 		display:none!important;
 	}
+
+	&.active {
+		input{
+			border: 1px solid #444;		
+			font-weight: 600;
+		}
+	}
+
 }
 
 
@@ -29,20 +44,21 @@ kng-search{
 	margin: auto;
 	max-width: 450px;
 	display: flex;
+	align-items:center;
 	right: 0;
 	left: 0;      
 	i.left{
 		position: absolute;
-		margin-left: 22px;
+		margin-left: 12px;
 		z-index: 1;
-		margin-top: 11px;  
-		color: var(--mdc-theme-primary)!important;      
+		margin-top: 5px;  
+		color: var(--mdc-theme-secondary)!important;      
 		cursor: pointer;
 
 	}
 	i.right-favorite{
 		z-index: 1;
-		color: var(--mdc-theme-primary)!important;      
+		color: var(--mdc-theme-secondary)!important;      
 		margin-left:-60px;
 		cursor: pointer;
 		transform: scale(0);
@@ -50,14 +66,14 @@ kng-search{
 		animation-iteration-count: 1;
 
 		padding: 5px;
-    margin-top: 4px;
-    height: 27px;
-    width: 31px;
-    display: flex;
-    align-items: center;
-    border-radius: 20px;
-    justify-content: center;
-    background-color: #eee;		
+		margin-top: 4px;
+		height: 27px;
+		width: 31px;
+		display: flex;
+		align-items: center;
+		border-radius: 20px;
+		justify-content: center;
+		background-color: #eee;		
 
 	
 		@media (max-width: 541px) {
@@ -67,8 +83,7 @@ kng-search{
 	}
 	i.right{
 		z-index: 1;
-		margin-top: 11px;  
-		color: var(--mdc-theme-primary)!important;      
+		color: var(--mdc-theme-secondary)!important;      
 		cursor: pointer;
 		margin-left:-70px;
 		@media (max-width: 541px) {
@@ -78,31 +93,30 @@ kng-search{
 			opacity: 0;
 		}
 		opacity: 0.5;
+		font-weight: 600;
 	}
 	.stats{
 		font-size: 90%;
 		position: absolute;
-		margin-top: 15px;
 		font-weight: 900;
 		color: #999;     
 		transition: all .3s;   
 	}
 	input::placeholder {
-		font-size: 18px;
+		font-size: 17px;
 	}
 	input{
 		outline: 0;
-		border: 1px solid rgba(185, 185, 185, 0.6);
+		border: 1px solid transparent;		
 		border-radius: 25px;
-		background: #fff;
+		background: var(--mdc-theme-appbar-light);
 		width:500px;
+		height: 100%;
+		max-width: fit-content;
 		max-width: calc( 100vw - 60px);
-		padding-left: 30px;
+		padding-left: 28px;
 		font-size: 17px;
-		margin: 0 15px;
-	}
-	@media (max-width: 541px) {
-		-margin-right:10px;
+		margin: 0 5px;
 	}
 }
 

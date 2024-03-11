@@ -58,6 +58,7 @@ export class KngCartItemsComponent implements OnInit {
   items: CartItem[];
   contractItems: CartSubscriptionProductItem[];
   itemsAmount: number;
+  displaySharedSeparator:number;
   noshippingMsg: string;
   hasOrderError: boolean;
   doToggleFees: boolean;
@@ -87,6 +88,7 @@ export class KngCartItemsComponent implements OnInit {
     private $router: Router
   ) { 
     this.items = [];
+    this.displaySharedSeparator = 0;
     this._subscription = new Subscription();
     this.showFooter = true;
     this.weekdays = this.$i18n.label().weekdays.split('_');
@@ -359,10 +361,17 @@ export class KngCartItemsComponent implements OnInit {
           hub:this.currentHub.slug
         }    
 
+        if(this.showCartItems) {
+          ctx.onSubscription = false;
+        }
+
         //
         // select items for Cart or for Subscription
         this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
         this.itemsAmount = this.$cart.subTotal(ctx);
+
+        const lastSharedItemIdx = this.items.length - this.items.reverse().findIndex(item => item.shared);
+        this.displaySharedSeparator = lastSharedItemIdx>this.items.length? 0:lastSharedItemIdx;
 
 
         this.noshippingMsg = this.getNoShippingMessage();

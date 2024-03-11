@@ -19,10 +19,13 @@
 
     <!--- SAFARI >=13 -->
     <audio id="audio" controls [hidden]="!cartItemAudio || audioIsRecording"></audio>
-    <button class="record"  
-      (pointerdown)="audioRecord($event)"
-      (pointerup)="audioStopAndSave()">
+
+    <!-- RUN AUDIO -->
+    <button class="record"  [class.recording]="audioIsRecording"                
+      (pointerdown)="audioRecord($event)"                
+      (click)="$event.preventDefault()">
       <span class="material-symbols-outlined">mic</span>
     </button>
+
   </div>
 </div>

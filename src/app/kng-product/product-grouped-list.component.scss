@@ -1,5 +1,6 @@
 
 
+  
   .group{
     min-width: 100%;
     @media (prefers-color-scheme: dark) {
@@ -12,7 +13,7 @@
   }
 
   .category-hide-sm:not(.display) {
-    @media (max-width: 429px) {
+    @media (max-width: 430px) {
       display: none!important;
     }
   }
@@ -28,6 +29,10 @@
       padding-top:10px;  
       margin-bottom: 20px;
       margin-left: 0px;
+      display: none;      
+    }
+    &.display{
+      display: block;      
     }
     &.child{      
       margin: 50px 4px;

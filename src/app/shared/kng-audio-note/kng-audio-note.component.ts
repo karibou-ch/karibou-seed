@@ -52,14 +52,6 @@ export class KngAudioNoteComponent implements OnInit {
       // record error , display user message
       this.cartItemAudioError = true;
     })
-    this.onContextMenu = window.oncontextmenu;
-    //
-    // avoid context menu on full application (but only needed on audio record)
-    window.oncontextmenu = function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
-    };    
 
   }
 
@@ -79,27 +71,49 @@ export class KngAudioNoteComponent implements OnInit {
     return this.$i18n.label();
   }
 
-  audioRecord($event) {
-    $event.preventDefault();
-    if(this.audioIsRecording) {
-      return;
-    }
-    this.$audio.startRecording();
+
+  ngOnDestroy() {
+    const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
+    const eventName = supportTouchEvent? 'touchend':'mouseup';
+    window.removeEventListener(eventName,this.audioStopAndSave.bind(this));
   }
 
+  async ngOnInit() {
+    //
+    // detect end recording
+    const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
+    const eventName = supportTouchEvent? 'touchend':'mouseup';
+    window.addEventListener(eventName,this.audioStopAndSave.bind(this));
 
-  ngOnDestroy(): void {
-    window.oncontextmenu = this.onContextMenu;
 
-  }
-
-  ngOnInit(): void {
   }
 
   async checkAudioDetected(url) {
     if(this.audioDetected == undefined && url) {
       this.audioDetected = await this.$audio.detectSound({url});      
     }
+  }
+
+
+  async audioRecord($event) {
+    if(this.audioIsRecording) {
+      return;
+    }
+    this.cartItemAudioError = !(await this.$audio.isAudioGranted());
+
+    this.$audio.preload().then(module => {
+      console.log('mp3 loaded');
+    });
+
+    await this.$audio.startRecording(()=> {
+      // force stop recording   
+      console.log('--- stop')
+      setTimeout(()=>{
+        this.audioStopAndSave();
+      });
+    })
+
+    setTimeout(this.audioStopAndSave.bind(this),15000);
   }
 
   async audioStopAndSave() {

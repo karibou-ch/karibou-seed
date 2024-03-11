@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService, CartSubscription, Config, Order, ProductService, User, UserService } from 'kng2-core';
-import { KngNavigationStateService, i18n } from 'src/app/common';
+import { StripeService } from 'ngx-stripe';
+import { i18n } from 'src/app/common';
 
 @Component({
   selector: 'kng-subsciption-control',
@@ -14,9 +15,10 @@ export class KngSubsciptionControlComponent implements OnInit {
     fr: {
       title_subscription:'Vos abonnements',
       subtitle_subscription:'Votre abonnement',
+      subtitle_subscription_premium:'Votre abonnement Premium',
       subtitle_subscription_start: 'Actif depuis',
       subtitle_subscription_pause:'Mettre en pause jusqu\'au ',
-      subtitle_subscription_pause_action:'Activer la pause',
+      subtitle_subscription_pause_action:'Mettre en pause jusqu\'au',
       subtitle_subscription_cancel:'Annuler votre abonnement',
       subtitle_subscription_end:'Votre abonnement est supprimé',
       subtitle_subscription_status:'Fréquence de votre abonnement :',
@@ -24,17 +26,18 @@ export class KngSubsciptionControlComponent implements OnInit {
       subtitle_subscription_update_method:'Votre méthode de paiement n\'est plus valable',
       subtitle_subscription_confirm_method:'Votre banque souhaite une confirmation',
       subtitle_subscription_action:'Voir ou modifier votre abonnement',
-      subtitle_subscription_items:'Les articles',
-      subtitle_subscription_service:'Les services',
-      subtitle_subscription_options:'Les options',
+      subtitle_subscription_items:'Vos articles',
+      subtitle_subscription_service:'Vos services',
+      subtitle_subscription_options:'Vos options',
       subtitle_subscription_gocart:'Modifier les articles'
     },
     en: {
       title_subscription:'Your subscriptions',
       subtitle_subscription:'Your subscription',
+      subtitle_subscription_premium:'Your Premium Subscription',
       subtitle_subscription_start: 'Active since',
       subtitle_subscription_pause:'Pause deliveries until',
-      subtitle_subscription_pause_action:'Activate pause',
+      subtitle_subscription_pause_action:'Pause until',
       subtitle_subscription_cancel:'Cancel your subscription',
       subtitle_subscription_end:'Votre abonnement est supprimé',
       subtitle_subscription_status:'Subscription frequency :',
@@ -53,17 +56,23 @@ export class KngSubsciptionControlComponent implements OnInit {
   private _orders:Order[];
 
   @Input() config: Config;
+  @Input() user: User;
 
   contracts: CartSubscription[];
   currentContract:CartSubscription;
+  payments = [];
   until:Date;
   pauseUntil:Date;
+  error:string;
+  isRunning:boolean;
 
   constructor(
     public $products: ProductService,
     public $cart: CartService,
     public $i18n: i18n,
-    public $router: Router
+    public $router: Router,
+    public $user: UserService,
+    public $stripe: StripeService
   ) {
     this._orders = [];
     this.contracts = [];
@@ -93,12 +102,59 @@ export class KngSubsciptionControlComponent implements OnInit {
     return now.daysDiff(this.pauseUntil);    
   }
 
+  get store() {
+    return this.config.shared.hub.slug;
+  }
+
+
+  get currentContract_frequency() {
+    if(!this.currentContract) return '';
+    return 
+  }
+
+  get contract_requires_action() {
+    if(!this.currentContract || !this.currentContract.latestPaymentIntent) {
+      return false;
+    }
+    return this.currentContract.latestPaymentIntent.status=='requires_action';
+  }
+
+  get contract_requires_method() {
+    if(!this.currentContract || !this.currentContract.latestPaymentIntent) {
+      return false;
+    }
+    return this.currentContract.latestPaymentIntent.status=='requires_payment_method';
+  }
+
   ngOnDestroy(){
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   ngOnInit() {
-    this.$cart.subscription$.subscribe(contracts => this.contracts = contracts);
+    this.$cart.subscription$.subscribe(contracts => {
+      this.contracts = contracts;
+    });
+
+    this.$cart.subscriptionsGet().subscribe(contracts => {
+      this.contracts = contracts;
+    });
+
+    //
+    // set the stripe key
+    if (this.config.shared && this.config.shared.keys) {
+      this.$stripe.setKey(this.config.shared.keys.pubStripe);
+    }
+
+    if(!this.user ||!this.user.payments) {
+      return;
+    }
+
+    //
+    // keep user updated 
+    this.$user.user$.subscribe(user => {
+      this.payments = user.payments.filter(payment => payment.issuer!="invoice");
+    })
+
   }
 
   getContractAction(contract){
@@ -108,17 +164,17 @@ export class KngSubsciptionControlComponent implements OnInit {
       return this.i18n[this.locale].subtitle_subscription_action;
     }
 
-    //
-    // pending requires_payment_method
-    if(contract.latestPaymentIntent.status=='requires_payment_method'){
-      return this.i18n[this.locale].subtitle_subscription_update_method_action;
-    }
+    // //
+    // // pending requires_payment_method
+    // if(contract.latestPaymentIntent.status=='requires_payment_method'){
+    //   return this.i18n[this.locale].subtitle_subscription_update_method_action;
+    // }
 
-    //
-    // pending requires_payment_method
-    if(contract.latestPaymentIntent.status=='requires_action'){
-      return this.i18n[this.locale].subtitle_subscription_confirm_method_action;
-    }
+    // //
+    // // pending requires_payment_method
+    // if(contract.latestPaymentIntent.status=='requires_action'){
+    //   return this.i18n[this.locale].subtitle_subscription_confirm_method_action;
+    // }
 
     // active 
     return this.i18n[this.locale].subtitle_subscription_action;
@@ -128,10 +184,10 @@ export class KngSubsciptionControlComponent implements OnInit {
   getContractDescription(contract){
 
     //
-    // invoice
-    if (!contract.latestPaymentIntent){
-      return this.i18n[this.locale].subtitle_subscription;
-    }
+    // without payment intent, contract is ready
+    if (!contract.latestPaymentIntent){      
+      return this.getDayOfWeek(contract.dayOfWeek)+ ' ' + this.getFrequency(contract);
+    } 
 
     //
     // pending requires_payment_method
@@ -145,9 +201,16 @@ export class KngSubsciptionControlComponent implements OnInit {
       return this.i18n[this.locale].subtitle_subscription_confirm_method;
     }
 
-    // active 
-    return this.i18n[this.locale].subtitle_subscription;
+      //
+      // special case of patreon
+      if(contract.patreon && contract.patreon.length) {
+        return this.i18n[this.locale].subtitle_subscription_premium;
+      }
 
+  }
+
+  getFrequency(contract) {
+    return this.$i18n.label()[contract.frequency];
   }
 
   getDayOfWeek(idx){
@@ -158,17 +221,55 @@ export class KngSubsciptionControlComponent implements OnInit {
     return this.config.shared.hub.shippingtimes[contract.shipping.hours];
   }
 
-  onOpen(contract){
-    //
-    // pending requires_payment_method
-    // pending requires_payment_method_confirm
-    if(contract.latestPaymentIntent &&
-      ['requires_payment_method','requires_action'].indexOf(contract.latestPaymentIntent.status)>-1){
-      return this.$router.navigateByUrl('/store/artamis/home/cart/default?view=subscription&id='+contract.id);
+
+  //
+  async onConfirmPaymentIntent() {
+    try{
+      const intent = this.currentContract.latestPaymentIntent;
+      const intentOpt: any = {
+        payment_method: intent.source 
+      };
+  
+      this.isRunning = true;
+      this.error = null;
+  
+      const result = await this.$stripe.confirmCardPayment(intent.client_secret, intentOpt).toPromise();
+      if (result.error) {
+        //
+        // Show error to our customer (e.g., insufficient funds)
+        this.error = result.error.message;
+        this.isRunning = false;
+        return;
+      }
+      // The payment must be confirmed for an order
+      this.currentContract = await this.$cart.subscriptionPaymentConfirm(this.currentContract.id,result.paymentIntent).toPromise();
+  
+    }catch(err) {
+      this.error = err.error||err.message;
+    }finally{
+      this.isRunning = false;
     }
 
+  }
 
-    document.documentElement.classList.add('mdc-dialog-scroll-lock');
+  async onUpdatePaymenMethod() {
+    try{
+      const card = {};
+      const intent = this.currentContract.latestPaymentIntent;
+      this.isRunning = true;
+      this.error = null;      
+      this.currentContract = await this.$cart.subscriptionUpdatePayment(this.currentContract.id,card).toPromise();
+    }catch(err) {
+      this.error = err.error||err.message;
+    }finally{
+      this.isRunning = false;
+    }
+
+  }
+
+  onOpen(contract){
+
+    document.body.classList.add('mdc-dialog-scroll-lock');
     this.currentContract = contract;
   }
 
@@ -181,26 +282,28 @@ export class KngSubsciptionControlComponent implements OnInit {
     const plan = (this.currentContract.plan)?('&plan='+this.currentContract.plan):'';
     const url = `/store/${hub}/home/cart/default?view=subscription&id=${this.currentContract.id}${plan}`;
     this.$router.navigateByUrl(url);
-    // if(business){
-    // }else {
-    //   this.$router.navigateByUrl('/store/artamis/home/subscription?id='+this.currentContract.id);
-    // }
   }
 
   onPause(to:Date) {
+    this.error =null;
     this.$cart.subscriptionPause(this.currentContract,to).subscribe(done=> {
       this.currentContract=done
+    },status => {
+      this.error=status.error;
     });
 
   }
 
   onDelete(){
+    this.error =null;
     this.$cart.subscriptionCancel(this.currentContract).subscribe(done=> {
       this.onClose();
+    },status => {
+      this.error=status.error;
     });
   }
   onClose(res?){
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
     this.currentContract = res||null;
   }
 }

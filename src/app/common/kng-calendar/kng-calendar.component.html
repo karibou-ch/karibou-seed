@@ -1,11 +1,6 @@
   <!-- CONTAINER-->
   <div class="calendar-container">
-    <h2 [hidden]="hideTitle">{{label.nav_shipping}} {{currentHub.name}}</h2>
-    <!-- PENDING ORDER -->
-    <h3 [hidden]="!pendingOrder">
-      {{label.cart_order_grouped_details}}, <b>{{pendingOrderShipping|date:'EEE d MMM':'':locale}}</b>.
-      &nbsp;{{label.cart_order_grouped_details_more}}
-    </h3>
+    <h3 [hidden]="hideTitle">{{label.nav_shipping}} {{currentHub.siteName[locale]}}</h3>
 
     <!-- NO SHIPPING -->
     <div class="noshipping block-warning" [hidden]="!noshippingMsg">
@@ -21,8 +16,12 @@
           [class.disabled]="!isDayAvailable(day)" 
           *ngFor="let day of currentWeek;let idx=index"
           (click)="doSetCurrentShippingDay($event,day,idx)">
-            <div class="ei_Title">{{day|date:'EEE d MMM':'':locale}}</div>
+            <div class="ei_Title">{{day|date:'EEE d':'':locale}}</div>
         </div>
       </div>
     </div>
+    <!-- PENDING ORDER -->
+    <p [hidden]="!pendingOrder" class="info" [innerHtml]="label.cart_order_grouped_info">
+    </p>
+
   </div>

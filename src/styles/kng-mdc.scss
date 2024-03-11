@@ -90,7 +90,7 @@ mdc-list{
 .mdc-dialog-scroll-lock{
   overflow: hidden!important;
   position: relative;  
-  height: 100vh;
+  height: fit-content;
 }
 
 .mdc-dialog-scroll-lock .toolbox.home {
@@ -163,7 +163,7 @@ mdc-list{
 //     transform: translateY(160px) scale(1)!important;
 //   }
 
-//   @media (max-width: 429px) {
+//   @media (max-width: 430px) {
 //     width: 100%!important;
 //     transform: translateY(200px) scale(1)!important;
 //   }

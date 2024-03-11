@@ -32,6 +32,7 @@ import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-c
 import { KngSubscriptionOptionComponent } from './kng-subscription-option/kng-subscription-option.component';
 import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
 import { KngRippleDirective } from './kng-ripple.directive';
+import { NgxStripeModule } from 'ngx-stripe';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { KngRippleDirective } from './kng-ripple.directive';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    NgxStripeModule.forRoot(),
     CommonMdcModule
   ],
   exports: [
