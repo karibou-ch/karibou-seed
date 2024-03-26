@@ -1,0 +1,448 @@
+
+.chat-container{
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  margin-bottom: 140px;
+  height: 100%;
+  .chat-line{
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 15px;
+    padding: 12px 20px;
+    background-color: #f3f3f3;
+    margin-bottom:0;
+
+
+    &.assistant {
+      background-color: #fff;
+
+    }
+    .running-on-mobile {
+      float: right;
+      color: var(--mdc-theme-secondary);
+      font-weight: bold;
+      @media (min-width:431px) {
+        display: none;        
+      }
+    }
+    .avatar{
+      width: 30px;
+    }
+    .message {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      font-size: 17px;
+      line-height: 23px;
+    
+      .content ::ng-deep{
+        h2{
+          font-size: 1.1em;
+        }
+        li{
+          padding: 5px 0;
+        }
+        p{
+          margin: 8px 0;
+
+        }
+        a{
+          color: #000;
+          text-decoration: none;
+          border-bottom: 1px dotted #555;          
+        }
+        ol,ul{
+          padding: 0 15px;
+        }
+        .products{
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+
+          border-radius: 15px;
+          -width: 100%; 
+          margin-left: calc(-27px - 0.75rem);
+          margin-top: 10px;
+          overflow: hidden;
+          @media (max-width:431px) {
+            width: calc( 100vw - 40px );     
+            margin: 0;
+
+          }
+          .actions{
+            display: flex;
+            width: 100%;
+            button{
+              &.toggle{
+                span{
+                  transform: scale(-1,1);
+                }
+              }
+              margin-left: 35px;
+              margin-top: 10px;
+              background: transparent;
+              cursor: pointer;
+              z-index: 1;
+              border: 0; 
+              color: var(--mdc-theme-primary);;
+              font-weight: bold;             
+            }
+          }
+          kng-product-grouped-list{
+            width: 100%;
+            padding: 8px;
+            transition: all .6s ease-in-out;
+            transform: scale(1);
+            transform-origin: top left;          
+            &.closed {
+              max-height: fit-content;
+              margin-top: -10000%;
+              
+            }
+  
+          }
+  
+        }
+        .tool{
+          color: blue;
+        }
+      }
+
+      .actions{
+        margin-top: 5px;
+        display: flex;
+        gap:0.5rem;
+        height: 25px;
+        margin-left: 0;
+        button:disabled {
+          color: #aaa;
+          cursor: inherit;
+        }
+        button{
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          color: var(--mdc-theme-secondary);
+          background-color: transparent;
+          border: none;
+          padding: 0;
+
+          &.border {
+            border: 1px solid #eee;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            border-radius: 12px;  
+          }
+
+        }
+      }
+    }
+
+    
+  }
+}
+
+
+
+.content2{
+  width: 100%;  
+  margin: auto;
+  .bottom{
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+    width: 100%;
+    margin-bottom: 50%;
+    z-index: 1;
+    transition: all 0.3s ease-out;
+    position: fixed;
+    bottom: -30px;
+    width: 865px;
+    max-width: 100%;
+    margin: 30px 0;
+    background: white;
+    padding: 5px 0px;
+    padding-bottom: 5px;
+    border-radius: 0 0 16px 16px;
+    height: 70%;
+
+    @media (min-width: 1640px) {
+      width: 1024px;
+    }
+
+    &.running{
+      padding-bottom: 5px;
+      height: auto;
+    }
+
+    .welcome-mic {
+      height: 70%;
+      div.audio-info-title {
+        font-size: larger;
+        color: #aaa;
+        width: 250px;
+        text-align: center;
+        line-height: 27px;        
+        .sub{
+          font-size: 12px;
+          line-height: 17px;
+          color: #333;
+          font-family: monospace;
+          margin-top: 10px;      
+          background-color: yellow;    
+        }
+      }
+      div.icon{
+        width: 100%;
+        position: relative;
+        div{
+          font-size: 170px;
+          color: #999;
+          text-align: center;
+          width: 100%; 
+          animation: all 1s ease-out infinite forwards; 
+        }
+        div.pause {
+          position: absolute;
+          left: 0;
+          transform: scale(0.6);          
+          visibility: hidden;
+        }
+
+        -webkit-touch-callout: none; /* Safari */
+        -webkit-user-select: none; /* Chrome */     
+           -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none;         
+
+        &.recording{
+          div{
+            color: rgb(160,0,0);
+          }
+          div.mic{
+            visibility: hidden;
+          }
+          div.pause{
+            visibility: visible;
+          }
+        }                
+      }
+    }
+
+    .welcome-mic div.icon::before,
+    .welcome-mic div.icon::after {
+      content: '';
+      position: absolute;
+      margin: auto;
+      margin-top: 40px;
+      left: calc(50% - 70px);
+      width: 100px;
+      height: 100px;
+      pointer-events: none;
+      opacity: 0;
+      border: 20px solid rgba(160, 0, 0, 0.1);
+      border-radius: 50%;
+    }
+
+    .welcome-mic div.recording::before,
+    .welcome-mic div.recording::after {
+      -webkit-animation: anim-ripple 1.2s ease-out infinite forwards;
+      animation: anim-ripple 1.2s ease-out infinite forwards;
+    }
+
+    .welcome-mic div.recording::after {
+      -webkit-animation-delay: 0.6s;
+      animation-delay: 0.6s;
+    }
+    
+    .audio-info,
+    .audio-error{
+      background: rgba(255, 255, 255, 0.93);
+      display: flex;
+      align-items: center;
+      z-index: 1;
+      padding: 20px;
+      color: rgb(160,0,0);
+      width: 90%;
+      button{
+        padding: 10px;
+        margin-right: 7px;
+        margin-left: auto;        
+        border: none;
+        border-radius: 4px;
+      }
+    }    
+    .audio-info {
+      justify-content: center;
+    }
+    .recipe-info{
+      display: flex;
+      align-items: center;
+      z-index: 1;
+      padding: 20px;
+      /* color: #a00000; */
+      width: 90%;
+      background: aliceblue;
+      font-size: smaller;
+    }
+    form{
+      z-index: 1;
+      width: 97%;
+      box-shadow: 0 0 14px 2px rgba(235, 235, 235, 0.95);
+      border-radius: 24px;
+      padding: 1px;
+      .help{
+        display: flex;
+        justify-content: flex-start;
+        padding: 5px;
+        button.tag.end{
+          border: none;
+          background-color: transparent;
+          margin-right: 0;
+          margin-left: auto;
+          color: red;
+        }
+
+        .kng-chip{
+          cursor: pointer;
+          font-size: 14px;
+          height: 22px;
+          font-weight: 100;
+          width: fit-content;
+          margin: 2px;
+          line-height: 22px;   
+          background-color: var(--mdc-theme-appbar);       
+          @media (max-width: 431px) {
+            font-size: 12px;
+          }
+          &.end{
+            margin-right: 5px;
+            margin-left: auto;
+            width: 45px;
+            background-color: #eee;            
+          }
+        }
+      }
+      button[disabled] *{
+        cursor: pointer;
+        background: #eee;
+        color: #aaa;
+        opacity: .8;
+
+      }
+      
+      @media (max-width: 431px) {
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+  
+      div.input{
+        display: flex;     
+        margin: auto;
+        width: 100%;       
+        margin-top: 5px;
+        @media (max-width:430px) {
+          input[type='text'],
+          textarea,
+          button.push{
+            visibility: hidden;
+            width: 0px!important;
+          }
+          button.record{
+            width: 100%;
+            cursor: pointer;
+          }
+        }
+        button.reset {
+          width: calc(100% - 10px);
+          cursor: pointer;
+        }
+        
+        input[type='text'],
+        textarea{
+          outline: 0;
+          border: 0px;
+          background: #fff;
+          height: 45px;
+          min-height: 45px;
+          width: calc( 100% - 100px );
+          padding-left: 10px;
+          font-size: 15px;
+          line-height: 23px;
+          
+  
+        }
+        button{
+          -webkit-touch-callout: none; /* Safari */
+          -webkit-user-select: none; /* Chrome */     
+             -moz-user-select: none; /* Firefox */
+              -ms-user-select: none; /* Internet Explorer/Edge */
+                  user-select: none;           
+          margin-left: -50px;
+          border: none;
+          background: #eee;
+          height: 48px;
+          border-radius: 45px;
+          width: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 10px;
+          margin-left: auto;
+          &.record {
+            height: 46px;
+            margin: auto;
+            margin-right:5px;
+          }
+          &.recording{
+            background-color: rgb(160,0,0);            
+            color: white;
+            font-weight: bolder;
+          }
+        }
+      }
+
+    }    
+    .disclaimer{
+      color: #aaa;
+      margin: 10px auto;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    @-webkit-keyframes anim-ripple {
+      0% {
+        opacity: 0;
+        -webkit-transform: scale3d(3, 3, 1);
+        transform: scale3d(3, 3, 1);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+      }
+    }
+    
+    @keyframes anim-ripple {
+      0% {
+        opacity: 0;
+        -webkit-transform: scale3d(3, 3, 1);
+        transform: scale3d(3, 3, 1);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+      }
+    }    
+  }  
+}

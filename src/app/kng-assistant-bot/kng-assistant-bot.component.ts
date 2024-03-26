@@ -2,7 +2,7 @@ import { ApplicationRef, ChangeDetectionStrategy, ChangeDetectorRef, Component, 
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
-import { KngAudioRecorderService, OutputFormat, RecorderState } from '../shared/kng-audio-recorder.service';
+import { KngAudioRecorderService, RecorderState } from '../shared/kng-audio-recorder.service';
 import { Subject, Subscription, fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
@@ -145,8 +145,8 @@ export class KngAssistantBotComponent implements OnInit {
   }
 
   get audioIsRecording() {
-    const state = this.$audio.getRecorderState();
-    return state == RecorderState.RECORDING|| state == RecorderState.PAUSED || state == RecorderState.INITIALIZED;
+    const state = RecorderState.RECORDING;
+    return state == RecorderState.RECORDING|| state == RecorderState.PAUSED ;
   }
 
   get randomPrompt() {
@@ -189,9 +189,6 @@ export class KngAssistantBotComponent implements OnInit {
     this.isReady = true;
     this.audioDetected = true;
     this.audioError = !(await this.$audio.isAudioGranted());
-    this.$audio.preload().then(module => {
-      console.log('mp3 loaded');
-    });
 
     //
     // markdown must be available before
@@ -401,8 +398,7 @@ export class KngAssistantBotComponent implements OnInit {
     this.$cdr.markForCheck();
     setTimeout(async()=> {
       try{
-        const format = OutputFormat.WEBM_BLOB;
-        const blob = await this.$audio.stopRecording(format);
+        const blob = await this.$audio.stopRecording();
         const audioDetected = await this.$audio.detectSound({blob});
         const base64 = await this.$audio.blobToBase64(blob);
 
