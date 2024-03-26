@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { KngAudioRecorderService, OutputFormat, RecorderState } from '../kng-audio-recorder.service';
-import {UploadClient, base} from '@uploadcare/upload-client';
+import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.service';
+import {UploadClient} from '@uploadcare/upload-client';
 
 import { i18n } from '../../common';
 
@@ -67,7 +67,7 @@ export class KngAudioNoteComponent implements OnInit {
     return parseFloat(this._amount);
   }  
   get audioIsRecording() {
-    const state = this.$audio.getRecorderState();
+    const state = this.$audio.state;
     return state == RecorderState.RECORDING|| state == RecorderState.PAUSED;
   }
 
@@ -79,13 +79,13 @@ export class KngAudioNoteComponent implements OnInit {
     return this.$i18n.label();
   }
 
-  audioRecord($event) {
-    $event.preventDefault();
-    if(this.audioIsRecording) {
-      return;
-    }
-    this.$audio.startRecording();
-  }
+  // audioRecord($event) {
+  //   $event.preventDefault();
+  //   if(this.audioIsRecording) {
+  //     return;
+  //   }
+  //   this.$audio.startRecording();
+  // }
 
 
   ngOnDestroy(): void {
@@ -102,14 +102,25 @@ export class KngAudioNoteComponent implements OnInit {
     }
   }
 
+
+  async audioRecord($event) {
+    if(this.audioIsRecording) {
+      return;
+    }
+    this.cartItemAudioError = !(await this.$audio.isAudioGranted());
+
+
+    await this.$audio.startRecording(15000);    
+
+  }
+
   async audioStopAndSave() {
     if(!this.audioIsRecording||this.$audio.recordTime<1) {
       return;
     }
     try{
 
-      const format = OutputFormat.WEBM_BLOB;
-      const blob = await this.$audio.stopRecording(format);
+      const {blob, base64} = await this.$audio.stopRecording();
       this.cartItemAudioLoading = true;
       this.onCartItemAudioLoading.emit(true);
 
