@@ -48,7 +48,7 @@ export class KngAssistantComponent implements OnInit {
   @Input() user:User;
   @Input() config:Config;
   @Input() widget:boolean;
-  @Input() system:string;
+  @Input() agent:string;
   @Input() tips:string[];
   @Input() prompts:string[];
   @Input() set prompt(value:string){
@@ -200,10 +200,6 @@ export class KngAssistantComponent implements OnInit {
       })
     );
 
-    this.isReady=true;
-    if(this.prompt) {
-      this.onChat();
-    }
     const state:AssistantState = {
       status:"init",
       audioDetected: this.audioDetected,
@@ -217,6 +213,12 @@ export class KngAssistantComponent implements OnInit {
       messagesCount:this.messages.length
     }
     this.assistant.emit(state);
+
+    this.isReady=true;
+    if(this.prompt) {
+      this.onChat();
+    }
+
   }
 
 
@@ -382,7 +384,7 @@ export class KngAssistantComponent implements OnInit {
     //
     // else, start recording
     this.audioDetected = true;
-    await this.$audio.startRecording(25000);// with max len
+    await this.$audio.startRecording({timeout:25000});// with max len
     this.$cdr.markForCheck();
 
     const state:AssistantState = {
@@ -452,7 +454,7 @@ export class KngAssistantComponent implements OnInit {
     const href = target.getAttribute('href')||'';
 
     const rules =[
-      {regexp:/quote\/orders/,prompt:"10 des exemples de produits pour mon devis ", param:false},      
+      {regexp:/quote\/orders/,prompt:"10 des exemples de produits pour ma demande de devis ", param:false},      
       {regexp:/products\/cart/,prompt:"Quelques recettes avec mon panier ", param:false},      
       {regexp:/products\/orders/,prompt:"Informations sur mes dernières commandes", param:false},      
       {regexp:/popular\/([^)]+)/,prompt:"Quelques recettes avec les produits populaires", param:false},      

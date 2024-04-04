@@ -34,6 +34,7 @@ import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component
 import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
+import { KngAssistantComponent } from './kng-assistant/kng-assistant.component';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
   exports: [
     RouterModule,
     KngCommonModule,
+    KngAssistantComponent,
     KngAudioNoteComponent,
     KngControlMessagesComponent,
     KngTextfieldAutosizeDirective,
@@ -60,6 +62,7 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
   ],
   declarations: [
     KngAudioNoteComponent,
+    KngAssistantComponent,
     KngHomeComponent,
     KngControlMessagesComponent,
     KngShopComponent,

@@ -1,10 +1,11 @@
-import { ApplicationRef, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
 import { KngAudioRecorderService, RecorderState } from '../shared/kng-audio-recorder.service';
-import { Subject, Subscription, fromEvent } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { EnumMetrics, MetricsService } from '../common/metrics.service';
+import { AssistantState, KngAssistantComponent } from '../shared/kng-assistant/kng-assistant.component';
 
 @Component({
   selector: 'kng-assistant-bot',
@@ -15,41 +16,32 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 export class KngAssistantBotComponent implements OnInit {
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
-  @ViewChild('recorder') recorder: ElementRef;
-  @Input() user:User;
-  @Input() config:Config;
-  @Input() widget:boolean;
+  @ViewChild('assistant',{static: true}) assistant: KngAssistantComponent;
 
-  isRuning: Subscription;
+  user:User;
+  config:Config;
   isReady = false;
   isFeedbackReady = false;
   messages:any[];
   error:string;
   prompt:string;
-  markdown:any;
   scrollToBottom:boolean;
   scrollBottomPosition:number;
   scrollStickedToolbar:boolean;
-  audioDetected: boolean|undefined;
-  audioRecorded: boolean;
-  audioError: boolean;
-  timeoutRecord;
 
+  assistantState:AssistantState;
 
-  currentMessage:any;
   subscription$:any;
-
-  //
-  // used to fix html update
-  messageId:number;
 
 
   tips = [
-    {clazz:"", label:"Qui es-tu James?",action:"Qui es-tu James?, qu'elles sont les outils et les informations utiles ?"},
+    {clazz:"", label:"Qui es-tu James?",action:"Bonjour James, qui es-tu et quelles sont les services que tu proposes ?"},
     //{clazz:"hide-sm", label:"Mon panier...",action:"Une semaine de menus avec les produits de mon panier"},
-    {clazz:"", label:"Mes commandes",action:"Que proposes-tu avec mes commandes"},
+    {clazz:"hide-sm", label:"Mes commandes",action:"Que proposes-tu avec mes commandes"},
+    {clazz:"", label:"Un événement",action:"Je veux organiser un buffet pour un événement"},
+    {clazz:"hide-sm", label:"Une école",action:"Une composition équilibrée de 10 produits pour le parascolaire des enfants"},
     // {clazz:"", label:"Produits populaires...",action:"Une semaine de menus avec les produits populaires"},
-    {clazz:"", label:"Les thématiques...",action:"Quelle liste de thématiques tu proposes?"},
+    // {clazz:"", label:"Les thématiques...",action:"Quelle liste de thématiques tu proposes?"},
     {clazz:"", label:"J'ai de la chance",action:"*?"},
   ];
   prompts = [
@@ -80,23 +72,21 @@ export class KngAssistantBotComponent implements OnInit {
 
 
   constructor(
-    private $audio: KngAudioRecorderService,
     private $i18n: i18n,
     private $cart: CartService,
-    private $metrics: AnalyticsService,
+    private $metric: AnalyticsService,
+    private $metrics: MetricsService,
     private $navigation: KngNavigationStateService,
-    private $products: ProductService,
     private $router: Router,
     private $route: ActivatedRoute,
-    private $cdr: ChangeDetectorRef,
-    private $zone: NgZone
+    private $cdr: ChangeDetectorRef
   ) { 
-    this.user = new User({
-      displayName:'Anonymous'
-    })
     const ask = this.$route.snapshot.queryParamMap.get('recipe');
     this.prompt = ask? "Les 10 meilleures associations avec "+ask:"";
-    this.widget = true;
+    
+    // this.$router.navigate([], {
+    //   queryParams: {recipe: null}
+    // });
 
     this.subscription$ = new Subscription();    
 
@@ -144,18 +134,29 @@ export class KngAssistantBotComponent implements OnInit {
     return this.$cart.subTotal(ctx).toFixed(2)
   }
 
-  get audioIsRecording() {
-    const state = RecorderState.RECORDING;
-    return state == RecorderState.RECORDING|| state == RecorderState.PAUSED ;
-  }
-
   get randomPrompt() {
     const prompt = this.prompts.sort((a, b) => 0.5 - Math.random())[0];
     return (prompt==this.prompt)? this.randomPrompt:prompt;
   }
 
+  get isAssistantRuning() {
+    if(!this.assistantState) return false;
+    return this.assistantState.isAssistantRuning;
+  }
+
+  get audioIsRecording() {
+    if(!this.assistant) return false;
+    return this.assistant.audioIsRecording;
+  }
+
+  get messagesCount() {
+    if(!this.assistantState) return 0;
+    return this.assistantState.messagesCount;
+  }
+
   get messagesLimit() {
-    return this.messages.length>6;
+    if(!this.assistant) return 0;
+    return this.assistantState.tokensOut>15000;
   }
 
   ngOnDestroy() {
@@ -178,21 +179,16 @@ export class KngAssistantBotComponent implements OnInit {
     // this.subscription$.add(
     //   fromEvent<MouseEvent>(window,eventName).pipe(map ($evt => $evt.screenX * $evt.screenY),debounceTime(50),distinctUntilChanged()).subscribe(this.audioStopAndSave.bind(this))
     // );
-    
-    const module = await import('markdown-it');
-    //const plugin = await import('linkify-it');
-    this.markdown = new module.default({
-      html:true,
-      breaks:true,
-      typographer:true
-    });  
-    this.isReady = true;
-    this.audioDetected = true;
-    this.audioError = !(await this.$audio.isAudioGranted());
 
     //
-    // markdown must be available before
-    await this.history();
+    // publish metrics
+    const metric ={
+      path:window.location.pathname,
+      hub:this.store,
+      action:'james',
+      title:document.title
+    }
+    this.$metrics.event(EnumMetrics.metric_view_page,metric);
 
 
     this.subscription$.add(
@@ -203,17 +199,15 @@ export class KngAssistantBotComponent implements OnInit {
     );
 
     if(this.prompt) {
-      this.onChat();
+      // this.onChat();
       this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
+      this.container.nativeElement.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
     }
+    this.isReady = true;
   }
 
   ngAfterViewInit() {
-    setTimeout(()=> {
-      this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
-      this.scrollBottomPosition = this.container.nativeElement.scrollTop;        
-      this.scrollStickedToolbar = (this.container.nativeElement.scrollTop>40);
-    })
+    this.onScrollToBottom();
   }
 
   ngAfterViewChecked() {
@@ -227,273 +221,24 @@ export class KngAssistantBotComponent implements OnInit {
     document.body.classList.remove('mdc-dialog-scroll-lock');
   }  
 
-  async loadProducts(assistant) {
-    const skus = this.parseSKU(assistant.content);
-    if(!skus.length) {
-      return;
-    }
-
-    assistant.products = await this.$products.select({skus}).toPromise();
-  }
-
-  async history(clear?) {
-    try{
-      const filterMessage = (message) => ['tool','system'].indexOf(message.user||message.role)==-1&& message.content;
-      this.messages = await this.$cart.chatHistory(clear).toPromise();
-      this.messages = this.messages.filter(filterMessage).map(message => {
-        const content = (message.content||'').replace(/\(\([0-9]*\)\)/gm,'')
-        message.html = this.markdownRender(content);
-        message.assistant = false;
-        message.running = false;
-        message.audio = false;
-        message.products = [];
-        if(message.role == 'assistant') {
-          message.assistant = true;
-          message.role = 'James';
-        }else{
-          message.role = this.displayName;
-        }
-        return message;
-      })
-  
-      if(this.messages.length) {
-        this.currentMessage = this.messages[this.messages.length-1];
-        await this.loadProducts(this.currentMessage);
-      }
-    }catch(err){
-      console.log('----',err)
-      this.error=err.error;
-    }finally{
-      this.$cdr.markForCheck();
-    }
-
-  }
-
-  markdownRender(content) {
-    //
-    // apply correction before the rendering
-    content = content.replace(/\(\([0-9]*\)\)/gm,'');
-    // FIX markdown link
-    const link = /\[(.*?)\]\((.*?)\)/g;
-    content = content.replace(link, (match, text, target) => {
-      return `[${text}](${target.replace(/ /g, "_")})`;
-    });
-    return this.markdown.render(content);
-  }
-
   //
-  // parse GPT content to resolve sku with the right format
-  parseSKU(text:string) {
-    text = text ||'';
-    return (text.match(/10[0-9]{5}/gm)||[]).filter(sku => +sku);
-  }
-
-  onChat(base64?:string) {    
-    this.messageId = Date.now();
-
-    const assistant = this.currentMessage = {
-      role:'James',
-      content:'',
-      html:'',
-      assistant:true,
-      tool:{},
-      running:true,
-      audio:false,
-      products: [],
-      id: this.messageId
-    }
-
-
-    const params:any = {};
-    if(base64) {
-      params.body={audio:base64};
-      params.q = "( ͡° ᴥ ͡°)";
-      assistant.audio = true;
-    }else {
-      params.q = (this.prompt == '*?')? this.randomPrompt:this.prompt;
-    }
-
-    params.hub=this.$navigation.store;
-
-    this.messages.push({
-      role:this.displayName,
-      content:params.q,
-      products:[]
-    });
-    this.messages.push(assistant);
-    this.prompt = "";
-    this.error = null;
-    // 
-    // force change detection
-    this.messages = this.messages.slice();
-
-
-    this.isRuning = this.$cart.chat(params).subscribe(chunk => {
-      setTimeout(()=> {
-        assistant.audio = false;      
-        assistant.content += chunk.text||'';
-        assistant.tool = chunk.tool;
-        assistant.content = assistant.content.replace(/\(\([0-9]*\)\)/gm,'')
-
-        assistant.html = this.markdownRender(assistant.content);  
-        if(this.scrollToBottom) {
-          this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;  
-          this.scrollBottomPosition = Math.max(this.container.nativeElement.scrollTop,this.scrollBottomPosition)
-        }   
-        return this.messages;
-      });
-    },err => {
-      this.isRuning = null;
-      this.error = err.error;
-    },async ()=>{ //complete == finally
-      this.isFeedbackReady = true;
-      this.isRuning = null;
-      assistant.running = false;      
-
-      await this.loadProducts(assistant);
-    });
-
-    //
-    // close on exit
-    this.subscription$.add(this.isRuning);
-  }
-
+  // stop assistant 
   onAbort() {
-    if(!this.isRuning) {
-      return;
-    }
-    this.isRuning.unsubscribe()
-  }
-  async onFeedback(evaluation, message){
-    const index = this.messages.findIndex(msg => msg.id==message.id);
-    if(index>-1) {
-      const content = {...this.messages[0],...this.messages.slice(index-1)};
-      await this.$metrics.feedback(evaluation,content).toPromise();
-      this.isFeedbackReady = false;
-    }
-    this.$cdr.markForCheck();
-
   }
 
-  async audioRecord($event) {
-    if(this.timeoutRecord || this.isRuning) {
-      this.audioStopAndSave();
-      return;
-    }
-    this.audioDetected = true;
-    this.timeoutRecord = setTimeout(this.audioStopAndSave.bind(this),10000);
-    await this.$audio.startRecording();
-    this.$cdr.markForCheck();
+
+  onScrollToBottom() {
+    setTimeout(()=>{
+      this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
+      this.scrollBottomPosition = this.container.nativeElement.scrollTop;        
+      this.scrollStickedToolbar = (this.container.nativeElement.scrollTop>40);
+    },500);
   }
 
-  audioStopAndSave($event?) {
-    if(!this.timeoutRecord||this.isRuning||this.$audio.recordTime<1) {
-      return;
-    }
-    clearTimeout(this.timeoutRecord);
-    this.timeoutRecord = 0;
-    //
-    // fake subscription to avoid reentrency
-    this.isRuning = new Subscription();
-    this.$cdr.markForCheck();
-    setTimeout(async()=> {
-      try{
-        const blob = await this.$audio.stopRecording();
-        const audioDetected = await this.$audio.detectSound({blob});
-        const base64 = await this.$audio.blobToBase64(blob);
-
-        //
-        // detect sound on audio, and convert buffer
-        this.audioDetected = audioDetected;  
-
-        //
-        // should exit 
-        if(!this.audioDetected){
-          this.prompt = "";
-          return;
-        }
-        //
-        // run the prompt and exit
-        this.prompt = "audio";
-        this.onChat(base64);
-      }catch(error){
-        console.log(error);
-        //
-        // use sentry to report the error
-        throw error;
-      }  
-    });
-
-
-    // this.$audio.stopRecording(format).then(blob=>{
-    //   //
-    //   // detect sound on audio, and convert buffer
-    //   const convert = Promise.all([
-    //     this.$audio.detectSound({blob}), 
-    //     this.$audio.blobToBase64(blob)
-    //   ]);
-    //   return convert
-    // }).then(([audioDetected,base64]) => {
-    //   this.audioDetected = audioDetected;  
-    //   //
-    //   // should exit 
-    //   this.$cdr.markForCheck();
-    //   if(!this.audioDetected){
-    //     this.prompt = "";
-    //     return;
-    //   }
-
-    //   return this.onChat(base64);
-    // }).then(done => {
-    //   console.log('chat done',done);
-    // }).catch(error => {
-    //   alert(error.message)        
-    // }).finally(()=> this.$cdr.markForCheck());
-  }  
-
-  //
-  // capture Clic on child innerHtml
-  @HostListener('click', ['$event'])
-  async onClickAction($event) {
-    if(this.isRuning || !this.currentMessage) {
-      return;
-    }
-    const target = $event.target as HTMLElement;
-    const href = target.getAttribute('href')||'';
-
-    const rules =[
-      {regexp:/products\/cart/,prompt:"Quelques recettes avec mon panier ", param:false},      
-      {regexp:/products\/orders/,prompt:"Informations sur mes dernières commandes", param:false},      
-      {regexp:/popular\/([^)]+)/,prompt:"Quelques recettes avec les produits populaires", param:false},      
-      {regexp:/recipe\/([^)]+)/,prompt:"Le détail de la recette ", param:true},      
-      {regexp:/search\/([^)]+)/,prompt:"Cherche les aliments séparés pour ", param:true},      
-      {regexp:/theme\/([^)]+)/,prompt:"10 recettes de la thématique ", param:true},      
-      {regexp:/document\/([^)]+)/,prompt:"Je souhaite connaître ", param:true},      
-      {regexp:/sku\/([^)]+)/,prompt:"Je souhaite des variations de ", param:true},      
-    ]
-
-    //
-    // apply URL action
-    for(const rule of rules) {
-      const values = rule.regexp.exec(href);  
-      if(!values || !values.length) {
-        continue;
-      }
-      $event.stopPropagation();
-      $event.preventDefault();
-      let param = (rule.param)?("'"+ decodeURI(values[1].replace(/_/gm,' '))+"'"):'';
-      const sku = /1[0-9]{6,7}/.exec(param);
-      if(sku) {
-        const product = this.currentMessage.products.find(product => product.sku==parseInt(sku[0]));
-        param = product && product.title || param;
-      }
-
-      this.prompt = rule.prompt+param;
-      this.onChat();
-      break;
-    }
+  onAssistant(state) {
+    this.assistantState = state;
+    this.onScrollToBottom();
   }
-
   // //
   // // capture mic control
   // @HostListener('window:keydown.m',['$event']) 
@@ -507,16 +252,21 @@ export class KngAssistantBotComponent implements OnInit {
   //   this.audioStopAndSave(0); 
   // }
 
+  onAudioRecord($event) {
+    this.assistant.audioRecord($event);
+  }
 
-  async onTip($event,action:string) {
-    $event.preventDefault();
-    this.prompt = action;
-    this.onChat();
+  onChat($event?) {
+    this.assistant.onChat($event);
+  }
+
+  onPrompt($event,action?) {
+    this.assistant.onPrompt($event,action);
   }
 
   async onClear($event?){
     $event.preventDefault();
-    await this.history(true);
+    // await this.history(true);
   }
 
   onClose(closedialog) {
