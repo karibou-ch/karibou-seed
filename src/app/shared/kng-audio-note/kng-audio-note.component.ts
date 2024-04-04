@@ -110,7 +110,7 @@ export class KngAudioNoteComponent implements OnInit {
     this.cartItemAudioError = !(await this.$audio.isAudioGranted());
 
 
-    await this.$audio.startRecording(15000);    
+    await this.$audio.startRecording({timeout:15000});    
 
   }
 

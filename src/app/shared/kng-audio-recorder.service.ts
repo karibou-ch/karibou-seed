@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { i18n } from '../common';
 import { RecordRTCPromisesHandler } from "recordrtc";
 
 
@@ -42,8 +41,8 @@ export class KngAudioRecorderService {
 
 
   constructor(
-    private $i18n:i18n
   ) {
+    this._recorderState = RecorderState.STOPPED;
   }
 
 
@@ -107,7 +106,7 @@ export class KngAudioRecorderService {
   }
 
   
-  async startRecording(timeout?) {    
+  async startRecording(options:any = {}) {    
     if (this._recorderState == RecorderState.RECORDING) {
       this.recorderError.emit(ErrorCase.ALREADY_RECORDING);
       return;
@@ -124,13 +123,44 @@ export class KngAudioRecorderService {
       // });
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
+      const media = window['MediaRecorder'];
+      let mimeType:any = 'audio/webm';
+      if (media.isTypeSupported('audio/webm; codecs=opus')) { //opus as preferred codec
+        mimeType='audio/webm; codecs=opus';
+      } else if (media.isTypeSupported('audio/webm; codec=opus')) { //opus as preferred codec
+        mimeType='audio/webm; codec=opus';
+      } else  if (media.isTypeSupported('audio/webm')) {
+        mimeType='audio/webm';
+      } else if (media.isTypeSupported('audio/mp4;codec=mp3')) { //mp4 for IOS
+        mimeType='audio/mp4; codec=mp3';
+      } else if (media.isTypeSupported('audio/mp4')) { //mp4 for IOS
+        mimeType='audio/mp4';
+      } else {
+        console.error("no suitable mimetype found for this device");
+      }
+
+      // DBG stuffs for live 
+      // window.MIMETYPE='audio/mpeg; codecs="mp3"'
+      mimeType = window['MIMETYPE']|| mimeType;
+      const rtcpOpts:any = {
+        type: 'audio',
+        mimeType,
+        numberOfAudioChannels: 1,
+      }
+
+      //
+      // needs chunks of audio
+      if(options.timeSlice) {
+        rtcpOpts.timeSlice = options.timeSlice;
+        rtcpOpts.ondataavailable = async function(blob) {
+          console.log(' chunk of data',blob);
+          const base64 = await this.blobToBase64(blob);
+          options.onChunk({blob,base64});
+        }
+      }
       //
       // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/recordrtc/index.d.ts
-      this.recorder = new RecordRTCPromisesHandler(this.stream, {
-        type: 'audio',
-        mimeType: 'audio/webm',
-        numberOfAudioChannels: 1,
-      });      
+      this.recorder = new RecordRTCPromisesHandler(this.stream,rtcpOpts);      
     
       //
       // use hark for silence detection,
@@ -140,17 +170,17 @@ export class KngAudioRecorderService {
 
       this.recorderState.emit(this._recorderState);
 
-      if(timeout) {
+      if(options.timeout) {
         this._recordTimeout = setTimeout(()=> {
           this.recorderState.emit(RecorderState.SILENCE);
-        },timeout);
+        },options.timeout);
         this.stopOnSilence(this.stream);
       }
 
     }catch(err){
       console.log('---- DBG audio-record',err);
       this.clear();
-      alert(this.$i18n.label().audio_error)
+      throw err;
     }
   }
 
@@ -161,21 +191,23 @@ export class KngAudioRecorderService {
     clearTimeout(this._recordTimeout);    
     this._recordTime = 0;
     this._recordTimeout = 0;
+    let url,blob,base64;
     if(this._recorderState == RecorderState.STOPPED) {
-      return;
+      return {blob, base64};
     }
     try{
       this._recorderState = RecorderState.STOPPED;
-      this.stream.getAudioTracks().forEach((track: any) => track.stop());
-      await this.recorder.stopRecording();
-      const blob = await this.recorder.getBlob();
-      const base64= await this.recorder.getDataURL();
+      // this.stream.getAudioTracks().forEach((track: any) => track.stop());
+      url = await this.recorder.stopRecording();
+      blob = await this.recorder.getBlob();
+      base64= await this.recorder.getDataURL();
       return {blob, base64};
-    }catch(err){
+    }catch(err:any){
       this.recorderError.emit(err);
     }finally{
       this.recorderState.emit(this._recorderState);
       this.clear();
+      return {blob, base64};
     }
   }
 
