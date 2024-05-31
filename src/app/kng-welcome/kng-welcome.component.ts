@@ -214,11 +214,6 @@ export class KngWelcomeComponent implements OnInit {
   }
 
 
-  set store(name) {
-    this.$navigation.store = name;
-    // this.$router.navigate(['/store/'+name]);
-  }
-
   get store() {
     return this.$navigation.store;
   }
