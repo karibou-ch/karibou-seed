@@ -35,7 +35,6 @@
 
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
-
     <!-- DISPLAY HUB ITEMS -->
     <kng-cart-items (checkoutEvent)="doInitateCheckout($event)" [showCartItems]="currentCartView" [i18n]="i18n" [config]="config" [currentHub]="hub" [showSeparator]="idx>0" [showFooter]="!last"></kng-cart-items>
     </ng-container>

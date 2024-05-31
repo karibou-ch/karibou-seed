@@ -16,6 +16,7 @@ import { KngNavigationStateService, KngUtils, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
+import { Subscription } from 'rxjs';
 
 
 
@@ -189,6 +190,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.shops = loader[3];
     this.orders = [];
 
+    this.subscription$ = new Subscription();
     this.loadOrders(); 
 
     const cart = this.$route.snapshot.paramMap.get('name');
@@ -219,7 +221,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     const defaultHub =  this.currentHub;//this.$navigation.landingHubSlug ||
 
     const _current = this.config.shared.hubs.find(hub => hub.slug == defaultHub);
-    if(this.lockedHUB){
+    if(this.lockedHUB || this.isSharedCart || !this.currentCartView){
       return [_current];
     }
     const _hubs = this.config.shared.hubs.filter(hub => hub.slug != defaultHub);
@@ -250,70 +252,75 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    if(this.subscription$) {
-      this.subscription$.unsubscribe();
-    }
+    this.subscription$.unsubscribe();
   }
 
 
   ngOnInit() {
+
+
     this.store = this.$navigation.store;
     this.currentHub = this.config.shared.hub;
 
+    console.log(this.store,this.currentHub)
     //
     // save the plan for the subscription (business, customer)
     this.plan = this.$route.snapshot.queryParams.plan||window['subsplan']||'customer';
 
-    this.$route.queryParams.subscribe(params => {
+    this.subscription$.add(
+      this.$route.queryParams.subscribe(params => {
       const view = params.view
       this.currentCartView = (view != "subscription");
 
       this.initItems();
-    })
+      })
+    );
 
-    this.subscription$ = this.$loader.update().subscribe(emit => {
-      // if (emit.state) {
-      //   console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
-      // }
-      // emit signal for config
-      if (emit.config) {
-        //
-        // set the stripe key
-        if (this.config.shared && this.config.shared.keys) {
-          this.$stripe.setKey(this.config.shared.keys.pubStripe);
+    this.subscription$.add(
+      this.$loader.update().subscribe(emit => {
+        // if (emit.state) {
+        //   console.log('--DEBUG load cart', CartAction[emit.state.action], emit);
+        // }
+        // emit signal for config
+        if (emit.config) {
+          //
+          // set the stripe key
+          if (this.config.shared && this.config.shared.keys) {
+            this.$stripe.setKey(this.config.shared.keys.pubStripe);
+          }
+          //
+          // update local config
+          this.currentHub = this.config.shared.hub.slug;
         }
-        //
-        // update local config
-        this.currentHub = this.config.shared.hub.slug;
-      }
-      // emit signal for user
-      if (emit.user) {
-        this.user = emit.user;       
-        //this.$cart.setContext(this.config,this.user);
-        //this.loadOrders(); 
-      }
-      // emit signal for cart
-      if (emit.state) {
-
-        //
-        // display subscription or cart 
-        this.isValid = true;
-
-        this.currentShippingDay = this.$cart.getCurrentShippingDay();
-
-        this.initItems();
-        //
-        // if customer have only one valid payment method, 
-        // and payment is not set
-        const payment = this.user.payments.find((method,idx,all) => method.isValid && all.length==1 && method.isValid());
-        if(!this.$cart.getCurrentPaymentMethod() && payment) {
-          this.$cart.setPaymentMethod(payment);
+        // emit signal for user
+        if (emit.user) {
+          this.user = emit.user;       
+          //this.$cart.setContext(this.config,this.user);
+          //this.loadOrders(); 
         }
-      }
+        // emit signal for cart
+        if (emit.state) {
 
-    }, error => {
-      console.log('loader-update', error);
-    });
+          //
+          // display subscription or cart 
+          this.isValid = true;
+
+          this.currentShippingDay = this.$cart.getCurrentShippingDay();
+
+          this.initItems();
+          //
+          // if customer have only one valid payment method, 
+          // and payment is not set
+          const payment = this.user.payments.find((method,idx,all) => method.isValid && all.length==1 && method.isValid());
+          if(!this.$cart.getCurrentPaymentMethod() && payment) {
+            this.$cart.setPaymentMethod(payment);
+          }
+        }
+
+      }, error => {
+        console.log('loader-update', error);
+      })
+    );
 
     //
     // load cart from server to limit Cart Sync Issue
