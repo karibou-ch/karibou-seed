@@ -130,22 +130,22 @@
 
   <!-- DESKTOP -->
   <ul>
-    <li class="hide-sm separator" [routerLink]="userRouterLink">
+    <li class="hide-sm " [routerLink]="userRouterLink">
 
         <!-- LOGIN / REGISTER -->
         <span class="label" [hidden]="!user.isAuthenticated()" >
           {{label.nav_account}}
-          <span class="material-symbols-outlined secondary-text" >account_circle</span>
           <!-- <div >{{label.nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
           <!-- <span class="cart-users-count">2</span> -->
-        </span>
+        </span>        
         <span class="label" [hidden]="user.isAuthenticated()" >
           {{label.nav_login2}}
-          <span class="material-symbols-outlined secondary-text">account_circle</span>
           <!-- <div >{{label.nav_login2}}</div> -->
-        </span>
-              
+        </span>              
+    </li>
+    <li class="hide-sm separator" [hidden]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/assistant/james'">
+      <b>Découvrez James</b>
     </li>
     <li (click)="scrollToSlug(category.slug)"
               [id]="'category-'+j"                    
