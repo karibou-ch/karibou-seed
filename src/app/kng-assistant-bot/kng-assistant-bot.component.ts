@@ -36,10 +36,10 @@ export class KngAssistantBotComponent implements OnInit {
 
   tips = [
     {clazz:"", label:"Qui es-tu James?",action:"Bonjour James, qui es-tu et quelles sont les services que tu proposes ?"},
-    //{clazz:"hide-sm", label:"Mon panier...",action:"Une semaine de menus avec les produits de mon panier"},
-    {clazz:"hide-sm", label:"Mes commandes",action:"Que proposes-tu avec mes commandes"},
-    {clazz:"", label:"Un événement",action:"Je veux organiser un buffet pour un événement"},
-    {clazz:"hide-sm", label:"Une école",action:"Une composition équilibrée de 10 produits pour le parascolaire des enfants"},
+    {clazz:"hide-sm", label:"Mon panier...",action:"Une semaine de menus avec les produits de mon panier"},
+    {clazz:"hide-sm", label:"Mes commandes",action:"Que proposes-tu avec mes commandes précédentes"},
+    //{clazz:"", label:"Un événement",action:"Je veux organiser un buffet pour un événement"},
+    //{clazz:"hide-sm", label:"Une école",action:"Une composition équilibrée de 10 produits pour le parascolaire des enfants"},
     // {clazz:"", label:"Produits populaires...",action:"Une semaine de menus avec les produits populaires"},
     // {clazz:"", label:"Les thématiques...",action:"Quelle liste de thématiques tu proposes?"},
     {clazz:"", label:"J'ai de la chance",action:"*?"},
