@@ -221,7 +221,7 @@ export class CardComponent {
         this.isLoading = false;
       },
       result => {
-        this.displayCardError = result.message || result.error.message;
+        this.displayCardError = result.error || result.message;
         this.isLoading = false;
       }
     );
