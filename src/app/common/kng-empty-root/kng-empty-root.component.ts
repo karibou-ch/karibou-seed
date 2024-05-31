@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { KngNavigationStateService } from '../navigation.service';
 
 @Component({
   selector: 'app-kng-empty-root',
@@ -7,9 +10,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class KngEmptyRootComponent implements OnInit {
 
-  constructor() { }
+  private subscription$: Subscription;
+  constructor(
+    private $route: ActivatedRoute,
+    private $navigation: KngNavigationStateService
+  ) { 
+    this.subscription$ = new Subscription();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription$.unsubscribe();
+  }
 
   ngOnInit(): void {
+    this.subscription$.add(
+      this.$route.params.subscribe(params => {
+      this.$navigation.store = params['store'];
+    }));
+
   }
 
 }
