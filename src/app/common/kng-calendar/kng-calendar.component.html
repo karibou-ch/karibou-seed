@@ -1,6 +1,6 @@
   <!-- CONTAINER-->
   <div class="calendar-container">
-    <h3 [hidden]="hideTitle">{{label.nav_shipping}} {{currentHub.siteName[locale]}}</h3>
+    <h3 [hidden]="minimal">{{label.nav_shipping}} {{currentHub.siteName[locale]}}</h3>
 
     <!-- NO SHIPPING -->
     <div class="noshipping block-warning" [hidden]="!noshippingMsg">
@@ -19,9 +19,20 @@
             <div class="ei_Title">{{day|date:'EEE d':'':locale}}</div>
         </div>
       </div>
+    </div>    
+
+    <div class="switch-hub kng-boxed" [hidden]="minimal">
+      <div class="label">{{label_switch_store}}</div>
+      <span class="content">
+        <button class="goto" [routerLink]="['/store',displayHubSwitch.slug,'home']">{{displayHubSwitch.name}}​</button>
+      </span>
     </div>
+
     <!-- PENDING ORDER -->
-    <p [hidden]="!pendingOrder" class="info" [innerHtml]="label.cart_order_grouped_info">
-    </p>
+    <div [hidden]="!pendingOrder" >
+        <p [innerHtml]="label.cart_order_grouped_info" class="help-info" ></p>
+    </div>
+
+
 
   </div>
