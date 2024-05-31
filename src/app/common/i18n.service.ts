@@ -37,7 +37,7 @@ export class i18n  {
     cart_audio_note: 'Le montant facturé sera mis à jour lors de la préparation par le commerçant et ne pourra pas dépasser le maximum réservé de',
     cart_others: 'Panier(s) des autres marchés',
     cart_order_grouped_details:'Vous avez une commande en préparation',
-    cart_order_grouped_info:'<b>Psst!</b> Vous avez oublié quelque chose? Pour compléter votre commande, il suffit d\'en passer une nouvelle <span class="bold">😇</span>!',
+    cart_order_grouped_info:'<b class="highlight">Psst!</b> Vous avez oublié quelque chose? Pour compléter votre commande, il suffit d\'en passer une nouvelle <span class="bold">😇</span>!',
     home_feedback_title: 'Votre commande',
     james_title_cta:'Rencontrez James, votre assistant culinaire',
     james_product_title:'Découvrez James avec ce produit',
@@ -62,7 +62,8 @@ export class i18n  {
     nav_shipping: 'Livraison ',
     nav_shipping_off: 'Cette journée n\'est plus disponible',
     nav_store: 'Informations ',
-    nav_store_sub: 'Vous souhaitez des produits de différents marchés? Pas de problème ! Recevez tous vos paniers en une seule livraison ​​​​​​​​​​​​​​​​​​​​​​​​😉​',
+    nav_store_sublong: 'Vous voulez d\'autres jours de livraison ? Changez de marché !',
+    nav_store_subshort: 'Vous souhaitez plus de diversité ? Changez de marché !',
     nav_store_change: 'Faire ses courses',
     nav_store_b2b: 'Découvrir l\'offre entreprise',
     nav_store_continue:'J\'ai oublié un article',
@@ -122,7 +123,9 @@ export class i18n  {
     subscription_status_off:'↳ une commande ponctuelle sur mesure',
     month:'chaque mois',
     week:'chaque semaine',
-    '2weeks': 'une semaine sur deux'
+    '2weeks': 'une semaine sur deux',
+    category_name_champagnes:'Champagne et mousseux',
+
   };
 
   public en: any = {
@@ -149,7 +152,7 @@ export class i18n  {
     cart_audio_note: 'The amount charged will be updated during preparation by the merchant and cannot exceed the maximum reserved of ',
     cart_others: 'Cart(s) from other markets',
     cart_order_grouped_details:'You have an order in process',
-    cart_order_grouped_info:'<b>Psst!</b> Forgot something? To complete your order, just place a new one <span class="bold">😇</span>!',
+    cart_order_grouped_info:'<b class="highlight">Psst!</b> Forgot something? To complete your order, just place a new one <span class="bold">😇</span>!',
     james_title_cta:'Introducing James, Your Culinary Assistant',
     james_product_title:'Discover James with this product',
     james_product_action:'See examples',
@@ -173,7 +176,8 @@ export class i18n  {
     nav_shipping: 'Delivery ',
     nav_shipping_off: 'This delivery day is currently fully booked',
     nav_store: 'Informations',
-    nav_store_sub: 'You want products from different markets ? No problem ! You are entitled to multiple baskets 😉',
+    nav_store_sublong: 'Want other delivery days? Switch markets!',
+    nav_store_subshort: 'Want more diversity? Simply switch markets!',
     nav_store_change: 'Go shopping',
     nav_store_b2b: 'Discover our business selection?',
     nav_store_continue:'Continue shopping',
@@ -235,7 +239,7 @@ export class i18n  {
     category_title:'Categories',    
 
     //FIXME
-    category_name_champagnes:'Champagne',
+    category_name_champagnes:'Champagne and Sparkling wines',
     category_name_fruits_legumes:'Fruits & Vegetables',
     category_name_boucherie_artisanale:'Meat Shop',
     category_name_poissonnerie:'Fish Shop',
