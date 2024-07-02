@@ -3,6 +3,7 @@ import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.se
 import {UploadClient} from '@uploadcare/upload-client';
 
 import { i18n } from '../../common';
+import { AssistantService } from 'kng2-core';
 
 @Component({
   selector: 'kng-audio-note',
@@ -15,12 +16,11 @@ export class KngAudioNoteComponent implements OnInit {
 
   @Output() onCartItemAudioLoading = new EventEmitter<boolean>();
   @Output() onCartItemAudioError = new EventEmitter<Error>();
-  @Output() onCartItemAudio = new EventEmitter<string>();
+  @Output() onCartItemAudio = new EventEmitter<{audio,note?}>();
 
   cartItemAudioLoading: boolean;
   cartItemAudioError: boolean;
   cartItemAudio: string;
-  cartItemNote: string;
   audioDetected: boolean|undefined;
   audioRecorded: boolean;
 
@@ -28,6 +28,7 @@ export class KngAudioNoteComponent implements OnInit {
 
 
 
+  @Input() cartItemNote: string;
   @Input() filename:string;
   @Input() set amount(value: number){
     this._amount = (value).toFixed(2); 
@@ -43,6 +44,7 @@ export class KngAudioNoteComponent implements OnInit {
 
 
   constructor(
+    private $assistant: AssistantService,
     private $audio: KngAudioRecorderService,
     public $i18n: i18n,
   ) { 
@@ -73,18 +75,16 @@ export class KngAudioNoteComponent implements OnInit {
 
 
   ngOnDestroy() {
-    const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
-    const eventName = supportTouchEvent? 'touchend':'mouseup';
-    window.removeEventListener(eventName,this.audioStopAndSave.bind(this));
+    // const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
+    // const eventName = supportTouchEvent? 'touchend':'mouseup';
+    // window.removeEventListener(eventName,this.audioStopAndSave.bind(this));
+    this.$audio.closeAudioStream();
+
   }
 
   async ngOnInit() {
     //
     // detect end recording
-    const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
-    const eventName = supportTouchEvent? 'touchend':'mouseup';
-    window.addEventListener(eventName,this.audioStopAndSave.bind(this));
-
 
   }
 
@@ -95,9 +95,25 @@ export class KngAudioNoteComponent implements OnInit {
   }
 
 
+  async audioWhisper(base64: string) {
+    const params:any = {body:{audio:base64,whisperOnly:true}};
+    params.q = 'whisper';
+    this.cartItemNote = '';
+    this.$assistant.chat(params).subscribe((content) => {
+      this.cartItemNote += content.text;
+    },(error) => {
+      this.onCartItemAudio.emit({audio:base64});
+    },()=>{
+      this.cartItemNote = this.cartItemNote.trim().replace('**traitement...**','');
+      this.onCartItemAudio.emit({audio:base64,note:this.cartItemNote});
+    });
+
+  }
+
+
   async audioRecord($event) {
     if(this.audioIsRecording) {
-      return;
+      return this.audioStopAndSave();
     }
     this.cartItemAudioError = !(await this.$audio.isAudioGranted());
 
@@ -107,7 +123,7 @@ export class KngAudioNoteComponent implements OnInit {
   }
 
   async audioStopAndSave() {
-    if(!this.audioIsRecording||this.$audio.recordTime<1) {
+    if(!this.audioIsRecording) {
       return;
     }
     try{
@@ -137,15 +153,14 @@ export class KngAudioNoteComponent implements OnInit {
       // upload file if audio is ok
       const file = await client.uploadFile((blob as any),options);
       this.onCartItemAudioLoading.emit(false);
-      const url = file.cdnUrl.replace('https:', '');
+      const audio = file.cdnUrl.replace('https:', '');
       this.cartItemAudioLoading = false;
 
-      this.cartItemAudio = url;
-      const audio:HTMLAudioElement = document.querySelector('#audio');
-      audio.setAttribute('src', this.cartItemAudio);  
+      this.cartItemAudio = audio;
+      const audioHtml:HTMLAudioElement = document.querySelector('#audio');
+      audioHtml.setAttribute('src', this.cartItemAudio);  
 
-      this.onCartItemAudio.emit(url);
-
+      this.audioWhisper(base64);
     }catch(error){
       this.cartItemAudioLoading = false;
       this.cartItemAudioError = true;
@@ -153,4 +168,12 @@ export class KngAudioNoteComponent implements OnInit {
       this.onCartItemAudioError.emit(error);
     }
   }  
+
+  onClear() {
+    this.cartItemAudio = null;
+    this.cartItemNote = null;
+    this.onCartItemAudio.emit({audio:this.cartItemAudio,note:this.cartItemNote});
+
+  }
+
 }

@@ -139,6 +139,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     window.scroll(0, 0);
     this.subscription.add(
       this.$route.params.subscribe(params => {
+      if(!params.store) {
+        return;
+      }
+
       this.$navigation.store = params['store'];
     }));
     
@@ -474,6 +478,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  onAssistantClick($event) {
+    console.log('----assistant click',$event);
+  }
 
   onFavorites(){
     this.$navigation.searchAction('favoris');    

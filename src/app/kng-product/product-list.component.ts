@@ -43,7 +43,9 @@ export class ProductListComponent implements OnInit {
 
   isReady = false;
   config: any;
+  jamesTitle:string;
   products: Product[] = [];
+  selections: Product[] = [];
   cache: {
     products: Product[];
   };
@@ -73,6 +75,8 @@ export class ProductListComponent implements OnInit {
 
   options: {
     hub?: string;
+    bundle?: boolean;
+    customized?: boolean;
     available: boolean;
     status?: boolean;
     when: string|boolean;
@@ -120,7 +124,7 @@ export class ProductListComponent implements OnInit {
     this.scrollDirection = 0;
     this.contracts = [];
     this.subcriptionParams = {
-      activeForm:true,
+      activeForm:false,
       dayOfWeek:0,
       frequency:'week'
     }
@@ -362,7 +366,7 @@ export class ProductListComponent implements OnInit {
   }
 
   getProducts() {
-    return this.cache.products;
+    return this.products;
   }
 
   getVendorsClosed() {
@@ -381,7 +385,7 @@ export class ProductListComponent implements OnInit {
   productsByShop(shopname) {
     //
     // update metrics
-
+    this.selections = [];
     this.options.hub = this.store;
     this.options.shopname = shopname;
     //this.options.when = this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.hub);
@@ -402,6 +406,7 @@ export class ProductListComponent implements OnInit {
       }
 
       this.cache.products = this.products = products.sort(this.sortProducts);
+      this.selections = this.products.filter(product => product.attributes.home);
 
       //
       // count child categories
@@ -418,6 +423,7 @@ export class ProductListComponent implements OnInit {
 
 
   productsBySubscription() {
+    this.selections = [];
     this.options.hub = this.store;
     delete this.options.when;
     this.$cart.subscriptionsGet().subscribe(contracts => this.contracts=contracts);
@@ -448,12 +454,18 @@ export class ProductListComponent implements OnInit {
   }
 
   productsByCategory(category) {
+    this.selections = [];
     const when = (this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub)) as Date;
     this.options.hub = this.store;
-    this.options.when = when.toISOString()
+    this.options.when = when.toISOString();
+    this.options.bundle = false;
 
     this.$product.findByCategory(category, this.options).subscribe((products: Product[]) => {
+      //
+      // sort product and fork selection
       this.cache.products = this.products = products.sort(this.sortProducts);
+      this.selections = this.products.filter(product => product.attributes.home);
+
 
       //
       // count child categories
@@ -487,6 +499,14 @@ export class ProductListComponent implements OnInit {
 
   toggleChild(child: string) {
     this.filterChild = child;
+  }
+
+  onAssistantData(skus: number[]) {
+    this.jamesTitle = this.$i18n.label().james_selection_pinned;
+    this.selections = this.cache.products.filter(product => skus.indexOf(product.sku) > -1);
+    //console.log('onAssistantData', this.selections.map(product => product.title));
+    this.cdr.markForCheck();  
+    this.dialog.nativeElement.scrollTop = 0;
   }
 
   onMOnbileShowMore(){
@@ -559,6 +579,13 @@ export class ProductListComponent implements OnInit {
     return product.sku;
   }
 
+  onAudioStopAndSave($event) {
+    console.log('onAudioStopAndSave');
+  }
+
+  onAudioError($event) {
+    console.log('onAudioError');
+  }
 }
 
 

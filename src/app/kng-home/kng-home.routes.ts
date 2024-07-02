@@ -15,7 +15,7 @@ export const childrenRoute: Route[] = [
   { path: 'products', pathMatch: 'full', component: ProductComponent, data: { redirect: true } },
   { path: 'category/:category/:child', component: ProductListComponent },
   { path: 'category/:category', component: ProductListComponent },
-  { path: 'assistant', outlet:'sidebar',  loadChildren: () => import('../kng-assistant-bot/kng-assistant-bot.module').then( m => m.KngAssistantBotModule)}
+  { path: 'assistant',  loadChildren: () => import('../kng-assistant-bot/kng-assistant-bot.module').then( m => m.KngAssistantBotModule)}
 ];
 
 
@@ -27,9 +27,6 @@ export const appRoutes: Routes = [
 
   { 
     path: 'patreon',  loadChildren: () => import('../kng-patreon/kng-patreon.module').then( m => m.KngPatreonModule)
-  },
-  {
-    path: 'assistant', outlet:'sidebar',  loadChildren: () => import('../kng-assistant-bot/kng-assistant-bot.module').then( m => m.KngAssistantBotModule)
   },
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },

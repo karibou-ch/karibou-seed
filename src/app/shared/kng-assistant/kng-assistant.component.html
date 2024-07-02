@@ -51,19 +51,20 @@
   <div class="content" >
     <!-- QUERY CHAT -->
     <div class="bottom" [class.running]="messagesCount">
-
       <div class="welcome-mic" [hidden]="messagesCount">
         <div class="audio-info-title" >
           {{label.james_welcome}}
-          <div class="sub">{{label.james_feedback_title}}</div>
         </div>
+        <kng-stream-sentence  [sentences]="prompts" (chat)="prompt = ($event.sentence);onChat()" [pause]="messagesCount"></kng-stream-sentence>
 
         <div class="icon" [class.recording]="audioIsRecording"  (click)="audioRecord($event)">
           <div class="material-symbols-outlined pause">pause_circle</div>
           <div class="material-symbols-outlined mic">mic</div>
         </div>
+
       </div>
-      
+      <div class="sub-highlight" [hidden]="messagesCount<3">{{label.james_feedback_title}}</div>
+
       <!-- <div class="recipe-info" [hidden]="messagesCount" >
         {{prompts[0]}}
       </div> -->
@@ -89,7 +90,7 @@
         </div>
         <div class="help">
           <button type="button" [disabled]="isAssistantRuning" class="tag kng-chip" [ngClass]="tip.clazz" *ngFor="let tip of tips" [innerHtml]="tip.label" (click)="onPrompt($event, tip.action)"></button>
-          <button type="button" [disabled]="isAssistantRuning" class="tag end "> <span class="material-symbols-outlined" (click)="onClear($event)">cancel</span></button>
+          <button type="button" [disabled]="isAssistantRuning" class="tag kng-chip end " (click)="onClear($event)"> <span class="material-symbols-outlined">delete</span> brrr..</button>
         </div>
       </form>
       <div class="disclaimer">

@@ -30,9 +30,11 @@ import { KngFeedbackComponent } from '../shared/kng-feedback/kng-feedback.compon
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
 import { KngSubscriptionOptionComponent } from './kng-subscription-option/kng-subscription-option.component';
-import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
 import { KngRippleDirective } from './kng-ripple.directive';
 import { NgxStripeModule } from 'ngx-stripe';
+import { KngAddressComponent } from './kng-address/kng-address.component';
+import { KngPaymentComponent } from './kng-payment/kng-user-payment.component';
+import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
 
 
 @NgModule({
@@ -49,6 +51,9 @@ import { NgxStripeModule } from 'ngx-stripe';
     ReactiveFormsModule,
     CommonMdcModule,
     RouterModule,
+    KngSubsciptionControlComponent,
+    KngPaymentComponent,
+    KngAddressComponent,
     KngUiBottomActionsComponent,
     KngSearchComponent,
     KngSearchBarComponent,
@@ -62,10 +67,12 @@ import { NgxStripeModule } from 'ngx-stripe';
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-    KngSubsciptionControlComponent,
     KngRippleDirective
   ],
   declarations: [
+    KngSubsciptionControlComponent,
+    KngPaymentComponent,
+    KngAddressComponent,
     KngUiBottomActionsComponent,
     KngSearchComponent,
     KngSearchBarComponent,
@@ -79,7 +86,6 @@ import { NgxStripeModule } from 'ngx-stripe';
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-    KngSubsciptionControlComponent,
     KngRippleDirective
   ],
 })

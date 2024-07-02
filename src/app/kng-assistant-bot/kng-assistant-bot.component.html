@@ -31,59 +31,7 @@
       </div>
 
       <kng-assistant #assistant [user]="user" [config]="config" [prompt]="prompt" [prompts]="prompts" [tips]="tips" (assistant)="onAssistant($event)">
-
       </kng-assistant>
-
-      <div class="content" *ngIf="false">
-        <!-- QUERY CHAT -->
-        <div class="bottom" [class.running]="messagesCount">
-
-          <div class="welcome-mic" [hidden]="messagesCount">
-            <div class="audio-info-title" >
-              {{label.james_welcome}}
-              <div class="sub">{{label.james_feedback_title}}</div>
-            </div>
-
-            <div class="icon" [class.recording]="audioIsRecording"  (click)="onAudioRecord($event)">
-              <div class="material-symbols-outlined pause">pause_circle</div>
-              <div class="material-symbols-outlined mic">mic</div>
-            </div>
-          </div>
-          
-          <!-- <div class="recipe-info" [hidden]="messagesCount" >
-            {{prompts[0]}}
-          </div> -->
-
-          <form (submit)="onChat()">
-            <!-- RESET -->
-            <div class="input " [hidden]="!messagesLimit">
-              <button  (click)="onClear($event)" type="button" class="record reset">
-                {{label.james_reset_action}}
-              </button>
-            </div>
-            <div class="input " [hidden]="messagesLimit">
-              <textarea (keydown.enter)="onChat()" type="text" (submit)="onChat()" [(ngModel)]="prompt" tabindex="0"  [ngModelOptions]="{standalone: true}" placeholder="Message James…"></textarea>
-              <!-- RUN AUDIO -->
-              <button #recorder (click)="onAudioRecord($event)" type="button" class="record " [disabled]="isAssistantRuning"  [class.recording]="audioIsRecording" [hidden]="!messagesCount">
-                <span class="material-symbols-outlined">mic</span>
-              </button>
-        
-              <!-- RUN QUERY -->
-              <button type="button" class="push" [disabled]="isAssistantRuning" (click)="onChat()">
-                <span class="material-symbols-outlined">arrow_upward</span>
-              </button>
-            </div>
-            <div class="help">
-              <button type="button" [disabled]="isAssistantRuning" class="tag kng-chip" [ngClass]="tip.clazz" *ngFor="let tip of tips" [innerHtml]="tip.label" (click)="onPrompt($event, tip.action)"></button>
-              <button type="button" [disabled]="isAssistantRuning" class="tag end "> <span class="material-symbols-outlined" (click)="onClear($event)">cancel</span></button>
-            </div>
-          </form>
-          <div class="disclaimer">
-            <span>James can make mistakes. Consider checking recipes before feeding kids</span>
-          </div>
-        </div>
-
-      </div>
     </div>
   </div>
 </div>

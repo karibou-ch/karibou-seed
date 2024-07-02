@@ -3,7 +3,16 @@
   <section>
     <h2 class="">{{title}}</h2>
   </section>
-  <div class="content" #scrollEl >
+  <div class="content-sm">
+    <div class="product" *ngIf="firstProduct">
+      <img [src]="firstProduct.photo.url" alt="">
+    </div>
+    <div class="action">
+      <div class="icon"><i class="material-symbols-outlined">playlist_add</i></div>
+      <div class="title" (click)="doSearch(action)">{{actionLabel}} </div>
+    </div>
+  </div>
+  <div class="content" #scrollEl >    
       <div class="mdc-layout-grid">
         <kng-product-thumbnail 
           [selected]="true"

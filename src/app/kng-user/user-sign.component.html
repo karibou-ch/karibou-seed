@@ -111,7 +111,7 @@
 
     <!-- PAYMENT -->
     <div class="inner" *ngIf="askAction=='payment'">
-      <kng-user-payment [user]="user" [minimal]="mandatory.minimal" [config]="config" (updated)="onUpdatePayment($event)"></kng-user-payment>
+      <kng-user-payment-page [user]="user" [config]="config" (updated)="onUpdatePayment($event)"></kng-user-payment-page>
     </div>
       
     <!-- LOGOUT -->

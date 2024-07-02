@@ -8,6 +8,7 @@ import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 import { Config, User, UserService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
+import { KngPaymentComponent } from '../common/kng-payment/kng-user-payment.component';
 
 @Component({
   selector: 'kng-user-sign',
@@ -17,45 +18,6 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 export class UserSignComponent {
 
   K_BRAND = '/assets/img/k-brand-lg.png';
-
-  issuer = {
-    wallet: {
-      img: '/assets/img/payment/wallet.jpg',
-      label: 'Votre compte privé'
-    },
-    invoice: {
-      img: '/assets/img/payment/invoice.jpg',
-      label: 'Facture en ligne'
-    },
-    mastercard: {
-      img: '/assets/img/payment/mc.jpg',
-      label: 'Mastercard'
-    },
-    visa: {
-      img: '/assets/img/payment/visa.jpg',
-      label: 'VISA'
-    },
-    amex: {
-      img: '/assets/img/payment/ae.jpg',
-      label: 'American Express'
-    },
-    'american express': {
-      img: '/assets/img/payment/ae.jpg',
-      label: 'American Express'
-    },
-    btc: {
-      img: '/assets/img/payment/btc.jpg',
-      label: 'Bitcoin'
-    },
-    eth: {
-      img: '/assets/img/payment/bch.jpg',
-      label: 'Bitcoin Cash'
-    },
-    kng: {
-      img: '/assets/img/payment/xlm.jpg',
-      label: 'Lumen'
-    }
-  };
 
 
   i18n: any = {
@@ -162,6 +124,7 @@ export class UserSignComponent {
       referrer: this.$route.snapshot.data.referrer
     };
 
+    
     const postalCodeValidator= (control) => {
       if(this.mandatory.minimal){
         return;
@@ -212,6 +175,10 @@ export class UserSignComponent {
     this.updateState();
   }
 
+
+  get issuer(){
+    return KngPaymentComponent.issuer;
+  }
 
   get hubSlug() {
     if (!this.config || !this.config.shared.hub) {

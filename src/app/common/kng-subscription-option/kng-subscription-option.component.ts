@@ -151,7 +151,6 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
         // CART_SHIPPING   =10,
         if(emit.state && emit.state.action) {
           //this.currentShippingDay = this.$cart.getCurrentShippingDay();
-          console.log('---- ',emit.state.action,this.hub.name,this.hub.weekdays)
           this.subscriptionParams = this.$cart.subscriptionGetParams();
           this.selDayOfWeek = this.findDayOfWeek(this.subscriptionParams.dayOfWeek);
           this.selIteration = this.findIteration(this.subscriptionParams.frequency);

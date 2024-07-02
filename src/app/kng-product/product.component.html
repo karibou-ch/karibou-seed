@@ -84,14 +84,15 @@
           [key]="config.shared.keys.pubUpcare"
           [amount]="product.pricing.price * cartItemQuantity"
           [src]="cartItemAudio" 
+          [cartItemNote]="cartItemNote" 
           (onCartItemAudio)="onAudioStopAndSave($event)"
           (onCartItemAudioError)="onAudioError($event)"></kng-audio-note>
 
 
       <!-- DESCRIPTION -->
       <div class="description">
-        <div [kng-markdown]="product.details.description"></div>
-        <div [hidden]="!product.details?.origin" class="light">{{product.details.origin}}</div>
+        <div [kng-markdown]="product.details.description" removeRoot="true"></div>
+        <div [hidden]="!product.details?.origin" class="light" [innerHtml]="product.details.origin"></div>
       </div>
 
       <!-- CERTIFIED -->

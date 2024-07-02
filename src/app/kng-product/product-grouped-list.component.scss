@@ -10,6 +10,14 @@
       margin: 10px 0 20px;
     }
 
+    &.james{
+      padding: 14px;      
+      border-radius: 14px;
+      width: calc(100% - 28px);
+      margin-left: -14px;
+      background-color: yellow;
+      margin-top: 20px;
+    }
   }
 
   .category-hide-sm:not(.display) {
@@ -35,7 +43,7 @@
       display: block;      
     }
     &.child{      
-      margin: 50px 4px;
+      margin: 50px 4px 25px;
       border-bottom: 1px solid #ddd;
     }
     &.child:first-child {

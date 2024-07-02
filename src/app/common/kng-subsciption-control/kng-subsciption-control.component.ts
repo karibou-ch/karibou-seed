@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CartService, CartSubscription, Config, Order, ProductService, User, UserService } from 'kng2-core';
+import { CartService, CartSubscription, Config, Order, ProductService, User, UserCard, UserService } from 'kng2-core';
 import { StripeService } from 'ngx-stripe';
 import { i18n } from 'src/app/common';
+import { PaymentEvent } from '../kng-payment/kng-user-payment.component';
 
 @Component({
   selector: 'kng-subsciption-control',
@@ -77,7 +78,7 @@ export class KngSubsciptionControlComponent implements OnInit {
     this._orders = [];
     this.contracts = [];
     this.pauseUntil = this.until = new Date(Date.now()+3600000*24*6);
- 
+    this.user = $user.currentUser;
   }
 
   get locale() {
@@ -124,6 +125,11 @@ export class KngSubsciptionControlComponent implements OnInit {
       return false;
     }
     return this.currentContract.latestPaymentIntent.status=='requires_payment_method';
+  }
+
+  get userPayment() {
+    const alias = this.currentContract.paymentAlias;
+    return new UserCard(this.user.payments.find(payment => payment.alias == alias) || {})
   }
 
   ngOnDestroy(){
@@ -252,13 +258,17 @@ export class KngSubsciptionControlComponent implements OnInit {
 
   }
 
-  async onUpdatePaymenMethod() {
-    try{
-      const card = {};
-      const intent = this.currentContract.latestPaymentIntent;
+  async onUpdatePaymenMethod(payment:PaymentEvent) {
+    try{      
+      // on error
+      if(payment.error) {
+        this.error = payment.error;      
+        return
+      }
+      const card = payment.card;
+      const hub = this.currentContract.items[0].hub;
       this.isRunning = true;
-      this.error = null;      
-      this.currentContract = await this.$cart.subscriptionUpdatePayment(this.currentContract.id,card).toPromise();
+      this.currentContract = await this.$cart.subscriptionUpdatePayment(hub,this.currentContract.id,card.id).toPromise();
     }catch(err) {
       this.error = err.error||err.message;
     }finally{

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { stat } from 'fs';
 import { Config, CartSubscription, CartItemsContext, CartItem, CartService, LoaderService, Hub, User, Order, CartSubscriptionParams, CartSubscriptionProductItem } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
@@ -29,7 +30,7 @@ export class KngCartItemsComponent implements OnInit {
   @Input() i18n: any;
   @Input() set showCartItems(value: boolean){
     this._showCartItems = value;
-    if(!this.currentHub) {
+    if(!this.hub) {
       return;
     }
 
@@ -37,7 +38,7 @@ export class KngCartItemsComponent implements OnInit {
     // _showCartItems determine items for subscription
     const ctx:CartItemsContext = {
       forSubscription:!this._showCartItems,
-      hub:this.currentHub.slug
+      hub:this.hub.slug
     }    
 
     this.items = this.$cart.getItems(ctx);
@@ -94,6 +95,7 @@ export class KngCartItemsComponent implements OnInit {
     this.weekdays = this.$i18n.label().weekdays.split('_');
     this.contracts =[];
     this.contractItems = [];
+    this._config = {shared:{}} as Config;
     this.__v =0;
 
     //
@@ -108,12 +110,19 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get hub() {
+    // case of non active hub with currentHub == undefined
+    if(!this.currentHub) {
+      const hub = (this.config.shared && this.config.shared.hub) || {shared:{},status:{}};
+      hub.status.active = false;
+      return hub;
+    }
+
     return this.currentHub;
   }
 
   get isActiveHub() {
     const hub = this.config.shared && this.config.shared.hub;
-    return this.currentHub.slug == hub.slug;
+    return this.hub.slug == hub.slug;
   }
 
   get hubLogo() {
@@ -138,7 +147,7 @@ export class KngCartItemsComponent implements OnInit {
       return '';
     }
     const day = when.getDay();
-    const label = this.i18n[this.locale].cart_info_one_date.replace('__HUB__',this.currentHub.name).replace('__DAY__',this.weekdays[day]);
+    const label = this.i18n[this.locale].cart_info_one_date.replace('__HUB__',this.hub.name).replace('__DAY__',this.weekdays[day]);
     return label;
   }
 
@@ -149,18 +158,18 @@ export class KngCartItemsComponent implements OnInit {
       const ctx:CartItemsContext = {
         forSubscription:!this.showCartItems,
         onSubscription:!this.showCartItems,
-        hub:this.currentHub.slug
+        hub:this.hub.slug
       }    
     //
     // adding gateway fees
     const gateway = this.$cart.getCurrentGateway();
-    const fees = this.currentHub.serviceFees + gateway.fees;
+    const fees = this.hub.serviceFees + gateway.fees;
     const label = this.i18n[this.locale].cart_info_service_k.replace('__FEES__',(fees*100).toFixed(0));
     return  label + ' ('+this.$cart.totalHubFees(ctx)+' fr)';
   }
 
   get cart_info_hub_not_active() {
-    return this.i18n[this.locale].cart_info_hub_not_active.replace('__HUB__',this.currentHub.name);
+    return this.i18n[this.locale].cart_info_hub_not_active.replace('__HUB__',this.hub.name);
   }
 
   get cart_info_checkout_or_subscription() {
@@ -211,7 +220,7 @@ export class KngCartItemsComponent implements OnInit {
 
 
 
-    if(!contract || contract.items[0].hub !== this.currentHub.slug) {
+    if(!contract || contract.items[0].hub !== this.hub.slug) {
       return;
     }
     
@@ -240,7 +249,7 @@ export class KngCartItemsComponent implements OnInit {
     if(!currentDay || currentDay<now) { 
       return false; 
     }
-    const week = this.config.potentialShippingWeek(this.currentHub);
+    const week = this.config.potentialShippingWeek(this.hub);
     const available =week.some(day => day.getDay() == currentDay.getDay());
     return available;
   }
@@ -249,7 +258,7 @@ export class KngCartItemsComponent implements OnInit {
   // used for order limitation
   get isNotShippingLimit() {
     const ranks = Object.keys(this.currentRanks);
-    if(!this.currentShippingDay || !this.currentHub.status || !this.currentHub.status.active || !ranks.length){
+    if(!this.currentShippingDay || !this.hub.status || !this.hub.status.active || !ranks.length){
       return true;
     }
     const day = this.currentShippingDay;
@@ -303,11 +312,6 @@ export class KngCartItemsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // case of non active hub with currentHub == undefined
-    if(!this.currentHub) {
-      this.currentHub = this.config.shared.hub;
-      this.currentHub.status.active = false;
-    }
 
     this._subscription.add(
       this.$cart.subscription$.subscribe(contracts => {
@@ -333,7 +337,7 @@ export class KngCartItemsComponent implements OnInit {
         }
 
         if(emit.config){
-          this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
+          this.currentRanks = this.config.shared.currentRanks[this.hub.slug] || {};
           this.currentLimit = this.config.shared.hub.currentLimit || 1000;
           this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;      
         }
@@ -344,13 +348,13 @@ export class KngCartItemsComponent implements OnInit {
 
         // WARNING
         // there is one emit by HUB (you will see more than one on console.log)
-        //console.log(this.currentHub.slug,emit.state.action)
+        //console.log(this.hub.slug,emit.state.action)
 
 
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
         if(!this.isCrossMarketShippingDate){
-          this.currentShippingDay = Order.nextShippingDay(this.user,this.currentHub);
+          this.currentShippingDay = Order.nextShippingDay(this.user,this.hub);
         }
 
         //
@@ -358,7 +362,7 @@ export class KngCartItemsComponent implements OnInit {
         // onSubscription:!this.showCartItems,
         const ctx:CartItemsContext = {
           forSubscription:!this.showCartItems,
-          hub:this.currentHub.slug
+          hub:this.hub.slug
         }    
 
         if(this.showCartItems) {
@@ -375,7 +379,7 @@ export class KngCartItemsComponent implements OnInit {
 
 
         this.noshippingMsg = this.getNoShippingMessage();
-        this.hasOrderError = this.$cart.hasError(this.currentHub.slug);
+        this.hasOrderError = this.$cart.hasError(this.hub.slug);
 
         //
         // select subs when order view is False
@@ -401,7 +405,7 @@ export class KngCartItemsComponent implements OnInit {
     const updateItems = this.contractItems.slice();
     const ctx = {
       plan:this.plan,
-      hub:this.currentHub,
+      hub:this.hub,
       items: this.items,
       updated:updateItems,
       contract: contract, 
@@ -410,7 +414,7 @@ export class KngCartItemsComponent implements OnInit {
       user: this.user
     } as CheckoutCtx;
     if(!this.user.isAuthenticated()) {
-      return this.$router.navigate(['/store/'+this.currentHub.slug+'/home/me/login-or-register']);
+      return this.$router.navigate(['/store/'+this.hub.slug+'/home/me/login-or-register']);
     }
     this.checkoutEvent.emit(ctx);
   }
@@ -421,7 +425,7 @@ export class KngCartItemsComponent implements OnInit {
     const ctx:CartItemsContext = {
       forSubscription:!this.showCartItems,
       onSubscription:!this.showCartItems,
-      hub:this.currentHub.slug
+      hub:this.hub.slug
     }    
     return this.$cart.totalHubFees(ctx);
   }
@@ -435,7 +439,7 @@ export class KngCartItemsComponent implements OnInit {
       return this.$i18n[this.locale].nav_no_shipping_long;
     }
 
-    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => {
+    const noshipping = this.config.noShippingMessage(this.hub).find(shipping => {
       return shipping.equalsDate(this.currentShippingDay) && shipping.message;
     });
     return noshipping && noshipping.message[this.locale];
@@ -454,7 +458,7 @@ export class KngCartItemsComponent implements OnInit {
 
   //DEPRECATED
   getTotalDiscount() {
-    return this.$cart.getTotalDiscount(this.currentHub.slug)
+    return this.$cart.getTotalDiscount(this.hub.slug)
   }  
 
   //DEPRECATED
@@ -469,14 +473,14 @@ export class KngCartItemsComponent implements OnInit {
     const ctx:CartItemsContext = {
       forSubscription:!this.showCartItems,
       onSubscription:!this.showCartItems,
-      hub:this.currentHub.slug
+      hub:this.hub.slug
     }    
 
     return this.$cart.subTotal(ctx);
   }
 
   sortedItems(hub?) {
-    const slug = hub? hub.slug:this.currentHub;
+    const slug = hub? hub.slug:this.hub;
     return this.items.filter(item => item.hub == slug).sort((a,b) => {
       return a.category.slug.localeCompare(b.category.slug);
     });

@@ -43,26 +43,38 @@
         <h2 [innerHtml]="category.current.description"></h2>  
       </div>
 
-      <!-- FOR SUBSCRIPTION -->
+      <div class="kng-informations" *ngIf="label_subscriptionInformations">
+        <div class="menu">
+          <div class="elem main info" (click)="activeMenu=true" [class.active]="activeMenu">
+            <span class="-hide material-symbols-outlined size-large">apps</span>
+            
+          </div>
+          <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">
+            {{label.nav_menu_information}}
+          </div>
+        </div>
+        <div class="markdown" [hidden]="activeMenu" [kng-markdown]="label_subscriptionInformations"></div> 
+      </div>
+
+
+      <!-- ACTIVE SUBSCRIPTION OPTS -->
       <div class="subscription colored" *ngIf="isForSubscriptionList">
         <div class="row ">
           <div class="label">
-            {{label.subscription_switch}}
-            <div class="sublabel"><span [innerHtml]="label_souscription"></span></div>
+            {{label_souscription}}
           </div>
           <label class="switch">
             <input type="checkbox"  [(ngModel)]="activeSubscription" ngDefaultControl>
-            <span class="slider">
-             <svg class="slider-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation"><path fill="none" d="m4 16.5 8 8 16-16"></path></svg> 
-            </span>
+            <span class="slider"></span>
           </label>  
         </div>
       </div>
-
+      
       <!-- SUBSCRIPTION OPTIONS  -->
       <div class="subscription" [hidden]="!isForSubscriptionList||!activeSubscription">
         <kng-subscription-option [hub]="hub"  [contract]="subscriptionContract"></kng-subscription-option>
       </div>
+
 
 
 
@@ -80,20 +92,11 @@
                     *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
             <span>{{child.name}}</span>
           </li>
-        </ul>        
+        </ul>      
       </div>
     </div>
-
-    <div class="kng-informations" *ngIf="label_subscriptionInformations">
-      <div class="menu">
-        <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">
-          <span class="material-symbols-outlined size-large">apps</span></div>
-        <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">
-          {{label.nav_menu_information}}
-        </div>
-      </div>
-      <div class="markdown" [hidden]="activeMenu" [kng-markdown]="label_subscriptionInformations"></div> 
-    </div>
+    <!-- JAMES-->
+    <kng-audio-assistant *ngIf="products.length>50" class="kng-assistant" [category]="category.current.slug" [products]="products" (onData)="onAssistantData($event)"></kng-audio-assistant>  
 
     <!-- FURTHER -->
     <div class="further-product-container" [hidden]="!activeMenu">
@@ -105,15 +108,15 @@
         [displayVendor]="true"
         [displaySubscription]="activeSubscription"
         [config]="config" 
-        [user]="user"         
-        [useGroupedCategory]="activeSubscription"
+        [user]="user"
+        [selections]="selections"         
+        [selectionsTitle]="jamesTitle"         
+        [useGroupedCategory]="isForSubscriptionList"
         [scrollContainer]="getDialog()"
         [scrollToSlug]="scrollToCategory"
         [contentCategories]="getChildCategory(category.current)" 
         [contentProducts]="getProducts()"
         (currentCategory)="filterChild=$event"
         (direction)="scrollDirection=$event"> </kng-product-grouped-list>
- 
-  
-  </div>
+    </div>
 </div>

@@ -17,6 +17,7 @@ import { StripeService } from 'ngx-stripe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
 import { Subscription } from 'rxjs';
+import { StripeCardElement, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
 
 
 
@@ -166,6 +167,19 @@ export class KngCartComponent implements OnInit, OnDestroy {
   };
 
 
+  //
+  // Stripe
+  elements: StripeElements;
+  card: StripeCardElement;
+  isLoading: boolean;
+
+  // optional parameters
+  elementsOptions: StripeElementsOptions = {
+    locale: 'fr'
+  };
+
+
+
 
   constructor(
     public $dom: DomSanitizer,
@@ -257,8 +271,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-
-
     this.store = this.$navigation.store;
     this.currentHub = this.config.shared.hub;
 
@@ -333,7 +345,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  initItems() {
+  async initItems() {
     if(!this.isValid) {
       return;
     }
@@ -348,6 +360,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       ctx.onSubscription = false;
     }
     this.items = this.$cart.getItems(ctx);      
+
+    // stripe 
+    // const elements = await this.$stripe.elements().toPromise();
+    // const applePay = elements.create('applePay');
   }
 
   doSelectCart(viewcart:boolean) {

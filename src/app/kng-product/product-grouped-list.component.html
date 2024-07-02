@@ -1,3 +1,21 @@
+<div class="group" [class.james]="selectionsTitle" *ngIf="selections.length">
+  <section  class="category-hide-sm" [class.display]="showSection" [ngClass]="isChildCategory ? 'child':'title'">
+    <h2>{{selectionsTitle || label.nav_pinned}}</h2>
+    <!-- <h3 class="hide" [innerHtml]="category.description"></h3> -->
+  </section>
+
+  <div class="kng-layout-card" [class]="clazz">
+    <!-- [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor" -->
+    <kng-product-thumbnail 
+      *ngFor="let product of selections;let j=index" 
+      [displayVendor]="displayVendor"
+      [visibility]="true" 
+      [sku]="product.sku"         
+      [class]="clazz">
+    </kng-product-thumbnail>
+  </div>
+</div>
+
 <ng-template ngFor let-i="index" let-category [ngForOf]="sortedCategories" [ngForTrackBy]="trackerCategories">
   <ng-content  *ngIf="i==categoryMiddle && contentIf"></ng-content>
   <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>

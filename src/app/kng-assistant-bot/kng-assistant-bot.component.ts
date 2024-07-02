@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User } from 'kng2-core';
+import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User, AssistantService } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
 import { KngAudioRecorderService, RecorderState } from '../shared/kng-audio-recorder.service';
 import { Subscription } from 'rxjs';
@@ -49,6 +49,7 @@ export class KngAssistantBotComponent implements OnInit {
     "Les 10 meilleures recettes de cuisine italienne", 
     "Les 10 meilleures recettes de cuisine Espagnole et Tapas", 
     "Les 10 meilleures recettes de cuisine de la mer", 
+    "Pains pita garnis à la grecque",
     "La recette du Hamburgers texans",
     "La recette de Viande hachée façon Cambodgienne",
     "La recette Gyudon Japonais",
@@ -74,6 +75,7 @@ export class KngAssistantBotComponent implements OnInit {
   constructor(
     private $i18n: i18n,
     private $cart: CartService,
+    private $assistant: AssistantService,
     private $metric: AnalyticsService,
     private $metrics: MetricsService,
     private $navigation: KngNavigationStateService,
@@ -263,6 +265,12 @@ export class KngAssistantBotComponent implements OnInit {
   onPrompt($event,action?) {
     this.assistant.onPrompt($event,action);
   }
+
+  onTip($event) {
+    this.prompt = $event.sentence;
+  }
+
+
 
   async onClear($event?){
     $event.preventDefault();

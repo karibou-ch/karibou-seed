@@ -176,25 +176,37 @@
       padding-bottom: 5px;
       height: auto;
     }
-
+    .sub-highlight{
+      text-align: center;
+      font-size: 12px;
+      line-height: 17px;
+      color: #333;
+      font-family: monospace;
+      margin: 2px auto;      
+      background-color: yellow;    
+    }
     .welcome-mic {
       height: 70%;
+      text-align: center;
+      width: 100%;
+      kng-stream-sentence{
+        width: calc(100% - 20px);
+        height: 60px;        
+        margin: auto;
+        display: block;
+        padding: 10px;
+      }
       div.audio-info-title {
         font-size: larger;
         color: #aaa;
         width: 250px;
+        margin: auto;
         text-align: center;
         line-height: 27px;        
-        .sub{
-          font-size: 12px;
-          line-height: 17px;
-          color: #333;
-          font-family: monospace;
-          margin-top: 10px;      
-          background-color: yellow;    
-        }
       }
-      div.icon{
+
+
+    div.icon{
         width: 100%;
         position: relative;
         div{
@@ -302,7 +314,7 @@
           background-color: transparent;
           margin-right: 0;
           margin-left: auto;
-          color: red;
+          color: #8d1313;
         }
 
         .kng-chip{
@@ -320,7 +332,7 @@
           &.end{
             margin-right: 5px;
             margin-left: auto;
-            width: 45px;
+            width: fit-content;
             background-color: #eee;            
           }
         }
@@ -413,22 +425,6 @@
       font-size: 15px;
     }
 
-    @-webkit-keyframes anim-ripple {
-      0% {
-        opacity: 0;
-        -webkit-transform: scale3d(3, 3, 1);
-        transform: scale3d(3, 3, 1);
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
-      }
-    }
-    
     @keyframes anim-ripple {
       0% {
         opacity: 0;

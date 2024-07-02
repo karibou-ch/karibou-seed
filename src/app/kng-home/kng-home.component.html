@@ -31,10 +31,9 @@
 <kng-calendar [hidden]="availableSearch" class="fit-content" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
 <!-- JAMES -->
-<div class="kng-boxed hide-md hide-lg" [hidden]="!isJamesAvailable">
+<div class="kng-boxed hide-md hide-lg " >
   <div class="content">    
-
-    <div class="bottom"> <button [routerLink]="'/store/'+store+'/home/assistant/james'" >Découvrez James, il est à votre service</button></div>
+    <div class="bottom"> <button [routerLink]="'/store/'+store+'/home/assistant/james'" >James est à votre service</button></div>
   </div>
 </div>
   
@@ -60,14 +59,12 @@
 
 
 
-  <!-- JAMES -->
+  <!-- JAMES 
   <div class="kng-boxed hide-sm" [hidden]="!isJamesAvailable">
     <div class="content">    
-      <div class="items">Découvrez notre assistant culinaire</div>
-
-      <div class="bottom"> <button [routerLink]="'/store/'+store+'/home/assistant/james'" >Découvrez James</button></div>
-    </div>
-  </div>
+      <kng-audio-assistant agent="feedback" (onAction)="onAssistantClick($event)"></kng-audio-assistant>
+    </div> 
+  </div> -->
 
   <!-- NEED HELP? -->
   <div class="kng-boxed">
@@ -93,7 +90,7 @@
         <ul class="subs">
           <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <h3>{{label.nav_subscription_b2b}}</h3>
-            <span class="">{{subB2b.t[locale]}} 🍏 </span>
+            <span class="">{{subB2b.t[locale]}}</span>
           </li>
           <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <h3>{{label.nav_subscription}}</h3>
@@ -144,7 +141,7 @@
           <!-- <div >{{label.nav_login2}}</div> -->
         </span>              
     </li>
-    <li class="hide-sm separator" [hidden]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/assistant/james'">
+    <li class="hide-sm separator"  [routerLink]="'/store/'+store+'/home/assistant/james'">
       <b>Découvrez James</b>
     </li>
     <li (click)="scrollToSlug(category.slug)"

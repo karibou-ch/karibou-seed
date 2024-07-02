@@ -108,10 +108,25 @@ h3{
       @media (max-width: 430px) {
         padding: 0 5px;
       }
+
   
       &::-webkit-scrollbar { 
         display: none; 
       }    
+
+      kng-user-payment{
+        width: 100%;
+      }
+      .method{
+        padding: 5px;
+        background: #eee;
+        width: 100%;
+        border-radius: 8px;
+        margin: 5px 0;        
+      }
+      .title_payment{
+        white-space: break-spaces;        
+      }
 
       .title{
         overflow: hidden;

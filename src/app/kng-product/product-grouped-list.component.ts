@@ -118,6 +118,10 @@ export class ProductGroupedListComponent implements OnInit {
     this.productsGroupByCategory();
   }
 
+  @Input() selectionsTitle: string;
+  @Input() selections: Product[];
+
+
   @Input() set scrollToSlug(slug: string) {
     if (!slug) {
       return;
@@ -155,6 +159,7 @@ export class ProductGroupedListComponent implements OnInit {
     this.cache = {
       products: []
     };
+    this.selections = [];
 
     this.showSection = true;
     this.categoryMiddle = 2;
@@ -194,6 +199,10 @@ export class ProductGroupedListComponent implements OnInit {
       this.currentCategory.emit(name)
     })
 
+  }
+
+  get label() {
+    return this.$i18n.label();
   }
 
   get isMobile() {

@@ -237,7 +237,7 @@ kng-product-swipe{
   margin: 0 10px;
   ul{
     &.subs{
-      display: flex;
+      -display: flex;
     }
     list-style: none;
     padding: 0;
@@ -247,9 +247,10 @@ kng-product-swipe{
     gap: 8px;
     justify-items: center;  
     li.subs{
-      width: calc(200% - 10px );
+      grid-column: span 2!important;
+      width: calc(100% - 30px );
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       border-radius: 10px;
       background-color: var(--mdc-theme-appbar);
       color: var(--mdc-theme-appbar-text);

@@ -56,6 +56,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   thumbnail = false;
   bgStyle: any;
   bgImage: string;
+  bgGradient: string;
   photosz: string;
   cartItemNote: string;
   cartItemAudio: string;
@@ -181,6 +182,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.$i18n.label();
   }
 
+  get urlTitle(){
+    return this.product.title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
+  }
+
   //
   // this component is shared with thumbnail, tiny, and wider product display
   // on init with should now which one is loaded
@@ -243,22 +248,18 @@ export class ProductComponent implements OnInit, OnDestroy {
       //
       // Alerts when navigating away from a web page
       // https://stackoverflow.com/questions/1289234/alerts-when-navigating-away-from-a-web-page/1289260#1289260
-      window.onbeforeunload = function() {
-        return false;
-      }      
+      // window.onbeforeunload = function() {
+      //   return false;
+      // }      
+
+      //
+      // Expression has changed after it was checked
+      // https://angular.io/errors/NG0100
+      setTimeout(()=> this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40,0,1000);
 
     }
   }
 
-  ngAfterViewChecked() {
-    if (!this.isDialog|| !this.dialog || !this.dialog.nativeElement){
-      return;
-    }
-    //
-    // Expression has changed after it was checked
-    // https://angular.io/errors/NG0100
-    setTimeout(()=> this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40,0)
-  }
 
   ngOnDestroy() {
     this.scrollCallback = null;
@@ -273,12 +274,19 @@ export class ProductComponent implements OnInit, OnDestroy {
     console.log('---DBG audio error',error);
   }
 
-  onAudioStopAndSave(url: string) {
-    this.cartItemAudio = url;
-    if(!url){
+  onAudioStopAndSave(ctx:{audio: string,note?:string}) {
+    this.cartItemAudio = ctx.audio;
+    this.cartItemNote = ctx.note;
+    //
+    // update note product, no qty, no variant and audio
+    const item = this.$cart.findBySku(this.product.sku,this.store);
+    if(!item){
+      this.addToCart(0,this.product, null, true);
       return;
     }
-    this.addToCart(0,this.product, null, true);
+    item.audio = this.cartItemAudio;
+    item.note = this.cartItemNote;
+    this.$cart.addOrUpdateNote(item);
   }
 
   addToCart($event, product: Product, variant?: string, audio?: boolean) {
@@ -294,7 +302,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       // Should reload the page
       const label_error = this.$i18n.label().action_error_reload;
       if (confirm(label_error)) {
-        window.location.reload(true);
+        window.location.reload();
       }
     }
 
@@ -562,12 +570,22 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     //
     // if colors detected
+    this.bgGradient = "";
     const colors = this.product.photo.colors;
     if (colors && colors.length) {
+      const conicGradient = `conic-gradient(
+        from -90deg,
+        rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5),        /* Top */
+        rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 0deg,  /* Right */
+        rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 90deg, /* Bottom */
+        rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 270deg  /* Left */
+      )`
+  
       const shadow = `-20px 0 32px -18px rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}),
                     -3px -13px 35px -18px rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b})`;
 
       this.bgStyle['box-shadow'] = shadow;
+      this.bgStyle['background-image'] = `url(${this.product.photo.url + this.photosz}),${conicGradient}`;
     }
   }
 }
@@ -595,7 +613,21 @@ export class ProductThumbnailComponent extends ProductComponent {
     // this.bgStyle = {
     //   'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
     // };
-    
+
+    const colors = this.product.photo.colors;
+    if (colors && colors.length) {
+      this.bgGradient = `linear-gradient(to bottom right, 
+      rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5), 
+      rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 25%, 
+      rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 50%, 
+      rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 75%)`;
+      this.bgStyle = {
+        'background' : this.bgGradient 
+      };
+
+    }
+
+
     if (this.cartItemQuantity) {
       this.bgStyle = {
         'background-color' : this.bgGradient 

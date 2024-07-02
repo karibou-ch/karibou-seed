@@ -53,7 +53,7 @@
         {{i18n[locale].subtitle_subscription_end}}
       </div>
 
-      <h3>{{i18n[locale].subtitle_subscription_options}} </h3>
+      <h3 [hidden]="contract_requires_method">{{i18n[locale].subtitle_subscription_options}} </h3>
 
 
       <ul>
@@ -65,17 +65,24 @@
 
         <!---3D secure -->
         <li [hidden]="!contract_requires_action" >
-          <div class="title">Votre abonnement n'est pas encore actif </div>          
+          <div class="title_payment red">Votre abonnement n'est pas encore actif </div>          
           <button class=""  (click)="onConfirmPaymentIntent()">{{i18n[locale].subtitle_subscription_confirm_method}}</button>
         </li>
 
         <!---new payment method -->
-        <li [hidden]="!contract_requires_method" >
-          <div class="title">Votre abonnement n'est pas encore actif</div>          
-          <button class=""  (click)="onUpdatePaymenMethod()">{{i18n[locale].subtitle_subscription_update_method}}</button>
+        <li [hidden]="!contract_requires_method">
+          <div class="title_payment red">Activer votre abonnement avec une nouvelle méthode de paiement</div>          
+          <div class="method" *ngIf="userPayment">
+            Celle-ci ne fonctione plus →
+            <span class="method name">{{userPayment.issuer}}  **{{userPayment.last4}}</span>&nbsp;
+            <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>  
+          </div>
+          <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+
         </li>
 
-        <li class="contrasted-sm">
+
+        <li class="contrasted-sm" [hidden]="contract_requires_method">
           <div class="title">{{i18n[locale].subtitle_subscription_start}}   </div>
           <label class="date bold kng-chip">{{currentContract.start|date:'EEEE d MMM YYYY'}}</label>
         </li>
@@ -87,7 +94,7 @@
             <b>{{getDayOfWeek(currentContract.dayOfWeek)}} ({{getShippingTime(currentContract)}})</b>  <b class="green">✓</b> 
           </label>      
         </li>
-        <li class="contrasted-sm" [hidden]="currentContract.status=='paused' || currentContract.status=='canceled'">
+        <li class="contrasted-sm" [hidden]="currentContract.status=='paused' || currentContract.status=='canceled' || contract_requires_method">
           <div class="title" [hidden]="currentContract.status=='paused'">
             <span >{{llabel.subtitle_subscription_pause}}&nbsp;</span>            
             <span class="bold">{{pauseUntil|date:'EEE d MMM'}} ?</span>

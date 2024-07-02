@@ -34,16 +34,16 @@
     </div>
 
     </div>
+    <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
+
+    <!-- SUBSCRITION OPTIONS -->
+    <kng-subsciption-control [config]="config"></kng-subsciption-control>
 
     <!-- FEEDBACK -->
     <kng-feedback [config]="config" [user]="user">
     </kng-feedback>
 
-    <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
-
-    <!-- SUBSCRITION OPTIONS -->
-    <kng-subsciption-control [config]="config"></kng-subsciption-control>
 
 
     <!-- MARKETPLACE -->

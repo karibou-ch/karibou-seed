@@ -25,63 +25,10 @@
 
 
   <div [hidden]="small">
-    <h2 MdcHeadline1>{{label.list_add}}</h2>
-    <form [formGroup]="$address" (submit)="onSave()">
+    <h2>{{label.list_add}}</h2>
 
-        <mdc-text-field fullwidth  [label]="$i18n[locale].user_display_name"  type="text" formControlName="name" [ngModel]="user.display()">
-          <span class="material-symbols-outlined" mdcTextFieldIcon trailing>person</span>
-        </mdc-text-field>
+    <kng-address displayClear="true" [config]="config" [address]="address" (updated)="onSave($event)"></kng-address>
 
-
-        <mdc-text-field autocomplete="false" fullwidth  [label]="i18n[locale].address_street" type="text" formControlName="street" class="width-75" (blur)="onGeloc()">
-        </mdc-text-field>
-          
-        <mdc-text-field fullwidth  [label]="i18n[locale].address_floor"  type="text" formControlName="floor" class="width-25 floor">
-        </mdc-text-field>
-  
-        <mdc-text-field fullwidth  [label]="$i18n[locale].user_phone"  type="text" formControlName="phone" >
-        </mdc-text-field>
-  
-        <p class="help-block" >
-          {{label.address_postalcode_title}}
-        </p>
-          
-        <select formControlName="region" class="width-50"  (change)="onGeloc($event)">
-          <!-- <option value="" selected></option> -->
-          <option value="" disabled selected>{{label.address_region}}</option>
-          <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
-        </select>
-        
-          
-        <!-- <mdc-text-field fullwidth  label="Code postal"  type="text" formControlName="postalCode" class="width-50">
-        </mdc-text-field> -->
-        <select  formControlName="postalCode" class="width-50"  (change)="onGeloc($event)">
-          <option value="" disabled selected>{{label.address_postalcode}}</option>
-          <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
-        </select>
-        
-        <mdc-text-field fullwidth  [label]="$i18n[locale].user_address_note"  type="text" formControlName="note">          
-        </mdc-text-field>
-        <!-- <p>Form value: {{ $address.value | json }}</p>
-        <p>Form status: {{ $address.status | json }}</p> -->
-        <button mdc-button 
-                type="button"
-                [unelevated]="true" 
-                [disabled]="idx==null||idx==undefined" 
-                (click)="idx=null;"
-                class="align-left primary">
-          <span >{{$i18n[locale].action_cancel}}</span>
-        </button>            
-        
-        <button mdc-button 
-                [unelevated]="true" 
-                [disabled]="!$address.valid||isLoading" 
-                class="align-right primary">
-          <span class="material-symbols-outlined">account_circle</span>              
-          <span >{{$i18n[locale].action_save}}</span>
-        </button>            
-
-    </form>
   </div>
 
 </div>

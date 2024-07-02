@@ -77,7 +77,7 @@
       &.colored {
         color: #333;
         background: #f6f6f6;
-        margin-top: 40px;
+        margin-top: 10px;
         padding: 12px 16px;
         width: calc(740px - 32px);
       }
@@ -100,7 +100,7 @@
       div.row {
         display: flex;
         width: 100%;
-        margin-bottom: 20px;
+        margin-bottom: 0px;
         align-items: center;
         justify-content: space-between;
       }
@@ -315,7 +315,7 @@
     opacity: 1;
     display: flex;
     margin-bottom: 0;
-    margin-top: 20%;
+    margin-top: 15%;
     flex-direction: column;
     align-items: flex-start;
 
@@ -421,6 +421,7 @@
         }
       }
     }
+
   }
 
   .owner-title {
@@ -435,7 +436,19 @@
   max-width: 760px;
 }
 
+.kng-assistant{
+  background: var(--mdc-theme-appbar-light);
+  width: 225px;
+  margin-left: 10px;
+  border-radius: 7px;      
+  max-width: 740px;
+  padding: 0px 0;
 
+  position: relative;
+
+}
+
+.kng-assistant,
 .kng-informations,
 .owner-title,
 .vendor,
@@ -443,15 +456,12 @@
   max-width: 740px;
   padding: 0px 0;
 
-  display: relative;
+  position: relative;
   width: 95%;
   margin: auto;
   flex: 1;
   align-items: center;
 
-  >div {
-    padding: 10px 5px;
-  }
   >.menu {
     justify-content: flex-start!important;
   }

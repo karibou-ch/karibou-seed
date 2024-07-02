@@ -15,10 +15,10 @@ export enum ErrorCase {
 }
 
 export enum RecorderState {
-  RECORDING,
-  SILENCE,
-  PAUSED,
-  STOPPED
+  RECORDING = "RECORDING",
+  SILENCE = "SILENCE",
+  PAUSED = "PAUSED",
+  STOPPED = "STOPPED"
 }
 
 
@@ -44,8 +44,6 @@ export class KngAudioRecorderService {
   ) {
     this._recorderState = RecorderState.STOPPED;
   }
-
-
   
   get state() {
     return this._recorderState;
@@ -59,6 +57,21 @@ export class KngAudioRecorderService {
   }
 
 
+  closeAudioStream() {
+    if (!this.stream || !this.stream.active) {
+      return;
+    }
+
+    if(this.recorder) {
+      this.recorder.stopRecording();
+    }
+
+    this.stream.getTracks().forEach(function(track) {
+      track.stop();
+      console.log('---- audio stream closed');
+    });
+
+  }
 
   detectAudioVolume(floats32:Float32Array) {
     const analysis = {
@@ -99,16 +112,26 @@ export class KngAudioRecorderService {
     }
     // const permission = await navigator.permissions.query({ name: 'microphone' });
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    } catch (err) {
-      // Errors when accessing the device
-      return false
-    }    
+    // try {
+    //   const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    // } catch (err) {
+    //   // Errors when accessing the device
+    //   return false
+    // }    
     return true;
   }
 
-
+  async getAudioStream() {
+    if (!this.stream || !this.stream.active) {
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        console.error("Error accessing audio stream:", err);
+        throw err;
+      }
+    }
+    return this.stream;
+  }
   
   async startRecording(options:any = {}) {    
     if (this._recorderState == RecorderState.RECORDING) {
@@ -125,7 +148,7 @@ export class KngAudioRecorderService {
       //   startRecordingAt:0,
       //   encodeAfterRecordCheck:true
       // });
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.stream = await this.getAudioStream();
 
       const media = window['MediaRecorder'];
       let mimeType:any = 'audio/webm';
@@ -148,6 +171,7 @@ export class KngAudioRecorderService {
       mimeType = window['MIMETYPE']|| mimeType;
       const rtcpOpts:any = {
         type: 'audio',
+        debugger:false,
         mimeType,
         numberOfAudioChannels: 1,
       }
@@ -157,7 +181,6 @@ export class KngAudioRecorderService {
       if(options.timeSlice) {
         rtcpOpts.timeSlice = options.timeSlice;
         rtcpOpts.ondataavailable = async function(blob) {
-          console.log(' chunk of data',blob);
           const base64 = await this.blobToBase64(blob);
           options.onChunk({blob,base64});
         }
@@ -178,6 +201,8 @@ export class KngAudioRecorderService {
         this._recordTimeout = setTimeout(()=> {
           this.recorderState.emit(RecorderState.SILENCE);
         },options.timeout);
+      }
+      if(options.stopOnSilence) {
         this.stopOnSilence(this.stream);
       }
 
@@ -305,9 +330,10 @@ export class KngAudioRecorderService {
   }
 
 
-  private clear() {
+  private clear() {    
     this.recorder = null;
     this._recorderState = RecorderState.STOPPED;
+    this.closeAudioStream();
   }
 
 }

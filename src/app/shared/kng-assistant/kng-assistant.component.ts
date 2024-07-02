@@ -2,9 +2,9 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, I
 import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.service';
 import { i18n } from 'src/app/common';
 import { Subscription } from 'rxjs';
-import { Config, CartService, User, ProductService, Product } from 'kng2-core';
+import { Config, CartService, User, ProductService, Product, AssistantService, Assistant } from 'kng2-core';
 
-export interface AssistantQuery {
+export interface AssistantQuery extends Assistant{
   content:string;
   role:string;  
 }
@@ -88,7 +88,7 @@ export class KngAssistantComponent implements OnInit {
   constructor(
     private $audio: KngAudioRecorderService,
     private $i18n: i18n,
-    private $cart: CartService,
+    private $assistant: AssistantService,
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
   ) { 
@@ -166,6 +166,8 @@ export class KngAssistantComponent implements OnInit {
 
   ngOnDestroy() {
     this.subscription$.unsubscribe();
+    this.$audio.closeAudioStream();
+
   }
 
   async ngOnInit() {
@@ -225,7 +227,7 @@ export class KngAssistantComponent implements OnInit {
   async history(clear?) {
     try{
       const filterMessage = (message) => ['tool','system'].indexOf(message.user||message.role)==-1&& message.content;
-      this.messages = await this.$cart.chatHistory(clear).toPromise() as AssistantMessage[];
+      this.messages = await this.$assistant.history({clear:(!!clear)}).toPromise() as AssistantMessage[];
       this.messages = this.messages.filter(filterMessage).map(message => {
         const content = (message.content||'').replace(/\(\([0-9]*\)\)/gm,'')
         message.html = this.markdownRender(content);
@@ -263,6 +265,7 @@ export class KngAssistantComponent implements OnInit {
       audio:false,
       tool:{},
       products: [],
+      deleted:false
     }
 
 
@@ -283,7 +286,8 @@ export class KngAssistantComponent implements OnInit {
       audio:false,
       role:this.displayName,
       content:params.q,
-      products:[]
+      products:[],
+      deleted:false
     });
     this.messages.push(assistant);
     this.prompt = "";
@@ -307,7 +311,7 @@ export class KngAssistantComponent implements OnInit {
     }
     this.assistant.emit(state);
 
-    this.isAssistantRuning = this.$cart.chat(params).subscribe(chunk => {
+    this.isAssistantRuning = this.$assistant.chat(params).subscribe(chunk => {
       setTimeout(()=> {
         assistant.assistant = true;      
         assistant.audio = false;      

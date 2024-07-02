@@ -75,6 +75,10 @@ export class KngRootComponent implements OnInit {
   ngOnInit() {
     this.subscription.add(
       this.$route.params.subscribe(params => {
+      if(!params.store) {
+        return;
+      }
+  
       this.$navigation.store = params['store'];
     }));
 
