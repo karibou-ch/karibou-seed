@@ -1,3 +1,27 @@
+:host {
+  &.fit-content{
+    .calendar-container{
+      font-size: 15px;
+      padding: 0 10px;
+      max-width: calc(100% - 20px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;      
+      .calendar {
+        margin-left: -10px;
+
+      }
+      .calendar .list{
+        padding-left: 5px;
+      }
+      .calendar .list .element {
+        width: 50px;
+        height: 68px;
+      }
+    }
+  }
+}
 .calendar-container{
   margin: 10px;
   margin-bottom: 50px;
@@ -9,6 +33,7 @@
     margin-left: 40px;        
   }
   h2{
+    width: 100%;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.87);
     color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
@@ -16,19 +41,27 @@
     margin-bottom: 15px;
   }
   h3{
-    margin-top: 0px;
-    font-weight: 200;
-    font-size: 1.275rem;
-    color: #aaa;
-    text-shadow: 1px 1px 0 white;
+    width: 100%;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 1.4675rem;
+    margin-bottom: 15px;
+    margin-top: 25px;
+    margin-left: 0;    
   }
 
+  .noshipping{
+    width: 100%;
+  }
   .calendar{
     overflow: hidden;
     overflow-x: auto;
-    background-color: rgba(240, 240, 240, .4);
-    background-color:var(--mdc-theme-appbar);
-    border-radius: 50px;
+    background-color: transparent;
+    border:1px solid var(--mdc-theme-appbar);
+    border-radius: 15px;
+    width: 55%;
+    min-width: 385px;    
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -45,7 +78,7 @@
         border: 1px solid #eee;
         width: 60px;
         height: 60px;
-        border-radius: 50px;
+        border-radius: 15px;
         font-size: .80em;
         display: flex;
         flex-flow: column;    
@@ -85,5 +118,44 @@
   
     }
 
+  }
+  .kng-boxed{
+
+    margin-left: -6px;
+    width: fit-content;
+    min-height: 30px;    
+    padding: 0px;
+    .label{
+      padding: 20px 15px 0;
+      font-weight: 400;
+      font-size: inherit;
+    }
+    .content{
+      min-height: auto;
+      padding: 10px;
+    }
+  }
+  .switch-hub {
+    width: 40%;
+    min-width: 385px;    
+    .label button {
+      min-width: 135px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;      
+    }
+    button{
+      cursor: pointer;
+      color: var(--mdc-theme-secondary);
+      background-color: var(--mdc-theme-secondary-text);
+      width: auto;
+      margin-left: 0;
+      margin-right: auto;
+      border: 1px solid var(--mdc-theme-appbar);
+    }
+  }
+
+  p{
+    width: 100%;
   }
 }

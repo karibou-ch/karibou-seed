@@ -24,16 +24,17 @@
           <div class="payment checked" 
             *ngIf="currentPayment?.issuer" 
             (click)="selectPaymentIsDone=!selectPaymentIsDone"
-            [class.error]="!currentPayment.isValid()">
+            [class.error]="!currentPayment.isValid()" 
+            [class.selection]="isSelectionState">
             <label [hidden]="!selectPaymentIsDone"> Changer </label>
-            <div class="method name">{{issuer[currentPayment.issuer].label}}  **{{currentPayment.last4}}</div>
+            <div class="method name"><span class="highlight">{{issuer[currentPayment.issuer].label}}</span>  **{{currentPayment.last4}}</div>
             <div class="note">{{currentPayment.expiryToDate()|date:'MM/y'}}</div>  
           </div>
 
           <div class="payment" *ngFor="let payment of userPayments" 
             [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
             (click)="setPaymentMethod(payment)">
-            <label> Choisir </label>
+            <label class=""> Choisir </label>
             <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
             <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>  
           </div>
@@ -54,6 +55,7 @@
         <section class="addresses">
           <div class="address checked"               
               (click)="userAddressSelection=!userAddressSelection"
+              [class.selection]="isSelectionState"
               [hidden]="!currentShipping()||!currentAddress.streetAdress">
               <label  [hidden]="userAddressSelection"> Changer </label>
 
@@ -62,8 +64,7 @@
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{currentAddress.note}}</div>  
               <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
           </div>
-
-
+          <!-- USER ADDRESS -->
           <div class="address" *ngFor="let address of userAddresses"  
               (click)="setShippingAddress(address)" [hidden]="!userAddressSelection && currentAddress.streetAdress">
               <label> Choisir </label>
@@ -72,6 +73,8 @@
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>  
               <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
           </div>
+
+          <!-- DEPOSIT ADDRESS -->
           <div class="address deposit"  *ngFor="let address of getDepositAddress()" 
               [hidden]="!userAddressSelection && currentAddress.streetAdress || !address.active || useCartSubscriptionView" 
               (click)="setShippingAddress(address)" >
@@ -80,8 +83,14 @@
               <div class="street text-overflow">{{address.streetAdress}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{label.cart_deposit}}</div>  
               <div class="shipping-amount">Fr  {{(address.fees)|number:'1.2-2'}}</div>
-        </div>
-          <!-- NEW ADDRESS -->
+          </div>
+
+          <!-- INLINE NEW ADDRESS -->
+          <!-- <div class="address address-new" *ngIf="!userAddresses.length && selectAddressIsDone">
+            <kng-address displayClear="true" [config]="config" (updated)="onAddressSave($event)"></kng-address>
+          </div> -->
+
+          <!-- MANAGE ADDRESSES -->
           <div class="profile-action"  [hidden]="!userAddressSelection && currentAddress.streetAdress">
             <button class="" [routerLink]="['./user/login-or-address']" >              
               <span class="material-symbols-outlined black">add_box</span> {{labell.user_address_add}} 
@@ -136,13 +145,13 @@
 
           <div class="bill">
             <div class="label">
-              <span [innerHtml]="label.cart_info_subtotal"></span>
+              <span [innerHtml]="label_cart_info_subtotal"></span>
               &nbsp;<i class="material-symbols-outlined gray" (click)="doToggleFees=!doToggleFees">info</i>
             </div>
             <div class="amount">{{itemsAmount|currency:'CHF'}}</div>
           </div>
 
-          <div class="bill border">
+          <div class="bill border" hidden>
             <div class="label">              
               <span [innerHtml]="label_cart_info_subtotal_fees"></span>              
 
@@ -201,7 +210,7 @@
           <!-- AMOUNT RESERVATION (HIDDEN FOR SUBS) -->
           <div class="bill reserved" [hidden]="useCartSubscriptionView">
             <div class="label">
-              {{label.cart_info_reserved}} ({{currentPayment?.issuer}})
+              {{label.cart_info_reserved}} <span class="highlight">{{currentPayment?.issuer}}</span>
             </div>
             <div class="amount-light" >{{currentTotalMinusBalance*amountReserved|currency:'CHF'}}</div>
           </div>
@@ -220,7 +229,7 @@
         <div class="order-resume-block border-left">
           <section class="resume-title" [hidden]="useCartSubscriptionView">
             <p class="bold block-info">              
-              Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} ({{shippingTime}} heures)
+              Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} (<span class="highlight">{{shippingTime}} heures</span>)
             </p>
           </section>  
           
@@ -252,9 +261,10 @@
                   [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a></label>    
             </div>
 
-            <!-- DO ORDER -->
+
+            <!-- DO ORDER-->
             <div [hidden]="useCartSubscriptionView" >
-              <button [disabled]="isFinalizeDisabled"  (click)="doOrder()" >
+              <button [disabled]="isFinalizeDisabled"  (click)="doOrderRouting()" >
                 <span class="material-symbols-outlined icon" [class.waiting]="isRunning"> clock_loader_10</span>
                 {{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}
               </button>    

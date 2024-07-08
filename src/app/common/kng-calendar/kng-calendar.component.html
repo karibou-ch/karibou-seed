@@ -24,5 +24,12 @@
             <div class="ei_Title">{{day|date:'EEE d MMM':'':locale}}</div>
         </div>
       </div>
+    </div>    
+
+    <div class="switch-hub kng-boxed" [hidden]="minimal">
+      <div class="label">{{label_switch_store}}
+        <button class="goto" [routerLink]="['/store',displayHubSwitch.slug,'home']">{{displayHubSwitch.name}}​</button>
+
+      </div>
     </div>
   </div>

@@ -142,6 +142,12 @@
       flex-direction: column;
       align-content: flex-start;
 
+      .address.selection,
+      .payment.selection {
+        -filter:blur(4px);
+        opacity: 0.25;
+      }
+
       .payment.error,
       .address.error{
         .name,
@@ -153,6 +159,14 @@
         }
       }
 
+      .address-new {
+        background-color: white!important;
+        kng-address {
+          border: none;
+          max-width: 600px;
+          margin: auto;
+        }
+      }
       .payment,
       .address{
         display: block;

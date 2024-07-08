@@ -31,11 +31,26 @@
   </section>
 
 
-  <div class="pending-order" [hidden]="!currentCartView" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
-    <p class="shipping-grouped block-info" [innerHtml]="label.cart_order_grouped_info">
+  
+  <!-- CHECKOUT MSG  -->
+  <div class="pending-order display-message" [hidden]="!checkoutMessage">
+    <p class="shipping-grouped block-info" >
+      <span class="highlight" [innerHtml]="checkoutMessage"></span>
+    </p>
+  </div>
+
+  <!-- CHECKOUT ERR MSG  -->
+  <div class="pending-order display-message error-message" [hidden]="!checkoutMessageError">
+    <p class="shipping-grouped block-info" >
+      <span [innerHtml]="checkoutMessageError"></span>
+    </p>
   </div>
 
 
+  <!-- COMPLEMENT DE CMD -->
+  <div class="pending-order" [hidden]="!currentCartView" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
+    <p class="shipping-grouped block-info" [innerHtml]="label.cart_order_grouped_info">
+  </div>  
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
 

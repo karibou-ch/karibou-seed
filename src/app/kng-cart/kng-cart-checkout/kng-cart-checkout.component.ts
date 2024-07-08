@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { i18n, KngUtils } from '../../common';
+import { i18n, KngNavigationStateService, KngUtils } from '../../common';
 import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, OrderShipping, User, UserAddress, UserCard, UserService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
@@ -8,6 +8,8 @@ import { CheckoutCtx } from '../kng-cart-items/kng-cart-items.component';
 import { CartSubscription } from 'kng2-core';
 import { Router, ActivatedRoute } from '@angular/router';
 import pkgInfo from '../../../../package.json';
+import { KngPaymentComponent } from 'src/app/common/kng-payment/kng-user-payment.component';
+import { error } from 'console';
 
 @Component({
   selector: 'kng-cart-checkout',
@@ -58,6 +60,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
 
   selectPaymentIsDone: boolean;
+  paymentTWINT: UserCard;
 
   // FIXME remove hardcoded reserved value 0.11!
   amountReserved = 1.11;
@@ -66,49 +69,10 @@ export class KngCartCheckoutComponent implements OnInit {
   errorMessage: string|null = null;
   isRunning = false;  
 
-  issuer = {
-    cash: {
-      img: '/assets/img/payment/wallet.jpg',
-      label: 'Votre portefeuille'
-    },
-    invoice: {
-      img: '/assets/img/payment/invoice.jpg',
-      label: 'Facture en ligne'
-    },
-    mastercard: {
-      img: '/assets/img/payment/mc.jpg',
-      label: 'Mastercard'
-    },
-    visa: {
-      img: '/assets/img/payment/visa.jpg',
-      label: 'VISA'
-    },
-    'amex': {
-      img: '/assets/img/payment/ae.jpg',
-      label: 'American Express'
-    },
-    'american express': {
-      img: '/assets/img/payment/ae.jpg',
-      label: 'American Express'
-    },
-    btc: {
-      img: '/assets/img/payment/btc.jpg',
-      label: 'Bitcoin'
-    },
-    bch: {
-      img: '/assets/img/payment/bch.jpg',
-      label: 'Bitcoin Cash'
-    },
-    lumen: {
-      img: '/assets/img/payment/xlm.jpg',
-      label: 'Lumen'
-    }
-  };
-
-
   constructor(
     private $i18n: i18n,
     private $cart: CartService,
+    private $navigation: KngNavigationStateService,
     private $metric: MetricsService,
     private $order: OrderService,
     private $stripe: StripeService,
@@ -121,6 +85,19 @@ export class KngCartCheckoutComponent implements OnInit {
     this.i18n = {};
     this.orders = [];
     this._updateItems = [];
+    this.paymentTWINT = new UserCard({
+      name:'TWINT',
+      alias:'twint',
+      issuer:'twint',
+      id:'twint',
+      type:'twint',
+      expiry: '12/2050',
+      provider:'stripe',
+    });
+  }
+
+  get issuer() {
+    return KngPaymentComponent.issuer;
   }
 
   get label() {
@@ -129,6 +106,13 @@ export class KngCartCheckoutComponent implements OnInit {
 
   get label_cart_info_subtotal_fees(){
     return this.i18n[this.locale].cart_info_subtotal_fees.replace('__FEES__',this.currentFeesName);
+  }
+  get label_cart_info_subtotal(){
+    return this.i18n[this.locale].cart_info_subtotal.replace('__FEES__',this.currentFeesName);
+  }
+
+  get label_payment_method() {
+    return this.currentPayment?.issuer;
   }
 
   get labell() {
@@ -187,7 +171,7 @@ export class KngCartCheckoutComponent implements OnInit {
   }  
 
   get userPayments() {
-    const payments = [... this.user.payments];
+    const payments = [... this.user.payments, this.paymentTWINT];
     if(!this.currentPayment || !this.currentPayment.alias) {
       return payments;
     }
@@ -211,6 +195,10 @@ export class KngCartCheckoutComponent implements OnInit {
     return this._currentHub;
   }
 
+  get isSelectionState() {
+    return !this.selectPaymentIsDone || this.userAddressSelection;
+  }
+
   get isFinalizeDisabled() {
     return !this.selectPaymentIsDone||!this.cgAccepted||!this.cg18Accepted||!this.selectAddressIsDone ||this.isRunning;
   }
@@ -220,7 +208,7 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   get store() :string{
-    return this._currentHub.slug;
+    return (this._currentHub && this._currentHub.slug)||this.$navigation.store;
   }
 
   set open(open: boolean) {
@@ -235,7 +223,6 @@ export class KngCartCheckoutComponent implements OnInit {
 
     this._open = open;
   }
-
 
   get currentTotalUserBalance() {
     const userBalance = this._user.balance>0? this._user.balance:0;
@@ -336,17 +323,425 @@ export class KngCartCheckoutComponent implements OnInit {
 
     this.$user.user$.subscribe(user => {      
       this._user = user;
-      if(!this._isReady){
+      //
+      // after user is updated verify if payment is still valid
+      const payment = this.currentPayment;
+      const isAvailable = this.userPayments.some(method => payment && payment.alias == method.alias);
+      if(!this._isReady || !isAvailable){
         this.selectPaymentIsDone = false;
         this.$cart.setPaymentMethod(null);
         return;
       }
       //
       // if user i
-      this.checkPaymentMethod();
+      
+      this.checkPaymentMethod();      
+    });
+
+    setTimeout(()=>{
+      //
+      // TWINT
+      this.confirmPaymentTWINT();
+    },100)
+  }
+
+  buildDiscountLabel() {
+    const ctx:CartItemsContext = {
+      address:this.currentShipping(),
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }
+    const address = this.currentShipping();    
+    const {price, status} = this.$cart.estimateShippingFeesWithoutReduction(ctx);
+    const {multiple, discountA,discountB, deposit} = this.$cart.hasShippingReduction(ctx);
+
+    const label = this.i18n[this.locale]['cart_info_shipping_discount'];
+
+    //
+    // grouped discount or deposit
+    if(multiple || deposit){ 
+      return  this.shippingDiscount = '';
+    } 
+
+    //
+    // Maximum discount
+    if(discountB) {
+      return this.shippingDiscount = this.i18n[this.locale]['cart_info_shipping_applied'];
+    //
+    // Minimum discount
+    } else if (discountA) {
+      return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',Math.max(price - this.shipping.priceB,0).toFixed(2));
+    //
+    // Missing amount
+    } else {
+      return  this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountA).replace('_DISCOUNT_',Math.max(price - this.shipping.priceA,0).toFixed(2));
+    }    
+  }
+
+
+  computeShippingByAddress(address: UserAddress) {
+    const ctx:CartItemsContext = {
+      address,
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }
+
+    return this.$cart.computeShippingFees(ctx);
+  }
+
+  currentShippingDay() {
+    return this.$cart.getCurrentShippingDay();
+  }
+
+  currentShipping() {
+    const address = this.$cart.getCurrentShippingAddress();
+
+    return address;
+  }
+
+  currentPaymentMethod() {
+    return this.$cart.getCurrentPaymentMethod();
+  }
+
+  currentPaymentMethodLabel() {
+    const method = this.currentPaymentMethod();
+    if(!method || !method.issuer){
+      return '';
+    }
+    return this.issuer[method.issuer].label;
+  }
+
+  currentGatewayLabel() {
+    return (this.$cart.getCurrentGateway().label);
+  }
+
+  currentGatewayFees() {
+    return (this.$cart.getCurrentGateway().fees * 100).toFixed(1);
+  }
+
+  //
+  // (total + shipping - totalDiscount) * fees
+  currentGatewayAmount() {
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+    
+    const fees = this.$cart.getCurrentGateway().fees;
+    return (this.$cart.total(ctx)*fees).toFixed(2);
+  }
+
+  currentServiceFees() {
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+
+    return this.$cart.totalHubFees(ctx);
+  }
+
+  currentTotal() {
+    const ctx:CartItemsContext = {
+      forSubscription: this.useCartSubscriptionView,
+      hub:this.store
+    }    
+
+    if(this.contract) {
+      return this.$cart.subTotal(ctx);
+    }
+
+    return this.$cart.total(ctx);
+  }  
+  
+  checkPaymentMethod(force?:boolean) {
+    if (!this._user.isAuthenticated()) {
+      this.open = false;
+      return;
+    }
+    const total = this.currentTotal() + this.currentServiceFees();
+    this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
+      //
+      // set default payment
+      // FIXME me this.orders[0].payment.issue is crashing 
+      this._user = user;
+      const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
+      const payments = this._user.payments.filter(payment => !payment.error);
+      const currentPayment = this.$cart.getCurrentPaymentMethod();
+      const previousPayment = payments.find(payment => payment.alias == lastAlias);
+
+
+      //
+      // use last order as default 
+      if(previousPayment) {
+        payments.unshift(previousPayment);
+      }
+
+      //
+      // use last selected as default 
+      if(currentPayment && !currentPayment.error) {
+        payments.unshift(currentPayment);
+      }
+
+      //
+      // update default payment 
+      if(payments.length){
+        this.setPaymentMethod(payments[0]);
+      }
+      this._isReady = true;
+    }, error => {
+      if (error.status === 401) {
+        this.open = false;
+      }
     });
   }
 
+  getTotalDiscount() {
+    return this._totalDiscount;
+  }
+
+  getStaticMap(address: UserAddress) {
+    return KngUtils.getStaticMap(address);
+  }
+
+  getDepositAddress() {
+    return this.hub.deposits;
+  }
+
+
+
+  //
+  // FIXME refactor, use shipping reduction enum as 'multiple,deposit,discountA,discountB'
+  // contract has no reduction
+  hasShippingReductionMultipleOrder(){
+    if(this.contract) {
+      return false;
+    }
+    const address = this.currentShipping();
+    return this.$cart.hasShippingReductionMultipleOrder(address);
+  }
+
+
+
+  // available day for order,
+  isOpen() {
+    const next = Order.nextShippingDay(this._user);
+
+    return !!next;
+  }
+
+  isCartDeposit() {
+    const current = this.$cart.getCurrentShippingAddress();
+    // deposit address contains fees
+    // TODO make a test for that
+    return current['fees'] !== undefined;
+  }
+
+  isSelectedAddress(add: UserAddress) {
+    const current = this.$cart.getCurrentShippingAddress();
+    return add.name == (current.name);
+  }
+
+  isSelectedPayment(payment: UserCard) {
+    const current = this.$cart.getCurrentGateway();
+    return (current.label) === payment.issuer;
+  }
+
+  isPaymentMethodsValid() {
+    return this._user.payments.every(payment => payment.isValid());
+  }
+
+  setShippingAddress(address: UserAddress) :boolean {
+    if(!address || !address.streetAdress) {
+      return false;
+    }
+
+    this.userAddressSelection = false;
+    const isDone = this.$cart.setShippingAddress(address);
+
+
+    //
+    // copy note
+    this.shippingNote = address.note;
+
+    //
+    // update shipping time
+    const shippingDay = this.currentShippingDay();
+    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+
+    this.shippingTime = this.config.shared.hub.shippingtimes[shippingHours];
+
+
+    return isDone;
+  }
+
+  setPaymentMethod(payment: UserCard) {
+    this.selectPaymentIsDone = false;
+    if (!payment) {
+      return;
+    }
+
+
+    if (!payment.isValid()) {
+      this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
+      return;
+    }
+    this.$cart.setPaymentMethod(payment);
+    this.selectPaymentIsDone = true;
+  }
+
+  //
+  // payment stuffs
+  createPaymentConfirmation(order: Order) {
+    this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
+    this._items = [];
+    this.$cart.clearAfterOrder(this.store,order);
+    this.updated.emit({ order });
+    this.open = false;
+  }
+
+  //
+  // subscription stuffs 
+  createSubscriptionConfirmation(contract) {
+    this.$snack.open(this.$i18n.label().cart_save_subscription);
+    this.$cart.clearAfterOrder(this.store,null,contract);
+    this._items = [];
+    this.open = false;
+    this.updated.emit({ contract });
+  }
+
+  confirmPaymentTWINT() {
+    // payment_intent=pi_3PYUfWBTMLb4og7P1An0LY7h
+    // payment_intent_client_secret=pi_3PYUfWBTMLb4og7P1An0LY7h_secret_mCEud6EZW9oFjI8BUWWeKlkSM
+    // redirect_status=succeeded
+    const { payment_intent, payment_intent_client_secret, redirect_status, oid} = this.$route.snapshot.queryParams;
+    if(!payment_intent) {
+      return;
+    }
+    // clean url
+    this.$router.navigate([], {
+      queryParams: {
+        'oid':null,
+        'redirect_status':null,
+        'payment_intent': null,
+        'payment_intent_client_secret': null,
+      },
+      queryParamsHandling: 'merge'
+    })
+
+    //
+    // error
+    if(redirect_status!='succeeded') {
+      return this.updated.emit({ twint: 'TWINT' });
+    }
+
+    const confirm = {
+      alias:'twint',
+      issuer:'twint',
+      intent_id:payment_intent, 
+      secret:payment_intent_client_secret,
+      oid
+    }
+    this._items = [];
+    this.doOrder(confirm);
+  }  
+
+  confirmPaymenIntent(intent: any, target:any) {
+    const intentOpt: any = {
+      payment_method: intent.source 
+    };
+
+    this.errorMessage = null;
+
+    this.$stripe.confirmCardPayment(intent.client_secret, intentOpt).subscribe((result) => {
+      if (result.error) {
+        //
+        // Show error to our customer (e.g., insufficient funds)
+        this.errorMessage = result.error.message;
+        this.$snack.open(
+          result.error.message,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+        );
+        this.isRunning = false;
+        this.$cart.broadcastState();
+        return;
+      }
+      // The payment must be confirmed for an order
+      if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+        const payment = this.$cart.getCurrentPaymentMethod();
+        // 
+        // include oid reference as payment DATA
+        //({...this.currentPayment,oid:intent.oid,intent_id:intent.intent_id})
+        const intent = {
+          oid:target.oid,
+          intent_id:result.paymentIntent.id,
+          ...payment
+        }
+
+        this.doOrder(intent);
+      }
+      if(target.subscription&& ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+        this.doSubscriptionPaymentConfirm(target.subscription,result.paymentIntent);
+      }
+
+    });
+  }
+
+
+  confirmPaymenTwintIntent(intent: any, target:any) {
+    const intentOpt: any = {
+    };
+
+    this.errorMessage = null;
+
+    
+    this.$stripe.getInstance()['confirmTwintPayment'](intent.client_secret,{
+      payment_method:{
+        twint:{}
+      },
+      return_url: window.location.href+'?oid='+target.oid
+    }).then((result) => {
+      console.log('--- TWINT ',result);
+      if (result.error) {
+        //
+        // Show error to our customer (e.g., insufficient funds)
+        this.errorMessage = result.error.message;
+        this.$snack.open(
+          result.error.message,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+        );
+        this.isRunning = false;
+        this.$cart.broadcastState();
+        return;
+      }
+      // The payment must be confirmed for an order
+      // if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+      //   const payment = this.$cart.getCurrentPaymentMethod();
+      //   // 
+      //   // include oid reference as payment DATA
+      //   //({...this.currentPayment,oid:intent.oid,intent_id:intent.intent_id})
+      //   const intent = {
+      //     oid:target.oid,
+      //     intent_id:result.paymentIntent.id,
+      //     ...payment
+      //   }
+
+      //   this.doOrder(intent);
+      // }
+      // if(target.subscription&& ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+      //   this.doSubscriptionPaymentConfirm(target.subscription,result.paymentIntent);
+      // }
+
+    });
+  }
+
+
+
+  doOrderRouting(){
+    this.doOrder();
+  }
 
   doOrder(intent?) {
     //
@@ -365,7 +760,7 @@ export class KngCartCheckoutComponent implements OnInit {
     //needed from backend
     //paymentData && paymentData.oid && paymentData.intent_id
     const payment = intent||this.currentPayment;
-    const hub = this._currentHub.slug;
+    const hub = this._currentHub && this._currentHub.slug || this.$navigation.store;
     const items = this.items.map(item => item.toDEPRECATED());
 
     //
@@ -416,6 +811,14 @@ export class KngCartCheckoutComponent implements OnInit {
       },
       status => {
         this.isRunning = false;
+
+
+        //
+        // TWINT
+        if (payment.type=='twint' && status.error.client_secret) {
+          return this.confirmPaymenTwintIntent(status.error, {oid:status.error.oid});
+        }
+
 
         //
         // SCA request payment confirmation
@@ -616,316 +1019,16 @@ export class KngCartCheckoutComponent implements OnInit {
     //
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
+
   }
 
 
-  buildDiscountLabel() {
-    const ctx:CartItemsContext = {
-      address:this.currentShipping(),
-      forSubscription: this.useCartSubscriptionView,
-      hub:this.store
-    }
-    const address = this.currentShipping();    
-    const {price, status} = this.$cart.estimateShippingFeesWithoutReduction(ctx);
-    const {multiple, discountA,discountB, deposit} = this.$cart.hasShippingReduction(ctx);
-
-    const label = this.i18n[this.locale]['cart_info_shipping_discount'];
-
-    //
-    // grouped discount or deposit
-    if(multiple || deposit){ 
-      return  this.shippingDiscount = '';
-    } 
-
-    //
-    // Maximum discount
-    if(discountB) {
-      return this.shippingDiscount = this.i18n[this.locale]['cart_info_shipping_applied'];
-    //
-    // Minimum discount
-    } else if (discountA) {
-      return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',Math.max(price - this.shipping.priceB,0).toFixed(2));
-    //
-    // Missing amount
-    } else {
-      return  this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountA).replace('_DISCOUNT_',Math.max(price - this.shipping.priceA,0).toFixed(2));
-    }    
+  onAddressSave(address: UserAddress) {
+    this.setShippingAddress(address);
+    // this.$user.addressAdd(address).subscribe(user => {
+    //   this._user = user;
+    //   this.userAddressSelection = false;
+    // });
   }
-
-
-  computeShippingByAddress(address: UserAddress) {
-    const ctx:CartItemsContext = {
-      address,
-      forSubscription: this.useCartSubscriptionView,
-      hub:this.store
-    }
-
-    return this.$cart.computeShippingFees(ctx);
-  }
-
-  currentShippingDay() {
-    return this.$cart.getCurrentShippingDay();
-  }
-
-  currentShipping() {
-    const address = this.$cart.getCurrentShippingAddress();
-
-    return address;
-  }
-
-  currentPaymentMethod() {
-    return this.$cart.getCurrentPaymentMethod();
-  }
-
-  currentPaymentMethodLabel() {
-    const method = this.currentPaymentMethod();
-    if(!method || !method.issuer){
-      return '';
-    }
-    return this.issuer[method.issuer].label;
-  }
-
-  currentGatewayLabel() {
-    return (this.$cart.getCurrentGateway().label);
-  }
-
-  currentGatewayFees() {
-    return (this.$cart.getCurrentGateway().fees * 100).toFixed(1);
-  }
-
-  //
-  // (total + shipping - totalDiscount) * fees
-  currentGatewayAmount() {
-    const ctx:CartItemsContext = {
-      forSubscription: this.useCartSubscriptionView,
-      hub:this.store
-    }    
-    
-    const fees = this.$cart.getCurrentGateway().fees;
-    return (this.$cart.total(ctx)*fees).toFixed(2);
-  }
-
-  currentServiceFees() {
-    const ctx:CartItemsContext = {
-      forSubscription: this.useCartSubscriptionView,
-      hub:this.store
-    }    
-
-    return this.$cart.totalHubFees(ctx);
-  }
-
-  currentTotal() {
-    const ctx:CartItemsContext = {
-      forSubscription: this.useCartSubscriptionView,
-      hub:this.store
-    }    
-
-    if(this.contract) {
-      return this.$cart.subTotal(ctx);
-    }
-
-    return this.$cart.total(ctx);
-  }  
-  
-  checkPaymentMethod(force?:boolean) {
-    if (!this._user.isAuthenticated()) {
-      this.open = false;
-      return;
-    }
-    const total = this.currentTotal() + this.currentServiceFees();
-    this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
-      //
-      // set default payment
-      // FIXME me this.orders[0].payment.issue is crashing 
-      this._user = user;
-      const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
-      const payments = this._user.payments.filter(payment => !payment.error);
-      const currentPayment = this.$cart.getCurrentPaymentMethod();
-      const previousPayment = payments.find(payment => payment.alias == lastAlias);
-
-
-      //
-      // use last order as default 
-      if(previousPayment) {
-        payments.unshift(previousPayment);
-      }
-
-      //
-      // use last selected as default 
-      if(currentPayment && !currentPayment.error) {
-        payments.unshift(currentPayment);
-      }
-
-      //
-      // update default payment 
-      if(payments.length){
-        this.setPaymentMethod(payments[0]);
-      }
-      this._isReady = true;
-
-    }, error => {
-      if (error.status === 401) {
-        this.open = false;
-      }
-    });
-  }
-
-  getTotalDiscount() {
-    return this._totalDiscount;
-  }
-
-  getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address);
-  }
-
-  getDepositAddress() {
-    return this.hub.deposits;
-  }
-
-
-
-  //
-  // FIXME refactor, use shipping reduction enum as 'multiple,deposit,discountA,discountB'
-  // contract has no reduction
-  hasShippingReductionMultipleOrder(){
-    if(this.contract) {
-      return false;
-    }
-    const address = this.currentShipping();
-    return this.$cart.hasShippingReductionMultipleOrder(address);
-  }
-
-
-
-  // available day for order,
-  isOpen() {
-    const next = Order.nextShippingDay(this._user);
-
-    return !!next;
-  }
-
-  isCartDeposit() {
-    const current = this.$cart.getCurrentShippingAddress();
-    // deposit address contains fees
-    // TODO make a test for that
-    return current['fees'] !== undefined;
-  }
-
-  isSelectedAddress(add: UserAddress) {
-    const current = this.$cart.getCurrentShippingAddress();
-    return add.name == (current.name);
-  }
-
-  isSelectedPayment(payment: UserCard) {
-    const current = this.$cart.getCurrentGateway();
-    return (current.label) === payment.issuer;
-  }
-
-  isPaymentMethodsValid() {
-    return this._user.payments.every(payment => payment.isValid());
-  }
-
-  setShippingAddress(address: UserAddress) :boolean {
-    if(!address || !address.streetAdress) {
-      return false;
-    }
-
-    this.userAddressSelection = false;
-    const isDone = this.$cart.setShippingAddress(address);
-
-
-    //
-    // copy note
-    this.shippingNote = address.note;
-
-    //
-    // update shipping time
-    const shippingDay = this.currentShippingDay();
-    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
-    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
-
-    this.shippingTime = this.config.shared.hub.shippingtimes[shippingHours];
-
-
-    return isDone;
-  }
-
-  setPaymentMethod(payment: UserCard) {
-    this.selectPaymentIsDone = false;
-    if (!payment) {
-      return;
-    }
-
-
-    if (!payment.isValid()) {
-      this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
-      return;
-    }
-    this.$cart.setPaymentMethod(payment);
-    this.selectPaymentIsDone = true;
-  }
-
-  //
-  // payment stuffs
-  createPaymentConfirmation(order: Order) {
-    this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
-    this._items = [];
-    this.$cart.clearAfterOrder(this.store,order);
-    this.updated.emit({ order });
-    this.open = false;
-  }
-
-  //
-  // subscription stuffs 
-  createSubscriptionConfirmation(contract) {
-    this.$snack.open(this.$i18n.label().cart_save_subscription);
-    this.$cart.clearAfterOrder(this.store,null,contract);
-    this._items = [];
-    this.open = false;
-    this.$router.navigate(['/store',this.store])
-  }
-
-  confirmPaymenIntent(intent: any, target:any) {
-    const intentOpt: any = {
-      payment_method: intent.source 
-    };
-
-    this.errorMessage = null;
-
-    this.$stripe.confirmCardPayment(intent.client_secret, intentOpt).subscribe((result) => {
-      if (result.error) {
-        //
-        // Show error to our customer (e.g., insufficient funds)
-        this.errorMessage = result.error.message;
-        this.$snack.open(
-          result.error.message,
-          this.$i18n.label().thanks,
-          this.$i18n.snackOpt
-        );
-        this.isRunning = false;
-        this.$cart.broadcastState();
-        return;
-      }
-      // The payment must be confirmed for an order
-      if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
-        const payment = this.$cart.getCurrentPaymentMethod();
-        // 
-        // include oid reference as payment DATA
-        //({...this.currentPayment,oid:intent.oid,intent_id:intent.intent_id})
-        const intent = {
-          oid:target.oid,
-          intent_id:result.paymentIntent.id,
-          ...payment
-        }
-
-        this.doOrder(intent);
-      }
-      if(target.subscription&& ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
-        this.doSubscriptionPaymentConfirm(target.subscription,result.paymentIntent);
-      }
-
-    });
-  }
-
 
 }

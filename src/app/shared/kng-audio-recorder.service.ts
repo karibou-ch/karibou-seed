@@ -105,6 +105,22 @@ export class KngAudioRecorderService {
     return volume>0.01;
   }
 
+  async getAudioStream() {
+    if (!this.stream || !this.stream.active) {
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        //
+        // permission not allowed
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          return alert("Vous avez refusé l'accès au microphone. Veuillez aller dans les paramètres - en haut à gauche - de votre navigateur pour l'activer manuellement.");          
+        }        
+        console.error("Error accessing audio stream:", err);
+        throw err;
+      }
+    }
+    return this.stream;
+  }
   
   async startRecording(options:any = {}) {    
     if (this._recorderState == RecorderState.RECORDING) {

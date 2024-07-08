@@ -49,6 +49,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
   plan:string;
 
 
+  checkoutMessage: string;
+  checkoutMessageError: string;
+
   i18n: any = {
     fr: {
       cart_deposit: 'Commande à collecter',
@@ -61,8 +64,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_total_subscription_update: 'Total ajouté à votre abo',
       cart_info_reserved: 'Montant réservé',
       cart_info_contract_total: 'Montant de votre abo en cours',
-      cart_info_subtotal: 'Sous total (service inclus)',
-      cart_info_subtotal_fees: '__FEES__ de Service ',
+      cart_info_subtotal: 'Sous total (__FEES__ service inclus)',
+      cart_info_subtotal_fees: '__FEES__ de Service',
       cart_info_shipping: 'Livraison 100% cycliste',
       cart_info_shipping_title: 'Adresse de livraison ',
       cart_info_shipping_group: 'Vous complétez une commande en cours',
@@ -76,8 +79,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_limit: `Nos créneaux de livraison sont tous occupés. Toutefois, vous pouvez préparer votre panier et valider votre commande
       lorsque de nouvelles fenêtres de livraison seront disponibles.
        Merci beaucoup pour votre compréhension.`,
-      cart_info_service_k: `Service <span class=" ">__FEES__%</span> inclus`,
-      cart_info_service_k_plus: `C'est ce que vous payez pour permettre aux marchés d'être en ligne avec un service client 5🌟.`,
+      cart_info_service_k: `Service <span> __FEES__%</span> inclus`,
+      cart_info_service_k_plus: `Nos prix restent inchangés grâce à notre vente directe ; les frais de service transparents assurent une qualité 5🌟.`,
       cart_remove: 'enlever',
       cart_modify_add: 'Choisir une autre adresse de livraison',
       cart_modify_payment: 'Choisir un autre mode de paiement',
@@ -103,7 +106,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
       cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
       cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
-      cart_order: 'Commander pour'
+      cart_order: 'Commander pour',
+      cart_order_error_twint: 'Votre paiement TWINT a été refusé',
+      cart_order_placed: 'Votre commande est enregistrée et sera livrée le ',
+      cart_contract_placed: 'Votre abonnement est enregistré',
+      
     },
     en: {
       cart_deposit: 'Order to collect',
@@ -116,7 +123,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_reserved: 'Amount reserved',
       cart_info_wallet:'Debit from your wallet',
       cart_info_contract_total: 'Amount of your running subscription',
-      cart_info_subtotal: 'Subtotal (service fee included)',
+      cart_info_subtotal: 'Subtotal (__FEES__ service fee included)',
       cart_info_subtotal_fees:'Service fee  __FEES__ ',
       cart_info_shipping: 'Delivery 100% ecological ',
       cart_info_shipping_title: 'Shipping between',
@@ -130,8 +137,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_one_date_more: 'Change the date to receive everything in one delivery',
       cart_info_limit: `Our delivery slots are all full. However, you can prepare your basket and confirm your order when
        new delivery windows become available. Thank you very much for your understanding.`,
-      cart_info_service_k: 'Service fee <span class="gray ">__FEES__%</span> included',
-      cart_info_service_k_plus: `This is what you're paying for - to keep the markets up and running, and to provide you a 5🌟 customer support`,
+      cart_info_service_k: 'Service fee <span class="">__FEES__</span> included',
+      cart_info_service_k_plus: `Our prices remain unchanged thanks to our direct sales; transparent service fees ensure 5🌟 quality.`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
       cart_modify_add: 'Select another shipping address',
@@ -157,7 +164,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_error: 'Your cart has to be modified!',
       cart_cg: 'I read and I agree to the general selling conditions',
       cart_cg_18: 'I am of legal age to purchase alcohol',
-      cart_order: 'Order now  for '
+      cart_order: 'Order now  for ',
+      cart_order_placed: 'Your order is placed and will be delivered on',
+      cart_order_error_twint: 'Your TWINT payment has been declined',
+      cart_contract_placed: 'Your subscription is registered'
     }
   };
 
@@ -334,6 +344,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   doInitateCheckout(ctx){
+    this.checkoutMessage = '';
+    this.checkoutMessageError = '';
     this.hasOrderError = false;
     this.checkout.doInitateCheckout(ctx);
   }  
@@ -370,11 +382,35 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   onCheckout($event:any) {
+    //
+    // case of error
     if($event.errors) {
       this.hasOrderError = true;
       return;
     }   
-    this.orders.unshift($event as Order); 
+    //
+    // case of TWINT error
+    if($event.twint) {
+      this.checkoutMessageError = this.llabel.cart_order_error_twint;
+      return;
+    }   
+
+    //
+    // case of final contract
+    if($event.contract) {
+      this.checkoutMessage = this.llabel.cart_contract_placed;
+      return;
+    }
+
+    //
+    // case of final order
+    if($event.order) {
+      const day = $event.order.shipping.when.getDate();
+      const month = $event.order.shipping.when.getMonth() + 1;
+      this.checkoutMessage = this.llabel.cart_order_placed + `(${day}/${month})`;
+    }
+
+    this.orders.unshift($event.order as Order); 
   }
 
 }

@@ -20,6 +20,7 @@
     </div>
   </div>
 
+  <!-- FEES INFORMATION -->
   <div class="list-item auto-line" [hidden]="!doToggleFees">
     <p class="block-info" [innerHtml]="labell.cart_info_service_k_plus"></p>
   </div>
@@ -63,7 +64,7 @@
   </div>
   
   <!-- WARNING DISPLAY HUB DATE -->
-  <div class="list-item auto-line slim-item pending-date" [class.display-message]="!isCrossMarketShippingDate">
+  <div class="list-item auto-line slim-item pending-date" [class.display-message]="!isReady && !isCrossMarketShippingDate">
     <p class="shipping-grouped text-overflow block-warning" [innerHtml]="i18n[locale].cart_info_one_date_more">
   </div>
 
