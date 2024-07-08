@@ -6,9 +6,10 @@ kng-product-swipe{
   margin: 20px 0px;
   border-bottom: 1px solid #eee;
 
-  @media (max-width:425px) {
+  @media (max-width:430px) {
     width: calc(100vw - 20px );    
     margin: 15px 10px;
+    min-height: fit-content !important;
     padding: 0;
   }
 
@@ -27,6 +28,9 @@ kng-product-swipe{
     -webkit-overflow-scrolling: touch;
     height: auto;
     section{
+      @media (max-width: 429px) {
+        display: none;        
+      }
       position: relative;
       width: 100%;
       text-align:left;
@@ -56,10 +60,45 @@ kng-product-swipe{
   
       }  
     }
+
+    div.content-sm{
+      width: calc(100% - 20px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 10px;
+      background-color: var(--mdc-theme-appbar);
+      color: var(--mdc-theme-appbar-text);
+      font-weight: 500;
+      padding: 9px;
+      margin: auto auto 15px;
+
+      div.product{
+        overflow: hidden;
+        width: 60px;
+        height: 60px;
+        img{
+          object-fit: cover;
+          width: 100%;
+          height: 100%;          
+          border-radius: 10px;
+        }
+      }
+      .action {
+
+      }
+      @media (min-width: 430px) {
+        display: none;        
+      }
+    }
+
     div.content{
       margin-bottom:-15px;
       overflow: hidden;
       overflow-x: auto;
+      @media (max-width: 429px) {
+        display: none;        
+      }
       &::-webkit-scrollbar {
         display: none;
       }

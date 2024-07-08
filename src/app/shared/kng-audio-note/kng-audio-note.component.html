@@ -4,9 +4,8 @@
   </div>
   <div class="title">
     {{label.cart_audio}}
-    <p>{{label.cart_audio_note}} <b>{{amount}} fr</b></p>
+    <p>{{label.cart_audio_note}}</p>
   </div>
-  <textarea  hidden autofocus rows="5" [(ngModel)]="cartItemNote" placeholder="Ajoutez un commentaire ou enregistrez un message audio."></textarea>
 
   <div class="audio-controls">
     <div class="audio-error" [hidden]="!cartItemAudioError" >
@@ -19,10 +18,19 @@
 
     <!--- SAFARI >=13 -->
     <audio id="audio" controls [hidden]="!cartItemAudio || audioIsRecording"></audio>
-    <button class="record"  
-      (pointerdown)="audioRecord($event)"
-      (pointerup)="audioStopAndSave()">
-      <span class="material-symbols-outlined">mic</span>
+
+    <!-- RUN AUDIO -->
+    <button class="record"  [class.recording]="audioIsRecording"                
+      (click)="audioRecord($event)">
+      <span [hidden]="audioIsRecording" class="material-symbols-outlined">mic</span>
+      <span [hidden]="!audioIsRecording" class="material-symbols-outlined">pause</span>
+
     </button>
+
   </div>
+  <div class="context" [hidden]="!cartItemNote">
+    <span [innerHtml]="cartItemNote"></span> 
+    <span class="hide btn" (click)="onClear()">❌</span>
+  </div>
+
 </div>

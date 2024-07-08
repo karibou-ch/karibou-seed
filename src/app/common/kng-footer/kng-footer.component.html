@@ -1,9 +1,5 @@
-<div class="footer">
+<div class="footer" [class.display]="isReady">
   <div class="main">
-    <div class="line marked">
-      <div class="elem"><span [innerHtml]="getFooter('t')"></span></div>
-      <div class="elem right"><span [innerHtml]="getFooter('h')"></span></div>
-    </div>
     <div class="line ">
       <div class="elem" [hidden]="!getMenuItems('about').length">
         <ul>
@@ -16,7 +12,6 @@
           <li>&nbsp;<b>v{{VERSION}}</b></li>
         </ul>
       </div>
-      <div class="elem right" [innerHtml]="getFooter('p')"></div>
     </div>
   </div>      
 </div>

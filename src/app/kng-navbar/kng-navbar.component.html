@@ -51,8 +51,8 @@
 <div [hidden]="!isAppReady()" class="navbar">
 
   <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar [fixed]="!$navigation.isMobile()" >
-    <mdc-top-app-bar-row >
+  <mdc-top-app-bar [fixed]="!$navigation.isMobile()">
+    <mdc-top-app-bar-row hidden >
       <!-- APPBAR LEFT ACTIONS -->
       <mdc-top-app-bar-section align="start" >
         <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
@@ -62,13 +62,9 @@
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
-      <!-- APP TITLE (DATE) -->
-      <mdc-top-app-bar-section>
-        <kng-search-bar></kng-search-bar>
-      </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
-      <mdc-top-app-bar-section align="end" class="actions">        
+      <mdc-top-app-bar-section align="end"  class="actions">        
 
         <!-- LOGIN / REGISTER -->
         <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcTopAppBarNavIcon>
@@ -79,40 +75,39 @@
         <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcTopAppBarNavIcon>
           <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text">account_circle</span><!-- <div >{{label.nav_login2}}</div> -->
         </a>
-
-        <a class="hide-sm" *ngFor="let menu of topmenu;let idx=index;" href="javascript:;" mdcTopAppBarNavIcon [routerLink]="'/store/'+store+menu.url" 
-          routerLinkActive #rla="routerLinkActive" [class.active]="rla.isActive">
-          <span  mdcTopAppBarActionItem class="secondary-text" [innerHTML]="menu.name[locale]"></span>
-        </a>
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
 
     <mdc-top-app-bar-row class="navigation ">      
+
       <!-- APPBAR-SECTION-START HUB AND DATE -->
       <mdc-top-app-bar-section align="start" class="hide-sm">
+        <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
+
+        <div class="mdc-top-app-bar-left" >
+          <img class="icon icon-hub" [class.icon-show]="isLockedHUB()"  [src]="hubImage" (click)="navigation.open = ! navigation.open" />
+          <span [hidden]="isLockedHUB()" [routerLink]="['/store',store]" class="title">Karibou.ch</span>
+
+        </div>
+
         <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-symbols-outlined start">roofing</i>{{label.nav_bottom_home}}</div>
         <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}} </div>
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</div>
-
-
-        <div class="kng-chip" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <i class="material-symbols-outlined icon  secondary-text ">update</i> 
-          &nbsp;{{label.nav_subscription_b2b}}
-        </div>
-
-        <div class="kng-chip" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <i class="material-symbols-outlined icon  secondary-text ">update</i> 
-          &nbsp;{{label.nav_subscription}}
-        </div>
             
 
         <div class="kng-chip bold" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
 
+
         <div class="kng-chip shopping-cart first"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
+          
           <div > <span class="cart-items-count"></span></div>
           <span  class="end material-symbols-outlined secondary-text" >shopping_cart</span>          
         </div>
-
+        <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active" [queryParams]="subscriptionQueryParams" [hidden]="!subsItemsSz">
+          
+          <div > <span class="subs-items-count"></span></div>
+          <span  class="end material-symbols-outlined secondary-text" >more_time</span>          
+        </div>
 
       </mdc-top-app-bar-section>
 
@@ -123,7 +118,10 @@
       <mdc-top-app-bar-section  class="title hide-md hide-lg">
         <span class="start">{{hubTitle}} </span>
         <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
+        
       </mdc-top-app-bar-section>
+
+      <!-- APP RIGHT ACTIONS -->
 
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>
@@ -134,19 +132,34 @@
   </div>
 
   <!-- FAB  [exited]="scrollDirection<-5" -->
-  <kng-ui-bottom-actions [config]="config" [categories]="categories">  
-  </kng-ui-bottom-actions>
+  <kng-ui-bottom-actions [config]="config" [categories]="categories">  </kng-ui-bottom-actions>
 
+  <!-- ASK LOGIN  -->
+  <div class="overlay-pane" [class.overlay-open]="displayLogin">
+    <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
+      <div class="mdc-snackbar__surface">
+        <div class="close" (click)="displayLogin=false"><i class="material-symbols-outlined">close</i> </div>
+        <div class="mdc-snackbar__label install-ios" >
+          Pour effectuer une commande nous avons <br/>
+          besoin de vérifier votre identité.<br/>
+          <b><span class="link" (click)="displayLogin=false" [routerLink]="['/store',store,'home','me','login']">Merci de suivre ce lien </span></b>
+        </div>
+        <div class="install-ios material-symbols-outlined" >sentiment_very_satisfied</div>
+      </div>          
+    </div>
+  </div>
 
   <!-- IOS INSTALL -->
   <div class="overlay-pane" [class.overlay-open]="displayIosInstall">
     <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
       <div class="mdc-snackbar__surface">
+        <div class="close" (click)="displayIosInstall=false"><i class="material-symbols-outlined">close</i> </div>
         <div class="mdc-snackbar__label install-ios" [innerHtml]="label.action_install_ios">
           Install this app on your device.<br/>
           Tap the share icon and then<br/>
           <b>Add to homescreen.</b>
         </div>
+        
         <div class="install-ios material-symbols-outlined" >arrow_downward</div>
       </div>          
     </div>

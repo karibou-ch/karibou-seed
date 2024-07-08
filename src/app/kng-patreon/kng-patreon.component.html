@@ -10,22 +10,27 @@
 
 
       <!-- TITLE -->
-      <div class="banner" hidden>
-        <h1 [innerHtml]="patreon.t[locale]"></h1>
-        <h2 [innerHtml]="patreon.h[locale]"></h2>  
-      </div>
 
       <div class="welcome">
         <h1 [innerHtml]="patreon.t[locale]"></h1>
-        <div class="content" [innerHtml]="patreon.h[locale]">
+        <div class="content" [innerHtml]="patreon.p[locale]">
         </div>
-        <div class="actions">
-          <button class="CTA" [disabled]="!selectItem" [routerLink]="['./user/login-or-patreon']">Je participe <span class="sm">{{selected_box}}</span> </button>
+        <div class="actions" [hidden]="contractIsActive">
+          <button class="CTA" [disabled]="!selectItem || isRunning" (click)="onSubscribe($event)">{{label.subscription_go}} <span class="sm">{{selected_box}}</span> </button>
           <div class="info" *ngIf="payment">          
             <div class="method name">paiement  {{payment.issuer}}  **{{payment.last4}} {{payment.expiryToDate()|date:'MM/y'}}</div>
           </div>
+          <div class="info red bold" *ngIf="error">          
+            {{error}}
+          </div>
 
         </div>
+        <div class="ready" [hidden]="!contractIsActive">
+          <h2>
+            {{label.subscription_active}} - {{contractAmount}}
+          </h2>
+        </div>
+
 
       </div>
     
@@ -36,13 +41,13 @@
           <div class="elem main" (click)="activeMenu=true" [class.active]="activeMenu">
             <span class="material-symbols-outlined size-large">apps</span>
           </div>
-          <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">
+          <div class="elem info bold" (click)="activeMenu=false" [class.active]="!activeMenu">
             {{label.nav_menu_information}}
           </div>
         </div>
   
         <!-- INFORMATION -->
-        <div class="markdown" [hidden]="activeMenu" [kng-markdown]="patreon.p[locale]"></div> 
+        <div class="markdown" [hidden]="activeMenu" [kng-markdown]="patreon.article[locale]"></div> 
 
 
         <!-- ITEMS -->
@@ -59,7 +64,7 @@
   
             <div class="box" *ngFor="let product of products" [class.checked]="selectItem?.id == product.id" (click)="selectItem=product">
               <div class="name">{{product.metadata.title}}</div>
-              <div class="description">{{product.description}}</div>
+              <div class="description" [innerHtml]="product.description"></div>
               <div class="price">{{product.default_price.unit_amount/100}} fr / mois</div>
             </div>  
           </section>

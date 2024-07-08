@@ -1,0 +1,38 @@
+<div class="assistant-dialog " #dialog >
+  <div class="assistant-backdrop"></div>
+  <div class="assistant-dialog__surface" *ngIf="isReady">
+
+    <div class="container" >
+
+      <!-- CLOSE -->
+      <!-- CLOSE OR SUBS CART -->
+      <div class="topbar" [style.width.px]="clientWidth" [class.sticked]="scrollStickedToolbar">
+        <button (click)="onClose(true)" class="close" >
+          <span class="material-symbols-outlined size-large">arrow_back</span>
+        </button>
+  
+        <div class="cart visible"  >
+          <div class="subscription-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >            
+            <button>               
+              <span>
+                {{cartAmount}}&nbsp;fr&nbsp; 
+                <span class="end material-symbols-outlined">shopping_cart</span>
+              </span>              
+            </button>
+          </div>  
+
+        </div>  
+
+      </div>
+
+      <!-- TITLE -->
+      <div class="banner" >
+        <h1 hidden> <img src="/assets/img/food.jpg"/> </h1>
+      </div>
+
+      <kng-assistant #assistant [user]="user" [config]="config" [prompt]="prompt" [prompts]="prompts" [tips]="tips" (assistant)="onAssistant($event)">
+      </kng-assistant>
+    </div>
+  </div>
+</div>
+

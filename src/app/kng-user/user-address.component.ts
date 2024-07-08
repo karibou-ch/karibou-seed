@@ -24,6 +24,7 @@ export interface AddressEvent {
 })
 export class AddressComponent implements OnDestroy{
 
+  private _config: Config;
   private _defaultUser: User = new User();
 
   @Output() updated: EventEmitter<AddressEvent> = new EventEmitter<AddressEvent>();
@@ -33,7 +34,7 @@ export class AddressComponent implements OnDestroy{
   @Input() address: UserAddress;
   @Input() action: boolean;
   @Input() set config(config: Config) {
-    this.main(config);
+    this._config = config;
   }
 
   i18n: any = {
@@ -61,40 +62,25 @@ export class AddressComponent implements OnDestroy{
     }
   };
 
-  $address: FormGroup;
-  locations: string[];
-  regions: string[];
   idx: number;
-  geo: any;
   isLoading: boolean;
-  collector$: Subscription;
 
-  // utiliser l'api
-  // https://tel.search.ch/api/help.fr.html
   constructor(
     public  $i18n: i18n,
-    private $fb: FormBuilder,
-    private $http: HttpClient,
-    private $user: UserService,
-    private $util: KngUtils
+    private $user: UserService
   ) {
-    this.collector$ = new Subscription();
     this.isLoading = false;
-    this.$address = this.$fb.group({
-      'name':   ['', [Validators.required, Validators.minLength(3)]],
-      'note':   [''],
-      'floor':  ['', [Validators.required, Validators.minLength(1)]],
-      'street': ['', [Validators.required, Validators.minLength(5)]],
-      'region': ['', [Validators.required]],
-      'postalCode': ['', [Validators.required, Validators.minLength(4)]],
-      'phone':  ['', [Validators.required, Validators.minLength(10)]]
-    });
-    // [ngModelOptions]="{updateOn: 'blur'}"
+    this.idx = -1;
   }
 
   ngOnDestroy() {
-    if(this.collector$) {
-      this.collector$.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.address = new UserAddress();
+    if(this.user.addresses.length){
+      this.address = this.user.addresses[0];
+      this.idx = 0;
     }
   }
 
@@ -110,40 +96,11 @@ export class AddressComponent implements OnDestroy{
     return this.$i18n.locale;
   }
 
-  //
-  // entry poiont
-  main(config: Config) {
-    this.locations = config.shared.user.location.list.sort();
-    this.regions = config.shared.user.region.list;
-
-
-    //
-    // save phone
-    if (this.user.phoneNumbers.length) {
-      this.$address.patchValue({
-        phone: this.user.phoneNumbers[0].number
-      });
-    }
-
-    const _g$ = this.$util.getGeoCode().subscribe(
-      (result) => {
-        this.geo = (result.geo || {}).location;
-        //
-        // autofill region and location
-        setTimeout(() => {
-          (result.components || []).forEach(comp => {
-            if (this.locations.indexOf(comp) > -1 && (this.$address.value.postalCode !== comp)) {
-              this.$address.patchValue({postalCode: comp});
-            }
-            if (this.regions.indexOf(comp) > -1 && (this.$address.value.region !== comp)) {
-              this.$address.patchValue({region: comp});
-            }
-          });
-        }, 700);
-       }
-    );
-    this.collector$.add(_g$);
+  get config() {
+    return this._config;
   }
+
+
 
   getStaticMap(address: UserAddress) {
     return KngUtils.getStaticMap(address);
@@ -158,53 +115,27 @@ export class AddressComponent implements OnDestroy{
     this.updated.emit(result);
   }
 
-  onGeloc(event?: { index: number, value: any }) {
-    if (!this.$address.value.street) {
-         return;
+  onSave(address: UserAddress) {
+    if(!address) {
+      this.idx = -1;
+      this.address = new UserAddress();
+      return;
     }
-    this.$util.updateGeoCode(this.$address.value.street,
-                        this.$address.value.postalCode,
-                        this.$address.value.region);
-  }
-
-  onSave() {
     this.isLoading = true;
     const tosave = new User(this.user);
 
-    //
-    // editable phone, max len == 1
-    if (tosave.phoneNumbers.length) {
-      tosave.phoneNumbers[0].number = this.$address.value.phone;
-    }
-    if (!tosave.phoneNumbers.length) {
-      tosave.phoneNumbers.push({number: this.$address.value.phone, what: 'mobile'});
+    // save default phone
+    if (!tosave.phoneNumbers.length && address.phone) {
+      tosave.phoneNumbers.push({number: address.phone, what: 'mobile'});
     }
 
-    //
-    // edit or create
-    if ([0, 1, 2, 3, 4, 5, 6].indexOf(this.idx) > -1) {
-      tosave.addresses[this.idx].name = this.$address.value.name,
-      tosave.addresses[this.idx].streetAdress = this.$address.value.street,
-      tosave.addresses[this.idx].floor = this.$address.value.floor,
-      tosave.addresses[this.idx].region = this.$address.value.region,
-      tosave.addresses[this.idx].postalCode = this.$address.value.postalCode,
-      tosave.addresses[this.idx].note = this.$address.value.note;
-    } else {
-      this.idx = tosave.addresses.push(new UserAddress(
-        this.$address.value.name,
-        this.$address.value.street,
-        this.$address.value.floor,
-        this.$address.value.region,
-        this.$address.value.postalCode,
-        this.$address.value.note
-      )) - 1;
+    // save address
+    if(this.idx >= 0 ) {
+      tosave.addresses[this.idx] = address;
+    }else {
+      this.idx = (tosave.addresses.push(address)) - 1;
     }
 
-    //
-    // update Geo localisation
-    if (this.geo) {
-      tosave.addresses[this.idx].geo = this.geo;
-    }
 
     this.$user.save(tosave).subscribe(
       user => this.onEmit({address: tosave.addresses[this.idx]}),
@@ -226,30 +157,8 @@ export class AddressComponent implements OnDestroy{
   }
 
   setAddress(address: UserAddress, idx: number) {
-    const defaultAddress = {
-      name: '',
-      street: '',
-      floor: '',
-      region: address.region,
-      postalCode: address.postalCode,
-      note: ''
-    };
-
-    if (this.idx === idx) {
-      this.idx = null;
-      this.$address.patchValue(defaultAddress);
-      return;
-    }
     this.idx = idx;
-    this.geo = null;
-    this.$address.patchValue({
-      name: address.name,
-      street: address.streetAdress,
-      floor: address.floor,
-      region: address.region,
-      postalCode: address.postalCode,
-      note: address.note
-    });
+    this.address = address;
   }
 
 }

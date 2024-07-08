@@ -66,26 +66,31 @@
 
     .subscription {
       display: flex;
-      width: calc(740px - 32px);
+      width: calc(740px - 10px);
       margin: auto;
-      padding: 12px 16px;
+      padding: 12px 5px;
       flex-wrap: wrap;
       font-size: 18px;
       font-weight: 500;
       border-radius: 15px;
 
-      @media (max-width:827px) {
-        max-width: calc(100% - 32px);
-        width: calc(95% - 32px);
-      }
-
-
       &.colored {
         color: #333;
         background: #f6f6f6;
-        margin-top: 40px;
-
+        margin-top: 10px;
+        padding: 12px 16px;
+        width: calc(740px - 32px);
       }
+
+      @media (max-width:827px) {
+        width: calc(100% - 10px);
+        &.colored {
+          max-width: calc(100% - 32px);
+          width: calc(95% - 32px);
+        }
+      }
+
+
 
       @media (prefers-color-scheme: dark) {
         background-color: var(--mdc-theme-secondary-dark);
@@ -95,7 +100,7 @@
       div.row {
         display: flex;
         width: 100%;
-        margin-bottom: 20px;
+        margin-bottom: 0px;
         align-items: center;
         justify-content: space-between;
       }
@@ -178,7 +183,7 @@
       transition: all .5s;
       z-index: 1;
 
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         top:0px
       }
 
@@ -310,7 +315,7 @@
     opacity: 1;
     display: flex;
     margin-bottom: 0;
-    margin-top: 20%;
+    margin-top: 15%;
     flex-direction: column;
     align-items: flex-start;
 
@@ -324,7 +329,7 @@
       left: calc((100vw - 865px) / 2);
       top: 20px;
       margin-top: 0;
-      margin-left: -230px;
+      margin-left: -250px;
       opacity: 1 !important;
       ul{
         align-items: flex-end;
@@ -408,6 +413,7 @@
         box-shadow: 0 0 1px 1px rgba(100, 100, 100, 0.4);
         color: #000;
         font-size: 1.1em;
+        max-width: 250px;
 
         &.selected {
           background-color: black !important;
@@ -415,6 +421,7 @@
         }
       }
     }
+
   }
 
   .owner-title {
@@ -429,7 +436,19 @@
   max-width: 760px;
 }
 
+.kng-assistant{
+  background: var(--mdc-theme-appbar-light);
+  width: 225px;
+  margin-left: 10px;
+  border-radius: 7px;      
+  max-width: 740px;
+  padding: 0px 0;
 
+  position: relative;
+
+}
+
+.kng-assistant,
 .kng-informations,
 .owner-title,
 .vendor,
@@ -437,17 +456,17 @@
   max-width: 740px;
   padding: 0px 0;
 
-  display: relative;
+  position: relative;
   width: 95%;
   margin: auto;
   flex: 1;
   align-items: center;
 
-  >div {
-    padding: 10px 5px;
+  >.menu {
+    justify-content: flex-start!important;
   }
 
-  @media (max-width:429px) {
+  @media (max-width:431px) {
     width: calc(100% - 10px);
   }
 

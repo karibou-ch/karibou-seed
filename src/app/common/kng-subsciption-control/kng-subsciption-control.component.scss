@@ -11,46 +11,50 @@ h3{
   margin-left: 10px;
   margin-right: 10px;
 }
-button {
-  cursor: pointer;
-  margin-right: 0;
-  margin-left: auto;
-
-  font-weight: bold;
-  border: 0;
-  padding: 7px 20px;
-  background-color: #ffffffcf;      
-  color: #333;
-  border-radius: 20px;
-  font-size: inherit;
-
-  span {
-    font-size: 40px;
-  }
-}
-
-button[disabled] {
-  opacity: .4;
-  background-color: var(--mdc-theme-primary-light)!important;
-  color: #333!important;
-  border-color: #eee!important;
-}
 
 .customer {
   display: flex;
   flex-wrap: wrap;
 
   .subscription {
-    &.patreon {
+    width: 95%;
+    background-color: #eee;
+    &.patreon, &.premium {
       background-color: yellow;
+      background-color: #222;
+      color: lightyellow;
+      .label {
+        color: white;
+      }
     }
+
+    .label {
+      color: black;
+      display: inline-block;
+      .active {
+        display: inline;
+        font-weight: bold;
+        font-size: 15px;
+        text-align: right;
+        background-color: transparent;
+      }
+    }
+
+    .label:first-letter {
+      text-transform: uppercase!important;
+    }
+    button{
+      width: fit-content;
+      background-color: white;
+      color: black;
+    }    
 
   }
 }
 
 
   //
-  // FEEDBACK
+  // SUBS DIALOG 
   .container.top{
     color: #424242;
     background-color:rgba(255,255,255,0.99);
@@ -76,7 +80,7 @@ button[disabled] {
       top: 10px;
       right: 10px;
       z-index: 4;
-      @media (max-width: 429px) {
+      @media (max-width: 430px) {
         top: 10px;
         right: -10px;
       }
@@ -101,13 +105,28 @@ button[disabled] {
       width: 600px;
       margin: 0 auto 20px auto;
   
-      @media (max-width: 429px) {
+      @media (max-width: 430px) {
         padding: 0 5px;
       }
+
   
       &::-webkit-scrollbar { 
         display: none; 
       }    
+
+      kng-user-payment{
+        width: 100%;
+      }
+      .method{
+        padding: 5px;
+        background: #eee;
+        width: 100%;
+        border-radius: 8px;
+        margin: 5px 0;        
+      }
+      .title_payment{
+        white-space: break-spaces;        
+      }
 
       .title{
         overflow: hidden;
@@ -115,7 +134,7 @@ button[disabled] {
         white-space: nowrap;
         width: 50%;        
         font-weight: 300;
-        @media (max-width: 429px) {
+        @media (max-width: 430px) {
           width: 100%;
           padding:8px 2px;
         }
@@ -130,7 +149,7 @@ button[disabled] {
         span::after {
           padding-left: 5px;
         }
-        @media (max-width: 429px) {
+        @media (max-width: 430px) {
           width: 100%;
         }
 
@@ -153,21 +172,45 @@ button[disabled] {
         }        
       }
       button.date {
-        border-radius:20px  0 0 20px;
-        border-color: #aaa !important;
-        margin: 4px 0;
+        border-radius:20px ;
+        border-color: #aaa ;
+        margin: 4px 5px;
         margin-left: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;        
+        @media (max-width: 430px) {
+          width: calc(100% - 50px);
+          margin-left: 0;
+        }
+
       }
       input[type="date"] {
-        width: 26px;
+        width: 25px;
         height: 24px;
-        font-size: 20px;
-        border-radius: 0 20px 20px 0;
+        font-size: 19px;
+        border-radius: 20px 20px;
         border: 1px solid var(--mdc-theme-primary);
         background-color: var(--mdc-theme-appbar);
-        padding-right: 7px;
+        padding-right: 3px;
         color: black;
       }
+
+
+      // input[type="date"]:before {
+      //   content: 'Changer'; 
+      //   font-family: Arial, sans-serif;
+      //   position: absolute;
+      //   right: 10px;
+      //   top: 50%;
+      //   transform: translateY(-50%);
+      //   cursor: pointer;
+      //   padding: 3px;
+      //   color: black;
+      //   background-color: var(--mdc-theme-appbar);
+      //   border-radius: 20px 20px;
+      //   font-size:14px;
+      // }      
 
       textarea{
         margin-top: 10px;
@@ -206,10 +249,13 @@ button[disabled] {
           height: auto;    
           flex-wrap: wrap;
 
-          @media (max-width: 429px) {
+          @media (max-width: 430px) {
             margin: 4px 0;
           }
     
+          &.separator {
+            margin:10px auto 40px;
+          }
 
           &.selected{
             color: var(--mdc-theme-primary);
@@ -222,7 +268,7 @@ button[disabled] {
 
 
           &.contrasted-sm{
-            @media (max-width:429px) {
+            @media (max-width:431px) {
               color: #777;
               background-color: #efefef;                
             }
@@ -237,7 +283,7 @@ button[disabled] {
             padding: 3px 15px;
             border: 1px solid var(--mdc-theme-primary);
             background-color: var(--mdc-theme-primary);            
-            font-size: 16px;
+            font-size: 14px;
             &.danger{
               background-color: red;
               color: white;
@@ -250,7 +296,7 @@ button[disabled] {
       }
   
   
-      @media (max-width: 429px) {
+      @media (max-width: 430px) {
         box-shadow: none;
         position: absolute;        
         margin-top: 40px;

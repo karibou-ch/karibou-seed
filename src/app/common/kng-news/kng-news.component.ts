@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { Config } from 'kng2-core';
+import { Router } from '@angular/router';
+import { Config, hachacha } from 'kng2-core';
 import { i18n } from '../i18n.service';
 import { KngNavigationStateService } from '../navigation.service';
 
@@ -54,8 +54,8 @@ export class KngNewsComponent implements OnInit {
     try {
       this.stored = JSON.parse(localStorage.getItem(this.KNG_STORE_NEWS)) || [];
       this.content = this.getContent('p');
-      const hacha = this.hacha(this.content);
-      if(this.stored.indexOf(this.hacha(this.content))==-1){
+      const hacha = hachacha(this.content);
+      if(this.stored.indexOf(hachacha(this.content))==-1){
         this.open = KngNewsComponent.KNG_TO_DISPLAY && this.isReady;
         KngNewsComponent.KNG_TO_DISPLAY = false;
       }
@@ -77,9 +77,9 @@ export class KngNewsComponent implements OnInit {
       return;
     }
     if(open) {
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+      document.body.classList.add('mdc-dialog-scroll-lock');
     } else {
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
 
     this._open = open;
@@ -98,7 +98,7 @@ export class KngNewsComponent implements OnInit {
   }
 
   doClose() {
-    this.stored.unshift(this.hacha(this.content));
+    this.stored.unshift(hachacha(this.content));
     this.stored = this.stored.filter((v, i, a) => a.indexOf(v) === i).slice(0,5);
 
     try {
@@ -112,13 +112,6 @@ export class KngNewsComponent implements OnInit {
     this.open = false;
   }  
 
-  hacha(str) {
-    const hash:number = Array.from(str).reduce((hash:number, char:string) => {
-      return (hash << (6)) + (char.charCodeAt(0)) + (hash << (16)) - hash ;
-    }, 0) as number;
-    // return 8 bytes!
-    return (hash & 0xffffffff) ;  
-  }
 
   //
   // HUB information

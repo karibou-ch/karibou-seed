@@ -114,6 +114,9 @@ export class KngNavigationStateService  {
         // force appBar to Null if not exists
         if(hub.colors.appbar){
           style.setProperty('--mdc-theme-appbar', hub.colors.appbar);
+          const use ="color-mix(in srgb, var(--mdc-theme-appbar) 40%, white)"
+          const light = CSS.supports('color:'+use)? use:"var(--mdc-theme-appbar)";
+          style.setProperty('--mdc-theme-appbar-light', light);
         }else{
           style.removeProperty('--mdc-theme-appbar');
         }
@@ -245,47 +248,48 @@ export class KngNavigationStateService  {
     return false;
   }
 
-  registerScrollEvent(container?) {
-    let _scrollPosition = 0;
-    let _scrollDirection = 0;
+  registerScrollEvent(container?,debounceT?) {
+    let scrollPosition = 0;
+    let scrollDirection = 0;
   
     //
     // detect scrall motion and hide component
     // @HostListener('window:scroll', ['$event'])
     const windowScroll:any = ($event?) => {
-      const scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
+      const _scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
+
       //
       // initial position, event reset value
-      if(scrollPosition == 0) {
-        return(scrollPosition);
+      if(_scrollPosition == 0) {
+        return {direction:0,position:_scrollPosition};
       }
       //
       // avoid CPU usage
-      if (Math.abs(_scrollPosition - scrollPosition) < 20) {
-        return;
+      if (Math.abs(scrollPosition - _scrollPosition) < 20) {
+        return {direction:0,position:_scrollPosition};
       }
 
-      // console.log(window.pageYOffset,scrollPosition,'-- > sH, sT, cH: ', $event.target.scrollHeight,$event.target.scrollTop, $event.target.clientHeight);
+      // console.log(window.pageYOffset,_scrollPosition,'-- > sH, sT, cH: ', $event.target.scrollHeight,$event.target.scrollTop, $event.target.clientHeight);
 
-      if (scrollPosition > _scrollPosition) {
-        if (_scrollDirection < 0) {
-          _scrollDirection--;
+      if (_scrollPosition > scrollPosition) {
+        if (scrollDirection < 0) {
+          scrollDirection--;
         } else {
-          _scrollDirection = -6;
+          scrollDirection = -6;
         }
       } else {
-        if (_scrollDirection > 0) {
-          _scrollDirection++;
+        if (scrollDirection > 0) {
+          scrollDirection++;
         } else {
-          _scrollDirection = 1;
+          scrollDirection = 1;
         }
       }
-      _scrollPosition = scrollPosition;
+      scrollPosition = _scrollPosition;
 
 
       // FIXME make it better (<-5 && !exited) = event.exit 
-      //this._direction$.next(5*(Math.round( _scrollDirection / 5)));
-      return (_scrollDirection);
+      //this._direction$.next(5*(Math.round( scrollDirection / 5)));
+      return {direction:scrollDirection,position:scrollPosition};
     }
 
 
@@ -297,9 +301,8 @@ export class KngNavigationStateService  {
       elem = (container instanceof ElementRef)? container.nativeElement:document.querySelector(container);
     }
     return fromEvent(elem, 'scroll').pipe(
-      debounceTime(50),
+      debounceTime(debounceT||50),
       map(event => windowScroll(event)),
-      filter(position=> Number.isInteger(position)),
       distinctUntilChanged()
     );
   }

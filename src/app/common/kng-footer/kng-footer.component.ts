@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User, Config, UserService } from 'kng2-core';
+import { User, Config } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '..';
 import pkgInfo from '../../../../package.json';
 
@@ -22,10 +22,10 @@ export class KngFooterComponent implements OnInit {
   VERSION: string = pkgInfo.version;
   shared: any;
   store: string;
+  isReady: boolean;
 
   constructor(
     private $i18n: i18n,
-    private $user: UserService,
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
   ) {
@@ -47,6 +47,7 @@ export class KngFooterComponent implements OnInit {
 
   ngOnInit() {
     this.store = this.$navigation.store;
+    setTimeout(()=>this.isReady=true,4000);
   }
 
   get locale() {

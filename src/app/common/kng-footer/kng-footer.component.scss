@@ -7,8 +7,13 @@ div.footer{
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  min-height: 200px;
+  height: fit-content;
   font-size: .9rem;
+  opacity: 0;
+
+  &.display{
+    opacity: 1;
+  }
 
   background-image: url(/assets/img/k-footer.png);
   background-position-y: 8%;
@@ -16,15 +21,14 @@ div.footer{
   background-repeat: repeat-x;
   background-color: var(--mdc-theme-appbar);
   background-color: #fff;  
-  padding-top: 120px;
+  padding-top: 110px;
   @media (prefers-color-scheme: dark) {
     background-color: var(--mdc-theme-primary-dark);
     color: var(--mdc-theme-primary-dark-text);
   }
 
 
-  @media (max-width:429px) {
-    min-height: 80px;
+  @media (max-width:431px) {
     .main{
       display: none!important;
     }
@@ -36,12 +40,12 @@ div.footer{
     width: 100%;
     margin: auto;
     box-sizing: border-box;  
-    padding:4px 0;
+    padding:0;
     margin-top: 0px;
     margin-bottom: 0px;    
     .line{
       padding:2px 0;
-      @media screen and (max-width:429px){
+      @media screen and (max-width:431px){
         padding-left: 30px;
       }
       display:flex;
@@ -53,9 +57,9 @@ div.footer{
       }
       .elem{
         flex:1 0 calc(33% - 40px);
-        padding:20px;
+        padding:0px;
         min-width: 200px;
-        @media screen and (max-width:429px){
+        @media screen and (max-width:431px){
           flex:1 0 calc(100% - 40px);
           padding:5px;
         }
@@ -73,14 +77,18 @@ div.footer{
 
         ul,ol{
           list-style: none;//hangul-consonant;
-          padding-left: 0;
-          margin-top: 0;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;          
           li{
             line-height: 1.9em;
           }
           a{
             text-decoration: none;
-            color: #555;
+            color: #000;
             font-size: 90%;          }          
         }
       }

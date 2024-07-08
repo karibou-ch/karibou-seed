@@ -1,22 +1,55 @@
 <kng-navbar style="height:100%">
 
   <div class="root-container">
+    <div class="basic-setting">
+    <!-- USER i18n -->
+    <div class="kng-boxed i18n">
+      <div class="content">
+        <div class="">{{label.nav_i18n}}</div>
+        <label class="switch">
+          <input type="checkbox" (click)="doLocaleSwitch()">
+          <span class="slider">&nbsp;{{locale}}</span>
+        </label>
 
+      </div>
+    </div>
 
-    <!-- FEEDBACK -->
-    <kng-feedback [config]="config" [user]="user" forceload="true" >
-    </kng-feedback>
+    <!-- USER login -->
+    <div class="kng-boxed theme" [hidden]="user.isAuthenticated()">
+      <div class="label" [innerHtml]="tagline.t[locale]"></div>
+      <div class="content">
+        <button class="" [routerLink]="'/store/'+store+'/home/me/login'" [relativeTo]="'/store/'+store+'/home'">{{label.nav_login}}</button> 
+      </div>
+    </div>
 
+    <!-- USER theme -->
+    <div class="kng-boxed theme" hidden>
+      <div class="label"> Changer de couleur</div>
+      <div class="content">
+        <div class="color">&nbsp;</div>
+        <div class="color">&nbsp;</div>
+        <div class="color">&nbsp;</div>
+        <div class="color">&nbsp;</div>
+      </div>
+    </div>
+
+    </div>
     <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
-
 
     <!-- SUBSCRITION OPTIONS -->
     <kng-subsciption-control [config]="config"></kng-subsciption-control>
 
+    <!-- FEEDBACK -->
+    <kng-feedback [config]="config" [user]="user">
+    </kng-feedback>
+
+
+
 
     <!-- MARKETPLACE -->
-    <kng-nav-marketplace (updated)="doOpenMarket($event)"  [hidden]="lockedHUB" [config]="config" [orders]="orders"></kng-nav-marketplace>
-  
+    <kng-nav-marketplace (updated)="doOpenMarket($event)" [hidden]="lockedHUB" [config]="config"
+      [orders]="orders"></kng-nav-marketplace>
+
     <!-- DATE -->
     <!-- <kng-calendar [config]="config"  (updated)="currentShippingDay=$event"></kng-calendar> -->
 
@@ -34,4 +67,4 @@
 
   </div>
 
-</kng-navbar>  
+</kng-navbar>

@@ -8,6 +8,7 @@ import { KngNavigationStateService, i18n } from '../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 import { Config, User, UserService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
+import { KngPaymentComponent } from '../common/kng-payment/kng-user-payment.component';
 
 @Component({
   selector: 'kng-user-sign',
@@ -17,45 +18,6 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 export class UserSignComponent {
 
   K_BRAND = '/assets/img/k-brand-lg.png';
-
-  issuer = {
-    wallet: {
-      img: '/assets/img/payment/wallet.jpg',
-      label: 'Votre compte privé'
-    },
-    invoice: {
-      img: '/assets/img/payment/invoice.jpg',
-      label: 'Facture en ligne'
-    },
-    mastercard: {
-      img: '/assets/img/payment/mc.jpg',
-      label: 'Mastercard'
-    },
-    visa: {
-      img: '/assets/img/payment/visa.jpg',
-      label: 'VISA'
-    },
-    amex: {
-      img: '/assets/img/payment/ae.jpg',
-      label: 'American Express'
-    },
-    'american express': {
-      img: '/assets/img/payment/ae.jpg',
-      label: 'American Express'
-    },
-    btc: {
-      img: '/assets/img/payment/btc.jpg',
-      label: 'Bitcoin'
-    },
-    eth: {
-      img: '/assets/img/payment/bch.jpg',
-      label: 'Bitcoin Cash'
-    },
-    kng: {
-      img: '/assets/img/payment/xlm.jpg',
-      label: 'Lumen'
-    }
-  };
 
 
   i18n: any = {
@@ -162,6 +124,7 @@ export class UserSignComponent {
       referrer: this.$route.snapshot.data.referrer
     };
 
+    
     const postalCodeValidator= (control) => {
       if(this.mandatory.minimal){
         return;
@@ -211,6 +174,28 @@ export class UserSignComponent {
 
     this.updateState();
   }
+
+
+  get issuer(){
+    return KngPaymentComponent.issuer;
+  }
+
+  get hubSlug() {
+    if (!this.config || !this.config.shared.hub) {
+      return 'artamis';
+    }
+    return this.config.shared.hub.slug;
+  }
+
+  get taglineLogo() {
+    const defaultImg = (this.config.shared.hub && this.config.shared.hub.logo) ?
+          this.config.shared.hub.logo : this.K_BRAND;
+
+    const bgStyle = 'url(' + defaultImg + ')';
+    return {'background-image': bgStyle};
+
+  }
+
 
   //
   // release data
@@ -282,14 +267,6 @@ export class UserSignComponent {
 
   }
 
-
-  getHubSlug() {
-    if (!this.config || !this.config.shared.hub) {
-      return 'artamis';
-    }
-    return this.config.shared.hub.slug;
-  }
-
   getTagline(key) {
     if (!this.config || !this.config.shared.tagLine[key]) {
       return;
@@ -299,14 +276,6 @@ export class UserSignComponent {
     return (hub && hub.name) ? hub.tagLine[key][this.$i18n.locale] : shared.tagLine[key][this.$i18n.locale];
   }
 
-  getTaglineLogo() {
-    const defaultImg = (this.config.shared.hub && this.config.shared.hub.logo) ?
-          this.config.shared.hub.logo : this.K_BRAND;
-
-    const bgStyle = 'url(' + defaultImg + ')';
-    return {'background-image': bgStyle};
-
-  }
 
   // @HostListener('document:click')
   onBack() {
@@ -391,7 +360,7 @@ export class UserSignComponent {
       lastname: this.signup.value.name,
       password: this.signup.value.password,
       confirm: this.signup.value.confirm,
-      hub: this.getHubSlug(),
+      hub: this.hubSlug,
       phoneNumbers: [{number: this.signup.value.phone, what: 'mobile'}]
     };
     this.$user.register(user).subscribe(

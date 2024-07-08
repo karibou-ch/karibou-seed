@@ -28,6 +28,8 @@ export class KngShopComponent implements OnInit {
   error: string;
   vendor: Shop = new Shop();
   products: Product[];
+  selections: Product[];
+
   LIMITED_PRODUCTS = 70;
   ngStyleBck: any;
 
@@ -69,6 +71,8 @@ export class KngShopComponent implements OnInit {
 
     this.urlpath = this.$route.snapshot.params.urlpath;
     this.products = [];
+    this.selections = [];
+
     this.ngStyleBck = {};
   }
 
@@ -110,6 +114,8 @@ export class KngShopComponent implements OnInit {
       this.products = products.sort((a, b) => {
         return b.stats.score - a.stats.score;
       }).slice(0, this.LIMITED_PRODUCTS);
+      this.selections = this.products.filter(product => product.attributes.home);
+
     }, error => {
       this.error = error.error;
     });    

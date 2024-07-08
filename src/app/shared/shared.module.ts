@@ -29,12 +29,14 @@ import { KngSharedMdcModule } from './shared.mdc.module';
 
 
 import { appRoutes } from './shared.routes';
-import { NgxStripeModule } from 'ngx-stripe';
 import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
 import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component';
 import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
+import { KngAssistantComponent } from './kng-assistant/kng-assistant.component';
+import { KngAudioAssistantComponent } from './kng-audio-assistant/kng-audio-assistant.component';
+import { KngStreamSentenceComponent } from './kng-stream-sentence/kng-stream-sentence.component';
 
 
 @NgModule({
@@ -44,13 +46,14 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
     Kng2CoreModule,
     KngSharedMdcModule,
     KngCommonModule,
-    NgxStripeModule.forRoot(),
     RouterModule.forChild(appRoutes),
   ],
   exports: [
     RouterModule,
     KngCommonModule,
+    KngAssistantComponent,
     KngAudioNoteComponent,
+    KngAudioAssistantComponent,
     KngControlMessagesComponent,
     KngTextfieldAutosizeDirective,
     KngUserReminderComponent,
@@ -58,10 +61,12 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    UcWidgetComponent    
+    UcWidgetComponent,    
   ],
   declarations: [
     KngAudioNoteComponent,
+    KngAudioAssistantComponent,
+    KngAssistantComponent,
     KngHomeComponent,
     KngControlMessagesComponent,
     KngShopComponent,
@@ -77,7 +82,8 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    KngProductLinkComponent
+    KngProductLinkComponent,
+    KngStreamSentenceComponent,
   ],
 })
 export class KngSharedModule {

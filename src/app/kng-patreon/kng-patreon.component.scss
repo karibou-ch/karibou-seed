@@ -155,14 +155,23 @@
   margin-bottom: 40px;
   max-width: calc(100% - 160px);
   margin: auto;
-  @media (max-width: 429px) {
+  @media (max-width: 430px) {
     max-width: calc(100% - 16px);
   }
 
   .markdown {
+    margin: auto;
     margin-bottom: 40px;
-    width: calc(100% - 32px);
-
+    width: calc(100% - 32px);    
+  }
+  .markdown ::ng-deep{
+    h2 {
+      font-size: 1.1em;
+      margin: 25px auto 15px;
+    }
+    code {
+      font-size: 15px;
+    }
   }
 
   .profile-action {
@@ -176,7 +185,7 @@
     padding: 15px;
     background-color: #efefef;
     margin-bottom: 10px;
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       width: calc( 100% - 40px );
       margin-right: 0px;
     }
@@ -185,7 +194,8 @@
       transform: translateY(7px);      
     }
     div.button,
-    button{          
+    button{     
+      cursor: pointer;     
       border: 0;
       font-size: 16px;
       font-weight: 600;
@@ -232,14 +242,16 @@
       margin-bottom: 5px;
       text-align: center;
       width: 100%;
-      -background: -webkit-linear-gradient(45deg,#1c176d,#007b48 90%);
-      -background-clip: text;
-      --webkit-text-fill-color: transparent;
+      max-width: 700px;
 
-      @media (max-width:429px) {
+      // -background: -webkit-linear-gradient(45deg,#1c176d,#007b48 90%);
+      // -background-clip: text;
+      // --webkit-text-fill-color: transparent;
+
+      @media (max-width:431px) {
         font-size: 40px;
         line-height: 48px;
-        padding-left: 10px;    
+        padding:auto 10px;    
   
       }
     }
@@ -253,8 +265,8 @@
       margin: 0 auto;
       color: #333;
       text-align: center;    
-      @media (max-width:429px) {
-        font-size: 15px;
+      @media (max-width:431px) {
+        font-size: 17px;
         padding-left: 0px;
         max-width: calc(100% - 40px);
         line-height: 21px;
@@ -271,7 +283,8 @@
       button[disabled] {
         opacity: .5;
       }
-      button{        
+      button{       
+        cursor: pointer; 
         text-transform: uppercase;
         padding: 20px 10px;
         border-radius: 45px;
@@ -299,6 +312,14 @@
         text-align: center;
       }
     }
+
+    .ready {
+      width: 100%;
+      text-align: center;
+      background: #eee;
+      margin: 20px 0;      
+      font-family: sans-serif;
+    }
   }
 
 
@@ -313,6 +334,7 @@
     margin-bottom: 40px;
 
     .box{
+      cursor: pointer;
       width: 238px;
       box-shadow: 2px 4px 10px 2px rgb(201 198 198 / 40%);
       border-radius: 14px;
@@ -330,7 +352,7 @@
 
       &.checked{          
         border: 2px solid var(--mdc-theme-primary);
-        border: 2px solid #ccc;
+        border: 2px solid #da1c5c;
         background-color: white;
         -width: 100%;
         .price{
@@ -342,7 +364,7 @@
         -margin-bottom: 0px;
       }
       
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         min-height: auto;
         padding: 15px 12px;
         margin: 10px 10px;

@@ -32,7 +32,7 @@
         color: red;
         font-weight: 200;
       }
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         max-width: 190px;
         font-size: 14px;
       }
@@ -94,6 +94,11 @@
     border:1px solid var(--mdc-theme-primary, rgba(0, 0, 0, 0.87));
   }
 
+  &.shared {
+    height: 80px;
+    background: var(--mdc-theme-appbar-light);
+    border-bottom: 1px solid #eee;    
+  }
 
   color: #333;
   button{
@@ -137,7 +142,7 @@
     color: var(--mdc-theme-karibou-pink);      
   }
 
-  @media (max-width:429px) {
+  @media (max-width:431px) {
     padding-left: 5px;      
   }
 
@@ -174,6 +179,7 @@
   
     }
   }
+
 
   &.auto-height {
     height: auto;
@@ -248,7 +254,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         font-size: 90%;
       }
     
@@ -312,7 +318,7 @@
     font-size: 1rem;
     flex-wrap: nowrap;
     align-items: center;   
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       zoom: .85;        
     }
 
@@ -405,7 +411,7 @@
     white-space: nowrap;
     display: flex;
     align-items: center;    
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       margin-right: auto;
       width: 100%;
       margin-top: 10px;      
@@ -425,7 +431,7 @@
     height: 45px;
     font-weight: bold;
     margin-left: 0;    
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       width: 100%;
     }
 

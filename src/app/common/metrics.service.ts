@@ -63,7 +63,7 @@ export class MetricsService {
                          this.$route.snapshot.queryParamMap.get('source') ||
                          this.$route.snapshot.queryParamMap.get('umt_source') || this.currentSource;
 
-    this.fbclid = this.$route.snapshot.queryParamMap.get('fbclid') || this.fbclid;
+    this.fbclid = this.$route.snapshot.queryParamMap.get('fbclid');
     if(this.fbclid) {
       this.fbclid = this.fbp.split('.').slice(0, -1).join('.')+this.fbclid;
     }
@@ -101,7 +101,11 @@ export class MetricsService {
         //
         // AddToProducts
         if (ctx.state && ctx.state.action === CartAction.ITEM_ADD) {
-          this.event(EnumMetrics.metric_add_to_card, {'amount': ctx.state.item.price,hub:ctx.state.item.hub});
+          this.event(EnumMetrics.metric_add_to_card, {
+            amount: ctx.state.item.price,
+            sku:[ctx.state.item.sku],
+            hub:ctx.state.item.hub
+          });
         }
 
         //
@@ -219,10 +223,14 @@ export class MetricsService {
     // server side tracking
     metrics.extra = {
       url:location.href,
-      fbc:this.fbclid,
       fbp:this.fbp,
       user_agent: window.navigator.userAgent
     }
+
+    if(this.fbclid){
+      metrics.extra.fbclid = this.fbclid;
+    }
+
 
     //console.log('---- DBG metrics',EnumMetrics[metric],metrics)
 
@@ -235,6 +243,10 @@ export class MetricsService {
     // gtag('event', [category], [Action], [Label], [Value], [fieldsObject]);
     // ga4 ecommerce
     // https://developers.google.com/analytics/devguides/collection/ga4/ecommerce?client_type=gtag#view_cart
+    if(params.sku) {
+      metrics.extra.content_ids=[params.sku];
+      metrics.extra.content_type = 'product';  
+    }
 
     switch (metric) {      
       case EnumMetrics.metric_view_page:

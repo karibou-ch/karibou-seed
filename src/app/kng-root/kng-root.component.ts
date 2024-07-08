@@ -44,6 +44,10 @@ export class KngRootComponent implements OnInit {
     return this.$i18n.locale;
   }
 
+  set locale(value) {
+    this.$i18n.locale = value;
+  }
+
   get label() {
     return this.$i18n.label();
   }
@@ -51,22 +55,32 @@ export class KngRootComponent implements OnInit {
   get lockedHUB() {
     return this.$navigation.isLocked();
   }
+
   
   get store() {
     return this.$navigation.store;
   }
 
-  set store(name) {
-    this.$navigation.store = name;
-  }
 
+  get tagline() {
+    if (!this.config || !this.config.shared.tagLine) {
+      return {};
+    }
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name) ? hub.tagLine : shared.tagLine;
+  }
 
   
   ngOnInit() {
-    // this.subscription.add(
-    //   this.$route.params.subscribe(params => {
-    //   this.store = params['store'];
-    // }));
+    this.subscription.add(
+      this.$route.params.subscribe(params => {
+      if(!params.store) {
+        return;
+      }
+  
+      this.$navigation.store = params['store'];
+    }));
 
     this.subscription.add(
       this.$loader.update().subscribe(emit => {
@@ -78,7 +92,6 @@ export class KngRootComponent implements OnInit {
         return
       }
       this.config = emit.config;
-      this.store = this.config.shared.hub && this.config.shared.hub.slug;
     }));
 
 
@@ -119,6 +132,11 @@ export class KngRootComponent implements OnInit {
   getImage(product){
     return product.photo.url + '/-/resize/300x/';
   }
+
+  doLocaleSwitch(){
+    this.$i18n.localeSwitch();
+  }
+
 
   doOpenMarket(hub) {
     KngRootComponent.SCROLL_CACHE = 0;

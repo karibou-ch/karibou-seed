@@ -1,10 +1,10 @@
 <div>
-  <h2  [hidden]="isMinimal" >
+  <h2>
     {{label.title_header}} 
   </h2>
 
 
-  <ul class="payment" [hidden]="isMinimal">
+  <ul class="payment">
     <li *ngFor="let payment of user.payments" 
       (click)="setPaymentMethod(payment)"
       [class.selected]="isSelectedPayment(payment)">
@@ -31,24 +31,6 @@
     {{label.action_add}}
   </h2>
     
+  <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePayment($event)"></kng-user-payment>
   
-  <form novalidate 
-       (ngSubmit)="onPayment()" 
-       [formGroup]="stripe" 
-       class="stripe-component">
-    <mdc-text-field  [label]="$i18n[locale].user_display_name" style="width:100%" type="text" 
-                    [hidden]="!user.isReady()"
-                    formControlName="name" [ngModel]="user.display()">
-    </mdc-text-field>
-
-    <div id="card-element" class="field"></div>
-    <button type="submit" [disabled]="isLoading||!isValid" >
-      {{$i18n[locale].action_save}}
-    </button>
-
-    <div [hidden]="!displayCardError" class="stripe-error">
-      <h4>{{label.stripe_issue}}</h4>
-      {{displayCardError}}
-    </div>
-  </form>      
 </div>

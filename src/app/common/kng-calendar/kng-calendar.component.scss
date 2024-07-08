@@ -1,34 +1,53 @@
+:host {
+  &.fit-content{
+    .calendar-container{
+      font-size: 15px;
+      padding: 0 10px;
+      max-width: calc(100% - 20px);
+      .calendar {
+        margin-left: -10px;
+        width: fit-content;
+
+      }
+      .calendar .list{
+        padding-left: 5px;
+      }
+      .calendar .list .element {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  }
+}
 .calendar-container{
-  margin: 10px;
+  margin: 0 10px;
   margin-bottom: 50px;
-  color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
-  width: calc( 100%  - 20px );
+  width: calc( 100%  - 30px );
   @media (min-width:1024px) {
-    max-width: 940px;
     width: 940px;
-    margin-left: 40px;        
+    margin-left: 0px;        
   }
   h2{
     font-weight: 600;
     color: rgba(0, 0, 0, 0.87);
-    color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
     font-size: 1.4675rem;
     margin-bottom: 15px;
   }
   h3{
-    margin-top: 0px;
-    font-weight: 200;
-    font-size: 1.275rem;
-    color: #aaa;
-    text-shadow: 1px 1px 0 white;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 1.4675rem;
+    margin-bottom: 15px;
+    margin-top: 25px;
+    margin-left: 0;    
   }
 
   .calendar{
     overflow: hidden;
     overflow-x: auto;
-    background-color: rgba(240, 240, 240, .4);
-    background-color:var(--mdc-theme-appbar);
+    background-color: var(--mdc-theme-appbar-light);
     border-radius: 50px;
+    width: fit-content;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -36,10 +55,11 @@
     .list{
       display: flex;
       flex-wrap: nowrap;
+      gap:3px;
       width: max-content;
   
       .element{
-        margin: 0px 5px;
+        margin: 0px;
         margin-left: 0;
         background-color: white;
         border: 1px solid #eee;
@@ -62,16 +82,16 @@
         }
       
         &.selected{
-          background-color: var(--mdc-theme-primary);
+          background-color: var(--mdc-theme-karibou-yellow);
           .ei_Title{
             font-weight: 600;
-            color: var(--mdc-theme-primary-text);
+            color: #333;
           }
         }
         .ei_Title{
           color: black;
           margin: auto;
-          padding: 8px;
+          padding: 10px;
         }        
            
         &:hover:not(.disabled){
@@ -85,5 +105,36 @@
   
     }
 
+  }
+  .kng-boxed{
+
+    margin-left: -6px;
+    width: fit-content;
+    min-height: 30px;    
+    padding: 0px;
+    .label{
+      padding: 20px 15px 0;
+      font-weight: 400;
+      font-size: inherit;
+    }
+    .content{
+      min-height: auto;
+      padding: 10px;
+    }
+  }
+  .switch-hub {
+    button{
+      cursor: pointer;
+      color: var(--mdc-theme-secondary);
+      background-color: var(--mdc-theme-secondary-text);
+      width: auto;
+      margin-left: 0;
+      margin-right: auto;
+      border: 1px solid var(--mdc-theme-appbar);
+    }
+  }
+
+  p{
+    width: 100%;
   }
 }
