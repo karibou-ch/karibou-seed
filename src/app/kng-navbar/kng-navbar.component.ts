@@ -58,9 +58,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   cgAccepted: boolean;
   cardItemsSz = 0;
   cartItemCountElem = 0;
+  subsItemsSz = 0;
+  subsItemCountElem = 0;
+
   currentShippingDay: Date;
   isFixed = true;
   displayIosInstall: boolean;
+  displayLogin:boolean;
   subscription : Subscription;
   scrollDirection = 0;
   //
@@ -121,6 +125,27 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.$i18n.label();
   }
 
+
+  get subscriptionQueryParams() {
+    const contractId = this.$route.snapshot.queryParams.id;
+    const params:any = {view:'subscription'};
+
+    //
+    // FIXME UGLY STORAGE OF SUBS_PLAN (FOR SHARING WITH CART)
+    if(window['subsplan'] && window['subsplan'].length>1) {
+      params.plan=window['subsplan'];
+    }
+
+    // if(this.isForSubscriptionBusiness) {
+    //   params.plan='business'
+    // }
+    // if(contractId) {
+    //   params.id=contractId;
+    // }    
+    return params;
+  }
+
+
   ngOnDestroy() {
     // FIXME, better to use declarative pipe(takeUntil(destroyed$))
     this.subscription.unsubscribe();
@@ -128,8 +153,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription.add(
-      this.$navigation.registerScrollEvent().subscribe(scrollDirection => {
-        this.scrollDirection = scrollDirection;
+      this.$navigation.registerScrollEvent().subscribe(scroll => {
+        this.scrollDirection = scroll.direction;
         this.$cdr.markForCheck();
       })  
     )
@@ -191,12 +216,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           else if(!KngNavbarComponent.ASK_FOR_LOGIN && this.user.email.address) {
             
             KngNavbarComponent.ASK_FOR_LOGIN = true;
+      
             setTimeout(()=>{
-              this.$snack.open(
-                this.$i18n.label().user_ask_login,
-                this.$i18n.label().thanks,
-                {timeoutMs:10000,direction:"top"}
-              );
+              this.displayLogin =  true;
+              timer(13000).subscribe(() => {
+                this.displayLogin =  false;
+                this.$cdr.markForCheck();
+              });
+              this.$cdr.markForCheck();
             },2000)
           }
 
@@ -211,21 +238,23 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         //
         // update cart
         if (emit.state) {
-          this.cardItemsSz = 0;
-          this.cartItemCountElem = 0;
+          this.cardItemsSz = this.subsItemsSz = 0;
+          this.cartItemCountElem = this.subsItemCountElem = 0;
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
           //
           // update cart for all market (hub)
           (this.config.shared||[]).hubs.forEach(hub => {
-            // never display subscription item in cart
-            const ctx:CartItemsContext = {
-              forSubscription:false,
-              hub:hub.slug
-            }    
-            const items = this.$cart.getItems(ctx);
-              
-            this.cardItemsSz = parseFloat ((this.cardItemsSz + this.$cart.subTotal(ctx)).toFixed(2));
-            this.cartItemCountElem += items.length;
+            // display cart items
+            const cartCtx:CartItemsContext = { forSubscription:false,hub:hub.slug };    
+            const cartItems = this.$cart.getItems(cartCtx);              
+            this.cardItemsSz = parseFloat ((this.cardItemsSz + this.$cart.subTotal(cartCtx)).toFixed(2));
+            this.cartItemCountElem += cartItems.length;
+
+            // display subs items
+            const subsCtx:CartItemsContext = { forSubscription:true,hub:hub.slug };    
+            const subsItems = this.$cart.getItems(subsCtx);              
+            this.subsItemsSz = parseFloat ((this.subsItemsSz + this.$cart.subTotal(subsCtx)).toFixed(2));
+            this.subsItemCountElem += subsItems.length;            
           });
   
 
@@ -277,7 +306,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     const isInStandaloneMode = () => ('standalone' in (window as any).navigator) && ((window as any).navigator.standalone);
     if (isIos() && !isInStandaloneMode() && Math.random() > .85) {
       this.displayIosInstall =  true;
-      timer(5000).subscribe(() => {
+      timer(13000).subscribe(() => {
         this.displayIosInstall =  false;
         this.$cdr.markForCheck();
       });
@@ -358,6 +387,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       //
       // top & bottom bar
       (<Element>(document.querySelector('.cart-items-count') || {})).innerHTML = '' + this.cardItemsSz + ' fr';
+      (<Element>(document.querySelector('.subs-items-count') || {})).innerHTML = '' + this.subsItemsSz + ' fr';
       (<Element>(document.querySelector('.cart-items-count-mobile') || {})).innerHTML = '' + this.cartItemCountElem;
     });
 

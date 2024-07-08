@@ -30,7 +30,7 @@ export class IsAuthenticatedGard implements CanActivate, CanActivateChild {
           return true;
         }
         const store = this.$navigation.store || paramLookup('store');
-        this.$router.navigate(['/store', store, 'me', 'login']);
+        this.$router.navigate(['/store', store, 'home','me', 'login']);
         return false;
       })
     ).toPromise();

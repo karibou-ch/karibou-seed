@@ -84,13 +84,15 @@
           [key]="config.shared.keys.pubUpcare"
           [amount]="product.pricing.price * cartItemQuantity"
           [src]="cartItemAudio" 
+          [cartItemNote]="cartItemNote" 
           (onCartItemAudio)="onAudioStopAndSave($event)"
           (onCartItemAudioError)="onAudioError($event)"></kng-audio-note>
 
+
       <!-- DESCRIPTION -->
       <div class="description">
-        <div [kng-markdown]="product.details.description"></div>
-        <div [hidden]="!product.details?.origin" class="light">{{product.details.origin}}</div>
+        <div [kng-markdown]="product.details.description" removeRoot="true"></div>
+        <div [hidden]="!product.details?.origin" class="light" [innerHtml]="product.details.origin"></div>
       </div>
 
       <!-- CERTIFIED -->
@@ -115,11 +117,11 @@
       </div>
 
       <!-- RECEIPE -->
-      <div class="recipe hide">
+      <div class="recipe ">
         <div class="content bold">
-          Trouver les produits associés 
+          {{label.james_product_title}}
         </div>
-        <kng-product-link (click)="isSearching=true" [links]="['tomate cerise','origan','sauce tomate']"></kng-product-link>
+        <kng-product-link [product]="product">{{label.james_product_action}}</kng-product-link>
       </div>
 
 

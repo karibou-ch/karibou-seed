@@ -19,11 +19,10 @@ export class KngFeedbackComponent implements OnInit {
     fr: {
       title_code:'Code $$',
       title_wallet:'Votre Portefeuille',
-      title_favorite:'Les suggestions pour vous',
-      title_favorite_p:'Un rapide coup d\'oeil de la sélection',
       title_order_prepare: 'Votre commande est en cours de préparation pour',
       title_order_pending: 'La confirmation de paiement n\' a pas été effectuée ...',
-      title_order_open: 'Vous avez une commande en cours ...',
+      title_order_placed: 'Vous avez une commande en cours ...',
+      title_order_open:'Voir le détail de votre commande ...',
       title_order_grouped: 'complément(s)',
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
@@ -46,13 +45,12 @@ export class KngFeedbackComponent implements OnInit {
     en: {
       title_code:'Code $$',
       title_wallet:'Your Wallet',
-      title_favorite:'Suggestions mades for you',
-      title_favorite_p:'A quick glance of goods',
       title_order_prepare: 'You order is being prepared for',
       title_order_grouped: 'complement(s)',
       title_order_shipping: 'Delivery is expected at',
       title_order_pending: 'Payment confirmation has not been made',
-      title_order_open: 'You have a pending order',
+      title_order_placed: 'You have a pending order',
+      title_order_open:'See details of your order...',
       title_order_cancel: 'Your order has been cancelled',
       title_evaluation: 'Your feeling in stars ?',
       title_evaluation_quick: 'Rate your Satisfaction for this order',
@@ -111,6 +109,10 @@ export class KngFeedbackComponent implements OnInit {
 
   get hubName() {
     return (this.config && this.config.shared) ? this.config.shared.hub.name : '';
+  }
+
+  get store() {
+    return (this.config && this.config.shared) ? this.config.shared.hub.slug : '';
   }
 
   get locale() {
@@ -175,7 +177,7 @@ export class KngFeedbackComponent implements OnInit {
       return false;
     }
     const oids = this.invoices.map(invoice => invoice.invoices.map(order => order.oid)).flat();
-    return 'K-ch-QRBILL: '+oids.join('-')
+    return 'Vous avez '+oids.length + ' factures ouvertes';
   }
 
   constructor(
@@ -238,7 +240,7 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
   ngOnChanges() {
   }
@@ -248,8 +250,6 @@ export class KngFeedbackComponent implements OnInit {
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
     this.config.shared.hubs.forEach(hub => this.HUBS[hub.id]=hub.name);
-
-
   }
 
   displayEvaluate() {
@@ -332,7 +332,7 @@ export class KngFeedbackComponent implements OnInit {
 
     combineLatest([
       this.$order.customerInvoices(),
-      this.$order.findOrdersByUser(this.user, {limit: 5})
+      this.$order.findOrdersByUser(this.user, {limit: 2})
     ]).subscribe(([invoices,orders]) => {
       this.invoices = invoices;
       this._orders = orders || [];
@@ -362,16 +362,18 @@ export class KngFeedbackComponent implements OnInit {
   openIssue(score?) {
     //
     // DIALOG INIT HACK
-    document.documentElement.classList.add('mdc-dialog-scroll-lock');
+    document.body.classList.add('mdc-dialog-scroll-lock');
     this.askFeedback = true;
     if(score>=0) {
       this.score=score;
     }
   }
 
-  onFavorites(){
-    this.$navigation.searchAction('favoris');    
+  openOrder(order){
+    document.body.classList.add('mdc-dialog-scroll-lock');
+    this.selectedOrderPopup = order;
   }
+
 
   onAddAllToCart() {
     let items = this.order.items;
@@ -398,8 +400,10 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   onBack() {
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
     this.askFeedback = false;
+    this.selectedOrderPopup = null;
+
   }
 
   onEvaluate() {

@@ -2,6 +2,8 @@
 .kng-drawer{
   color:var(--mdc-theme-primary-text);
   background: linear-gradient(transparent 20%,white 50%);
+  background: white;
+
 
   position: fixed;
   top: calc( 100vh * -1.85 );
@@ -50,7 +52,6 @@
     top: 12px;
     right: 10px;
     color: #333;
-    background: var(--mdc-theme-appbar);
     width: 100px;
     text-align: right;    
     @media (max-width: 769px) {
@@ -105,7 +106,7 @@
     color: #333;
   }
 
-  @media (max-width:429px) {
+  @media (max-width:431px) {
     width: calc( 100% - 8px );
     margin-left: 0px;
     margin-right: 0;
@@ -190,7 +191,7 @@
           margin-bottom: 0px;
         }
 
-        @media (max-width:429px) {
+        @media (max-width:431px) {
           width: calc( 100% - 40px );
           margin-right: 0px;
         }
@@ -268,7 +269,7 @@
         padding: 15px;
         background-color: #efefef;
         margin-bottom: 10px;
-        @media (max-width:429px) {
+        @media (max-width:431px) {
           width: calc( 100% - 40px );
           margin-right: 0px;
         }
@@ -331,7 +332,7 @@
         padding-left: 15px;        
       }
 
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         width: calc(100% - 00px);
       }
 

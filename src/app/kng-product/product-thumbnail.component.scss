@@ -71,7 +71,7 @@
   cursor: pointer;
  
   margin-bottom: 20px;
-  background: white;
+  background: rgba(255,255,255,0.6);
   border-radius: 6px;
 
   @media (prefers-color-scheme: dark) {
@@ -79,9 +79,15 @@
     color: var(--mdc-theme-primary-dark-text);      
 }
 
-  div.media{
+  .media{
     position: relative;
     overflow: hidden;
+    height: 9rem;
+  
+    border-radius: 0 0 12px 12px;  
+    transition: background-color .2s ease-in-out;
+    background: linear-gradient(43deg,var(--mdc-theme-primary) 0%, var(--mdc-theme-appbar) 100%);
+
     .product-in-subscription,
     .product-available{
       position: absolute;
@@ -89,7 +95,7 @@
       width: 100%;
       bottom: 0;
       background: rgba(0, 0, 0, 0.55);
-      z-index: 2;
+      z-index: 1;
       text-align: center;
       padding-top: 35%;
       color: white;
@@ -136,9 +142,12 @@
       font-weight: 600;
       font-size: 11px;
       background: var(--mdc-theme-primary-text);
-      padding: 1px 3px;      
+      padding: 0;      
       letter-spacing: -0.2px;
       opacity: .8;      
+      span{
+        padding: 1px 3px;      
+      }
     }
   }
 
@@ -189,8 +198,8 @@
 
   
   .action-add,.action-remove{
-    background-color: var(--mdc-theme-primary) !important;
-    color: var(--mdc-theme-primary-text) !important;
+    background-color: var(--mdc-theme-secondary) !important;
+    color: var(--mdc-theme-secondary-text) !important;
     border: 0;
     font-weight: bold;
     border-radius: 25px;
@@ -240,19 +249,6 @@
     display: none;
   }
 
-  .media{
-    position: relative;
-    height: 9rem;
-    background-color:#ddd;
-  
-    background-repeat: no-repeat;
-    background-size: cover;  
-    background-position-y: 50%;
-    border-radius: 12px;  
-    transition: background-color .2s ease-in-out;
-
-  }  
-
   .product-card__vendor{
     padding: 0;
     margin-bottom: 3px;
@@ -280,7 +276,8 @@
     display: flex;
     flex-wrap:wrap;
     width: 100%;
-    padding: 5px 0 8px;
+    padding: 5px 3px 8px;
+    width: calc( 100% - 6px);
     align-items:center;
 
     .product-title{
@@ -288,7 +285,7 @@
       overflow: hidden;
       -text-overflow: ellipsis;
       -white-space: nowrap;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 18px;
       font-weight: normal;
       color: rgb(52, 53, 56);    

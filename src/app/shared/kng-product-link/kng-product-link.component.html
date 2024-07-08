@@ -1,9 +1,9 @@
-<div class="links" [hidden]="hideIfEmpty">
-  <ng-content class="title"></ng-content>
-  <div class="content" *ngIf="!shops">
+<div class="links" *ngIf="!hideIfEmpty">
+  
+  <div class="content">
       <div class="kng-chip-content" >
-        <div class="kng-chip" *ngFor="let link of links;let i=index" (click)="searchAction(link)">
-          <span>{{link}}</span>
+        <div class="kng-chip" (click)="assistant('recipe',product)">
+          <ng-content class="title"></ng-content>
         </div>
       </div>
   </div>

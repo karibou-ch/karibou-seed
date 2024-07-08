@@ -115,6 +115,10 @@ export class ProductSwipeComponent implements OnInit {
     return this._products;
   }
 
+  get firstProduct() {
+    return this._products[0];
+  }
+
   get title() {
     if(this.mailchimp) {
       return this.i18n[this.$i18n.locale].title_mailchimp;

@@ -19,6 +19,19 @@ body{
 @import 'kng-card-skeleton.scss';
 
 :root {
+
+  //100% mobile up 1024px
+  //m740px up 1024px
+  //940px up 1440px
+  //940px up 1850px
+  --mdc-theme-width-sm: 100%;
+  --mdc-theme-width-md: 930px;
+  --mdc-theme-width-lg: 930px;
+  --mdc-theme-max-width-sm: 740px;
+  --mdc-theme-max-width-md: 930px;
+  --mdc-theme-max-width-lg: 930px;//1170px;
+  --mdc-theme-top-bar: 70px;
+
   --mdc-theme-karibou-pink: #da1c5c;
   --mdc-theme-karibou-green: #62dd2a;
   --mdc-theme-karibou-yellow: #ffe83d;
@@ -31,6 +44,8 @@ body{
   --mdc-theme-text-secondary-on-background:#333;  
 
   --mdc-theme-appbar: rgba(227,236, 235, 0.97);
+  --mdc-theme-appbar: white;
+  --mdc-theme-appbar-light: rgba(227,236, 235, 0.5);
   --mdc-theme-appbar-text: rgba(19, 83, 20, 0.97);  
 
   --mdc-theme-primary-dark:white;

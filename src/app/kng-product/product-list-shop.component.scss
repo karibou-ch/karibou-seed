@@ -118,7 +118,7 @@
     box-shadow: 0px 2px 10px rgba(0,0,0,0.18);
     border-radius: 40px;
     min-height: 600px;
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       min-height: 300px;      
     }
   }
@@ -141,9 +141,12 @@
     padding-top: 5px;    
     max-width: 700px;
     div.description{
-      max-width: calc(100% - 30px);    
+      max-width: calc(100% - 70px);    
       margin-left: 15px; 
       min-height: 100px; 
+      border-radius: 40px;
+      background-color: var(--mdc-theme-appbar-light);
+      padding: 20px;
     }
 
     div.owner{

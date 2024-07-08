@@ -76,7 +76,7 @@ export class KngUserReminderComponent implements OnInit {
       this.user.reminder.time = this.time;
     } else {
       this.user.reminder.weekdays = [];
-      this.user.reminder.time = null;
+      this.user.reminder.time = this.time;
     }
     this.user.reminder.active = !!(this.user.reminder.weekdays.length);
     this.selectedNotification = this.weekdays[this.weekdays.length - 1];

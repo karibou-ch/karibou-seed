@@ -1,21 +1,11 @@
-.message{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ffe83d;
-  padding: 15px 58px 15px;
-  color: black;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 500;
-}
+
 
 .menu{
   width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  @media (max-width:429px) {
+  @media (max-width:431px) {
     background-color:transparent;
   }
   .logo{
@@ -29,7 +19,7 @@
     font-size: 20px;
     font-weight: bold;
     color: transparent;
-    @media (max-width:429px) {
+    @media (max-width:431px) {
       padding: 22px 4px 20px;
       margin-left: 40px;
     }
@@ -52,7 +42,7 @@
       color: #007aff;
       border-radius: 20px;
       cursor: pointer; 
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         padding: 10px 15px;
       }
     }
@@ -108,6 +98,17 @@ button.CTA {
 
 .container.welcome-top {
   background-image: linear-gradient(to right top,#e3eceb,#fff,#fff,#e3eceb);
+  .message{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffe83d;
+    padding: 15px 58px 15px;
+    color: black;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+  }  
   .welcome{
     font-family: 'Gentium Plus';
     padding-top: 20px;
@@ -141,7 +142,7 @@ button.CTA {
       -background-clip: text;
       --webkit-text-fill-color: transparent;
 
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         font-size: 40px;
         line-height: 48px;
         padding-left: 10px;    
@@ -161,7 +162,7 @@ button.CTA {
       display: flex; 
       flex-direction:column;
 
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         font-size: 17px;
         padding-left: 0px;
         max-width: calc(100% - 40px);
@@ -216,7 +217,7 @@ button.CTA {
       position: relative;
       overflow: hidden;  
       text-align: center;    
-      @media (max-width:429px) {
+      @media (max-width:431px) {
         min-height: auto;
         padding: 15px 12px;
         margin: 10px 10px;
@@ -278,7 +279,7 @@ button.CTA {
       width: 60%;
       margin: 20px auto;  
       opacity: .8;
-      @media (max-width: 429px) {
+      @media (max-width: 430px) {
         width: 97%;
       }
     }    
@@ -312,7 +313,7 @@ button.CTA {
       margin-top: 0;
     }
   
-    @media (max-width: 429px) {
+    @media (max-width: 430px) {
       padding-top: 0!important;
       padding-bottom: 0!important;
       overflow-y: auto;
@@ -341,7 +342,7 @@ button.CTA {
     outline: none;    
     background-color: #ffffff4f;
     border-radius: 14px;
-    @media (max-width: 429px) {
+    @media (max-width: 430px) {
       width: calc(100% - 20px);    
 
     }    
@@ -370,7 +371,7 @@ button.CTA {
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
-    width: 380px;
+    width: 395px;
     p{
       padding: 5px 10px;
       padding-left: 0;
@@ -404,8 +405,9 @@ button.CTA {
     div.price{
       font-size: 17px;
       width: 100%;
-      padding-left: 10px;
+      padding-left: 5px;
       color: #333;
+      line-height: 25px;
     }
   }
   .actions{

@@ -9,10 +9,10 @@ import { i18n } from '../i18n.service';
   styleUrls: ['./kng-calendar.component.scss']
 })
 export class KngCalendarComponent implements OnInit {
-  private _hideTitle = false;
+  private _minimal:boolean;
   @Input() config: Config;
-  @Input() set hideTitle(value){
-    this._hideTitle = true;
+  @Input() set minimal(value){
+    this._minimal = ['true','yes','on',true].indexOf(value)>-1;
   }
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
@@ -29,7 +29,8 @@ export class KngCalendarComponent implements OnInit {
   availableDays:Date[];
   multipleHubsDays:Date[];
   pendingOrder: Order|undefined;
-
+  displayHubSwitch: Hub;
+  displayHubMoreOptions: boolean;
 
   constructor(
     private $i18n: i18n,
@@ -40,6 +41,7 @@ export class KngCalendarComponent implements OnInit {
     this.availableDays = [];
     this.multipleHubsDays = [];
   }
+
 
   ngOnInit(): void {
     this.$loader.update().subscribe(emit => {
@@ -57,11 +59,16 @@ export class KngCalendarComponent implements OnInit {
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
+      // propose to switch to another hub
+      const hub = this.config.shared.hubs.find(hub => hub.slug != this.currentHub.slug);
+      this.displayHubSwitch = hub;
+      this.displayHubMoreOptions = (this.currentHub.weekdays.length == 3);
       //
       // validate shipping state
       this.noshippingMsg = this.getNoShippingMessage();
-      this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date()).plusDays(idx));      
       this.availableDays = Order.fullWeekShippingDays(this.currentHub);
+      this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date(this.availableDays[0])).plusDays(idx));      
+
       this.multipleHubsDays = this.$cart.getShippingDayForMultipleHUBs();
       this.pendingOrder = this.$cart.hasPendingOrder();
       if(!this.isDayAvailable(this.currentWeek[0])){
@@ -74,12 +81,16 @@ export class KngCalendarComponent implements OnInit {
     return this.$i18n.label();
   }
 
+  get label_switch_store() {
+    return (this.currentHub.weekdays.length == 3)?this.label.nav_store_sublong:this.label.nav_store_subshort;
+  }
+
   get locale() {
     return this.$i18n.locale;
   }
 
-  get hideTitle() {
-    return this._hideTitle;
+  get minimal() {
+    return this._minimal;
   }
 
   get pendingOrderShipping() {
@@ -123,8 +134,9 @@ export class KngCalendarComponent implements OnInit {
     if(!this.availableDays.some(date => date.equalsDate(day))){
       return false;
     }
+    // FIXME : check if the day is available with the max ordres Limit
     const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return (this.currentRanks[day.getDay()] <= maxLimit);
+    return true;//(this.currentRanks[day.getDay()] <= maxLimit);
   }
 
   getShippingText(day: Date) {

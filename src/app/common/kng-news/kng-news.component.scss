@@ -2,6 +2,7 @@
 .kng-drawer{
   color:var(--mdc-theme-primary-text);
   background: linear-gradient(transparent 20%,white 50%);
+  background: white;
 
   position: fixed;
   top: calc( 100vh * -1.85 );
@@ -168,7 +169,7 @@
             object-fit: cover;
             object-position: center center;
           }
-          @media (max-width:429px) {
+          @media (max-width:431px) {
             max-width:100%;
             overflow: hidden;
             max-height: 230px;             
@@ -186,7 +187,7 @@
         .left{
           flex: 1;
           max-width: 48%;        
-          @media (max-width:429px) {
+          @media (max-width:431px) {
             flex: 1 0 100%;
             max-width:100%;
             font-size:70%;
@@ -211,7 +212,7 @@
             padding: 0;
             margin-top: -10px;
             margin-bottom: auto;            
-            @media (max-width:429px) {
+            @media (max-width:431px) {
               max-width:100%;
               font-size:70%;
               transform: none;    
@@ -226,7 +227,7 @@
           padding: 20px;
           align-self: center;
           max-width: 45%;        
-          @media (max-width:429px) {
+          @media (max-width:431px) {
             max-width:100%;
           }
         }
@@ -294,7 +295,7 @@
         padding: 20px;
         border: none;
         height: 250px;
-        @media  (max-width:429px){
+        @media  (max-width:431px){
           max-width: 100%;
           width: 100%;
           padding: 50px 4px;

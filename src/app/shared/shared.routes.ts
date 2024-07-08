@@ -7,6 +7,9 @@ import { KngShopsComponent } from '../kng-shops/kng-shops.component';
 
 
 export const childrenRoute: Route[] = [
+  {
+    path: 'assistant',  loadChildren: () => import('../kng-assistant-bot/kng-assistant-bot.module').then( m => m.KngAssistantBotModule)
+  },
   { path: 'business', data: { business:true }, component: ProductListComponent },
   { path: 'subscription', data: { subscription: true }, component: ProductListComponent },
   { path: 'products/:sku/:title', component: ProductComponent },
@@ -18,12 +21,12 @@ export const childrenRoute: Route[] = [
   { path: '', pathMatch: 'full', redirectTo: '' }
 ];
 
+
 // TODO needs dynamic DEPARTEMENT feature
 export const appRoutes: Routes = [
   { 
     path: 'patreon',  loadChildren: () => import('../kng-patreon/kng-patreon.module').then( m => m.KngPatreonModule)
   },
-
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
   { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},

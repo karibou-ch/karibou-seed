@@ -92,7 +92,7 @@ export class KngInvoiceComponent implements OnInit {
 
   ngOnInit(){
     this.today = new Date();
-    document.documentElement.classList.add('mdc-dialog-scroll-lock');
+    document.body.classList.add('mdc-dialog-scroll-lock');
     this.convertImageToBase64(this.headerImg).then(b64=>this.headerImgB64 = b64);
     this.prepareInvoice();
     import('swissqrbill/lib/node/esm/node/svg.js').then(module => {
@@ -114,7 +114,7 @@ export class KngInvoiceComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   prepareInvoice() {

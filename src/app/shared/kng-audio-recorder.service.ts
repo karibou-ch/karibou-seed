@@ -15,10 +15,10 @@ export enum ErrorCase {
 }
 
 export enum RecorderState {
-  RECORDING,
-  SILENCE,
-  PAUSED,
-  STOPPED
+  RECORDING = "RECORDING",
+  SILENCE = "SILENCE",
+  PAUSED = "PAUSED",
+  STOPPED = "STOPPED"
 }
 
 
@@ -44,8 +44,6 @@ export class KngAudioRecorderService {
   ) {
     this._recorderState = RecorderState.STOPPED;
   }
-
-
   
   get state() {
     return this._recorderState;
@@ -55,10 +53,25 @@ export class KngAudioRecorderService {
     if (!this._recordTime){
       return 0;
     }
-    return ((Date.now() - this._recordTime)/1000)|0;
+    return parseFloat(((Date.now() - this._recordTime)/1000).toFixed(2));
   }
 
 
+  closeAudioStream() {
+    if (!this.stream || !this.stream.active) {
+      return;
+    }
+
+    if(this.recorder) {
+      this.recorder.stopRecording();
+    }
+
+    this.stream.getTracks().forEach(function(track) {
+      track.stop();
+      console.log('---- audio stream closed');
+    });
+
+  }
 
   detectAudioVolume(floats32:Float32Array) {
     const analysis = {
@@ -90,19 +103,22 @@ export class KngAudioRecorderService {
 
     const floats32 = audioBuffer.getChannelData(0);
 
-    let analysis = {
-      sum:0,
-      max:0
+    return this.detectAudioVolume(floats32);
+  }
+
+  async isAudioGranted() {
+    if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+      return false
     }
-    floats32.forEach(amplitude => {
-      analysis.sum += (amplitude * amplitude);      
-      analysis.max = Math.max(analysis.max,amplitude);
-    })
+    // const permission = await navigator.permissions.query({ name: 'microphone' });
 
-    const volume = Math.sqrt(analysis.sum / floats32.length);
-
-    console.log('---- detectSound',volume,analysis)
-    return volume>0.01;
+    // try {
+    //   const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    // } catch (err) {
+    //   // Errors when accessing the device
+    //   return false
+    // }    
+    return true;
   }
 
   async getAudioStream() {
@@ -130,14 +146,14 @@ export class KngAudioRecorderService {
 
     try{
       this._recordTime = Date.now();
-      this._recorderState = RecorderState.INITIALIZED;
+      this._recorderState = RecorderState.RECORDING;  
   
       // const module = await import('mic-recorder-to-mp3');
       // this.recorder = new module.default({
       //   startRecordingAt:0,
       //   encodeAfterRecordCheck:true
       // });
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.stream = await this.getAudioStream();
 
       const media = window['MediaRecorder'];
       let mimeType:any = 'audio/webm';
@@ -160,6 +176,7 @@ export class KngAudioRecorderService {
       mimeType = window['MIMETYPE']|| mimeType;
       const rtcpOpts:any = {
         type: 'audio',
+        debugger:false,
         mimeType,
         numberOfAudioChannels: 1,
       }
@@ -169,7 +186,6 @@ export class KngAudioRecorderService {
       if(options.timeSlice) {
         rtcpOpts.timeSlice = options.timeSlice;
         rtcpOpts.ondataavailable = async function(blob) {
-          console.log(' chunk of data',blob);
           const base64 = await this.blobToBase64(blob);
           options.onChunk({blob,base64});
         }
@@ -190,6 +206,8 @@ export class KngAudioRecorderService {
         this._recordTimeout = setTimeout(()=> {
           this.recorderState.emit(RecorderState.SILENCE);
         },options.timeout);
+      }
+      if(options.stopOnSilence) {
         this.stopOnSilence(this.stream);
       }
 
@@ -317,9 +335,10 @@ export class KngAudioRecorderService {
   }
 
 
-  private clear() {
+  private clear() {    
     this.recorder = null;
     this._recorderState = RecorderState.STOPPED;
+    this.closeAudioStream();
   }
 
 }

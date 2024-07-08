@@ -1,7 +1,7 @@
 <!-- DISPLAY HUBS -->
   <div  class="hub-item list-item selected" [hidden]="!isReady">
     <div class="text text-overflow" [hidden]="!isReady">
-      <span class="title large">{{hub.siteName[locale]}} </span>
+      <span class="title large">{{hub.name}} </span>
       <div class="text-overflow title-subtitle">
         <span class="checkout-disabled-title" 
               [innerHtml]="cart_info_one_date" 
@@ -124,7 +124,7 @@
   <!-- DISPLAY HUB ITEMS      -->
   <!--                        -->
   <h4 class="title-separator" [hidden]="!currentSubscription">Les articles que vous souhaitez ajouter</h4>
-  <div class="list-item one-line " *ngFor="let item of items" (click)="onSelect($event,item)">
+  <div class="list-item one-line " [class.shared]="item.shared" *ngFor="let item of items;let idx=index" (click)="onSelect($event,item)">
     <div class="graphic">
       <div class="avatar"
         [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}"></div>

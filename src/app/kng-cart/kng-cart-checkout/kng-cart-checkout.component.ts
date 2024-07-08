@@ -216,9 +216,9 @@ export class KngCartCheckoutComponent implements OnInit {
       return;
     }
     if(open) {
-      document.documentElement.classList.add('mdc-dialog-scroll-lock');
+      document.body.classList.add('mdc-dialog-scroll-lock');
     } else {
-      document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
 
     this._open = open;
@@ -315,7 +315,7 @@ export class KngCartCheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     // ensure state
-    document.documentElement.classList.remove('mdc-dialog-scroll-lock');
+    document.body.classList.remove('mdc-dialog-scroll-lock');
 
     //
     // save the plan for the subscription (business, customer)
@@ -802,7 +802,8 @@ export class KngCartCheckoutComponent implements OnInit {
         this.$metric.event(EnumMetrics.metric_order_sent, {
           shipping: order.getShippingPrice(),
           amount: order.getSubTotal(),
-          hub:hub
+          hub:hub,
+          sku:order.items.map(item => item.sku)
         });
 
         //
@@ -967,7 +968,10 @@ export class KngCartCheckoutComponent implements OnInit {
     this._user = checkoutCtx.user;
     this.open = true;
     this.errorMessage = null;
-    this.useCartSubscriptionView = this.subscriptionParams = this.contract = null;
+    this.subscriptionParams = this.contract = null;
+    //
+    // should be a boolean
+    this.useCartSubscriptionView = false;
     if (checkoutCtx.forSubscription){
       this.contract = checkoutCtx.contract;
       this.useCartSubscriptionView = true;

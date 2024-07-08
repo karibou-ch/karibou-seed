@@ -28,12 +28,13 @@
         
     </div>
   </div>
+  
   <div class="selector day-of-week" [class.quiet]="quiet">
     <div class="elem" id="day-of-week">
       <div class="item " 
           *ngFor="let day of dayOfWeek;let idx=index" 
           (click)="selDayOfWeek = day;onSave()"
-          [class.selected]="selDayOfWeek.id == day.id">{{day.label[locale]}}</div>
+          [class.selected]="selDayOfWeek.id == day.id">{{day.label}}</div>
     </div>
   </div>
   <div class="info">

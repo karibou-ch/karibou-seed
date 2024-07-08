@@ -5,10 +5,9 @@
   </section>
 
   <!-- VOS PANIER -->
-
   <div class="cart-selector">
     <div class="elem">
-      <div class="item" [hidden]="!currentCartView" (click)="doSelectCart(true)">
+      <div class="item" [hidden]="!currentCartView ||isSharedCart" (click)="doSelectCart(true)">
         {{llabel.cart_info_title}} {{currentShippingDay|date:'EEEE':'':locale}}
       </div>
       <div  class="item" [hidden]="currentCartView" (click)="doSelectCart(false)" >
@@ -22,12 +21,10 @@
   <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
   <!-- PANIER PARTAGER -->
-  <section [hidden]="!isSharedCart()" class="block-cart">
-    <h2 hidden>{{i18n[locale].cart_shared_title1}} <span class="material-symbols-outlined">share</span>
-    </h2>
-    <h3 class="" [hidden]="user.isAuthenticated()">
-      {{i18n[locale].cart_shared_title2}}
-    </h3>
+  <section [hidden]="!isSharedCart" class="block-sharedcart ">
+    <h2><span class="named" [class.name-breaker]="cartName?.length>20">{{cartName}}&nbsp;</span> 
+    {{i18n[locale].cart_shared_title1}}</h2>
+    <h3>{{i18n[locale].cart_shared_title2}}</h3>
   </section>
 
 
@@ -53,16 +50,22 @@
   </div>  
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
-
     <!-- DISPLAY HUB ITEMS -->
     <kng-cart-items (checkoutEvent)="doInitateCheckout($event)" [showCartItems]="currentCartView" [i18n]="i18n" [config]="config" [currentHub]="hub" [showSeparator]="idx>0" [showFooter]="!last"></kng-cart-items>
     </ng-container>
   </mdc-list>
 
-  <div class="pending-order display-message" [hidden]="!currentCartView">
-    <p class=" block-link" [hidden]="isSharedCart()">
-      {{i18n[locale].cart_shared_copy}} <a class="copy-link" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
+  <div class="pending-order display-message" >
+    <p class=" block-link" [hidden]="isSharedCart">      
+      {{i18n[locale].cart_shared_copy}} 
+      <input id="shared-cart-name" class="cart-name" type="text" [(ngModel)]="_sharedCartName" [placeholder]="i18n[locale].cart_shared_name" />
+      <a class="copy-link" [hidden]="!_sharedCartName" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
+
     </p>  
+    <div class="block-info" [hidden]="_sharedCartName?.length<5">
+      <b>Info:</b><br/>
+      <span class="named" [class.name-breaker]="cartName?.length>20">{{_sharedCartName}}. </span> {{i18n[locale].cart_shared_title1}}
+    </div>
   </div>
 
   <router-outlet></router-outlet>

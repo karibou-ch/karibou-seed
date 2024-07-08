@@ -1,7 +1,7 @@
 
 .kng-drawer{
   color:var(--mdc-theme-primary-text);
-  background: linear-gradient(transparent 20%,white 50%);
+  background: white;
 
   position: fixed;
   top: calc( 100vh * -1.85 );
@@ -67,7 +67,6 @@
     top: 12px;
     right: 10px;
     color: #333;
-    background: var(--mdc-theme-appbar);
     width: 100px;
     text-align: right;    
     @media (max-width: 769px) {
