@@ -35,6 +35,7 @@ import { NgxStripeModule } from 'ngx-stripe';
 import { KngAddressComponent } from './kng-address/kng-address.component';
 import { KngPaymentComponent } from './kng-payment/kng-user-payment.component';
 import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
+import { KngSignupComponent } from './kng-signup/kng-signup.component';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-su
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
+    KngSignupComponent,
     KngSearchComponent,
     KngSearchBarComponent,
     KngNavMarketplaceComponent,
@@ -74,6 +76,7 @@ import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-su
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
+    KngSignupComponent,
     KngSearchComponent,
     KngSearchBarComponent,
     KngNavMarketplaceComponent,

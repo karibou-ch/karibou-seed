@@ -71,10 +71,14 @@
       </div>
       
       <!-- SUBSCRIPTION OPTIONS  -->
-      <div class="subscription" [hidden]="!isForSubscriptionList||!activeSubscription">
+      <div class="subscription" [hidden]="!isForSubscriptionCustomer||!activeSubscription">
         <kng-subscription-option [hub]="hub"  [contract]="subscriptionContract"></kng-subscription-option>
       </div>
 
+      <!-- BUSINESS OPTIONS  -->
+      <div class="subscription" [hidden]="!isForSubscriptionBusiness||!activeSubscription">
+        <kng-business-option [hub]="hub" [user]="user" ></kng-business-option>
+      </div>
 
 
 

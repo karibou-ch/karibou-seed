@@ -1,0 +1,112 @@
+:host{
+  background: #f2f2f2;
+  background: #fff;
+  min-height: 100px;
+  border-radius: 15px;
+  color: #333;  
+  overflow: visible;
+  width: 100%;
+}
+
+.arrow-up {
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 25px solid #f2f2f2;
+  position: absolute;
+  right: 40%;
+  top: -24px;
+}
+
+.arrow-down {
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-top: 25px solid #eee;
+  position: absolute;
+  right: 70%;
+  top: 0px;
+}
+
+.icon{
+  color: #666;
+  transform: translateY(6px);  
+}
+
+.business{
+  display: flex;
+  flex: 1 1 0%;
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  padding: 0px 0;
+
+  .width-100{
+    width: 100% !important;
+  }
+
+  .width-50{
+    width: calc(50% - 25px) !important;
+  }
+
+  .width-25{
+    width: calc(25% - 25px) !important;
+  }
+
+  .on-right{
+    margin-right: 0;
+    margin-left: auto;    
+  }
+
+  form{
+    width: 100%;
+    div.selector {
+      label.selector {
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 24px;
+        width: 100%;
+        transform: translateY(-5px);
+
+      }
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;    
+      align-items: baseline;
+      border: 2px solid var(--mdc-theme-appbar);
+      border-radius: 14px;
+      padding: 10px;
+      margin-left: -5px;
+      margin-right: -5px;
+      margin-bottom: 30px;
+    }    
+    .groupfield label{
+      font-size: 16px;
+    }
+  }
+
+
+  h1{
+    font-size: 28px;
+    line-height: 32px;
+    font-weight: bold;
+    margin-top: 10px;    
+  }
+  p{
+    font-size: 17px;
+    line-height: 23px;
+    font-weight: 400;
+    margin-top: 10px;
+  }
+
+  p.highcontrast,
+  p.checkout{
+    margin-top: 5px;
+    margin-bottom: 0px;
+    margin-right: 10px;
+    font-weight: bold;
+    background: yellow;    
+    .update{
+      display: none;
+    }
+  }
+
+
+}

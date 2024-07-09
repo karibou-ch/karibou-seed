@@ -3,7 +3,7 @@
     <div class="loading" [hidden]="!audioLoading" >
       {{glabel.audio_recording}}
     </div>
-    <div class="title">{{label.title}}</div>
+    <div class="title">{{label_title}}</div>
   
     <div class="audio-error" [hidden]="!audioError" >
       {{glabel.audio_error}} <button (click)="audioError = null">OK</button>
