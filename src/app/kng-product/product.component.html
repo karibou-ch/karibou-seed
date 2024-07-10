@@ -103,6 +103,16 @@
         </ul>
 
         <div class="kng-chip-content">
+          <div class="kng-chip secondary-on-text" [hidden]="!product.attributes.subscription">
+            <span class="material-symbols-outlined size-medium ">more_time</span>
+            <span>Abonnement</span>
+          </div>
+          <div class="kng-chip secondary-on-text" [hidden]="!product.attributes.business">
+            <span class="material-symbols-outlined size-medium ">more_time</span>
+            <span>Entreprise</span>
+          </div>
+          <div class="kng-chip" [hidden]="!product.details.nitrite"><span>Sans-nitrite</span></div>
+          <div class="kng-chip" [hidden]="!product.details.handmade"><span>Fait main</span></div>
           <div class="kng-chip" [hidden]="!product.details.homemade"><span>Artisanal</span></div>
           <div class="kng-chip" [hidden]="!product.details.local"><span>Local</span></div>
           <div class="kng-chip" [hidden]="!product.details.lactose"><span>Sans lactose</span></div>
@@ -119,9 +129,14 @@
       <!-- RECEIPE -->
       <div class="recipe ">
         <div class="content bold">
-          {{label.james_product_title}}
+          {{glabel.james_product_title}}
         </div>
-        <kng-product-link [product]="product">{{label.james_product_action}}</kng-product-link>
+        <button class="default" [routerLink]="['/store',this.store,'home','assistant','james']" [queryParams]="queryParamsRecipe">
+          {{label.james_product_recipe}}
+        </button>
+        <button class="default" [routerLink]="['/store',this.store,'home','assistant','james']" [queryParams]="queryParamsVariant">
+          {{label.james_product_variant}}
+        </button>
       </div>
 
 

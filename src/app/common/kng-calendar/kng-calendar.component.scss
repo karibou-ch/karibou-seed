@@ -73,7 +73,11 @@
         margin: 0px;
         margin-left: 0;
         background-color: white;
-        border: 1px solid #eee;
+        border: 0px solid var(--mdc-theme-secondary);
+
+        color: var(--mdc-theme-appbar-text);
+        background-color: var(--mdc-theme-appbar);
+
         width: 60px;
         height: 60px;
         border-radius: 15px;
@@ -100,7 +104,6 @@
           }
         }
         .ei_Title{
-          color: black;
           margin: auto;
           padding: 10px;
         }        

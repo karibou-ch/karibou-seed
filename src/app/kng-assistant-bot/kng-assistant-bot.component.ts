@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, 
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User, AssistantService } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
-import { KngAudioRecorderService, RecorderState } from '../shared/kng-audio-recorder.service';
 import { Subscription } from 'rxjs';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 import { AssistantState, KngAssistantComponent } from '../shared/kng-assistant/kng-assistant.component';
@@ -42,14 +41,13 @@ export class KngAssistantBotComponent implements OnInit {
     //{clazz:"hide-sm", label:"Une école",action:"Une composition équilibrée de 10 produits pour le parascolaire des enfants"},
     // {clazz:"", label:"Produits populaires...",action:"Une semaine de menus avec les produits populaires"},
     // {clazz:"", label:"Les thématiques...",action:"Quelle liste de thématiques tu proposes?"},
-    {clazz:"", label:"J'ai de la chance",action:"*?"},
+    //{clazz:"", label:"J'ai de la chance",action:"*?"},
   ];
   prompts = [
-    "Les 10 meilleures recettes de cuisine française",
-    "Les 10 meilleures recettes de cuisine italienne", 
-    "Les 10 meilleures recettes de cuisine Espagnole et Tapas", 
-    "Les 10 meilleures recettes de cuisine de la mer", 
-    "Pains pita garnis à la grecque",
+    "j'aimerais préparer un événement pour mon entreprise",
+    "Les 5 meilleures recettes de cuisine française",
+    "Les 5 meilleures recettes de cuisine italienne", 
+    "Les 5 meilleures recettes de cuisine de la mer", 
     "La recette du Hamburgers texans",
     "La recette de Viande hachée façon Cambodgienne",
     "La recette Gyudon Japonais",
@@ -83,12 +81,14 @@ export class KngAssistantBotComponent implements OnInit {
     private $route: ActivatedRoute,
     private $cdr: ChangeDetectorRef
   ) { 
-    const ask = this.$route.snapshot.queryParamMap.get('recipe');
-    this.prompt = ask? "Les 10 meilleures associations avec "+ask:"";
-    
-    // this.$router.navigate([], {
-    //   queryParams: {recipe: null}
-    // });
+    const recipe = this.$route.snapshot.queryParamMap.get('recipe');
+    if(recipe) {
+      this.prompt = "Les 5 meilleures recettes avec "+recipe;
+    }
+    const variant = this.$route.snapshot.queryParamMap.get('variant');
+    if(variant) {
+      this.prompt = "Les 5 meilleures associations avec "+variant;
+    }
 
     this.subscription$ = new Subscription();    
 
