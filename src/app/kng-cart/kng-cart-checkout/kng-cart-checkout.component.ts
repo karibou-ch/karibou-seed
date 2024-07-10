@@ -596,7 +596,7 @@ export class KngCartCheckoutComponent implements OnInit {
     this.$snack.open(this.$i18n.label().cart_save_deliver + order.shipping.when.toDateString());
     this._items = [];
     this.$cart.clearAfterOrder(this.store,order);
-    this.updated.emit({ order });
+    this.updated.emit({ order,store:this.store });
     this.open = false;
   }
 
@@ -643,7 +643,9 @@ export class KngCartCheckoutComponent implements OnInit {
       oid
     }
     this._items = [];
-    this.doOrder(confirm);
+    setTimeout(()=>{
+      this.doOrder(confirm);
+    },500);
   }  
 
   confirmPaymenIntent(intent: any, target:any) {

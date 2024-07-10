@@ -23,7 +23,7 @@ export class KngNavigationStateService  {
   private currentStore: string;
   private agent: string;
   private cached: any = {};
-  static forceLockedHub: string;
+  static forceLockedHub: string = '';
   static forceLandingHub: string;
 
   private _search$: Subject<string>;
@@ -229,7 +229,10 @@ export class KngNavigationStateService  {
     if(KngNavigationStateService.forceLockedHub == this.store) {
       return true;
     }
-    return !this.config.shared.hub ||!!this.config.shared.hub.domainOrigin;
+    if(!this.config.shared.hub) {
+      return false;
+    }
+    return !!this.config.shared.hub.domainOrigin;
   }
 
   isMobile(): boolean {

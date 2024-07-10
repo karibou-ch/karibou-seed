@@ -489,18 +489,17 @@
 
   .recipe{
     margin: 40px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
     .content{
+      width: 100%;
       margin: 5px 0;
       padding: 5px;
     }
-
-    kng-product-link{
-      margin: 5px 0;
-      margin-left: -10px;
-      .kng-chip{
-        background-color: var(--mdc-theme-primary) !important;        
-        color: var(--mdc-theme-primary-text) !important;        
-      }
+    button{
+      font-size: 18px;
+      flex: 1;
     }
   }
 
@@ -519,6 +518,9 @@
     div.kng-chip-content{
       transform: translateX(-4px);
       padding: 10px 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;      
     }
       
     >ul{

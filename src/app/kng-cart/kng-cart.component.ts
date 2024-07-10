@@ -448,6 +448,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
   onCheckout($event:any) {
+    console.log('onCheckout', $event);
     //
     // case of error
     if($event.errors) {
@@ -474,6 +475,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       const day = $event.order.shipping.when.getDate();
       const month = $event.order.shipping.when.getMonth() + 1;
       this.checkoutMessage = this.llabel.cart_order_placed + `(${day}/${month})`;
+      this.$cart.clearAfterOrder(this.store,$event.order);
+
     }
 
     this.orders.unshift($event.order as Order); 

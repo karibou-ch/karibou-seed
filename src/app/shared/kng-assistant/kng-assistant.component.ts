@@ -3,6 +3,7 @@ import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.se
 import { i18n } from 'src/app/common';
 import { Subscription } from 'rxjs';
 import { Config, CartService, User, ProductService, Product, AssistantService, Assistant } from 'kng2-core';
+import { Router } from '@angular/router';
 
 export interface AssistantQuery extends Assistant{
   content:string;
@@ -90,6 +91,7 @@ export class KngAssistantComponent implements OnInit {
     private $i18n: i18n,
     private $assistant: AssistantService,
     private $products: ProductService,
+    private $router: Router,
     private $cdr: ChangeDetectorRef
   ) { 
     this.user = new User({
@@ -458,7 +460,8 @@ export class KngAssistantComponent implements OnInit {
     const href = target.getAttribute('href')||'';
 
     const rules =[
-      {regexp:/quote\/orders/,prompt:"10 des exemples de produits pour ma demande de devis ", param:false},      
+      {regexp:/^\/store\/.*$/,prompt:"-", param:false},      
+      {regexp:/quote\/orders/,prompt:"5 exemples de produits pour ma demande de devis ", param:false},      
       {regexp:/products\/cart/,prompt:"Quelques recettes avec mon panier ", param:false},      
       {regexp:/products\/orders/,prompt:"Informations sur mes dernières commandes", param:false},      
       {regexp:/popular\/([^)]+)/,prompt:"Quelques recettes avec les produits populaires", param:false},      
@@ -478,6 +481,10 @@ export class KngAssistantComponent implements OnInit {
       }
       $event.stopPropagation();
       $event.preventDefault();
+      if(rule.prompt=="-"){
+        this.$router.navigateByUrl(values[0]);
+        break;
+      }
       let param = (rule.param)?("'"+ decodeURI(values[1].replace(/_/gm,' '))+"'"):'';
       const sku = /1[0-9]{6,7}/.exec(param);
       if(sku) {

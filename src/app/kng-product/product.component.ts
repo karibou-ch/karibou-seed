@@ -46,6 +46,18 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
 
+  public i18n = {
+    fr: {
+      james_product_recipe:"Quelques suggestions de recettes ?",
+      james_product_variant:"Quelques associations avec le produit ?",
+    },
+    en:{
+      james_product_recipe:"Some recipe suggestions?",
+      james_product_variant:"Some associations with this product?",
+    }
+  }
+
+
   isSearching: boolean;
   isRedirect: boolean;
   isReady: boolean;
@@ -157,6 +169,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     return (this.displaySubscription  && this.productActiveSubscription)?{view:'subscription'}:{};
   }
 
+  get queryParamsRecipe() {
+    return {recipe:this.product.details.internal};
+  }
+
+  get queryParamsVariant() {
+    return {variant:this.product.details.internal};
+  }
 
   get cartItemQuantity(){
     const isForSubscription = (this.displaySubscription && this.productActiveSubscription);
@@ -178,9 +197,14 @@ export class ProductComponent implements OnInit, OnDestroy {
     return !this.isReady || this.product.pricing.stock;
   }
 
-  get label() {
+  get glabel() {
     return this.$i18n.label();
   }
+
+  get label() {
+    return this.i18n[this.$i18n.locale];
+  }
+
 
   get urlTitle(){
     return this.product.title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
