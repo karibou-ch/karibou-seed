@@ -73,8 +73,6 @@ export class KngAssistantBotComponent implements OnInit {
   constructor(
     private $i18n: i18n,
     private $cart: CartService,
-    private $assistant: AssistantService,
-    private $metric: AnalyticsService,
     private $metrics: MetricsService,
     private $navigation: KngNavigationStateService,
     private $router: Router,
