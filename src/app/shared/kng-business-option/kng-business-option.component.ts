@@ -5,7 +5,8 @@ import {
   CartService, 
   LoaderService,   
   Hub, 
-  User
+  User,
+  CartItemsContext
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -33,6 +34,16 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     }
   }
 
+  private _defaultNotes: string = `1. Date et heure de l'événement: 
+
+2. Le lieu (entreprise ou particulier): 
+
+3. Nombre de participants: 
+
+4. Description (en option):
+
+`;  
+
   @Input() user:User;
   @Input() checkout:boolean;
   @Input() contractId:string;
@@ -44,7 +55,6 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   selIteration:any;
   selDayOfWeek:any;  
   selTime:number;
-  items:CartItem[];
   shippingtimes:any;
   //
   // default shipping time for the week and saturday (12)
@@ -52,8 +62,15 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
 
   oneWeek: Date[];
   $quote: FormGroup;
-  note:string
   audioSrc:string;
+
+  options = {
+    project:false,
+    identity:false,
+    address:false,
+    more:false,
+  }
+
 
   constructor(
     private $i18n: i18n,
@@ -62,13 +79,12 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     private $fb: FormBuilder,
     private $cdr: ChangeDetectorRef
   ) { 
-    this.items = [];
     this.selTime = 16;
     this.shippingtimes = {};
     this._subscription = new Subscription();
 
     this.$quote = this.$fb.group({
-      'note':   [''],
+      'notes':   [''],
       'date': ['', [Validators.required, Validators.minLength(4)]],
       'time': ['', [Validators.required, Validators.minLength(4)]],
       'qty': ['', [Validators.required, Validators.minLength(4)]],
@@ -78,23 +94,47 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
       'phone':  ['', [Validators.required, Validators.minLength(10)]]
     });
 
-    // const shippingDay = this.currentShippingDay();
-    // const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    this.notes = this._defaultNotes;
   }
 
+  get store() {
+    if(!this.config || !this.config.shared.hub) {
+      return '';
+    }
+    return this.config.shared.hub.slug;
+  }
 
   get label() {
-    return this.$i18n.label();
+    return this._i18n[this.locale];
   }
 
-  get i18n() {
-    return this._i18n[this.locale];
+  get glabel() {
+    return this.$i18n.label();
+  }  
+
+  get items() {
+    const ctx = {
+      forSubscription: false,
+      onSubscription: false,
+      hub: this.store
+    } as CartItemsContext;
+    return this.$cart.getItems(ctx).filter((item:CartItem) => item)||[];
   }
 
   get locale() {
     return this.$i18n.locale;
   }
 
+  get notes() {
+    return this.$quote.get('notes').value.trim();
+  }
+
+  set notes(notes:string){
+    this.$quote.patchValue({
+      notes
+    });
+
+  }
 
   get timeprice() {
     if(!this.selTime||!this.config.shared.shipping) {
@@ -144,8 +184,12 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   onSignup($event){
     console.log('onSignup', $event);
   }
-  onAssistantData($event) {
+  onAssistantNote($event) {
     console.log('onAssistantData', $event);
+    this.notes = $event || this._defaultNotes;
   }
 
+  onAddress(address){
+    console.log('onAddress', address);
+  }
 }

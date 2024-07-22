@@ -219,7 +219,7 @@
       .cart {
         margin-right: 15px;
         margin-left: auto;
-        min-width: 158px;
+        min-width: fit-content;
         opacity: 0;
       }
 
@@ -371,14 +371,14 @@
     // height: auto;
     // flex-flow: row wrap; 
     .show-more {
-      width: 64px;
-      height: 64px;
+      width: 32px;
+      height: 32px;
       color: white;
       background: #000;
       border-radius: 32px;
       text-align: center;
-      min-width: 64px;
-      transform: translateX(-22px);
+      min-width: 32px;
+      transform: translateX(-12px);
       box-shadow: 0 0 5px 0px #646464cf;
       display: flex;
       justify-content: center;
@@ -430,6 +430,10 @@
     text-align: left;
     font-size: 24px;
   }
+}
+
+kng-signup{
+  border: 0!important;
 }
 
 .kng-informations{

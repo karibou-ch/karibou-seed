@@ -13,21 +13,21 @@
         <div class="cart visible"  >
           <div class="subscription-cart" [hidden]="!activeSubscription"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" [queryParams]="subscriptionQueryParams">            
             <button> 
-              Votre Abo&nbsp;   
               <span>
                 {{subscriptionAmount}} fr &nbsp; 
                 <span class="end material-symbols-outlined">shopping_cart</span>
               </span>
+              Votre Abo →&nbsp;   
               
             </button>
           </div>  
           <div class="subscription-cart" [hidden]="activeSubscription" href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >            
             <button> 
-              
               <span>
                 {{cartAmount}}&nbsp;fr&nbsp; 
                 <span class="end material-symbols-outlined">shopping_cart</span>
               </span>
+              <span [hidden]="!isForSubscriptionBusiness">Votre projet →&nbsp;</span>
               
             </button>
           </div>  
@@ -43,7 +43,7 @@
         <h2 [innerHtml]="category.current.description"></h2>  
       </div>
 
-      <div class="kng-informations" *ngIf="label_subscriptionInformations">
+      <div class="kng-informations" *ngIf="isForSubscriptionCustomer">
         <div class="menu">
           <div class="elem main info" (click)="activeMenu=true" [class.active]="activeMenu">
             <span class="-hide material-symbols-outlined size-large">apps</span>
@@ -58,16 +58,10 @@
 
 
       <!-- ACTIVE SUBSCRIPTION OPTS -->
-      <div class="subscription colored" *ngIf="isForSubscriptionList">
-        <div class="row ">
-          <div class="label">
-            {{label_souscription}}
-          </div>
-          <label class="switch">
-            <input type="checkbox"  [(ngModel)]="activeSubscription" ngDefaultControl>
-            <span class="slider"></span>
-          </label>  
-        </div>
+      <div class="subscription colored" *ngIf="isForSubscriptionCustomer">
+        <kng-slider class="row" [(ngModel)]="activeSubscription">
+          {{label_souscription}}
+        </kng-slider>
       </div>
       
       <!-- SUBSCRIPTION OPTIONS  -->
@@ -76,7 +70,7 @@
       </div>
 
       <!-- BUSINESS OPTIONS  -->
-      <div class="subscription" [hidden]="!isForSubscriptionBusiness||!activeSubscription">
+      <div class="subscription" *ngIf="isForSubscriptionBusiness">
         <kng-business-option [hub]="hub" [user]="user" ></kng-business-option>
       </div>
 
@@ -87,7 +81,6 @@
       <!-- FIXED SIZE -->
       <div class="toolbox " [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="isForSubscriptionList">
         <div class="show-more hide-lg" (click)="onMOnbileShowMore()" >
-          <span class="material-symbols-outlined size-medium">density_small</span>
         </div>
         <ul  #subcategory>
           <li class="kng-chip" (click)="scrollTo($event,child.name)"
@@ -100,7 +93,7 @@
       </div>
     </div>
     <!-- JAMES-->
-    <kng-audio-assistant *ngIf="products.length>50" class="kng-assistant" [category]="category.current.slug" [products]="products" (onData)="onAssistantData($event)"></kng-audio-assistant>  
+    <kng-audio-assistant *ngIf="products.length>50" class="kng-assistant" [store]="store" [category]="category.current.slug" [products]="products" (onData)="onAssistantData($event)"></kng-audio-assistant>  
 
     <!-- FURTHER -->
     <div class="further-product-container" [hidden]="!activeMenu">
@@ -108,14 +101,14 @@
       *ngIf="products.length"
         alphasort="true"
         showSection="true"
-        [clazz]="isForSubscriptionBusiness?'':''"
+        [clazz]="products.length>10?'':'large'"
         [displayVendor]="true"
         [displaySubscription]="activeSubscription"
         [config]="config" 
         [user]="user"
         [selections]="selections"         
         [selectionsTitle]="jamesTitle"         
-        [useGroupedCategory]="isForSubscriptionList"
+        [useGroupedCategory]="isForSubscriptionCustomer"
         [scrollContainer]="getDialog()"
         [scrollToSlug]="scrollToCategory"
         [contentCategories]="getChildCategory(category.current)" 

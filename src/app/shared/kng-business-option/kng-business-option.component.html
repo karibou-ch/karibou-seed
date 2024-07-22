@@ -1,91 +1,84 @@
 <div class="business">
-  <p>
-    {{i18n.title}}     
+  <p hidden>
+    {{label.title}}     
   </p>
 
   <form [formGroup]="$quote" (ngSubmit)="onSave()">
     <!-- BUSINESS OPTIONS - calendar:date -->
     <div id="s1" class="selector event">
-      <label class="selector" for="s1">Votre événement</label>
-      <div class="groupfield width-50">
-        <input  id="f000" class="form__field" type="date" formControlName="date"  placeholder="glabel.user_display_name">
-        <label for="f000" class="form__label">
-          {{i18n.title_time_contract}}
-        </label>
-      </div>          
-      <div class="groupfield width-25 on-right">
-        <input  id="f001" class="form__field" type="time" formControlName="time"  placeholder="glabel.user_display_name">
-        <label for="f001" class="form__label">
-          A quelle heure?
-        </label>
-      </div>    
-      
-      <!-- BUSINESS OPTIONS - person:qty -->
-      <div class="groupfield width-25">
-        <input  id="f002" class="form__field" type="number" min="5" max="1000" formControlName="qty"  placeholder="glabel.user_display_name">
-        <label for="f002" class="form__label">
-          Qté personnes?
-        </label>
-      </div>          
-    </div>
+      <kng-slider [small]="true" [(ngModel)]="options.project" [ngModelOptions]="{standalone: true}">
+        <h3>Décrivez votre projet</h3>
+      </kng-slider>
+      <p class="info">
+        Vous souhaitez obtenir un devis personalisé? <span class="gray">(formulaire à compléter)</span>
+      </p>
+      <div [hidden]="!options.project" class="group">
 
-    <div id="s2" class="selector options">
-      <label class="selector" for="s2">Vos options</label>
-      <div class="item">
-        Fourniture de vaisselle et verres 
-        <input type="checkbox" formControlName="options" value="vaisselle">
-      </div>
-      <div class="item">
-        Fourniture de nappes et serviettes 
-        <input type="checkbox" formControlName="options" value="nappes">
-      </div>
-
-    </div>
-
-    <!-- BUSINESS OPTIONS - calendar:time -->
-    <div class="selector time" hidden>
-      <div class="label" for="time">{{i18n.title_time_contract_update}}</div>
+        <div hidden class="groupfield width-50">
+          <input  id="bf000" class="form__field" type="date" formControlName="date"  [placeholder]="glabel.user_display_name">
+          <label for="bf000" class="form__label">
+            {{label.title_time_contract}}
+          </label>
+        </div>          
+        <div hidden class="groupfield width-25 on-right">
+          <input  id="bf001" class="form__field" type="time" formControlName="time"  [placeholder]="glabel.user_display_name">
+          <label for="bf001" class="form__label">
+            A quelle heure?
+          </label>
+        </div>    
+    
+        <!-- <kng-slider [small]="true" [(ngModel)]="options.more" formControlName="options">
+          Fourniture de nappes, vaisselle et serviettes
+        </kng-slider> -->
+        
+        <!-- BUSINESS OPTIONS - person:qty -->
+        <div class="groupfield width-100 nopadding">
+          <textarea kng-autosize id="bf002" class="form__field" rowcount="10"  min="5" max="1000" formControlName="notes" >
+  
+          </textarea>
+          <div class="fieldset" [hidden]="!items.length">
+            <legend>Votre panier 🛒 sera transmis avec votre demande</legend>
+            <ul>
+              <li *ngFor="let item of items">{{item.quantity}}x {{item.title}}</li>
+            </ul>
+  
+          </div>
+  
+        </div>          
+        <kng-audio-assistant  [store]="store" [quiet]="true"  [cleanQuery]="true" [agent]="'quote'" (onNote)="onAssistantNote($event)"></kng-audio-assistant>  
+      </div>  
     </div>
 
     <!-- BUSINESS OPTIONS - identity -->
     <div class="selector identity" >
-      <kng-signup [user]="user" [displayOnly]="true" [config]="config" (onSignup)="onSignup($event)"></kng-signup>
+      <kng-slider [small]="true" [(ngModel)]="options.identity" [ngModelOptions]="{standalone: true}">
+        <h3>Vos informations personnelles</h3>
+      </kng-slider>
+      <div [hidden]="!options.identity" class="group">
+        <kng-signup [user]="user" [signin]="true" [config]="config" (onSignup)="onSignup($event)"></kng-signup>
+      </div>      
     </div>
     <!-- BUSINESS OPTIONS - address -->
-    <div class="selector address" >
-      <div class="groupfield width-100">
-        <input  id="f004" class="form__field" type="text" formControlName="address"  placeholder="glabel.user_display_name">
-        <label for="f004" class="form__label">
-          adresse
-        </label>
-      </div>          
+    <div class="selector address" hidden>
+      <kng-slider [small]="true" [(ngModel)]="options.address" [ngModelOptions]="{standalone: true}">
+        <h3>Votre adresse de livraison</h3>
+      </kng-slider>    
+  
+      <div [hidden]="!options.address" class="group">
+        <kng-address  [config]="config" (onAddress)="onAddress($event)"></kng-address>
+      </div>
     </div>
-    <!-- BUSINESS OPTIONS - note -->
-    <div class="selector note" >
-      <div class="groupfield width-100">
-        <input  id="f005" class="form__field" type="text" formControlName="note"  placeholder="glabel.user_display_name">
-        <label for="f005" class="form__label">
-          note
-        </label>
-      </div>          
+    <!-- MAIL ACTION - address -->
+    <div class="selector action" [hidden]="!options.project">
+      <button class="default action">
+        <span class="material-symbols-outlined">mail</span>
+        <span>Envoyer la demande de projet</span>
+      </button>
+
     </div>
-
-    <kng-audio-assistant class="kng-assistant" [agent]="'quote'" (onData)="onAssistantData($event)"></kng-audio-assistant>  
-
 
   </form>
 
-
-  <!-- BUSINESS OPTIONS - resumé -->
-  <div class="info">
-    <div class="icon">
-      <span class="material-symbols-outlined ">info</span>
-    </div>
-    <p [class.checkout]="checkout">
-      Note du devis
-    </p>
-
-  </div>
 
 
 </div>
