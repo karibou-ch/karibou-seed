@@ -541,7 +541,7 @@
 
   .availability {
     font-size: medium;
-    width: auto;
+    width: 100%;
     ul{
       padding-left: 0;
       list-style: none;
@@ -558,6 +558,9 @@
   }
 
   .vendor{
+    background-color: var(--mdc-theme-appbar-light);
+    border-radius: 14px;
+    padding: 5px;    
     span>p{
       display: inline;
     }
@@ -606,35 +609,6 @@
     width: calc( 100% - 10px );
   }
 
-  section{
-    h2,h3{
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.87);      
-      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
-      font-size: 1.4675rem;
-      text-transform: uppercase;    
-      margin-top: 20px;
-      margin-left: 10px;
-      margin-right: 10px;      
-
-      @media (prefers-color-scheme: dark) {
-          background-color: var(--mdc-theme-secondary-dark);
-          color: var(--mdc-theme-secondary-dark-text);      
-      }
-            
-    }
-    h3{
-      font-weight: 200;
-      font-size: 1.275rem;
-      color: #aaa;
-      text-shadow:1px 1px 0 white;
-      margin-top: -10px;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-
-  }  
-  
 
 }
 
