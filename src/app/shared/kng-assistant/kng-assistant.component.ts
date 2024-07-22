@@ -49,7 +49,8 @@ export class KngAssistantComponent implements OnInit {
   @Input() user:User;
   @Input() config:Config;
   @Input() widget:boolean;
-  @Input() agent:string;
+  @Input() agent: "productsagent"|"quote"|"checkout"|"feedback"|"recipefull" = "recipefull";
+
   @Input() tips:string[];
   @Input() prompts:string[];
   @Input() set prompt(value:string){
@@ -229,7 +230,8 @@ export class KngAssistantComponent implements OnInit {
   async history(clear?) {
     try{
       const filterMessage = (message) => ['tool','system'].indexOf(message.user||message.role)==-1&& message.content;
-      this.messages = await this.$assistant.history({clear:(!!clear)}).toPromise() as AssistantMessage[];
+      const params = {agent:this.agent,clear:(!!clear),hub:this.store};
+      this.messages = await this.$assistant.history(params).toPromise() as AssistantMessage[];
       this.messages = this.messages.filter(filterMessage).map(message => {
         const content = (message.content||'').replace(/\(\([0-9]*\)\)/gm,'')
         message.html = this.markdownRender(content);
