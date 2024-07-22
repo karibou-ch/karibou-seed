@@ -18,21 +18,22 @@ export class KngSignupComponent implements OnInit {
 
   i18n: any = {
     fr: {
+      signup_create: 'Créer votre compte',
+      signup_phone: 'Le téléphone mobile est important pour communiquer avec vous.',
     },
     en: {
+      signup_create: 'Continue', 
+      signup_phone: 'Mobile phone is essential if you want to place an order',
     }
   };
 
   $user: FormGroup;
 
   @Output() updatedSignup: EventEmitter<User|undefined> = new EventEmitter<User>();
-  @Input() set signin(singin:boolean) {
-    this._signin = singin;
-    this.onUpdateForm();
-  }
+  @Input() signin: boolean;
+  @Input() displayPostalcode: boolean;
   @Input() config:Config;
   @Input() phone: string;
-  @Input() displayOnly: boolean;
   @Input() set user(user: User){
     this._user = user;
     this.onUpdateUser(user);
@@ -81,8 +82,22 @@ export class KngSignupComponent implements OnInit {
     return this.$i18n.locale;
   }
 
-  get signin() {
-    return this._signin;
+  get isAuth() {
+    return this._user && this._user.isAuthenticated();
+  }
+  get signup() {
+    return !this.signin;
+  }
+
+
+  set signup(signup: boolean) {
+    this.signin = !signup;
+  }
+
+
+  ngUpdate() {
+    this.onUpdateForm();
+    this.onUpdateUser(this._user);
   }
 
   ngOnInit(): void {
@@ -122,12 +137,12 @@ export class KngSignupComponent implements OnInit {
 
     } else {  
       this.$user = this.$fb.group({
-        'name': ['', [Validators.required, ]],
+        'name': ['', [Validators.required]],
         'forname': ['', [Validators.required]],
         'email': ['', [Validators.required, KngInputValidator.emailValidator]],
         'password': ['', [Validators.required, KngInputValidator.passwordValidator]],
         'confirm': ['', [Validators.required, KngInputValidator.passwordValidator]],
-        'postalcode':['',[postalCodeValidator]],
+        'postalcode':['', [postalCodeValidator]],
         'phone': ['', [Validators.required, Validators.minLength(9)]]
       });
   

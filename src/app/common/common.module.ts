@@ -36,6 +36,7 @@ import { KngAddressComponent } from './kng-address/kng-address.component';
 import { KngPaymentComponent } from './kng-payment/kng-user-payment.component';
 import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
 import { KngSignupComponent } from './kng-signup/kng-signup.component';
+import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
 
 
 @NgModule({
@@ -69,7 +70,8 @@ import { KngSignupComponent } from './kng-signup/kng-signup.component';
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-    KngRippleDirective
+    KngRippleDirective,
+    KngSliderComponent
   ],
   declarations: [
     KngSubsciptionControlComponent,
@@ -89,7 +91,8 @@ import { KngSignupComponent } from './kng-signup/kng-signup.component';
     KngSafeHtmlPipe,
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
-    KngRippleDirective
+    KngRippleDirective,
+    KngSliderComponent
   ],
 })
 export class KngCommonModule {

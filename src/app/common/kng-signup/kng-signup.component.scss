@@ -3,17 +3,20 @@
   border-radius: 14px;    
   display: block;
 }
+div.signup,
 form{
     display: flex;
     flex-flow: row wrap;
     justify-content:space-between;
-    width: calc(100% - 36px);
-    padding: 15px;
+    width: calc(100% - 10px);
+    padding: 5px;
 
     select,
     kng-control-messages {
       flex: 0 1 calc(100% - 0px);
     }
+
+    
   
     select{
       align-self: flex-end;
@@ -51,4 +54,10 @@ form{
   
 }
 
+
+div.signup{
+  padding: 15px 0;
+  width: 100%;
+
+}
 

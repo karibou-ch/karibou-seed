@@ -2,8 +2,8 @@
   <form [formGroup]="$user" (submit)="onSignup()">
     <!-- FAMILY NAME -->
     <div class="groupfield fullwidth">
-      <input id="name" class="form__field" type="text" formControlName="name" [placeholder]="$i18n[locale].user_name">
-      <label for="name" class="form__label" [class.error]="$user.controls.name.invalid"> {{$i18n[locale].user_name}}
+      <input id="name" class="form__field" type="text" formControlName="name" [placeholder]="glabel.user_name">
+      <label for="name" class="form__label" [class.error]="isInvalid('name')"> {{glabel.user_name}}
       </label>
     </div>
 
@@ -11,55 +11,64 @@
     <div class="groupfield fullwidth">
       <input id="forname" class="form__field" type="text" formControlName="forname"
         [placeholder]="$i18n[locale].user_firstname">
-      <label for="forname" class="form__label" [class.error]="$user.controls.forname.invalid">
+      <label for="forname" class="form__label" [class.error]="isInvalid('forname')">
         {{$i18n[locale].user_firstname}} </label>
     </div>
 
     <!-- POSTAL CODE -->
-    <div class="groupfield fullwidth" [hidden]="displayOnly">
+    <div class="groupfield fullwidth" [hidden]="signin || !displayPostalcode">
       <input id="postalcode" class="form__field" type="text" formControlName="postalcode"
         [placeholder]="$i18n[locale].user_postalcode">
-      <label for="postalcode" class="form__label" [class.error]="$user.controls.postalcode.invalid">
+      <label for="postalcode" class="form__label" [class.error]="isInvalid('postalcode')">
         {{$i18n[locale].user_postalcode}} </label>
     </div>
 
     <div class="groupfield fullwidth">
       <input id="phone" class="form__field" type="text" formControlName="phone"
         [placeholder]="$i18n[locale].user_phone">
-      <label for="phone" class="form__label" [class.error]="$user.controls.phone.invalid"> {{$i18n[locale].user_phone}}
+      <label for="phone" class="form__label" [class.error]="isInvalid('phone')"> {{glabel.user_phone}}
       </label>
     </div>
-    <p class="help-block phone-hide">
+    <!-- <p class="help-block phone-hide">
       {{i18n[locale].signup_phone}}
-    </p>
+    </p> -->
 
     <!-- EMAIL -->
     <div class="groupfield fullwidth">
       <input id="email" class="form__field" type="text" formControlName="email"
-        [placeholder]="$i18n[locale].user_email">
-      <label for="email" class="form__label" [class.error]="$user.controls.email.invalid"> {{$i18n[locale].user_email}}
+        [placeholder]="glabel.user_email">
+      <label for="email" class="form__label" [class.error]="isInvalid('email')"> {{glabel.user_email}}
       </label>
     </div>
 
-    <!-- PASSWORD -->
-    <div class="groupfield fullwidth" [hidden]="displayOnly">
-      <input id="password" class="form__field" type="password" formControlName="password"
-        [placeholder]="$i18n[locale].user_password">
-      <label for="password" class="form__label" [class.error]="$user.controls.password.invalid">
-        {{$i18n[locale].user_password}} </label>
+    <div class="signup" [hidden]="isAuth">
+      <kng-slider [small]="true" [(ngModel)]="signup" [ngModelOptions]="{standalone: true}">
+        <span>Souhaitez-vous créer un compte client</span>
+      </kng-slider>    
+  
+      <!-- PASSWORD -->
+      <div class="groupfield fullwidth" [hidden]="signin">
+        <input id="password" class="form__field" type="password" formControlName="password"
+          [placeholder]="glabel.user_password">
+        <label for="password" class="form__label" [class.error]="isInvalid('password')">
+          {{glabel.user_password}} </label>
+      </div>
+  
+      <!-- PASSWORD / confirmation -->
+      <div class="groupfield fullwidth" [hidden]="signin">
+        <input id="confirm" class="form__field" type="password" formControlName="confirm"
+          [placeholder]="glabel.user_repassword">
+        <label for="confirm" class="form__label" [class.error]="isInvalid('confirm')">
+          {{glabel.user_repassword}} </label>
+      </div>
+
+      <button [disabled]="!$user.valid" class="default align-center" [hidden]="signin">
+        <span tabindex="-1" class="material-symbols-outlined">account_circle</span>
+        <span>{{label.signup_create}}</span>
+      </button>
+        
     </div>
 
-    <!-- PASSWORD / confirmation -->
-    <div class="groupfield fullwidth" [hidden]="displayOnly">
-      <input id="confirm" class="form__field" type="password" formControlName="confirm"
-        [placeholder]="$i18n[locale].user_repassword">
-      <label for="confirm" class="form__label" [class.error]="$user.controls.confirm.invalid">
-        {{$i18n[locale].user_repassword}} </label>
-    </div>
-
-    <button [disabled]="!$user.valid" class="align-center">
-      <span tabindex="-1" class="material-symbols-outlined">account_circle</span>
-      <span>{{i18n[locale].signup_create}}</span>
-    </button>
+    
   </form>
 </div>
