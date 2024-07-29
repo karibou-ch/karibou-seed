@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { Hub } from 'kng2-core';
 import { CartService, Config, LoaderService, Order } from 'kng2-core';
 import { i18n } from '../i18n.service';
@@ -10,10 +10,16 @@ import { i18n } from '../i18n.service';
 })
 export class KngCalendarComponent implements OnInit {
   private _minimal:boolean;
+
+
+
   @Input() config: Config;
   @Input() set minimal(value){
     this._minimal = ['true','yes','on',true].indexOf(value)>-1;
   }
+
+  @HostBinding('class.minimal') get isMinimal() { return this._minimal; }
+
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
   labelTime: string;
@@ -77,6 +83,15 @@ export class KngCalendarComponent implements OnInit {
     })
   }
 
+  ngOnChanges()  {
+    this.pendingOrder = this.$cart.hasPendingOrder();
+
+  }
+
+  get minimal() { 
+    return this._minimal; 
+  }
+
   get label() {
     return this.$i18n.label();
   }
@@ -87,10 +102,6 @@ export class KngCalendarComponent implements OnInit {
 
   get locale() {
     return this.$i18n.locale;
-  }
-
-  get minimal() {
-    return this._minimal;
   }
 
   get pendingOrderShipping() {

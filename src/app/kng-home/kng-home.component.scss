@@ -180,6 +180,17 @@ div.home-header{
 
 }
 
+kng-calendar  {
+  .calendar-container{
+    .calendar{
+      background-color: var(--mdc-theme-appbar-light)!important;
+      padding: 10px;      
+      flex:1;
+    }
+
+  }
+}
+
 .product-container,
 kng-nav-marketplace,
 kng-product-link,

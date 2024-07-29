@@ -34,9 +34,17 @@
   <!-- DISPLAY ACTION HUB ORDER -->
   <div class="list-item action-line border-bottom">
     <button class="order" (click)="doCheckout()" 
-            [disabled]="!isCheckoutEnabled">{{cart_info_checkout_or_subscription}} </button>
+            [disabled]="!isCheckoutEnabled">
+            {{cart_info_checkout_or_subscription}}, 
+            {{currentShippingDay|date:'EEE dd':'':locale}}
+    </button>
   
-    <button class="continue"   [routerLink]="routerLinkForMoreProducts"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
+
+              
+    <button class="continue hide"   [routerLink]="routerLinkForMoreProducts"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
+
+    <!-- CALENDAR-->
+    <kng-calendar minimal="true" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
     
   </div>
 

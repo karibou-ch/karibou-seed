@@ -419,16 +419,20 @@
       font-size: 15px;
     }
   }
+  kng-calendar{
+    border-radius: 8px;
+    background-color: rgba(239, 239, 239, 0.5);
+  }
   button.order{
     cursor: pointer;
     border: 1px solid var(--mdc-theme-appbar);
     border-radius: 8px;
     padding: 4px 10px;
-    width: 55%;
+    width: 42%;
     max-width: 400px;
     margin-right: auto;
     font-size: 17px;
-    height: 45px;
+    height: 56px;
     font-weight: bold;
     margin-left: 0;    
     @media (max-width:431px) {

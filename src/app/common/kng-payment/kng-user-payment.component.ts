@@ -60,7 +60,7 @@ export class KngPaymentComponent {
   //
   // TODO shared this issuer assets
   static issuer = {
-    wallet: {
+    cash: {
       img: '/assets/img/payment/wallet.jpg',
       label: 'Votre compte privé'
     },

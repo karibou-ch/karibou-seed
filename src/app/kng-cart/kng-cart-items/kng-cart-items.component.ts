@@ -530,4 +530,15 @@ export class KngCartItemsComponent implements OnInit {
     });
   }
 
+
+  onSetCurrentShippingDay(day: Date, hours?: number) {
+    if (!(day)) {
+      return;
+    }
+    // this.dialogRef.close(day);
+
+    hours = hours|| this.config.getDefaultTimeByDay(day);
+    this.$cart.setShippingDay(day,hours);
+  }
+
 }
