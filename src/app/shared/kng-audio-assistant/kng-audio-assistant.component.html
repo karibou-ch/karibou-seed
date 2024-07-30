@@ -3,7 +3,11 @@
     <div class="loading" [hidden]="!audioLoading" >
       {{glabel.audio_recording}}
     </div>
-    <div class="title">{{label.title}}</div>
+    <div class="title">
+      <span [hidden]="sentences.length">{{label.title}}</span>
+      <kng-stream-sentence [sentences]="sentences" (chat)="onTest($event)" [pause]="isThinking"></kng-stream-sentence>
+
+    </div>
   
     <div class="audio-error" [hidden]="!audioError" >
       {{glabel.audio_error}} <button (click)="audioError = null">OK</button>
@@ -28,8 +32,7 @@
     <span class="btn" (click)="onSearch()">recommencer</span>
     <span class="btn" (click)="onClear()">supprimer</span>
   </div>
-  <div class="context tips" [hidden]="note||audioIsRecording ">
-    <kng-stream-sentence [sentences]="sentences" (chat)="onTest($event)" [pause]="isThinking"></kng-stream-sentence>
-  </div>
+  <!-- <div class="context tips" [hidden]="note||audioIsRecording ">
+  </div> -->
 
 </div>

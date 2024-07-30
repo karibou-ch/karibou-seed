@@ -196,7 +196,7 @@ export class KngAudioAssistantComponent implements OnInit {
       return;
     }
 
-    this.$assistant.history({agent:'customerservice',trim:true}).subscribe((content) => {
+    this.$assistant.history({agent:'productsagent',trim:true}).subscribe((content) => {
       const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
       const result = content.filter(item => item['role'] == 'assistant');
       if(result.length) {
@@ -234,7 +234,7 @@ export class KngAudioAssistantComponent implements OnInit {
     const query = /\*\*Question:?\*\*.+?[.?!]/i;
     let endprint = false;
     const body:any = { products:this.products.filter(filterProductAsFIX).map(product => product.sku)};
-    const params:any = {agent:'customerservice'};
+    const params:any = {agent:'productsagent'};
     params.q = this.defaulPrompt;
     if(base64) {
       params.q = "( ͡° ᴥ ͡°)";
@@ -337,7 +337,7 @@ export class KngAudioAssistantComponent implements OnInit {
     this.$cdr.markForCheck();
   }
   onClear() {
-    this.$assistant.history({agent:'customerservice',clear:true}).subscribe((content) => {
+    this.$assistant.history({agent:'productsagent',clear:true}).subscribe((content) => {
       this.note = '';
       this.onData.emit([]);
       this.$cdr.markForCheck();
@@ -346,7 +346,7 @@ export class KngAudioAssistantComponent implements OnInit {
 
   async onSearch(){
     this.note = '';
-    await this.$assistant.history({agent:'customerservice',clear:true}).toPromise()
+    await this.$assistant.history({agent:'productsagent',clear:true}).toPromise()
     this.assistant();
   }
 }
