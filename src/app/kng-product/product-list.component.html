@@ -9,7 +9,7 @@
           <span class="material-symbols-outlined size-large">arrow_back</span>
         </button>
   
-        <div class="title text-overflow" [hidden]="isForSubscriptionList">{{category.current.name}}</div>
+        <div class="page-title text-overflow" [hidden]="isForSubscriptionList">{{category.current.name}}</div>
         <div class="cart visible"  >
           <div class="subscription-cart" [hidden]="!activeSubscription"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" [queryParams]="subscriptionQueryParams">            
             <button> 

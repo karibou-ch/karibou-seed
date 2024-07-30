@@ -30,22 +30,21 @@
         <!-- <kng-slider [small]="true" [(ngModel)]="options.more" formControlName="options">
           Fourniture de nappes, vaisselle et serviettes
         </kng-slider> -->
+        <kng-audio-assistant  [store]="store" [quiet]="true"  [cleanQuery]="true" [agent]="'quote'" (onNote)="onAssistantNote($event)"></kng-audio-assistant>  
         
         <!-- BUSINESS OPTIONS - person:qty -->
         <div class="groupfield width-100 nopadding">
           <textarea kng-autosize id="bf002" class="form__field" rowcount="10"  min="5" max="1000" formControlName="notes" >
   
           </textarea>
-          <div class="fieldset" [hidden]="!items.length">
-            <legend>Votre panier 🛒 sera transmis avec votre demande</legend>
-            <ul>
-              <li *ngFor="let item of items">{{item.quantity}}x {{item.title}}</li>
-            </ul>
-  
-          </div>
-  
         </div>          
-        <kng-audio-assistant  [store]="store" [quiet]="true"  [cleanQuery]="true" [agent]="'quote'" (onNote)="onAssistantNote($event)"></kng-audio-assistant>  
+        <div class="fieldset" [hidden]="!items.length">
+          <legend>Votre panier 🛒 sera transmis avec votre demande</legend>
+          <ul>
+            <li *ngFor="let item of items">{{item.quantity}}x {{item.title}}</li>
+          </ul>
+        </div>
+
       </div>  
     </div>
 

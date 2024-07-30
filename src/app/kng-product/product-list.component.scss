@@ -190,10 +190,10 @@
       &.sticked {
         background-color: rgba(255, 255, 255, .9);
         top: 0px;
-        .title { opacity: 1;}
+        .page-title { opacity: 1;}
       }
 
-      .title{
+      .page-title{
         opacity: 0;
         font-size: 20px;
         line-height: 28px;
@@ -270,7 +270,7 @@
   text-transform: inherit;
   line-height: 1.3rem;
 
-  .title {
+  .page-title {
     margin: auto;
     text-align: left;
     margin-top: 10px;
