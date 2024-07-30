@@ -89,6 +89,10 @@ export class AddressComponent implements OnDestroy{
   }
 
 
+  get phone() {
+    return this.defaultUser.phoneNumbers.length ? this.defaultUser.phoneNumbers[0].number : '';
+  }
+
   get label() {
     return this.i18n[this.$i18n.locale];
   }  
@@ -157,6 +161,10 @@ export class AddressComponent implements OnDestroy{
   }
 
   setAddress(address: UserAddress, idx: number) {
+    if(idx === this.idx) {  
+      this.idx = -1;
+      return;
+    }
     this.idx = idx;
     this.address = address;
   }

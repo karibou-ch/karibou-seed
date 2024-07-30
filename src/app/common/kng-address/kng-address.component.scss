@@ -27,6 +27,10 @@ form{
 
     button{
       margin: 10px 0;
+      &.secondary{
+        background: #eee;
+        color: #000;
+      }
     }
 
     .fullwidth{
