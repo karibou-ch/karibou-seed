@@ -125,6 +125,12 @@ export class KngAddressComponent implements OnInit {
   async loadAutocomplete() {
     // const dev ='AIzaSyAOlRpmLYUNtJxGx-h6Dc_452aVB3AmLYQ';
     try {
+
+      const findComponent = (place, type) => {
+        const elem = place.address_components.find((comp) => comp.types.indexOf(type) > -1);
+        return elem ? elem.short_name : '';
+      }    
+
       const apiKey = this.config.shared.keys.pubMap;
       const loader = new Loader({
         apiKey,
@@ -139,14 +145,13 @@ export class KngAddressComponent implements OnInit {
         return;
       }
 
-      const findComponent = (place, type) => {
-        const elem = place.address_components.find((comp) => comp.types.indexOf(type) > -1);
-        return elem ? elem.short_name : '';
-      }    
-
-      
+      // google.maps.event.addListenerOnce(loader, 'authentication_error', (event: any) => {
+      //   console.error('Authentication error:', event);
+      // });
+  
+        
       const autocomplete = new google.maps.places.Autocomplete(this.street.nativeElement, { types: ['geocode'] });
-      autocomplete.addListener('place_changed', () => {      
+      autocomplete.addListener('place_changed', () => {              
         const place = autocomplete.getPlace();
         this.street.nativeElement.disabled = false;
         console.log('KngAddressComponent: place_changed',place);

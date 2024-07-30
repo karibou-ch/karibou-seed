@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, I
 import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.service';
 import { i18n } from 'src/app/common';
 import { Subscription } from 'rxjs';
-import { Config, CartService, User, ProductService, Product, AssistantService, Assistant } from 'kng2-core';
+import { Config, CartService, User, ProductService, Product, AssistantService, Assistant, AnalyticsService } from 'kng2-core';
 import { Router } from '@angular/router';
 
 export interface AssistantQuery extends Assistant{
@@ -91,6 +91,7 @@ export class KngAssistantComponent implements OnInit {
     private $audio: KngAudioRecorderService,
     private $i18n: i18n,
     private $assistant: AssistantService,
+    private $metric: AnalyticsService,
     private $products: ProductService,
     private $router: Router,
     private $cdr: ChangeDetectorRef
@@ -512,7 +513,7 @@ export class KngAssistantComponent implements OnInit {
     const index = this.messages.findIndex(msg => msg.id==message.id);
     if(index>-1) {
       const content = {...this.messages[0],...this.messages.slice(index-1)};
-      // await this.$metric.feedback(evaluation,content).toPromise();
+      await this.$metric.feedback(evaluation,content).toPromise();
       this.isFeedbackReady = false;
     }
     this.$cdr.markForCheck();

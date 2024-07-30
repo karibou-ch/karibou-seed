@@ -27,7 +27,7 @@
         <div class="groupfield fullwidth">
             <input  id="f004" class="form__field" type="text" formControlName="phone" [placeholder]="glabel.user_phone" (blur)="onGeoloc()">
             <label for="f004" class="form__label" [class.error]="isInvalid('phone')">
-                <span class="material-symbols-outlined">phone</span>
+                <span hidden class="material-symbols-outlined">phone</span>
                 {{glabel.user_phone}}
             </label>
         </div>
@@ -60,12 +60,12 @@
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
         <button [hidden]="!displayClear" [disabled]="isClear" type="button" (click)="onCancel()"
-                class="align-left ">
+                class="align-left default secondary">
           <span class="material-symbols-outlined">close</span>              
         </button>            
         
         <button [disabled]="!$address.valid" 
-                class="align-right primary">
+                class="align-right primary default">
           <span class="material-symbols-outlined">account_circle</span>              
           <span >{{glabel.action_save}}</span>
         </button>            
