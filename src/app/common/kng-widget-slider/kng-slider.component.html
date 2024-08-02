@@ -1,0 +1,7 @@
+<div class="label" (click)="onClick($event)">
+  <ng-content></ng-content>
+</div>
+<label class="switch" [class.small-1]="small">
+  <input type="checkbox" [disabled]="disabled" (change)="onCheck($event)" [(ngModel)]="value" ngDefaultControl>
+  <span class="slider"></span>
+</label>  

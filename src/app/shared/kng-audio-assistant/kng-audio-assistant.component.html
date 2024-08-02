@@ -19,7 +19,7 @@
 
 
     <!-- RUN AUDIO -->
-    <button class="record"  [class.recording]="audioIsRecording" [disabled]="!products.length"
+    <button class="record"  [class.recording]="audioIsRecording" [disabled]="isThinking"
       (click)="audioRecord($event)">
       <span [hidden]="audioIsRecording" class="material-symbols-outlined">mic</span>
       <span [hidden]="!audioIsRecording" class="material-symbols-outlined">pause</span>
@@ -28,7 +28,7 @@
   </div>
 
   <div class="context" [hidden]="!note">
-    <span [innerHtml]="markdownRender"></span> 
+    <span [innerHtml]="markdownRender" [hidden]="quiet"></span> 
     <span class="btn" (click)="onSearch()">recommencer</span>
     <span class="btn" (click)="onClear()">supprimer</span>
   </div>

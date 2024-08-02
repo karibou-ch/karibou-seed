@@ -13,30 +13,30 @@ import { AssistantService, Product } from 'kng2-core';
 export class KngAudioAssistantComponent implements OnInit {
 
   private _sentences= {
-    "productsfruits-legumes":[      
+    "productsagentfruits-legumes":[      
       "Un panier de fruits et légumes pour petits budgets",
       "Un panier de fruits gourmand pour une grande famille",
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment pour une soirée grillade entre amis",
       "Un assortiment généreux et gourmand pour 10 personnes",
     ],
-    "productstraiteurs":[      
+    "productsagenttraiteurs":[      
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
     ],
-    "charcuterie-pates":[
+    "productsagentcharcuterie-pates":[
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment pour une soirée grillade entre amis",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour des Grillades Festives",
     ],
-    "productsboulangerie-artisanale":[
+    "productsagentboulangerie-artisanale":[
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
       "Un assortiment pour le gouter de 50 enfants",
     ],
-    products:[      
+    productsagent:[      
       "Un assortiment festif pour un événement dans mon entreprise ",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
@@ -51,6 +51,8 @@ export class KngAudioAssistantComponent implements OnInit {
       "Un assortiment pour une Cuisine de la Mer"
     ],
     feedback: [
+    ],
+    quote: [
     ]
   }
 
@@ -58,13 +60,15 @@ export class KngAudioAssistantComponent implements OnInit {
   public i18n = {
     fr: {
       title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_products:"La liste est longue. Donnez-moi un peu de contexte et je vais la simplifier.",
+      note_quote:"Vous pouvez aussi décrire votre projet avec un audio",
+      note_productsagent:"La liste est longue. Donnez-moi un peu de contexte et je vais la simplifier.",
       note_checkout:'Je peux vous aider à finaliser votre commande.',
       note_feedback:'Vous pouvez aussi nous laissez un message'
     },
     en:{
       title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_products:"The list is long. Give me some context and I will simplify it.",
+      note_quote:"Décrivez votre projet avec un audio",
+      note_productsagent:"The list is long. Give me some context and I will simplify it.",
       note_checkout:'Je peux vous aider à finaliser votre commande.',
       note_feedback:'You can also leave us a message'
     }
@@ -76,6 +80,7 @@ export class KngAudioAssistantComponent implements OnInit {
   @Output() onAudioError = new EventEmitter<Error>();
   @Output() onAudio = new EventEmitter<string>();
   @Output() onData = new EventEmitter<any>();
+  @Output() onNote = new EventEmitter<string>();
 
   audioLoading: boolean;
   audioError: boolean;
@@ -90,7 +95,11 @@ export class KngAudioAssistantComponent implements OnInit {
   cleanMarkdown = /\(\/sku\/\d+\)|{{[\d,]*?}}|\[[\d,]*?\]/ig;
 
 
-  @Input() agent: "products"|"checkout"|"feedback" = "products";
+  @Input() store:string;
+  @Input() quiet = false;
+  @Input() cleanQuery = true;
+  @Input() withHistory = false;
+  @Input() agent: "productsagent"|"quote"|"checkout"|"feedback" = "productsagent";
   @Input() category: string = "";
   @Input() products: Product[];
   isThinking: boolean;
@@ -146,6 +155,9 @@ export class KngAudioAssistantComponent implements OnInit {
     return this.$i18n.label();
   }
 
+  get label_title() {
+    return this.i18n[this.locale]['note_'+this.agent];
+  }
 
   get defaultNote() {
     return this.defaulPrompt || this.i18n[this.locale]['note_'+this.agent];
@@ -196,16 +208,17 @@ export class KngAudioAssistantComponent implements OnInit {
       return;
     }
 
-    this.$assistant.history({agent:'productsagent',trim:true}).subscribe((content) => {
+    this.$assistant.history({agent:this.agent,trim:true,hub:this.store}).subscribe((content) => {
       const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
       const result = content.filter(item => item['role'] == 'assistant');
       if(result.length) {
-        const msg = result[result.length-1]['content'];
+        const msg = (this.withHistory)? result.reduce((note, msg) => note + msg['content']+'\n', ''):(result[result.length-1]['content']);
         this.note = msg;
         let products =msg.match(skus)?.map(match => match.replace(/{{|}}|\[|\]/g, '').split(',')).flat().map(sku => (+sku)).filter(sku => sku);
         if(products && products.length){
           this.onData.emit(products);
         }
+        this.onNote.emit(this.note.trim());
       }
       this.$cdr.markForCheck();
     },(error)=>{
@@ -231,17 +244,18 @@ export class KngAudioAssistantComponent implements OnInit {
     };
 
     this.isThinking = true;
-    const query = /\*\*Question:?\*\*.+?[.?!]/i;
+    const query = (this.cleanQuery)? /\*\*Question:?\*\*.+?[\n?!]/i : /\*\*Question:?\*\*?/i;
     let endprint = false;
     const body:any = { products:this.products.filter(filterProductAsFIX).map(product => product.sku)};
-    const params:any = {agent:'productsagent'};
+    const params:any = {agent:this.agent};
     params.q = this.defaulPrompt;
     if(base64) {
       params.q = "( ͡° ᴥ ͡°)";
       body.audio = base64;
     }
     params.body = body;
-    this.$cdr.markForCheck()
+    this.$cdr.markForCheck();
+    let streamTxt = '';
     this.$assistant.chat(params).subscribe((content) => {
       if(content.tool && content.tool.length) {
         this.onData.emit(content.tool);
@@ -249,21 +263,21 @@ export class KngAudioAssistantComponent implements OnInit {
 
       const indexOfSku = content.text.indexOf('---')
       if(endprint||indexOfSku>-1) {
-        this.note+=content.text.substring(0,indexOfSku);
+        streamTxt+=content.text.substring(0,indexOfSku);
         endprint=true;
         return
       }
-      this.note+=(content.text.replace('**traitement...**','').replace(query,''));
+      streamTxt+=(content.text.replace('**traitement...**','').replace(query,''));
 
       this.$cdr.markForCheck()
     }, err => { 
       this.isThinking = false;
-      this.note = "Oups, il y a un problème ...";
+      this.note = "Oups, il y a un problème :"+err.message;
       this.$cdr.markForCheck();
-      console.log(err);
     },async ()=>{ 
       this.isThinking = false;
-      this.note = (this.note);
+      this.note = (streamTxt.trim());
+      this.onNote.emit(this.note);
       this.$cdr.markForCheck();
   });
 
@@ -340,6 +354,7 @@ export class KngAudioAssistantComponent implements OnInit {
     this.$assistant.history({agent:'productsagent',clear:true}).subscribe((content) => {
       this.note = '';
       this.onData.emit([]);
+      this.onNote.emit('');
       this.$cdr.markForCheck();
     });
   }

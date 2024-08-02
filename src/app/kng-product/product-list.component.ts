@@ -139,7 +139,7 @@ export class ProductListComponent implements OnInit {
   }
 
   get store(){
-    return this.hub && this.config.shared.hub.slug;
+    return this.hub && this.hub.slug;
   }
 
   get hub(){
@@ -170,7 +170,7 @@ export class ProductListComponent implements OnInit {
   }  
 
   get isForSubscriptionList(){
-    return this.$route.snapshot.data.subscription || this.$route.snapshot.data.business;
+    return this.$route.snapshot.data.subscription ;
   }
 
   get isForSubscriptionCustomer(){
@@ -246,26 +246,25 @@ export class ProductListComponent implements OnInit {
 
     //
     // list product available for subscription
-    if(this.isForSubscriptionList) {
-      this.isForSubscriptionCustomer && (this.options.subscription=true);
-      this.isForSubscriptionBusiness && (this.options.business=true);
+    if(this.isForSubscriptionCustomer) {
+      this.options.subscription = true;
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.subscription.t[this.locale];
       this.category.current.description =this.config.shared.subscription.h[this.locale];
-      if(this.isForSubscriptionBusiness) {
-        this.options.business = true;
-        this.category.current.name =this.config.shared.business.t[this.locale];
-        this.category.current.description =this.config.shared.business.h[this.locale];
-      }
-      this.category.current.child = [];
 
       //
       // FIXME UGLY STORAGE OF SUBS_PLAN (FOR SHARING WITH CART)
-      window['subsplan'] = this.isForSubscriptionBusiness?'business':'customer';
-
-      this.productsBySubscription();
+      window['subsplan'] = 'customer';
+      this.productsByAttribute('subscription');
     } 
     
+    else if(this.isForSubscriptionBusiness) {
+      this.category.current = this.category.categories[0];
+      this.category.current.name =this.config.shared.business.t[this.locale];
+      this.category.current.description =this.config.shared.business.h[this.locale];
+      this.productsByAttribute('business');
+    }
+  
     //
     // list product available from category
     else if(category){
@@ -328,6 +327,7 @@ export class ProductListComponent implements OnInit {
     if(diff < 100) {
       return;
     }
+    console.log('--- ngAfterViewChecked')
     setTimeout(()=>{
       this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
     },40);    
@@ -351,7 +351,7 @@ export class ProductListComponent implements OnInit {
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    if(this.isForSubscriptionList) {
+    if(this.category.categories.length>2) {
       return (this.products.length)? (this.category.categories as Category[]):[];
     }
     const child = category.child || [];
@@ -422,14 +422,16 @@ export class ProductListComponent implements OnInit {
   }
 
 
-  productsBySubscription() {
+  productsByAttribute(attribute) {
     this.selections = [];
     this.options.hub = this.store;
     delete this.options.when;
+    //
+    // this is only for subscription (not business)
     this.$cart.subscriptionsGet().subscribe(contracts => this.contracts=contracts);
     this.subcriptionParams = this.$cart.subscriptionGetParams();
 
-    this.$product.findByDetails('subscription', this.options).subscribe((products: Product[]) => {
+    this.$product.findByAttribute(attribute, this.options).subscribe((products: Product[]) => {
       this.cache.products = this.products = products.sort(this.sortProducts);
       
       //
@@ -438,8 +440,12 @@ export class ProductListComponent implements OnInit {
                                     .filter((item,pos,arr)=>   arr.findIndex(idx => idx.slug == item.slug)== pos);
 
       this.category.categories = this.category.categories.filter(cat => categories.find(c => c.slug==cat.slug));
+      //
+      // set the default category of the page
+      this.category.current.child = this.category.categories[0].child;
+      this.category.current.slug = this.category.categories[0].slug;
 
-
+      console.log('productsByAttribute', attribute, this.category.current);
       this.products.forEach(product => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;
