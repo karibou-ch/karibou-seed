@@ -4,7 +4,7 @@
       {{glabel.audio_recording}}
     </div>
     <div class="title">
-      <span [hidden]="sentences.length">{{label.title}}</span>
+      <span [hidden]="sentences.length">{{label_title}}</span>
       <kng-stream-sentence [sentences]="sentences" (chat)="onTest($event)" [pause]="isThinking"></kng-stream-sentence>
 
     </div>
@@ -27,7 +27,7 @@
 
   </div>
 
-  <div class="context" [hidden]="!note">
+  <div class="context" [hidden]="!note||quiet">
     <span [innerHtml]="markdownRender" [hidden]="quiet"></span> 
     <span class="btn" (click)="onSearch()">recommencer</span>
     <span class="btn" (click)="onClear()">supprimer</span>

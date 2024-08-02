@@ -20,7 +20,6 @@ export class KngAssistantBotComponent implements OnInit {
   user:User;
   config:Config;
   isReady = false;
-  isFeedbackReady = false;
   messages:any[];
   error:string;
   prompt:string;

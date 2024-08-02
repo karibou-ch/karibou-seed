@@ -251,6 +251,8 @@ export class ProductListComponent implements OnInit {
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.subscription.t[this.locale];
       this.category.current.description =this.config.shared.subscription.h[this.locale];
+      document.title = this.category.current.name;
+
 
       //
       // FIXME UGLY STORAGE OF SUBS_PLAN (FOR SHARING WITH CART)
@@ -262,24 +264,13 @@ export class ProductListComponent implements OnInit {
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.business.t[this.locale];
       this.category.current.description =this.config.shared.business.h[this.locale];
+      document.title = this.category.current.name;
       this.productsByAttribute('business');
     }
   
     //
     // list product available from category
     else if(category){
-      this.category.slug = category;
-      this.category.current = this.category.categories.find(cat => cat.slug == category);
-      //
-      // old google reference goes wrong
-      this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
-        return a.weight - b.weight;
-      });
-
-      this.category.similar = this.category.categories
-      .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
-      .sort(cat => cat.weight);
-      this.bgStyle = 'url(' + this.category.current.cover + ')';  
       this.productsByCategory(category);
     } 
     //
@@ -351,7 +342,7 @@ export class ProductListComponent implements OnInit {
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    if(this.category.categories.length>2) {
+    if(!category.child.length) {
       return (this.products.length)? (this.category.categories as Category[]):[];
     }
     const child = category.child || [];
@@ -445,7 +436,7 @@ export class ProductListComponent implements OnInit {
       this.category.current.child = this.category.categories[0].child;
       this.category.current.slug = this.category.categories[0].slug;
 
-      console.log('productsByAttribute', attribute, this.category.current);
+
       this.products.forEach(product => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;
@@ -466,6 +457,22 @@ export class ProductListComponent implements OnInit {
     this.options.when = when.toISOString();
     this.options.bundle = false;
 
+    this.category.slug = category;
+    this.category.current = this.category.categories.find(cat => cat.slug == category);
+    this.bgStyle = 'url(' + this.category.current.cover + ')';  
+    document.title = this.category.current.name;
+
+    //
+    // old google reference goes wrong
+    this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
+      return a.weight - b.weight;
+    });
+
+    this.category.similar = this.category.categories
+    .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
+    .sort(cat => cat.weight);
+
+
     this.$product.findByCategory(category, this.options).subscribe((products: Product[]) => {
       //
       // sort product and fork selection
@@ -481,6 +488,8 @@ export class ProductListComponent implements OnInit {
         }
         this.childMap[product.belong.name]++;
       });
+      console.log('productsByCategory', this.category.current, this.category);
+      console.log('productsByCategoryChild', this.category.current.child);
 
       //
       // set vendors after toggle of child category

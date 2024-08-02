@@ -6,7 +6,9 @@ import {
   LoaderService,   
   Hub, 
   User,
-  CartItemsContext
+  CartItemsContext,
+  AssistantService,
+  AnalyticsService
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -56,6 +58,9 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   selDayOfWeek:any;  
   selTime:number;
   shippingtimes:any;
+  isValid:boolean;
+  isRunning:boolean
+  formError:string;
   //
   // default shipping time for the week and saturday (12)
   defaultTime = [12,16];
@@ -73,7 +78,9 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private $i18n: i18n,
+    private $assistant: AssistantService,
+    private $metric: AnalyticsService,
+      private $i18n: i18n,
     private $cart: CartService,
     private $loader: LoaderService,
     private $fb: FormBuilder,
@@ -119,6 +126,14 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
       hub: this.store
     } as CartItemsContext;
     return this.$cart.getItems(ctx).filter((item:CartItem) => item)||[];
+  }
+
+  get itemsPrompt() {
+    const items = this.items;
+    const prompt = items.reduce((prompt, item:CartItem) => {
+      return `${prompt}  ${item.title} (${item.quantity}x${item.part})\n`;
+    },'');
+    return (items.length)? `Le type d'événement:\n${prompt}`:'' ;
   }
 
   get locale() {
@@ -187,9 +202,50 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   onAssistantNote($event) {
     console.log('onAssistantData', $event);
     this.notes = $event || this._defaultNotes;
+    this.onValidate();
   }
 
   onAddress(address){
     console.log('onAddress', address);
+  }
+
+  onValidate(){
+    this.formError = '';    
+    const prefix = "Tu dois maintenant valider le formulaire attention de bien répondre en cas d'erreur:\n----\n";
+    const params:any = {agent:'quote', q: prefix+this.notes+this.itemsPrompt, zeroshot:true};
+    return new Promise((resolve, reject) => {
+      this.$assistant.chat(params).subscribe(message=> {
+        this.isValid = message.text.toLowerCase().indexOf('true') > -1;
+        if(this.isValid){          
+          return;
+        }
+        this.formError += message.text;
+        this.$cdr.markForCheck();
+      },(err)=> {
+        reject(err);
+      },()=> {
+        resolve(this.isValid);
+      });
+    });
+
+  }
+
+  async onMail(){
+    try{
+      this.isRunning = true;
+      this.$cdr.markForCheck();
+      await this.onValidate();
+      if(!this.isValid) {
+        return;
+      }
+      await this.$metric.feedback('DEVIS-B2B',this.notes).toPromise();
+
+    }catch(e){
+      throw e;
+    }
+    finally{
+      this.isRunning = false;
+      console.log('onMail', this.notes);
+    }
   }
 }

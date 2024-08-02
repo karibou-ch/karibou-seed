@@ -54,7 +54,7 @@
     margin: 0;
     margin-top: -10px;
     -background-color: var(--mdc-theme-appbar);    
-    border-bottom: 1px solid #eee;
+    -border-bottom: 1px solid #eee;
     padding-bottom: 5px;
   }
   .on-right{
@@ -104,14 +104,29 @@
     }
 
     div.selector.action {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;      
       border: 0px solid var(--mdc-theme-appbar);
-      button.action{
+      button{
+        
         padding: 15px;
         font-size: 18px;
         border-radius: 45px;
-        margin: auto;  
+        margin: 0;  
       }
       
+      .error{
+        width: 100%;
+        color: #330000;
+        white-space: break-spaces;
+        padding: 5px;
+        font-size: 15px;
+        font-weight: 200;
+        border-bottom: 2px dotted #aaa;
+      }
     }
     div.selector {
       border: 2px solid var(--mdc-theme-appbar);

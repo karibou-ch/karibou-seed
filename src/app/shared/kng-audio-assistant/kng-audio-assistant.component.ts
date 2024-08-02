@@ -60,7 +60,7 @@ export class KngAudioAssistantComponent implements OnInit {
   public i18n = {
     fr: {
       title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_quote:"Vous pouvez aussi décrire votre projet avec un audio",
+      note_quote:"Vous pouvez décrire votre projet par écrit ⤵️ ou avec un audio ➡️",
       note_productsagent:"La liste est longue. Donnez-moi un peu de contexte et je vais la simplifier.",
       note_checkout:'Je peux vous aider à finaliser votre commande.',
       note_feedback:'Vous pouvez aussi nous laissez un message'
@@ -74,7 +74,7 @@ export class KngAudioAssistantComponent implements OnInit {
     }
   }
 
-  defaulPrompt = "un apéro gourmand pour 10 personnes";
+  defaulPrompt = "Comment puis-je vous aider ?";
 
   @Output() onAudioLoading = new EventEmitter<boolean>();
   @Output() onAudioError = new EventEmitter<Error>();
@@ -95,11 +95,12 @@ export class KngAudioAssistantComponent implements OnInit {
   cleanMarkdown = /\(\/sku\/\d+\)|{{[\d,]*?}}|\[[\d,]*?\]/ig;
 
 
+  @Input() promptmore:string = "";
   @Input() store:string;
   @Input() quiet = false;
   @Input() cleanQuery = true;
   @Input() withHistory = false;
-  @Input() agent: "productsagent"|"quote"|"checkout"|"feedback" = "productsagent";
+  @Input() agent: "productsagent"|"quote"|"checkout"|"feedback";
   @Input() category: string = "";
   @Input() products: Product[];
   isThinking: boolean;
@@ -121,6 +122,7 @@ export class KngAudioAssistantComponent implements OnInit {
   ) { 
     this.audioDetected = undefined;
     this.products = [];
+    this.agent= "productsagent";
     this.$audio.recorderError.subscribe(error => {
       //
       // record error , display user message
@@ -159,9 +161,6 @@ export class KngAudioAssistantComponent implements OnInit {
     return this.i18n[this.locale]['note_'+this.agent];
   }
 
-  get defaultNote() {
-    return this.defaulPrompt || this.i18n[this.locale]['note_'+this.agent];
-  }
 
   get sentences() {
     return this._sentences[this.agent+this.category]||this._sentences[this.agent]||[]
@@ -250,7 +249,7 @@ export class KngAudioAssistantComponent implements OnInit {
     const params:any = {agent:this.agent};
     params.q = this.defaulPrompt;
     if(base64) {
-      params.q = "( ͡° ᴥ ͡°)";
+      params.q = this.promptmore || "( ͡° ᴥ ͡°)";
       body.audio = base64;
     }
     params.body = body;
