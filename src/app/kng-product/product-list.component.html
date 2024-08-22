@@ -1,4 +1,4 @@
-<div class="product-dialog " #dialog (scroll)="onScroll($event)" >
+<div class="product-dialog "  #dialog (scroll)="onScroll($event)" >
   <div class="product-backdrop"></div>
   <div class="product-dialog__surface" *ngIf="isReady">
     <div class="category-wide" >
@@ -43,19 +43,6 @@
         <h2 [innerHtml]="category.current.description"></h2>  
       </div>
 
-      <div class="kng-informations" *ngIf="isForSubscriptionCustomer">
-        <div class="menu">
-          <div class="elem main info" (click)="activeMenu=true" [class.active]="activeMenu">
-            <span class="-hide material-symbols-outlined size-large">apps</span>
-            
-          </div>
-          <div class="elem info" (click)="activeMenu=false" [class.active]="!activeMenu">
-            {{label.nav_menu_information}}
-          </div>
-        </div>
-        <div class="markdown" [hidden]="activeMenu" [kng-markdown]="label_subscriptionInformations"></div> 
-      </div>
-
 
       <!-- ACTIVE SUBSCRIPTION OPTS -->
       <div class="subscription colored" *ngIf="isForSubscriptionCustomer">
@@ -71,7 +58,7 @@
 
       <!-- BUSINESS OPTIONS  -->
       <div class="subscription" *ngIf="isForSubscriptionBusiness">
-        <kng-business-option [hub]="hub" [user]="user" ></kng-business-option>
+        <kng-business-option [hub]="hub" [user]="user"   (onOpen)="scrollLocked = $event"></kng-business-option>
       </div>
 
 
@@ -79,7 +66,7 @@
 
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
-      <div class="toolbox " [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="isForSubscriptionList">
+      <div class="toolbox " [hidden]="scrollLocked" [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="isForSubscriptionList">
         <div class="show-more hide-lg" (click)="onMOnbileShowMore()" >
         </div>
         <ul  #subcategory>
@@ -93,10 +80,10 @@
       </div>
     </div>
     <!-- JAMES-->
-    <kng-audio-assistant *ngIf="products.length>50" class="kng-assistant" [store]="store" [category]="category.current.slug" [products]="products" (onData)="onAssistantData($event)"></kng-audio-assistant>  
+    <!-- <kng-audio-assistant *ngIf="products.length>50" class="kng-assistant" [store]="store" [category]="category.current.slug" [products]="products" (onData)="onAssistantData($event)"></kng-audio-assistant>   -->
 
     <!-- FURTHER -->
-    <div class="further-product-container" [hidden]="!activeMenu">
+    <div class="further-product-container" [hidden]="scrollLocked">
       <kng-product-grouped-list class=""        
       *ngIf="products.length"
         alphasort="true"

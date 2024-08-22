@@ -11,6 +11,10 @@
   z-index: 3;
   background: white;
 
+  &.scroll-locked {
+    overflow-y: hidden!important;
+  }
+
   @media (min-width: 1025px) {
     background-color: rgba(0, 0, 0, 0.57);
   }
@@ -35,7 +39,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 865px;
+    max-width: 900px;
     min-height: 70vh;
     border-radius: 4px;
     opacity: 1;
@@ -45,6 +49,7 @@
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 100px;
+
 
     @media (prefers-color-scheme: dark) {
       background-color: var(--mdc-theme-secondary-dark);
@@ -372,7 +377,7 @@
     // flex-flow: row wrap; 
     .show-more {
       width: 32px;
-      height: 32px;
+      height: 232px;
       color: white;
       background: #000;
       border-radius: 32px;
@@ -446,7 +451,7 @@ kng-signup{
   margin-left: 10px;
   border-radius: 7px;      
   max-width: 740px;
-  padding: 0px 0;
+  padding: 0px 5px!important;
 
   position: relative;
 
@@ -457,7 +462,7 @@ kng-signup{
 .owner-title,
 .vendor,
 .further-product-container {
-  max-width: 740px;
+  max-width: 880px;
   padding: 0px 0;
 
   position: relative;

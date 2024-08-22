@@ -72,6 +72,7 @@ export class ProductListComponent implements OnInit {
   scrollDirection: number;
   scrollToCategory: string;
   scrollStickedToolbar: boolean;
+  scrollLocked: boolean;
 
   options: {
     hub?: string;
@@ -247,7 +248,6 @@ export class ProductListComponent implements OnInit {
     //
     // list product available for subscription
     if(this.isForSubscriptionCustomer) {
-      this.options.subscription = true;
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.subscription.t[this.locale];
       this.category.current.description =this.config.shared.subscription.h[this.locale];
@@ -342,7 +342,7 @@ export class ProductListComponent implements OnInit {
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    if(!category.child.length) {
+    if(!category.child.length || this.category.categories.length > 1) {
       return (this.products.length)? (this.category.categories as Category[]):[];
     }
     const child = category.child || [];
@@ -401,7 +401,7 @@ export class ProductListComponent implements OnInit {
 
       //
       // count child categories
-      this.products.forEach(product => {
+      this.products.forEach((product, idx) => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;
         }
@@ -459,6 +459,7 @@ export class ProductListComponent implements OnInit {
 
     this.category.slug = category;
     this.category.current = this.category.categories.find(cat => cat.slug == category);
+    this.category.categories = [this.category.current];
     this.bgStyle = 'url(' + this.category.current.cover + ')';  
     document.title = this.category.current.name;
 
@@ -468,9 +469,9 @@ export class ProductListComponent implements OnInit {
       return a.weight - b.weight;
     });
 
-    this.category.similar = this.category.categories
-    .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
-    .sort(cat => cat.weight);
+    // this.category.similar = this.category.categories
+    // .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
+    // .sort(cat => cat.weight);
 
 
     this.$product.findByCategory(category, this.options).subscribe((products: Product[]) => {
@@ -488,8 +489,6 @@ export class ProductListComponent implements OnInit {
         }
         this.childMap[product.belong.name]++;
       });
-      console.log('productsByCategory', this.category.current, this.category);
-      console.log('productsByCategoryChild', this.category.current.child);
 
       //
       // set vendors after toggle of child category
@@ -519,7 +518,6 @@ export class ProductListComponent implements OnInit {
   onAssistantData(skus: number[]) {
     this.jamesTitle = this.$i18n.label().james_selection_pinned;
     this.selections = this.cache.products.filter(product => skus.indexOf(product.sku) > -1);
-    //console.log('onAssistantData', this.selections.map(product => product.title));
     this.cdr.markForCheck();  
     this.dialog.nativeElement.scrollTop = 0;
   }
@@ -542,6 +540,9 @@ export class ProductListComponent implements OnInit {
       return
     }
     this.clean();
+    // if(this.$navigation.hasHistory){
+    //   return this.$navigation.back();      
+    // }
     return this.$router.navigate(['..'], { relativeTo: this.$route });
 
   }
@@ -636,5 +637,14 @@ export class KngProductListByShopComponent extends ProductListComponent{
     return  phone.replace(/[\.;-]/g, '');
   }
 
+  onClose(closedialog) {
+    if(!this.activeMenu) {
+      this.activeMenu = true;
+      return
+    }
+    this.clean();
+    return this.$router.navigate(['../..'], { relativeTo: this.$route });
+
+  }
 
 }
