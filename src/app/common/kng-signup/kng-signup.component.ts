@@ -42,8 +42,7 @@ export class KngSignupComponent implements OnInit {
 
   constructor(
     public  $i18n: i18n,
-    private $fb: FormBuilder,
-    private $http: HttpClient
+    private $fb: FormBuilder
   ) {
     
   }
@@ -96,6 +95,7 @@ export class KngSignupComponent implements OnInit {
 
 
   ngUpdate() {
+    console.log('ngUpdate',this._user);
     this.onUpdateForm();
     this.onUpdateUser(this._user);
   }
