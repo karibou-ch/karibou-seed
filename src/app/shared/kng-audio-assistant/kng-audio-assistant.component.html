@@ -27,7 +27,7 @@
 
   </div>
 
-  <div class="context" [hidden]="!note||quiet">
+  <div class="context" [hidden]="!note">
     <span [innerHtml]="markdownRender" [hidden]="quiet"></span> 
     <span class="btn" (click)="onSearch()">recommencer</span>
     <span class="btn" (click)="onClear()">supprimer</span>

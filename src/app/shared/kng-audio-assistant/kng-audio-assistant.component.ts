@@ -25,14 +25,23 @@ export class KngAudioAssistantComponent implements OnInit {
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
     ],
+    "productsagentboucherie-artisanale":[
+      "Un assortiment pour des Grillades Festives",
+      "Un assortiment pour une Cuisine Suisse Authentique",
+      "Un assortiment pour une Cuisine de Brasserie",
+      "Un assortiment pour une Cuisine Française Raffinée",
+      "Un assortiment pour une Cuisine Italienne Chaleureuse",
+      "Un assortiment pour une Cuisine Espagnole et Tapas",
+      "Un assortiment pour une Cuisine Méditerranéenne",
+      "Un assortiment pour une Cuisine Moyen-Orientale",
+    ],
     "productsagentcharcuterie-pates":[
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment pour une soirée grillade entre amis",
-      "Un assortiment généreux et gourmand pour 10 personnes",
-      "Un assortiment pour des Grillades Festives",
+      "Un assortiment généreux et gourmand pour un anniversaire",
     ],
     "productsagentboulangerie-artisanale":[
-      "Un assortiment généreux et gourmand pour 10 personnes",
+      "Un assortiment généreux et gourmand pour un anniversaire",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
       "Un assortiment pour le gouter de 50 enfants",
     ],
@@ -59,17 +68,17 @@ export class KngAudioAssistantComponent implements OnInit {
 
   public i18n = {
     fr: {
-      title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_quote:"Vous pouvez décrire votre projet par écrit ⤵️ ou avec un audio ➡️",
-      note_productsagent:"La liste est longue. Donnez-moi un peu de contexte et je vais la simplifier.",
-      note_checkout:'Je peux vous aider à finaliser votre commande.',
+      title: 'Donnez moi un peu de contexte sur vos envies, je fais une sélection',
+      note_quote:"Vous pouvez aussi décrire votre projet avec un audio ",
+      note_productsagent:"Donnez moi un peu de contexte sur vos envies, je fais une sélection.",
+      note_checkout:'Je vais vous aider à finaliser votre commande.',
       note_feedback:'Vous pouvez aussi nous laissez un message'
     },
     en:{
-      title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_quote:"Décrivez votre projet avec un audio",
-      note_productsagent:"The list is long. Give me some context and I will simplify it.",
-      note_checkout:'Je peux vous aider à finaliser votre commande.',
+      title: 'Give me a bit of context about your desires, I will make a selection',
+      note_quote: 'You can describe your project with audio',
+      note_productsagent: 'Give me a bit of context about your desires, I will make a selection.',
+      note_checkout: 'I will help you finalize your order.',
       note_feedback:'You can also leave us a message'
     }
   }
@@ -254,14 +263,16 @@ export class KngAudioAssistantComponent implements OnInit {
     }
     params.body = body;
     this.$cdr.markForCheck();
-    let streamTxt = '';
+    let streamTxt = '', attach='';
     this.$assistant.chat(params).subscribe((content) => {
+      console.log('content', content.text);      
       if(content.tool && content.tool.length) {
         this.onData.emit(content.tool);
       }
 
       const indexOfSku = content.text.indexOf('---')
       if(endprint||indexOfSku>-1) {
+        attach+=content.text;
         streamTxt+=content.text.substring(0,indexOfSku);
         endprint=true;
         return
@@ -275,6 +286,12 @@ export class KngAudioAssistantComponent implements OnInit {
       this.$cdr.markForCheck();
     },async ()=>{ 
       this.isThinking = false;
+      const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
+      let products =attach.match(skus)?.map(match => match.replace(/{{|}}|\[|\]/g, '').split(',')).flat().map(sku => (+sku)).filter(sku => sku);
+      if(products && products.length){
+        this.onData.emit(products);
+      }
+
       this.note = (streamTxt.trim());
       this.onNote.emit(this.note);
       this.$cdr.markForCheck();
