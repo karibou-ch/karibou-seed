@@ -55,8 +55,20 @@
   min-height: 100px;
   height: 100%;
   overflow: hidden;
+  overflow-y: auto;
   align-content: flex-start;
+  -webkit-overflow-scrolling: touch;
 
+  &::-webkit-scrollbar {
+    width: 1px;
+    height: 8px;
+    background-color: transparent; /* or add it to the track */
+  }
+  
+  /* Add a thumb */
+  &::-webkit-scrollbar-thumb {
+    background: #555;
+  }   
   &.full-width{
     width: calc(100% - 20px);
     height: fit-content;
@@ -155,12 +167,16 @@
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 8px;
+  -grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+  grid-template-columns: repeat(6,minmax(auto,140px));
+  gap: 10px;
   justify-items: center;    
   width: 100%;
   margin-left: 0;  
-  @media (min-width:429px) {
+  @media (max-width:430px) {
+    grid-template-columns: repeat(3,minmax(auto,140px));
+  }
+  @media (min-width:431px) {
 
     &.large{
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
