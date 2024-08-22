@@ -134,6 +134,7 @@ export class KngRootComponent implements OnInit {
   }
 
   doLocaleSwitch(){
+    console.log('doLocaleSwitch');
     this.$i18n.localeSwitch();
   }
 

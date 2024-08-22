@@ -3,15 +3,10 @@
   <div class="root-container">
     <div class="basic-setting">
     <!-- USER i18n -->
-    <div class="kng-boxed i18n">
-      <div class="content">
-        <div class="">{{label.nav_i18n}}</div>
-        <label class="switch">
-          <input type="checkbox" (click)="doLocaleSwitch()">
-          <span class="slider">&nbsp;{{locale}}</span>
-        </label>
-
-      </div>
+    <div class="kng-boxed theme i18n">
+      <kng-slider class="label" [small]="true" (change)="doLocaleSwitch()">
+        {{label.nav_i18n}}&nbsp;({{locale}})
+      </kng-slider>            
     </div>
 
     <!-- USER login -->
@@ -36,12 +31,13 @@
     </div>
     <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
+    <!-- FEEDBACK -->
+    <kng-feedback [config]="config" [user]="user" [hidden]="!user.isAuthenticated()">
+    </kng-feedback>
+
+
     <!-- SUBSCRITION OPTIONS -->
     <kng-subsciption-control [config]="config"></kng-subsciption-control>
-
-    <!-- FEEDBACK -->
-    <kng-feedback [config]="config" [user]="user">
-    </kng-feedback>
 
 
 
