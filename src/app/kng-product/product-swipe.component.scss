@@ -108,6 +108,11 @@ kng-product-swipe{
         margin: 0;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(6,minmax(auto,145px));
+        @media (max-width:430px) {
+          grid-template-columns: repeat(3,minmax(auto,145px));
+        }
+      
         gap: 8px;
         justify-items: center;                  
     
