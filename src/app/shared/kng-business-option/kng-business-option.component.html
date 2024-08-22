@@ -1,76 +1,85 @@
 <div class="business">
   <p hidden>
-    {{label.title}}     
+    {{label.title}}
   </p>
+  <div class="business-backdrop" [class.invisible]="!options.project">
+  </div>
 
   <form [formGroup]="$quote" (ngSubmit)="onSave()">
     <!-- BUSINESS OPTIONS - calendar:date -->
     <div id="s1" class="selector event">
-      <kng-slider [small]="true" [(ngModel)]="options.project" [ngModelOptions]="{standalone: true}">
-        <h3>Décrivez votre projet</h3>
+      <kng-slider [small]="true" [(ngModel)]="options.project" [ngModelOptions]="{standalone: true}"
+        (click)="onToggleOptions()">
+        <h3>{{label.title}}</h3>
       </kng-slider>
       <p class="info">
-        Vous souhaitez obtenir un devis personalisé? <span class="gray">(formulaire à compléter)</span>
+        {{label.title_info}}
       </p>
       <div [hidden]="!options.project" class="group">
 
         <div hidden class="groupfield width-50">
-          <input  id="bf000" class="form__field" type="date" formControlName="date"  [placeholder]="glabel.user_display_name">
+          <input id="bf000" class="form__field" type="date" formControlName="date"
+            [placeholder]="glabel.user_display_name">
           <label for="bf000" class="form__label">
             {{label.title_time_contract}}
           </label>
-        </div>          
+        </div>
         <div hidden class="groupfield width-25 on-right">
-          <input  id="bf001" class="form__field" type="time" formControlName="time"  [placeholder]="glabel.user_display_name">
+          <input id="bf001" class="form__field" type="time" formControlName="time"
+            [placeholder]="glabel.user_display_name">
           <label for="bf001" class="form__label">
             A quelle heure?
           </label>
-        </div>    
-    
+        </div>
+
         <!-- <kng-slider [small]="true" [(ngModel)]="options.more" formControlName="options">
           Fourniture de nappes, vaisselle et serviettes
         </kng-slider> -->
-        <kng-audio-assistant  [store]="store" [quiet]="true"  [cleanQuery]="true" [agent]="'quote'" [promptmore]="itemsPrompt" (onNote)="onAssistantNote($event)"></kng-audio-assistant>  
         <div hidden>{{itemsPrompt}}</div>
         <!-- BUSINESS OPTIONS - person:qty -->
         <div class="groupfield width-100 nopadding">
-          <textarea kng-autosize id="bf002" class="form__field" rowcount="10"  min="5" max="1000" formControlName="notes" >
-  
+          <textarea kng-autosize id="bf002" class="form__field" rowcount="8" min="5" formControlName="notes">
+
           </textarea>
-        </div>          
-        <div class="fieldset" [hidden]="!items.length">
-          <legend>* Votre panier 🛒 sera transmis avec votre demande</legend>
+        </div>
+        <kng-audio-assistant [store]="store" [quiet]="true" [cleanQuery]="true" [agent]="'quote'"
+          [promptmore]="itemsPrompt" (onNote)="onAssistantNote($event)"></kng-audio-assistant>
+
+        <!-- BUSINESS OPTIONS - identity -->
+        <div class="groupfield width-100" [hidden]="user.isAuthenticated()">
+          <kng-slider [small]="true" [(ngModel)]="options.signup" [ngModelOptions]="{standalone: true}">
+          <h3>Souhaitez-vous créer un compte client</h3>
+        </kng-slider>
+  
         </div>
 
-      </div>  
+      </div>
+
+
     </div>
 
-    <!-- BUSINESS OPTIONS - identity -->
-    <div class="selector identity" [hidden]="user.isAuthenticated()">
-      <kng-slider [small]="true" [(ngModel)]="options.identity" [ngModelOptions]="{standalone: true}">
-        <h3>Vos informations personnelles</h3>
-      </kng-slider>
-      <div [hidden]="!options.identity" class="group">
-        <kng-signup [user]="user" [signin]="true" [config]="config" (onSignup)="onSignup($event)"></kng-signup>
-      </div>      
+    <!-- MAIL ACTION - validation -->
+    <div class="selector action" [hidden]="!options.project">
+      <div class="error">{{formError}}</div>
+      <button class="default action" [disabled]="isRunning" (click)="onMail()">
+        <span class="material-symbols-outlined">mail</span>
+        <span>{{label.action}}</span>
+      </button>
+      <div class="fieldset info" [hidden]="!items.length">
+        <legend >{{label.title_cart}}</legend>
+      </div>
+
     </div>
+
     <!-- BUSINESS OPTIONS - address -->
     <div class="selector address" hidden>
       <kng-slider [small]="true" [(ngModel)]="options.address" [ngModelOptions]="{standalone: true}">
         <h3>Votre adresse de livraison</h3>
-      </kng-slider>    
-  
+      </kng-slider>
+
       <div [hidden]="!options.address" class="group">
-        <kng-address  [config]="config" (onAddress)="onAddress($event)"></kng-address>
+        <kng-address [config]="config" (onAddress)="onAddress($event)"></kng-address>
       </div>
-    </div>
-    <!-- MAIL ACTION - address -->
-    <div class="selector action" [hidden]="!options.project">      
-      <button class="default action" [disabled]="isRunning" (click)="onMail()">
-        <span class="material-symbols-outlined">mail</span>
-        <span>Envoyer la demande de projet</span>
-      </button>
-      <div class="error">{{formError}}</div>
     </div>
 
   </form>

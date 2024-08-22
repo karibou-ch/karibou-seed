@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { 
   Config,
   CartItem, 
@@ -25,26 +25,28 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   private _subscription: Subscription;
   private _i18n = {
     fr:{
-      title:'Décidez de la fréquence de livraison et du jour qui vous arrange pour les produits dans votre panier.',
+      identity:'Connectez-vous ou indiquez le mail et téléphone de la personne de contact 🙏🏼\n',
+      empty:'Le formulaire est incomplet, merci de préciser les éléments de votre projet 🙏🏼\n',
+      title:'Décrivez votre projet',
+      title_info:'Vous souhaitez obtenir un devis personalisé? (formulaire)',
+      title_cart:'* Votre panier 🛒 sera transmis avec votre demande',
+      action:'Envoyer la demande de devis',
       title_time_contract:'Quand souhaitez vous être livré ?',
       title_time_contract_update:'La livraison est programmée à'
     },
     en:{
-      title:'Decide on the delivery frequency and day that suits you for the products in your basket.',
+      identity:'Login or provide the email and telephone number on the contact form 🙏🏼\n',
+      empty:'The form is incomplete, please specify the elements of your project 🙏🏼\n',
+      title: 'Describe your project',
+      title_info: 'Would you like to receive a personalized quote? (form)',
+      title_cart: '* Your cart 🛒 will be submitted with your request',
+      action: 'Send quote request',
       title_time_contract:'When would you like delivery?',
       title_time_contract_update:'Delivery is scheduled for'
     }
   }
 
-  private _defaultNotes: string = `1. Date et heure de l'événement: 
-
-2. Le lieu (entreprise ou particulier): 
-
-3. Nombre de participants: 
-
-4. Description (en option):
-
-`;  
+  private _defaultNotes: string = `Veuillez indiquer la date de l'événement, l'heure , le lieu (entreprise ou particulier), le nombre de participants et éventuellement le type d'événement. Merci 🐱.\n`;
 
   @Input() user:User;
   @Input() checkout:boolean;
@@ -52,7 +54,9 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   @Input() hub: Hub;
   @Input() shippingDay: Date;
 
+  // @HostBinding('class.locked') get locked() {return this.options.project};
 
+  @Output() onOpen = new EventEmitter<boolean>();
   config:Config;
   selIteration:any;
   selDayOfWeek:any;  
@@ -74,8 +78,8 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     identity:false,
     address:false,
     more:false,
+    signup:false
   }
-
 
   constructor(
     private $assistant: AssistantService,
@@ -119,6 +123,18 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     return this.$i18n.label();
   }  
 
+  get isUserReady() {
+    return this.user.isAuthenticated() || this.userIdentity.length > 1;
+  }
+
+  get userIdentity() {
+    if(this.user.isAuthenticated()) {
+      return [this.user.displayName,this.user.email.address, this.user.phoneNumbers[0].number];
+    }
+    const matches = [...this.notes.matchAll(/([\w.]{2,}@[\w.]{2,}|([\d.\- \/]{6,}))/gi)].map(m=> m[0]);
+    return matches;
+  }
+
   get items() {
     const ctx = {
       forSubscription: false,
@@ -128,6 +144,12 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     return this.$cart.getItems(ctx).filter((item:CartItem) => item)||[];
   }
 
+  get userPrompt() {
+    const signup = this.options.signup? 'Le client souhaite creer son compte':'';
+    const identity = this.userIdentity.concat(signup);
+
+    return (identity.length>1)? `\nPersonne de contact:\n${identity.join('\n')}`:''; 
+  }
   get itemsPrompt() {
     const items = this.items;
     const prompt = items.reduce((prompt, item:CartItem) => {
@@ -202,7 +224,18 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   onAssistantNote($event) {
     console.log('onAssistantData', $event);
     this.notes = $event || this._defaultNotes;
-    this.onValidate();
+  }
+
+  onToggleOptions(){
+    // if(this.options.project){
+    //   document.body.classList.add('mdc-dialog-scroll-lock');
+    // }else {
+    //   document.body.classList.remove('mdc-dialog-scroll-lock');
+
+    // }
+
+    this.onOpen.emit(!this.options.project);
+
   }
 
   onAddress(address){
@@ -211,19 +244,39 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
 
   onValidate(){
     this.formError = '';    
-    const prefix = "Tu dois maintenant valider le formulaire attention de bien répondre en cas d'erreur:\n----\n";
-    const params:any = {agent:'quote', q: prefix+this.notes+this.itemsPrompt, zeroshot:true};
-    return new Promise((resolve, reject) => {
+    const prefix = "VALIDER:\n";
+    const notes = this.notes;
+    const prompt = prefix+notes+this.userPrompt+this.itemsPrompt;
+    console.log('onValidate', prompt);
+    const params:any = {agent:'quote', q: prompt, zeroshot:true};
+    return new Promise(async (resolve, reject) => {
+      if(this.isRunning){
+        return resolve(false);
+      }
+
+      if(!this.user.isAuthenticated() && !this.isUserReady) {
+        await this.streamOutput(this.label.identity);
+        return resolve(false);
+      }
+      if(notes.length < 10) {
+        await this.streamOutput(this.label.empty);
+        return resolve(false);
+      }
+      this.isRunning = true;
       this.$assistant.chat(params).subscribe(message=> {
-        this.isValid = message.text.toLowerCase().indexOf('true') > -1;
-        if(this.isValid){          
-          return;
-        }
         this.formError += message.text;
+        if(this.isValid){          
+          this.notes = "";
+        }else{
+          this.isValid = this.formError.toLowerCase().indexOf('[ok]') > -1;
+        }
+        this.formError = this.formError.replace(/\[?\[OK\]\]?/gi,'')
         this.$cdr.markForCheck();
       },(err)=> {
+        this.isRunning = false;
         reject(err);
       },()=> {
+        this.isRunning = false;
         resolve(this.isValid);
       });
     });
@@ -232,20 +285,38 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
 
   async onMail(){
     try{
-      this.isRunning = true;
       this.$cdr.markForCheck();
-      await this.onValidate();
-      if(!this.isValid) {
+      const message = this.notes+this.userPrompt+this.itemsPrompt;
+  
+      const isOK = await this.onValidate();
+      this.isRunning = true;
+      if(!this.isValid || !isOK) {
         return;
       }
-      await this.$metric.feedback('DEVIS-B2B',this.notes).toPromise();
+      await this.$metric.feedback('DEVIS-B2B',message).toPromise();
+      console.log('onMail', this.notes);
 
     }catch(e){
       throw e;
     }
     finally{
       this.isRunning = false;
-      console.log('onMail', this.notes);
     }
   }
+
+  async streamOutput(sentence:string,step:number=4) {
+    for (let i = 0; i < sentence.length; i += step) {
+      this.formError+=sentence.substring(i, Math.min(i + step, sentence.length));
+      this.$cdr.markForCheck();
+      await this.time(30);
+    }
+
+  }
+
+
+  async time(ttl) {
+    return new Promise(res => {
+      setTimeout(res, ttl || 0);
+    });
+  }  
 }
