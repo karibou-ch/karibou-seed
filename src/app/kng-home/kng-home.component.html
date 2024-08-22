@@ -8,13 +8,11 @@
   </div>
 </div> -->
 
-<!-- ACTIVE SEARCH -->
-<div class="home-header" [hidden]="!availableSearch">
-  <div class="banner" >
-    <h1>Résultat de votre recherche <span [hidden]="!isLoading" class="waiting material-symbols-outlined pink bold">progress_activity</span> </h1>
-    <h2><button class="button"> <span class="material-symbols-outlined bold">chevron_left</span></button>  Retourner à la sélection </h2>
-  </div>
-</div>
+
+
+
+<!-- CalENDAR -->
+<kng-calendar [title]="theme.name" [hidden]="availableSearch" class="fit-content" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="!hub.header.active">
@@ -26,24 +24,13 @@
 <kng-search class="home" [class.active]="availableSearch"></kng-search>
 
 
-
-<!-- CalENDAR -->
-<kng-calendar [hidden]="availableSearch" class="fit-content" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
-
-<!-- JAMES -->
-<div class="kng-boxed hide-md hide-lg " >
-  <div class="content">    
-    <div class="bottom"> <button [routerLink]="'/store/'+store+'/home/assistant/james'" >James est à votre service</button></div>
-  </div>
-</div>
   
 <!-- SELECTION -->
-<kng-product-swipe [hidden]="availableSearch" mailchimp="true" [hub]="store" ></kng-product-swipe>
+<kng-product-swipe [hidden]="useTheme||isMobile" mailchimp="true" [hub]="store" ></kng-product-swipe>
 
 
 <!-- DISCOUNT -->
-<kng-product-swipe [hidden]="availableSearch" discount="true" [hub]="store" ></kng-product-swipe>
-
+<kng-product-swipe [hidden]="useTheme||isMobile" discount="true" [hub]="store" ></kng-product-swipe>
 
 
 
@@ -82,28 +69,18 @@
   <!-- SPECIAL LINKS -->
   <div class="kng-boxed subscription hide-sm">
     <div class="label">
-      <h2>Les tendances <i class="material-symbols-outlined icon   ">update</i>  </h2>
+      <h2>Thématiques <i class="material-symbols-outlined icon   ">update</i>  </h2>
     </div>
-
     <div class="content">
       <div class="items">
         <ul class="subs">
-          <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            <h3>{{label.nav_subscription_b2b}}</h3>
-            <span class="">{{subB2b.t[locale]}}</span>
+          <li class="subs "  *ngFor="let theme of themes;let j=index"
+             [routerLink]="['/store',store,'home','theme',theme.slug]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >
+            <h3>{{theme.name}}</h3>
+            <span class="">{{theme.description}}</span>
           </li>
-          <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            <h3>{{label.nav_subscription}}</h3>
-            <span class="">{{subCustomer.t[locale]}} 🍏 </span>
-          </li>
-          <li class="subs" [hidden]="isJamesAvailable" [routerLink]="['/store',store,'home','patreon','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            <h3>{{label.nav_subscription_patreon}}</h3>
-            <span class="">{{label.nav_subscription_patreon_description}}</span>
-          </li>
-
         </ul>
-      
-      </div>
+      </div>  
     </div>
   </div>
 
@@ -115,49 +92,62 @@
   <!-- MOBILE -->
   <ul class="subs">
     <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon   ">update</i>  
+      <i class="material-symbols-outlined icon black   ">trending_up</i>  
 
       <span>{{label.nav_subscription_b2b}}</span>
     </li>
     <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon  ">update</i>  
+      <i class="material-symbols-outlined icon black  ">update</i>  
       <span>{{label.nav_subscription}}</span>
+    </li>
+
+    <li class="subs  full-width" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon  pink">smart_toy</i>  
+      <span>Découvrez James</span>
     </li>
   </ul>
 
   <!-- DESKTOP -->
   <ul>
     <li class="hide-sm " [routerLink]="userRouterLink">
+      <!-- LOGIN / REGISTER -->
+      <span class="fa icon hide">👦</span>
+      <b>{{user.isAuthenticated()?label.nav_account:label.nav_login}}</b>
 
-        <!-- LOGIN / REGISTER -->
-        <span class="label" [hidden]="!user.isAuthenticated()" >
-          {{label.nav_account}}
-          <!-- <div >{{label.nav_account}}</div>-->
-          <!-- DISPLAY MULTI USER -->
-          <!-- <span class="cart-users-count">2</span> -->
-        </span>        
-        <span class="label" [hidden]="user.isAuthenticated()" >
-          {{label.nav_login2}}
-          <!-- <div >{{label.nav_login2}}</div> -->
-        </span>              
     </li>
+    <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/business'">
+      <span class="fa icon hide">🤝</span>
+      <b>{{label.nav_subscription_b2b}}</b>
+    </li>
+
+    <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/subscription'">
+      <span class="fa icon hide">🧺</span>
+      <b>{{label.nav_subscription}}</b>
+    </li>    
+
     <li class="hide-sm separator"  [routerLink]="'/store/'+store+'/home/assistant/james'">
-      <b>Découvrez James</b>
+      <span class="fa icon hide">✨</span>
+      <b>Découvrez James ✨</b>
     </li>
-    <li (click)="scrollToSlug(category.slug)"
+    <li class="hide-sm" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <span>{{hub.name}}</span>
+    </li>
+
+    <li (click)="scrollToSlug(category.slug)" 
               [id]="'category-'+j"                    
               [class.selected]="category.slug == displaySlug"
               *ngFor="let category of sortedCategories;let j=index">
       <img [src]="category.cover" class="show-sm">
-      <!--<i [class]="category.image" class="icon hide-sm hide-md"></i>               -->
+      <i [class]="category.image" class="icon hide "></i>              
       <span>{{getCategoryI18n(category)}}</span>
     </li>
   </ul>
 </div>
-
-<div class="product-container mdc-layout-grid" *ngIf="products.length" >
+<div class="product-container " *ngIf="products.length" >
   <kng-product-grouped-list 
-       [useMaxCat]="!availableSearch"  [showMore]="!availableSearch" 
+       [useMaxCat]="useMaxcat"  
+       [displayVendor]="true"
+       [showMore]="true" 
        [config]="config" 
        [user]="user" 
        [contentCategories]="sortedCategories"

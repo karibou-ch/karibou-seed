@@ -77,6 +77,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   };
 
+
   //
   // products for home
   options: {
@@ -89,6 +90,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     when: Date | boolean;
     reload?: number;
     showMore: boolean;
+    theme?:string;
   } = {
       showMore: true,
       available: true,
@@ -139,12 +141,27 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     window.scroll(0, 0);
     this.subscription.add(
       this.$route.params.subscribe(params => {
-      if(!params.store) {
+
+      if(params.theme && this.options.theme!== params.theme) {
+        const theme = this.categories.find(c=>c.slug === params.theme);
+        this.options.theme = theme.slug;
+        this.products = [];
+        this.cached.categories = [];
+        this.$navigation.currentTheme = theme;
+
+        this.productsGroupByCategory({state:{action:CartAction.CART_INIT}});
         return;
       }
-
-      this.$navigation.store = params['store'];
+  
+      if(params.store) {
+        this.$navigation.store = params['store'];
+        return;
+      }
     }));
+    this.subscription.add(
+      this.$route.queryParams.subscribe(query => {
+    }));
+    
     
     // this.subscription.add(
     //   this.$navigation.search$().subscribe((keyword)=>{
@@ -222,6 +239,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  get theme() {
+    return this.$navigation.currentTheme;
+  }
+
   get currentShippingDay() {
     return this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
   }
@@ -296,6 +317,18 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   get userRouterLink() {
     const target = this.user.isAuthenticated()? 'orders':'login';
     return ['/store',this.store,'home','me',target];
+  }
+
+  get themes() {
+    return this.categories.filter(c => c.type === 'theme');
+  }
+
+  get useMaxcat() {
+    return !this.availableSearch && !this.options.theme;
+  }
+
+  get useTheme() {
+    return this.options.theme;
   }
 
   add(product: Product) {

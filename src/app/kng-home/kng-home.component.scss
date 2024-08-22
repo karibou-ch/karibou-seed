@@ -20,7 +20,7 @@ div.home-header{
     position: relative;
     background: var(--mdc-theme-appbar);
     background: #f6f6f6;
-    min-height: 120px;
+    -min-height: 120px;
     border-radius: 15px;
     color: var(--mdc-theme-appbar-text);
     color: #333;
@@ -225,6 +225,10 @@ kng-product-swipe{
       margin: 0;
     }
   }
+  &.theme {
+    width: calc( 100% - 35px );
+    min-height: auto;
+  }
   .items{
     h3{
       margin: 5px 0;
@@ -410,7 +414,7 @@ kng-product-swipe{
     padding-top: 10px;
     margin-top: 0px;    
     margin-left: 0px;    
-    background: rgba(240, 240, 240, 0.6);
+    background: rgba(240, 242, 240, 0.4);
     border-radius: 14px;
     height: 100%;
     overflow: auto;
@@ -432,11 +436,11 @@ kng-product-swipe{
     
     /* Add a thumb */
     &::-webkit-scrollbar-thumb {
-      background: #ddd;
+      background: #888;
     }    
 
     @media (max-width:431px) {
-      background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
+      -background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
     }
 
     li{      
@@ -456,10 +460,11 @@ kng-product-swipe{
       }
       &.separator {
         border-bottom: 1px solid #aaa;
-        margin-bottom: 3px;        
+        margin-bottom: 8px;        
+        padding-bottom: 12px;        
       }
       cursor: pointer;
-      padding: 5px 14px;
+      padding: 5px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;      
@@ -468,6 +473,10 @@ kng-product-swipe{
       line-height: 20px;
       margin-left: 5px;
       color: rgb(52, 53, 56);
+      b{
+        color: #333;
+        font-weight: 400;
+      }
       a{
         text-decoration: none;
         color: black;
@@ -483,11 +492,20 @@ kng-product-swipe{
 
       .icon,
       .fa{
-        margin-left: 5px;
-        margin-right: 10px;        
-        width: 19px;
-        height: 19px;
+        &.invisible{
+          opacity: 0;
+        }
+        margin-left: 0px;
+        margin-right: 10px;
+        width: 18px;
+        height: 18px;
         display: inline-block;
+        border: 0px solid #eee;
+        border-radius: 14px;
+        padding-top:2px;
+        padding-left: 2px;
+        filter: grayscale(1);
+        opacity: .7; 
       }
     }
   }
@@ -505,7 +523,8 @@ div.product-container{
   margin-bottom: 100px;
   padding-top: 0;
   padding: 0;
-  width: 100%;  
+  width: 100%;
+  min-height: 30vh;  
   @media (max-width:431px) {    
     padding: 0;
     width: calc(100vw - 20px);
