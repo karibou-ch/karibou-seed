@@ -37,9 +37,9 @@ export class ProductSwipeComponent implements OnInit {
     //
     // hide if empty
     if (!this._products || this._products.length < 1|| this.hideIfEmpty){
-      native.setAttribute('hidden', '');
+      native.classList.add('hide');
     } else{
-      native.removeAttribute('hidden');
+      native.classList.remove('hide');
     }
     
   }
