@@ -75,7 +75,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   isReady: boolean;
 
 
-
+  currentThemeName: string;
+  opentheme: boolean;
 
   constructor(
     public $cart: CartService,
@@ -101,7 +102,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // not mandatory
     this.categories = <Category[]>loader[2] || [];
     this.shops = <Shop[]>loader[3] || [];
-
     this.orders = [];
 
     //
@@ -125,6 +125,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     return this.$i18n.label();
   }
 
+
+  get themes() {
+    return this.categories.filter(c => c.type === 'theme');
+  }
 
   get subscriptionQueryParams() {
     const contractId = this.$route.snapshot.queryParams.id;
@@ -156,6 +160,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.$navigation.registerScrollEvent().subscribe(scroll => {
         this.scrollDirection = scroll.direction;
         this.$cdr.markForCheck();
+        // FIXME use appropriate place to update currentThemeName;
+        this.currentThemeName = this.$navigation.currentTheme?.name;
       })  
     )
 
@@ -172,6 +178,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.$loader.update().subscribe(emit=> {
+        this.currentThemeName = this.$navigation.currentTheme?.name;
 
         //
         // update config

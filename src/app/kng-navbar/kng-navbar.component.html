@@ -1,10 +1,4 @@
 
-<kng-nav-calendar 
-  [config]="config" 
-  [currentShippingDay]="currentShippingDay"
-  [isPremium]="user?.isPremium()"
-  (updated)="setShippingDay($event)" #calendar>
-</kng-nav-calendar>
 <kng-news [config]="config"></kng-news>
 
 <div class="mdc-drawer"  drawer="modal" #navigation 
@@ -63,10 +57,8 @@
       </mdc-top-app-bar-section>
 
 
-      <!-- APP RIGHT ACTIONS -->
+      <!-- LOGIN / REGISTER -->
       <mdc-top-app-bar-section align="end"  class="actions">        
-
-        <!-- LOGIN / REGISTER -->
         <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcTopAppBarNavIcon>
           <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text" >account_circle</span><!-- <div >{{label.nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
@@ -95,7 +87,9 @@
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</div>
             
 
-        <div class="kng-chip bold" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
+        <!-- <div class="kng-chip bold" [hidden]="!currentThemeName" (click)="opentheme=!opentheme">
+          <i class="material-symbols-outlined start">category</i> {{currentThemeName}} 
+        </div> -->
 
 
         <div class="kng-chip shopping-cart first"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
@@ -115,13 +109,23 @@
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
 
-      <mdc-top-app-bar-section  class="title hide-md hide-lg">
+      <mdc-top-app-bar-section hidden class="title hide-md hide-lg" >
         <span class="start">{{hubTitle}} </span>
-        <div class="kng-chip end" (click)="openCalendar(calendar,false)"><i class="material-symbols-outlined start">edit_calendar</i> {{gtShippingDateFormat()}} <i class="material-symbols-outlined end">keyboard_arrow_down</i></div>
+        <div class="kng-chip end" [hidden]="!currentThemeName" (click)="opentheme=!opentheme">
+          <i class="material-symbols-outlined start">category</i> {{currentThemeName}} <i class="material-symbols-outlined end">keyboard_arrow_down</i>
+        </div>
         
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
+
+    </mdc-top-app-bar-row>
+    <mdc-top-app-bar-row *ngIf="opentheme">
+      <mdc-top-app-bar-section>
+        <div class="kng-chip bold" *ngFor="let theme of themes">
+          {{theme.name}} 
+        </div>  
+      </mdc-top-app-bar-section>
 
     </mdc-top-app-bar-row>
   </mdc-top-app-bar>

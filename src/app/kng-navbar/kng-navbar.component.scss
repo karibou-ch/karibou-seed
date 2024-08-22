@@ -259,10 +259,9 @@ div.navbar{
       font-size: 1.2rem;
       letter-spacing: -0.8px;
       line-height: 19px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
       font-weight: 400;
+      overflow: hidden;
+      text-overflow: ellipsis;
       >.start{
         margin-left: 10px;
       }
