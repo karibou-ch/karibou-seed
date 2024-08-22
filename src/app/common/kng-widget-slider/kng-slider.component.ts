@@ -18,6 +18,7 @@ export class KngSliderComponent implements OnInit {
   @Input() disabled = false;
   @Input() small = false;
 
+  @Output() change = new EventEmitter<boolean>();
 
   // Function to call when the input changes.
   onChange = (text: string) => {};
@@ -45,6 +46,7 @@ export class KngSliderComponent implements OnInit {
 
   onClick($event) {
     this.value = !this.value
+    this.change.emit(this.value);
     this.onChange(this.value);
     this.onTouched(this.value);
 }
