@@ -213,7 +213,6 @@ button.CTA {
       min-height: 273px;
       padding: 15px 12px;
       margin: 0 10px 15px;
-      border: solid 1px transparent;
       position: relative;
       overflow: hidden;  
       text-align: center;    
@@ -241,6 +240,11 @@ button.CTA {
         flex-direction: column;
         justify-content: space-evenly;
         height: 100%;
+        img{
+          margin-left: -25px;
+          margin-right: -25px;
+          margin-bottom: 20px;          
+        }
         .bottom{
           margin-top: auto;
           margin-bottom: 0;
