@@ -11,14 +11,13 @@
     max-width: 350px;
     .calendar-container{
       font-size: 15px;
-      padding: 0 10px;
-      max-width: calc(100% - 20px);
+      padding: 0 0px;
+      max-width: calc(100% - 0px);
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;      
       .calendar {
-        border:0;
 
       }
       .calendar .list .element {
@@ -33,6 +32,12 @@
   @media (min-width:1024px) {
     width: 940px;
     margin-left: 0px;        
+  }
+  @media (max-width:430px) {
+    padding: 0 10px!important;
+    .calendar,.switch-hub{
+      width: calc(100% - 20px)!important;
+    }
   }
   h2{
     width: 100%;
@@ -60,6 +65,7 @@
     background-color: transparent;
     border:1px solid var(--mdc-theme-appbar);
     border-radius: 15px;
+    -margin: 0 10px;
 
     &::-webkit-scrollbar {
       display: none;
@@ -124,7 +130,7 @@
   }
   .kng-boxed{
 
-    margin-left: -6px;
+    margin-left: 0;
     width: fit-content;
     min-height: 30px;    
     padding: 0px;
@@ -139,8 +145,9 @@
     }
   }
   .switch-hub {
-    width: 50%;
+    width: 400px;
     min-width: 350px;    
+    -margin: auto 10px;
     .label button {
       min-width: 135px;
       text-overflow: ellipsis;

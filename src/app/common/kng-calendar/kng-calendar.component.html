@@ -1,6 +1,6 @@
   <!-- CONTAINER-->
   <div class="calendar-container">
-    <h3 [hidden]="minimal">{{label.nav_shipping}} {{currentHub.siteName[locale]}}</h3>
+    <h3 [hidden]="minimal">{{title||label.nav_shipping}} {{currentHub.siteName[locale]}}</h3>
 
     <!-- NO SHIPPING -->
     <div class="noshipping block-warning" [hidden]="!noshippingMsg">

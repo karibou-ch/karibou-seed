@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@an
 import { Hub } from 'kng2-core';
 import { CartService, Config, LoaderService, Order } from 'kng2-core';
 import { i18n } from '../i18n.service';
+import { title } from 'process';
 
 @Component({
   selector: 'kng-calendar',
@@ -12,7 +13,7 @@ export class KngCalendarComponent implements OnInit {
   private _minimal:boolean;
 
 
-
+  @Input() title: string;
   @Input() config: Config;
   @Input() set minimal(value){
     this._minimal = ['true','yes','on',true].indexOf(value)>-1;
