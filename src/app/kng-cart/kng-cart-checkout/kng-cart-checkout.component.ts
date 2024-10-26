@@ -115,7 +115,7 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.currentPayment?.issuer;
   }
 
-  get labell() {
+  get glabel() {
     return this.$i18n.label();
   }
 
@@ -157,6 +157,10 @@ export class KngCartCheckoutComponent implements OnInit {
 
   }
 
+  get userPhone() {
+    return this.user.phoneNumbers.length? this.user.phoneNumbers[0].number:'';
+  }
+
   get userAddresses() {
     const addresses = [... this.user.addresses];
     if(!this.currentAddress || !this.currentAddress.name) {
@@ -178,6 +182,21 @@ export class KngCartCheckoutComponent implements OnInit {
     return payments; 
   }
 
+// issuer:
+//  paypal
+//	invoice
+//	cash
+//	balance
+//	bitcoin
+//	twint
+// FIXME payment payment.type must be normalized and must use karibou-wallet
+  get userPaymentsCard() {
+    const payments = [... this.user.payments.filter(payment => ['invoice','twint','xch'].indexOf(payment.issuer)==-1)];
+    if(!this.currentPayment || !this.currentPayment.alias) {
+      return payments;
+    }
+    return payments; 
+  }
 
   get user() {
     return this._user;
@@ -200,7 +219,8 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   get isFinalizeDisabled() {
-    return !this.selectPaymentIsDone||!this.cgAccepted||!this.cg18Accepted||!this.selectAddressIsDone ||this.isRunning;
+    // cg18Accepted
+    return !this.selectPaymentIsDone||!this.cgAccepted||!this.selectAddressIsDone ||this.isRunning;
   }
 
   get isReady() :boolean {
@@ -334,6 +354,14 @@ export class KngCartCheckoutComponent implements OnInit {
       }
       //
       // if user i
+      if(this.userAddresses.length && !this.selectAddressIsDone){
+        this.setShippingAddress(this.userAddresses[0]);
+      }
+
+      if(!this.selectPaymentIsDone && this.userPaymentsCard.length){
+        this.setPaymentMethod(this.userPaymentsCard[0]);
+      }
+
       
       this.checkPaymentMethod();      
     });
@@ -619,15 +647,15 @@ export class KngCartCheckoutComponent implements OnInit {
       return;
     }
     // clean url
-    this.$router.navigate([], {
-      queryParams: {
-        'oid':null,
-        'redirect_status':null,
-        'payment_intent': null,
-        'payment_intent_client_secret': null,
-      },
-      queryParamsHandling: 'merge'
-    })
+    // this.$router.navigate([], {
+    //   queryParams: {
+    //     'oid':null,
+    //     'redirect_status':null,
+    //     'payment_intent': null,
+    //     'payment_intent_client_secret': null,
+    //   },
+    //   queryParamsHandling: 'merge'
+    // })
 
     //
     // error
@@ -1029,12 +1057,45 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
 
+  //
+  // payment method is valid and saved
+  onPaymentSave(payment: UserCard) {
+    this.setPaymentMethod(payment);
+  }
+
+  //
+  // address is valid and must be saved
   onAddressSave(address: UserAddress) {
-    this.setShippingAddress(address);
     // this.$user.addressAdd(address).subscribe(user => {
     //   this._user = user;
     //   this.userAddressSelection = false;
     // });
+
+    if(!address) {
+      return;
+    }
+    this.isRunning = true;
+
+    const tosave = new User(this.user);
+    // save default phone
+    if (!tosave.phoneNumbers.length) {
+      tosave.phoneNumbers.push({number: address.phone, what: 'mobile'});
+    }
+
+    // // save address
+    // if(this.idx >= 0 ) {
+    //   tosave.addresses[this.idx] = address;
+    // }else {
+    //   this.idx = (tosave.addresses.push(address)) - 1;
+    // }
+
+    tosave.addresses.push(address);
+    this.$user.save(tosave).subscribe(
+      user => {
+        this.isRunning = false;
+      }
+    );
+
   }
 
 }

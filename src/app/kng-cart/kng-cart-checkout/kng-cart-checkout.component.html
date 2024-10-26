@@ -15,7 +15,7 @@
 
       <!-- PAYMENT-->
       <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&user.isReady() && isOpen()">      
-        <section class="payment-title"  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
+        <h3  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></h3>
 
 
         <!-- FIXME hide wallet method -->
@@ -31,6 +31,12 @@
             <div class="note">{{currentPayment.expiryToDate()|date:'MM/y'}}</div>  
           </div>
 
+          <!-- INLINE NEW PAYMENT IN FIRST PLACE -->
+          <div class="address-new" *ngIf="!userPaymentsCard.length && !selectPaymentIsDone">
+            <kng-user-payment title="Informations de la carte" [config]="config" [user]="user" (updated)="onPaymentSave($event)"></kng-user-payment>
+          </div>
+
+          <!-- LIST PAYMENTS -->
           <div class="payment" *ngFor="let payment of userPayments" 
             [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
             (click)="setPaymentMethod(payment)">
@@ -38,9 +44,11 @@
             <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
             <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>  
           </div>
-          <div class="profile-action"  [hidden]="selectPaymentIsDone && currentPayment" [routerLink]="['./user/login-or-payment']">
+
+          <!-- MANAGE PAYMENTS -->
+          <div class="profile-action"  [hidden]="selectPaymentIsDone && currentPayment || !userPaymentsCard.length" [routerLink]="['./user/login-or-payment']">
             <div class="button">
-              <span class="material-symbols-outlined black">add_box</span>  {{labell.user_payment_add}} 
+              <span class="material-symbols-outlined black">add_box</span>  {{glabel.user_payment_add}} 
             </div>
           </div>      
         </section>
@@ -55,7 +63,6 @@
         <section class="addresses">
           <div class="address checked"               
               (click)="userAddressSelection=!userAddressSelection"
-              [class.selection]="isSelectionState"
               [hidden]="!currentShipping()||!currentAddress.streetAdress">
               <label  [hidden]="userAddressSelection"> Changer </label>
 
@@ -64,6 +71,11 @@
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{currentAddress.note}}</div>  
               <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
           </div>
+          <!-- INLINE NEW ADDRESS IN FIRST PLACE -->
+          <div class=" address-new" *ngIf="!userAddresses.length && !selectAddressIsDone">
+            <kng-address [phone]="userPhone" [title]="glabel.user_shipping_title" [config]="config" (updated)="onAddressSave($event)"></kng-address>
+          </div>
+
           <!-- USER ADDRESS -->
           <div class="address" *ngFor="let address of userAddresses"  
               (click)="setShippingAddress(address)" [hidden]="!userAddressSelection && currentAddress.streetAdress">
@@ -73,7 +85,6 @@
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>  
               <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
           </div>
-
           <!-- DEPOSIT ADDRESS -->
           <div class="address deposit"  *ngFor="let address of getDepositAddress()" 
               [hidden]="!userAddressSelection && currentAddress.streetAdress || !address.active || useCartSubscriptionView" 
@@ -85,15 +96,10 @@
               <div class="shipping-amount">Fr  {{(address.fees)|number:'1.2-2'}}</div>
           </div>
 
-          <!-- INLINE NEW ADDRESS -->
-          <!-- <div class="address address-new" *ngIf="!userAddresses.length && selectAddressIsDone">
-            <kng-address displayClear="true" [config]="config" (updated)="onAddressSave($event)"></kng-address>
-          </div> -->
-
           <!-- MANAGE ADDRESSES -->
-          <div class="profile-action"  [hidden]="!userAddressSelection && currentAddress.streetAdress">
+          <div class="profile-action"  [hidden]="!userAddressSelection && currentAddress.streetAdress || !userAddresses.length">
             <button class="" [routerLink]="['./user/login-or-address']" >              
-              <span class="material-symbols-outlined black">add_box</span> {{labell.user_address_add}} 
+              <span class="material-symbols-outlined black">add_box</span> {{glabel.user_address_add}} 
             </button>
           </div>
 
@@ -124,10 +130,11 @@
       <div class="order-resume " *ngIf="isOpen && !hasPendingSubscription">
 
         <div class="order-resume-block" >
-          <section class="resume-title" [hidden]="useCartSubscriptionView" [class.deposit]="isCartDeposit()" 
+          <section [hidden]="useCartSubscriptionView" [class.deposit]="isCartDeposit()" 
                     [innerHtml]="config?.shared.hub.checkout.resume[locale]">
           </section>  
   
+
           <!-- BILL GROUPED -->
           <div class="bill grouped" [hidden]="!hasShippingReductionMultipleOrder() || useCartSubscriptionView">
             <div>
@@ -227,11 +234,6 @@
         </div>
         <!-- BLOCK DE DROITE -->
         <div class="order-resume-block border-left">
-          <section class="resume-title" [hidden]="useCartSubscriptionView">
-            <p class="bold block-info">              
-              Livraison {{currentShippingDay()|date:'EEEE dd':'':locale|titlecase}} (<span class="highlight">{{shippingTime}} heures</span>)
-            </p>
-          </section>  
           
             
 
@@ -239,7 +241,7 @@
 
           <!-- INFO SHIPPING NOTE -->
           <div class="bill" [hidden]="isCartDeposit()">
-            <div class="small">{{labell.user_address_note}}</div>
+            <div class="small">{{glabel.user_address_note}}</div>
             <div class="input-text">
               <input type="text" placeholder="code, note, etc" [(ngModel)]="shippingNote" />
             </div>            
@@ -248,25 +250,12 @@
                   
         
           <div class="bill bill-title">
-            <div class="overflow">
-              <input type="checkbox" [(ngModel)]="cgAccepted" >
-              <label class="link">        
-                <a href="javascript:;" class="link"
-                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a></label>    
-            </div>
-            <div class="overflow">
-              <input type="checkbox" [(ngModel)]="cg18Accepted" >
-              <label class="link">        
-                <a href="javascript:;" class="link"
-                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a></label>    
-            </div>
-
 
             <!-- DO ORDER-->
             <div [hidden]="useCartSubscriptionView" >
               <button [disabled]="isFinalizeDisabled"  (click)="doOrderRouting()" >
                 <span class="material-symbols-outlined icon" [class.waiting]="isRunning"> clock_loader_10</span>
-                {{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}
+                {{label.cart_order}} {{currentShippingDay()|date:'EEEE dd/M':'':locale}}  (<span class="">{{shippingTime}}</span>)
               </button>    
             </div>
             <!-- DO SUBSCRIPTION --> 
@@ -274,6 +263,21 @@
               <button [disabled]="isFinalizeDisabled"  (click)="doSubscription()" >
                 <span class="material-symbols-outlined icon" [class.waiting]="isRunning"> clock_loader_10</span>
                 {{label.cart_subscription}}</button>    
+            </div>
+            <div class="slot">
+              <div >
+                <input type="checkbox" [(ngModel)]="cgAccepted" >
+              </div>
+              <div class="info">        
+                <a href="javascript:;" class="link"
+                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a>
+
+                <span class="dotted">{{label.cart_cg_middle}}</span>
+
+                <a href="javascript:;" class="link"
+                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a>
+              </div>    
+                    
             </div>
 
             <div class="bill error" [hidden]="!errorMessage">

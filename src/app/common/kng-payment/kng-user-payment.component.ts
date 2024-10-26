@@ -34,12 +34,14 @@ export class KngPaymentComponent {
 
   i18n: any = {
     fr: {
-      stripe_issue: 'Votre banque à indiqué le problème suivant',
+      stripe_issue: 'Votre banque a indiqué le problème suivant',
       action_create_ok: 'Votre méthode de paiement a été enregistrée',
+      user_display_name: 'Nom du titulaire de la carte'
     },
     en: {
-      stripe_issue: 'Your bank indicate the following issue',
+      stripe_issue: 'Your bank indicated the following issue',
       action_create_ok: 'Your payment method has been saved',
+      user_display_name: 'Cardholder name'
     }
   };
 
@@ -213,7 +215,7 @@ export class KngPaymentComponent {
 
   onEmit(result: PaymentEvent) {
     this.isLoading = false;
-    this.updated.emit(result);
+    this.updated.emit(new UserCard(result));
   }
 
   onPayment() {

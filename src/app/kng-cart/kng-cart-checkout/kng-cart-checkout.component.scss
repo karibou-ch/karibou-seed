@@ -98,7 +98,7 @@
 .cart-container{
   padding-top: 0px;
   background: var(--mdc-theme-background-container);
-  max-width: 900px;
+  max-width: 600px;
   margin: auto;
 
   @media (prefers-color-scheme: dark) {
@@ -162,9 +162,9 @@
 
       .address-new {
         background-color: white!important;
+        width: 100%;
+        margin-bottom: 20px;
         kng-address {
-          border: none;
-          max-width: 600px;
           margin: auto;
         }
       }
@@ -175,7 +175,7 @@
         min-width: 165px;
         margin-right: 15px;
         margin-bottom: 10px;
-        width: calc( 100% - 30px);
+        width: calc( 100% - 35px);
 
         border: 2px solid #eee;
         border-radius: 14px;
@@ -192,7 +192,7 @@
         }
 
         @media (max-width:431px) {
-          width: calc( 100% - 40px );
+          width: calc( 100% - 35px );
           margin-right: 0px;
         }
 
@@ -305,6 +305,7 @@
     margin: 10px 0;
     border:2px solid #ccc;
     border-radius: 14px;
+
     h3{
       font-weight: 200;
       font-size: 1.275rem;
@@ -324,9 +325,10 @@
     .order-resume-block{
       position: relative;
       width: calc(50% - 20px);
+      width: 100%;
       padding: 10px 0px 0;
-      margin: 15px 0;
-      &.border-left{
+      margin: 0;
+      &.border-left-old{
         border-left: 4px solid #eee;
         margin-left: -19px;
         padding-left: 15px;        
@@ -341,10 +343,19 @@
         font-size: 19px;
         transform: translateY(3px);        
       }
+      .slot{
+        display: flex;
+        align-items: center;
+      }
       .bill{
         display: flex;
         flex-wrap: wrap;
         padding-left: 5px;
+        input{
+          margin-right: 16px;
+          width: 18px;
+          height: 18px;
+        }
         &.border{
           border-bottom: 1px solid #aaa;
 
@@ -356,9 +367,13 @@
         }
         &.wallet{
           border-top: 4px solid black;
-          padding: 5px auto;
-          margin-top: 10px;
+          padding-top: 8px;
+          margin-top: 16px;
           font-weight: normal;
+        }
+
+        &.info-amount{
+          padding:8px 5px 16px;
         }
 
         &.total{
@@ -388,7 +403,8 @@
           color: #e45e5e;
           text-align: right;
           width: 100%;   
-          font-size: 13px;       
+          font-size: 13px;  
+          margin-bottom:16px;     
         }
         &.help{
           border-top: 3px solid #ddd;
@@ -448,7 +464,8 @@
           line-height: 18px;
           color: #888;
           font-size: 14px;
-          margin-top: 10px;
+          margin-top: 16px;
+          margin-top: 16px;
           height: fit-content;
         }
         .input-text{
@@ -497,7 +514,6 @@
       margin: 0;
       margin-top:30px;
     }
-     
 
     button{
       flex:0 0 70%;
@@ -506,10 +522,12 @@
       margin: 25px;
       min-height: 50px;      
     }
+
     button{
       cursor: pointer;
       width: 100%;
       margin: 10px 0;
+      padding: 16px 8px;
       background-color: var(--mdc-theme-primary);
       color: var(--mdc-theme-primary-text);
       border: none;

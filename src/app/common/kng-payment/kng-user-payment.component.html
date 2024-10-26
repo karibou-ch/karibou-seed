@@ -4,16 +4,19 @@
       class="stripe-component">
   
   <div class="groupfield fullwidth">
-    <input  id="f001" class="form__field" type="text" formControlName="name" [ngModel]="user.display()"  [placeholder]="$i18n[locale].user_display_name">
+    <input  id="f001" class="form__field" type="text" formControlName="name" [ngModel]="user.display()"  [placeholder]="label.user_display_name">
     <label class="form__field" for="f001" class="form__label" [class.error]="isInvalid('name')">
-        {{$i18n[locale].user_display_name}}
+        {{label.user_display_name}}
     </label>
   </div>          
 
 
   <div id="card-element" class="field"></div>
   <button type="submit" [disabled]="isLoading||!isValid" class="save default">
-    {{$i18n[locale].action_save}}
+    <span class="material-symbols-outlined">
+      credit_card
+    </span>
+    {{$i18n[locale].action_check}}
   </button>
 
   <div [hidden]="!displayCardError" class="stripe-error">
