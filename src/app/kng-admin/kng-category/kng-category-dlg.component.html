@@ -9,60 +9,63 @@
       </mdc-dialog-title>
       <mdc-dialog-content *ngIf="category">
           <form [formGroup]="form" (submit)="askSave()">
-              <!-- IMAGE  -->
-              <div class="image" >
-                  <img [src]="category.cover" *ngIf="category.cover" />
-                  <mdc-form-field>
-                      <ngx-uploadcare-widget
-                        images-only="true"
-                        [value]="category.cover"
-                        [validator]="ucValidator"
-                        (on-upload-complete)="onUpload($event)"
-                        (on-dialog-open)="onDialogOpen($event)"
-                        [public-key]="pubUpcare">            
-                      </ngx-uploadcare-widget>          
-                    </mdc-form-field>      
-              </div>
 
               <!-- CHECK -->          
-              <div>
-
-                <mdc-form-field>
-                    <mdc-checkbox [ngModel]="category.active" formControlName="active"></mdc-checkbox>
-                    <span >Actif</span>
-                </mdc-form-field>
-
-                <mdc-form-field>
-                    <mdc-checkbox [ngModel]="category.home" formControlName="home"></mdc-checkbox>
-                    <span >Page d'accueil</span>
-                </mdc-form-field>
-
+            <div>
+              <div class="group">
+                <kng-slider [small]="true" [(ngModel)]="category.active" formControlName="active">
+                  Caétogorie active
+                </kng-slider>
+          
+                <kng-slider [small]="true" [(ngModel)]="category.home" formControlName="home">
+                  Caétogorie de la Page d'accueil
+                </kng-slider>
                 <!-- TYPE -->
-                <div class="align-end">
-                  <!-- FIXME upgrade mdc angular 6 -->
-                  <mdc-radio-group formControlName="type" [(ngModel)]="category.type">
-                    <mdc-form-field>
-                      <mdc-radio class="radio-primary" [value]="'Category'"  (change)="onTypeChange($event,'Category')" ></mdc-radio>
-                      <label>Category</label>
-                    </mdc-form-field>
-                    <mdc-form-field>
-                      <mdc-radio class="radio-primary" [value]="'Catalog'"  (change)="onTypeChange($event,'Catalog')" ></mdc-radio>
-                      <label>Catalog</label>
-                    </mdc-form-field>
-                  </mdc-radio-group>
-                </div>            
+                <fieldset>
+                  <legend>Type de la catégorie</legend>
+                  <label for="type-1">Classification des produits</label>
+                  <input id="type-1" type="radio" formControlName="type" value="Category" name="type" [ngModel]="category.type"/>
+
+                  <label for="type-3">Classification des catégories</label>
+                  <input id="type-3" type="radio" formControlName="type" value="Group" name="type" [ngModel]="category.type"/>
+
+                  <label for="type-2">Classification des commerçants</label>
+                  <input id="type-2" type="radio" formControlName="type" value="Catalog" name="type" [ngModel]="category.type"/>
+
+                  
+                </fieldset>
             </div>
+            <!-- IMAGE  -->
+             <div class="group bg">
+              <div class="image" >
+                <img [src]="category.cover" *ngIf="category.cover" />
+                <mdc-form-field>
+                    <ngx-uploadcare-widget
+                      images-only="true"
+                      [value]="category.cover"
+                      [validator]="ucValidator"
+                      (on-upload-complete)="onUpload($event)"
+                      (on-dialog-open)="onDialogOpen($event)"
+                      [public-key]="pubUpcare">            
+                    </ngx-uploadcare-widget>          
+                  </mdc-form-field>      
+                </div>
+              </div> 
+
+             </div>
+
+
             <div class="-between">
               <!-- GROUP -->
-              <mdc-text-field  label="Group" type="text" [ngModel]="category.group" formControlName="group" style="width: 80px">
+              <mdc-text-field  label="Group" type="text" [ngModel]="category.group" formControlName="group" style="width: 120px">
               </mdc-text-field>
 
               <!-- WEIGHT -->
-              <mdc-text-field  label="Poid" type="number" [ngModel]="category.weight" formControlName="weight" style="width: 80px">
+              <mdc-text-field  label="Poid" type="number" [ngModel]="category.weight" formControlName="weight" style="width: 120px">
               </mdc-text-field>
 
               <!-- ICON -->
-              <mdc-text-field  label="Icon" type="text" [ngModel]="category.image" formControlName="image" style="width: 80px">
+              <mdc-text-field  label="Icon" type="text" [ngModel]="category.image" formControlName="image" style="width: 120px">
               </mdc-text-field>
 
               <!-- COLOR -->
@@ -117,7 +120,7 @@
       <mdc-dialog-actions>
         <button mdcDialogButton [disabled]="category?.usedBy?.length!=0" (click)="askDelete()" class="align-start">Delete</button>
         <button mdcDialogButton mdcDialogAction="close">Decline</button>      
-        <button mdcDialogButton mdcDialogAction="accept" (click)="askSave()" [disabled]="!form?.valid">Accept</button>
+        <button mdcDialogButton mdcDialogAction="accept" (click)="askSave()" [disabled]="!isFormValid">Accept</button>
       </mdc-dialog-actions>
     </mdc-dialog-surface> 
  

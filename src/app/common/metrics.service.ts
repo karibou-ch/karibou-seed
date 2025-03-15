@@ -10,6 +10,7 @@ export enum EnumMetrics {
   metric_account_login,
   metric_account_forget_password,
   metric_add_to_card,
+  metric_custom,
   metric_exception,
   metric_view_menu,
   metric_view_landing,
@@ -262,6 +263,9 @@ export class MetricsService {
         metrics.extra.event='PageView';
         this.$analytics.push(metrics);
         break;
+      case EnumMetrics.metric_custom:
+        gtag('event', params.name,params.value);
+        break;
       case EnumMetrics.metric_account_login:
         gtag('event', 'login');
         break;
@@ -273,8 +277,8 @@ export class MetricsService {
         break;
       case EnumMetrics.metric_add_to_card:
         gtag('event', 'add_to_cart',{ currency:'CHF', value:params.amount });
-        metrics.extra.event='AddToCart';
-        metrics.action='cart';
+        metrics.extra.event = 'AddToCart';
+        metrics.action = 'cart';
         metrics.amount = params.amount;
         this.$analytics.push(metrics);
         break;

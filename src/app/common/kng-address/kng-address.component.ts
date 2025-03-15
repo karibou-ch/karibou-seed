@@ -1,9 +1,9 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Config, UserAddress, geolocation } from 'kng2-core';
-import { KngUtils, i18n } from 'src/app/common';
-import { Loader } from "@googlemaps/js-api-loader"
+import { Config, UserAddress, geoadmin, geolocation } from 'kng2-core';
+import { i18n } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
+import { debounceTime, distinctUntilChanged, filter, skip } from 'rxjs/operators';
 declare const google;
 
 @Component({
@@ -18,27 +18,32 @@ export class KngAddressComponent implements OnInit {
     fr: {
       address_street: 'Adresse*',
       address_floor: 'Étage*',
-      address_postalcode_title: 'Aujourd\'hui nous livrons uniquement les code postaux proposés.',
+      address_postalcode_title: 'Désolé, le code postal n\'est pas encore disponible pour la livraison',
       address_postalcode: 'Code postal',
-      address_region: 'Région',
+      address_region: 'Région (automatique)',
     },
     en: {
       address_street: 'Street, number*',
       address_floor: 'Floor*',
-      address_postalcode_title: 'Today we deliver only the postal codes below.',
+      address_postalcode_title: 'Sorry, the postal code is not yet available for delivery.',
       address_postalcode: 'Postal code',
-      address_region: 'Region',
+      address_region: 'Region (autocomplete)',
     }
   };
 
+  addresses = [];
+  isReady= false;
   location = {lat:0, lng:0 };
   locations: string[];
   regions: string[];
   $address: FormGroup;
 
-  @ViewChild('street') street: ElementRef;
+  @ViewChild('street') street!: ElementRef;
+  @ViewChild('floor') floor!: ElementRef;
+
 
   @Output() updated: EventEmitter<UserAddress|undefined> = new EventEmitter<UserAddress>();
+  @Input() title:string;
   @Input() config:Config;
   @Input() phone: string;
   @Input() displayClear: boolean;
@@ -53,7 +58,7 @@ export class KngAddressComponent implements OnInit {
       street: address.streetAdress,
       region: address.region,
       postalCode: address.postalCode,
-      phone: address.phone || this.phone || '' 
+      phone: address.phone || this.phone || ''
     });
   }
 
@@ -72,16 +77,39 @@ export class KngAddressComponent implements OnInit {
       'postalCode': ['', [Validators.required, Validators.minLength(4)]],
       'phone':  ['', [Validators.required, Validators.minLength(10)]]
     });
+
+    // Listen to changes on the 'street' field with a debounce of 3 seconds
+    this.$address.get('street').valueChanges
+      .pipe(
+        distinctUntilChanged((prev, curr) => {
+          return prev === "" || curr === "" || prev.toLowerCase() === curr.toLowerCase()
+        }),
+        skip(1),
+        debounceTime(500)
+
+      ) // .5 seconds and address len > 6 chars
+      .subscribe(value => {
+        this.onStreetChange(value);
+      });
+
   }
 
   get isValid() {
     return this.$address.valid;
   }
 
+  get isPostalValid() {
+    const pc = this.$address.value.postalCode;
+    if(!pc.length) {
+      return true;
+    }
+    return this.locations.indexOf(pc)>-1;
+  }
+
   get isClear() {
-    return this.address.name === '' && 
-           this.address.streetAdress === '' && 
-           this.address.floor === ''; 
+    return this.address.name === '' &&
+           this.address.streetAdress === '' &&
+           this.address.floor === '';
   }
 
   get address() {
@@ -92,7 +120,8 @@ export class KngAddressComponent implements OnInit {
       region: this.$address.value.region,
       postalCode: this.$address.value.postalCode,
       note: this.$address.value.note,
-      geo: this.location
+      geo: this.location,
+      type: 'customer'
     };
     const phone = this.$address.value.phone;
     if(phone)address.phone = phone;
@@ -101,11 +130,11 @@ export class KngAddressComponent implements OnInit {
 
   get glabel() {
     return this.$i18n.label();
-  }  
+  }
 
   get label() {
     return this.i18n[this.$i18n.locale];
-  }  
+  }
   get locale() {
     return this.$i18n.locale;
   }
@@ -117,74 +146,68 @@ export class KngAddressComponent implements OnInit {
     this.locations = this.config.shared.user.location.list.sort();
     this.regions = this.config.shared.user.region.list.sort();
 
-    this.loadAutocomplete().then(() => {
-    });
-
-  }
-
-  async loadAutocomplete() {
-    // const dev ='AIzaSyAOlRpmLYUNtJxGx-h6Dc_452aVB3AmLYQ';
-    try {
-
-      const findComponent = (place, type) => {
-        const elem = place.address_components.find((comp) => comp.types.indexOf(type) > -1);
-        return elem ? elem.short_name : '';
-      }    
-
-      const apiKey = this.config.shared.keys.pubMap;
-      const loader = new Loader({
-        apiKey,
-        version: "weekly",
-        libraries: ["places"]
-      });
-  
-      await loader.load();
-
-          // Vérifiez si l'objet google.maps est défini après le chargement
-      if (!google || !google.maps) {
-        return;
-      }
-
-      // google.maps.event.addListenerOnce(loader, 'authentication_error', (event: any) => {
-      //   console.error('Authentication error:', event);
-      // });
-  
-        
-      const autocomplete = new google.maps.places.Autocomplete(this.street.nativeElement, { types: ['geocode'] });
-      autocomplete.addListener('place_changed', () => {              
-        const place = autocomplete.getPlace();
-        this.street.nativeElement.disabled = false;
-        console.log('KngAddressComponent: place_changed',place);
-        if(!place||!place.address_components) {
-          return;
-        }
-        const postalCode = findComponent(place, 'postal_code');
-        const region = findComponent(place, "administrative_area_level_2");
-        Object.assign(this.location,place.geometry.location.toJSON());
-  
-        this.$address.patchValue({street: place.name});
-  
-        if(postalCode) {
-          this.$address.patchValue({postalCode: postalCode});
-        }
-        if(region) {
-          this.$address.patchValue({region: region});
-        }      
-      });
-
-  
-    }catch(e) {
-      console.log('KngAddressComponent: loadAutocomplete',e);
-      
+    this.isReady = true;
+    // this.loadAutocomplete().then(() => {
+    // });
+    if(this.phone){
+      this.$address.get('phone').setValue(this.phone);
     }
-    // get place service
-
 
   }
 
   isInvalid(controlName: string): boolean {
     const control = this.$address.get(controlName);
     return control ? control.invalid && (control.dirty || control.touched) : false;
+  }
+
+  //
+  // update address with the current text or selection
+  // - selection is the index of the dropdown list
+  onBlurOrSelect(selection?){
+    if (selection<0 || selection == undefined) {
+      let street = this.$address.value.street;
+      selection = this.addresses.findIndex(option => option.street.indexOf(street)>-1);
+    }
+
+    const idx = selection;
+    if(idx==-1){
+      return;
+    }
+
+    this.address.geo = {
+      lat:this.addresses[idx].lat,
+      lng:this.addresses[idx].lng
+    }
+    this.address.postalCode = this.addresses[idx].postal;
+    this.address.region = this.addresses[idx].region;
+
+    this.$address.patchValue({ street:this.addresses[idx].street });
+    this.$address.patchValue({ postalCode: this.addresses[idx].postal });
+    this.$address.patchValue({ region: this.addresses[idx].region });
+    this.addresses = [];
+    this.isReady = false;
+
+    setTimeout(() => {
+      this.floor.nativeElement.focus();
+      this.isReady = true;
+    },500);
+  }
+
+  async onStreetChange(street) {
+    if(!this.isReady){
+      return;
+    }
+
+
+    this.addresses = [];
+    const context = {config:this.config,$http:this.$http};
+    this.addresses = await geoadmin(street,context).toPromise();
+    if(this.addresses.length==1) {
+      this.$address.patchValue({ street:this.addresses[0].street.trim() });
+      this.$address.patchValue({ postalCode: this.addresses[0].postal });
+      this.$address.patchValue({ region: this.addresses[0].region });
+      this.addresses = [];
+    }
   }
 
   async onGeoloc() {
@@ -194,17 +217,14 @@ export class KngAddressComponent implements OnInit {
 
     const context = {config:this.config,$http:this.$http};
     const result = await geolocation(this.address,context).toPromise();
-    this.location = (result.geo&&result.geo.location) || this.location;
-
+    return this.location = (result.geo&&result.geo.location) || this.location;
   }
 
 
   async onSave() {
     const address = this.address;
     if(!address.geo || !address.geo.lat) {
-      const context = {config:this.config,$http:this.$http};
-      const result = await geolocation(this.address,context).toPromise();
-      address.geo = (result.geo&&result.geo.location) || this.location;
+      this.address.geo = await this.onGeoloc();
     }
 
     this.updated.emit(address);

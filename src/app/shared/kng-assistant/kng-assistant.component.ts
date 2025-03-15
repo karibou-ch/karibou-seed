@@ -49,7 +49,8 @@ export class KngAssistantComponent implements OnInit {
   @Input() user:User;
   @Input() config:Config;
   @Input() widget:boolean;
-  @Input() agent:string;
+  @Input() agent: "productsagent"|"quote"|"checkout"|"feedback"|"recipefull" = "recipefull";
+
   @Input() tips:string[];
   @Input() prompts:string[];
   @Input() set prompt(value:string){
@@ -69,9 +70,11 @@ export class KngAssistantComponent implements OnInit {
 
   isReady:boolean;
   isFeedbackReady: boolean;
+  isMailSent: boolean;
   isAssistantRuning: Subscription;
   messages:AssistantMessage[];
   tokensLimit= 16000;
+  showPinnedProducts:boolean;
   error:string;
   markdown:any;
   audioDetected: boolean|undefined;
@@ -135,7 +138,7 @@ export class KngAssistantComponent implements OnInit {
   //
   // use a fixed message limit to avoid the tokens limit exception
   get messagesLimit() {
-    return this.messages.length>10;
+    return this.messages.length>20;
   }
 
   get messagesCount() {
@@ -230,7 +233,8 @@ export class KngAssistantComponent implements OnInit {
   async history(clear?) {
     try{
       const filterMessage = (message) => ['tool','system'].indexOf(message.user||message.role)==-1&& message.content;
-      this.messages = await this.$assistant.history({clear:(!!clear)}).toPromise() as AssistantMessage[];
+      const params = {agent:this.agent,clear:(!!clear),hub:this.store};
+      this.messages = await this.$assistant.history(params).toPromise() as AssistantMessage[];
       this.messages = this.messages.filter(filterMessage).map(message => {
         const content = (message.content||'').replace(/\(\([0-9]*\)\)/gm,'')
         message.html = this.markdownRender(content);
@@ -464,6 +468,8 @@ export class KngAssistantComponent implements OnInit {
       {regexp:/^\/store\/.*$/,prompt:"-", param:false},      
       {regexp:/quote\/orders/,prompt:"5 exemples de produits pour ma demande de devis ", param:false},      
       {regexp:/products\/cart/,prompt:"Quelques recettes avec mon panier ", param:false},      
+      {regexp:/products\/box/,prompt:"Le panier de fruits et légumes de la semaine", param:false},      
+      {regexp:/products\/school/,prompt:"Une sélection pour 100 enfants", param:false},      
       {regexp:/products\/orders/,prompt:"Informations sur mes dernières commandes", param:false},      
       {regexp:/popular\/([^)]+)/,prompt:"Quelques recettes avec les produits populaires", param:false},      
       {regexp:/recipe\/([^)]+)/,prompt:"Le détail de la recette ", param:true},      
@@ -515,8 +521,18 @@ export class KngAssistantComponent implements OnInit {
       this.isFeedbackReady = false;
     }
     this.$cdr.markForCheck();
-
   }
+  async onMail(message){
+    try{
+      await this.$assistant.message(message.html).toPromise();
+      this.isMailSent = true;  
+    }catch(err){
+      this.error = err.error||err.message;
+      this.prompt = this.error;
+      this.onChat()
+    }
+  }
+
 
   async onPrompt($event,action:string) {
     $event.preventDefault();
@@ -529,7 +545,7 @@ export class KngAssistantComponent implements OnInit {
   private markdownRender(content) {
     //
     // apply correction before the rendering
-    content = content.replace(/\(\([0-9]*\)\)/gm,'');
+    content = content.replace(/\(\([0-9]*\)\)/gm,'').replace("<thinking>","<section class='thinking'>").replace("</thinking>","</section>");
     // FIX markdown link
     const link = /\[(.*?)\]\((.*?)\)/g;
     content = content.replace(link, (match, text, target) => {

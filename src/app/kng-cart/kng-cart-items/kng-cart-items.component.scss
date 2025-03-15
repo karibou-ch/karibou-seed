@@ -9,6 +9,9 @@
   padding: 0 14px;
 }
 
+kng-subscription-option{
+  max-width: 360px;
+}
 
 .hub-item{
   height: 90px;
@@ -16,9 +19,9 @@
   &.selected{
     border: none!important;
     .title{
-      font-weight: bold;  
+      font-weight: bold;
       margin-top: 15px;
-      margin-bottom: auto;      
+      margin-bottom: auto;
       color: black;
       font-size: 1.5rem;
     }
@@ -26,7 +29,7 @@
   .text{
     width: 100%;
     margin-top: 14px;
-    margin-bottom: auto;    
+    margin-bottom: auto;
     .title-subtitle{
       .checkout-disabled-title{
         color: red;
@@ -37,16 +40,16 @@
         font-size: 14px;
       }
     }
-  
+
     button{
       line-height: 14px;
       width: auto;
       height: 20px;
       border-radius: 8px;
       padding: 0 10px;
-      margin-left: 0px;      
+      margin-left: 0px;
       border:1px solid #eee;
-  
+
     }
   }
 }
@@ -59,7 +62,7 @@
   justify-content: flex-start;
   height: 90px;
   padding: 0 16px;
-  overflow: hidden;  
+  overflow: hidden;
 
   &.border-top{
     border-top: 1px solid #eee;
@@ -75,6 +78,12 @@
   &.auto-line {
     height: auto;
     padding-top:8px;
+  }
+
+  &.error-line {
+    align-items:flex-start;
+    margin-bottom: 16px;
+
   }
 
   &.action-line {
@@ -97,13 +106,13 @@
   &.shared {
     height: 80px;
     background: var(--mdc-theme-appbar-light);
-    border-bottom: 1px solid #eee;    
+    border-bottom: 1px solid #eee;
   }
 
   color: #333;
   button{
     width: 31px;
-    height: 34px;  
+    height: 34px;
     border: 0;
     display: flex;
     align-items: center;
@@ -119,31 +128,28 @@
   }
 
   &.pending-date:not(.display-message){
-    display: none!important;      
+    display: none!important;
   }
 
 
   .block-info{
-    font-size: 90%;
-    border: 1px solid #eee;
+    border: 0;
+    border-bottom: 1px solid #eee;
     padding: 10px;
-    border-radius: 10px;
-    background: var(--mdc-theme-background);
-    margin-top: 0px;
-    margin-bottom: 10px;
-    margin-left: 0px;
-  }      
+    border-radius: 0px;
+    background: transparent;
+  }
 
 
 
 
   .cart-frequency{
     margin-left: 10px;
-    color: var(--mdc-theme-karibou-pink);      
+    color: var(--mdc-theme-karibou-pink);
   }
 
   @media (max-width:431px) {
-    padding-left: 5px;      
+    padding-left: 5px;
   }
 
 }
@@ -164,19 +170,21 @@
   &.subscription{
     background: #fff;
     font-weight: 600;
-    margin: 15px 0 50px;    
+    margin: 15px 0 50px;
 
   }
   &.separator {
-    background: #f7f7f7;
+    background: #f9f9f9;
     border-bottom: 1px solid #eee;
-    margin: 0px 0 30px;    
+    margin: 0px 0 30px;
     color: #888;
+    opacity: .5;
+    border-radius: 0 0 14px 14px;
     div{
       text-align: center;
       width: 100%!important;
       font-weight: 400;
-  
+
     }
   }
 
@@ -189,16 +197,16 @@
   &.separator.hide-title{
     >div{
       display: none;
-    }    
-    margin: 5px 0;    
+    }
+    margin: 5px 0;
     height: 30px;
-    border-top: none;    
+    border-top: none;
   }
 
 
   .full-width{
     width: 100%;
-  }  
+  }
   .start{
     margin-left: 0;
     margin-right: auto;
@@ -229,7 +237,7 @@
       font-size: 26px;
       background-color: var(--mdc-theme-appbar);
       padding: 14px;
-      border-radius: 8px;      
+      border-radius: 8px;
     }
     >div{
       width: 56px;
@@ -238,7 +246,7 @@
       background-repeat: no-repeat;
       background-size: cover;
       background-position-y: 50%;
-      background-color: #ddd;    
+      background-color: #ddd;
     }
     >div.round{
       border-radius: 50%;
@@ -247,7 +255,7 @@
   }
 
   .item{
-    overflow: hidden;   
+    overflow: hidden;
 
 
     .title{
@@ -257,7 +265,7 @@
       @media (max-width:431px) {
         font-size: 90%;
       }
-    
+
     }
     .subtitle{
       color: #999;
@@ -268,7 +276,7 @@
       .action-delete{
         color: #aaa;
       }
-    
+
 
       .link{
         border-color: #ccc;
@@ -290,25 +298,30 @@
         transform: translateY(5px);
         margin-left: -4px;
         padding-left: 0;
-      }      
-  
+      }
+
     }
-  
+
   }
 
   .message-error{
-    width: 92%;
+    width: auto;
     background-color: yellow;
     color: #333;
     position: absolute;
-    height: 22px;
+    height: auto;
     display: flex;
-    left: 6px;
+    left: 68px;
     align-items: center;
-    top: 4px;
-    padding: 1px 5px;
-    font-size: 13px;    
+    bottom: 14px;
+    padding: 5px;
+    margin-right:8px;
+    font-size: 13px;
     opacity: .95;
+    border-radius: 8px;
+    a {
+      margin-left: 10px;
+    }
   }
 
   .item-actions{
@@ -317,9 +330,9 @@
     color: #333!important;
     font-size: 1rem;
     flex-wrap: nowrap;
-    align-items: center;   
+    align-items: center;
     @media (max-width:431px) {
-      zoom: .85;        
+      zoom: .85;
     }
 
     div.label{
@@ -334,10 +347,10 @@
 
       cursor: pointer;
       button{
-        border-radius: 50%;        
+        border-radius: 50%;
       }
-  
-    } 
+
+    }
 
     div.info i{
       transform: translateY(5px);
@@ -349,7 +362,7 @@
       z-index: 1;
       &.right { transform:translateX(30px);}
       &.left  { transform:translateX(-30px);}
-    }    
+    }
     div.quantity{
       flex:1;
       border:1px solid #ddd;
@@ -386,14 +399,14 @@
     color: var(--mdc-theme-secondary-text);
     border-radius: 39px;
     border-style: solid;
-    padding: 4px 20px;    
+    padding: 4px 20px;
     width: fit-content;
     margin: auto;
     font-size: 18px;
     height: 50px;
     display: flex;
-    align-items: center;    
-  }  
+    align-items: center;
+  }
 
   button.continue{
     cursor: pointer;
@@ -405,23 +418,22 @@
     max-width: 400px;
     margin-right: 0;
     font-size: 17px;
-    height: 45px;    
+    height: 45px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     display: flex;
-    align-items: center;    
+    align-items: center;
     @media (max-width:431px) {
       margin-right: auto;
       width: 100%;
-      margin-top: 10px;      
+      margin-top: 10px;
       height: 35px;
       font-size: 15px;
     }
   }
   kng-calendar{
     border-radius: 8px;
-    background-color: rgba(239, 239, 239, 0.5);
   }
   button.order{
     cursor: pointer;
@@ -434,7 +446,7 @@
     font-size: 17px;
     height: 56px;
     font-weight: bold;
-    margin-left: 0;    
+    margin-left: 0;
     @media (max-width:431px) {
       width: 100%;
     }
@@ -443,8 +455,8 @@
   button[disabled]{
     cursor: pointer;
     background: #eee!important;
-    color: #aaa!important;    
+    color: #aaa!important;
   }
-  
+
 }
 

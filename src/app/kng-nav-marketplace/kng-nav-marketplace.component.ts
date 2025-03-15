@@ -114,6 +114,14 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   }
 
+  get hubs() {
+    if(!this.config.shared.hubs) {
+      return [];
+    }
+
+    return this.config.shared.hubs.filter(hub => !hub.status.private);
+  }
+
   get i18n() {
     return this.$i18n;
   }

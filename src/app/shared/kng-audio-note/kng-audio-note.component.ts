@@ -16,7 +16,7 @@ export class KngAudioNoteComponent implements OnInit {
 
   @Output() onCartItemAudioLoading = new EventEmitter<boolean>();
   @Output() onCartItemAudioError = new EventEmitter<Error>();
-  @Output() onCartItemAudio = new EventEmitter<{audio,note?}>();
+  @Output() onCartItemAudio = new EventEmitter<{src,audio,note?}>();
 
   cartItemAudioLoading: boolean;
   cartItemAudioError: boolean;
@@ -95,17 +95,17 @@ export class KngAudioNoteComponent implements OnInit {
   }
 
 
-  async audioWhisper(base64: string) {
+  async audioWhisper(base64: string, src: string) {
     const params:any = {body:{audio:base64,whisperOnly:true}};
     params.q = 'whisper';
     this.cartItemNote = '';
     this.$assistant.chat(params).subscribe((content) => {
       this.cartItemNote += content.text;
     },(error) => {
-      this.onCartItemAudio.emit({audio:base64});
+      this.onCartItemAudio.emit({src,audio:base64});
     },()=>{
       this.cartItemNote = this.cartItemNote.trim().replace('**traitement...**','');
-      this.onCartItemAudio.emit({audio:base64,note:this.cartItemNote});
+      this.onCartItemAudio.emit({src,audio:base64,note:this.cartItemNote});
     });
 
   }
@@ -160,7 +160,7 @@ export class KngAudioNoteComponent implements OnInit {
       const audioHtml:HTMLAudioElement = document.querySelector('#audio');
       audioHtml.setAttribute('src', this.cartItemAudio);  
 
-      this.audioWhisper(base64);
+      this.audioWhisper(base64, this.cartItemAudio);
     }catch(error){
       this.cartItemAudioLoading = false;
       this.cartItemAudioError = true;
@@ -172,7 +172,7 @@ export class KngAudioNoteComponent implements OnInit {
   onClear() {
     this.cartItemAudio = null;
     this.cartItemNote = null;
-    this.onCartItemAudio.emit({audio:this.cartItemAudio,note:this.cartItemNote});
+    this.onCartItemAudio.emit({src:'',audio:this.cartItemAudio,note:this.cartItemNote});
 
   }
 

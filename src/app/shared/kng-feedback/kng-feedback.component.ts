@@ -18,6 +18,8 @@ export class KngFeedbackComponent implements OnInit {
   i18n: any = {
     fr: {
       title_code:'Code $$',
+      title_account:'Votre Compte',
+      title_account_action:'Modifier vos données',
       title_wallet:'Votre Portefeuille',
       title_order_prepare: 'Votre commande est en cours de préparation pour',
       title_order_pending: 'La confirmation de paiement n\' a pas été effectuée ...',
@@ -27,7 +29,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_shipping: 'La livraison est prévue chez',
       title_order_cancel: 'la commande a été annulée ',
       title_evaluation: 'Votre note',
-      title_evaluation_quick: 'Votre sentiment en étoiles ?',
+      title_evaluation_quick: 'Votre <b>évaluation</b> en étoiles ?',
       title_evaluation_save: 'Votre note',
       title_issue_question: 'Avez-vous rencontré un problème?',
       title_issue_hub: 'Vous pouvez aussi laisser un commentaire à notre équipe',
@@ -53,7 +55,7 @@ export class KngFeedbackComponent implements OnInit {
       title_order_open:'See details of your order...',
       title_order_cancel: 'Your order has been cancelled',
       title_evaluation: 'Your feeling in stars ?',
-      title_evaluation_quick: 'Rate your Satisfaction for this order',
+      title_evaluation_quick: '<b>Rate</b> your Satisfaction for this order',
       title_evaluation_save: 'Your rating',
       title_issue_question: 'An issue with your order ?',
       title_issue_title: 'You have an issue with a product',
@@ -138,11 +140,11 @@ export class KngFeedbackComponent implements OnInit {
 
   get label(){
     return this.$i18n.label();
-  }  
+  }
 
   get llabel(){
     return this.i18n[this.locale];
-  }  
+  }
 
   get orders(){
     return this._orders;
@@ -227,13 +229,13 @@ export class KngFeedbackComponent implements OnInit {
     }
 
     //
-    // auth 
+    // auth
     if (['authorized','prepaid'].indexOf(this.order.payment.status)>-1) {
       return 'authorized';
     }
 
     //
-    // auth 
+    // auth
     if (['partially_refunded','invoice','invoice_paid','paid'].indexOf(this.order.payment.status)>-1) {
       return 'paid';
     }
@@ -276,7 +278,7 @@ export class KngFeedbackComponent implements OnInit {
     return this.label.weekdays.split('_')[idx];
   }
 
-  isOpen(order: Order) {    
+  isOpen(order: Order) {
     if (!order) {
       return false;
     }
@@ -310,7 +312,7 @@ export class KngFeedbackComponent implements OnInit {
         this.order = mains[0];
         this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
         this.score = this.order.score;
-      } 
+      }
 
     };
 
@@ -336,7 +338,7 @@ export class KngFeedbackComponent implements OnInit {
     ]).subscribe(([invoices,orders]) => {
       this.invoices = invoices;
       this._orders = orders || [];
-      
+
       localInit();
       this.$cdr.markForCheck();
     });
@@ -354,7 +356,7 @@ export class KngFeedbackComponent implements OnInit {
       if(parentoid) {
         this.childOrder[parentoid] = this.childOrder[parentoid] || [];
         this.childOrder[parentoid].push(order);
-      }  
+      }
     });
   }
 
@@ -377,7 +379,7 @@ export class KngFeedbackComponent implements OnInit {
 
   onAddAllToCart() {
     let items = this.order.items;
-    items.forEach(item => item.hub = this.HUBS[this.order.hub])    
+    items.forEach(item => item.hub = this.HUBS[this.order.hub])
     this.childOrder[this.order.oid].forEach(order => {
       order.items.forEach(item => item.hub = this.HUBS[order.hub])
       items = items.concat(order.items);

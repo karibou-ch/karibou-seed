@@ -1,0 +1,64 @@
+:host{
+  border: 2px solid #eee;
+  border-radius: 14px;    
+  display: block;
+}
+div.signup,
+form{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content:space-between;
+    width: calc(100% - 10px);
+    padding: 5px;
+
+    select,
+    kng-control-messages {
+      flex: 0 1 calc(100% - 0px);
+    }
+
+    
+  
+    select{
+      align-self: flex-end;
+      margin-bottom: 8px;        
+      padding: 15px;
+      border: 1px solid #aaa;
+      background: #fff;
+      border-radius: 5px;
+      font-size: 1em;      
+    }
+
+    button{
+      margin: 10px 0;
+      margin-left: auto;
+    }
+
+    .fullwidth{
+        width: 100% !important;
+    }
+
+    .gm-err-autocomplete{
+      background-image:none !important;
+    }
+
+    .help-block{
+        color: #ccc;
+        text-align: center;
+        padding: 0 20px;        
+    }
+
+    .align-right{     
+      flex: 0 1 auto;
+      margin-left: auto;
+    }
+
+  
+}
+
+
+div.signup{
+  padding: 15px 0;
+  width: 100%;
+
+}
+

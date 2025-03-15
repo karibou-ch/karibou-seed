@@ -157,6 +157,7 @@ export class KngShopsComponent extends KngShopComponent{
 
   ngStyleBck: any;
   shops: Shop[];
+  group={};
 
   ngOnInit(){
     this.ngStyleBck = {};
@@ -169,9 +170,14 @@ export class KngShopsComponent extends KngShopComponent{
     document.title = this.config.shared.hub.name;
     try {window.scroll(0, 0); } catch (e) {}
 
-    this.$shop.shops$.subscribe(shops => {
+    this.$shop.query({active:true,hub:this.$navigation.store}).subscribe(shops=>{
       this.shops = shops.filter(shop => shop.status).sort(this.sortByName.bind(this));
       this.shops.forEach(shop => {        
+        let letter = shop.name.toLowerCase().replace(/[èéëê]/gi,'E').toUpperCase()[0];
+        letter = letter.replace(/[CDEFG]/, 'C...G').replace(/[PQRSTUVXYZ]/, 'P...Z').replace(/[HIJKLMNO]/, 'H...O').replace(/[1-9]/, '1..9');
+        this.group[letter]=this.group[letter]||[];
+        this.group[letter].push(shop);
+
         shop['ngStyleBck'] = {
           'background-image': 'url(' + shop.photo.fg + '/-/resize/64x/fb.jpg)',
           'background-repeat': 'no-repeat',
@@ -181,8 +187,11 @@ export class KngShopsComponent extends KngShopComponent{
         shop['img'] = shop.photo.fg + '/-/resize/400x/fb.jpg';
 
       });
-
     });
+  }
+
+  get groupByName() {
+    return Object.keys(this.group).sort();
   }
 
   sortByName(a,b) {

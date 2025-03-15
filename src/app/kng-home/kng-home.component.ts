@@ -48,9 +48,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   categorySlug: string;
   displaySlug: string;
   scrollDirection:number;
+  scrollLocked:boolean;
 
   //
-  // search 
+  // search
   availableSearch:boolean;
   autocompletes:any;
 
@@ -77,6 +78,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   };
 
+
   //
   // products for home
   options: {
@@ -89,6 +91,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     when: Date | boolean;
     reload?: number;
     showMore: boolean;
+    theme?:string;
   } = {
       showMore: true,
       available: true,
@@ -124,28 +127,43 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.shops = [];
 
     this.availableSearch = false;
-    
+
     this.pendingOrders = [];
     if(loader.length>3) {
       this.pendingOrders = <Order[]>loader[4];
-    }    
+    }
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();  
+    this.subscription.unsubscribe();
   }
 
   ngOnInit() {
     window.scroll(0, 0);
     this.subscription.add(
       this.$route.params.subscribe(params => {
-      if(!params.store) {
+
+      // if(params.theme && this.options.theme!== params.theme) {
+      //   const theme = this.categories.find(c=>c.slug === params.theme);
+      //   this.options.theme = theme.slug;
+      //   this.products = [];
+      //   this.cached.categories = [];
+      //   this.$navigation.currentTheme = theme;
+
+      //   this.productsGroupByCategory({state:{action:CartAction.CART_INIT}});
+      //   return;
+      // }
+
+      if(params.store) {
+        this.$navigation.store = params['store'];
         return;
       }
-
-      this.$navigation.store = params['store'];
     }));
-    
+    // this.subscription.add(
+    //   this.$route.queryParams.subscribe(query => {
+    // }));
+
+
     // this.subscription.add(
     //   this.$navigation.search$().subscribe((keyword)=>{
     //     if(keyword == 'favoris'||keyword == 'discount') {
@@ -182,6 +200,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         // (<CacheRouteReuseStrategy>this.$routeCache).clearCache();
         // console.log('---- clear cache',this.user.id)
         // this.$cdr.markForCheck();
+      }
+
+      //
+      // wait cart init or new date is SAVED
+      if(!emit.state) {
+        return;
       }
 
       // emit signal for CartAction[state]
@@ -222,6 +246,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+
   get currentShippingDay() {
     return this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
   }
@@ -235,7 +260,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   get label() {
-    return this.$i18n.label();    
+    return this.$i18n.label();
   }
 
   get isLockedHUB() {
@@ -264,6 +289,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  get isAuthencated() {
+    return this.user.isAuthenticated();
+  }
+  get isB2BSchool() {
+    return this.user.plan.name == 'b2b-school';
+  }
+
   get hub(){
     return this.config.shared.hub ||{};
   }
@@ -279,15 +311,22 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.config.shared.subscription || {};
   }
 
+  get sortedGroups() {
+    return this.categories.sort(this.sortByWeight).filter(c => {
+      return (c.active) &&
+             (c.type === 'Group');
+    });
+  }
+
   get sortedCategories() {
-    
+
     if (this.cached.categories && this.cached.categories.length) {
       return this.cached.categories;
     }
 
     // Filter categories for group HOME
     return this.cached.categories = this.categories.sort(this.sortByWeight).filter(c => {
-      return (c.active) && 
+      return (c.active) &&
              (c.type === 'Category') &&
              this.availableCategories[c.name];
     });
@@ -298,6 +337,36 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return ['/store',this.store,'home','me',target];
   }
 
+  get theme() {
+    return this.$navigation.currentTheme;
+  }
+
+  get themes() {
+    if(!this.categories) {
+      return [];
+    }
+    return this.categories.filter(c => c.type === 'theme');
+  }
+
+  get useMaxcat() {
+    return !this.availableSearch && !this.options.theme;
+  }
+
+  get useTheme() {
+    return this.options.theme;
+  }
+
+
+  get tagline() {
+    if (!this.config || !this.config.shared.tagLine) {
+      return {};
+    }
+    const shared = this.config.shared;
+    const hub = this.config.shared.hub;
+    return (hub && hub.name && shared.hub.domainOrigin) ? hub.tagLine : shared.tagLine;
+
+  }
+
   add(product: Product) {
     this.$cart.add(product);
   }
@@ -305,11 +374,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   clearCategory() {
     this.categories.forEach(cat=> this.availableCategories[cat.name] = false);
-    // this.cached.categories = [];
+    this.cached.categories = [];
   }
 
   doSearch(link){
-    this.$navigation.searchAction(link);    
+    this.$navigation.searchAction(link);
   }
 
   doSearch_NEW(value: string) {
@@ -322,7 +391,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     //
     // on search open window
     const options = {
-      when: this.$cart.getCurrentShippingDay().toISOString(),
+      when: this.currentShippingDay.toISOString(),
       hub: this.config.shared.hub && this.config.shared.hub.slug
     };
     this.availableSearch = true;
@@ -338,11 +407,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       }
 
 
-
       this.clearCategory();
       this.$navigation.searchAction('stats:'+products.length);
       this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
-      products.forEach((product: Product) => {        
+      products.forEach((product: Product) => {
         this.availableCategories[product.categories.name] = true;
       });
       this.isReady = true;
@@ -375,13 +443,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       this.clearCategory();
 
       this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
-      products.forEach((product: Product) => {        
+      products.forEach((product: Product) => {
         this.availableCategories[product.categories.name] = true;
       });
       this.isReady = true;
       this.isLoading = false;
 
       this.$cdr.markForCheck();
+
     });
 
   }
@@ -403,10 +472,25 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   productsGroupByCategory(emit) {
 
     const state = emit.state && emit.state.action;
-    console.log('----init load products on',state,this.products.length);
-    if(this.products.length && !state){
+      // ITEM_ADD       = 1,
+      // ITEM_REMOVE    = 2,
+      // ITEM_MAX       = 3,
+      // CART_INIT      = 4,
+      // CART_LOADED    = 5,
+      // CART_LOAD_ERROR= 6,
+      // CART_SAVE_ERROR= 7,
+      // CART_ADDRESS   = 8,
+      // CART_PAYMENT   = 9,
+      // CART_SHIPPING   =10,
+
+    // If there are already products loaded and no specific state is provided,
+    // or if the state is in the list of states that do not require reloading products, return early
+    const states = ['ITEM_ADD','ITEM_REMOVE','ITEM_MAX','CART_ADDRESS','CART_PAYMENT'];
+    if(this.products.length && !state ||
+       this.products.length && states.indexOf(state)>-1) {
       return;
     }
+    console.log('----init load products on',state,this.products.length);
 
     if(this.isLoading){
       return;
@@ -429,11 +513,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if(this.isMobile) {
       this.isReady = true;
       this.isLoading = false;
-      this.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+      // this.hub.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+      this.categories.forEach(cat=> this.availableCategories[cat.name] = (this.hub.categories.indexOf(cat._id)>-1||!this.hub.categories.length));
       return;
     }
 
-    console.log('----load products on',state, 'product count:',this.products.length);
 
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
@@ -441,23 +525,30 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     options.maxcat = this.isMobile? 2:options.maxcat;
     options.hub = this.$navigation.store;
 
+    if(this.options.theme) {
+      delete options.when;
+      delete options.available;
+      delete options.status;
+    }
+
 
     this.$product.select(options).subscribe((products: Product[]) => {
       this.products = products.filter(product => product.categories && product.categories.name);
-      this.products.forEach((product: Product) => {        
-        this.availableCategories[product.categories.name] = true;
+      this.products.forEach((product: Product) => {
+        this.availableCategories[product.categories.name] = product.categories;
       });
       this.isReady = true;
       this.isLoading = false;
     });
 
-  }  
+  }
 
-  onSetCurrentShippingDay(day){
+  onSetCurrentShippingDay({day, time}){
     if(!day){
       return;
     }
-    const hours = this.config.getDefaultTimeByDay(day);
+    // DEPRECATED FIXME move this.config.getDefaultTimeByDay(day) in $cart.getCurrentShippingTime()
+    const hours = time || this.config.getDefaultTimeByDay(day);
 
     this.$cart.setShippingDay(day,hours);
   }
@@ -469,7 +560,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     const href = target.getAttribute('href');
     //
     // verify if it's a routerLink
-    if(href && href.length > 2 && 
+    if(href && href.length > 2 &&
       (href.indexOf('http') === -1&&href.indexOf('mailto:') === -1&&href.indexOf('tel:') === -1)) {
       $event.stopPropagation();
       $event.preventDefault();
@@ -483,11 +574,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   onFavorites(){
-    this.$navigation.searchAction('favoris');    
+    this.$navigation.searchAction('favoris');
   }
 
   //
-  // detect child overlay 
+  // detect child overlay
   @HostListener('window:popstate', ['$event'])
   onPopState($event) {
     setTimeout(() => {

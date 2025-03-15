@@ -1,6 +1,6 @@
 <div class="subscription">
   <p [hidden]="quiet">
-    {{i18n.title}}     
+    {{i18n.title}}
   </p>
 
 
@@ -9,8 +9,8 @@
   <div class="selector time" [hidden]="!checkout || contract">
     <div class="label" for="time">{{i18n.title_time_contract}} <span class="price" [hidden]="!timeprice">+{{timeprice}} fr</span></div>
     <div class="elem" id="time">
-      <div class="item time" 
-          *ngFor="let time of shippingtimes|keyvalue;let idx=index" 
+      <div class="item time"
+          *ngFor="let time of shippingtimes|keyvalue;let idx=index"
           (click)="selTime = time.key;onSave()"
           [class.selected]="selTime == time.key">{{time.value}}</div>
     </div>
@@ -19,37 +19,35 @@
     <div class="label" for="time">{{i18n.title_time_contract_update}} <span class="price" >{{shippingtimes[selTime]}}</span></div>
   </div>
 
-  <div class="selector iteration" [class.quiet]="quiet">
+  <div class="selector iteration" [hidden]="quiet">
     <div class="elem" id="iteration">
-      <div class="item " 
-          *ngFor="let iteration of iterations;let idx=index" 
+      <div class="item "
+          *ngFor="let iteration of iterations;let idx=index"
           (click)="selIteration = iteration;onSave()"
           [class.selected]="selIteration.id == iteration.id">{{iteration.label[locale]}}</div>
-        
+
     </div>
   </div>
-  
-  <div class="selector day-of-week" [class.quiet]="quiet">
+
+  <div class="selector day-of-week" [hidden]="quiet">
     <div class="elem" id="day-of-week">
-      <div class="item " 
-          *ngFor="let day of dayOfWeek;let idx=index" 
+      <div class="item "
+          *ngFor="let day of dayOfWeek;let idx=index"
           (click)="selDayOfWeek = day;onSave()"
           [class.selected]="selDayOfWeek.id == day.id">{{day.label}}</div>
     </div>
   </div>
-  <div class="info">
-    <div class="icon">
-      <span class="material-symbols-outlined ">info</span>
-    </div>
+  <div class="info" [hidden]="quiet">
     <p [class.checkout]="checkout">
+      <span class="material-symbols-outlined icon">info</span>
       <b [hidden]="!update" class="update">
         {{label.subscription_update}}<br/>
       </b>
-  
+
       {{label.subscription_next_shipping}}
-       <b>{{nextShippingDay|date:'EEEE dd':'':locale|titlecase}} </b> 
+       <b>{{nextShippingDay|date:'EEEE dd':'':locale|titlecase}} </b>
     </p>
-    
+
   </div>
 
 

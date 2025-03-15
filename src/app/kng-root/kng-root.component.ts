@@ -21,6 +21,26 @@ export class KngRootComponent implements OnInit {
 
   static SCROLL_CACHE = 0;
 
+  i18n: any = {
+    fr: {
+      title_account_sign:'Identifiez-vous avec une session',
+      title_account_mail:'Votre adresse mail',
+      title_account_shipping:'Vos addresses de livraison',
+      title_orders:'Vos commandes',
+      title_invoices_open:'Vos factures',
+      title_invoice_paid:'Facture payée, en attente du virement bancaire',
+    },
+    en: {
+      title_account_sign:'Sign in with a session',
+      title_account_mail:'Your email address',
+      title_account_shipping:'Your delivery addresses',
+      title_orders:'Your orders',
+      title_invoices_open:'Your invoices',
+      title_invoice_paid:'Invoice paid, waiting for Bank transfer',
+    }
+  };
+
+
   constructor(
     public $i18n: i18n,
     public $cart: CartService,
@@ -46,6 +66,9 @@ export class KngRootComponent implements OnInit {
 
   set locale(value) {
     this.$i18n.locale = value;
+  }
+  get llabel() {
+    return this.i18n[this.locale];
   }
 
   get label() {
@@ -134,6 +157,7 @@ export class KngRootComponent implements OnInit {
   }
 
   doLocaleSwitch(){
+    console.log('doLocaleSwitch');
     this.$i18n.localeSwitch();
   }
 

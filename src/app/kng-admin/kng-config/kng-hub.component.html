@@ -84,33 +84,30 @@
   <!-- HUB SiteName -->
   <h3 >Colors </h3>
   <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Color Mixer" name="colors.colormix" format="text" 
+                    [(ngModel)]="currentHub.colors.colormix"></kng-config-input>
+
   <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text" 
-                    [style.color]="currentHub.colors.primaryText"
                     [style.background]="currentHub.colors.primary"
                     [(ngModel)]="currentHub.colors.primary"></kng-config-input>
 
   <kng-config-input clazz="config" label="Text Color" name="colors.text" format="text" 
-                    [style.color]="currentHub.colors.primaryText"
                     [style.background]="currentHub.colors.primary"
                     [(ngModel)]="currentHub.colors.primaryText"></kng-config-input>
 
   <kng-config-input clazz="config" label="Action Color" name="colors.action" format="text" 
-                    [style.color]="currentHub.colors.actionText"
                     [style.background]="currentHub.colors.action"
                     [(ngModel)]="currentHub.colors.action"></kng-config-input>
 
   <kng-config-input clazz="config" label="Action Text Color" name="colors.action-text" format="text" 
-                    [style.color]="currentHub.colors.actionText"
                     [style.background]="currentHub.colors.action"
                     [(ngModel)]="currentHub.colors.actionText"></kng-config-input>
 
   <kng-config-input clazz="config" label="Appbar Color (optional)" name="colors.action-appbar" format="text" 
-                    [style.color]="currentHub.colors.appbarText" 
                     [style.background]="currentHub.colors.appbar"
                     [(ngModel)]="currentHub.colors.appbar"></kng-config-input>
 
   <kng-config-input clazz="config" label="Appbar Text Color (optional)" name="colors.action-appbar-text" format="text" 
-                    [style.color]="currentHub.colors.appbarText" 
                     [style.background]="currentHub.colors.appbar"
                     [(ngModel)]="currentHub.colors.appbarText"></kng-config-input>
 

@@ -155,6 +155,7 @@ export class ProductGroupedListComponent implements OnInit {
   constructor(
     private $cdr: ChangeDetectorRef,
     private $i18n: i18n,
+    private $el: ElementRef
   ) {
     this.cache = {
       products: []
@@ -174,9 +175,10 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // FIXME HARDCODED CAT.WEIGHT FOR SUBS
-    this.defaultVisibleCat = 'fruits-legumes';
-    this.groupedCategoryKeys['fleurs'] = 2; // plaisir
-    this.groupedCategoryKeys['fruits-legumes'] = 1; // plaisir
+    this.defaultVisibleCat = 'fruits';
+    this.groupedCategoryKeys['fleurs'] = 9; // plaisir
+    this.groupedCategoryKeys['fruits'] = 1; // plaisir
+    this.groupedCategoryKeys['legumes'] = 2; // plaisir
     this.groupedCategoryKeys['douceurs-chocolats'] = 3; // plaisir
     this.groupedCategoryKeys['traiteur-maison'] = 5; // apero
     this.groupedCategoryKeys['charcuterie-pates'] = 6; // apero
@@ -307,6 +309,7 @@ export class ProductGroupedListComponent implements OnInit {
     }
     // const maxcat = this.useMaxCat? (this.isMobile ? 8 : 12):100;
     // const divider = this.isMobile ? 2 : 4;
+    // IMPORTANT: maxcat limit the display of products
     const maxcat = this.useMaxCat ? (this.isMobile ? 2 : (
       (window.innerWidth < 1025) ? 6 : 5
     )) : 200;
@@ -317,7 +320,7 @@ export class ProductGroupedListComponent implements OnInit {
 
     const inferedCategories = [];
     this.group = {};
-    this.products.forEach((product: Product) => {
+    this.products.forEach((product: Product, idx) => {
       //
       // FIXME, which is the case of tiny products list ?
       // if(!this.showSection && this.products.length<8) {
@@ -325,6 +328,7 @@ export class ProductGroupedListComponent implements OnInit {
       // }
       // 
       // grouped category is not available for Child 
+
       const categoryOrGroupName = this.isChildCategory ? product.belong.name : product.categories.name; 
       if (!this.group[categoryOrGroupName]) {
         this.group[categoryOrGroupName] = [];
@@ -418,10 +422,18 @@ export class ProductGroupedListComponent implements OnInit {
     }
 
     const offset = el.offsetTop;
-
     //
     // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
     el.scrollIntoView(<any>{ behavior: 'smooth', block: 'start' });
+
+    // const scrollEl = this.scrollContainer ? this.scrollContainer.nativeElement : document;
+    // const $thisRect = this.$el.nativeElement.getBoundingClientRect();
+    // const scrollTop = offset- $thisRect.top;
+    // scrollEl.scrollTo({
+    //     top: scrollTop,
+    //     behavior: 'smooth'
+    // });
+
   }
 
 

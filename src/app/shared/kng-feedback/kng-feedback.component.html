@@ -25,14 +25,7 @@
     </div>
   </div>
 
-  <div class="kng-boxed  bill"  [class.boxed]="boxed">
-    <div class="label">{{i18n[locale].title_invoice}}</div>
-    <div class="content">
-      <p>{{qrbillInvoice|| 'Aucune facture ouverte'}}</p>
-      <div class="bottom"><button class="" [routerLink]="'/store/'+store+'/home/me/invoices'" [relativeTo]="'/store/'+store+'/home'">{{i18n[locale].title_invoice_open}}</button> </div>
-    </div>
-  </div>
-      
+
 </div>
 <!-- ORDER PENDING -->
 <div class="" [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState=='pending'" >
@@ -40,7 +33,7 @@
     {{i18n[locale].title_order_pending}} {{order.oid}}
   </div>
   <div class="content">
-    <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>    
+    <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>
   </div>
 </div>
 
@@ -51,15 +44,14 @@
   <div class="content">
       {{i18n[locale].title_order_prepare}}&nbsp; <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b>
       {{i18n[locale].title_order_shipping}} <b class="-text-capitalize">{{order.shipping.name}}</b>
-      &nbsp;<span [hidden]="!childOrderLength" class="ita">//{{childOrderLength}} {{i18n[locale].title_order_grouped}} </span>
-
-      <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>            
-
+      &nbsp;
       <div class="bottom">
-        <button (click)="openOrder(order)" class="issue" >{{i18n[locale].title_order_open}}</button>    
+        <button (click)="openOrder(order)" class="issue" >{{i18n[locale].title_order_open}}</button>
       </div>
+      <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>
+
   </div>
-  
+
 </div>
 
 <!--- ORDER IS CANCEL -->
@@ -69,7 +61,7 @@
     <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
       {{i18n[locale].title_order_cancel}}
       <span class="text-strike">{{order.getTotalPrice()|currency:'CHF'}}</span>
-  </h3>                                      
+  </h3>
 </div>
 
 <!--- ORDER IS EVALUATED -->
@@ -84,11 +76,11 @@
     <span>
       &nbsp;{{order.getTotalPrice()|currency:'CHF'}}
     </span>
-  </div>                                      
+  </div>
   <div class="form">
     <span>{{i18n[locale].title_evaluation}}</span>&nbsp;
-    <span class="stars material-symbols-outlined" [class.scored]="score>=0">star</span> 
-    <span class="stars material-symbols-outlined" [class.scored]="score>=1">star</span> 
+    <span class="stars material-symbols-outlined" [class.scored]="score>=0">star</span>
+    <span class="stars material-symbols-outlined" [class.scored]="score>=1">star</span>
     <span class="stars material-symbols-outlined" [class.scored]="score>=2">star</span>
     <span class="stars material-symbols-outlined" [class.scored]="score>=3">star</span>
   </div>
@@ -102,7 +94,7 @@
       <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
     </p>
     <div class="bottom">
-      <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>    
+      <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>
     </div>
   </div>
 </div>
@@ -126,34 +118,34 @@
       <p [innerHtml]="i18n[locale].title_issue_header"></p>
 
       <!-- ORDER ITEMS -->
-      <ng-container 
+      <ng-container
         [ngTemplateOutlet]="orderItems"
         [ngTemplateOutletContext]="{ $implicit: order }">
       </ng-container>
 
 
       <p>
-  
+
         <label for="feedback">{{i18n[locale].title_issue_hub}}</label>
-        <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>                  
-  
+        <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>
+
       </p>
       <!-- ORDER FEEDBACK -->
       <div class="form">
-        <!-- Annulation {{order.getFulfilledFailure()}} - 
+        <!-- Annulation {{order.getFulfilledFailure()}} -
         Problème {{order.getFulfilledIssue().length}} -->
-        <span class="">{{i18n[locale].title_evaluation_quick}}</span>&nbsp;
-        <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span> 
-        <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span> 
+        <span class="" [innerHtml]="i18n[locale].title_evaluation_quick"></span>&nbsp;
+        <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span>
+        <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span>
         <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-        <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>    
+        <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>
       </div>
 
       <!-- FEEDBACK ACTIONS -->
       <button  (click)="onEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>
 
     </div>
-  </div>    
+  </div>
 </ng-container>
 
 <!-- ITEMS POPUP -->
@@ -168,7 +160,7 @@
       <h2>{{order.shipping.when|date:'EEEE d MMM y':'':locale}}</h2>
 
       <!-- ORDER ITEMS -->
-      <ng-container 
+      <ng-container
         [ngTemplateOutlet]="orderItems"
         [ngTemplateOutletContext]="{ $implicit: selectedOrderPopup }">
       </ng-container>
@@ -181,7 +173,7 @@
       <!-- FEEDBACK ACTIONS -->
 
     </div>
-  </div>    
+  </div>
 
 </ng-container>
 
@@ -191,7 +183,7 @@
         [class.selected]="selected[item.sku]" >
         <div class="header"(click)="selected[item.sku]=!selected[item.sku]">
           <input type="checkbox" [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]" [hidden]="!order.closed">
-          {{item.quantity}}x {{item.title}} ({{item.part}})  
+          {{item.quantity}}x {{item.title}} ({{item.part}})
         </div>
         <div class="content" [hidden]="!selected[item.sku]">
           <label for="story">{{i18n[locale].title_issue_item}}</label>
@@ -207,7 +199,7 @@
 
         <div class="header"(click)="selected[item.sku]=!selected[item.sku]">
           <input type="checkbox" [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]">
-          {{item.quantity}}x {{item.title}} ({{item.part}})  
+          {{item.quantity}}x {{item.title}} ({{item.part}})
         </div>
         <div class="content" [hidden]="!selected[item.sku]">
           <label for="story">{{i18n[locale].title_issue_item}}</label>
@@ -217,10 +209,10 @@
     </li>
   </ul>
   <ul >
-    <li class="add-to-cart">                
-      <a href="javascript:;" class="black smaller "                    
+    <li class="add-to-cart">
+      <a href="javascript:;" class="black smaller "
       (click)="onAddAllToCart()" i18n>
-      <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
+      <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>
     </li>
 
   </ul>

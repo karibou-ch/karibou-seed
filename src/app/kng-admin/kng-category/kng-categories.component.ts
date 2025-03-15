@@ -8,7 +8,7 @@ import {
 
 import { KngNavigationStateService, i18n } from '../../common';
 import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 
@@ -19,17 +19,6 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./kng-categories.component.scss']
 })
 export class KngCategoryDlgComponent {
-  constructor(
-    public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
-    public $fb: FormBuilder,
-    public $i18n: i18n,
-    private $snack: MdcSnackbar,
-    @Inject(MDC_DIALOG_DATA) public data: any
-  ) {
-    this.category = data.category;
-    this.pubUpcare = data.pubUpcare;
-
-  }
 
   //
   // edit.category
@@ -40,23 +29,58 @@ export class KngCategoryDlgComponent {
 
   //
   // init formBuilder
-  form = this.$fb.group({
-    'weight': ['', [Validators.required]],
-      'active': ['', []],
-      'home': ['', []],
-      'color': ['', []],
-      'image': ['', [Validators.required]],
-      'group': ['', []],
-      'name': ['', [Validators.required]],
-      'description': ['', [Validators.required]],
-      'type': ['', [Validators.required]]
-  });
+  form: FormGroup;
 
+  constructor(
+    public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
+    public $fb: FormBuilder,
+    public $i18n: i18n,
+    private $snack: MdcSnackbar,
+    @Inject(MDC_DIALOG_DATA) public data: any
+  ) {
+    this.category = data.category;
+    this.pubUpcare = data.pubUpcare;
+    //
+    // init formBuilder
+    this.form = this.$fb.group({
+      'weight': ['', [Validators.required]],
+      'active': ['', []],
+        'home': ['', []],
+        'color': ['', []],
+        'image': ['', [Validators.required]],
+        'group': ['', []],
+        'name': ['', [Validators.required]],
+        'description': ['', [Validators.required]],
+        'type': ['', [Validators.required]]
+    });
+
+    this.form.setValue({
+      'weight': this.category.weight || 0,
+      'active': this.category.active || false,
+      'home': this.category.home || false,
+      'color': this.category.color || '',
+      'image': this.category.cover || '',
+      'group': this.category.group || '',
+      'name': this.category.name || '',
+      'description': this.category.description || '',
+      'type': this.category.type ||'Category'
+    });
+  }
+
+
+  get isFormValid() {
+    return this.form.valid;
+  }
+
+  ngOnInit() {
+  }
   ucValidator(info) {
     if (info.size !== null && info.size > 150 * 1024) {
-    throw new Error('fileMaximumSize');
+      throw new Error('fileMaximumSize');
+    }
   }
-  }
+
+
 
   askSave() {
     if (this.form.invalid) {
@@ -146,10 +170,10 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     //
     // init formBuilder
-    this.loadCategories();
+    await this.loadCategories();
   }
 
   ngOnDestroy() {
@@ -162,10 +186,9 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadCategories() {
-    this.$category.select({stats: true}).subscribe((categories: Category[]) => {
-      this.categories = categories.sort(this.sortByGroupAndWeight.bind(this));
-    });
+  async loadCategories() {
+    const categories = await this.$category.select({stats: true}).toPromise();
+    this.categories = categories.sort(this.sortByGroupAndWeight.bind(this));
   }
 
   onSave(value: any) {
@@ -174,8 +197,8 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     // copy data
 
     // FIXME radio button is not working
-      delete value.type;
     Object.assign(this.edit.category, value);
+    console.log('onSave', this.edit.category);
     const editor = (this.edit.create) ?
       this.$category.create(this.edit.category) :
       this.$category.save(this.edit.category.slug, this.edit.category);

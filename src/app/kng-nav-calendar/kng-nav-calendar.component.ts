@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { i18n } from '../common';
-import { Config } from 'kng2-core';
+import { Config, User } from 'kng2-core';
 import pkgInfo from '../../../package.json';
 
 @Component({
@@ -78,14 +78,14 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
     this.$i18n.locale = lang;
   }
 
-  doSetCurrentShippingDay(day: Date) {
+  doSetCurrentShippingDay({day, time}) {
     if (!day || !this.isDayAvailable(day)) {
       return;
     }
     // this.dialogRef.close(day);
     this.currentShippingDay=day;
     this.open = false;
-    this.updated.emit({day});
+    this.updated.emit({day, time});
   }
 
   isDayAvailable(day: Date) {

@@ -34,12 +34,14 @@ export class KngPaymentComponent {
 
   i18n: any = {
     fr: {
-      stripe_issue: 'Votre banque à indiqué le problème suivant',
+      stripe_issue: 'Votre banque a indiqué le problème suivant',
       action_create_ok: 'Votre méthode de paiement a été enregistrée',
+      user_display_name: 'Nom du titulaire de la carte'
     },
     en: {
-      stripe_issue: 'Your bank indicate the following issue',
+      stripe_issue: 'Your bank indicated the following issue',
       action_create_ok: 'Your payment method has been saved',
+      user_display_name: 'Cardholder name'
     }
   };
 
@@ -52,7 +54,9 @@ export class KngPaymentComponent {
   elements: StripeElements;
   card: StripeCardElement;
   paymentSecret: any;
+  paymentIntent: any;
   isLoading: boolean;
+
 
   // optional parameters
   elementsOptions: StripeElementsOptions;
@@ -89,13 +93,14 @@ export class KngPaymentComponent {
       label: 'Bitcoin'
     },
     twint: {
-      img: '/assets/img/payment/tiwnt.png',
+      img: '/assets/img/payment/twint.png',
       label: 'TWINT (prepaid)'
     }
   };
 
   @Output() updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
 
+  @Input() title: string;
   @Input() minimal: boolean;
   @Input() user: User;
   @Input('config') config: Config;
@@ -158,7 +163,8 @@ export class KngPaymentComponent {
       // console.log('--- DB USER PAYMENTS 1',this.user.payments);
       this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
         this.user = user;
-        // console.log('--- DB USER PAYMENTS 2',user.context);
+        this.paymentIntent = user.context.intent;
+        console.log('--- DB USER PAYMENTS intent',this.paymentIntent);
       });
     }
 
@@ -213,7 +219,7 @@ export class KngPaymentComponent {
 
   onEmit(result: PaymentEvent) {
     this.isLoading = false;
-    this.updated.emit(result);
+    this.updated.emit(new UserCard(result));
   }
 
   onPayment() {
@@ -245,7 +251,7 @@ export class KngPaymentComponent {
       card: this.card,
       billing_details: { name, address: { postal_code, city, country} }
     };
-    const paymentSecret = this.user.context.intent;
+    const paymentSecret = this.paymentIntent;
     this.$stripe.confirmCardSetup(paymentSecret.client_secret, { payment_method: paymentMethod}).subscribe((result: any) => {
         // console.log('---- DEBUG intent', result);
 
@@ -282,6 +288,7 @@ export class KngPaymentComponent {
           this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
             this.isLoading = false;
             this.user = user;
+            this.paymentIntent = user.context.intent;
           });
         }
       });

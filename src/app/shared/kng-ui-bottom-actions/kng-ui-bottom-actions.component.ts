@@ -1,9 +1,9 @@
 // tslint:disable-next-line: import-spacing
-import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef }
+import { Component, OnInit, ViewEncapsulation, HostBinding, Input, ElementRef, ViewChild, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, HostListener }
 from '@angular/core';
 import { Category, ProductService, Product, CartService, Config, ConfigMenu, CartItem } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../../common';
-import { MetricsService } from 'src/app/common/metrics.service';
+import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { User } from 'kng2-core';
 
 @Component({
@@ -21,13 +21,16 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Input() exited: boolean;
   @Input() group: string;
   @Input() defaultMenu: string;
-
+  
+  themes: Category[];
   primary: ConfigMenu[];
 
   show: boolean;
   findGetNull: boolean;
   products: Product[] = [];
   autocompletes:any[];
+  lastSearch: string;
+  lastTheme: Category;
 
 
   @HostBinding('class.show') get classShow(): boolean {
@@ -42,6 +45,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   @ViewChild('search', { static: true }) search: ElementRef;
   @ViewChild('stats', { static: true }) stats: ElementRef;
+  @ViewChild('results', { static: true }) results: ElementRef;
 
   constructor(
     public  $i18n: i18n,
@@ -77,7 +81,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     });
 
     this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
-
+    this.themes = this.categories.filter(c => c.type === 'theme');
     this.categories = (this.categories||[]).sort(this.sortByWeight).filter((c, i) => {
       return c.active && (c.type === 'Category');
     });
@@ -88,6 +92,10 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
+  }
+
+  get isAdminAndTheme() {
+    return this.user && this.user.isAdmin() && this.lastTheme;
   }
 
   get store() {
@@ -111,6 +119,24 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.$cart.add(item);
   }
 
+  //
+  // FIXME this is quick implementation of remove product from theme
+  async removeToTheme(product) {
+    try{
+      const theme = this.themes.find(c => c.name == this.lastSearch);
+      product.themeDel = theme.name;
+      await this.$products.save(product).toPromise();
+  
+      const idx = this.products.findIndex(p => p.sku === product.sku);
+      this.products.splice(idx, 1);  
+      this.$cdr.markForCheck();
+
+    }catch(e) {
+      alert(e.message);
+    }
+
+  }
+
   hasSearch() {
     return this.search.nativeElement.value;
   }
@@ -121,6 +147,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
 
   doClear() {
     this.products = [];
+    this.lastTheme = this.lastSearch = null;
 
     this.$cdr.markForCheck();
   }
@@ -136,7 +163,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     const blur = !value;
     const tokens = value.split(' ').map(val => (val || '').length);
     document.body.classList.add('mdc-dialog-scroll-lock');
-
+    this.lastTheme = this.themes.find(c => c.name == value);
     //
     // on search open window
     if (tokens.some(len => len >= 3)) {
@@ -155,12 +182,26 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
           return;
         }
 
+        this.lastSearch = value;
+
         this.$navigation.searchAction('stats:'+products.length);
+
+        //
+        // use metrics for search or themes
+        const name = (this.lastTheme||value == 'popular'||value == 'discount')? 'kng_action_theme':'kng_action_search';
+        const params = {name,value:{value}};
+        this.$metric.event(EnumMetrics.metric_custom,params);
+        console.log('---DBG custom',params.name,params.value);
+
 
         this.findGetNull = !products.length;
         // FIXME products.sort is not a function
+        // const sort = this.lastTheme ? this.sortByCatAndScore : this.sortByScore;
         this.products = products.sort(this.sortByScore);
         this.$cdr.markForCheck();
+        setTimeout(() => {
+          this.results.nativeElement.scrollTop = 0;
+        }, 0);        
       });
     }
   }
@@ -186,6 +227,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     if (this.group) {
       options.group = this.group;
     }
+    this.lastTheme = this.lastSearch = null;
     
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
@@ -206,7 +248,16 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       this.doClear();
       document.body.classList.remove('mdc-dialog-scroll-lock');
     }
+  }
 
+  @HostListener('window:popstate', ['$event'])
+  onPopState($event) {
+    console.log('---DBG popstate', $event);
+    if(this.show){
+      this.show = false;
+      this.$cdr.markForCheck();
+      $event.preventDefault();
+    }
   }
 
   onPrimaryMenu(menu) {
@@ -214,7 +265,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   sortByCatAndScore(a: Product, b) {
-    const cat = (a.categories.weight - b.categories.weight);
+    const cat = (b.categories.weight - a.categories.weight);
     if ( cat !== 0 ) {
       return cat;
     }

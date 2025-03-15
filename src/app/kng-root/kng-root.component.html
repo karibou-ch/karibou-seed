@@ -3,24 +3,54 @@
   <div class="root-container">
     <div class="basic-setting">
     <!-- USER i18n -->
-    <div class="kng-boxed i18n">
-      <div class="content">
-        <div class="">{{label.nav_i18n}}</div>
-        <label class="switch">
-          <input type="checkbox" (click)="doLocaleSwitch()">
-          <span class="slider">&nbsp;{{locale}}</span>
-        </label>
-
-      </div>
+    <div class="kng-boxed theme i18n">
+      <kng-slider class="label" [small]="true" (change)="doLocaleSwitch()">
+        {{label.nav_i18n}}&nbsp;({{locale}})
+      </kng-slider>            
     </div>
 
     <!-- USER login -->
     <div class="kng-boxed theme" [hidden]="user.isAuthenticated()">
-      <div class="label" [innerHtml]="tagline.t[locale]"></div>
-      <div class="content">
-        <button class="" [routerLink]="'/store/'+store+'/home/me/login'" [relativeTo]="'/store/'+store+'/home'">{{label.nav_login}}</button> 
-      </div>
+      <div class="label" [innerHtml]="llabel.title_account_sign"></div>
+      <button class="end" [routerLink]="'/store/'+store+'/home/me/login'" [relativeTo]="'/store/'+store+'/home'">
+        <span class="material-symbols-outlined">arrow_forward_ios</span>
+      </button> 
+
     </div>
+
+
+    <!-- USER cmd -->
+    <div class="kng-boxed theme" [class.disabled]="!user.isAuthenticated()">
+      <div class="label" [innerHtml]="llabel.title_orders"></div>
+      <button class="end" [routerLink]="'/store/'+store+'/home/me/orders'" [relativeTo]="'/store/'+store+'/home'">
+        <span class="material-symbols-outlined">arrow_forward_ios</span>
+      </button> 
+    </div>    
+
+    <!-- USER invoice -->
+    <div class="kng-boxed theme" [class.disabled]="!user.isAuthenticated()">
+      <div class="label" [innerHtml]="llabel.title_invoices_open"></div>
+      <button class="end" [routerLink]="'/store/'+store+'/home/me/invoices'" [relativeTo]="'/store/'+store+'/home'">
+        <span class="material-symbols-outlined">arrow_forward_ios</span>
+      </button> 
+    </div>
+
+    <!-- USER account email -->
+    <div class="kng-boxed bill" [class.disabled]="!user.isAuthenticated()">
+      <div class="label" [innerHtml]="llabel.title_account_mail"></div>
+      <button class="end" [routerLink]="'/store/'+store+'/home/me/email'" [relativeTo]="'/store/'+store+'/home'">
+        <span class="material-symbols-outlined">arrow_forward_ios</span>
+      </button> 
+    </div>
+    
+      <!-- USER account shipping -->
+      <div class="kng-boxed bill" [class.disabled]="!user.isAuthenticated()">
+        <div class="label" [innerHtml]="llabel.title_account_shipping"></div>
+        <button class="end" [routerLink]="'/store/'+store+'/home/me/email'" [relativeTo]="'/store/'+store+'/home'">
+          <span class="material-symbols-outlined">arrow_forward_ios</span>
+        </button> 
+      </div>
+      
 
     <!-- USER theme -->
     <div class="kng-boxed theme" hidden>
@@ -34,14 +64,16 @@
     </div>
 
     </div>
+ 
     <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
+
+    <!-- FEEDBACK -->
+    <kng-feedback [config]="config" [user]="user" [hidden]="!user.isAuthenticated()">
+    </kng-feedback>
+
 
     <!-- SUBSCRITION OPTIONS -->
     <kng-subsciption-control [config]="config"></kng-subsciption-control>
-
-    <!-- FEEDBACK -->
-    <kng-feedback [config]="config" [user]="user">
-    </kng-feedback>
 
 
 

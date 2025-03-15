@@ -13,30 +13,39 @@ import { AssistantService, Product } from 'kng2-core';
 export class KngAudioAssistantComponent implements OnInit {
 
   private _sentences= {
-    "productsfruits-legumes":[      
+    "productsagentfruits-legumes":[
       "Un panier de fruits et légumes pour petits budgets",
       "Un panier de fruits gourmand pour une grande famille",
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment pour une soirée grillade entre amis",
       "Un assortiment généreux et gourmand pour 10 personnes",
     ],
-    "productstraiteurs":[      
+    "productsagenttraiteurs":[
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
     ],
-    "charcuterie-pates":[
+    "productsagentboucherie-artisanale":[
+      "Un assortiment pour des Grillades Festives",
+      "Un assortiment pour une Cuisine Suisse Authentique",
+      "Un assortiment pour une Cuisine de Brasserie",
+      "Un assortiment pour une Cuisine Française Raffinée",
+      "Un assortiment pour une Cuisine Italienne Chaleureuse",
+      "Un assortiment pour une Cuisine Espagnole et Tapas",
+      "Un assortiment pour une Cuisine Méditerranéenne",
+      "Un assortiment pour une Cuisine Moyen-Orientale",
+    ],
+    "productsagentcharcuterie-pates":[
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment pour une soirée grillade entre amis",
-      "Un assortiment généreux et gourmand pour 10 personnes",
-      "Un assortiment pour des Grillades Festives",
+      "Un assortiment généreux et gourmand pour un anniversaire",
     ],
-    "productsboulangerie-artisanale":[
-      "Un assortiment généreux et gourmand pour 10 personnes",
+    "productsagentboulangerie-artisanale":[
+      "Un assortiment généreux et gourmand pour un anniversaire",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
       "Un assortiment pour le gouter de 50 enfants",
     ],
-    products:[      
+    productsagent:[
       "Un assortiment festif pour un événement dans mon entreprise ",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
@@ -51,31 +60,36 @@ export class KngAudioAssistantComponent implements OnInit {
       "Un assortiment pour une Cuisine de la Mer"
     ],
     feedback: [
+    ],
+    quote: [
     ]
   }
 
 
   public i18n = {
     fr: {
-      title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_products:"La liste est longue. Donnez-moi un peu de contexte et je vais la simplifier.",
-      note_checkout:'Je peux vous aider à finaliser votre commande.',
+      title: 'Donnez moi un peu de contexte sur vos envies, je fais une sélection',
+      note_quote:"Vous pouvez aussi décrire votre projet avec un audio ",
+      note_productsagent:"Donnez moi un peu de contexte sur vos envies, je fais une sélection.",
+      note_checkout:'Je vais vous aider à finaliser votre commande.',
       note_feedback:'Vous pouvez aussi nous laissez un message'
     },
     en:{
-      title: 'Donnez moi un peu de contexte sur vos envies, je peux simplifier cette page',
-      note_products:"The list is long. Give me some context and I will simplify it.",
-      note_checkout:'Je peux vous aider à finaliser votre commande.',
+      title: 'Give me a bit of context about your desires, I will make a selection',
+      note_quote: 'You can describe your project with audio',
+      note_productsagent: 'Give me a bit of context about your desires, I will make a selection.',
+      note_checkout: 'I will help you finalize your order.',
       note_feedback:'You can also leave us a message'
     }
   }
 
-  defaulPrompt = "un apéro gourmand pour 10 personnes";
+  defaulPrompt = "Comment puis-je vous aider ?";
 
   @Output() onAudioLoading = new EventEmitter<boolean>();
   @Output() onAudioError = new EventEmitter<Error>();
   @Output() onAudio = new EventEmitter<string>();
   @Output() onData = new EventEmitter<any>();
+  @Output() onNote = new EventEmitter<string>();
 
   audioLoading: boolean;
   audioError: boolean;
@@ -85,12 +99,19 @@ export class KngAudioAssistantComponent implements OnInit {
   audioRecorded: boolean;
 
   onContextMenu:any;
-  markdown:any;  
+  markdown:any;
+  whisperNote:string;
 
   cleanMarkdown = /\(\/sku\/\d+\)|{{[\d,]*?}}|\[[\d,]*?\]/ig;
 
 
-  @Input() agent: "products"|"checkout"|"feedback" = "products";
+  @Input() promptmore:string = "";
+  @Input() store:string;
+  @Input() whisperOnly = false;
+  @Input() quiet = false;
+  @Input() cleanQuery = true;
+  @Input() withHistory = false;
+  @Input() agent: "productsagent"|"quote"|"checkout"|"feedback";
   @Input() category: string = "";
   @Input() products: Product[];
   isThinking: boolean;
@@ -109,9 +130,11 @@ export class KngAudioAssistantComponent implements OnInit {
     private $audio: KngAudioRecorderService,
     private $i18n: i18n,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
+    this.whisperNote = '';
     this.audioDetected = undefined;
     this.products = [];
+    this.agent= "productsagent";
     this.$audio.recorderError.subscribe(error => {
       //
       // record error , display user message
@@ -137,7 +160,7 @@ export class KngAudioAssistantComponent implements OnInit {
   get locale() {
     return this.$i18n.locale;
   }
-  
+
   get label() {
     return this.i18n[this.$i18n.locale];
   }
@@ -146,23 +169,23 @@ export class KngAudioAssistantComponent implements OnInit {
     return this.$i18n.label();
   }
 
-
-  get defaultNote() {
-    return this.defaulPrompt || this.i18n[this.locale]['note_'+this.agent];
+  get label_title() {
+    return this.i18n[this.locale]['note_'+this.agent];
   }
+
 
   get sentences() {
     return this._sentences[this.agent+this.category]||this._sentences[this.agent]||[]
   }
 
   //
-  // 
+  //
   get markdownRender() {
-    let content = this.note;
+    let content = this.note || this.whisperNote;
     if(!content) return '';
     //
     // apply correction before the rendering
-    content = content.replace(this.cleanMarkdown,'');
+    content = content.replace(this.cleanMarkdown,'').replace('[ok]','');
     // FIX markdown link
     const link = /\[(.*?)\]\((.*?)\)/g;
     content = content.replace(link, (match, text, target) => {
@@ -184,7 +207,7 @@ export class KngAudioAssistantComponent implements OnInit {
         html:true,
         breaks:true,
         typographer:true
-      });    
+      });
     });
 
     //
@@ -192,20 +215,22 @@ export class KngAudioAssistantComponent implements OnInit {
     //const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
     //const eventName = supportTouchEvent? 'touchend':'mouseup';
     //window.addEventListener(eventName,this.audioStopAndSave.bind(this));
-    if(this.isAgentFeedback){
+    if(this.isAgentFeedback || this.whisperOnly){
       return;
     }
 
-    this.$assistant.history({agent:'productsagent',trim:true}).subscribe((content) => {
+    this.$assistant.history({agent:this.agent,trim:true,hub:this.store}).subscribe((content) => {
       const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
       const result = content.filter(item => item['role'] == 'assistant');
       if(result.length) {
-        const msg = result[result.length-1]['content'];
-        this.note = msg;
+        const msg = (this.withHistory)? result.reduce((note, msg) => note + msg['content']+'\n', ''):(result[result.length-1]['content']);
+        this.note = msg.replace("<thinking>","<section class='thinking'>").replace("</thinking>","</section>");
+
         let products =msg.match(skus)?.map(match => match.replace(/{{|}}|\[|\]/g, '').split(',')).flat().map(sku => (+sku)).filter(sku => sku);
         if(products && products.length){
           this.onData.emit(products);
         }
+        this.onNote.emit(this.note.trim());
       }
       this.$cdr.markForCheck();
     },(error)=>{
@@ -218,11 +243,37 @@ export class KngAudioAssistantComponent implements OnInit {
 
   async checkAudioDetected(url) {
     if(this.audioDetected == undefined && url) {
-      this.audioDetected = await this.$audio.detectSound({url});      
+      this.audioDetected = await this.$audio.detectSound({url});
     }
   }
 
+
+  async audioWhisper(base64: string, src: string) {
+    const params:any = {body:{audio:base64,whisperOnly:true}};
+    params.q = 'whisper';
+    this.whisperNote = '';
+    this.isThinking = true;
+    this.$assistant.chat(params).subscribe((content) => {
+      this.whisperNote += content.text;
+      this.$cdr.markForCheck();
+    },(error) => {
+      this.isThinking = false;
+      this.note = "Oups, il y a un problème :"+error.error?.message||error.message;
+      this.$cdr.markForCheck();
+
+    },()=>{
+      this.isThinking = false;
+      this.whisperNote = this.whisperNote.trim().replace('**traitement...**','');
+      this.onNote.emit(this.whisperNote);
+      this.$cdr.markForCheck();
+    });
+  }
+
   async assistant(base64?) {
+    if(this.whisperOnly){
+      await this.audioWhisper(base64,this.urlAudio);
+      return;
+    }
     const filterProductAsFIX = (product) => {
       if(product.attributes.bundle || product.attributes.customized){
         return false;
@@ -231,52 +282,61 @@ export class KngAudioAssistantComponent implements OnInit {
     };
 
     this.isThinking = true;
-    const query = /\*\*Question:?\*\*.+?[.?!]/i;
+    const query = (this.cleanQuery)? /\*\*Question:?\*\*.+?[\n?!]/i : /\*\*Question:?\*\*?/i;
     let endprint = false;
     const body:any = { products:this.products.filter(filterProductAsFIX).map(product => product.sku)};
-    const params:any = {agent:'productsagent'};
+    const params:any = {agent:this.agent};
     params.q = this.defaulPrompt;
     if(base64) {
-      params.q = "( ͡° ᴥ ͡°)";
+      params.q = this.promptmore || "( ͡° ᴥ ͡°)";
       body.audio = base64;
     }
     params.body = body;
-    this.$cdr.markForCheck()
+    this.$cdr.markForCheck();
+    let streamTxt = '', attach='';
     this.$assistant.chat(params).subscribe((content) => {
+      console.log('content', content.text);
       if(content.tool && content.tool.length) {
         this.onData.emit(content.tool);
       }
 
       const indexOfSku = content.text.indexOf('---')
       if(endprint||indexOfSku>-1) {
-        this.note+=content.text.substring(0,indexOfSku);
+        attach+=content.text;
+        streamTxt+=content.text.substring(0,indexOfSku);
         endprint=true;
         return
       }
-      this.note+=(content.text.replace('**traitement...**','').replace(query,''));
+      streamTxt+=(content.text.replace('**traitement...**','').replace(query,''));
 
       this.$cdr.markForCheck()
-    }, err => { 
+    }, err => {
       this.isThinking = false;
-      this.note = "Oups, il y a un problème ...";
+      this.note = "Oups, il y a un problème :"+err.message;
       this.$cdr.markForCheck();
-      console.log(err);
-    },async ()=>{ 
+    },async ()=>{
       this.isThinking = false;
-      this.note = (this.note);
+      const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
+      let products =attach.match(skus)?.map(match => match.replace(/{{|}}|\[|\]/g, '').split(',')).flat().map(sku => (+sku)).filter(sku => sku);
+      if(products && products.length){
+        this.onData.emit(products);
+      }
+
+      this.note = (streamTxt.trim());
+      this.onNote.emit(this.note);
       this.$cdr.markForCheck();
   });
 
-    
+
   }
 
-  async audioRecord($event) {    
+  async audioRecord($event) {
     if(this.audioIsRecording ) {
       return this.audioStopAndSave();
     }
     this.audioError = !(await this.$audio.isAudioGranted());
 
-    await this.$audio.startRecording({timeout:15000});    
+    await this.$audio.startRecording({timeout:15000});
     this.$cdr.markForCheck()
   }
 
@@ -297,7 +357,7 @@ export class KngAudioAssistantComponent implements OnInit {
       this.audioDetected = await this.$audio.detectSound({blob});
 
       //
-      // should exit 
+      // should exit
       if(!this.audioDetected){
         this.audioLoading = false;
         this.$cdr.markForCheck();
@@ -311,14 +371,14 @@ export class KngAudioAssistantComponent implements OnInit {
 
       this.urlAudio = base64;
       // const audio:HTMLAudioElement = document.querySelector('#audio');
-      // audio.setAttribute('src', this.urlAudio);  
+      // audio.setAttribute('src', this.urlAudio);
 
       this.onAudio.emit(base64);
 
       if(this.isAgentFeedback){
         return;
       }
-  
+
       this.assistant(base64);
 
     }catch(error){
@@ -328,7 +388,7 @@ export class KngAudioAssistantComponent implements OnInit {
       this.onAudioError.emit(error);
       this.$cdr.markForCheck();
     }
-  }  
+  }
 
   onTest($event) {
     this.defaulPrompt = $event.sentence;
@@ -340,6 +400,7 @@ export class KngAudioAssistantComponent implements OnInit {
     this.$assistant.history({agent:'productsagent',clear:true}).subscribe((content) => {
       this.note = '';
       this.onData.emit([]);
+      this.onNote.emit('');
       this.$cdr.markForCheck();
     });
   }

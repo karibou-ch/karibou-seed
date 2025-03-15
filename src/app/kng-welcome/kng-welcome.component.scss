@@ -41,7 +41,7 @@
       background-color: #ddd;
       color: #007aff;
       border-radius: 20px;
-      cursor: pointer; 
+      cursor: pointer;
       @media (max-width:431px) {
         padding: 10px 15px;
       }
@@ -49,7 +49,7 @@
   }
 }
 
-.b2b-query {  
+.b2b-query {
   cursor: pointer;
   font-size: 18px;
   width: 100%;
@@ -60,7 +60,7 @@
   .new{
     background: yellow;
     transform: rotate(343deg);
-    display: inline-block;    
+    display: inline-block;
     margin-right: 10px;
   }
   .link{
@@ -84,15 +84,15 @@ button.CTA {
   min-width: 300px;
   display: block;
   margin:10px auto;
-  text-decoration: none;        
-  font-size:large;  
+  text-decoration: none;
+  font-size:large;
   background-color: var(--mdc-theme-primary);
   color: var(--mdc-theme-primary-text);
   border: 0px ;
   font-weight: bold;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;  
+  justify-content: space-evenly;
 }
 
 
@@ -108,7 +108,7 @@ button.CTA {
     text-align: center;
     font-size: 15px;
     font-weight: 500;
-  }  
+  }
   .welcome{
     font-family: 'Gentium Plus';
     padding-top: 20px;
@@ -118,12 +118,17 @@ button.CTA {
     justify-content: center;
     width: 100%;
     position: relative;
+    img{
+      border-radius: 16px;
+      width: 400px;
+      max-width: calc(100% - 30px);
+    }
     canvas{
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;    
+      bottom: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
@@ -134,7 +139,7 @@ button.CTA {
       line-height: 72px;
       color: #111;
       font-weight: 600;
-      padding-left: 0;    
+      padding-left: 0;
       margin-bottom: 5px;
       text-align: center;
       width: 100%;
@@ -145,8 +150,8 @@ button.CTA {
       @media (max-width:431px) {
         font-size: 40px;
         line-height: 48px;
-        padding-left: 10px;    
-  
+        padding-left: 10px;
+
       }
     }
     .content{
@@ -158,8 +163,8 @@ button.CTA {
       font-size: 21px;
       margin: 0 auto;
       color: #333;
-      text-align: center;   
-      display: flex; 
+      text-align: center;
+      display: flex;
       flex-direction:column;
 
       @media (max-width:431px) {
@@ -168,12 +173,12 @@ button.CTA {
         max-width: calc(100% - 40px);
         line-height: 21px;
         width: calc(100% - 40px);
-        padding-top: 0;        
+        padding-top: 0;
       }
     }
     .actions{
       display: flex;
-      width: 100%;    
+      width: 100%;
       padding-top: 30px;
 
     }
@@ -194,7 +199,7 @@ button.CTA {
       flex-basis: 100%;
       height: 0;
       display: none;
-    }    
+    }
     .box{
       &.business,
       &.b2b{
@@ -213,10 +218,9 @@ button.CTA {
       min-height: 273px;
       padding: 15px 12px;
       margin: 0 10px 15px;
-      border: solid 1px transparent;
       position: relative;
-      overflow: hidden;  
-      text-align: center;    
+      overflow: hidden;
+      text-align: center;
       @media (max-width:431px) {
         min-height: auto;
         padding: 15px 12px;
@@ -224,7 +228,6 @@ button.CTA {
         width: 100%;
       }
       .title{
-        text-transform: uppercase;
         font-weight: 600;
         font-size: 17px;
         padding: 6px 0 10px;
@@ -241,10 +244,15 @@ button.CTA {
         flex-direction: column;
         justify-content: space-evenly;
         height: 100%;
+        img{
+          margin-left: -25px;
+          margin-right: -25px;
+          margin-bottom: 20px;
+        }
         .bottom{
           margin-top: auto;
           margin-bottom: 0;
-          height: fit-content;          
+          height: fit-content;
         }
 
         .button{
@@ -258,9 +266,9 @@ button.CTA {
           color: #333;
           border-radius: 20px;
           font-size: inherit;
-          margin-top: 20px;        
+          margin-top: 20px;
         }
-  
+
       }
     }
   }
@@ -271,18 +279,18 @@ button.CTA {
     padding: 50px 0;
     background: rgba(204,204,204 ,0.28);
     margin-top: -50px;
-    padding-top: 100px;    
+    padding-top: 100px;
     text-align: center;
     max-width: 100%;
-    overflow: hidden;    
+    overflow: hidden;
     img{
       width: 60%;
-      margin: 20px auto;  
+      margin: 20px auto;
       opacity: .8;
       @media (max-width: 430px) {
         width: 97%;
       }
-    }    
+    }
     h3{
       width: 100%;
       font-size: 28px;
@@ -312,13 +320,13 @@ button.CTA {
       padding-top: 30px;
       margin-top: 0;
     }
-  
+
     @media (max-width: 430px) {
       padding-top: 0!important;
       padding-bottom: 0!important;
       overflow-y: auto;
-    }    
-  
+    }
+
   }
   padding-bottom: 50px;
   align-items: stretch;
@@ -334,18 +342,18 @@ button.CTA {
 
   }
   .faq-box{
-    width: calc(33% - 20px);    
+    width: calc(33% - 20px);
     text-align: left;
     padding-top: 10px;
     padding-bottom: 20px;
     margin: 10px;
-    outline: none;    
+    outline: none;
     background-color: #ffffff4f;
     border-radius: 14px;
     @media (max-width: 430px) {
-      width: calc(100% - 20px);    
+      width: calc(100% - 20px);
 
-    }    
+    }
     .title{
       padding: 0 13px;
       font-weight: bold;
@@ -377,10 +385,10 @@ button.CTA {
       padding-left: 0;
       margin: 4px 10px;
       padding-top: 8px;
-      font-weight: 400;            
+      font-weight: 400;
       width: 100%;
       text-align: left;
-    }        
+    }
     input{
       transition: all 0.25s ease-out;
       margin: 4px 0px;
@@ -397,10 +405,10 @@ button.CTA {
       padding: 5px 10px;
       height: 30px;
       font-size: 16px;
-      color: #555;           
-      text-align: left; 
+      color: #555;
+      text-align: left;
       margin-right: 6px;
-      font-weight: 600;      
+      font-weight: 600;
     }
     div.price{
       font-size: 17px;
@@ -414,7 +422,7 @@ button.CTA {
     display: flex;
     width: 100%;
     padding-top: 30px;
-        
+
   }
 }
 

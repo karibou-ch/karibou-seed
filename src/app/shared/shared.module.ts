@@ -37,6 +37,7 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
 import { KngAssistantComponent } from './kng-assistant/kng-assistant.component';
 import { KngAudioAssistantComponent } from './kng-audio-assistant/kng-audio-assistant.component';
 import { KngStreamSentenceComponent } from './kng-stream-sentence/kng-stream-sentence.component';
+import { KngBusinessOptionComponent } from './kng-business-option/kng-business-option.component';
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import { KngStreamSentenceComponent } from './kng-stream-sentence/kng-stream-sen
     KngAssistantComponent,
     KngAudioNoteComponent,
     KngAudioAssistantComponent,
+    KngBusinessOptionComponent,
     KngControlMessagesComponent,
     KngTextfieldAutosizeDirective,
     KngUserReminderComponent,
@@ -67,8 +69,9 @@ import { KngStreamSentenceComponent } from './kng-stream-sentence/kng-stream-sen
     KngAudioNoteComponent,
     KngAudioAssistantComponent,
     KngAssistantComponent,
-    KngHomeComponent,
+    KngBusinessOptionComponent,
     KngControlMessagesComponent,
+    KngHomeComponent,
     KngShopComponent,
     KngShopsComponent,
     KngTextfieldAutosizeDirective,

@@ -2,7 +2,7 @@
   display: flex;
   position: relative;
   height: 100%;
-  flex-direction: column;  
+  flex-direction: column;
   max-height: 100%;
   overflow: hidden;
 }
@@ -14,7 +14,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   visibility:visible;
   z-index: 3;
@@ -33,7 +33,7 @@
 
   .assistant-dialog__surface{
     /* see overflow in mdc-style.scss */
-    background-image: linear-gradient(45deg, #fff 90%, #fff, #fff, var(--mdc-theme-appbar));
+    background-image: linear-gradient(45deg, #fff 90%, #fff, #fff, var(--mdc-theme-appbar-light));
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
     background-color: var(--mdc-theme-background, #fff);
     background-color: #fff;
@@ -48,14 +48,14 @@
     margin-top: 20px;
     margin-bottom: 40px;
     margin-left: auto;
-    margin-right: auto;    
-    
+    margin-right: auto;
+
 
     @media (prefers-color-scheme: dark) {
       background-color: var(--mdc-theme-primary-dark)!important;
-      color: var(--mdc-theme-primary-dark-text)!important;      
+      color: var(--mdc-theme-primary-dark-text)!important;
     }
-  
+
     @media (max-width: 769px) {
       margin-top: 0px;
     }
@@ -130,7 +130,7 @@
       }
     }
 
-  
+
     .topbar {
       margin: 0;
       padding: 0;
@@ -159,8 +159,8 @@
         font-size: 20px;
         line-height: 28px;
         text-align: left;
-        width: fit-content; 
-        margin-left: 3%;       
+        width: fit-content;
+        margin-left: 3%;
       }
 
 
@@ -178,7 +178,7 @@
         }
 
       }
-        
+
       .cart {
         margin-right: 15px;
         margin-left: auto;
@@ -230,7 +230,7 @@
       text-transform: inherit;
       line-height: 1.3rem;
       height: 100%;
-    
+
       .title {
         margin: auto;
         text-align: left;

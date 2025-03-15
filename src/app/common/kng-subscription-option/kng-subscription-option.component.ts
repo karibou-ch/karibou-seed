@@ -1,15 +1,15 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { i18n } from '../i18n.service';
-import { 
+import {
   Config,
-  CartSubscription, 
-  CartSubscriptionParams, 
-  CartItemFrequency, 
-  CartItem, 
-  CartService, 
-  LoaderService, 
-  Order, 
-  Hub, 
+  CartSubscription,
+  CartSubscriptionParams,
+  CartItemFrequency,
+  CartItem,
+  CartService,
+  LoaderService,
+  Order,
+  Hub,
   CartAction
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
@@ -25,12 +25,12 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
   private _subscription: Subscription;
   private _i18n = {
     fr:{
-      title:'Décidez de la fréquence de livraison et du jour qui vous arrange pour les produits dans votre panier.',
+      title:'Fréquence et jour de livraison.',
       title_time_contract:'Quand souhaitez vous être livré ?',
       title_time_contract_update:'La livraison est programmée à'
     },
     en:{
-      title:'Decide on the delivery frequency and day that suits you for the products in your basket.',
+      title:'Frequency and delivery day',
       title_time_contract:'When would you like delivery?',
       title_time_contract_update:'Delivery is scheduled for'
     }
@@ -51,7 +51,7 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
 
   config:Config;
   selIteration:any;
-  selDayOfWeek:any;  
+  selDayOfWeek:any;
   selTime:number;
   items:CartItem[];
   subscriptions:CartSubscription[];
@@ -68,7 +68,7 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     private $cart: CartService,
     private $loader: LoaderService,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
     this._subscription = new Subscription();
     this.items = [];
     this.subscriptions = [];
@@ -78,7 +78,9 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
         activeForm: false
     };
     this.selTime = 16;
-    this.oneWeek = Order.fullWeekShippingDays(this.hub);
+    const aweek = Order.fullWeekShippingDays(this.hub);
+    this.oneWeek = Array.from({length: 30}).map((id,idx) => (new Date(aweek[0])).plusDays(idx));
+    // this.oneWeek = Order.fullWeekShippingDays(this.hub);
     this.selDayOfWeek = this.findDayOfWeek(this.subscriptionParams.dayOfWeek);
     this.selIteration = this.findIteration(this.subscriptionParams.frequency);
     this.shippingtimes = {};
@@ -164,7 +166,7 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
         this.shippingtimes = times.reduce((shippingtimes,time)=> {
           shippingtimes[time]=emit.config.shared.hub.shippingtimes[time];
           return shippingtimes;
-        },{});  
+        },{});
       })
     );
   }
@@ -175,7 +177,7 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     // FIXME this should be done in the change hub service
     this.selDayOfWeek = this.dayOfWeek[0];
     this.subscriptionParams.dayOfWeek = this.selDayOfWeek.id;
-    this.$cart.subscriptionSetParams(this.subscriptionParams);
+    this.$cart.subscriptionSetParams(this.subscriptionParams, true);
     return this.selDayOfWeek;
   }
 
@@ -188,7 +190,7 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     this.subscriptionParams.frequency = this.selIteration.id;
     this.subscriptionParams.time = this.selTime;
     this.$cart.subscriptionSetParams(this.subscriptionParams);
-    this.$cart.save({action:CartAction.CART_SUBSCRIPTION});
+
   }
 
 

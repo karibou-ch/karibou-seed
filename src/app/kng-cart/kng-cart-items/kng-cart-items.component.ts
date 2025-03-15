@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { stat } from 'fs';
-import { Config, CartSubscription, CartItemsContext, CartItem, CartService, LoaderService, Hub, User, Order, CartSubscriptionParams, CartSubscriptionProductItem } from 'kng2-core';
+import { Config, CartSubscription, CartItemsContext, CartItem, CartService, LoaderService, Hub, User, Order, CartSubscriptionParams, CartSubscriptionProductItem, ShippingAddress } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
 
@@ -26,7 +25,6 @@ export class KngCartItemsComponent implements OnInit {
   private _config: Config;
   private _subscription: Subscription;
   private _showCartItems: boolean;
-
   @Input() i18n: any;
   @Input() set showCartItems(value: boolean){
     this._showCartItems = value;
@@ -39,12 +37,12 @@ export class KngCartItemsComponent implements OnInit {
     const ctx:CartItemsContext = {
       forSubscription:!this._showCartItems,
       hub:this.hub.slug
-    }    
+    }
 
     this.items = this.$cart.getItems(ctx);
     this.itemsAmount = this.$cart.subTotal(ctx);
 
-    
+
   }
   @Input() showFooter: boolean;
   @Input() showSeparator: boolean;
@@ -87,7 +85,7 @@ export class KngCartItemsComponent implements OnInit {
     private $loader: LoaderService,
     private $route: ActivatedRoute,
     private $router: Router
-  ) { 
+  ) {
     this.items = [];
     this.displaySharedSeparator = 0;
     this._subscription = new Subscription();
@@ -133,14 +131,13 @@ export class KngCartItemsComponent implements OnInit {
     return this.$i18n.locale;
   }
 
-  get labell(){
+  get llabel(){
     return this.i18n[this.locale];
-  }  
-
+  }
 
   get label(){
     return this.$i18n.label();
-  }  
+  }
   get cart_info_one_date() {
     const when = this.$cart.getCurrentShippingDay();
     if(!this.currentShippingDay || !when){
@@ -159,7 +156,7 @@ export class KngCartItemsComponent implements OnInit {
         forSubscription:!this.showCartItems,
         onSubscription:!this.showCartItems,
         hub:this.hub.slug
-      }    
+      }
     //
     // adding gateway fees
     const gateway = this.$cart.getCurrentGateway();
@@ -175,12 +172,12 @@ export class KngCartItemsComponent implements OnInit {
   get cart_info_checkout_or_subscription() {
 
     if(this.hasPendingSubscription) {
-      return this.labell.cart_update_subscription_payment;
+      return this.llabel.cart_update_subscription_payment;
     }
     if(this.hasUpdateContract) {
-      return this.labell.cart_update_subscription;
+      return this.llabel.cart_update_subscription;
     }
-    return (this.showCartItems)?this.labell.cart_checkout:this.labell.cart_create_subscription
+    return (this.showCartItems)?this.llabel.cart_checkout:this.llabel.cart_create_subscription
   }
 
   get showCartItems() {
@@ -190,40 +187,18 @@ export class KngCartItemsComponent implements OnInit {
     if(!this.contracts||!this.subscriptionParams){
       return null;
     }
-    let contract;
-    const contractId = this.$route.snapshot.queryParams.id;
-
-    // 
-    // when contract is specified from queryParams it must be digest
-    if(contractId && (contract = this.contracts.find(contract=> contract.id == contractId))) {
-      this.subscriptionParams = {
-        frequency: contract.frequency,
-        activeForm: true,
-        dayOfWeek: contract.dayOfWeek,
-        time:contract.shipping.hours
-      }
-      this.$cart.subscriptionSetParams(this.subscriptionParams);
-
-      //
-      // contract is selected 
-      this.$router.navigate([], {
-        queryParams: { id: null},
-        queryParamsHandling: 'merge'
-      });
-    } else {
-      contract = this.contracts.find(contract=>{
+    const contract = this.contracts.find(contract=>{
         return contract.frequency==this.subscriptionParams.frequency&&
                contract.dayOfWeek==this.subscriptionParams.dayOfWeek&&
-               contract.status!='canceled'      
-      });  
-    }
+               contract.status!='canceled'
+      });
 
 
 
     if(!contract || contract.items[0].hub !== this.hub.slug) {
       return;
     }
-    
+
     return contract;
   }
 
@@ -246,8 +221,8 @@ export class KngCartItemsComponent implements OnInit {
     if(this.currentSubscription||!this.isReady) {
       return true;
     }
-    if(!currentDay || currentDay<now) { 
-      return false; 
+    if(!currentDay || currentDay<now) {
+      return false;
     }
     const week = this.config.potentialShippingWeek(this.hub);
     const available =week.some(day => day.getDay() == currentDay.getDay());
@@ -268,7 +243,7 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get isCheckoutEnabled() {
-    // user is created but not ready 
+    // user is created but not ready
     const userAlmostReady = (this.user.isReady()||!this.user.isAuthenticated())
     if(this.hasPendingSubscription) {
       return true;
@@ -277,7 +252,7 @@ export class KngCartItemsComponent implements OnInit {
       return true;
     }
     return this.isCrossMarketShippingDate && userAlmostReady &&
-           this.isNotShippingLimit && 
+           this.isNotShippingLimit &&
            this.items.length && !this.noshippingMsg;
   }
 
@@ -306,12 +281,49 @@ export class KngCartItemsComponent implements OnInit {
     return  ['/store',this.hub.slug,'home','subscription'];
   }
 
+
+  get queryParamsMenu() {
+    return {menu:"miam"};
+  }
+
   ngOnDestroy() {
     this._subscription.unsubscribe();
   }
 
 
   ngOnInit(): void {
+    //
+    //
+    this._subscription.add(
+      this.$route.queryParams.subscribe(params => {
+        const contractId = this.$route.snapshot.queryParams.id;
+        if(!contractId) {
+          return
+        }
+        const contract = this.contracts.find(contract=> contract.id == contractId)
+
+        //
+        // when contract is specified from queryParams it must be digest
+        if(contract) {
+          const shipping:ShippingAddress = contract.shipping as ShippingAddress;
+          this.subscriptionParams = {
+            frequency: contract.frequency,
+            activeForm: true,
+            dayOfWeek: contract.dayOfWeek,
+            time:shipping.hours
+          }
+          this.$cart.subscriptionSetParams(this.subscriptionParams);
+
+          //
+          // contract is selected
+          this.$router.navigate([], {
+            queryParams: { id: null},
+            queryParamsHandling: 'merge'
+          });
+        }
+
+      })
+    );
 
     this._subscription.add(
       this.$cart.subscription$.subscribe(contracts => {
@@ -327,7 +339,7 @@ export class KngCartItemsComponent implements OnInit {
         this.subscriptionParams = this.$cart.subscriptionGetParams();
         this.currentSubscription = this.hasUpdateContract;
         this.contractItems = this.currentSubscription?this.currentSubscription.items.slice():[];
-      })  
+      })
     );
 
     this._subscription.add(
@@ -339,7 +351,7 @@ export class KngCartItemsComponent implements OnInit {
         if(emit.config){
           this.currentRanks = this.config.shared.currentRanks[this.hub.slug] || {};
           this.currentLimit = this.config.shared.hub.currentLimit || 1000;
-          this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;      
+          this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
         }
 
         if(!emit.state){
@@ -363,7 +375,7 @@ export class KngCartItemsComponent implements OnInit {
         const ctx:CartItemsContext = {
           forSubscription:!this.showCartItems,
           hub:this.hub.slug
-        }    
+        }
 
         if(this.showCartItems) {
           ctx.onSubscription = false;
@@ -383,7 +395,7 @@ export class KngCartItemsComponent implements OnInit {
 
         //
         // select subs when order view is False
-        this.isReady = true;
+        this.showFooter = this.isReady = (this.items.length>0 || this.hub.slug == this.config.shared.hub.slug);
         if(this.showCartItems){
           return;
         }
@@ -408,7 +420,7 @@ export class KngCartItemsComponent implements OnInit {
       hub:this.hub,
       items: this.items,
       updated:updateItems,
-      contract: contract, 
+      contract: contract,
       totalDiscount: this.getTotalDiscount(),
       forSubscription: !this.showCartItems,
       user: this.user
@@ -426,7 +438,7 @@ export class KngCartItemsComponent implements OnInit {
       forSubscription:!this.showCartItems,
       onSubscription:!this.showCartItems,
       hub:this.hub.slug
-    }    
+    }
     return this.$cart.totalHubFees(ctx);
   }
 
@@ -459,7 +471,7 @@ export class KngCartItemsComponent implements OnInit {
   //DEPRECATED
   getTotalDiscount() {
     return this.$cart.getTotalDiscount(this.hub.slug)
-  }  
+  }
 
   //DEPRECATED
   getVendorDiscount(item: CartItem) {
@@ -474,7 +486,7 @@ export class KngCartItemsComponent implements OnInit {
       forSubscription:!this.showCartItems,
       onSubscription:!this.showCartItems,
       hub:this.hub.slug
-    }    
+    }
 
     return this.$cart.subTotal(ctx);
   }
@@ -531,14 +543,16 @@ export class KngCartItemsComponent implements OnInit {
   }
 
 
-  onSetCurrentShippingDay(day: Date, hours?: number) {
+  onSetCurrentShippingDay({day,time}) {
     if (!(day)) {
       return;
     }
     // this.dialogRef.close(day);
 
-    hours = hours|| this.config.getDefaultTimeByDay(day);
-    this.$cart.setShippingDay(day,hours);
+    // DEPRECATED FIXME move this.config.getDefaultTimeByDay(day) in $cart.getCurrentShippingTime()
+    time = time|| this.config.getDefaultTimeByDay(day);
+    this.$cart.setShippingDay(day,time);
+    this.currentShippingDay = day;
   }
 
 }

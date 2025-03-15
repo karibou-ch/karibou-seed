@@ -43,7 +43,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   categories: Category[];
   shops: Shop[];
   orders: Order[];
-  
+
   //
   // content
   currentTab: number;
@@ -75,7 +75,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   isReady: boolean;
 
 
-
+  currentThemeName: string;
+  opentheme: boolean;
 
   constructor(
     public $cart: CartService,
@@ -101,7 +102,6 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // not mandatory
     this.categories = <Category[]>loader[2] || [];
     this.shops = <Shop[]>loader[3] || [];
-
     this.orders = [];
 
     //
@@ -126,6 +126,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   }
 
 
+  get themes() {
+    return this.categories.filter(c => c.type === 'theme');
+  }
+
   get subscriptionQueryParams() {
     const contractId = this.$route.snapshot.queryParams.id;
     const params:any = {view:'subscription'};
@@ -141,7 +145,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     // }
     // if(contractId) {
     //   params.id=contractId;
-    // }    
+    // }
     return params;
   }
 
@@ -156,7 +160,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
       this.$navigation.registerScrollEvent().subscribe(scroll => {
         this.scrollDirection = scroll.direction;
         this.$cdr.markForCheck();
-      })  
+        // FIXME use appropriate place to update currentThemeName;
+        this.currentThemeName = this.$navigation.currentTheme?.name;
+      })
     )
 
     this.detectIOS();
@@ -172,6 +178,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.$loader.update().subscribe(emit=> {
+        this.currentThemeName = this.$navigation.currentTheme?.name;
 
         //
         // update config
@@ -182,19 +189,20 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           // HUB title
           this.hubTitle = this.config.shared.hub.siteName[this.locale];
           this.hubPhone = this.config.shared.hub.address.phone;
-  
+
           this.primary = this.config.shared.menu.filter(menu => menu.group === 'primary' && menu.active).sort((a, b) => a.weight - b.weight);
           this.topmenu = this.config.shared.menu.filter(menu => menu.group === 'topmenu' && menu.active).sort((a, b) => a.weight - b.weight);
-      
+
           this.currentRanks = this.config.shared.currentRanks[this.store] || {};
           this.currentLimit = this.config.shared.hub.currentLimit || 1000;
           this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
           this.hubImage = this.config.shared.hub.logo;
-    
-          this.$cart.setContext(this.config, this.user,this.shops,this.orders);
+
+          this.$cart.setContext(this.config, this.user,this.shops);
           this.$cdr.markForCheck();
         }
 
+        // console.log('--- DBG date emit',emit.state,this.$cart.getCurrentShippingDay().toLocaleDateString());
         //
         // update user
         if (emit.user) {
@@ -202,8 +210,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           Object.assign(this.user, emit.user);
           window['sentry.id'] = this.user.email.address;
           //
-          // FIXME avoid multiple update of same value 
-          this.$cart.setContext(this.config, this.user,this.shops,this.orders);
+          // FIXME avoid multiple update of same value
+          this.$cart.setContext(this.config, this.user,this.shops);
           this.$cdr.markForCheck();
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
@@ -214,9 +222,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           //
           // If the user is known, we open ONE TIME the login form
           else if(!KngNavbarComponent.ASK_FOR_LOGIN && this.user.email.address) {
-            
+
             KngNavbarComponent.ASK_FOR_LOGIN = true;
-      
+
             setTimeout(()=>{
               this.displayLogin =  true;
               timer(13000).subscribe(() => {
@@ -228,13 +236,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           }
 
         }
-  
+
         // FIXME use appropriate place to setup $cart
         if(emit.orders && !this.orders.length) {
           this.orders = emit.orders;
-          this.$cart.setContext(this.config, this.user,this.shops,this.orders);        
+          this.$cart.setContext(this.config, this.user,this.shops,this.orders);
         }
-  
+
         //
         // update cart
         if (emit.state) {
@@ -245,28 +253,28 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           // update cart for all market (hub)
           (this.config.shared||[]).hubs.forEach(hub => {
             // display cart items
-            const cartCtx:CartItemsContext = { forSubscription:false,hub:hub.slug };    
-            const cartItems = this.$cart.getItems(cartCtx);              
+            const cartCtx:CartItemsContext = { forSubscription:false,hub:hub.slug };
+            const cartItems = this.$cart.getItems(cartCtx);
             this.cardItemsSz = parseFloat ((this.cardItemsSz + this.$cart.subTotal(cartCtx)).toFixed(2));
             this.cartItemCountElem += cartItems.length;
 
             // display subs items
-            const subsCtx:CartItemsContext = { forSubscription:true,hub:hub.slug };    
-            const subsItems = this.$cart.getItems(subsCtx);              
+            const subsCtx:CartItemsContext = { forSubscription:true,hub:hub.slug };
+            const subsItems = this.$cart.getItems(subsCtx);
             this.subsItemsSz = parseFloat ((this.subsItemsSz + this.$cart.subTotal(subsCtx)).toFixed(2));
-            this.subsItemCountElem += subsItems.length;            
+            this.subsItemCountElem += subsItems.length;
           });
-  
+
 
           this.updateDomPrice();
-  
+
           //
           // update shipping date
           if (!emit.state.item) {
             this.isReady = true;
             return;
           }
-  
+
           if(this.isReady){
             if (emit.state.action === CartAction.ITEM_MAX) {
               this.$snack.open(
@@ -280,13 +288,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
                 this.$i18n.label()[CartAction[emit.state.action]] + emit.state.item.quantity + 'x ' + emit.state.item.title + ' (' + emit.state.item.part + ')',
                 this.$i18n.label().thanks,
                 this.$i18n.snackOpt
-              );  
+              );
             }
-  
+
           }
           this.isReady = true;
         }
-      })  
+      })
     );
   }
 
@@ -393,12 +401,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
 
   }
 
-  setShippingDay(value: any) {
-    const hours = this.config.getDefaultTimeByDay(value.day);
-    this.$cart.setShippingDay(value.day,hours);
-    this.currentShippingDay = this.$cart.getCurrentShippingDay();
-    this.$cdr.markForCheck();
-  }
+  //
+  // DEPRECATED
+  // setShippingDay(value: any) {
+  //   const hours = this.config.getDefaultTimeByDay(value.day);
+  //   this.$cart.setShippingDay(value.day,hours);
+  //   this.currentShippingDay = this.$cart.getCurrentShippingDay();
+  //   this.$cdr.markForCheck();
+  // }
 
   openCalendar(marketplace: any, check?: boolean) {
     // if not mobile then route to HOME

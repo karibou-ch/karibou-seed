@@ -43,22 +43,12 @@ export class AddressComponent implements OnDestroy{
       list_select: 'Éditer une adresse',
       list_add: 'Ajouter ou éditer une adresse',
       address_edit: 'Modifer',
-      address_street: 'Adresse*',
-      address_floor: 'Étage*',
-      address_postalcode_title: 'Aujourd\'hui nous livrons uniquement les code postaux proposés.',
-      address_postalcode: 'Code postal',
-      address_region: 'Région',
     },
     en: {
       list_title: 'Your active shipping addresses',
       list_select: 'Edit an address',
       list_add: 'Add a new shipping address',
       address_edit: 'Update',
-      address_street: 'Street, number*',
-      address_floor: 'Floor*',
-      address_postalcode_title: 'Today we deliver only the postal codes below.',
-      address_postalcode: 'Postal code',
-      address_region: 'Region',
     }
   };
 
@@ -77,7 +67,7 @@ export class AddressComponent implements OnDestroy{
   }
 
   ngOnInit() {
-    this.address = new UserAddress();
+    this.address = new UserAddress({});
     if(this.user.addresses.length){
       this.address = this.user.addresses[0];
       this.idx = 0;
@@ -95,7 +85,7 @@ export class AddressComponent implements OnDestroy{
 
   get label() {
     return this.i18n[this.$i18n.locale];
-  }  
+  }
   get locale() {
     return this.$i18n.locale;
   }
@@ -122,7 +112,7 @@ export class AddressComponent implements OnDestroy{
   onSave(address: UserAddress) {
     if(!address) {
       this.idx = -1;
-      this.address = new UserAddress();
+      this.address = new UserAddress({});
       return;
     }
     this.isLoading = true;
@@ -161,8 +151,9 @@ export class AddressComponent implements OnDestroy{
   }
 
   setAddress(address: UserAddress, idx: number) {
-    if(idx === this.idx) {  
+    if(idx === this.idx) {
       this.idx = -1;
+      this.address = new UserAddress({});
       return;
     }
     this.idx = idx;

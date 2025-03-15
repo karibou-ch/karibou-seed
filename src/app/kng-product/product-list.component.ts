@@ -72,6 +72,7 @@ export class ProductListComponent implements OnInit {
   scrollDirection: number;
   scrollToCategory: string;
   scrollStickedToolbar: boolean;
+  scrollLocked: boolean;
 
   options: {
     hub?: string;
@@ -139,7 +140,7 @@ export class ProductListComponent implements OnInit {
   }
 
   get store(){
-    return this.hub && this.config.shared.hub.slug;
+    return this.hub && this.hub.slug;
   }
 
   get hub(){
@@ -170,7 +171,7 @@ export class ProductListComponent implements OnInit {
   }  
 
   get isForSubscriptionList(){
-    return this.$route.snapshot.data.subscription || this.$route.snapshot.data.business;
+    return this.$route.snapshot.data.subscription ;
   }
 
   get isForSubscriptionCustomer(){
@@ -246,41 +247,30 @@ export class ProductListComponent implements OnInit {
 
     //
     // list product available for subscription
-    if(this.isForSubscriptionList) {
-      this.isForSubscriptionCustomer && (this.options.subscription=true);
-      this.isForSubscriptionBusiness && (this.options.business=true);
+    if(this.isForSubscriptionCustomer) {
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.subscription.t[this.locale];
       this.category.current.description =this.config.shared.subscription.h[this.locale];
-      if(this.isForSubscriptionBusiness) {
-        this.options.business = true;
-        this.category.current.name =this.config.shared.business.t[this.locale];
-        this.category.current.description =this.config.shared.business.h[this.locale];
-      }
-      this.category.current.child = [];
+      document.title = this.category.current.name;
+
 
       //
       // FIXME UGLY STORAGE OF SUBS_PLAN (FOR SHARING WITH CART)
-      window['subsplan'] = this.isForSubscriptionBusiness?'business':'customer';
-
-      this.productsBySubscription();
+      window['subsplan'] = 'customer';
+      this.productsByAttribute('subscription');
     } 
     
+    else if(this.isForSubscriptionBusiness) {
+      this.category.current = this.category.categories[0];
+      this.category.current.name =this.config.shared.business.t[this.locale];
+      this.category.current.description =this.config.shared.business.h[this.locale];
+      document.title = this.category.current.name;
+      this.productsByAttribute('business');
+    }
+  
     //
     // list product available from category
     else if(category){
-      this.category.slug = category;
-      this.category.current = this.category.categories.find(cat => cat.slug == category);
-      //
-      // old google reference goes wrong
-      this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
-        return a.weight - b.weight;
-      });
-
-      this.category.similar = this.category.categories
-      .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
-      .sort(cat => cat.weight);
-      this.bgStyle = 'url(' + this.category.current.cover + ')';  
       this.productsByCategory(category);
     } 
     //
@@ -328,6 +318,7 @@ export class ProductListComponent implements OnInit {
     if(diff < 100) {
       return;
     }
+    console.log('--- ngAfterViewChecked')
     setTimeout(()=>{
       this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
     },40);    
@@ -351,7 +342,7 @@ export class ProductListComponent implements OnInit {
   //
   // return a child category IFF a product is refers to it
   getChildCategory(category: Category) {
-    if(this.isForSubscriptionList) {
+    if(!category.child.length || this.category.categories.length > 1) {
       return (this.products.length)? (this.category.categories as Category[]):[];
     }
     const child = category.child || [];
@@ -410,7 +401,7 @@ export class ProductListComponent implements OnInit {
 
       //
       // count child categories
-      this.products.forEach(product => {
+      this.products.forEach((product, idx) => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;
         }
@@ -422,24 +413,32 @@ export class ProductListComponent implements OnInit {
   }
 
 
-  productsBySubscription() {
+  productsByAttribute(attribute) {
     this.selections = [];
     this.options.hub = this.store;
     delete this.options.when;
+    //
+    // this is only for subscription (not business)
     this.$cart.subscriptionsGet().subscribe(contracts => this.contracts=contracts);
     this.subcriptionParams = this.$cart.subscriptionGetParams();
 
-    this.$product.findByDetails('subscription', this.options).subscribe((products: Product[]) => {
+    this.$product.findByAttribute(attribute, this.options).subscribe((products: Product[]) => {
       this.cache.products = this.products = products.sort(this.sortProducts);
+      if (!products.length) {
+        return;
+      }
       
       //
       // makes categories
       const categories = this.products.map(product => product.categories)
                                     .filter((item,pos,arr)=>   arr.findIndex(idx => idx.slug == item.slug)== pos);
 
-      this.category.categories = this.category.categories.filter(cat => categories.find(c => c.slug==cat.slug));
-
-
+      this.category.categories = this.category.categories.filter(cat => categories.find(c => c.slug==cat.slug && cat.type=='Category'));
+      //
+      // set the default category of the page
+      this.category.current.child = this.category.categories[0].child;
+      this.category.current.slug = this.category.categories[0].slug;
+  
       this.products.forEach(product => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;
@@ -459,6 +458,23 @@ export class ProductListComponent implements OnInit {
     this.options.hub = this.store;
     this.options.when = when.toISOString();
     this.options.bundle = false;
+
+    this.category.slug = category;
+    this.category.current = this.category.categories.find(cat => cat.slug == category);
+    this.category.categories = [this.category.current];
+    this.bgStyle = 'url(' + this.category.current.cover + ')';  
+    document.title = this.category.current.name;
+
+    //
+    // old google reference goes wrong
+    this.category.current.child = (this.category.current.child||[]).sort((a, b) => {
+      return a.weight - b.weight;
+    });
+
+    // this.category.similar = this.category.categories
+    // .filter(cat => cat.group === this.category.current.group && cat.slug !== category)
+    // .sort(cat => cat.weight);
+
 
     this.$product.findByCategory(category, this.options).subscribe((products: Product[]) => {
       //
@@ -504,7 +520,6 @@ export class ProductListComponent implements OnInit {
   onAssistantData(skus: number[]) {
     this.jamesTitle = this.$i18n.label().james_selection_pinned;
     this.selections = this.cache.products.filter(product => skus.indexOf(product.sku) > -1);
-    //console.log('onAssistantData', this.selections.map(product => product.title));
     this.cdr.markForCheck();  
     this.dialog.nativeElement.scrollTop = 0;
   }
@@ -527,6 +542,9 @@ export class ProductListComponent implements OnInit {
       return
     }
     this.clean();
+    // if(this.$navigation.hasHistory){
+    //   return this.$navigation.back();      
+    // }
     return this.$router.navigate(['..'], { relativeTo: this.$route });
 
   }
@@ -621,5 +639,14 @@ export class KngProductListByShopComponent extends ProductListComponent{
     return  phone.replace(/[\.;-]/g, '');
   }
 
+  onClose(closedialog) {
+    if(!this.activeMenu) {
+      this.activeMenu = true;
+      return
+    }
+    this.clean();
+    return this.$router.navigate(['../..'], { relativeTo: this.$route });
+
+  }
 
 }

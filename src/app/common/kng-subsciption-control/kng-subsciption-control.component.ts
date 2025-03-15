@@ -190,8 +190,11 @@ export class KngSubsciptionControlComponent implements OnInit {
   getContractDescription(contract){
 
     //
+    // contract is active even if the latest payment failed
+    const active = contract.status=='active';
+    //
     // without payment intent, contract is ready
-    if (!contract.latestPaymentIntent){      
+    if (active){      
       return this.getDayOfWeek(contract.dayOfWeek)+ ' ' + this.getFrequency(contract);
     } 
 

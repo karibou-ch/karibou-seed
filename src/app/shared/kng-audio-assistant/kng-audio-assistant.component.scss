@@ -35,7 +35,7 @@
     
 
   .context,
-  .title{
+  .autio-title{
     padding: 5px 5px 0;        
     font-weight: 200;
     margin: 8px 0;      
@@ -56,6 +56,18 @@
       display: inline-block;
     }
     span ::ng-deep{
+      
+      section.thinking{
+        background-color: yellow;
+        padding: 4px;
+        border-radius: 8px;
+        display: none;
+        font-family: monospace;
+        font-size: 10px;
+        line-height: 12px;          
+        white-space:pre-line;
+      }
+
       h2,h3{
         font-size: 1.1em;
         -margin: 0;
@@ -100,7 +112,7 @@
     align-content: center;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd;
+    -border-bottom: 1px solid #ddd;
     min-height: 90px;
     .audio-error{
       position: absolute;
@@ -136,10 +148,11 @@
 
     .record{
       position: relative;
-      min-width: 56px;
-      width: 56px!important;
-      height: 56px!important;
+      min-width: 54px;
+      width: 54px!important;
+      height: 54px!important;
       margin: 10px;
+      margin-right: 0;
       text-align: center;
       padding: 14px;
       border-radius: 50px;

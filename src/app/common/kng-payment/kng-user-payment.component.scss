@@ -1,23 +1,30 @@
 form{
 
+  h3,h4{
+    margin: 0;
+  }
+
+  position: relative;
   .invalid{
     color: red;
   }
 
-  width: calc(100% - 36px);
-  padding: 15px;
-  border: 3px solid #eee;
+  width: calc(100% - 20px);
+  padding: 8px;
+  border: 2px solid #aaa;
   border-radius: 14px;    
   input{
     font-size: 18px;
   }
 
   button.save{
-    width: 100%;
+    width: fit-content;
     font-size: 18px;
     margin: 5px 0;
-    margin-right: auto;
-    margin-left: auto;    
+    margin-right: 5px;
+    position: absolute;
+    top: 5px;
+    right: 5px;    
   }
 
   //

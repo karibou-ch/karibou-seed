@@ -5,6 +5,19 @@ body{
   margin-top: 0;
   background: white;
   font-size: 17px;
+  @media (min-width: 1025px) {
+    zoom:0.9;
+    transform-origin: top left;
+  }
+
+  @media (min-width: 1850px) {
+    zoom:1.2;
+  }
+
+  @media (min-width: 2500px) {
+    zoom:1.4;
+  }
+
 }
 
 
@@ -35,33 +48,90 @@ body{
   --mdc-theme-karibou-pink: #da1c5c;
   --mdc-theme-karibou-green: #62dd2a;
   --mdc-theme-karibou-yellow: #ffe83d;
-
+  --mdc-theme-colormix: white;
   --mdc-theme-primary: #32b0a0;
+  --mdc-theme-primary-light: rgba(227,236, 235, 0.3);
+
   --mdc-theme-primary-text: white;
   --mdc-theme-text-primary-on-background:#333;
   --mdc-theme-secondary: #028b7a;
+  --mdc-theme-secondary-light: rgba(227,236, 235, 0.3);
+
   --mdc-theme-secondary-text: white;
-  --mdc-theme-text-secondary-on-background:#333;  
+  --mdc-theme-text-secondary-on-background:#333;
 
   --mdc-theme-appbar: rgba(227,236, 235, 0.97);
   --mdc-theme-appbar: white;
-  --mdc-theme-appbar-light: rgba(227,236, 235, 0.5);
-  --mdc-theme-appbar-text: rgba(19, 83, 20, 0.97);  
+  --mdc-theme-appbar-light: rgba(227,236, 235, 0.3);
+
+  --mdc-theme-appbar-text: rgba(19, 83, 20, 0.97);
 
   --mdc-theme-primary-dark:white;
   --mdc-theme-primary-dark-text:black;
-  
+
   --mdc-theme-secondary-dark: initial;
   --mdc-theme-secondary-dark-text: initial;
-  
+
   // FIXME remove this hardcoding
   --mdc-theme-text-hint-on-background:#333;
   --mdc-theme-text-icon-on-background:#333;
 
   //
-  // BODY 
+  // BODY
   --mdc-theme-background-container: white;
 
+  @supports (color: color-mix(in srgb, red 50%, blue)) {
+    --mdc-theme-primary-light:color-mix(in srgb, var(--mdc-theme-primary) 30%, var(--mdc-theme-colormix));
+    --mdc-theme-secondary-light:color-mix(in srgb, var(--mdc-theme-secondary) 30%, var(--mdc-theme-colormix));
+    --mdc-theme-appbar-light:color-mix(in srgb, var(--mdc-theme-appbar) 30%, var(--mdc-theme-colormix));
+  }
+
+  /** theme colors
+  //
+  // Artamis
+  --mdc-theme-primary: #a21544;
+  --mdc-theme-primary-text: white;
+  --mdc-theme-secondary: #074840;
+  --mdc-theme-secondary-text: rgba(250, 250, 250, 0.97);
+  --mdc-theme-appbar: #03ab97;
+  --mdc-theme-appbar-text: rgba(250, 250, 250, 0.97)
+
+  //
+  // De Janvier à Mars (Montagne & neige)
+  --mdc-theme-primary: #5C6B73
+  --mdc-theme-primary-text: #FFFFFF
+  --mdc-theme-secondary: #8A7A5E
+  --mdc-theme-secondary-text: #FFFFFF
+  --mdc-theme-appbar: #D9E2D5
+  --mdc-theme-appbar-text: #3A4038
+
+  //
+  // Halle de Rive (HDR)
+  --mdc-theme-primary: #726658;
+  --mdc-theme-primary-text: white;
+  --mdc-theme-secondary: #890822;
+  --mdc-theme-secondary-text: white;
+  --mdc-theme-appbar: rgba(236, 230, 223, .95);
+  --mdc-theme-appbar-text: #473f30;
+
+  //
+  // Superlocal
+  --mdc-theme-primary: #32b0a0;
+  --mdc-theme-primary-text: black;
+  --mdc-theme-secondary: #028b7a;
+  --mdc-theme-secondary-text: white;
+  --mdc-theme-appbar: rgb(210, 240, 178);
+  --mdc-theme-appbar-text: black;
+
+  //
+  // Saint-Valentin
+  --mdc-theme-primary: #A43355;
+  --mdc-theme-primary-text: #000000;
+  --mdc-theme-secondary: #A71E47;
+  --mdc-theme-secondary-text: #FFFFFF;
+  --mdc-theme-appbar: #EFACC0;
+  --mdc-theme-appbar-text: #000000;
+  */
 
 }
 

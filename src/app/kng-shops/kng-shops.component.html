@@ -4,14 +4,20 @@
     <h3> {{$i18n.label().nav_shops_sub}}</h3>
   </section>
 
-  <section class="shops-list">
-    <article *ngFor="let shop of shops" (click)="doOpen(shop.urlpath)" [routerLink]="['/store',store,'home','shops',shop.urlpath]">
-      <div class="shop-image" [ngStyle]="shop.ngStyleBck" >
-        <img [src]="shop.img" />
-      </div>
-      <div class="shop-description">
-        <span>{{shop.name}}</span>
-      </div>
-    </article>
+  <section class="">
+    <div class="group shops-list" *ngFor="let alpha of groupByName">
+      <h1>{{alpha}}</h1>
+
+      <article *ngFor="let shop of group[alpha]" (click)="doOpen(shop.urlpath)" [routerLink]="['/store',store,'home','shops',shop.urlpath]">
+        <div class="shop-image" [ngStyle]="shop.ngStyleBck" >
+          <img [src]="shop.img" />
+        </div>
+        <div class="shop-description">
+          <span>{{shop.name}}</span>
+        </div>
+      </article>
+  
+    </div>
+
   </section>  
 </div>

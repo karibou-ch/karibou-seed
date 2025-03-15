@@ -29,7 +29,8 @@ export class KngTextfieldAutosizeDirective implements AfterContentChecked {
 
     //
     // init child control
-    this.textarea = this.textarea || this.element.nativeElement.querySelector('textarea');
+    this.textarea = this.textarea || this.element.nativeElement;
+
     const style = this.textarea.style || {};
     const height = this.textarea.scrollHeight;
 

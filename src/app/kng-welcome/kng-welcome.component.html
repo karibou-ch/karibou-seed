@@ -14,11 +14,12 @@
 
   </div>
   <div class="welcome" [class.exited]="exited">
+    <img [src]="tagline.image" [hidden]="!tagline.image"/>
     <canvas  #background ></canvas>
     <h1 [innerHtml]="tagline.h[locale]"></h1>
     <div class="content" [innerHtml]="tagline.p[locale]">
     </div>
-    <div class="b2b-query" [hidden]="isLocked"><span class="new">NEW!</span> <a class="link" (click)="doB2B()"> {{_('title_b2b')}}</a> </div>
+    <div class="b2b-query" hidden><span class="new">NEW!</span> <a class="link" (click)="doB2B()"> {{_('title_b2b')}}</a> </div>
     <div class="actions">
       <button class="CTA"  (click)="waiting=true" [routerLink]="homeDestination">
         <span class="material-symbols-outlined icon" [class.waiting]="waiting"> clock_loader_10</span>

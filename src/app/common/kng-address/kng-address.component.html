@@ -1,6 +1,6 @@
 <div>
     <form [formGroup]="$address" (ngSubmit)="onSave()">
-
+        <h4 [innerHtml]="title" [hidden]="!title"></h4>
         <div class="groupfield fullwidth">
             <input  id="f001" class="form__field" type="text" formControlName="name"  [placeholder]="glabel.user_display_name">
             <label for="f001" class="form__label" [class.error]="isInvalid('name')">
@@ -10,7 +10,10 @@
 
 
         <div class="groupfield width-75">
-            <input #street id="autocomplete" class="form__field  " type="text" [placeholder]="label.address_street" autocomplete="false" formControlName="street">
+            <input autocomplete="off"  id="autocomplete"  class="form__field  " type="text" [placeholder]="label.address_street"  formControlName="street">
+            <datalist  id="address-list">
+                <option *ngFor="let option of addresses;let index=index" (click)="onBlurOrSelect(index)"  [value]="index">{{option.street}}</option>
+            </datalist>
             <label for="autocomplete" class="form__label" [class.error]="isInvalid('street')">
                 {{label.address_street}}
             </label>
@@ -18,14 +21,14 @@
 
 
         <div class="groupfield width-25">
-            <input  id="f003" class="form__field  floor" type="text" formControlName="floor" [placeholder]="label.address_floor" >
-            <label for="f003" class="form__label" [class.error]="isInvalid('floor')">
+            <input #floor id="floor" class="form__field  floor" type="text" formControlName="floor" [placeholder]="label.address_floor" (blur)="onBlurOrSelect()">
+            <label for="floor" class="form__label" [class.error]="isInvalid('floor')">
                 {{label.address_floor}}
             </label>
         </div>
           
-        <div class="groupfield fullwidth">
-            <input  id="f004" class="form__field" type="text" formControlName="phone" [placeholder]="glabel.user_phone" (blur)="onGeoloc()">
+        <div class="groupfield fullwidth">            
+            <input  id="f004" class="form__field" type="text" formControlName="phone" [placeholder]="glabel.user_phone" >
             <label for="f004" class="form__label" [class.error]="isInvalid('phone')">
                 <span hidden class="material-symbols-outlined">phone</span>
                 {{glabel.user_phone}}
@@ -33,24 +36,24 @@
         </div>
         
   
-        <p class="help-block" >
+        <p class="help-block red" [hidden]="isPostalValid">
           {{label.address_postalcode_title}}
         </p>
-          
-        <select formControlName="region" class="width-50" >
-          <!-- <option value="" selected></option> -->
-          <option value="" disabled selected>{{label.address_region}}</option>
-          <option *ngFor="let region of regions" [value]="region" >{{region}}</option>
-        </select>
+
+        <div class="groupfield width-50">
+            <input  id="f005" class="form__field" type="text" formControlName="region" [placeholder]="label.address_region" (blur)="onGeoloc()">
+            <label for="f005" class="form__label">
+                {{label.address_region}}
+            </label>
+        </div>
+                  
         
-          
-        
-        <select  formControlName="postalCode" class="width-50" >
+        <select  formControlName="postalCode" class="width-50" autocomplete="off" >
           <option value="" disabled selected>{{label.address_postalcode}}</option>
           <option *ngFor="let location of locations" [value]="location" >{{location}}</option>
         </select>
         
-        <div class="groupfield fullwidth">
+        <div class="groupfield fullwidth loud">
             <input  id="f005" class="form__field" type="text" formControlName="note" [placeholder]="glabel.user_address_note">
             <label for="f005" class="form__label">
                 {{glabel.user_address_note}}
@@ -60,12 +63,12 @@
         <!-- <p>Form value: {{ $address.value | json }}</p>
         <p>Form status: {{ $address.status | json }}</p> -->
         <button [hidden]="!displayClear" [disabled]="isClear" type="button" (click)="onCancel()"
-                class="align-left default secondary">
+                class=" default secondary">
           <span class="material-symbols-outlined">close</span>              
         </button>            
         
         <button [disabled]="!$address.valid" 
-                class="align-right primary default">
+                class="primary default" [class.align-right]="displayClear">
           <span class="material-symbols-outlined">account_circle</span>              
           <span >{{glabel.action_save}}</span>
         </button>            

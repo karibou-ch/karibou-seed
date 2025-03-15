@@ -1,7 +1,8 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
-import { Hub } from 'kng2-core';
+import { Hub, User, UserService } from 'kng2-core';
 import { CartService, Config, LoaderService, Order } from 'kng2-core';
 import { i18n } from '../i18n.service';
+import { title } from 'process';
 
 @Component({
   selector: 'kng-calendar',
@@ -12,7 +13,8 @@ export class KngCalendarComponent implements OnInit {
   private _minimal:boolean;
 
 
-
+  @Input() user: User;
+  @Input() title: string;
   @Input() config: Config;
   @Input() set minimal(value){
     this._minimal = ['true','yes','on',true].indexOf(value)>-1;
@@ -32,6 +34,7 @@ export class KngCalendarComponent implements OnInit {
   isPremium:boolean;
 
   currentShippingDay: Date;
+  currentShippingTime: number;
   availableDays:Date[];
   multipleHubsDays:Date[];
   pendingOrder: Order|undefined;
@@ -41,11 +44,42 @@ export class KngCalendarComponent implements OnInit {
   constructor(
     private $i18n: i18n,
     private $cart: CartService,
+    private $user: UserService,
     private $loader: LoaderService
-  ) { 
+  ) {
     this.currentWeek = [];
     this.availableDays = [];
     this.multipleHubsDays = [];
+  }
+
+  // user can also have a prefered HUB @ reminder.defaultHub
+  get prefferedHub() {
+    const mapper = {
+      'b2b-school': 'superlocal',
+      'marche-bio-local-lft':'marche-bio-local-lft'
+    }
+    if(!this.user || !this.user.plan){
+      return this.config.shared.hubs.find(hub => hub.slug != this.currentHub.slug);
+    }
+
+    const plan = this.user.plan.name;
+    //
+    // for school
+    if(mapper[plan]){
+      return mapper[plan];
+    }
+
+    //
+    // for special customer
+    if(mapper[this.user.email['source']]){
+      return mapper[this.user.email['source']]
+    }
+    const hubs = this.config.shared.hubs.filter(hub => hub.slug != 'superlocal');
+    return hubs.find(hub => hub.slug != this.currentHub.slug);
+  }
+
+  get mainTitle() {
+    return this.title || this.currentHub?.siteName[this.locale];
   }
 
 
@@ -53,30 +87,38 @@ export class KngCalendarComponent implements OnInit {
     this.$loader.update().subscribe(emit => {
       if(emit.state &&  this.config) {
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
-        this.updated.emit(this.currentShippingDay);
+        this.currentShippingTime = this.$cart.getCurrentShippingTime();
+        this.updated.emit({day: this.currentShippingDay, time: this.currentShippingTime});
       }
       if(!emit.config) {
         return;
       }
       this.config = emit.config;
-      this.currentHub = this.config.shared.hub as Hub; 
+      this.currentHub = this.config.shared.hub as Hub;
       this.labelTime = this.config.shared.hub.shippingtimes[16]
       this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
+      const hub = this.config.shared.hubs.find(hub => hub.slug != this.currentHub.slug);
 
       // propose to switch to another hub
-      const hub = this.config.shared.hubs.find(hub => hub.slug != this.currentHub.slug);
+      // user have a prefered HUB
       this.displayHubSwitch = hub;
+      if(this.user){
+        // propose to switch to another hub
+        // user have a prefered HUB
+        this.displayHubSwitch = this.prefferedHub|| hub;
+      }
       this.displayHubMoreOptions = (this.currentHub.weekdays.length == 3);
+
       //
       // validate shipping state
       this.noshippingMsg = this.getNoShippingMessage();
       this.availableDays = Order.fullWeekShippingDays(this.currentHub);
-      this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date(this.availableDays[0])).plusDays(idx));      
-
+      this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date(this.availableDays[0])).plusDays(idx));
       this.multipleHubsDays = this.$cart.getShippingDayForMultipleHUBs();
       this.pendingOrder = this.$cart.hasPendingOrder();
+
       if(!this.isDayAvailable(this.currentWeek[0])){
         this.currentWeek.shift();
       }
@@ -88,8 +130,8 @@ export class KngCalendarComponent implements OnInit {
 
   }
 
-  get minimal() { 
-    return this._minimal; 
+  get minimal() {
+    return this._minimal;
   }
 
   get label() {
@@ -125,7 +167,7 @@ export class KngCalendarComponent implements OnInit {
     });
 
     return noshipping && noshipping.message[this.locale];
-  }  
+  }
 
   doSetCurrentShippingDay($event, day: Date, idx: number) {
     if (!this.isDayAvailable(day)) {
@@ -135,7 +177,7 @@ export class KngCalendarComponent implements OnInit {
 
     const hours = this.config.getDefaultTimeByDay(day);
     this.$cart.setShippingDay(day,hours);
-    this.updated.emit(day);
+    this.updated.emit({day, time: hours});
   }
 
   isDayAvailable(day: Date) {

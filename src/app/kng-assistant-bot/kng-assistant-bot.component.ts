@@ -20,7 +20,6 @@ export class KngAssistantBotComponent implements OnInit {
   user:User;
   config:Config;
   isReady = false;
-  isFeedbackReady = false;
   messages:any[];
   error:string;
   prompt:string;
@@ -34,9 +33,11 @@ export class KngAssistantBotComponent implements OnInit {
 
 
   tips = [
-    {clazz:"", label:"Qui es-tu James?",action:"Bonjour James, qui es-tu et quelles sont les services que tu proposes ?"},
-    {clazz:"hide-sm", label:"Mon panier...",action:"Une semaine de menus avec les produits de mon panier"},
-    {clazz:"hide-sm", label:"Mes commandes",action:"Que proposes-tu avec mes commandes précédentes"},
+    {clazz:"", label:"Qui es-tu?",action:"Bonjour James, peux-tu me dire qui tu es et quels services tu proposes ?"},
+    {clazz:"", label:"Mon Menu",action:"Tu génères un menu de la semaine avec les produits de mon panier, le format est soigné comme à l'hôtel."},
+    {clazz:"", label:"Ma Box",action:"Propose-moi une box de fruits pour la semaine"},
+    {clazz:"hide", label:"100 enfants",action:"La sélection de la semaine pour 100 enfants"},
+    {clazz:"", label:"Ma recette",action:"Tu dois générer une recette en t'inspirant de mes commandes précédentes."},
     //{clazz:"", label:"Un événement",action:"Je veux organiser un buffet pour un événement"},
     //{clazz:"hide-sm", label:"Une école",action:"Une composition équilibrée de 10 produits pour le parascolaire des enfants"},
     // {clazz:"", label:"Produits populaires...",action:"Une semaine de menus avec les produits populaires"},
@@ -73,8 +74,6 @@ export class KngAssistantBotComponent implements OnInit {
   constructor(
     private $i18n: i18n,
     private $cart: CartService,
-    private $assistant: AssistantService,
-    private $metric: AnalyticsService,
     private $metrics: MetricsService,
     private $navigation: KngNavigationStateService,
     private $router: Router,
@@ -89,6 +88,16 @@ export class KngAssistantBotComponent implements OnInit {
     if(variant) {
       this.prompt = "Les 5 meilleures associations avec "+variant;
     }
+    const menu = this.$route.snapshot.queryParamMap.get('menu');
+    if(menu) {
+      this.prompt = "Mes repas de la semaine inspirés de mon panier";
+    }
+
+    const prompt = this.$route.snapshot.queryParamMap.get('prompt');
+    if(prompt) {
+      this.prompt = prompt;
+    }
+
 
     this.subscription$ = new Subscription();    
 
@@ -158,7 +167,7 @@ export class KngAssistantBotComponent implements OnInit {
 
   get messagesLimit() {
     if(!this.assistant) return 0;
-    return this.assistantState.tokensOut>15000;
+    return this.assistantState.tokensOut>60000;
   }
 
   ngOnDestroy() {
@@ -239,6 +248,16 @@ export class KngAssistantBotComponent implements OnInit {
 
   onAssistant(state) {
     this.assistantState = state;
+    if(state.status == 'end') {
+      console.log('state',state,this.$route.snapshot.queryParams );
+      this.$router.navigate([], {
+        relativeTo: this.$route,
+        queryParams: { prompt:null, menu:null,recipe:null,variant:null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
+    }
+
     this.onScrollToBottom();
   }
   // //
@@ -287,6 +306,7 @@ export class KngAssistantBotComponent implements OnInit {
       return this.$router.navigate(['../../'], { relativeTo: this.$route });
     }
     this.$navigation.back();
+    console.log('close',this.$navigation.hasHistory);
   }
 
 }

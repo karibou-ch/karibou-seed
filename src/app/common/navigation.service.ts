@@ -17,7 +17,7 @@ export class KngNavigationStateService  {
   private _historyCursor ="";
   private _history: string[] = [];
   private _token:string[];
-
+  private _authlink:string;
   private config: Config;
   private menu: any;
   private currentStore: string;
@@ -29,6 +29,14 @@ export class KngNavigationStateService  {
   private _search$: Subject<string>;
   private _logout$: Subject<void>;
 
+  private theme:{
+    slug?:string;
+    name:string;
+    description:string;
+    img?:string;
+  }
+
+
   constructor(
     private $config: ConfigService,
     private $user: UserService,
@@ -38,6 +46,8 @@ export class KngNavigationStateService  {
     private $router: Router
   ) {
     this.menu = {};
+    this.theme = {name:'',description:''};
+    this._authlink = '';
 
     this._search$ = new Subject<string>();
     this._logout$ = new Subject<void>()
@@ -45,7 +55,7 @@ export class KngNavigationStateService  {
       debounceTime(1000),
       switchMap(()=>this.$user.logout())
     ).subscribe();
-    
+
     //
     // init common parameters
     this.agent = navigator.userAgent || navigator.vendor || window['opera'];
@@ -53,12 +63,18 @@ export class KngNavigationStateService  {
       KngNavigationStateService.forceLockedHub = params.locked || KngNavigationStateService.forceLockedHub;
 
       //
-      // stored sign-in 
+      // stored authlink
+      if(!this._authlink) {
+        this._authlink = params.authlink || '';
+      }
+
+      //
+      // stored sign-in
       const token = params.token;
       if (token && token.length) {
         try{ this._token = atob(token).split('::') }catch(e) {}
       }
-  
+
     });
 
     this.$router.events
@@ -71,10 +87,10 @@ export class KngNavigationStateService  {
 
     this.$config.config$.subscribe(config =>{
       this.updateConfig(config);
-    });   
+    });
 
     //
-    // UX for easy login 
+    // UX for easy login
     this._token = [];
 
   }
@@ -106,17 +122,12 @@ export class KngNavigationStateService  {
         if (hub.colors.primaryText) { style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText); }
         if (hub.colors.action) { style.setProperty('--mdc-theme-secondary', hub.colors.action); }
         if (hub.colors.actionText) { style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText); }
-        //
-        // remove pink 
-        //if (hub.colors.action) { style.setProperty('--mdc-theme-karibou-pink', hub.colors.action); }
 
+        if(hub.colors.colormix) { style.setProperty('--mdc-theme-colormix', hub.colors.colormix);}
         //
         // force appBar to Null if not exists
         if(hub.colors.appbar){
           style.setProperty('--mdc-theme-appbar', hub.colors.appbar);
-          const use ="color-mix(in srgb, var(--mdc-theme-appbar) 40%, white)"
-          const light = CSS.supports('color:'+use)? use:"var(--mdc-theme-appbar)";
-          style.setProperty('--mdc-theme-appbar-light', light);
         }else{
           style.removeProperty('--mdc-theme-appbar');
         }
@@ -145,24 +156,36 @@ export class KngNavigationStateService  {
     }
   }
 
+  get currentTheme() {
+    return this.theme;
+  }
+
+  get currentAuthlink() {
+    return this._authlink;
+  }
+
   get currentToken() {
-    return this._token; 
+    return this._token;
   }
 
   get currentContentType() {
     return this._historyCursor;
-  }  
+  }
 
 
   get hasHistory() {
-    return this._history.length>1;
-  }  
+    return this._history.length>2;
+  }
   get landingHubSlug() {
     return KngNavigationStateService.forceLandingHub;
   }
 
   get HUBs() {
     return this.config.shared.hubs || [];
+  }
+
+  set currentTheme(theme: any) {
+    this.theme = theme;
   }
 
   set store(store: string) {
@@ -179,6 +202,29 @@ export class KngNavigationStateService  {
     return this.currentStore;
   }
 
+
+  // Ipad Air 5th gen
+  // (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15"
+  // (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15"
+  get isIOS() {
+    const userAgent = window.navigator.userAgent || '';
+
+    // Rechercher la version d'iOS dans l'User-Agent
+    const match = userAgent.match(/OS X (\d+)_(\d+)_(\d+)?/i);
+
+    if (match) {
+      const majorVersion = match[1] || '0';
+      const minorVersion = match[2] || '0';
+      const patchVersion = match[3] || '0';
+
+      return `iOS:${majorVersion}.${minorVersion}.${patchVersion}`;
+    }
+
+    // Retourne null si la version iOS n'a pas été trouvée
+    return '';
+  }
+
+
   //
   // FIXME implement 100% complete back
   back() {
@@ -194,7 +240,7 @@ export class KngNavigationStateService  {
     //     return;
     //   }
     //   this.$router.navigate(['../../'], { relativeTo: this.$route });
-    // }, 500);    
+    // }, 500);
 
   }
 
@@ -254,7 +300,7 @@ export class KngNavigationStateService  {
   registerScrollEvent(container?,debounceT?) {
     let scrollPosition = 0;
     let scrollDirection = 0;
-  
+
     //
     // detect scrall motion and hide component
     // @HostListener('window:scroll', ['$event'])
@@ -290,7 +336,7 @@ export class KngNavigationStateService  {
       scrollPosition = _scrollPosition;
 
 
-      // FIXME make it better (<-5 && !exited) = event.exit 
+      // FIXME make it better (<-5 && !exited) = event.exit
       //this._direction$.next(5*(Math.round( scrollDirection / 5)));
       return {direction:scrollDirection,position:scrollPosition};
     }
@@ -325,8 +371,8 @@ export class KngNavigationStateService  {
     try{
       // screen.prefers-color-scheme = "dark"; //or
       // window.prefers-color-scheme = "dark"; //or
-      // navigator.prefers-color-scheme = "dark"; 
-      
+      // navigator.prefers-color-scheme = "dark";
+
     }catch(err) {
 
     }
