@@ -197,8 +197,8 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     // copy data
 
     // FIXME radio button is not working
-      delete value.type;
     Object.assign(this.edit.category, value);
+    console.log('onSave', this.edit.category);
     const editor = (this.edit.create) ?
       this.$category.create(this.edit.category) :
       this.$category.save(this.edit.category.slug, this.edit.category);

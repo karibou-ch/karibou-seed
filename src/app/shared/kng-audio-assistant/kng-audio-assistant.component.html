@@ -4,15 +4,15 @@
       {{glabel.audio_recording}}
     </div>
     <div class="title">
-      <span [hidden]="sentences.length">{{label_title}}</span>
+      <span [hidden]="sentences.length && !whisperNote">{{whisperNote||label_title}}</span>
       <kng-stream-sentence [sentences]="sentences" (chat)="onTest($event)" [pause]="isThinking"></kng-stream-sentence>
 
     </div>
-  
+
     <div class="audio-error" [hidden]="!audioError" >
       {{glabel.audio_error}} <button (click)="audioError = null">OK</button>
     </div>
-    
+
     <div class="audio-error" [hidden]="audioDetected || hasNoAudio" >
       {{glabel.audio_silent}} <button (click)="audioDetected = true">OK</button>
     </div>
@@ -28,7 +28,7 @@
   </div>
 
   <div class="context" [hidden]="!note">
-    <span [innerHtml]="markdownRender" [hidden]="quiet"></span> 
+    <span [innerHtml]="markdownRender" [hidden]="quiet"></span>
     <span class="btn" (click)="onSearch()">recommencer</span>
     <span class="btn" (click)="onClear()">supprimer</span>
   </div>

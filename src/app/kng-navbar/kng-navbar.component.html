@@ -109,9 +109,9 @@
       <!-- APPBAR-SECTION-MIDDLE -->
       <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
 
-      <mdc-top-app-bar-section hidden class="title hide-md hide-lg" >
+      <mdc-top-app-bar-section class="title hide-md hide-lg" >
         <span class="start">{{hubTitle}} </span>
-        <div class="kng-chip end" [hidden]="!currentThemeName" (click)="opentheme=!opentheme">
+        <div hidden class="kng-chip end"  (click)="opentheme=!opentheme">
           <i class="material-symbols-outlined start">category</i> {{currentThemeName}} <i class="material-symbols-outlined end">keyboard_arrow_down</i>
         </div>
         
@@ -120,14 +120,7 @@
       <!-- APP RIGHT ACTIONS -->
 
     </mdc-top-app-bar-row>
-    <mdc-top-app-bar-row *ngIf="opentheme">
-      <mdc-top-app-bar-section>
-        <div class="kng-chip bold" *ngFor="let theme of themes">
-          {{theme.name}} 
-        </div>  
-      </mdc-top-app-bar-section>
 
-    </mdc-top-app-bar-row>
   </mdc-top-app-bar>
 
   <!-- CONTENT APP -->
@@ -136,7 +129,7 @@
   </div>
 
   <!-- FAB  [exited]="scrollDirection<-5" -->
-  <kng-ui-bottom-actions [config]="config" [categories]="categories">  </kng-ui-bottom-actions>
+  <kng-ui-bottom-actions [config]="config" [categories]="categories" [user]="user">  </kng-ui-bottom-actions>
 
   <!-- ASK LOGIN  -->
   <div class="overlay-pane" [class.overlay-open]="displayLogin">

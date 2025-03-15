@@ -12,12 +12,12 @@ import { CartService,
          Order,
          ConfigService } from 'kng2-core';
 
-import { KngNavigationStateService, KngUtils, i18n } from '../common';
+import { KngNavigationStateService, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
 import { Subscription } from 'rxjs';
-import { StripeCardElement, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
+import { PaymentIntent, StripeCardElement, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
 
 
 
@@ -45,6 +45,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   isValid = false;
   hasOrderError = false;
   noshippingMsg: string;
+  shippingTime: number = 16;
   currentCartView:boolean = true;
 
   currentShippingDay: Date;
@@ -58,7 +59,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   i18n: any = {
     fr: {
       cart_deposit: 'Commande à collecter',
-      cart_info_title:'Votre liste d\'achat pour ',
+      cart_info_title:'Votre liste d\'achat',
       cart_info_note:'Note:',
       cart_info_help:'besoin d\'aide?',
       cart_info_wallet:'Débit de votre portefeuille',
@@ -69,8 +70,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_contract_total: 'Montant de votre abo en cours',
       cart_info_subtotal: 'Sous total (__FEES__ service inclus)',
       cart_info_subtotal_fees: '__FEES__ de Service',
+      cart_info_shipping_when: 'Date de livraison',
       cart_info_shipping: 'Livraison 100% cycliste',
-      cart_info_shipping_title: 'Adresse de livraison ',
       cart_info_shipping_group: 'Vous complétez une commande en cours',
       cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
       cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
@@ -86,13 +87,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_service_k_plus: `Nos prix restent inchangés grâce à notre vente directe ; les frais de service transparents assurent une qualité 5🌟.`,
       cart_remove: 'enlever',
       cart_modify_add: 'Choisir une autre adresse de livraison',
+      cart_payment_title:'Informations de la carte',
       cart_modify_payment: 'Choisir un autre mode de paiement',
       cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais de ',
       cart_checkout: 'Finaliser la commande',
-      cart_subscription: 'Activer votre abonnement',
-      cart_subscription_title: 'La page de votre abonnement',
+      cart_subscription: 'Confirmer l\'abonnement',
+      cart_subscription_title: 'Vérifier votre abonnement',
       cart_create_subscription: 'Créer votre abonnement',
       cart_update_subscription: 'Modifier votre abonnement',
       cart_update_subscription_payment: 'Valider votre méthode de paiement',
@@ -108,17 +110,20 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_shared_title1: 'Une liste d\'achats à été créée à votre attention',
       cart_shared_title2: 'Finalisez votre commande en un clin d\'œil : confirmez la date de livraison, identifiez-vous, sélectionnez votre adresse et le mode de paiement. Merci et savourez votre achat !',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
-      cart_cg: 'J\'ai lu et j\'accepte les conditions générales de vente',
-      cart_cg_18: 'J\'ai l\'âge légal pour l\'achat d\'alcool',
-      cart_order: 'Commander pour',
-      cart_order_error_twint: 'Votre paiement TWINT a été refusé',
+      cart_cg: 'J\'accepte les conditions générales de vente',
+      cart_cg_middle:' et je confirme que ',
+      cart_cg_18: 'j\'ai l\'âge légal pour l\'achat d\'alcool',
+      cart_order: 'Commander',
+      cart_order_pending_twint: 'Le paiement TWINT est en cours de traitement',
+      cart_order_unknownerror_twint: 'Erreur inconnue lors du paiement TWINT',
+      cart_order_error_twint: 'Votre paiement TWINT est refusé',
       cart_order_placed: 'Votre commande est enregistrée et sera livrée le ',
       cart_contract_placed: 'Votre abonnement est enregistré',
-      
+
     },
     en: {
       cart_deposit: 'Order to collect',
-      cart_info_title:'Your shopping cart for ',
+      cart_info_title:'Your shopping cart',
       cart_info_help:'Need help?',
       cart_info_note:'Note:',
       cart_info_total: 'Total estimate to be billed',
@@ -129,8 +134,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_contract_total: 'Amount of your running subscription',
       cart_info_subtotal: 'Subtotal (__FEES__ service fee included)',
       cart_info_subtotal_fees:'Service fee  __FEES__ ',
+      cart_info_shipping_when: 'Shipping date',
       cart_info_shipping: 'Delivery 100% ecological ',
-      cart_info_shipping_title: 'Shipping between',
       cart_info_shipping_group: 'You are close to complete an order in progress',
       cart_info_shipping_discount: 'From <b>_AMOUNT_</b> chf of purchase, you get delivery to your door for <b>_DISCOUNT_</b> !',
       cart_info_shipping_applied: 'You get a delivery discount!',
@@ -145,14 +150,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_service_k_plus: `Our prices remain unchanged thanks to our direct sales; transparent service fees ensure 5🌟 quality.`,
       cart_remove: 'remove',
       cart_modify: 'Modify',
+      cart_payment_title:'Card information',
       cart_modify_add: 'Select another shipping address',
-      cart_modify_payment: 'Select another payment methods',
+      cart_modify_payment: 'Select another payment method',
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
-      cart_discount_title: 'delivery discout ',
+      cart_discount_title: 'delivery discount ',
       cart_checkout: 'Go to checkout',
-      cart_subscription: 'Activate your subscription',
-      cart_subscription_title: 'The subscription page',
+      cart_subscription: 'Confirm Subscription',
+      cart_subscription_title: 'Check your subscription',
       cart_create_subscription: 'Create your subscription',
       cart_update_subscription: 'Modify your subscription',
       cart_update_subscription_payment: 'Validate your payment method',
@@ -167,11 +173,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_shared_title1: 'A shopping cart has been created for you',
       cart_shared_title2: 'Quickly finalize your order: confirm the delivery date, log in, select your address and payment method. Thank you and enjoy your purchase!',
       cart_error: 'Your cart has to be modified!',
-      cart_cg: 'I read and I agree to the general selling conditions',
+      cart_cg: 'I agree to the general selling conditions',
+      cart_cg_middle:' and I confirm that ',
       cart_cg_18: 'I am of legal age to purchase alcohol',
-      cart_order: 'Order now  for ',
+      cart_order: 'Order now ',
       cart_order_placed: 'Your order is placed and will be delivered on',
-      cart_order_error_twint: 'Your TWINT payment has been declined',
+      cart_order_pending_twint: 'TWINT payment is being processed',
+      cart_order_unknownerror_twint: 'Unknown error during TWINT payment',
+      cart_order_error_twint: 'Your TWINT payment is declined',
       cart_contract_placed: 'Your subscription is registered'
     }
   };
@@ -215,12 +224,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.orders = [];
 
     this.subscription$ = new Subscription();
-    this.loadOrders(); 
+    this.loadOrders();
 
     const cart = this.$route.snapshot.paramMap.get('name');
     if(cart !== 'default') {
       this._sharedCart = cart;
-    }    
+    }
 
   }
 
@@ -258,11 +267,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   get cartName(){
-    return this._sharedCartName ? this._sharedCartName:this.$cart.getName(); 
+    return this._sharedCartName ? this._sharedCartName:this.$cart.getName();
   }
 
   get sharedCart(){
-    const uuid = this.$cart.getCID(); 
+    const uuid = this.$cart.getCID();
     if(!uuid) {
       return;
     }
@@ -316,27 +325,33 @@ export class KngCartComponent implements OnInit, OnDestroy {
         }
         // emit signal for user
         if (emit.user) {
-          this.user = emit.user;       
-          //this.$cart.setContext(this.config,this.user);
-          //this.loadOrders(); 
+          this.user = emit.user;
+
+          //
+          // This is a big shit 💩
+          this.confirmAsyncPayment();
+          //this.loadOrders();
         }
         // emit signal for cart
         if (emit.state) {
 
           //
-          // display subscription or cart 
+          // display subscription or cart
           this.isValid = true;
 
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
+          this.shippingTime = this.$cart.getCurrentShippingTime()|0;
 
           this.initItems();
           //
-          // if customer have only one valid payment method, 
+          // if customer have only one valid payment method,
           // and payment is not set
           const payment = this.user.payments.find((method,idx,all) => method.isValid && all.length==1 && method.isValid());
           if(!this.$cart.getCurrentPaymentMethod() && payment) {
             this.$cart.setPaymentMethod(payment);
           }
+
+
         }
 
       }, error => {
@@ -353,7 +368,89 @@ export class KngCartComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       try {window.scroll(0, 0); } catch (e) {}
     }, 100);
+
   }
+
+  async confirmAsyncPayment() {
+    // payment_intent=pi_3PYUfWBTMLb4og7P1An0LY7h
+    // payment_intent_client_secret=pi_3PYUfWBTMLb4og7P1An0LY7h_secret_mCEud6EZW9oFjI8BUWWeKlkSM
+    // redirect_status=succeeded
+    const { payment_intent, payment_intent_client_secret, redirect_status, oid} = this.$route.snapshot.queryParams;
+    if(!payment_intent) {
+      return;
+    }
+
+    try{
+      const result = await this.$stripe.stripe.retrievePaymentIntent(payment_intent_client_secret).toPromise();
+      const paymentIntent:PaymentIntent = result.paymentIntent;
+
+      //
+      // pending, wait for payment
+      // | 'canceled'
+      // | 'processing'
+      // | 'requires_action'
+      // | 'requires_capture'
+      // | 'requires_confirmation'
+      // | 'requires_payment_method'
+      // | 'succeeded';
+      if(paymentIntent.status=='succeeded') {
+        const order = await this.$order.get(oid).toPromise();
+        this.onCheckout({order});
+        return;
+      }
+
+      //
+      // list all kind of errors
+      if(paymentIntent.status=='canceled') {
+        this.checkoutMessageError = this.llabel.cart_order_canceled_twint;
+        return;
+      }
+
+      if(paymentIntent.status=='processing') {
+        this.checkoutMessageError = this.llabel.cart_order_pending_twint;
+        setTimeout(()=> window.location.reload(),1000);
+        return;
+      }
+
+      setTimeout(()=>{
+
+        // clean url
+        this.$router.navigate([], {
+          queryParams: {
+            'oid':null,
+            'redirect_status':null,
+            'payment_intent': null,
+            'payment_intent_client_secret': null,
+          },
+          queryParamsHandling: 'merge'
+        })
+        throw new Error('ERROR:confirmAsyncPayment:'+this.checkoutMessageError);
+      })
+
+
+      if(result.error){
+        this.checkoutMessageError = result.error.message;
+        return;
+      }
+
+
+      if(paymentIntent.status=='requires_payment_method') {
+        this.checkoutMessageError = this.llabel.cart_order_error_twint;
+        return;
+      }
+
+      this.checkoutMessageError = this.llabel.cart_order_unknownerror_twint;
+
+    }catch(e){
+      this.checkoutMessageError = this.llabel.cart_order_unknownerror_twint;
+      console.log('async error',e)
+    }finally{
+
+    }
+
+
+  }
+
 
   async initItems() {
     if(!this.isValid) {
@@ -365,13 +462,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
     const ctx:CartItemsContext = {
       forSubscription:!this.currentCartView,
       hub:this.currentHub
-    }    
+    }
     if(this.currentCartView) {
       ctx.onSubscription = false;
     }
-    this.items = this.$cart.getItems(ctx);      
+    this.items = this.$cart.getItems(ctx);
 
-    // stripe 
+    // stripe
     // const elements = await this.$stripe.elements().toPromise();
     // const applePay = elements.create('applePay');
   }
@@ -384,13 +481,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
     const ctx:CartItemsContext = {
       forSubscription:!viewcart,
       hub:this.currentHub
-    }    
-    this.items = this.$cart.getItems(ctx);  
+    }
+    this.items = this.$cart.getItems(ctx);
 
 
   }
+
   async doSharedCart(name:string){
-    const cart = await this.$cart.getShared(name).toPromise(); 
+    const cart = await this.$cart.getShared(name).toPromise();
     const uuid = cart.cid;
     if(!uuid) {
       return;
@@ -410,7 +508,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.checkoutMessageError = '';
     this.hasOrderError = false;
     this.checkout.doInitateCheckout(ctx);
-  }  
+  }
 
   goBack(): void {
     this.$router.navigate(['../home'], { relativeTo: this.$route });
@@ -423,10 +521,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   loadOrders() {
     //
-    // load orders 
+    // load orders
     if(this.user.id && !this.orders.length){
       const cathError = true;
-      this.$order.findOrdersByUser(this.user,{limit:4},cathError).subscribe(orders=>this.orders=orders);        
+      this.$order.findOrdersByUser(this.user,{limit:4},cathError).subscribe(orders=>this.orders=orders);
     }
   }
 
@@ -446,21 +544,19 @@ export class KngCartComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  async onPendingPayment({payment_intent, payment_intent_client_secret, oid}) {
+    // const order = await this.$order.get(oid).toPromise();
+
+
+  }
 
   onCheckout($event:any) {
-    console.log('onCheckout', $event);
     //
     // case of error
     if($event.errors) {
       this.hasOrderError = true;
       return;
-    }   
-    //
-    // case of TWINT error
-    if($event.twint) {
-      this.checkoutMessageError = this.llabel.cart_order_error_twint;
-      return;
-    }   
+    }
 
     //
     // case of final contract
@@ -472,14 +568,18 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //
     // case of final order
     if($event.order) {
+      const hub = $event.order.items[0].hub||this.currentHub;
+      console.log('clearAfterOrder',hub,$event.order.items)
       const day = $event.order.shipping.when.getDate();
       const month = $event.order.shipping.when.getMonth() + 1;
       this.checkoutMessage = this.llabel.cart_order_placed + `(${day}/${month})`;
-      this.$cart.clearAfterOrder(this.store,$event.order);
+      setTimeout(() => {
+        this.$cart.clearAfterOrder(this.store,$event.order);
+      })
 
     }
 
-    this.orders.unshift($event.order as Order); 
+    this.orders.unshift($event.order as Order);
   }
 
 }

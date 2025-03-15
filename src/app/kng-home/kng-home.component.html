@@ -1,89 +1,110 @@
 
-      
+
 <!-- HUB -->
 <!-- <div class="home-header" [hidden]="hub.header.active">
   <div class="banner" >
     <h1>{{config.shared.hub.siteName[locale]}}</h1>
-    <h2>{{config.shared.hub.description[locale]}}</h2>  
+    <h2>{{config.shared.hub.description[locale]}}</h2>
   </div>
+</div> -->
+
+
+<!-- DESKTOP -->
+ <!--
+<div class="home mobile-categories" [class.menu-on-top]="!isMobile" [hidden]="availableSearch && isMobile">
+  <ul >
+    <li [id]="'group-'+j"
+        [class.selected]="group.slug == displaySlug"
+        *ngFor="let group of sortedGroups;let j=index">
+      <img [src]="group.cover" >
+      <span>{{(group.name)}}</span>
+    </li>
+  </ul>
 </div> -->
 
 
 
 
-<!-- CalENDAR -->
-<kng-calendar [title]="theme.name" [hidden]="availableSearch" class="fit-content" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
 <!-- INFORMATION -->
 <div class="home-header" [hidden]="!hub.header.active">
-  <div class="banner flyer-color" [innerHtml]="hub.header.message[locale]"></div>
+  <img [src]="tagline.image" [hidden]="!tagline.image"/>
+  <figure [innerHtml]="hub.header.message[locale]" ></figure>
 </div>
+<!-- CalENDAR -->
+<kng-calendar  [user]="user" [title]="theme.name" [hidden]="availableSearch" class="fit-content" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
 
-<!-- MOBILE SEARCH  -->
-<kng-search class="home" [class.active]="availableSearch"></kng-search>
+<!-- BUSINESS
+<kng-business-option [hub]="hub" [user]="user"   (onOpen)="scrollLocked = $event"></kng-business-option>
+-->
 
 
-  
 <!-- SELECTION -->
-<kng-product-swipe [hidden]="useTheme||isMobile" mailchimp="true" [hub]="store" ></kng-product-swipe>
+<kng-product-swipe [user]="user" [hidden]="sortedCategories.length<5" mailchimp="true" [hub]="store" ></kng-product-swipe>
 
 
 <!-- DISCOUNT -->
-<kng-product-swipe [hidden]="useTheme||isMobile" discount="true" [hub]="store" ></kng-product-swipe>
+<kng-product-swipe [user]="user" [hidden]="useTheme||isMobile" discount="true" [hub]="store" ></kng-product-swipe>
 
 
 
-<!-- LISTED CATEGORIES -->
-<h2 class="root -show-sm">{{label.category_title}}</h2>  
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
 <!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
 <div class="home" [class.menu-on-right]="!isMobile" [class.mobile-categories]="isMobile">
-  <!-- SEARH -->
-  <kng-search-bar [class.active]="availableSearch"></kng-search-bar>
-
-
-
-
-  <!-- JAMES 
+  <!-- JAMES
   <div class="kng-boxed hide-sm" [hidden]="!isJamesAvailable">
-    <div class="content">    
+    <div class="content">
       <kng-audio-assistant [store]="store" agent="feedback" (onAction)="onAssistantClick($event)"></kng-audio-assistant>
-    </div> 
+    </div>
   </div> -->
 
   <!-- NEED HELP? -->
-  <div class="kng-boxed">
-    <div class="content">    
+  <div class="kng-boxed first hide-sm">
+    <div class="content">
       <div class="items">
         {{hub.description[locale]}}
       </div>
-      <div class="bottom"> 
-        <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}</a>  
+      <div class="bottom">
+        <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}</a>
       </div>
-      
     </div>
   </div>
 
-  <!-- SPECIAL LINKS -->
-  <div class="kng-boxed subscription hide-sm">
-    <div class="label">
-      <h2>Thématiques <i class="material-symbols-outlined icon   ">update</i>  </h2>
+  <!-- SEARH -->
+  <kng-search-bar [class.active]="availableSearch"></kng-search-bar>
+
+  <!-- THEMES -->
+  <div class="kng-boxed themes">
+    <div class="kng-chip bold" *ngFor="let theme of themes" (click)="doSearch(theme.name)" [style.background]="theme.color">
+      <span>{{theme.name}} </span>
     </div>
+  </div>
+
+
+
+
+  <!-- SPECIAL LINKS -->
+  <!--
+  <div   class="kng-boxed subscription hide-sm " hidden>
+    <div class="label" hidden>
+      <h2>Les tendances <i class="material-symbols-outlined icon   ">update</i>  </h2>
+    </div>
+
     <div class="content">
       <div class="items">
         <ul class="subs">
-          <li class="subs "  *ngFor="let theme of themes;let j=index"
+          <li class="subs-item "  *ngFor="let theme of themes;let j=index"
              [routerLink]="['/store',store,'home','theme',theme.slug]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >
             <h3>{{theme.name}}</h3>
             <span class="">{{theme.description}}</span>
           </li>
         </ul>
-      </div>  
+      </div>
     </div>
   </div>
-
+  -->
 
 </div>
 
@@ -91,20 +112,25 @@
 <div class="home" [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile" [hidden]="availableSearch && isMobile">
   <!-- MOBILE -->
   <ul class="subs">
-    <li class="subs " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon black   ">trending_up</i>  
-
+    <li class="subs-item " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon    ">person_celebrate</i>
       <span>{{label.nav_subscription_b2b}}</span>
     </li>
-    <li class="subs  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon black  ">update</i>  
+    <li class="subs-item  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon ^  ">update</i>
       <span>{{label.nav_subscription}}</span>
     </li>
 
-    <li class="subs  full-width" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon  pink">smart_toy</i>  
-      <span>Découvrez James</span>
+
+    <li *ngIf="isAuthencated" class="subs-item" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon  ">shopping_cart</i>
+      <span>{{label.james_title_cta}}</span>
     </li>
+    <li *ngIf="isAuthencated && isB2BSchool" class="subs-item" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon  ">smart_toy</i>
+      <span>{{label.james_school}}</span>
+    </li>
+
   </ul>
 
   <!-- DESKTOP -->
@@ -112,50 +138,55 @@
     <li class="hide-sm " [routerLink]="userRouterLink">
       <!-- LOGIN / REGISTER -->
       <span class="fa icon hide">👦</span>
-      <b>{{user.isAuthenticated()?label.nav_account:label.nav_login}}</b>
+      <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
 
     </li>
     <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/business'">
-      <span class="fa icon hide">🤝</span>
       <b>{{label.nav_subscription_b2b}}</b>
     </li>
 
     <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/subscription'">
-      <span class="fa icon hide">🧺</span>
       <b>{{label.nav_subscription}}</b>
-    </li>    
-
-    <li class="hide-sm separator"  [routerLink]="'/store/'+store+'/home/assistant/james'">
-      <span class="fa icon hide">✨</span>
-      <b>Découvrez James ✨</b>
-    </li>
-    <li class="hide-sm" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <span>{{hub.name}}</span>
     </li>
 
-    <li (click)="scrollToSlug(category.slug)" 
-              [id]="'category-'+j"                    
+    <li [hidden]="!isAuthencated || !isB2BSchool" class="hide-sm" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <b>{{label.james_school}}</b>
+    </li>
+    <li class="hide-sm separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <b>{{label.james_title_cta}}</b>
+    </li>
+
+
+
+    <li (click)="scrollToSlug(category.slug)"
+              [id]="'category-'+j"
               [class.selected]="category.slug == displaySlug"
               *ngFor="let category of sortedCategories;let j=index">
       <img [src]="category.cover" class="show-sm">
-      <i [class]="category.image" class="icon hide "></i>              
+      <i [class]="category.image" class="icon hide "></i>
       <span>{{getCategoryI18n(category)}}</span>
     </li>
   </ul>
 </div>
+
+
+<!-- MOBILE SEARCH  -->
+<kng-search class="home" [class.active]="availableSearch"></kng-search>
+
 <div class="product-container " *ngIf="products.length" >
-  <kng-product-grouped-list 
-       [useMaxCat]="useMaxcat"  
+  <kng-product-grouped-list clazz="home"
+       [useMaxCat]="!useTheme && products.length>40"
+       [alphasort]="useTheme"
        [displayVendor]="true"
-       [showMore]="true" 
-       [config]="config" 
-       [user]="user" 
+       [showMore]="!useTheme && products.length>10"
+       [config]="config"
+       [user]="user"
        [contentCategories]="sortedCategories"
-       [contentProducts]="products"       
-       [scrollToSlug]="categorySlug" 
+       [contentProducts]="products"
+       [scrollToSlug]="categorySlug"
        (currentCategory)="displaySlug=($event || displaySlug)"
-       (direction)="scrollDirection=$event">    
+       (direction)="scrollDirection=$event">
   </kng-product-grouped-list>
 </div>
-  
+
 <router-outlet ></router-outlet>

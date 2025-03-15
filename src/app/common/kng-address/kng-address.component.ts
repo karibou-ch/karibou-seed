@@ -1,10 +1,9 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Config, UserAddress, geoadmin, geolocation } from 'kng2-core';
-import { KngUtils, i18n } from 'src/app/common';
-import { Loader } from "@googlemaps/js-api-loader"
+import { i18n } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, skip } from 'rxjs/operators';
 declare const google;
 
 @Component({
@@ -37,7 +36,7 @@ export class KngAddressComponent implements OnInit {
   location = {lat:0, lng:0 };
   locations: string[];
   regions: string[];
-  $address: FormGroup;  
+  $address: FormGroup;
 
   @ViewChild('street') street!: ElementRef;
   @ViewChild('floor') floor!: ElementRef;
@@ -59,7 +58,7 @@ export class KngAddressComponent implements OnInit {
       street: address.streetAdress,
       region: address.region,
       postalCode: address.postalCode,
-      phone: address.phone || this.phone || '' 
+      phone: address.phone || this.phone || ''
     });
   }
 
@@ -67,8 +66,7 @@ export class KngAddressComponent implements OnInit {
   constructor(
     public  $i18n: i18n,
     private $fb: FormBuilder,
-    private $http: HttpClient,
-    private $cdr: ChangeDetectorRef
+    private $http: HttpClient
   ) {
     this.$address = this.$fb.group({
       'name':   ['', [Validators.required, Validators.minLength(3)]],
@@ -83,13 +81,16 @@ export class KngAddressComponent implements OnInit {
     // Listen to changes on the 'street' field with a debounce of 3 seconds
     this.$address.get('street').valueChanges
       .pipe(
-        filter(value => value && value.length > 6),
-        debounceTime(500),
-        distinctUntilChanged()
-      ) // 3 seconds and address len > 6 chars
+        distinctUntilChanged((prev, curr) => {
+          return prev === "" || curr === "" || prev.toLowerCase() === curr.toLowerCase()
+        }),
+        skip(1),
+        debounceTime(500)
+
+      ) // .5 seconds and address len > 6 chars
       .subscribe(value => {
         this.onStreetChange(value);
-      });    
+      });
 
   }
 
@@ -106,9 +107,9 @@ export class KngAddressComponent implements OnInit {
   }
 
   get isClear() {
-    return this.address.name === '' && 
-           this.address.streetAdress === '' && 
-           this.address.floor === ''; 
+    return this.address.name === '' &&
+           this.address.streetAdress === '' &&
+           this.address.floor === '';
   }
 
   get address() {
@@ -119,7 +120,8 @@ export class KngAddressComponent implements OnInit {
       region: this.$address.value.region,
       postalCode: this.$address.value.postalCode,
       note: this.$address.value.note,
-      geo: this.location
+      geo: this.location,
+      type: 'customer'
     };
     const phone = this.$address.value.phone;
     if(phone)address.phone = phone;
@@ -128,11 +130,11 @@ export class KngAddressComponent implements OnInit {
 
   get glabel() {
     return this.$i18n.label();
-  }  
+  }
 
   get label() {
     return this.i18n[this.$i18n.locale];
-  }  
+  }
   get locale() {
     return this.$i18n.locale;
   }
@@ -164,7 +166,7 @@ export class KngAddressComponent implements OnInit {
   onBlurOrSelect(selection?){
     if (selection<0 || selection == undefined) {
       let street = this.$address.value.street;
-      selection = this.addresses.findIndex(option => option.street.indexOf(street)>-1);      
+      selection = this.addresses.findIndex(option => option.street.indexOf(street)>-1);
     }
 
     const idx = selection;
@@ -180,8 +182,8 @@ export class KngAddressComponent implements OnInit {
     this.address.region = this.addresses[idx].region;
 
     this.$address.patchValue({ street:this.addresses[idx].street });
-    this.$address.patchValue({ postalCode: this.addresses[idx].postal });  
-    this.$address.patchValue({ region: this.addresses[idx].region });  
+    this.$address.patchValue({ postalCode: this.addresses[idx].postal });
+    this.$address.patchValue({ region: this.addresses[idx].region });
     this.addresses = [];
     this.isReady = false;
 
@@ -202,8 +204,8 @@ export class KngAddressComponent implements OnInit {
     this.addresses = await geoadmin(street,context).toPromise();
     if(this.addresses.length==1) {
       this.$address.patchValue({ street:this.addresses[0].street.trim() });
-      this.$address.patchValue({ postalCode: this.addresses[0].postal });  
-      this.$address.patchValue({ region: this.addresses[0].region });  
+      this.$address.patchValue({ postalCode: this.addresses[0].postal });
+      this.$address.patchValue({ region: this.addresses[0].region });
       this.addresses = [];
     }
   }
@@ -215,7 +217,7 @@ export class KngAddressComponent implements OnInit {
 
     const context = {config:this.config,$http:this.$http};
     const result = await geolocation(this.address,context).toPromise();
-    return this.location = (result.geo&&result.geo.location) || this.location;    
+    return this.location = (result.geo&&result.geo.location) || this.location;
   }
 
 

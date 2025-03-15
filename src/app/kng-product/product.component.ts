@@ -77,6 +77,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   departement = 'home';
 
+  hoursLeftBeforeOrder: number;
   isHighlighted: boolean;
   WaitText = false;
   rootProductPath: string;
@@ -150,7 +151,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     // container.className == "product-dialog__surface"
     const container = this.dialog.nativeElement.children[1];
     return container.clientWidth;
-  }  
+  }
 
   get store() {
     return this.$navigation.store;
@@ -159,6 +160,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   get audioFileName() {
     const name = this.user && this.user.displayName || ''
     return this.product.sku + '-' + name.toLowerCase();
+  }
+
+  get pinned(){
+    return this.product.attributes.home || this.selected;
   }
 
   get productActiveSubscription() {
@@ -197,6 +202,30 @@ export class ProductComponent implements OnInit, OnDestroy {
     return !this.isReady || this.product.pricing.stock;
   }
 
+  get isOutOfTimelimitForOrder() {
+    return this.hoursLeftBeforeOrder < 0;
+  }
+
+  get getTimelimitForOrder() {
+    return this.product.attributes.timelimit>0 && this.hoursLeftBeforeOrder < 10;
+  }
+
+  get hoursAndMinutesLeftBeforeOrder() {
+    const hours = Math.floor(this.hoursLeftBeforeOrder);
+    const minutes = Math.floor((this.hoursLeftBeforeOrder - hours) * 60);
+    return `${hours}h ${minutes}m`;
+  }
+
+  // display hours and minutes after the timelimit
+  // hoursLeftBeforeOrder equal -1.5hours means that current time minus 1.5 compute the limit of time
+  get hoursAndMinutesAfterOrder() {
+    const time = new Date();
+    const hours = Math.floor(-this.hoursLeftBeforeOrder);
+    const minutes = time.getMinutes()-Math.floor((-this.hoursLeftBeforeOrder - hours) * 60)+'';
+    return `${time.getHours()-hours}h${minutes.padStart(2, '0')}`;
+  }
+
+
   get glabel() {
     return this.$i18n.label();
   }
@@ -217,6 +246,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (this.isRedirect) {
       return;
     }
+
 
     this.isSearching = this.isReady = false;
 
@@ -274,7 +304,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       // https://stackoverflow.com/questions/1289234/alerts-when-navigating-away-from-a-web-page/1289260#1289260
       // window.onbeforeunload = function() {
       //   return false;
-      // }      
+      // }
 
       //
       // Expression has changed after it was checked
@@ -298,8 +328,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     console.log('---DBG audio error',error);
   }
 
-  onAudioStopAndSave(ctx:{audio: string,note?:string}) {
-    this.cartItemAudio = ctx.audio;
+  onAudioStopAndSave(ctx:{src, audio: string,note?:string}) {
+    this.cartItemAudio = ctx.src; // use audio url instead of audio base64
     this.cartItemNote = ctx.note;
     //
     // update note product, no qty, no variant and audio
@@ -348,7 +378,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     //
     // manage subscription
-    item.frequency = (this.displaySubscription && this.productActiveSubscription) 
+    item.frequency = (this.displaySubscription && this.productActiveSubscription)
 
 
 
@@ -357,7 +387,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     item.note = this.cartItemNote;
     item.audio = this.cartItemAudio;
     if(audio){
-      this.$cart.addOrUpdateNote(item);      
+      this.$cart.addOrUpdateNote(item);
     }else{
       this.$cart.add(item);
     }
@@ -409,7 +439,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     const vendor = product.vendor;
     // if(vendor && vendor.available.active) {
     //   return "sold out";
-    // } 
+    // }
     if(vendor && !vendor.status) {
       return "discontinued";
     }
@@ -446,6 +476,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   loadProduct(product) {
     this.product = product;
 
+    this.hoursLeftBeforeOrder = this.config.timeleftBeforeCollect(this.config.shared.hub,this.product.attributes.timelimit);
+    // console.log('---DBG hoursLeftBeforeOrder',this.hoursLeftBeforeOrder,product.title);
     //
     // updated product is hilighted for 2 weeks
     this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;
@@ -464,7 +496,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     // specifics actions
     if (this.isDialog) {
       //
-      // update window title      
+      // update window title
       document.title = product.title;
       const location = window.location.href;
       const category = product.categories && product.categories.name;
@@ -604,7 +636,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 90deg, /* Bottom */
         rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 270deg  /* Left */
       )`
-  
+
       const shadow = `-20px 0 32px -18px rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}),
                     -3px -13px 35px -18px rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b})`;
 
@@ -632,21 +664,23 @@ export class ProductThumbnailComponent extends ProductComponent {
         rgba(50, 50, 50, 0.3)
       )`;
 
+
+
   updateBackground() {
-    this.bgImage = this.product.photo.url + '/-/resize/250x/';
+    this.bgImage = this.product.photo.url + '/-/resize/300x/-/enhance/50';
     // this.bgStyle = {
     //   'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
     // };
 
     const colors = this.product.photo.colors;
     if (colors && colors.length) {
-      this.bgGradient = `linear-gradient(to bottom right, 
-      rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5), 
-      rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 25%, 
-      rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 50%, 
+      this.bgGradient = `linear-gradient(to bottom right,
+      rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5),
+      rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 25%,
+      rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 50%,
       rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 75%)`;
       this.bgStyle = {
-        'background' : this.bgGradient 
+        'background' : this.bgGradient
       };
 
     }
@@ -654,7 +688,7 @@ export class ProductThumbnailComponent extends ProductComponent {
 
     if (this.cartItemQuantity) {
       this.bgStyle = {
-        'background-color' : this.bgGradient 
+        'background-color' : this.bgGradient
       };
     }
   }

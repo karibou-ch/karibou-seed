@@ -22,7 +22,7 @@
                    [class.disabled]="!category.active"
                    (click)="onCategorySelect($event,category)">
         <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
-        <span class="material-symbols-outlined" mdcListItemGraphic [hidden]="category.cover" class="size-large">folder</span>
+        <span class="material-symbols-outlined size-large" [hidden]="category.cover" >folder</span>
         <mdc-list-item-text>
           <span>{{category.type}}/{{category.name}} ({{category.usedBy?.length||0}})</span>
           <mdc-list-item-secondary>
@@ -33,15 +33,13 @@
         <mdc-list-item-meta>
             <mdc-chip-set choice>
               <mdc-chip [hidden]="category.home" class="chip-primary">
-                <mdc-chip-icon trailing>thumb_up</mdc-chip-icon>
               </mdc-chip>
               <mdc-chip >
                 <mdc-chip-text>{{category.group}}</mdc-chip-text>
-                <mdc-chip-icon trailing>folder</mdc-chip-icon>
               </mdc-chip>
               <mdc-chip>
                 <mdc-chip-text>{{category.weight}}</mdc-chip-text>
-                <mdc-chip-icon trailing><span class="material-symbols-outlined" >sort</span></mdc-chip-icon>
+                <span class="material-symbols-outlined" >sort</span>
               </mdc-chip>
             </mdc-chip-set>                      
             

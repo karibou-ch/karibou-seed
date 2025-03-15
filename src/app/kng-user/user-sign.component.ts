@@ -55,7 +55,7 @@ export class UserSignComponent {
       login_ok: '1000 Thanks, you are now connected',
       login_ko: 'Username or password are not correct',
       login_skip: 'Visit the marketplace without identification',
-      signup_create: 'Continue', 
+      signup_create: 'Continue',
       signup_phone: 'Mobile phone is essential if you want to place an order',
 
       password_change_ok: 'Votre mot de passe à été modifié',
@@ -124,14 +124,14 @@ export class UserSignComponent {
       referrer: this.$route.snapshot.data.referrer
     };
 
-    
+
     const postalCodeValidator= (control) => {
       if(this.mandatory.minimal){
         return;
       }
       if(this.config.shared.user.location.list.indexOf(control.value)==-1){
         return {invalidPostalcode:true};
-      }    
+      }
       return null;
     }
 
@@ -158,9 +158,16 @@ export class UserSignComponent {
     }
 
     //
+    // check authlink
+    if (this.$navigation.currentAuthlink) {
+      defaultPassword = this.$navigation.currentAuthlink;
+    }
+
+    //
     // login account
+    const authLinkValidators = this.$navigation.currentAuthlink? [Validators.required, KngInputValidator.emailValidator]:[Validators.required];
     this.sign = this.$fb.group({
-      'email': [defaultEmail, [Validators.required, KngInputValidator.emailValidator]],
+      'email': [defaultEmail, ],
       'password': [defaultPassword, [Validators.required, KngInputValidator.passwordValidator]]
     });
 
@@ -175,6 +182,9 @@ export class UserSignComponent {
     this.updateState();
   }
 
+  get authlink() {
+    return this.$navigation.currentAuthlink ? 'text' : 'email';
+  }
 
   get issuer(){
     return KngPaymentComponent.issuer;

@@ -33,7 +33,7 @@ Sentry.init({
 
   // Usefull for CORS api 
   // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-  // tracePropagationTargets: [/^https:\/\/karibou\.ch/],
+  tracePropagationTargets: [/^https:\/\/karibou\.ch/],
 
   // Capture Replay for 10% of all sessions,
   // plus for 100% of sessions with an error

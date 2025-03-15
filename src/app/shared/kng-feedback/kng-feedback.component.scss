@@ -9,25 +9,25 @@ button{
 
   border: 0;
   padding: 7px 20px;
-  background-color: #ffffffcf;      
+  background-color: #ffffffcf;
   font-weight: bold;
   color: #333;
   border-radius: 20px;
-  font-size: inherit;  
+  font-size: inherit;
   span{
     font-size: 30px;
     font-weight: bold;
-  }    
+  }
 }
 button[disabled]{
   opacity: .4;
-  background-color: var(--mdc-theme-primary-light);     
+  background-color: var(--mdc-theme-primary-light);
 }
 
 .boxed {
   button {
     border: 1px solid #ddd;
-    margin-top: 5px;    
+    margin-top: 5px;
   }
 }
 
@@ -35,14 +35,14 @@ button.action{
   cursor: pointer;
   border-radius: 8px;
   border: 1px solid #aaa;
-  padding: 1px 8px;       
-  font-size: 12px;     
+  padding: 1px 8px;
+  font-size: 12px;
   flex: 0 auto!important;
   &.right{
     margin-left: auto!important;
     margin-right: 0;
   }
-} 
+}
 
 
 .shipping-grouped{
@@ -60,7 +60,7 @@ p.block-info{
   margin-top: 0px;
   margin-bottom: 10px;
   margin-left: 0px;
-}      
+}
 
 .processing.boxed{
   progress{
@@ -76,7 +76,7 @@ p.block-info{
     border: 0;
     border-radius: 14px;
     background-color: var(--mdc-theme-secondary-dark);
-    color: var(--mdc-theme-secondary-dark-text);      
+    color: var(--mdc-theme-secondary-dark-text);
   }
 
 }
@@ -90,18 +90,19 @@ p.block-info{
   flex-wrap: wrap;
   align-items: stretch;
 
-  .wallet{  
+  .wallet{
     flex: 1 0 auto;
     align-items: center;
+    background-color: var(--mdc-theme-karibou-yellow);
     .boxed{
       display: none;
     }
     .cash{
       font-size: 20px;
       font-weight: 600;
-      font-family: monospace;    
+      font-family: monospace;
       width: calc(100% - 205px);
-      color: black;    
+      color: black;
     }
     .digital {
       display: flex;
@@ -111,7 +112,7 @@ p.block-info{
         font-size: 17px;
         display: flex;
         align-items: center;
-        margin-right: 10px;        
+        margin-right: 10px;
       }
     }
     .gift{
@@ -136,10 +137,10 @@ p.block-info{
         height: 36px!important;
         border-radius: 0 8px 8px 0;
         flex: auto;
-        background: var(--mdc-theme-secondary) !important;        
-        color: var(--mdc-theme-secondary-text)!important;        
-        padding: 0;   
-        cursor: pointer;   
+        background: var(--mdc-theme-secondary) !important;
+        color: var(--mdc-theme-secondary-text)!important;
+        padding: 0;
+        cursor: pointer;
       }
     }
   }
@@ -167,12 +168,12 @@ p.block-info{
   }
 
   ul{
-    margin: 0;    
+    margin: 0;
     padding: 0;
     list-style: none;
     input{
       display: none;
-    }    
+    }
     .add-to-cart{
     }
     li{
@@ -194,7 +195,7 @@ p.block-info{
     border: 0;
     border-radius: 14px;
     background-color: var(--mdc-theme-secondary-dark);
-    color: var(--mdc-theme-secondary-dark-text);      
+    color: var(--mdc-theme-secondary-dark-text);
 
   }
 
@@ -221,7 +222,7 @@ p.block-info{
     &.scored,
     &:hover{
       color:gold;
-    }      
+    }
   }
 
   .form{
@@ -232,7 +233,7 @@ p.block-info{
   .evaluate{
     &.boxed{
       margin-top: -20px;
-      height: 85px;      
+      height: 85px;
     }
     position: absolute;
     top: 0;right: 0;left: 0;bottom: 0;
@@ -268,7 +269,7 @@ p.block-info{
       border: 1px solid #ddd;
       padding: 1px 8px;
       font-size: 14px;
-    }    
+    }
     div.label{
       flex:0 0 95%;
       margin: auto;
@@ -296,7 +297,7 @@ p.block-info{
   align-items:center; /*valign*/
   padding-top: 4vh!important;
   padding-bottom: 10vh!important;
-  box-sizing: border-box;    
+  box-sizing: border-box;
   position: fixed;top: 0;z-index: 4;margin: auto;left: 0;right: 0;
   min-height: 100vh;
 
@@ -317,10 +318,10 @@ p.block-info{
 
   .feedback-container{
     display: block;
-    max-width: 100vw;
+    max-width: 100%;
     background: rgba(255,255,255,0.95);
     position: relative;
-    z-index: 2;  
+    z-index: 2;
     text-align:left;
     transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
     max-height:calc( 100vh - 60px ); // still have to hard-code a value!
@@ -335,9 +336,9 @@ p.block-info{
       padding: 0 5px;
     }
 
-    &::-webkit-scrollbar { 
-      display: none; 
-    }    
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .form{
       padding: 5px 5px 20px;
@@ -351,8 +352,8 @@ p.block-info{
         &.scored,
         &:hover{
           color:var(--mdc-theme-karibou-pink);
-        }      
-    
+        }
+
       }
     }
 
@@ -396,8 +397,8 @@ p.block-info{
         padding: 10px 8px;
         border-radius: 4px;
         position: relative;
-        background-color: var(--mdc-theme-appbar);
-        height: auto;    
+        background-color: var(--mdc-theme-appbar-light);
+        height: auto;
         flex-wrap: wrap;
 
         &.selected{
@@ -411,7 +412,7 @@ p.block-info{
         color: #999;
         margin: 8px 0;
         font-size: 1.1rem;
-  
+
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -423,7 +424,7 @@ p.block-info{
           label{
             color: #777;
           }
-  
+
         }
         input{
           float: left;
@@ -432,7 +433,7 @@ p.block-info{
           float: left;
           margin-top: 0px;
           margin-right: 10px;
-          margin-left: 0;          
+          margin-left: 0;
         }
       }
 
@@ -440,13 +441,13 @@ p.block-info{
 
     button{
       margin: 10px auto;
-      display: flex;      
+      display: flex;
       background-color: #ddd;
     }
 
     @media (max-width: 430px) {
       box-shadow: none;
-      position: absolute;        
+      position: absolute;
       margin-top: 40px;
     }
   }

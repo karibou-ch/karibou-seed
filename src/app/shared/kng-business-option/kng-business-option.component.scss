@@ -3,7 +3,7 @@
   background: #fff;
   min-height: 100px;
   border-radius: 15px;
-  color: #333;  
+  color: #333;
   overflow: visible;
   width: 100%;
   z-index: 1;
@@ -12,7 +12,7 @@
     height: 100vh;
     position: fixed;
     top: 0;
-    overflow-y: auto;    
+    overflow-y: auto;
     max-width: 600px;
     padding-top: 20px;
   }
@@ -20,12 +20,12 @@
 
 .business-backdrop {
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: hsla(34,30%, 90%, 1);
   z-index: 0;
   left: 0;
-  top: 0; 
+  top: 0;
   transition: all .5s;
   opacity: 1;
   &.invisible{
@@ -55,7 +55,7 @@
 
 .icon{
   color: #666;
-  transform: translateY(6px);  
+  transform: translateY(6px);
 }
 
 .business{
@@ -83,13 +83,13 @@
   .info {
     margin: 0;
     margin-top: 0px;
-    -background-color: var(--mdc-theme-appbar);    
+    -background-color: var(--mdc-theme-appbar);
     -border-bottom: 1px solid #eee;
     padding-bottom: 5px;
   }
   .on-right{
     margin-right: 0;
-    margin-left: auto;    
+    margin-left: auto;
   }
 
   form{
@@ -100,7 +100,7 @@
       width: 100%;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;    
+      gap: 10px;
       align-items: baseline;
       kng-audio-assistant, kng-address, kng-signup {
         width: 100%;
@@ -114,12 +114,12 @@
         width: 100%;
         height: 100px;
         padding-top: 20px;
-        font-size: 18px;
+        font-size: 16px;
         border-top: 2px solid #aaa;
         border-bottom: 2px solid #aaa;
 
         @media (max-width:430px) {
-          height: 300px;          
+          height: 300px;
         }
       }
       .fieldset {
@@ -140,14 +140,13 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 8px;      
+      gap: 8px;
       border: 0px solid var(--mdc-theme-appbar);
       button{
-        
         padding: 15px;
         font-size: 18px;
         border-radius: 45px;
-        margin: 0;  
+        margin: 0;
       }
       .info{
         width: 100%;
@@ -156,29 +155,33 @@
         color: #777;
         text-align: center;
       }
-          
+
       .error{
         width: 100%;
         color: #330000;
         white-space: break-spaces;
-        margin-top: 10px;
+        margin-top: 0px;
+        line-height: 22px;
         font-weight: 200;
         border-bottom: 2px dotted #aaa;
-        padding:10px 0;
+        padding:0px 0 20px;
+        ::ng-deep .thinking{
+          display: none;
+        }
       }
     }
     div.selector {
       border-left: 2px solid var(--mdc-theme-appbar);
       -border-radius: 14px;
-      padding: 10px;
+      padding: 0px 10px;
       margin-left: -4px;
       margin-right: -4px;
-      margin-bottom: 10px;
+      margin-bottom: 0px;
 
       >kng-slider {
         margin-top: -20px;
-        padding-top: 0;      
-        width: 100%;  
+        padding-top: 0;
+        width: 100%;
       }
 
       label.selector {
@@ -189,7 +192,7 @@
         transform: translateY(-5px);
 
       }
-    }    
+    }
     .groupfield label{
       font-size: 16px;
     }
@@ -201,7 +204,7 @@
     font-size: 28px;
     line-height: 32px;
     font-weight: bold;
-    margin-top: 10px;    
+    margin-top: 10px;
   }
   p{
     font-size: 17px;
@@ -216,7 +219,7 @@
     margin-bottom: 0px;
     margin-right: 10px;
     font-weight: bold;
-    background: yellow;    
+    background: yellow;
     .update{
       display: none;
     }

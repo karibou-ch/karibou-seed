@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
-import { 
+import {
   Config,
-  CartItem, 
-  CartService, 
-  LoaderService,   
-  Hub, 
+  CartItem,
+  CartService,
+  LoaderService,
+  Hub,
   User,
   CartItemsContext,
   AssistantService,
@@ -27,27 +27,45 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     fr:{
       identity:'Connectez-vous ou indiquez le mail et téléphone de la personne de contact 🙏🏼\n',
       empty:'Le formulaire est incomplet, merci de préciser les éléments de votre projet 🙏🏼\n',
-      title:'Décrivez votre projet',
-      title_info:'Vous souhaitez obtenir un devis personalisé? (formulaire)',
+      title:'Personalisez votre buffet',
+      title_info:'Complétez le formulaire pour recevoir un devis personnalisé',
       title_cart:'* Votre panier 🛒 sera transmis avec votre demande',
       action:'Envoyer la demande de devis',
       title_time_contract:'Quand souhaitez vous être livré ?',
-      title_time_contract_update:'La livraison est programmée à'
+      title_time_contract_update:'La livraison est programmée à',
+      create_identity:'Nous pouvons créer votre compte client pour vous.'
     },
     en:{
       identity:'Login or provide the email and telephone number on the contact form 🙏🏼\n',
       empty:'The form is incomplete, please specify the elements of your project 🙏🏼\n',
-      title: 'Describe your project',
-      title_info: 'Would you like to receive a personalized quote? (form)',
+      title: 'Personalize your buffet',
+      title_info: 'Complete the form to receive a personalized quote',
       title_cart: '* Your cart 🛒 will be submitted with your request',
       action: 'Send quote request',
       title_time_contract:'When would you like delivery?',
-      title_time_contract_update:'Delivery is scheduled for'
+      title_time_contract_update:'Delivery is scheduled for',
+      create_identity:'We can create your customer account for you.'
     }
   }
+  private _defaultUser= {
+    fr:`\n- le lieu (le nom de l'entreprise):\n- le contact (mail et téléphone):\n`,
+    en:`\n- the location (the company name):\n- the contact (email and phone number):\n`
+  }
 
-  private _defaultNotes: string = `Veuillez indiquer la date de l'événement, l'heure , le lieu (entreprise ou particulier), le nombre de participants et éventuellement le type d'événement. Merci 🐱.\n`;
+  //ℹ️ Les produits dans le panier 🛒 seront transmis comme indication. Merci 🐱.
 
+  private _defaultNotes={
+    fr:`
+- la date et l'heure de réception:
+- le nombre de participants:
+- le type d'événement:__USER__
+\n`,
+    en:`
+- reception date and time:
+- number of participants:
+- type of event:__USER__
+\n`
+  }
   @Input() user:User;
   @Input() checkout:boolean;
   @Input() contractId:string;
@@ -59,12 +77,13 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   @Output() onOpen = new EventEmitter<boolean>();
   config:Config;
   selIteration:any;
-  selDayOfWeek:any;  
+  selDayOfWeek:any;
   selTime:number;
   shippingtimes:any;
   isValid:boolean;
   isRunning:boolean
   formError:string;
+  whisperNote:string;
   //
   // default shipping time for the week and saturday (12)
   defaultTime = [12,16];
@@ -89,7 +108,7 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     private $loader: LoaderService,
     private $fb: FormBuilder,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
     this.selTime = 16;
     this.shippingtimes = {};
     this._subscription = new Subscription();
@@ -104,8 +123,6 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
       'email':   ['', [Validators.required, Validators.minLength(3)]],
       'phone':  ['', [Validators.required, Validators.minLength(10)]]
     });
-
-    this.notes = this._defaultNotes;
   }
 
   get store() {
@@ -121,10 +138,10 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
 
   get glabel() {
     return this.$i18n.label();
-  }  
+  }
 
   get isUserReady() {
-    return this.user.isAuthenticated() || this.userIdentity.length > 1;
+    return this.user.isAuthenticated() || this.userIdentity.length > 0;
   }
 
   get userIdentity() {
@@ -145,21 +162,32 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   }
 
   get userPrompt() {
-    const signup = this.options.signup? 'Le client souhaite creer son compte':'';
+    const signup = this.options.signup? '✅ Nous allons creer le compte du client':'';
     const identity = this.userIdentity.concat(signup);
 
-    return (identity.length>1)? `\nPersonne de contact:\n${identity.join('\n')}`:''; 
+    return (identity.length>0)? `\nAvec l'information de contact: ${identity.join('\n')}`:'';
   }
   get itemsPrompt() {
-    const items = this.items;
+    const items = this.items.filter((item:CartItem) => item.category?.slug === 'traiteur-maison');
     const prompt = items.reduce((prompt, item:CartItem) => {
       return `${prompt}  ${item.title} (${item.quantity}x${item.part})\n`;
     },'');
     return (items.length)? `Le type d'événement:\n${prompt}`:'' ;
   }
 
+  get notesPrompt() {
+    const whisper = this.whisperNote? `\nCommentaire du client:\n${this.whisperNote.trim()}\n`:'';
+    return this.notes+this.userPrompt+whisper;//+this.itemsPrompt;
+  }
+
   get locale() {
     return this.$i18n.locale;
+  }
+
+  get defaultNotes() {
+    const user = this.user && this.user.isAuthenticated();
+    const lang = this.locale;
+    return this._defaultNotes[lang].replace('__USER__', user? '': this._defaultUser[lang]).trim();
   }
 
   get notes() {
@@ -186,6 +214,9 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(){
+
+    this.notes = this.defaultNotes;
+
     this._subscription.add(
       this.$loader.update().subscribe(emit => {
 
@@ -210,7 +241,7 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
         this.shippingtimes = times.reduce((shippingtimes,time)=> {
           shippingtimes[time]=emit.config.shared.hub.shippingtimes[time];
           return shippingtimes;
-        },{});  
+        },{});
       })
     );
   }
@@ -221,9 +252,16 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   onSignup($event){
     console.log('onSignup', $event);
   }
+
   onAssistantNote($event) {
-    console.log('onAssistantData', $event);
-    this.notes = $event || this._defaultNotes;
+    // const regex = /<thinking>[\s\S]*(:?<\/thinking>)/gi;
+    // let thinking = "";
+
+    // this.notes = ($event || this.defaultNotes).replace(regex, (match, p1) => {
+    //   thinking= (p1.trim());
+    //   return '';
+    // });
+    this.whisperNote = $event;
   }
 
   onToggleOptions(){
@@ -243,12 +281,12 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   }
 
   onValidate(){
-    this.formError = '';    
-    const prefix = "VALIDER:\n";
+    this.formError = '';
+    const prefix = "Questions du formulaire, suivit des réponses de l'utilisateur :\n";
     const notes = this.notes;
-    const prompt = prefix+notes+this.userPrompt+this.itemsPrompt;
-    console.log('onValidate', prompt);
+    const prompt = prefix+this.notesPrompt;
     const params:any = {agent:'quote', q: prompt, zeroshot:true};
+    console.log('onValidate', params);
     return new Promise(async (resolve, reject) => {
       if(this.isRunning){
         return resolve(false);
@@ -264,13 +302,13 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
       }
       this.isRunning = true;
       this.$assistant.chat(params).subscribe(message=> {
+
         this.formError += message.text;
-        if(this.isValid){          
-          this.notes = "";
-        }else{
-          this.isValid = this.formError.toLowerCase().indexOf('[ok]') > -1;
+        if(!this.isValid){
+          this.isValid = this.formError.includes('[ok]');
         }
-        this.formError = this.formError.replace(/\[?\[OK\]\]?/gi,'')
+        this.formError = this.formError.replace(/\[?\[ok\]\]?/gi,'');
+        //this.formError = this.formError.replace(/\[?\[OK\]\]?/gi,'').replace("<thinking>","<section class='thinking'>").replace("</thinking>","</section>")
         this.$cdr.markForCheck();
       },(err)=> {
         this.isRunning = false;
@@ -286,14 +324,13 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
   async onMail(){
     try{
       this.$cdr.markForCheck();
-      const message = this.notes+this.userPrompt+this.itemsPrompt;
-  
-      const isOK = await this.onValidate();
+
+      const isFormOK = await this.onValidate();
       this.isRunning = true;
-      if(!this.isValid || !isOK) {
+      if(!isFormOK) {
         return;
       }
-      await this.$metric.feedback('DEVIS-B2B',message).toPromise();
+      // this.formError = '';
       console.log('onMail', this.notes);
 
     }catch(e){
@@ -318,5 +355,5 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
     return new Promise(res => {
       setTimeout(res, ttl || 0);
     });
-  }  
+  }
 }

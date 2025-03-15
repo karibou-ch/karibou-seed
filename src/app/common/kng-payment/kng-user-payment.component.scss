@@ -1,5 +1,9 @@
 form{
 
+  h3,h4{
+    margin: 0;
+  }
+
   position: relative;
   .invalid{
     color: red;
@@ -7,7 +11,7 @@ form{
 
   width: calc(100% - 20px);
   padding: 8px;
-  border: 2px solid #eee;
+  border: 2px solid #aaa;
   border-radius: 14px;    
   input{
     font-size: 18px;

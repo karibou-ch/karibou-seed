@@ -10,7 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import {
   ProductService,
-  Product
+  Product,
+  User
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
@@ -26,6 +27,7 @@ export class ProductSwipeComponent implements OnInit {
 
   bgStyle = '/-/resize/200x/';
 
+  @Input() user: User;
   @Input() hub: string;
   @Input() limit: number;
   @Input() config: any;
@@ -135,18 +137,17 @@ export class ProductSwipeComponent implements OnInit {
 
 
   ngOnInit() {
-    this.loadProducts();
   }
 
+  ngOnChanges() {
+    this.loadProducts();
+  }
 
   doSearch(link){
     this.$navigation.searchAction(link);    
   }  
 
-  loadProducts() {    
-    if(this.products && this.products.length) {
-      return;
-    }
+  loadProducts(force?) {    
     if(this.hub) {
       this.options.hub=this.hub;
     }

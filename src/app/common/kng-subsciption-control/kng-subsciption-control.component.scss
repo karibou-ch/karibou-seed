@@ -47,14 +47,14 @@ h3{
       width: fit-content;
       background-color: white;
       color: black;
-    }    
+    }
 
   }
 }
 
 
   //
-  // SUBS DIALOG 
+  // SUBS DIALOG
   .container.top{
     color: #424242;
     background-color:rgba(255,255,255,0.99);
@@ -66,16 +66,16 @@ h3{
     align-items:flex-start; /*valign*/
     padding-top: 4vh!important;
     padding-bottom: 10vh!important;
-    box-sizing: border-box;    
+    box-sizing: border-box;
     position: fixed;top: 0;z-index: 4;margin: auto;left: 0;right: 0;
     min-height: 100vh;
-    background-image: linear-gradient(45deg, #fff 50%, #fff, #fff, var(--mdc-theme-appbar));
+    background-image: linear-gradient(45deg, #fff 50%, #fff, #fff, var(--mdc-theme-appbar-light));
 
     .close{
       background: transparent;
       border: 0;
       color: #333;
-      
+
       position: absolute;
       top: 10px;
       right: 10px;
@@ -85,16 +85,16 @@ h3{
         right: -10px;
       }
       span{
-        font-size: 50px;        
+        font-size: 50px;
       }
     }
-  
+
     .subscription-container{
       display: block;
       max-width: 100vw;
       -background: rgba(255,255,255,0.95);
       position: relative;
-      z-index: 2;  
+      z-index: 2;
       text-align:left;
       transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
       max-height:calc( 100vh - 60px ); // still have to hard-code a value!
@@ -104,15 +104,15 @@ h3{
       font-size: 1.1rem;
       width: 600px;
       margin: 0 auto 20px auto;
-  
+
       @media (max-width: 430px) {
         padding: 0 5px;
       }
 
-  
-      &::-webkit-scrollbar { 
-        display: none; 
-      }    
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       kng-user-payment{
         width: 100%;
@@ -122,28 +122,29 @@ h3{
         background: #eee;
         width: 100%;
         border-radius: 8px;
-        margin: 5px 0;        
+        margin: 5px 0;
       }
       .title_payment{
-        white-space: break-spaces;        
+        white-space: break-spaces;
       }
 
       .title{
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        width: 50%;        
+        width: fit-content;
         font-weight: 300;
+        margin-bottom: 10px;
         @media (max-width: 430px) {
           width: 100%;
           padding:8px 2px;
         }
-            
+
       }
 
       label.date{
         display: flex;
-        align-items: center;      
+        align-items: center;
         width: max-content;
         margin-left: 0;
         span::after {
@@ -154,7 +155,7 @@ h3{
         }
 
         input{
-          font-size: 17px;          
+          font-size: 17px;
           font-family: "Roboto";
           margin-left: auto;
           width: 130px;
@@ -163,13 +164,13 @@ h3{
           content: "✖";
           color:var(--mdc-theme-karibou-pink)
         }
-        
+
         input:valid + span::after {
           content: "✓";
           color:var(--mdc-theme-primary);
           font-size: 20px;
           font-weight: 600;
-        }        
+        }
       }
       button.date {
         border-radius:20px ;
@@ -178,7 +179,7 @@ h3{
         margin-left: auto;
         display: flex;
         align-items: center;
-        justify-content: center;        
+        justify-content: center;
         @media (max-width: 430px) {
           width: calc(100% - 50px);
           margin-left: 0;
@@ -189,16 +190,17 @@ h3{
         width: 25px;
         height: 24px;
         font-size: 19px;
-        border-radius: 20px 20px;
-        border: 1px solid var(--mdc-theme-primary);
-        background-color: var(--mdc-theme-appbar);
+        border-radius: 8px;
+        border: 1px solid #aaa;
+        background-color: #eee;
         padding-right: 3px;
+        margin-left: 8px;
         color: black;
       }
 
 
       // input[type="date"]:before {
-      //   content: 'Changer'; 
+      //   content: 'Changer';
       //   font-family: Arial, sans-serif;
       //   position: absolute;
       //   right: 10px;
@@ -210,7 +212,7 @@ h3{
       //   background-color: var(--mdc-theme-appbar);
       //   border-radius: 20px 20px;
       //   font-size:14px;
-      // }      
+      // }
 
       textarea{
         margin-top: 10px;
@@ -224,35 +226,35 @@ h3{
       textarea:focus{
         border-color: #ddd!important;
       }
-  
+
       ul{
         list-style: none;
         padding: 5px;
         margin: 0;
-  
+
         li{
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin: 8px 0;
           font-size: 1.0rem;
-    
+
           text-overflow: ellipsis;
           white-space: nowrap;
-  
+
           overflow: hidden;
 
           padding: 8px;
           padding-left: 5px;
           border-radius: 4px;
           position: relative;
-          height: auto;    
+          height: auto;
           flex-wrap: wrap;
 
           @media (max-width: 430px) {
             margin: 4px 0;
           }
-    
+
           &.separator {
             margin:10px auto 40px;
           }
@@ -260,7 +262,7 @@ h3{
           &.selected{
             color: var(--mdc-theme-primary);
           }
-  
+
           &.contrasted{
             color: #777;
             background-color: #efefef;
@@ -270,7 +272,7 @@ h3{
           &.contrasted-sm{
             @media (max-width:431px) {
               color: #777;
-              background-color: #efefef;                
+              background-color: #efefef;
             }
           }
 
@@ -280,28 +282,30 @@ h3{
           }
           button{
             color: var(--mdc-theme-primary-text);
-            padding: 3px 15px;
+            padding: 6px 15px;
+            width: 100%;
             border: 1px solid var(--mdc-theme-primary);
-            background-color: var(--mdc-theme-primary);            
+            background-color: var(--mdc-theme-primary);
             font-size: 14px;
             &.danger{
               background-color: red;
               color: white;
               border-color: red;
               padding: 6px 18px;
+              font-weight: bold;
             }
           }
         }
-  
+
       }
-  
-  
+
+
       @media (max-width: 430px) {
         box-shadow: none;
-        position: absolute;        
+        position: absolute;
         margin-top: 40px;
       }
     }
   }
-  
+
 

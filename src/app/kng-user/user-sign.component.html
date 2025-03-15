@@ -6,14 +6,14 @@
   </button>
   <div class="k-brand">
     <img class="icon" src="/assets/img/k-puce-light.png" /> &nbsp; {{$i18n[locale].karibou_project}}
-  </div>  
+  </div>
 
   <div class="sign" >
 
-    <div class="logo" 
+    <div class="logo"
          [ngStyle]="taglineLogo"
          [class.small]="askAction=='signup'"
-         [routerLink]="['/store',hubSlug,'home']" 
+         [routerLink]="['/store',hubSlug,'home']"
          [hidden]="askAction=='payment'||askAction=='address'"></div>
 
     <!-- LOGIN -->
@@ -23,26 +23,26 @@
       </p>
 
       <form [formGroup]="sign" (submit)="onSign()">
-          <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete autofocus fullwidth  type="email" formControlName="email">
+          <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete autofocus fullwidth  [type]="authlink" formControlName="email">
             <span class="material-symbols-outlined" mdcTextFieldIcon trailing>person</span>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
-          
+
           <mdc-text-field  [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
             <span class="material-symbols-outlined"  trailing>vpn_key</span>
           </mdc-text-field>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
-            
+
           <button primary mdc-button unelevated  [disabled]="!sign.valid" class="align-center">
-            <span class="material-symbols-outlined">account_circle</span>              
+            <span class="material-symbols-outlined">account_circle</span>
             <span >Login</span>
-          </button>            
+          </button>
       </form>
       <div class="signup-vs-login black" ><a class="link" (click)="askAction='signup'">{{i18n[locale].login_create_account}}</a></div>
       <div class="signup-vs-login black" ><a class="link black" [routerLink]="['/store',hubSlug,'home']">{{i18n[locale].login_skip}}</a></div>
       <div class="signup-vs-login light" ><a class="link" (click)="askAction='recover'">{{i18n[locale].login_forgot_password}}</a></div>
     </div>
-      
+
     <!-- RECOVER -->
     <div class="inner" *ngIf="askAction=='recover'">
       <h3 >{{i18n[locale].login_reset_password}}</h3>
@@ -52,9 +52,9 @@
           </mdc-text-field>
           <kng-control-messages [control]="recover.controls.email"><span >{{i18n[locale].login_wait_msg}}</span></kng-control-messages>
           <button primary  mdc-button unelevated  [disabled]="!recover.valid || sendRecover" class="align-center">
-            <span class="material-symbols-outlined">account_circle</span>              
+            <span class="material-symbols-outlined">account_circle</span>
             <span >{{sendRecover ? i18n[locale].action_reset_done : i18n[locale].action_reset}}</span>
-          </button>            
+          </button>
       </form>
       <div class="signup-vs-login" ><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>
     </div>
@@ -79,7 +79,7 @@
           <p class="help-block phone-hide" >
             {{i18n[locale].signup_phone}}
           </p>
-              
+
 
           <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
             <span tabindex="-1" class="material-symbols-outlined "   trailing>email</span>
@@ -97,11 +97,11 @@
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 
           <button primary  mdc-button unelevated  [disabled]="!signup.valid" class="align-center">
-            <span tabindex="-1" class="material-symbols-outlined">account_circle</span>              
+            <span tabindex="-1" class="material-symbols-outlined">account_circle</span>
             <span >{{i18n[locale].signup_create}}</span>
-          </button>            
+          </button>
       </form>
-      <div class="signup-vs-login" ><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>      
+      <div class="signup-vs-login" ><a class="link" (click)="askAction=null">{{i18n[locale].login_back_login}}</a></div>
     </div>
 
     <!-- ADDRESS -->
@@ -113,12 +113,12 @@
     <div class="inner" *ngIf="askAction=='payment'">
       <kng-user-payment-page [user]="user" [config]="config" (updated)="onUpdatePayment($event)"></kng-user-payment-page>
     </div>
-      
+
     <!-- LOGOUT -->
     <div class="inner" *ngIf="askAction=='logout'">
       <h3 >{{i18n[locale].login_ok}}</h3>
       <div class="signup-vs-login" ><a class="link" (click)="askAction='login'">{{i18n[locale].login_back_login}}</a></div>
     </div>
-      
+
   </div>
 </div>

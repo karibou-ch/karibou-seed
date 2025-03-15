@@ -7,7 +7,7 @@ kng-product-swipe{
   border-bottom: 1px solid #eee;
 
   @media (max-width:430px) {
-    width: calc(100vw - 20px );    
+    width: calc(100% - 20px );    
     margin: 15px 10px;
     min-height: fit-content !important;
     padding: 0;
@@ -113,7 +113,7 @@ kng-product-swipe{
           grid-template-columns: repeat(3,minmax(auto,145px));
         }
       
-        gap: 8px;
+        gap: 16px;
         justify-items: center;                  
     
       }

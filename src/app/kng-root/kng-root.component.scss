@@ -38,13 +38,46 @@ kng-nav-marketplace,
 kng-feedback,
 kng-calendar{
   display: block;  
-  margin: 5px 5px 30px;
+  margin: 0;
+  width: 100%;
 }
 
 .basic-setting {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
   flex-wrap: wrap;
+  width: calc(100% - 30px);
+  margin-top: 10px;
+  .kng-boxed{
+    padding: 10px 10px;  
+    width: 100%;
+    min-height: fit-content;
+    .end {
+      width: 60px;
+      height: 35px;
+      padding: 0px;
+      margin-right: 10px;
+      span {        
+        font-size: 20px;
+      }      
+    }
+  }
+  .kng-boxed.disabled{
+    opacity: .3;
+    pointer-events: none;
+  }
+
+  .kng-boxed .label{
+    margin: auto!important;
+    margin-left: 5px!important;
+    justify-content: space-between;
+    width: auto;
+  }
+  .kng-boxed kng-slider{
+    width: 100%!important;    
+  }
+  
+   
 }
 
 .i18n{
@@ -87,7 +120,7 @@ button{
   color: black;  
   display: inline;
   .material-symbols-outlined{
-    transform: translateY(5px);
+    transform: translateY(3px);
   }
   cursor: pointer;
 }

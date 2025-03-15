@@ -3,7 +3,7 @@
   background: #fff;
   min-height: 100px;
   border-radius: 15px;
-  color: #333;  
+  color: #333;
   overflow: visible;
   width: 100%;
 }
@@ -28,7 +28,7 @@
 
 .icon{
   color: #666;
-  transform: translateY(6px);  
+  transform: translateY(6px);
 }
 
 .subscription{
@@ -38,37 +38,32 @@
   box-sizing: border-box;
   padding: 0px 0;
   .info{
-    .icon{
-      position: absolute;
-      right: 7px;
-      top: 0px;
-      color: var(--mdc-theme-secondary);
-    }
     .update{
       background: yellow;
     }
-    width: 100%;
-    border: 1px solid #eee;
-    padding: 8px 10px 15px;
-    border-radius: 8px;
-    background: #fafafa;
-    position: relative;
-    margin-right: 0px;    
-    p{
-      margin-top: 10px;
+
+    .icon{
+      top: 0px;
+      color: var(--mdc-theme-secondary);
     }
+
+    width: 100%;
+    position: relative;
+    margin-right: 0px;
+    text-align: center;
   }
   h1{
     font-size: 28px;
     line-height: 32px;
     font-weight: bold;
-    margin-top: 10px;    
+    margin-top: 10px;
   }
   p{
     font-size: 17px;
     line-height: 23px;
     font-weight: 400;
-    margin-top: 10px;
+    margin: 5px 0;
+    width: 100%;
   }
 
   p.highcontrast,
@@ -77,7 +72,7 @@
     margin-bottom: 0px;
     margin-right: 10px;
     font-weight: bold;
-    background: yellow;    
+    background: yellow;
     .update{
       display: none;
     }
@@ -90,7 +85,8 @@
     flex-basis: 50%;
     padding-bottom:5px;
     flex: auto;
-    
+    font-size: 14px;
+
     &.time{
       width: 100%;
       margin-bottom: 5px;
@@ -100,7 +96,7 @@
       .item.selected{
         background-color: #eee !important;
         color: #333 !important;
-        border-color: #bbb!important;        
+        border-color: #bbb!important;
       }
     }
 
@@ -133,10 +129,9 @@
 
     .elem{
       display: flex;
-      padding-top: 5px;
       -webkit-box-align: baseline;
       align-items: baseline;
-      width: 100%;    
+      width: 100%;
       @media (max-width:431px) {
         -width:calc(100% - 65px);
       }
@@ -160,7 +155,7 @@
           font-size: 14px;
         }
 
-        flex:1 1 auto;  
+        flex:1 1 auto;
         cursor: pointer;
         min-width: 65px;
         vertical-align: text-bottom;
@@ -205,7 +200,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: calc(100vw - 100px);
+      max-width: calc(100% - 100px);
     }
   }
 }

@@ -13,14 +13,14 @@ import { AssistantService, Product } from 'kng2-core';
 export class KngAudioAssistantComponent implements OnInit {
 
   private _sentences= {
-    "productsagentfruits-legumes":[      
+    "productsagentfruits-legumes":[
       "Un panier de fruits et légumes pour petits budgets",
       "Un panier de fruits gourmand pour une grande famille",
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment pour une soirée grillade entre amis",
       "Un assortiment généreux et gourmand pour 10 personnes",
     ],
-    "productsagenttraiteurs":[      
+    "productsagenttraiteurs":[
       "Un assortiment gourmand pour un événement dans mon entreprise ",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
@@ -45,7 +45,7 @@ export class KngAudioAssistantComponent implements OnInit {
       "Un assortiment pour un Petit-Déjeuner Gourmand",
       "Un assortiment pour le gouter de 50 enfants",
     ],
-    productsagent:[      
+    productsagent:[
       "Un assortiment festif pour un événement dans mon entreprise ",
       "Un assortiment généreux et gourmand pour 10 personnes",
       "Un assortiment pour un Petit-Déjeuner Gourmand",
@@ -99,13 +99,15 @@ export class KngAudioAssistantComponent implements OnInit {
   audioRecorded: boolean;
 
   onContextMenu:any;
-  markdown:any;  
+  markdown:any;
+  whisperNote:string;
 
   cleanMarkdown = /\(\/sku\/\d+\)|{{[\d,]*?}}|\[[\d,]*?\]/ig;
 
 
   @Input() promptmore:string = "";
   @Input() store:string;
+  @Input() whisperOnly = false;
   @Input() quiet = false;
   @Input() cleanQuery = true;
   @Input() withHistory = false;
@@ -128,7 +130,8 @@ export class KngAudioAssistantComponent implements OnInit {
     private $audio: KngAudioRecorderService,
     private $i18n: i18n,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
+    this.whisperNote = '';
     this.audioDetected = undefined;
     this.products = [];
     this.agent= "productsagent";
@@ -157,7 +160,7 @@ export class KngAudioAssistantComponent implements OnInit {
   get locale() {
     return this.$i18n.locale;
   }
-  
+
   get label() {
     return this.i18n[this.$i18n.locale];
   }
@@ -176,13 +179,13 @@ export class KngAudioAssistantComponent implements OnInit {
   }
 
   //
-  // 
+  //
   get markdownRender() {
-    let content = this.note;
+    let content = this.note || this.whisperNote;
     if(!content) return '';
     //
     // apply correction before the rendering
-    content = content.replace(this.cleanMarkdown,'');
+    content = content.replace(this.cleanMarkdown,'').replace('[ok]','');
     // FIX markdown link
     const link = /\[(.*?)\]\((.*?)\)/g;
     content = content.replace(link, (match, text, target) => {
@@ -204,7 +207,7 @@ export class KngAudioAssistantComponent implements OnInit {
         html:true,
         breaks:true,
         typographer:true
-      });    
+      });
     });
 
     //
@@ -212,7 +215,7 @@ export class KngAudioAssistantComponent implements OnInit {
     //const supportTouchEvent = window.ontouchstart || navigator.maxTouchPoints > 0 || navigator['msMaxTouchPoints'] > 0;
     //const eventName = supportTouchEvent? 'touchend':'mouseup';
     //window.addEventListener(eventName,this.audioStopAndSave.bind(this));
-    if(this.isAgentFeedback){
+    if(this.isAgentFeedback || this.whisperOnly){
       return;
     }
 
@@ -221,7 +224,8 @@ export class KngAudioAssistantComponent implements OnInit {
       const result = content.filter(item => item['role'] == 'assistant');
       if(result.length) {
         const msg = (this.withHistory)? result.reduce((note, msg) => note + msg['content']+'\n', ''):(result[result.length-1]['content']);
-        this.note = msg;
+        this.note = msg.replace("<thinking>","<section class='thinking'>").replace("</thinking>","</section>");
+
         let products =msg.match(skus)?.map(match => match.replace(/{{|}}|\[|\]/g, '').split(',')).flat().map(sku => (+sku)).filter(sku => sku);
         if(products && products.length){
           this.onData.emit(products);
@@ -239,11 +243,37 @@ export class KngAudioAssistantComponent implements OnInit {
 
   async checkAudioDetected(url) {
     if(this.audioDetected == undefined && url) {
-      this.audioDetected = await this.$audio.detectSound({url});      
+      this.audioDetected = await this.$audio.detectSound({url});
     }
   }
 
+
+  async audioWhisper(base64: string, src: string) {
+    const params:any = {body:{audio:base64,whisperOnly:true}};
+    params.q = 'whisper';
+    this.whisperNote = '';
+    this.isThinking = true;
+    this.$assistant.chat(params).subscribe((content) => {
+      this.whisperNote += content.text;
+      this.$cdr.markForCheck();
+    },(error) => {
+      this.isThinking = false;
+      this.note = "Oups, il y a un problème :"+error.error?.message||error.message;
+      this.$cdr.markForCheck();
+
+    },()=>{
+      this.isThinking = false;
+      this.whisperNote = this.whisperNote.trim().replace('**traitement...**','');
+      this.onNote.emit(this.whisperNote);
+      this.$cdr.markForCheck();
+    });
+  }
+
   async assistant(base64?) {
+    if(this.whisperOnly){
+      await this.audioWhisper(base64,this.urlAudio);
+      return;
+    }
     const filterProductAsFIX = (product) => {
       if(product.attributes.bundle || product.attributes.customized){
         return false;
@@ -265,7 +295,7 @@ export class KngAudioAssistantComponent implements OnInit {
     this.$cdr.markForCheck();
     let streamTxt = '', attach='';
     this.$assistant.chat(params).subscribe((content) => {
-      console.log('content', content.text);      
+      console.log('content', content.text);
       if(content.tool && content.tool.length) {
         this.onData.emit(content.tool);
       }
@@ -280,11 +310,11 @@ export class KngAudioAssistantComponent implements OnInit {
       streamTxt+=(content.text.replace('**traitement...**','').replace(query,''));
 
       this.$cdr.markForCheck()
-    }, err => { 
+    }, err => {
       this.isThinking = false;
       this.note = "Oups, il y a un problème :"+err.message;
       this.$cdr.markForCheck();
-    },async ()=>{ 
+    },async ()=>{
       this.isThinking = false;
       const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
       let products =attach.match(skus)?.map(match => match.replace(/{{|}}|\[|\]/g, '').split(',')).flat().map(sku => (+sku)).filter(sku => sku);
@@ -297,16 +327,16 @@ export class KngAudioAssistantComponent implements OnInit {
       this.$cdr.markForCheck();
   });
 
-    
+
   }
 
-  async audioRecord($event) {    
+  async audioRecord($event) {
     if(this.audioIsRecording ) {
       return this.audioStopAndSave();
     }
     this.audioError = !(await this.$audio.isAudioGranted());
 
-    await this.$audio.startRecording({timeout:15000});    
+    await this.$audio.startRecording({timeout:15000});
     this.$cdr.markForCheck()
   }
 
@@ -327,7 +357,7 @@ export class KngAudioAssistantComponent implements OnInit {
       this.audioDetected = await this.$audio.detectSound({blob});
 
       //
-      // should exit 
+      // should exit
       if(!this.audioDetected){
         this.audioLoading = false;
         this.$cdr.markForCheck();
@@ -341,14 +371,14 @@ export class KngAudioAssistantComponent implements OnInit {
 
       this.urlAudio = base64;
       // const audio:HTMLAudioElement = document.querySelector('#audio');
-      // audio.setAttribute('src', this.urlAudio);  
+      // audio.setAttribute('src', this.urlAudio);
 
       this.onAudio.emit(base64);
 
       if(this.isAgentFeedback){
         return;
       }
-  
+
       this.assistant(base64);
 
     }catch(error){
@@ -358,7 +388,7 @@ export class KngAudioAssistantComponent implements OnInit {
       this.onAudioError.emit(error);
       this.$cdr.markForCheck();
     }
-  }  
+  }
 
   onTest($event) {
     this.defaulPrompt = $event.sentence;

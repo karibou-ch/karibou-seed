@@ -1,4 +1,4 @@
-<!-- 
+<!--
 	mdc-card documentation
 	https://github.com/material-components/material-components-web/tree/master/packages/mdc-card
 	https://stackoverflow.com/questions/44741936/angular-4-multiple-named-router-outlets-in-a-child-route-supported/44742481
@@ -10,12 +10,13 @@
 </ng-container>
 
 <ng-template #loadingTpl>
-	<article class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}" 
-						[class.selected]="selected"
+	<article class="product-card card-skeleton score-{{product.stats.score.toFixed(3)}}"
 						[class.large]="large"
 						[class.incart]="cartItemQuantity"
 						[class.insubs]="cartSubsQuantity"
-						[class.noavailable]="!product.isAvailableForOrder()" 
+						[class.timelimited]="getTimelimitForOrder"
+						[class.timelimit]="isOutOfTimelimitForOrder"
+						[class.noavailable]="!isAvailableForOrder"
 						[class.popular]="product.stats.score>0.25"
 						[class.noinstock]="!product.pricing.stock">
 
@@ -23,12 +24,17 @@
 
 		<section [routerLink]="['/store',store, departement,'products',product.sku,urlTitle]" [queryParams]="queryParamsSKU">
 			<!-- MEDIA -->
-			<div  class="media " [ngStyle]="bgStyle" >
+			<div  class="media " [ngStyle]="bgStyle" [class.selected]="pinned">
 				<img [src]="bgImage" class="thumbnail" />
 
 				<div class="product-available">
 					non disponible
 				</div>
+				<div class="product-timelimit">
+					<div class="material-symbols-outlined size-medium">schedule</div>
+					<div>{{hoursAndMinutesAfterOrder}}</div>
+				</div>
+
 
 				<div class="product-in-subscription">
 					<div class="material-symbols-outlined size-medium">schedule</div>
@@ -42,7 +48,7 @@
 								*ngFor="let variant of product.variants">{{variant.short}}</li>
 					</ul>
 				</div>
-				<!-- LABEL -->				
+				<!-- LABEL -->
 				<div class="bio">
 					<span [hidden]="!hasLabel(product,'bio')"><i class="material-symbols-outlined green">eco</i> bio</span>
 					<span [hidden]="!hasLabel(product,'bioconvertion')"><i class="material-symbols-outlined green">eco</i> bioconversion</span>
@@ -51,8 +57,14 @@
 					<span [hidden]="!hasLabel(product,'grta')" class="text-right"> GRTA</span>
 				</div>
 
+        <div class="product-timelimited">
+					<div class="material-symbols-outlined size-medium">schedule</div>
+          <span>{{hoursAndMinutesLeftBeforeOrder}}</span>
+        </div>
+
 				<!-- quantité -->
 				<div class="info-quantity">{{cartItemQuantity}}</div>
+
 			</div>
 			<!-- CART ACTIONS -->
 			<button class="action-add right " (click)="addToCart($event,product)">
@@ -63,14 +75,14 @@
 				<span class="material-symbols-outlined size-medium">remove</span>
 			</button>
 			<div class="info-score"><i class="material-symbols-outlined">favorite</i></div>
-		
+
 			<!-- TITLE -->
 			<div class="product-header">
 				<div class="product-card__vendor" *ngIf="displayVendor && product.vendor.photo">
 					<img [src]="product.vendor.photo?.owner"alt="160x160" class="photo-owner hide" />
 					<div>{{product.vendor.name}}</div>
 				</div>
-	
+
 				<div class="product-title">{{product.title}}</div>
 				<div class="product-part">
 					{{product.pricing.part}}

@@ -5,8 +5,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   visibility: visible;
   z-index: 3;
   background: white;
@@ -32,7 +32,7 @@
 
   .product-dialog__surface {
     /* see overflow in mdc-style.scss */
-    background-image: linear-gradient(45deg, #fff 90%, #fff, #fff, var(--mdc-theme-appbar));
+    background-image: linear-gradient(45deg, #fff 70%, #fff, #fff, var(--mdc-theme-appbar-light));
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
     background-color: var(--mdc-theme-background, #fff);
     background-color: #fff;
@@ -203,8 +203,8 @@
         font-size: 20px;
         line-height: 28px;
         text-align: left;
-        width: fit-content; 
-        margin-left: 3%;       
+        width: fit-content;
+        margin-left: 3%;
       }
 
       button.close {
@@ -212,7 +212,7 @@
         background: transparent;
         border: 0;
         color: #111;
-        left: calc((100vw - 860px) / 2);
+        left: calc((100% - 860px) / 2);
         z-index: 4;
         margin-left: 10px;
 
@@ -315,7 +315,7 @@
     height: 100vh;
     width: 10px;
     overflow-x: visible;
-    top: 200px;
+    top: 50px;
     /* display sub category on product list screen */
     opacity: 1;
     display: flex;
@@ -331,7 +331,7 @@
 
     @media (min-width: 1025px) {
       transform: none !important;
-      left: calc((100vw - 865px) / 2);
+      left: calc((100% - 865px) / 2);
       top: 20px;
       margin-top: 0;
       margin-left: -250px;
@@ -343,7 +343,7 @@
     }
 
     @media (min-width: 1640px) {
-      left: calc((100vw - 945px) / 2);
+      left: calc((100% - 945px) / 2);
     }
 
 
@@ -362,10 +362,10 @@
     }
 
     &.extend-all {
-      top: 40px;
 
       ul {
         margin-left: 0;
+        padding-left:30px
       }
     }
 
@@ -374,8 +374,10 @@
 
     // display: flex!important;
     // height: auto;
-    // flex-flow: row wrap; 
+    // flex-flow: row wrap;
     .show-more {
+      position: absolute;
+      top: 130px;
       width: 32px;
       height: 232px;
       color: white;
@@ -449,7 +451,7 @@ kng-signup{
   background: var(--mdc-theme-appbar-light);
   width: 225px;
   margin-left: 10px;
-  border-radius: 7px;      
+  border-radius: 7px;
   max-width: 740px;
   padding: 0px 5px!important;
 

@@ -14,6 +14,7 @@
 
   </div>
   <div class="welcome" [class.exited]="exited">
+    <img [src]="tagline.image" [hidden]="!tagline.image"/>
     <canvas  #background ></canvas>
     <h1 [innerHtml]="tagline.h[locale]"></h1>
     <div class="content" [innerHtml]="tagline.p[locale]">

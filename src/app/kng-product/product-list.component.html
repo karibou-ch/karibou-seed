@@ -83,12 +83,12 @@
     <!-- <kng-audio-assistant *ngIf="products.length>50" class="kng-assistant" [store]="store" [category]="category.current.slug" [products]="products" (onData)="onAssistantData($event)"></kng-audio-assistant>   -->
 
     <!-- FURTHER -->
-    <div class="further-product-container" [hidden]="scrollLocked">
+    <div class="further-product-container" [class.large]="isForSubscriptionBusiness" [hidden]="scrollLocked">
       <kng-product-grouped-list class=""        
       *ngIf="products.length"
         alphasort="true"
         showSection="true"
-        [clazz]="products.length>10?'':'large'"
+        [clazz]="isForSubscriptionBusiness?'large':''"
         [displayVendor]="true"
         [displaySubscription]="activeSubscription"
         [config]="config" 

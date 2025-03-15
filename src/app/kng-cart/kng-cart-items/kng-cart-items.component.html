@@ -3,17 +3,17 @@
     <div class="text text-overflow" [hidden]="!isReady">
       <span class="title large">{{hub.name}} </span>
       <div class="text-overflow title-subtitle">
-        <span class="checkout-disabled-title" 
-              [innerHtml]="cart_info_one_date" 
+        <span class="checkout-disabled-title"
+              [innerHtml]="cart_info_one_date"
               [hidden]="isCrossMarketShippingDate && !noshippingMsg"></span>
         <span [hidden]="!showCartItems || !isCrossMarketShippingDate || noshippingMsg">
           {{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
         </span>
         <div class="subtitle" (click)="doToggleFees=!doToggleFees">
           <span [innerHtml]="cart_info_service_k" class="link "></span>
-        </div>      
+        </div>
       </div>
-    
+
     </div>
     <div class="end cart-price" *ngIf="items.length">
       {{items.length}} articles<br/> <b>{{itemsAmount}} fr</b>
@@ -22,55 +22,53 @@
 
   <!-- FEES INFORMATION -->
   <div class="list-item auto-line" [hidden]="!doToggleFees">
-    <p class="block-info" [innerHtml]="labell.cart_info_service_k_plus"></p>
+    <p class="block-info" [innerHtml]="llabel.cart_info_service_k_plus"></p>
   </div>
-  
-  <!-- SUBSCRIPTION OPTIONS  -->
-  <div class="list-item one-line subscrition auto-height"   [hidden]="showCartItems">
-    <kng-subscription-option [hub]="hub"  [contract]="hasUpdateContract"></kng-subscription-option>
-  </div>
-  
-  
-  <!-- DISPLAY ACTION HUB ORDER -->
-  <div class="list-item action-line border-bottom">
-    <button class="order" (click)="doCheckout()" 
-            [disabled]="!isCheckoutEnabled">
-            {{cart_info_checkout_or_subscription}}, 
-            {{currentShippingDay|date:'EEE dd':'':locale}}
-    </button>
-  
 
-              
+
+
+  <!-- DISPLAY ACTION HUB ORDER -->
+  <div class="list-item action-line border-bottom" [hidden]="!isReady">
+    <button class="order" (click)="doCheckout()"
+            [disabled]="!isCheckoutEnabled">
+            {{cart_info_checkout_or_subscription}}
+            <span [hidden]="!showCartItems">, {{currentShippingDay|date:'EEE dd':'':locale}}</span>
+    </button>
+
+
+
     <button class="continue hide"   [routerLink]="routerLinkForMoreProducts"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
 
     <!-- CALENDAR-->
-    <kng-calendar minimal="true" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
-    
+    <kng-calendar  [hidden]="!showCartItems"  [user]="user" minimal="true" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
+    <!-- SUBSCRIPTION OPTIONS  -->
+    <kng-subscription-option *ngIf="!showCartItems" [hub]="hub" [contract]="hasUpdateContract"></kng-subscription-option>
+
   </div>
 
   <!-- WARNING MESSAGE -->
   <!-- No more window for delivery -->
-  <div class="list-item auto-line" [hidden]="isNotShippingLimit">    
+  <div class="list-item auto-line" [hidden]="isNotShippingLimit">
     <p class="block-info" [innerHtml]="i18n[locale].cart_info_limit|safeHtml"></p>
   </div>
-    
+
   <!-- Hub is not available for checkout -->
-  <div class="list-item auto-line" [hidden]="hub.status?.active || !isReady">    
+  <div class="list-item auto-line" [hidden]="hub.status?.active || !isReady">
     <p class="block-info" [innerHtml]="cart_info_hub_not_active|safeHtml"></p>
   </div>
-  
+
   <!-- Not a shipping day -->
   <div class="list-item auto-line slim-item" *ngIf="noshippingMsg ">
-    <p class="block-warning">
-      <i class="material-symbols-outlined">info</i> {{noshippingMsg}} 
+    <p class="block-warning bold">
+      <i class="material-symbols-outlined">info</i> {{noshippingMsg}}
     </p>
   </div>
-  
+
   <!-- WARNING DISPLAY ERRORS -->
   <div class="list-item auto-line slim-item " [hidden]="!hasOrderError || !isReady">
-    <p class="block-warning" [innerHtml]="i18n[locale].cart_error">
+    <p class="block-warning bold" [innerHtml]="i18n[locale].cart_error">
   </div>
-  
+
   <!-- WARNING DISPLAY HUB DATE -->
   <div class="list-item auto-line slim-item pending-date" [class.display-message]="!isReady && !isCrossMarketShippingDate">
     <p class="shipping-grouped text-overflow block-warning" [innerHtml]="i18n[locale].cart_info_one_date_more">
@@ -80,65 +78,69 @@
   <!-- DISPLAY CONTRACT ITEMS -->
   <!--                        -->
   <h4 class="title-separator" [hidden]="!currentSubscription">Les articles de votre abonnement</h4>
-  <div class="list-item auto-line "  *ngFor="let item of contractItems">
+  <div class="list-item auto-line " [class.error-line]="item.error" *ngFor="let item of contractItems">
       <div class="graphic">
         <i class="material-symbols-outlined icon" [class.red]="item.deleted">update</i>
       </div>
 
       <div  class="item">
-        <div class="title" >{{item.title}} 
+        <div class="title" >{{item.title}}
         </div>
         <div class="subtitle">
           <div class="cart-variant red" [hidden]="!item.variant">» {{item.variant}} </div>
-  
+
           <!-- DELETE -->
           <a href="javascript:;" class="action-delete" (click)="sub_removeAll(item,item.variant)">
             <i class="material-symbols-outlined" >close</i>{{i18n[locale].cart_remove}}
           </a>
-    
+
           <!-- NOTE -->
           <a href="javascript:;" class="note" [hidden]="!item.note&&!item.audio">
             <i class="material-symbols-outlined">mail</i>&nbsp;message
           </a>
 
           &nbsp;<small class="kng-chip " [hidden]="!item.deleted">supprimer</small>
-    
+
         </div>
       </div>
-    
+
       <div class="item-actions end">
         <div class="action left" >
-          <button (click)="sub_remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button> 
+          <button (click)="sub_remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button>
         </div>
         <div class="quantity">
             {{item.quantity}}
         </div>
         <div class="action right" >
-            <button (click)="sub_add(item,item.variant)"><span class="material-symbols-outlined">add</span></button> 
+            <button (click)="sub_add(item,item.variant)"><span class="material-symbols-outlined">add</span></button>
         </div>
         <div class="price" [class.hidden]="item.selected">
             {{item.fees*item.quantity|number:'1.2-2'}} fr
         </div>
-      </div>   
-      <div class="message-error" [hidden]="!item.error">
-        <i class="material-symbols-outlined" >info</i>&nbsp;
-        {{item.error}} 
       </div>
-  
+      <div class="message-error" [hidden]="!item.error">
+        {{item.error}}
+
+        <!-- DELETE -->
+        <a href="javascript:;" class="action-delete" (click)="sub_removeAll(item,item.variant)">
+          {{i18n[locale].cart_remove}}
+        </a>
+      </div>
+
   </div>
 
-  
+
   <!--                        -->
   <!-- DISPLAY HUB ITEMS      -->
   <!--                        -->
   <h4 class="title-separator" [hidden]="!currentSubscription">Les articles que vous souhaitez ajouter</h4>
-  <div class="list-item one-line " [class.shared]="item.shared" *ngFor="let item of items;let idx=index" (click)="onSelect($event,item)">
+  <div class="list-item one-line " [class.error-line]="item.error" [class.shared]="item.shared" *ngFor="let item of items;let idx=index" (click)="onSelect($event,item)">
     <div class="graphic">
       <div class="avatar"
         [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}"></div>
     </div>
     <div  class="item">
-      <div class="title" >{{item.title}} 
+      <div class="title" >{{item.title}}
       </div>
       <div class="subtitle">
         <div class="cart-variant red" [hidden]="!item.variant">» {{item.variant}} </div>
@@ -147,44 +149,49 @@
         <a href="javascript:;" class="action-delete" (click)="removeAll(item,item.variant)">
           <i class="material-symbols-outlined" >close</i>{{i18n[locale].cart_remove}}
         </a>
-  
+
         <!-- NOTE -->
         <a href="javascript:;" class="note" [hidden]="!item.note&&!item.audio">
           <i class="material-symbols-outlined">mail</i>&nbsp;message
         </a>
-  
+
       </div>
     </div>
-  
+
     <div class="item-actions end">
       <div class="label action" [hidden]="!item.selected">
         <!-- FIXME: opening item from other hub is wrong and inconsistant -->
-        <button [routerLink]="['../products',item.sku]" [queryParams]="routerLinkQueryParamsForSKU"><span class="material-symbols-outlined icon">visibility</span></button> 
+        <button [routerLink]="['../products',item.sku]" [queryParams]="routerLinkQueryParamsForSKU"><span class="material-symbols-outlined icon">visibility</span></button>
       </div>
       <div class="action left" [hidden]="!item.selected" >
-        <button (click)="remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button> 
+        <button (click)="remove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button>
       </div>
       <div class="quantity">
           {{item.quantity}}
       </div>
       <div class="action right" [hidden]="!item.selected">
-          <button (click)="add(item,item.variant)"><span class="material-symbols-outlined">add</span></button> 
+          <button (click)="add(item,item.variant)"><span class="material-symbols-outlined">add</span></button>
       </div>
       <div class="price" [class.hidden]="item.selected">
           {{item.price*item.quantity|number:'1.2-2'}} fr
       </div>
     </div>
     <div class="message-error" [hidden]="!item.error">
-      <i class="material-symbols-outlined" >info</i>&nbsp;
-      {{item.error}} 
+      {{item.error}}
+
+      <!-- DELETE -->
+      <a href="javascript:;" class="action-delete" (click)="removeAll(item,item.variant)">
+        {{i18n[locale].cart_remove}}
+      </a>
+
     </div>
 
   </div>
-  
-  
+
+
   <!-- MORE SHOPPING CART  -->
   <div class="list-item one-line separator" [class.hide-title]="showSeparator"  [hidden]="!showFooter">
-    <div class="info" >{{label.cart_others}}</div> 
+
   </div>
 
 

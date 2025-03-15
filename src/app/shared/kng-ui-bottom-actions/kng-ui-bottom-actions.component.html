@@ -14,7 +14,7 @@
   </div>
 </div>  
 
-<div class="results" [hidden]="!show">
+<div class="results" [hidden]="!show" #results>
   <button  (click)="doToggle()" class="close">
     <span class="material-symbols-outlined large" >{{show?'close':'menu'}}</span>
   </button>  
@@ -29,10 +29,22 @@
     </li>                
   </ul> -->
 
-  <!-- PRODUCTS -->
+  <!-- PRODUCTS not available on common
+  <div class="further-product-container">
+    <kng-product-grouped-list class=""        
+    *ngIf="products.length"
+      alphasort="true"
+      showSection="true"
+      [displayVendor]="true"
+      [config]="config" 
+      [user]="user"
+      [useGroupedCategory]="true"
+      [contentProducts]="products"> </kng-product-grouped-list>
+  </div> -->
+
   <ul class="mdc-list  " [hidden]="!products.length">
     <li class="twoline" *ngFor="let product of products">
-      <a class="avatar" [routerLink]="['/store',store,'home','products',product.sku]">
+      <a class="avatar" [class.selected]="product.attributes.home" [routerLink]="['/store',store,'home','products',product.sku]">
         <img [src]="product.photo.url + '/-/resize/128x/)'" />
       </a>
       <div class="list-text">
@@ -47,12 +59,18 @@
           </span>
     
           <a href="javascript:;" class="gray" i18n (click)="addToCard(product)" [hidden]="product.variants.length">
-            <i class="material-symbols-outlined" style="transform: translateY(5px);font-size:20px">add</i>ajouter</a>
+            <i class="material-symbols-outlined" style="transform: translateY(5px);font-size:20px">add</i>ajouter
+          </a>
+
+          <a href="javascript:;" class="red" i18n (click)="removeToTheme(product)" [hidden]="!isAdminAndTheme">
+            <i class="material-symbols-outlined" style="transform: translateY(5px);font-size:20px">add</i>del
+          </a>
+
         </div>
   
       </div>
     </li>
-  </ul>
+  </ul> 
   <!-- SHOPS -->
   <!-- <kng-shops></kng-shops>   -->
 

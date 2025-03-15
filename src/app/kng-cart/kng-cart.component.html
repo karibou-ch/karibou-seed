@@ -1,14 +1,12 @@
-<kng-cart-checkout (updated)="onCheckout($event)" [config]="config" [i18n]="i18n" [orders]="orders" #checkout>  </kng-cart-checkout>
+<kng-cart-checkout (updated)="onCheckout($event)" [config]="config" [shippingTime]="shippingTime" [i18n]="i18n" [orders]="orders" #checkout>  </kng-cart-checkout>
 
 <div class="cart-container" *ngIf="isValid">
-  <section class="cart" [hidden]="items.length">
-  </section>
 
   <!-- VOS PANIER -->
   <div class="cart-selector">
     <div class="elem">
       <div class="item" [hidden]="!currentCartView ||isSharedCart" (click)="doSelectCart(true)">
-        {{llabel.cart_info_title}} {{currentShippingDay|date:'EEEE':'':locale}}
+        {{llabel.cart_info_title}}
       </div>
       <div  class="item" [hidden]="currentCartView" (click)="doSelectCart(false)" >
 
@@ -18,17 +16,17 @@
   </div>
 
 
-  <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
+  <!-- <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation> -->
 
   <!-- PANIER PARTAGER -->
   <section [hidden]="!isSharedCart" class="block-sharedcart ">
-    <h2><span class="named" [class.name-breaker]="cartName?.length>20">{{cartName}}&nbsp;</span> 
+    <h2><span class="named" [class.name-breaker]="cartName?.length>20">{{cartName}}&nbsp;</span>
     {{i18n[locale].cart_shared_title1}}</h2>
     <h3>{{i18n[locale].cart_shared_title2}}</h3>
   </section>
 
 
-  
+
   <!-- CHECKOUT MSG  -->
   <div class="pending-order display-message" [hidden]="!checkoutMessage">
     <p class="shipping-grouped block-info" >
@@ -47,7 +45,7 @@
   <!-- COMPLEMENT DE CMD -->
   <div class="pending-order" [hidden]="!currentCartView" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
     <p class="shipping-grouped block-info" [innerHtml]="label.cart_order_grouped_info">
-  </div>  
+  </div>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">
     <ng-container *ngFor="let hub of hubs; index as idx; let last = last ">
     <!-- DISPLAY HUB ITEMS -->
@@ -56,12 +54,11 @@
   </mdc-list>
 
   <div class="pending-order display-message" >
-    <p class=" block-link" [hidden]="isSharedCart">      
-      {{i18n[locale].cart_shared_copy}} 
+    <p class=" block-link" [hidden]="isSharedCart">
+      {{i18n[locale].cart_shared_copy}}
       <input id="shared-cart-name" class="cart-name" type="text" [(ngModel)]="_sharedCartName" [placeholder]="i18n[locale].cart_shared_name" />
-      <a class="copy-link" [hidden]="!_sharedCartName" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>    
-
-    </p>  
+      <a class="copy-link" [hidden]="!_sharedCartName" (click)="onCopy($event)" [href]="sharedCart">Copy Link</a>
+    </p>
     <div class="block-info" [hidden]="_sharedCartName?.length<5">
       <b>Info:</b><br/>
       <span class="named" [class.name-breaker]="cartName?.length>20">{{_sharedCartName}}. </span> {{i18n[locale].cart_shared_title1}}

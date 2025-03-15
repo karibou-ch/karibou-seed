@@ -56,6 +56,18 @@
       display: inline-block;
     }
     span ::ng-deep{
+      
+      section.thinking{
+        background-color: yellow;
+        padding: 4px;
+        border-radius: 8px;
+        display: none;
+        font-family: monospace;
+        font-size: 10px;
+        line-height: 12px;          
+        white-space:pre-line;
+      }
+
       h2,h3{
         font-size: 1.1em;
         -margin: 0;

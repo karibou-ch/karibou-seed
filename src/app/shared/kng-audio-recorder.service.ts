@@ -70,7 +70,7 @@ export class KngAudioRecorderService {
       track.stop();
       console.log('---- audio stream closed');
     });
-
+    this.stream = null;
   }
 
   detectAudioVolume(floats32:Float32Array) {
@@ -97,12 +97,14 @@ export class KngAudioRecorderService {
     const AudioCtx = (window.AudioContext || (<any>window).webkitAudioContext);
     const audioCtx:AudioContext = new AudioCtx();
 
-    const blobUrl = (content.blob)?URL.createObjectURL(content.blob):content.url;
+    // const blobUrl = (content.blob)?URL.createObjectURL(content.blob):content.url;
+    // URL.revokeObjectURL(blobUrl);
+
     const blob = (content.url)? await  fetch(content.url):content.blob;
     const audioBuffer = await audioCtx.decodeAudioData(await blob.arrayBuffer());
 
     const floats32 = audioBuffer.getChannelData(0);
-
+    audioCtx.close()
     return this.detectAudioVolume(floats32);
   }
 
@@ -184,12 +186,46 @@ export class KngAudioRecorderService {
       //
       // needs chunks of audio
       if(options.timeSlice) {
+        rtcpOpts.mimeType = 'audio/wav';
         rtcpOpts.timeSlice = options.timeSlice;
         rtcpOpts.ondataavailable = async function(blob) {
+          // Decode the audio data
+          const typedBlob = new Blob([blob], { type: 'audio/wav' });
+
           const base64 = await this.blobToBase64(blob);
-          options.onChunk({blob,base64});
+          options.onChunk({typedBlob,base64});
         }
       }
+
+      //
+      // needs chunks of audio that overlap
+      // rtcpOpts.ondataavailable = async (blob:Blob) => {
+      //   //const audioBuffer = await this.getAudioBuffer(blob);
+
+      //   // // Add the audio buffer to the list
+      //   // latestBlob.push(audioBuffer);
+      //   // if(latestBlob.length < 4) { 
+      //   //   return;
+      //   // }
+
+      //   // // Concatenate the audio buffers
+      //   // let concatenatedBuffer = this.concatenateAudioBuffers(latestBlob);
+      //   // latestBlob.shift();
+      //   // latestBlob.shift();
+      //   // latestBlob.shift();
+
+
+      //   // // Encode the concatenated buffer back into a blob
+      //   // let concatenatedBlob =  await this.audioBufferToWav(concatenatedBuffer);
+      //   const base64 = await this.blobToBase64(concatenatedBlob);
+
+      //   //console.log('----', concatenatedBlob.size, concatenatedBlob.type, base64.length)
+      //   options.onChunk({blob:concatenatedBlob, base64, detectedSound: true});  
+      // }
+    
+
+
+
       //
       // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/recordrtc/index.d.ts
       this.recorder = new RecordRTCPromisesHandler(this.stream,rtcpOpts);      

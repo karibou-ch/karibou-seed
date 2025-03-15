@@ -175,9 +175,10 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // FIXME HARDCODED CAT.WEIGHT FOR SUBS
-    this.defaultVisibleCat = 'fruits-legumes';
-    this.groupedCategoryKeys['fleurs'] = 2; // plaisir
-    this.groupedCategoryKeys['fruits-legumes'] = 1; // plaisir
+    this.defaultVisibleCat = 'fruits';
+    this.groupedCategoryKeys['fleurs'] = 9; // plaisir
+    this.groupedCategoryKeys['fruits'] = 1; // plaisir
+    this.groupedCategoryKeys['legumes'] = 2; // plaisir
     this.groupedCategoryKeys['douceurs-chocolats'] = 3; // plaisir
     this.groupedCategoryKeys['traiteur-maison'] = 5; // apero
     this.groupedCategoryKeys['charcuterie-pates'] = 6; // apero

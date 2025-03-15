@@ -38,19 +38,19 @@
         <div hidden>{{itemsPrompt}}</div>
         <!-- BUSINESS OPTIONS - person:qty -->
         <div class="groupfield width-100 nopadding">
-          <textarea kng-autosize id="bf002" class="form__field" rowcount="8" min="5" formControlName="notes">
+          <textarea kng-autosize id="bf002" class="form__field" rowcount="9" min="7" formControlName="notes">
 
           </textarea>
         </div>
-        <kng-audio-assistant [store]="store" [quiet]="true" [cleanQuery]="true" [agent]="'quote'"
-          [promptmore]="itemsPrompt" (onNote)="onAssistantNote($event)"></kng-audio-assistant>
+        <kng-audio-assistant [store]="store" [cleanQuery]="true" agent="quote"
+           (onNote)="onAssistantNote($event)" [whisperOnly]="true"></kng-audio-assistant>
 
         <!-- BUSINESS OPTIONS - identity -->
         <div class="groupfield width-100" [hidden]="user.isAuthenticated()">
           <kng-slider [small]="true" [(ngModel)]="options.signup" [ngModelOptions]="{standalone: true}">
-          <h3>Souhaitez-vous créer un compte client</h3>
+          <h3>{{label.create_identity}}</h3>
         </kng-slider>
-  
+
         </div>
 
       </div>
@@ -60,8 +60,8 @@
 
     <!-- MAIL ACTION - validation -->
     <div class="selector action" [hidden]="!options.project">
-      <div class="error">{{formError}}</div>
-      <button class="default action" [disabled]="isRunning" (click)="onMail()">
+      <div class="error" [innerHtml]="formError"></div>
+      <button class="default action" [disabled]="isRunning" (click)="onMail()" [hidden]="isValid">
         <span class="material-symbols-outlined">mail</span>
         <span>{{label.action}}</span>
       </button>
@@ -83,7 +83,4 @@
     </div>
 
   </form>
-
-
-
 </div>

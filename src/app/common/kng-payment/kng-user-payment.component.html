@@ -2,7 +2,7 @@
       (ngSubmit)="onPayment()" 
       [formGroup]="stripe" 
       class="stripe-component">
-  
+  <h4 [innerHtml]="title" [hidden]="!title"></h4>
   <div class="groupfield fullwidth">
     <input  id="f001" class="form__field" type="text" formControlName="name" [ngModel]="user.display()"  [placeholder]="label.user_display_name">
     <label class="form__field" for="f001" class="form__label" [class.error]="isInvalid('name')">

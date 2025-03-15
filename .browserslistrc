@@ -15,11 +15,17 @@
 
 
 # based analytics results
+#> 0.5%
+#last 3 Chrome version
+#last 3 Firefox version
+#last 3 Edge major versions
+#last 3 Safari major versions
+#last 3 iOS major versions
+#Firefox ESR
+#not IE 11
+
 > 0.5%
-last 3 Chrome version
-last 3 Firefox version
-last 3 Edge major versions
-last 3 Safari major versions
-last 3 iOS major versions
-Firefox ESR
-not IE 11
+last 2 versions
+#Firefox ESR
+not dead
+

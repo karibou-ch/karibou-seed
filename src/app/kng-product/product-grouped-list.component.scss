@@ -40,21 +40,23 @@
       margin-left: 0px;
       display: none;      
     }
+    
     &.display{
       display: block;      
     }
+
     &.child{      
       margin: 50px 4px 25px;
       border-bottom: 1px solid #ddd;
     }
+
     &.child:first-child {
       margin-top: 10px;
     }
 
     h2,h3{
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.87);      
-      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));      
+      font-weight: 600;
+      color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.9));      
       font-size: 1.4675rem;
       margin-top: 20px;
       margin-left: 0px;

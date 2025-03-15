@@ -424,19 +424,21 @@ export class ProductListComponent implements OnInit {
 
     this.$product.findByAttribute(attribute, this.options).subscribe((products: Product[]) => {
       this.cache.products = this.products = products.sort(this.sortProducts);
+      if (!products.length) {
+        return;
+      }
       
       //
       // makes categories
       const categories = this.products.map(product => product.categories)
                                     .filter((item,pos,arr)=>   arr.findIndex(idx => idx.slug == item.slug)== pos);
 
-      this.category.categories = this.category.categories.filter(cat => categories.find(c => c.slug==cat.slug));
+      this.category.categories = this.category.categories.filter(cat => categories.find(c => c.slug==cat.slug && cat.type=='Category'));
       //
       // set the default category of the page
       this.category.current.child = this.category.categories[0].child;
       this.category.current.slug = this.category.categories[0].slug;
-
-
+  
       this.products.forEach(product => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;

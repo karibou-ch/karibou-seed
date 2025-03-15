@@ -18,7 +18,7 @@
           <li *ngFor="let item of contract.items"><b>{{item.quantity}}x</b> {{item.title}} ({{item.part}})</li>
         </ul>
       </div>
-  
+
       <div class="bottom"> <button (click)="onOpen(contract)">{{getContractAction(contract)}}</button></div>
     </div>
   </div>
@@ -46,7 +46,7 @@
         <h3>{{i18n[locale].subtitle_subscription_service}} </h3>
         <ul>
           <li class="contrasted" *ngFor="let item of currentContract.services"><b>{{item.quantity}}x</b> <span class="left">{{item.title}}</span> <b>{{item.fees|number:'1.2-2'}} fr</b></li>
-        </ul>  
+        </ul>
       </ng-template>
 
       <div class="block-info red" *ngIf="currentContract.status=='canceled'">
@@ -65,17 +65,17 @@
 
         <!---3D secure -->
         <li [hidden]="!contract_requires_action" >
-          <div class="title_payment red">Votre abonnement n'est pas encore actif </div>          
+          <div class="title_payment red">Votre abonnement n'est pas encore actif </div>
           <button class=""  (click)="onConfirmPaymentIntent()">{{i18n[locale].subtitle_subscription_confirm_method}}</button>
         </li>
 
         <!---new payment method -->
         <li [hidden]="!contract_requires_method">
-          <div class="title_payment red">Activer votre abonnement avec une nouvelle méthode de paiement</div>          
+          <div class="title_payment red">Activer votre abonnement avec une nouvelle méthode de paiement</div>
           <div class="method" *ngIf="userPayment">
             Celle-ci ne fonctione plus →
             <span class="method name">{{userPayment.issuer}}  **{{userPayment.last4}}</span>&nbsp;
-            <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>  
+            <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>
           </div>
           <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
 
@@ -90,24 +90,28 @@
         <li class="contrasted-sm" *ngIf="!currentContract.patreon?.length">
           <div class="title">{{llabel.subtitle_subscription_status}}   </div>
           <label for="subdate" class="date kng-chip">
-            <b>{{getFrequency(currentContract)}}</b> / 
-            <b>{{getDayOfWeek(currentContract.dayOfWeek)}} ({{getShippingTime(currentContract)}})</b>  <b class="green">✓</b> 
-          </label>      
+            <b>{{getFrequency(currentContract)}}</b> /
+            <b>{{getDayOfWeek(currentContract.dayOfWeek)}} ({{getShippingTime(currentContract)}})</b>  <b class="green">✓</b>
+          </label>
         </li>
         <li class="contrasted-sm" [hidden]="currentContract.status=='paused' || currentContract.status=='canceled' || contract_requires_method">
           <div class="title" [hidden]="currentContract.status=='paused'">
-            <span >{{llabel.subtitle_subscription_pause}}&nbsp;</span>            
+            <span >{{llabel.subtitle_subscription_pause}}&nbsp;</span>
             <span class="bold">{{pauseUntil|date:'EEE d MMM'}} ?</span>
-          </div>      
+            <input type="date" id="subdate" (change)="pauseUntil = $event.target.valueAsDate"  [valueAsDate]="until" [min]="until| date:'yyyy-MM-dd'"  />
 
-          <button class="date"  (click)="onPause(pauseUntil)"   [disabled]="pauseInDays<7">{{i18n[locale].subtitle_subscription_pause_action}} &nbsp;<b class="align-right">↦</b></button>
-          <input type="date" id="subdate" (change)="pauseUntil = $event.target.valueAsDate"  [valueAsDate]="until" [min]="until| date:'yyyy-MM-dd'"  />
+          </div>
+
+          <button class="_date"  (click)="onPause(pauseUntil)"   [disabled]="pauseInDays<7">
+            {{i18n[locale].subtitle_subscription_pause_action}} &nbsp;<b>{{pauseUntil| date:'EEE d MMM'}}</b>
+          </button>
         </li>
+
         <li class="contrasted-sm" [hidden]="currentContract.status!='paused'">
           <div class="bold title">{{llabel.subtitle_subscription_paused}}  </div>
           <label for="subdate" class="date kng-chip">
-            <b>{{currentContract.pauseUntil| date:'EEE d MMM'}} ✓</b> 
-          </label>      
+            <b>{{currentContract.pauseUntil| date:'EEE d MMM'}} ✓</b>
+          </label>
         </li>
         <li class="separator"><hr class="dashed"></li>
         <li [hidden]="currentContract.status=='canceled'">
@@ -122,6 +126,6 @@
       <!-- FEEDBACK ACTIONS -->
 
     </div>
-  </div>    
+  </div>
 
 </ng-container>
