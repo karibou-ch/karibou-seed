@@ -99,14 +99,14 @@ export class KngInvoiceComponent implements OnInit {
       this.module = module;
       if(!this.qrbillAmount){
         return
-      }       
-      if(!this.svg || 
-         !this.contentSVG || 
-         !this.module || 
+      }
+      if(!this.svg ||
+         !this.contentSVG ||
+         !this.module ||
          !this.module.SVG){
           return;
          }
-         
+
       this.svg.nativeElement.innerHTML = new this.module.SVG(this.contentSVG, { language: 'EN' });
       this.printQr = true;
     })
@@ -122,7 +122,7 @@ export class KngInvoiceComponent implements OnInit {
     this.shipping = {
       name: this.order.shipping.name,
       address: this.order.shipping.streetAdress,
-      postalCode: this.order.shipping.postalCode,      
+      postalCode: this.order.shipping.postalCode,
     }
 
     //
@@ -131,7 +131,7 @@ export class KngInvoiceComponent implements OnInit {
       order.amount = this.getTotalPrice(order);
     });
     this.invoicesAmount = invoices.reduce((sum,order:any)=>{
-      const amount = order.amount;      
+      const amount = order.amount;
       return sum+amount;
     },0);
 
@@ -152,7 +152,7 @@ export class KngInvoiceComponent implements OnInit {
     });
 
     this.transfersAmount = this.invoice.transfers.reduce((sum,order:any)=>{
-      const amount = order.amount;      
+      const amount = order.amount;
       return sum+amount;
     },0);
 
@@ -166,7 +166,7 @@ export class KngInvoiceComponent implements OnInit {
 
     this.qrbillAmount = invoices.length?this.invoicesAmount:this.transfersAmount
     const ordersTxt = 'K-ch: '+this.qrbillOrders.map(order => order.oid).join('-');
-    
+
     this.contentSVG = {
       currency: "CHF",
       amount: this.qrbillAmount,
@@ -179,13 +179,13 @@ export class KngInvoiceComponent implements OnInit {
         city: this.order.shipping.region,
         country: "CH"
       }
-    } as any;    
+    } as any;
 
     //
     // setup the title
     const when = new Date(this.qrbillOrders[0].when);
     const format = (when.getFullYear())+' - '+(when.getMonth()+1);
-    const who = this.order.email.replace(/[.@]/,'-');
+    const who = this.order.customer.email.replace(/[.@]/,'-');
     document.title = 'k-ch-invoices'+format+' - '+who+' - '+this.qrbillOrders.map(order => order.oid).join('-');
     //console.log('--create invoice QR',this.svg )
 
@@ -194,7 +194,7 @@ export class KngInvoiceComponent implements OnInit {
   round1cts(value) {
     return parseFloat((Math.round(value*100)/100).toFixed(2))
   }
-  
+
 
   getTotalPrice(order){
 
@@ -206,7 +206,7 @@ export class KngInvoiceComponent implements OnInit {
       }
       return sum;
     },0);
-  
+
     return this.round1cts(total + order.fees.shipping);
   }
 
@@ -219,7 +219,7 @@ export class KngInvoiceComponent implements OnInit {
     const pdfMake = modulea.default;
     const pdfFonts = moduleb.default;
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
-    
+
 
     const pageWidth = 595.28;
     const pageHeigth= 841.89;
@@ -228,9 +228,9 @@ export class KngInvoiceComponent implements OnInit {
       pageSize: {
         width: pageWidth,
         height: pageHeigth
-      },      
+      },
       content: [
-        
+
         //
         // HEADER
         {
@@ -262,7 +262,7 @@ export class KngInvoiceComponent implements OnInit {
               },
               { text: this.contentSVG.debtor.address, width:'30%' },
               { text: this.contentSVG.debtor.zip, width:'30%' },
-              { text: this.order.email, width:'30%' }
+              { text: this.order.customer.email, width:'30%' }
             ],
           ],
           columnGap: 0,
@@ -306,8 +306,8 @@ export class KngInvoiceComponent implements OnInit {
           margin: [0, 15, 0, 15]
         }
       }
-    }  
-    pdfMake.createPdf(docDefinition).download(document.title); 
+    }
+    pdfMake.createPdf(docDefinition).download(document.title);
   }
 
   onPrint(){
