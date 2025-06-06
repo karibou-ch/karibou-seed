@@ -5,7 +5,8 @@ import {
   OnDestroy,
   Input,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
+  NgZone
 } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -48,10 +49,16 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   public i18n = {
     fr: {
+      before_order:"Encore ",
+      after_order_short:"Limite de com. ",
+      after_order:"Limite de commande ",
       james_product_recipe:"Quelques suggestions de recettes ?",
       james_product_variant:"Quelques associations avec le produit ?",
     },
     en:{
+      before_order:"Still ",
+      after_order_short:"Order limit ",
+      after_order:"Order before ",
       james_product_recipe:"Some recipe suggestions?",
       james_product_variant:"Some associations with this product?",
     }
@@ -107,7 +114,12 @@ export class ProductComponent implements OnInit, OnDestroy {
     windowtime: 200
   };
 
+  private updateTimer: any;
+  private lastUpdate: number = 0;
+  private readonly UPDATE_INTERVAL = 30000; // Update every 30s
+
   constructor(
+    private zone: NgZone,
     private $meta: Meta,
     private $metric: MetricsService,
     private $cart: CartService,
@@ -203,26 +215,36 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   get isOutOfTimelimitForOrder() {
-    return this.hoursLeftBeforeOrder < 0;
+    return !this.displaySubscription && this.hoursLeftBeforeOrder < 0;
   }
 
   get getTimelimitForOrder() {
-    return this.product.attributes.timelimit>0 && this.hoursLeftBeforeOrder < 10;
+    return !this.displaySubscription &&
+           this.product.attributes.timelimit>0 &&
+           this.hoursLeftBeforeOrder>0 &&
+           this.hoursLeftBeforeOrder < 10;
   }
 
   get hoursAndMinutesLeftBeforeOrder() {
     const hours = Math.floor(this.hoursLeftBeforeOrder);
     const minutes = Math.floor((this.hoursLeftBeforeOrder - hours) * 60);
-    return `${hours}h ${minutes}m`;
+    if(hours>0){
+      return `${hours} h ${minutes} minutes`;
+    }
+    return `${minutes} minutes`;
   }
 
   // display hours and minutes after the timelimit
   // hoursLeftBeforeOrder equal -1.5hours means that current time minus 1.5 compute the limit of time
   get hoursAndMinutesAfterOrder() {
-    const time = new Date();
-    const hours = Math.floor(-this.hoursLeftBeforeOrder);
-    const minutes = time.getMinutes()-Math.floor((-this.hoursLeftBeforeOrder - hours) * 60)+'';
-    return `${time.getHours()-hours}h${minutes.padStart(2, '0')}`;
+    // Reconstruct the exact deadline time by adding the (negative) hoursLeftBeforeOrder to the current time.
+    const now = new Date();
+    const deadline = new Date(now.getTime() + this.hoursLeftBeforeOrder * 3600000); // 3,600,000 ms in an hour
+
+    const deadlineHours = deadline.getHours();
+    const deadlineMinutes = deadline.getMinutes().toString().padStart(2, '0');
+
+    return `${deadlineHours}h${deadlineMinutes}`;
   }
 
 
@@ -312,6 +334,26 @@ export class ProductComponent implements OnInit, OnDestroy {
       setTimeout(()=> this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40,0,1000);
 
     }
+
+    // Start timer to update hoursLeftBeforeOrder
+    const updateTime = () => {
+      const now = Date.now();
+      if (now - this.lastUpdate >= this.UPDATE_INTERVAL) {
+        if (this.product && this.config) {
+          const shippingDay = this.$cart.getCurrentShippingDay();
+          const newValue = this.config.timeleftBeforeCollect(this.config.shared.hub, this.product.attributes.timelimit, shippingDay);
+          // Only update if the value has changed significantly (more than 1 minute)
+          if (Math.abs(newValue - this.hoursLeftBeforeOrder) > 1/60) {
+            this.zone.run(() => {
+              this.hoursLeftBeforeOrder = newValue;
+              this.lastUpdate = now;
+            });
+          }
+        }
+      }
+      this.updateTimer = this.zone.runOutsideAngular(() => requestAnimationFrame(updateTime));
+    };
+    this.updateTimer = this.zone.runOutsideAngular(() => requestAnimationFrame(updateTime));
   }
 
 
@@ -321,6 +363,11 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
+    }
+
+    // Clear the update timer
+    if (this.updateTimer) {
+      cancelAnimationFrame(this.updateTimer);
     }
   }
 
@@ -475,9 +522,10 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   loadProduct(product) {
     this.product = product;
+    const shippingDay = this.$cart.getCurrentShippingDay();
 
-    this.hoursLeftBeforeOrder = this.config.timeleftBeforeCollect(this.config.shared.hub,this.product.attributes.timelimit);
-    // console.log('---DBG hoursLeftBeforeOrder',this.hoursLeftBeforeOrder,product.title);
+    this.hoursLeftBeforeOrder = this.config.timeleftBeforeCollect(this.config.shared.hub,this.product.attributes.timelimit,shippingDay);
+
     //
     // updated product is hilighted for 2 weeks
     this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;

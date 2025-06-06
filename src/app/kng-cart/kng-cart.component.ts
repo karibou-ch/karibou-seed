@@ -45,7 +45,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   isValid = false;
   hasOrderError = false;
   noshippingMsg: string;
-  shippingTime: number = 16;
+  shippingTime: number;
   currentCartView:boolean = true;
 
   currentShippingDay: Date;
@@ -102,6 +102,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_login: 'Pour finaliser votre commande, vous devez vous connecter',
       cart_empty: 'Vos paniers sont vides',
       cart_error: 'Vous devez corriger votre panier!',
+      cart_error_timelimit: 'Commandez avant ',
       cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
       cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       cart_nextshipping: 'Livraison',
@@ -173,6 +174,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_shared_title1: 'A shopping cart has been created for you',
       cart_shared_title2: 'Quickly finalize your order: confirm the delivery date, log in, select your address and payment method. Thank you and enjoy your purchase!',
       cart_error: 'Your cart has to be modified!',
+      cart_error_timelimit: 'Order before ',
       cart_cg: 'I agree to the general selling conditions',
       cart_cg_middle:' and I confirm that ',
       cart_cg_18: 'I am of legal age to purchase alcohol',
@@ -294,6 +296,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.currentHub = this.config.shared.hub;
 
     console.log(this.store,this.currentHub)
+    this.currentShippingDay = this.$cart.getCurrentShippingDay();
+    this.shippingTime = this.$cart.getCurrentShippingTime()|0;
+    this.shippingTime = this.shippingTime || this.config.getDefaultTimeByDay(this.currentShippingDay);
+
     //
     // save the plan for the subscription (business, customer)
     this.plan = this.$route.snapshot.queryParams.plan||window['subsplan']||'customer';
@@ -339,8 +345,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
           // display subscription or cart
           this.isValid = true;
 
+          // FIXME: remove this when we have a better way to handle time limit error
+          // this.shippingTime = this.config.getDefaultTimeByDay(this.currentShippingDay);
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
           this.shippingTime = this.$cart.getCurrentShippingTime()|0;
+
 
           this.initItems();
           //
@@ -395,9 +404,27 @@ export class KngCartComponent implements OnInit, OnDestroy {
       // | 'succeeded';
       if(paymentIntent.status=='succeeded') {
         const order = await this.$order.get(oid).toPromise();
+        // order.payment.status == 'authorized'
         this.onCheckout({order});
         return;
       }
+
+      //
+      // pending, wait for payment (requires_confirmation or requires_action)
+      if(redirect_status=='pending') {
+        const order = await this.$order.get(oid).toPromise();
+        if(order.payment.status=='prepaid') {
+          this.onCheckout({order});
+          return;
+        }
+        if(order.payment.status=='voided') {
+          this.checkoutMessageError = this.llabel.cart_order_canceled_twint;
+          return;
+        }
+
+        this.checkoutMessageError = this.llabel.cart_order_pending_twint;
+        setTimeout(()=> window.location.reload(),1000);
+    }
 
       //
       // list all kind of errors
@@ -406,11 +433,15 @@ export class KngCartComponent implements OnInit, OnDestroy {
         return;
       }
 
+
+
+
       if(paymentIntent.status=='processing') {
         this.checkoutMessageError = this.llabel.cart_order_pending_twint;
         setTimeout(()=> window.location.reload(),1000);
         return;
       }
+
 
       setTimeout(()=>{
 
