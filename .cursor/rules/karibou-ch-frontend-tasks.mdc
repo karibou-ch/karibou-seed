@@ -1,0 +1,120 @@
+---
+description:
+globs: karibou-seed/**
+alwaysApply: false
+---
+# Tâches Techniques Frontend (karibou-seed)
+
+Cette liste est générée en scannant les commentaires `FIXME` et `TODO` dans le code source du projet.
+* Vérifier la racine du projet `~/nodejs/karibou.ch/karibou-seed` avant un git ou la création de fichiers.
+
+
+## Navbar (`kng-navbar.component.ts`)
+
+-   `[L70]` **FIXME:** Supprimer la répétition de code.
+-   `[L137]` **FIXME:** Le stockage de `SUBS_PLAN` est "laid" et doit être amélioré (utilisé pour le partage avec le panier).
+-   `[L153]` **FIXME:** Utiliser une approche déclarative pour se désabonner des observables (ex: `pipe(takeUntil(destroyed$))`).
+-   `[L162]` **FIXME:** `currentThemeName` doit être mis à jour au bon endroit.
+-   `[L169]` **FIXME:** L'activation de `mdc-tab` est buggée, le code actuel est un contournement.
+-   `[L170]` **TODO:** Implémenter la fonctionnalité de "département" dynamique.
+-   `[L215]` **FIXME:** Éviter les mises à jour multiples de la même valeur.
+-   `[L242]` **FIXME:** `$cart` doit être configuré à un endroit plus approprié.
+-   `[L373]` **FIXME:** La logique de planification (`scheduler`) devrait être dans l'API backend.
+
+## Page d'accueil (`kng-home.component.ts`)
+
+-   `[L501]` **FIXME:** Problème de double événement `CART_LOADED` (contourné avec `isLoading`).
+-   `[L548]` **FIXME:** `this.config.getDefaultTimeByDay(day)` est déprécié et devrait être déplacé dans `$cart.getCurrentShippingTime()`.
+
+## Styles (`styles.scss`)
+
+-   `[L73]` **FIXME:** Supprimer la valeur codée en dur.
+
+## Feedback (`kng-feedback.component.ts`)
+
+-   `[L295]` **FIXME:** La logique de planification (`scheduler`) devrait être dans l'API backend.
+-   `[L305]` **FIXME:** `order.shipping` ne devrait pas pouvoir être `null`.
+
+## Abonnements (`kng-subscription-control.component.html`)
+
+-   `[L99]` **TODO:** Moderniser la section d'erreur de paiement pour l'aligner avec le nouveau système du backend.
+
+## Profil utilisateur (`user-email.component.ts`)
+
+-   `[L90]` **FIXME:** Forcer l'utilisation du mot de passe lors de la mise à jour de l'email.
+
+## Paiement (`kng-cart-checkout.component.html`)
+
+-   `[L20]` **FIXME:** Masquer la méthode de paiement "wallet".
+
+## Objectif : Supprimer la dépendance `@angular/mdc`
+
+L'objectif est de remplacer tous les composants `<mdc-*>` par des éléments HTML standards stylisés avec les classes utilitaires déjà présentes dans `kng-widgets.scss` afin d'alléger l'application et de supprimer une dépendance devenue obsolète.
+
+-   **TODO :** Dans `kng-cart.component.html`, remplacer `<mdc-list>` par une structure `<ul>` ou `<div>` utilisant les styles de `kng-widgets.scss`.
+-   **TODO :** Dans `kng-navbar.component.html`, remplacer tous les composants `<mdc-top-app-bar*>` par des éléments sémantiques (`<header>`, `<div>`) et appliquer les styles de `kng-widgets.scss`.
+-   **TODO :** Dans `user-email.component.html`, `user-password.component.html` et `user-sign.component.html`, remplacer les `<mdc-text-field>` par des `<input>` standards utilisant le style de `groupfield` défini dans `kng-widgets.scss`.
+
+## Analyser et Améliorer la gestion des routes
+
+Les fichiers de routage principaux à analyser sont :
+
+*   `karibou-seed/src/app/app.routes.ts`
+*   `karibou-seed/src/app/shared/shared.routes.ts`
+*   `karibou-seed/src/app/kng-home/kng-home.routes.ts`
+
+## Hiérarchie des Routes du Projet `karibou-seed`
+
+Voici la structure hiérarchique des routes de l'application, reconstituée à partir des fichiers `app.routes.ts` et `shared.routes.ts`.
+
+### Routes Principales (`app.routes.ts`)
+
+-   **`/`**
+    -   **Composant :** `KngWelcomeComponent`
+    -   **Protection :** `canActivate: [IsWelcomeGard]` (s'active si l'utilisateur n'a pas encore choisi de magasin).
+-   **`/me`**
+    -   **Chargement :** `UserModule` (Lazy loaded).
+-   **`/validate/:uid/:mail`**
+    -   **Composant :** `KngValidateMailComponent` (Validation d'email).
+-   **`/store/:store`**
+    -   **Composant :** `KngRootComponent` (Composant racine pour l'affichage d'un magasin).
+    -   **Chargement :** `KngSharedModule` (Lazy loaded), qui contient les routes suivantes :
+        -   **`/cart`**
+            -   **Chargement :** `KngCartModule` (Lazy loaded).
+        -   **`/patreon`**
+            -   **Chargement :** `KngPatreonModule` (Lazy loaded).
+        -   **`/shops`**
+            -   **Composant :** `KngShopsComponent`.
+            -   **`/shops/:shop`**
+                -   **Composant :** `KngProductListByShopComponent`.
+            -   **`/shops/:shop/:child`**
+                -   **Composant :** `KngProductListByShopComponent`.
+        -   **`/me`**
+            -   **Chargement :** `UserModule` (Lazy loaded, espace utilisateur).
+        -   **`/home` (Route par défaut pour un magasin)**
+            -   **Composant :** `KngHomeComponent`.
+            -   **Routes Enfants :**
+                -   **`/assistant`**
+                    -   **Chargement :** `KngAssistantBotModule` (Lazy loaded).
+                -   **`/business`**
+                    -   **Composant :** `ProductListComponent` (Affiche les produits "business").
+                -   **`/subscription`**
+                    -   **Composant :** `ProductListComponent` (Affiche les produits d'abonnement).
+                -   **`/products/:sku`**
+                    -   **Composant :** `ProductComponent` (Détail d'un produit).
+                -   **`/category/:category`**
+                    -   **Composant :** `ProductListComponent` (Liste les produits d'une catégorie).
+-   **`/store/:store/admin`**
+    -   **Composant :** `KngEmptyRootComponent` (Conteneur vide).
+    -   **Chargement :** `AdminModule` (Lazy loaded).
+-   **`/store/:store/content`**
+    -   **Composant :** `KngEmptyRootComponent`.
+    -   **Chargement :** `KngDocumentModule` (Lazy loaded).
+
+### Routes de Redirection et d'Erreur
+
+-   **`/oops`**
+    -   **Composant :** `KngServerErrorFoundComponent` (Page d'erreur serveur).
+-   **`**` (Wildcard)
+    -   **Composant :** `KngPageNotFoundComponent` (Page 404).
+-   Plusieurs **redirections** sont en place pour assurer la compatibilité d'anciennes URLs vers la nouvelle structure `/store/:store/home/...`.

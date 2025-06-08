@@ -1,0 +1,168 @@
+---
+description: "Règles et conventions pour le projet frontend (@/karibou-seed)"
+globs:
+alwaysApply: true
+---
+# Règles et Conventions du Projet Frontend (karibou-seed)
+
+Ce document décrit les règles, conventions et bonnes pratiques à suivre pour le développement du projet frontend `karibou-seed`. L'objectif est d'assurer la cohérence, la maintenabilité et la qualité du code.
+* Vérifier la racine du projet `~/nodejs/karibou.ch/karibou-seed` avant un git ou la création de fichiers.
+
+## 1. Objectif du Projet
+
+`karibou-seed` est un projet "white-label" basé sur Angular, conçu pour servir de socle à des plateformes de e-commerce, principalement pour des groupements d'artisans ou des hubs alimentaires. Il est pensé pour être personnalisable via un système de theming et de configuration.
+
+## 2. Structure des Fichiers et Dossiers (`src/`)
+
+La structure du projet suit les conventions d'Angular, avec une organisation orientée par fonctionnalité.
+
+```
+src/
+├── app/
+│   ├── common/         # Composants, services, et directives réutilisables
+│   ├── kng-admin/      # Modules et composants pour la section admin
+│   ├── kng-cart/       # Logique et affichage du panier
+│   ├── kng-home/       # Page d'accueil
+│   ├── kng-user/       # Espace utilisateur (profil, commandes, etc.)
+│   ├── ...             # Autres dossiers de fonctionnalités (kng-*)
+│   ├── app.module.ts   # Module principal de l'application
+│   └── app.routes.ts   # Définition des routes principales
+├── assets/
+│   ├── i18n/           # Fichiers de traduction (fr.json, en.json)
+│   └── ...             # Images, icônes, et autres ressources statiques
+├── environments/
+│   ├── environment.ts
+│   └── environment.prod.ts
+└── styles/
+    ├── colors.scss     # Définition des palettes de couleurs du thème
+    ├── kng-theme.scss  # Fichier principal du thème (variables, mixins)
+    ├── styles.scss     # Styles globaux de l'application
+    └── ...             # Autres fichiers de styles partiels
+```
+
+## 3. Conventions de Nommage et de Codage
+
+### TypeScript / Angular
+
+-   **Modules / Composants / Services :** Les noms de classes utilisent `PascalCase`. Les noms de fichiers utilisent `kebab-case` et sont suffixés par leur type (`.component.ts`, `.service.ts`, `.module.ts`).
+    -   Exemple : Classe `KngHomeComponent` dans le fichier `kng-home.component.ts`.
+
+-   **Préfixe `kng-` :** Ce préfixe est utilisé pour les composants et modules spécifiques à l'application afin d'éviter les conflits de nommage avec des bibliothèques externes.
+
+-   **Variables et Méthodes :** Les noms de variables et de méthodes utilisent `camelCase`.
+    -   Exemple : `currentContract`, `getPaymentErrorMessage()`.
+
+-   **Services et Observables :** Les propriétés qui contiennent une instance de service (injectée via le constructeur) ou un `Observable` important peuvent être préfixées par un `$` pour les identifier rapidement.
+    -   Exemple : `this.$cart`, `this.$user`.
+    Utiliser une approche déclarative pour se désabonner des observables (ex: `pipe(takeUntil(destroyed$))`)
+
+-  **Evénements des composants :** Les noms des méthodes d'événnements sont  préfixées par `on`
+
+### Styles (SCSS)
+
+Cette section détaille l'architecture et les conventions de style du projet. Une adhésion stricte à ces règles est essentielle pour maintenir un design cohérent et faciliter la personnalisation du thème.
+
+#### **Méthodologie Générale**
+
+-   **Encapsulation :** Les styles sont encapsulés au niveau des composants par défaut (`ViewEncapsulation.None` est à éviter). Cela empêche les styles d'un composant de "fuir" et d'affecter d'autres parties de l'application.
+-   **Fichiers Globaux :** Les styles qui doivent s'appliquer à toute l'application (comme les définitions de variables, les resets CSS, etc.) sont placés dans le répertoire `src/styles/`.
+
+#### **Le Système de Theming : Variables CSS (Custom Properties)**
+
+Le cœur du système de theming repose sur les **variables CSS**, aussi appelées "Custom Properties".
+
+-   **Définition :** Toutes les variables de thème globales sont définies dans `src/styles/styles.scss` sous le sélecteur `:root`. Cela les rend disponibles dans l'ensemble de l'application.
+-   **Avantages :**
+    -   **Centralisation :** Toutes les valeurs de design clés (couleurs, dimensions) sont à un seul endroit.
+    -   **Personnalisation Facile :** Modifier une variable dans `:root` met à jour sa valeur partout où elle est utilisée, permettant de "re-skinner" l'application très facilement.
+    -   **Dynamisme :** Les variables CSS peuvent être modifiées à la volée avec JavaScript, ouvrant la voie à des thèmes dynamiques (ex: mode sombre/clair).
+
+#### **Utilisation Pratique**
+
+Pour utiliser une variable de thème dans le fichier SCSS d'un composant, utilisez la fonction `var()` :
+
+```scss
+// Exemple dans un composant
+.mon-bouton-principal {
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-primary-text);
+  border: 1px solid var(--mdc-theme-secondary);
+}
+
+.conteneur-page {
+  width: 100%;
+  max-width: var(--mdc-theme-max-width-md);
+  margin: 0 auto;
+}
+```
+
+#### **Variables de Thème Essentielles**
+
+Voici une liste des variables les plus importantes à connaître et à utiliser.
+
+##### **Palette de Couleurs**
+
+| Variable                                   | Rôle                                                                 |
+| ------------------------------------------ | -------------------------------------------------------------------- |
+| `--mdc-theme-primary`                      | **Couleur principale** de la marque. Utilisée pour les en-têtes, les boutons principaux, etc. |
+| `--mdc-theme-secondary`                    | **Couleur d'accentuation**. Utilisée pour les éléments interactifs secondaires, les liens, etc. |
+| `--mdc-theme-primary-light` / `--secondary-light` | Versions éclaircies, souvent générées via `color-mix`, pour les fonds ou les survols (`hover`). |
+| `--mdc-theme-primary-text` / `--secondary-text`   | Couleur du texte à utiliser **par-dessus** les couleurs primaires/secondaires. |
+| `--mdc-theme-text-primary-on-background`   | Couleur du **texte par défaut** sur un fond clair.                   |
+| `--mdc-theme-text-secondary-on-background` | Couleur du texte secondaire, moins important (sous-titres, etc.).  |
+| `--mdc-theme-text-hint-on-background`      | Couleur pour les textes d'aide ou les placeholders.                  |
+| `--mdc-theme-text-icon-on-background`      | Couleur des icônes par défaut.                                       |
+| `--mdc-theme-background-container`         | Couleur de **fond principale** de l'application.                     |
+| `--mdc-theme-appbar`                       | Couleur de fond de la barre de navigation.                           |
+| `--mdc-theme-appbar-text`                  | Couleur du texte et des icônes dans la barre de navigation.          |
+
+##### **Dimensions et Layout**
+
+| Variable                      | Rôle                                                                 |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `--mdc-theme-width-md`        | Largeur fixe du conteneur principal pour les écrans de taille moyenne (desktop). |
+| `--mdc-theme-max-width-md`    | Largeur **maximale** du conteneur principal pour les écrans de taille moyenne. |
+| `--mdc-theme-top-bar`         | **Hauteur de la barre de navigation** (`70px`). Essentiel pour positionner le contenu de la page en dessous avec `padding-top` ou `margin-top`. |
+
+
+## 4. Dépendances Clés
+
+Le projet repose sur un ensemble de dépendances fondamentales.
+
+-   **`@kng2-core` (Dépendance Principale) :**
+    -   **Rôle :** C'est le cœur de l'application. Cette bibliothèque contient la logique métier, les modèles de données, et les services principaux qui ne sont pas liés à l'interface utilisateur.
+    -   **Contenu :**
+        -   **Services :** `CartService`, `UserService`, `ProductService`, `ConfigService`.
+        -   **Modèles :** Interfaces comme `User`, `Product`, `Order`, `CartSubscription`.
+    -   **Convention :** Toute la logique métier (appels API, gestion de l'état du panier, etc.) doit être déléguée aux services de `@kng2-core`. Les composants Angular doivent rester aussi simples que possible et consommer ces services.
+
+-   **`@angular-mdc/web` :** Bibliothèque de composants UI basée sur Material Design (DEPRECATED, il faut supprimer cette dépendance).
+
+-   **`ngx-stripe` :** Intégration pour la gestion des paiements via Stripe.
+
+-   **`@sentry/angular-ivy` :** Suivi et rapport d'erreurs.
+
+## 5. Gestion de l'État (State Management)
+
+L'état de l'application (panier, utilisateur connecté, etc.) est géré de manière réactive à l'aide de **RxJS**. Les services de `@kng2-core` exposent des `Observables` (souvent basés sur des `BehaviorSubject`) auxquels les composants s'abonnent pour recevoir les mises à jour de l'état en temps réel.
+
+-   **Exemple :**
+    ```typescript
+    // Dans un composant, pour suivre les changements de l'utilisateur
+    this.$user.user$.subscribe(user => {
+      this.user = user;
+    });
+    ```
+-   **Convention :** Utiliser le pipe `async` dans les templates autant que possible pour gérer automatiquement les souscriptions et désabonnements, afin d'éviter les fuites de mémoire.
+
+
+## 6. Stratégie de Routage et de Cache
+
+Le fichier `app.cache.route.ts` implémente une stratégie de réutilisation des routes (`RouteReuseStrategy`) personnalisée. C'est une pièce maîtresse pour la performance et la fluidité de la navigation.
+
+-   **Objectif :** Améliorer l'expérience utilisateur en mettant en cache les vues des composants déjà visités. Cela permet d'éviter de re-détruire et re-créer des composants à chaque navigation, conservant ainsi l'état de la vue (comme la position de défilement) et évitant des appels réseau inutiles.
+
+-   **Fonctionnement :**
+    -   La classe `CacheRouteReuseStrategy` détermine, pour chaque navigation, s'il faut détacher et stocker la vue actuelle ou attacher une vue précédemment stockée.
+    -   La mise en cache est sélective et basée sur le chemin des routes. Par exemple, elle est configurée pour mettre en cache les listes de produits (`category/:category`) lorsque l'utilisateur navigue vers une page de détail produit (`products/:sku`) et revient en arrière.
+    -   Le cache est intelligemment invalidé, notamment lorsque l'utilisateur change de "département" principal (ex: passer de `home` à `cellar`), afin de ne pas conserver un état de cache incohérent.
