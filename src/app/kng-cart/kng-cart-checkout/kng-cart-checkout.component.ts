@@ -793,7 +793,6 @@ export class KngCartCheckoutComponent implements OnInit {
         this.createPaymentConfirmation(order);
       },
       status => {
-        this.isRunning = false;
 
 
         //
@@ -808,6 +807,7 @@ export class KngCartCheckoutComponent implements OnInit {
         if (status.error.client_secret) {
           return this.confirmPaymenIntent(status.error, {oid:status.error.oid});
         }
+        this.isRunning = false;
         this.errorMessage = status.error;
         this.$snack.open(
           status.error,

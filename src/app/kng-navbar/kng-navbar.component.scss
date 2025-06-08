@@ -1,7 +1,7 @@
 
 div.mdc-drawer{
   width: 300px!important;
-  
+
   a{
     color: #0a072b;
   }
@@ -20,7 +20,7 @@ div.mdc-drawer{
   }
   input[type="radio"] {
     width: 18px;
-    height: 18px;          
+    height: 18px;
     margin-right: 10px;
   }
 
@@ -32,32 +32,32 @@ div.mdc-drawer{
       flex-direction: row;
       justify-content: space-between;
       width: 100%;
-  
+
       .label-shipping{
         color: var(--mdc-theme-primary-dark);
         font-size: 85%;
-        margin-right: 5px;    
+        margin-right: 5px;
         .bullet{
           background: var(--mdc-theme-secondary);
           border-radius: 50%;
           padding: 0;
           padding-left: 12px;
           margin: 2px;
-          font-size: 10px;     
+          font-size: 10px;
           &.disabled{
             background: #ddd;
-          } 
+          }
         }
-      }   
+      }
     }
-  
+
   }
 
   .admin{
     mdc-list{
       -background: #555!important;
     }
-    mdc-list-item, 
+    mdc-list-item,
     h3,
     h4,
     h5,
@@ -65,11 +65,11 @@ div.mdc-drawer{
       color: #eee!important;
     }
   }
-    
+
 }
 div.navbar{
   display:flex;
-  flex-flow: column;  
+  flex-flow: column;
   height: 100%;
   //FIXME width-full goes larger than it should
   overflow: hidden;
@@ -84,36 +84,36 @@ div.navbar{
     padding-right: 40px;
     padding-left: 0px;
     margin-right: auto;
-    margin-left: auto;  
+    margin-left: auto;
     margin-top: var(--mdc-theme-top-bar);
     background-color: white;
     @media (prefers-color-scheme: dark) {
       background-color: var(--mdc-theme-primary-dark);
-      color: var(--mdc-theme-primary-dark-text);      
+      color: var(--mdc-theme-primary-dark-text);
     }
-  
-    @media (max-width: 430px) {
+
+    @media (max-width:440px) {
       padding: 0px;
       margin-top: 105px;
       min-width: 326px;
-      width: var(--mdc-theme-width-sm);      
+      width: var(--mdc-theme-width-sm);
     }
 
     @media (max-width: 1024px) {
       padding: 0px;
-      width: var(--mdc-theme-width-sm);      
+      width: var(--mdc-theme-width-sm);
     }
 
     @media (min-width:1024px) and (max-width:1440px) {
       max-width: 940px;
-      width: var(--mdc-theme-width-md);      
+      width: var(--mdc-theme-width-md);
       margin-right: calc((100% - 980px) / 2.5);
     }
 
 
     @media (min-width:1441px) {
-      max-width: var(--mdc-theme-max-width-lg);      
-      width: var(--mdc-theme-width-lg);      
+      max-width: var(--mdc-theme-max-width-lg);
+      width: var(--mdc-theme-width-lg);
     }
 
     @media (min-width:1600px) {
@@ -123,9 +123,9 @@ div.navbar{
     @media (min-width:1850px) {
       margin-right: auto;
     }
-    
+
   }
-  
+
   .cart-users-count{
     background: var(--mdc-theme-secondary);
     font-size: 10px;
@@ -136,21 +136,21 @@ div.navbar{
     line-height: 8px;
     position: absolute;
     top: 10px;
-    transform: translateX(-19px);    
+    transform: translateX(-19px);
   }
-  .cart-items-count{    
+  .cart-items-count{
     color: black;
-    font-weight: 600;    
+    font-weight: 600;
     &.label{
       display: inline-block;
       transform:translateY(-15px) translateX(-1px)
-    }             
+    }
   }
 
   .mdc-bottom-app-bar{
     z-index: 2;
     bottom: 0!important;
-    top:inherit!important;    
+    top:inherit!important;
   }
 
 
@@ -159,11 +159,11 @@ div.navbar{
     color: var(--mdc-theme-appbar-text,var(--mdc-theme-primary-text));
     background-color: var(--mdc-theme-appbar,var(--mdc-theme-primary));
     opacity: .95;
-    margin: 0;    
+    margin: 0;
 
     @media (prefers-color-scheme: dark) {
       background-color: var(--mdc-theme-primary-dark);
-      color: var(--mdc-theme-primary-dark-text);      
+      color: var(--mdc-theme-primary-dark-text);
     }
 
 
@@ -173,14 +173,14 @@ div.navbar{
 
     .mdc-top-app-bar__row{
       max-width: 1600px;
-      margin: auto;    
-  
+      margin: auto;
+
       display: flex;
       justify-content: center;
-      @media (max-width: 430px) {
+      @media (max-width:440px) {
         display: flex!important;
       }
-    }    
+    }
     .mdc-top-app-bar-left{
       display: flex;
       align-items: center;
@@ -194,9 +194,9 @@ div.navbar{
       padding-left: 10px;
       font-weight: 400;
       font-size: 1.1rem;
-      @media (max-width: 430px) {
+      @media (max-width:440px) {
         font-weight: 200;
-      }    
+      }
     }
 
     img.icon{
@@ -206,13 +206,13 @@ div.navbar{
       margin-top: 4px;
       transform: translateX(6px) translateY(-1px);
       &.icon-hub{
-        -display: none;        
+        -display: none;
         margin-right: 10px;
       }
       &.icon-hub.icon-show {
         display: block!important;
       }
-      @media (max-width: 430px) {
+      @media (max-width:440px) {
         display: none;
       }
 
@@ -227,15 +227,15 @@ div.navbar{
       }
 
     }
-        
+
     .kng-chip.active{
-      font-weight: 600;  
-      -border: 1px solid #ddd;    
+      font-weight: 600;
+      -border: 1px solid #ddd;
     }
 
     /** top-right navigation */
     .actions {
-      min-width: 180px;      
+      min-width: 180px;
       z-index: 0;
     }
 
@@ -254,7 +254,7 @@ div.navbar{
       }
 
     }
-    
+
     .title{
       font-size: 1.2rem;
       letter-spacing: -0.8px;
@@ -268,17 +268,17 @@ div.navbar{
       >.end{
         position: absolute;
         right: 5px;
-        -scale: .8;        
+        -scale: .8;
         font-weight: 600;
       }
-    }    
+    }
   }
 
 
 }
 
 .install-ios {
-  text-align: center;  
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
   color: white;
@@ -295,7 +295,7 @@ div.navbar{
   &.overlay-open{
     .mdc-snackbar__surface {
       transform: scale(1);
-    }  
+    }
   }
   .mdc-snackbar__surface {
     transform: scale(0);

@@ -12,10 +12,19 @@ form{
   width: calc(100% - 20px);
   padding: 8px;
   border: 2px solid #aaa;
-  border-radius: 14px;    
+  border-radius: 14px;
   input{
     font-size: 18px;
   }
+
+  &.working{
+    pointer-events: none;
+    opacity: .3;
+    background: #ddd;
+    color: #aaa;
+
+  }
+
 
   button.save{
     width: fit-content;
@@ -24,58 +33,58 @@ form{
     margin-right: 5px;
     position: absolute;
     top: 5px;
-    right: 5px;    
+    right: 5px;
   }
 
   //
-  // STRIPE 
+  // STRIPE
   .stripe-error {
     color: red;
     padding: 20px 10px;
-    font-weight: 600;    
+    font-weight: 600;
   }
 
   .stripe-component {
     background-color: #fff;
     padding: 6px 10px;
   }
-  
+
   .stripe-component * {
     font-size: 16px;
     font-weight: 500;
   }
-  
-  
+
+
   .stripe-component .field {
     position: relative;
     width: 100%;
     height: 50px;
     margin: 0 1px;
   }
-  
+
   .stripe-component .field.half-width {
     width: 50%;
   }
-  
+
   .stripe-component .field.quarter-width {
     width: calc(25% - 10px);
   }
-  
 
-  
+
+
   .stripe-component .input.StripeElement {
     opacity: 0;
     transition: opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     will-change: opacity;
   }
-  
+
   .stripe-component .input.focused,
   .stripe-component .input:not(.empty) {
     opacity: 1;
   }
-  
 
-  
+
+
   .stripe-component::placeholder{
     color: #333!important;
   }
@@ -83,40 +92,40 @@ form{
   .stripe-component .input:not(.empty)::-webkit-input-placeholder {
     color: #333!important;
   }
-  
+
   .stripe-component .input.focused::-moz-placeholder,
   .stripe-component .input:not(.empty)::-moz-placeholder {
     color: #333!important;
   }
-  
+
   .stripe-component .input.focused:-ms-input-placeholder,
   .stripe-component .input:not(.empty):-ms-input-placeholder {
     color: #333!important;
   }
-  
+
   .stripe-component .input.focused + label,
   .stripe-component .input:not(.empty) + label {
     color: #aab7c4;
     transform: scale(0.85) translateY(-25px);
     cursor: default;
   }
-  
+
   .stripe-component .input.focused + label {
     color: #24b47e;
   }
-  
+
   .stripe-component .input.invalid + label {
     color: #ffa27b;
   }
-  
+
   .stripe-component .input.focused + label + .baseline {
     background-color: #24b47e;
   }
-  
+
   .stripe-component .input.focused.invalid + label + .baseline {
     background-color: #e25950;
   }
-  
+
   .stripe-component input, .stripe-component button {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -124,18 +133,18 @@ form{
     outline: none;
     border-style: none;
   }
-  
+
   .stripe-component input:-webkit-autofill {
     -webkit-text-fill-color: #e39f48;
     transition: background-color 100000000s;
   }
-  
+
   .stripe-component .StripeElement--webkit-autofill {
     background: transparent !important;
   }
-  
 
-  
+
+
   .stripe-component button {
     display: block;
     width: calc(100% - 30px);
@@ -154,59 +163,114 @@ form{
     cursor: default;
   }
 
-  
+
   .stripe-component input:active {
     background-color: #159570;
   }
-  
+
   .stripe-component .error svg {
     margin-top: 0 !important;
   }
-  
+
   .stripe-component .error svg .base {
     fill: #e25950;
   }
-  
+
   .stripe-component .error svg .glyph {
     fill: #fff;
   }
-  
+
   .stripe-component .error .message {
     color: #e25950;
   }
-  
+
   .stripe-component .success .icon .border {
     stroke: #abe9d2;
   }
-  
+
   .stripe-component .success .icon .checkmark {
     stroke: #24b47e;
   }
-  
+
   .stripe-component .success .title {
     color: #32325d;
     font-size: 16px !important;
   }
-  
+
   .stripe-component .success .message {
     color: #8898aa;
     font-size: 13px !important;
   }
-  
+
   .stripe-component .success .reset path {
     fill: #24b47e;
-  }  
+  }
+}
+
+
+
+ul.payment{
+  list-style: none;
+  padding: 0;
+  cursor: pointer;
+  li{
+    min-height: 50px;
+    position: relative;
+    padding: 10px 15px;
+    background: #efefef;
+    border-radius: 14px;
+    margin: 10px 0;
+    padding-left:90px;
+    text-align: left;
+    .image{
+      width: 59px;
+      overflow: hidden;
+      position: absolute;
+      top: 18px;
+      left: 15px;
+      img{
+        object-fit: cover;
+        width: 100%;
+      }
+    }
+    label{
+      position: absolute;
+      right: 20px;
+      bottom: 9px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .name::first-letter{
+      text-transform: capitalize;
+    }
+
+    .name{
+      font-weight: bold;
+    }
+    button{
+      border: 0;
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      padding: 5px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: red;
+      background-color: white;
+    }
+  }
 }
 
 :host ::ng-deep{
   .InputElement::-webkit-input-placeholder {
     color: #444;
   }
-  
+
   .InputElement::-moz-placeholder {
     color: #444;
   }
   .InputElement::placeholder {
     color: #444;
-  }  
+  }
 }

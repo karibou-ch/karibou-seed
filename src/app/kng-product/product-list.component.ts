@@ -125,7 +125,7 @@ export class ProductListComponent implements OnInit {
     this.scrollDirection = 0;
     this.contracts = [];
     this.subcriptionParams = {
-      activeForm:false,
+      activeForm:true,
       dayOfWeek:0,
       frequency:'week'
     }
@@ -136,7 +136,7 @@ export class ProductListComponent implements OnInit {
     if(!this.dialog || !this.dialog.nativeElement){
       return 0;
     }
-    return this.dialog.nativeElement.children[1].clientWidth    
+    return this.dialog.nativeElement.children[1].clientWidth
   }
 
   get store(){
@@ -155,7 +155,7 @@ export class ProductListComponent implements OnInit {
     return this.$i18n.label();
   }
   get label_souscription(){
-    return this.subcriptionParams.activeForm? 
+    return this.subcriptionParams.activeForm?
            this.$i18n[this.locale].subscription_status_on:this.$i18n[this.locale].subscription_status_off
   }
 
@@ -168,7 +168,7 @@ export class ProductListComponent implements OnInit {
     }
     const article = this.config.shared[type].article[this.locale];
     return article;
-  }  
+  }
 
   get isForSubscriptionList(){
     return this.$route.snapshot.data.subscription ;
@@ -190,7 +190,7 @@ export class ProductListComponent implements OnInit {
     }
     if(contractId) {
       params.id=contractId;
-    }    
+    }
     return params;
   }
 
@@ -198,10 +198,10 @@ export class ProductListComponent implements OnInit {
     if(!this.isForSubscriptionList || !this.subcriptionParams.activeForm) {
       return false;
     }
-    return this.subcriptionParams.frequency;
+    return this.subcriptionParams.frequency as string;
   }
 
-  set activeSubscription(value) {
+  set activeSubscription(value:boolean|string) {
     this.subcriptionParams.activeForm = !this.subcriptionParams.activeForm;
     this.$cart.subscriptionSetParams(this.subcriptionParams);
   }
@@ -220,7 +220,7 @@ export class ProductListComponent implements OnInit {
     const ctx:CartItemsContext = {
       forSubscription:true,
       hub:this.store
-    }    
+    }
     return this.$cart.subTotal(ctx).toFixed(2)
   }
 
@@ -228,7 +228,7 @@ export class ProductListComponent implements OnInit {
     const ctx:CartItemsContext = {
       forSubscription:false,
       hub:this.store
-    }    
+    }
     return this.$cart.subTotal(ctx).toFixed(2)
   }
 
@@ -257,9 +257,10 @@ export class ProductListComponent implements OnInit {
       //
       // FIXME UGLY STORAGE OF SUBS_PLAN (FOR SHARING WITH CART)
       window['subsplan'] = 'customer';
+      this.$cart.subscriptionSetParams(this.subcriptionParams);
       this.productsByAttribute('subscription');
-    } 
-    
+    }
+
     else if(this.isForSubscriptionBusiness) {
       this.category.current = this.category.categories[0];
       this.category.current.name =this.config.shared.business.t[this.locale];
@@ -267,12 +268,12 @@ export class ProductListComponent implements OnInit {
       document.title = this.category.current.name;
       this.productsByAttribute('business');
     }
-  
+
     //
     // list product available from category
     else if(category){
       this.productsByCategory(category);
-    } 
+    }
     //
     // list product available from one shop
     else if(shopname){
@@ -283,9 +284,9 @@ export class ProductListComponent implements OnInit {
       });
 
       this.productsByShop(shopname);
-    } 
+    }
     //
-  
+
     //
     // publish metrics
     const metric ={
@@ -321,7 +322,7 @@ export class ProductListComponent implements OnInit {
     console.log('--- ngAfterViewChecked')
     setTimeout(()=>{
       this.dialog.nativeElement.scrollTop = ProductListComponent.SCROLL_CACHE;
-    },40);    
+    },40);
   }
 
   clean() {
@@ -407,7 +408,7 @@ export class ProductListComponent implements OnInit {
         }
         this.childMap[product.belong.name]++;
       });
-      
+
       this.cdr.markForCheck();
     });
   }
@@ -427,7 +428,7 @@ export class ProductListComponent implements OnInit {
       if (!products.length) {
         return;
       }
-      
+
       //
       // makes categories
       const categories = this.products.map(product => product.categories)
@@ -438,7 +439,7 @@ export class ProductListComponent implements OnInit {
       // set the default category of the page
       this.category.current.child = this.category.categories[0].child;
       this.category.current.slug = this.category.categories[0].slug;
-  
+
       this.products.forEach(product => {
         if (!this.childMap[product.belong.name]) {
           this.childMap[product.belong.name] = 0;
@@ -462,7 +463,7 @@ export class ProductListComponent implements OnInit {
     this.category.slug = category;
     this.category.current = this.category.categories.find(cat => cat.slug == category);
     this.category.categories = [this.category.current];
-    this.bgStyle = 'url(' + this.category.current.cover + ')';  
+    this.bgStyle = 'url(' + this.category.current.cover + ')';
     document.title = this.category.current.name;
 
     //
@@ -520,7 +521,7 @@ export class ProductListComponent implements OnInit {
   onAssistantData(skus: number[]) {
     this.jamesTitle = this.$i18n.label().james_selection_pinned;
     this.selections = this.cache.products.filter(product => skus.indexOf(product.sku) > -1);
-    this.cdr.markForCheck();  
+    this.cdr.markForCheck();
     this.dialog.nativeElement.scrollTop = 0;
   }
 
@@ -543,7 +544,7 @@ export class ProductListComponent implements OnInit {
     }
     this.clean();
     // if(this.$navigation.hasHistory){
-    //   return this.$navigation.back();      
+    //   return this.$navigation.back();
     // }
     return this.$router.navigate(['..'], { relativeTo: this.$route });
 
@@ -560,9 +561,9 @@ export class ProductListComponent implements OnInit {
     this.scrollToCategory = name;
     this.filterChild = name;
     this.scrollDirection = 0;
-    this.showSubCategory = false;    
+    this.showSubCategory = false;
     $event.stopPropagation();
-    $event.preventDefault();    
+    $event.preventDefault();
   }
 
   //

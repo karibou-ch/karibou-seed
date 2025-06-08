@@ -186,6 +186,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.store = this.$navigation.store;
 
           Object.assign(this.config, emit.config);
+          if(!this.config.shared.hub){
+            return;
+          }
           // HUB title
           this.hubTitle = this.config.shared.hub.siteName[this.locale];
           this.hubPhone = this.config.shared.hub.address.phone;

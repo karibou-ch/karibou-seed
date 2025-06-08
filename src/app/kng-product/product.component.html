@@ -29,9 +29,9 @@
           <div class="product-available">
             non disponible
           </div>
+          <!-- Lorsque le produit n'est pas disponible, on affiche l'heure limite de commande -->
           <div class="product-timelimit">
-            <div class="material-symbols-outlined size-medium">schedule</div>
-            <span>{{hoursAndMinutesAfterOrder}}</span>
+            <span> {{label.after_order}} {{hoursAndMinutesAfterOrder}}</span>
           </div>
 
 
@@ -40,10 +40,13 @@
             <div>abo en cours</div>
           </div>
 
+
+          <!-- Lorsque le produit est limité, on affiche le temps restant pour la commande -->
           <div class="product-timelimited">
-            <div class="material-symbols-outlined size-medium">schedule</div>
-            <span>{{hoursAndMinutesLeftBeforeOrder}}</span>
+            <span>{{label.before_order}} {{hoursAndMinutesLeftBeforeOrder}}</span>&nbsp;
+            <div class="label">{{glabel.action_day_limit}}</div>
           </div>
+
 
 
           <button class="action-add right " (click)="addToCart($event,product)">

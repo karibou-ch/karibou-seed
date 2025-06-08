@@ -1,23 +1,7 @@
-
 <!-- ACCEUIL -->
 <div class="customer" *ngIf="!boxed">
-  <div class="kng-boxed  wallet " [hidden]="!user.isAuthenticated()" [class.boxed]="boxed">
-    <div class="label">{{llabel.title_wallet}} </div>
-    <div class="cash">
-      {{balance}} CHF
-      <div class="digital" hidden>
-        <span><img height="22" class="xch" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJhIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48ZGVmcz48L2RlZnM+PGNpcmNsZSBjbGFzcz0iYiIgc3R5bGU9ImZpbGw6I2ZmZjsiIGN4PSIyNTAiIGN5PSIyNTAiIHI9IjI1MCIvPjxwb2x5Z29uIGNsYXNzPSJjIiBzdHlsZT0iZmlsbDojY2UwZTJkOyIgcG9pbnRzPSIzMDQuMzk5OTkgMTA5LjcgMzA0LjM5OTk5IDEwOS43IDI4NS41IDc5LjMgMTQ3IDMwMy43MDAwMSAxMTIuMyAzMDMuNzAwMDEgMTY4Ljg5OTk5IDIxMiAxNzAuMTAwMDEgMjEzLjggMTcwLjEwMDAxIDIxMy44IDE3OS4zIDIyOC42MDAwMSAxOTguMTAwMDEgMTk4LjIgMTc4LjEwMDAxIDE2NiAxNzggMTY2IDE2OC44IDE1MS4yIDE1MCAxODEuNjAwMDEgMTUwIDE4MS42MDAwMSA1NC45IDMzNS43MDAwMSA3Ni4zIDMzNS43MDAwMSA5Mi42IDMzNS43MDAwMSAxNjQuODk5OTkgMzM1LjcwMDAxIDE2NC44OTk5OSAzMzUuNzAwMDEgMTY0Ljg5OTk5IDMzNS43MDAwMSAyODUuNjAwMDEgMTQwLjEwMDAxIDM4Ny4zOTk5OSAzMDMuNzAwMDEgMjYzLjc5OTk5IDMwMy43MDAwMSAyMzEuMTAwMDEgMjUxLjIgMjEyLjMgMjgxLjYwMDAxIDI0NiAzMzUuNzAwMDEgMjQ2IDMzNS43MDAwMSA0MDcuMzk5OTkgMzM1LjcwMDAxIDQwOC44OTk5OSAzMzUuNzAwMDEgNDQ1LjEwMDAxIDMzNS43MDAwMSAzMDQuMzk5OTkgMTA5LjciLz48L3N2Zz4=">354.0</span>
-        <span><img height="22" class="wbtc" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNC4yLjMsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCINCgkgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTAwIDEwMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggc3R5bGU9ImZpbGw6I0Y3OTMxQTsiIGQ9Ik0xMDAsNTBjMCwyNy42LTIyLjQsNTAtNTAsNTBTMCw3Ny42LDAsNTBDMCwyMi40LDIyLjQsMCw1MCwwQzc3LjYsMCwxMDAsMjIuNCwxMDAsNTB6Ii8+DQo8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTcyLDQyLjljMS02LjctNC4xLTEwLjItMTEtMTIuNmwyLjItOWwtNS41LTEuNGwtMi4yLDguOGMtMS40LTAuNC0yLjktMC43LTQuNC0xbDIuMi04LjhsLTUuNS0xLjRsLTIuMiw5DQoJYy0xLjItMC4zLTIuNC0wLjUtMy41LTAuOGwwLDBsLTcuNi0xLjlsLTEuNSw1LjljMCwwLDQuMSwwLjksNCwxYzEuNiwwLjIsMi43LDEuNiwyLjYsMy4ybC02LjIsMjQuN2MtMC4zLDEuMS0xLjUsMS42LTIuNSwxLjNsMCwwDQoJYzAuMSwwLjEtNC0xLTQtMUwyNC4zLDY1bDcuMSwxLjhjMS4zLDAuMywyLjYsMC43LDMuOSwxbC0yLjMsOS4xbDUuNSwxLjRsMi4yLTljMS41LDAuNCwzLDAuOCw0LjQsMS4xbC0yLjIsOWw1LjUsMS40bDIuMy05LjENCgljOS40LDEuOCwxNi40LDEuMSwxOS40LTcuNGMyLjQtNi44LTAuMS0xMC43LTUtMTMuM0M2OC42LDUwLjEsNzEuMyw0Ny43LDcyLDQyLjlMNzIsNDIuOXogTTU5LjUsNjAuNWMtMS43LDYuOC0xMy4yLDMuMS0xNi45LDIuMg0KCWwzLTEyLjFDNDkuNCw1MS41LDYxLjMsNTMuMyw1OS41LDYwLjVMNTkuNSw2MC41eiBNNjEuMiw0Mi44Yy0xLjUsNi4yLTExLjEsMy0xNC4yLDIuM2wyLjctMTFDNTIuOCwzNC45LDYyLjgsMzYuMyw2MS4yLDQyLjgNCglMNjEuMiw0Mi44eiIvPg0KPC9zdmc+DQo=">0.0</span>
-        <span><img height="22" class="weth" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJ1dWlkLTE2ZWExZDgyLWExMGQtNDJiZC05ZjE5LWM5NTA3YTFmMDUyZiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI0OS45OTk5OTk5OTk5OTkwOTEiIHI9IjUwLjAwMDAwMDAwMDAwMDQ1NSIgc3R5bGU9ImZpbGw6IzYyN2VlYTsgc3Ryb2tlLXdpZHRoOjBweDsiLz48cG9seWdvbiBwb2ludHM9IjUwLjAwMDAwMTQyNTY5NzUxOSAxMi42MjYxOTI2NjA4MjQ5MjcgNDkuNDc2NzY3NTUyNjY5MTE2IDE0LjM0NTM4Nzc2Mjc4NDQxMiA0OS40NzY3Njc1NTI2NjkxMTYgNjMuNzUzNTYyMjQxMzc0MzExIDUwLjAwMDAwMTQyNTY5NzUxOSA2NC4yNzY3OTMyNjMwMDQ5NDcgNzIuOTQ3NTE2ODUwODM0MjkgNTAuNjcyNzI5NjcyNjYzMDgxIDUwLjAwMDAwMTQyNTY5NzUxOSAxMi42MjYxOTI2NjA4MjQ5MjciIHN0eWxlPSJmaWxsOiNjMGNiZjY7IHN0cm9rZS13aWR0aDowcHg7Ii8+PHBvbHlnb24gcG9pbnRzPSI1MC4wMDAwMDE0MjU2OTc1MTkgMTIuNjI2MTkyNjYwODI0OTI3IDI3LjA1MjQ4MzE0OTE2NDggNTAuNjcyNzI5NjcyNjYzMDgxIDUwLjAwMDAwMTQyNTY5NzUxOSA2NC4yNzY3OTMyNjMwMDQ5NDcgNTAuMDAwMDAxNDI1Njk3NTE5IDQwLjI4MjgxMDA5MTgxNDA5OSA1MC4wMDAwMDE0MjU2OTc1MTkgMTIuNjI2MTkyNjYwODI0OTI3IiBzdHlsZT0iZmlsbDojZmZmOyBzdHJva2Utd2lkdGg6MHB4OyIvPjxwb2x5Z29uIHBvaW50cz0iNTAuMDAwMDAxNDI1Njk3NTE5IDY4LjYxMjE1NzE5NTQ2NjM1MiA0OS43MDEwMDk4MjY0MjU0MzQgNjguOTExMTQ4Nzk0NzM3NTI4IDQ5LjcwMTAwOTgyNjQyNTQzNCA4Ni41NTE1ODQ3MTgyNjg3MTQgNTAuMDAwMDAxNDI1Njk3NTE5IDg3LjM3MzgwNzMzOTE3NDE2NCA3Mi45NDc1MTY4NTA4MzQyOSA1NS4wMDgwOTA3NTM3MjY3MTkgNTAuMDAwMDAxNDI1Njk3NTE5IDY4LjYxMjE1NzE5NTQ2NjM1MiIgc3R5bGU9ImZpbGw6I2MwY2JmNjsgc3Ryb2tlLXdpZHRoOjBweDsiLz48cG9seWdvbiBwb2ludHM9IjUwLjAwMDAwMTQyNTY5NzUxOSA4Ny4zNzM4MDczMzkxNzQxNjQgNTAuMDAwMDAxNDI1Njk3NTE5IDY4LjYxMjE1NzE5NTQ2NjM1MiAyNy4wNTI0ODMxNDkxNjQ4IDU1LjAwODA5MDc1MzcyNjcxOSA1MC4wMDAwMDE0MjU2OTc1MTkgODcuMzczODA3MzM5MTc0MTY0IiBzdHlsZT0iZmlsbDojZmZmOyBzdHJva2Utd2lkdGg6MHB4OyIvPjxwb2x5Z29uIHBvaW50cz0iNTAuMDAwMDAxNDI1Njk3NTE5IDY0LjI3Njc5MzI2MzAwNDk0NyA3Mi45NDc1MTY4NTA4MzQyOSA1MC42NzI3Mjk2NzI2NjMwODEgNTAuMDAwMDAxNDI1Njk3NTE5IDQwLjI4MjgxMDA5MTgxNDA5OSA1MC4wMDAwMDE0MjU2OTc1MTkgNjQuMjc2NzkzMjYzMDA0OTQ3IiBzdHlsZT0iZmlsbDojODE5N2VlOyBzdHJva2Utd2lkdGg6MHB4OyIvPjxwb2x5Z29uIHBvaW50cz0iMjcuMDUyNDgzMTQ5MTY0OCA1MC42NzI3Mjk2NzI2NjMwODEgNTAuMDAwMDAxNDI1Njk3NTE5IDY0LjI3Njc5MzI2MzAwNDk0NyA1MC4wMDAwMDE0MjU2OTc1MTkgNDAuMjgyODEwMDkxODE0MDk5IDI3LjA1MjQ4MzE0OTE2NDggNTAuNjcyNzI5NjcyNjYzMDgxIiBzdHlsZT0iZmlsbDojYzBjYmY2OyBzdHJva2Utd2lkdGg6MHB4OyIvPjwvc3ZnPg==">0.0</span>
-      </div>
-    </div>
-    <div class="gift">
-      <input type="text" [placeholder]="llabel.title_code" [(ngModel)]="applyCode">
-      <button (click)="onRedeem()" [disabled]="!applyCode"><span class="stars material-symbols-outlined">done</span></button>
-    </div>
-  </div>
 
-  <div class="kng-boxed  bill" [hidden]="!hasInvoiceTransfer || hasInvoice" [class.boxed]="boxed">
+  <div class="kng-boxed  bill with-border" [hidden]="!hasInvoiceTransfer || hasInvoice" [class.boxed]="boxed">
     <div class="label">{{i18n[locale].title_invoice_paid}}</div>
     <div class="content">
       <p>{{qrbillTransfer|| 'Aucune facture en attente'}}</p>
@@ -87,26 +71,61 @@
 </div>
 
 <!--- ORDER IS PAID -->
-<div class=" " [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState=='paid'">
-  <div class="label">{{label.home_feedback_title}} {{order.shipping.when|date:'d MMM'}}, {{order.getTotalPrice()|currency:'CHF'}}</div>
-  <div class="content">
-    <p [hidden]="boxed">
-      <span [innerHtml]="i18n[locale].title_issue_subtitle"></span>
-    </p>
-    <div class="bottom">
-      <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>
+<div class="kng-feedback-bar with-border" *ngIf="orderState=='paid'" (click)="toggleDetails()">
+    <div class="info">
+        {{label.home_feedback_title}} <br> <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b>
     </div>
-  </div>
+    <div class="details">
+        {{order.items.length}} articles<br>
+        {{order.getTotalPrice()|currency:'CHF'}}
+    </div>
+    <div class="action hide-sm">
+        <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>
+    </div>
+</div>
+
+<div class="kng-order-details" *ngIf="isExpandedOrder">
+  <ul>
+    <li *ngFor="let item of order.items" [class.strike]="item.fulfillment?.status=='failure'">
+      {{item.quantity}}x {{item.title}} ({{item.part}})
+      <span class="issue red" [hidden]="!item.fulfillment?.refunded">remboursé</span>
+    </li>
+  </ul>
+  <!--- ORDER COMPLEMENT -->
+  <ul *ngFor="let complement of childOrder[order.oid]">
+    <li class="bold">En complément</li>
+    <li *ngFor="let item of complement.items" [class.strike]="item.fulfillment?.status=='failure'">
+      {{item.quantity}}x {{item.title}} ({{item.part}})
+      <span class="issue red" [hidden]="!item.fulfillment?.refunded">remboursé</span>
+    </li>
+  </ul>
+  <ul class="actions">
+    <li [hidden]="!isPending(order)">
+      <a href="javascript:;" class="black smaller " (click)="onCancelOrder(order)">
+        <i class="material-symbols-outlined">cancel</i>{{i18n[locale].title_cancel_order}}
+      </a>
+    </li>
+    <li *ngFor="let complement of childOrder[order.oid]" [hidden]="!isPending(complement)">
+      <a href="javascript:;" class="black smaller " (click)="onCancelOrder(complement)">
+        <i class="material-symbols-outlined">cancel</i>Annuler le complément
+      </a>
+    </li>
+    <li [hidden]="isPending(order)">
+      <a href="javascript:;" class="black smaller " (click)="onAddAllToCart(order)">
+        <i class="material-symbols-outlined">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}
+      </a>
+    </li>
+  </ul>
 </div>
 
 <!-- FEEDBACK POPUP -->
 <ng-container *ngIf="askFeedback">
   <div class="blured" ></div>
-  <div class="container top">
-    <button (click)="onBack()" class="close">
+  <div class="kng-modal-overlay">
+    <button (click)="onBack()" class="kng-modal-close">
         <span class="size-xlarge  material-symbols-outlined">close</span>
     </button>
-    <div class="feedback-container" >
+    <div class="kng-modal-content feedback-container" >
 
 
       <h3>{{i18n[locale].title_issue_title}}</h3>
@@ -152,11 +171,11 @@
 <ng-container *ngIf="selectedOrderPopup">
 
   <div class="blured" ></div>
-  <div class="container top">
-    <button (click)="onBack()" class="close">
+  <div class="kng-modal-overlay">
+    <button (click)="onBack()" class="kng-modal-close">
         <span class="size-xlarge  material-symbols-outlined">close</span>
     </button>
-    <div class="feedback-container" >
+    <div class="kng-modal-content feedback-container" >
       <h2>{{order.shipping.when|date:'EEEE d MMM y':'':locale}}</h2>
 
       <!-- ORDER ITEMS -->
@@ -211,7 +230,7 @@
   <ul >
     <li class="add-to-cart">
       <a href="javascript:;" class="black smaller "
-      (click)="onAddAllToCart()" i18n>
+      (click)="onAddAllToCart(order)" i18n>
       <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>
     </li>
 

@@ -30,11 +30,6 @@
 				<div class="product-available">
 					non disponible
 				</div>
-				<div class="product-timelimit">
-					<div class="material-symbols-outlined size-medium">schedule</div>
-					<div>{{hoursAndMinutesAfterOrder}}</div>
-				</div>
-
 
 				<div class="product-in-subscription">
 					<div class="material-symbols-outlined size-medium">schedule</div>
@@ -57,9 +52,10 @@
 					<span [hidden]="!hasLabel(product,'grta')" class="text-right"> GRTA</span>
 				</div>
 
+        <!-- Lorsque le produit est limité, on affiche le temps restant pour la commande -->
         <div class="product-timelimited">
-					<div class="material-symbols-outlined size-medium">schedule</div>
-          <span>{{hoursAndMinutesLeftBeforeOrder}}</span>
+          <span>{{label.before_order}} {{hoursAndMinutesLeftBeforeOrder}}</span>
+          <div class="label">{{glabel.action_day_limit}}</div>
         </div>
 
 				<!-- quantité -->
@@ -79,8 +75,12 @@
 			<!-- TITLE -->
 			<div class="product-header">
 				<div class="product-card__vendor" *ngIf="displayVendor && product.vendor.photo">
-					<img [src]="product.vendor.photo?.owner"alt="160x160" class="photo-owner hide" />
-					<div>{{product.vendor.name}}</div>
+					<div class="vendor-name">{{product.vendor.name}}</div>
+          <!-- Lorsque le produit n'est plus disponible, on affiche l'heure limite de commande -->
+          <div class="product-timelimit">
+            <span class="">⏰ {{label.after_order_short}} {{hoursAndMinutesAfterOrder}}</span>
+          </div>
+
 				</div>
 
 				<div class="product-title">{{product.title}}</div>

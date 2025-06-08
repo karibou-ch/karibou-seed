@@ -287,7 +287,7 @@ button.CTA {
       width: 60%;
       margin: 20px auto;
       opacity: .8;
-      @media (max-width: 430px) {
+      @media (max-width:440px) {
         width: 97%;
       }
     }
@@ -321,7 +321,7 @@ button.CTA {
       margin-top: 0;
     }
 
-    @media (max-width: 430px) {
+    @media (max-width:440px) {
       padding-top: 0!important;
       padding-bottom: 0!important;
       overflow-y: auto;
@@ -350,7 +350,7 @@ button.CTA {
     outline: none;
     background-color: #ffffff4f;
     border-radius: 14px;
-    @media (max-width: 430px) {
+    @media (max-width:440px) {
       width: calc(100% - 20px);
 
     }

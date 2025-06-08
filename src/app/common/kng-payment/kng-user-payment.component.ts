@@ -118,13 +118,13 @@ export class KngPaymentComponent {
     });
 
     this.isLoading = false;
-    
+
   }
 
 
   get label() {
     return this.i18n[this.$i18n.locale];
-  }  
+  }
 
   get locale() {
     return this.$i18n.locale;
@@ -135,6 +135,14 @@ export class KngPaymentComponent {
     return this.minimal || !payments.length;
   }
 
+  get issuer(){
+    return KngPaymentComponent.issuer;
+
+  }
+
+  get userPayments(){
+    return this.user&&this.user.payments.filter(payment => payment.issuer!=='invoice')||[];
+  }
 
   //
   // entry point
@@ -143,7 +151,7 @@ export class KngPaymentComponent {
 
     //
     // check user state
-    if(!this.user||!this.user.isAuthenticated()){      
+    if(!this.user||!this.user.isAuthenticated()){
       return;
     }
 
@@ -164,7 +172,6 @@ export class KngPaymentComponent {
       this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
         this.user = user;
         this.paymentIntent = user.context.intent;
-        console.log('--- DB USER PAYMENTS intent',this.paymentIntent);
       });
     }
 
@@ -215,7 +222,7 @@ export class KngPaymentComponent {
   isInvalid(controlName: string): boolean {
     const control = this.stripe.get(controlName);
     return control ? control.invalid && (control.dirty || control.touched) : false;
-  }  
+  }
 
   onEmit(result: PaymentEvent) {
     this.isLoading = false;
@@ -277,7 +284,7 @@ export class KngPaymentComponent {
             }
           );
 
-        } 
+        }
         else if (result.error) {
           //
           // Error creating the token
@@ -292,6 +299,23 @@ export class KngPaymentComponent {
           });
         }
       });
+  }
+
+
+  onDelete(payment: UserCard) {
+    this.isLoading = true;
+    this.$user.deletePaymentMethod(payment.alias, this.user.id).subscribe(
+      user => {
+        //
+        // do not exit on delete payment
+        // this.onEmit(<PaymentEvent>({deleted: user.payments}));
+        this.isLoading = false;
+      },
+      result => {
+        this.displayCardError = result.error || result.message;
+        this.isLoading = false;
+      }
+    );
   }
 
 }

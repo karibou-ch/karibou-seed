@@ -35,6 +35,7 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
 export class KngHomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
   isLoading: boolean = false;
+  isMobile: boolean = false;
 
   shops: Shop[];
   pendingOrders: Order[];
@@ -140,6 +141,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     window.scroll(0, 0);
+    this.isMobile = this.$navigation.isMobileOrTablet();
     this.subscription.add(
       this.$route.params.subscribe(params => {
 
@@ -220,6 +222,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       // CART_PAYMENT   = 9,
       // CART_SHIPPING   =10,
       this.productsGroupByCategory(emit);
+      this.$cdr.detectChanges();
 
     }));
 
@@ -265,10 +268,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   get isLockedHUB() {
     return this.$navigation.isLocked();
-  }
-
-  get isMobile(){
-    return this.$navigation.isMobile();
   }
 
   get isJamesAvailable() {

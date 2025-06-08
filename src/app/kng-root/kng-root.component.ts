@@ -26,6 +26,7 @@ export class KngRootComponent implements OnInit {
       title_account_sign:'Identifiez-vous avec une session',
       title_account_mail:'Votre adresse mail',
       title_account_shipping:'Vos addresses de livraison',
+      title_account_subscriptions:'Vos abonnements',
       title_orders:'Vos commandes',
       title_invoices_open:'Vos factures',
       title_invoice_paid:'Facture payée, en attente du virement bancaire',
@@ -34,6 +35,7 @@ export class KngRootComponent implements OnInit {
       title_account_sign:'Sign in with a session',
       title_account_mail:'Your email address',
       title_account_shipping:'Your delivery addresses',
+      title_account_subscriptions:'Your subscriptions',
       title_orders:'Your orders',
       title_invoices_open:'Your invoices',
       title_invoice_paid:'Invoice paid, waiting for Bank transfer',
@@ -52,7 +54,7 @@ export class KngRootComponent implements OnInit {
     const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
     this.config = loader[0];
     this.user = loader[1];
-    this.orders = loader[4] || [];  
+    this.orders = loader[4] || [];
     this.currentShippingDay = new Date();
     this.selected = [];
     this.subscription = new Subscription();
@@ -79,7 +81,7 @@ export class KngRootComponent implements OnInit {
     return this.$navigation.isLocked();
   }
 
-  
+
   get store() {
     return this.$navigation.store;
   }
@@ -94,14 +96,14 @@ export class KngRootComponent implements OnInit {
     return (hub && hub.name) ? hub.tagLine : shared.tagLine;
   }
 
-  
+
   ngOnInit() {
     this.subscription.add(
       this.$route.params.subscribe(params => {
       if(!params.store) {
         return;
       }
-  
+
       this.$navigation.store = params['store'];
     }));
 
@@ -123,7 +125,7 @@ export class KngRootComponent implements OnInit {
       //document.body.scrollTop = KngRootComponent.SCROLL_CACHE;
     }, 100);
 
-  }  
+  }
   ngDestroy() {
     this.subscription.unsubscribe();
   }
@@ -143,11 +145,11 @@ export class KngRootComponent implements OnInit {
   //     return;
   //   }
   //   this.selected = [];
-  //   const selected = this.config.shared.mailchimp[this.store].map(media=>media.sku);    
+  //   const selected = this.config.shared.mailchimp[this.store].map(media=>media.sku);
   //   const products = await (this.$product.select({skus:selected}).toPromise());
   //   for(const product of products.slice(0,8)){
   //     this.selected.push(product);
-  //   }  
+  //   }
   //   return this.selected;
   // }
 
@@ -170,5 +172,5 @@ export class KngRootComponent implements OnInit {
   doOpenShop(shop) {
     KngRootComponent.SCROLL_CACHE = document.body.scrollTop;
   }
- 
+
 }

@@ -65,7 +65,7 @@ export class ProductGroupedListComponent implements OnInit {
   @Input() useGroupedCategory: boolean;
 
   //
-  // display more button 
+  // display more button
   @Input() showMore: boolean;
   @Input() showSection: boolean;
   @Input() contentIf: boolean;
@@ -98,13 +98,13 @@ export class ProductGroupedListComponent implements OnInit {
 
     //
     // FIXME HUGLY HACK for b2b2
-    // prepare groups of category if needed 
+    // prepare groups of category if needed
     this.categories.forEach(cat => {
       this.groupedCategory[cat.slug]=cat.group||'none';
     })
 
 
-    
+
 
     this.isChildCategory = this.categories[0].child;
   }
@@ -179,11 +179,11 @@ export class ProductGroupedListComponent implements OnInit {
     this.groupedCategoryKeys['fleurs'] = 9; // plaisir
     this.groupedCategoryKeys['fruits'] = 1; // plaisir
     this.groupedCategoryKeys['legumes'] = 2; // plaisir
-    this.groupedCategoryKeys['douceurs-chocolats'] = 3; // plaisir
+    this.groupedCategoryKeys['fromages-produits-frais'] = 3; // apero
+    this.groupedCategoryKeys['boulangerie-artisanale'] = 4; // apero
+    this.groupedCategoryKeys['douceurs-chocolats'] = 7; // plaisir
     this.groupedCategoryKeys['traiteur-maison'] = 5; // apero
     this.groupedCategoryKeys['charcuterie-pates'] = 6; // apero
-    this.groupedCategoryKeys['boulangerie-artisanale'] = 7; // apero
-    this.groupedCategoryKeys['fromages-produits-frais'] = 8; // apero
     this.groupedCategoryKeys['boissons'] = 10; // boisson
     this.groupedCategoryKeys['bieres-artisanales'] = 11; // boisson
     this.groupedCategoryKeys['vins-rouges'] = 12; // boisson
@@ -326,10 +326,10 @@ export class ProductGroupedListComponent implements OnInit {
       // if(!this.showSection && this.products.length<8) {
       //   product.categories.slug = product.categories.name = 'none';
       // }
-      // 
-      // grouped category is not available for Child 
+      //
+      // grouped category is not available for Child
 
-      const categoryOrGroupName = this.isChildCategory ? product.belong.name : product.categories.name; 
+      const categoryOrGroupName = this.isChildCategory ? product.belong.name : product.categories.name;
       if (!this.group[categoryOrGroupName]) {
         this.group[categoryOrGroupName] = [];
         inferedCategories.push({
@@ -367,7 +367,7 @@ export class ProductGroupedListComponent implements OnInit {
     this.categories = this.categories.filter(cat => cats.indexOf(cat.name) > -1).sort(this.sortByWeight);
 
 
-    // FIXME avoid this test 
+    // FIXME avoid this test
     if (!this.categories || !this.categories.length) {
       return;
     }
@@ -377,7 +377,7 @@ export class ProductGroupedListComponent implements OnInit {
     if(this.useGroupedCategory) {
       this.visibility[this.defaultVisibleCat] = true;
     }else {
-      this.visibility[this.categories[0].slug] = true;      
+      this.visibility[this.categories[0].slug] = true;
     }
   }
 
@@ -531,7 +531,7 @@ export class ProductGroupedListComponent implements OnInit {
     }
 
 
-    // FIXME make it better (<-5 && !exited) = event.exit 
+    // FIXME make it better (<-5 && !exited) = event.exit
     //this.direction$.next(5*(Math.round( this.scrollDirection / 5)));
     this.direction$.next(this.scrollDirection);
     this.updateCurrentCategory();

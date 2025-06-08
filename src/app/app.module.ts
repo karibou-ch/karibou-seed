@@ -91,13 +91,13 @@ export class GlobalErrorHandler implements ErrorHandler {
     //
     // Clear cache and Reload App is enough
     // For PWA, reload is not enough, activeUpdate is mandatory
-    if (!!chunkFailedMessage.test(error.message)) {      
-         
+    if (!!chunkFailedMessage.test(error.message)) {
+
       try{ caches.keys().then(keys => keys.forEach(c=>caches.delete(c))); } catch(err){}
-      
+
       return this.$update.checkForUpdate().then((available)=>{
-        this.$update.activateUpdate().then(() => document.location.reload(true));
-      });      
+        this.$update.activateUpdate().then(() => document.location.reload());
+      });
     }
 
     //
@@ -121,7 +121,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     });
 
     //
-    // 
+    //
     // this.$zone.run(() =>{
 
     // });
@@ -166,7 +166,7 @@ export class GlobalErrorHandler implements ErrorHandler {
       enableTracing: false,
       scrollPositionRestoration: 'disabled'
     }),
-    ServiceWorkerModule.register('ngsw-worker.js', { 
+    ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     })
   ],

@@ -15,7 +15,7 @@ div.user-container{
     margin-left: 0px;
     margin-right: 0;
     padding-left: 15px;
-    padding-right: 15px;    
+    padding-right: 15px;
   }
 
 
@@ -47,7 +47,7 @@ div.user-container{
       height: 80px;
       @media (max-width:431px) {
         width: 60px;
-        height: 60px;          
+        height: 60px;
       }
     }
   }
@@ -60,14 +60,18 @@ div.user-container{
     margin: 20px 0;
     justify-content: center;
     padding: 5px 0;
-    border-bottom: 1px solid #eee;    
+    border-bottom: 1px solid #eee;
     font-size: 19px;
     cursor: pointer;
     .elem{
       padding: 8px 10px;
       position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       @media (max-width:431px) {
-        font-size: 16px;        
+        font-size: 13px;
+        max-width: 45px;
       }
       &.active{
         font-weight: 700;
@@ -81,7 +85,7 @@ div.user-container{
         width: 60%;
         height: 1px;
         background-color: #22549f;
-        z-index: 1;        
+        z-index: 1;
       }
     }
 

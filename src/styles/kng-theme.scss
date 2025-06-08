@@ -5,35 +5,35 @@
   display: none!important;
 }
 
-// 
+//
 // Screen
 body{
-  font-family: Roboto, Helvetica, Arial, sans-serif !important; 
+  font-family: Roboto, Helvetica, Arial, sans-serif !important;
   margin: 0;
   margin-bottom: 0px!important;
   @media (prefers-color-scheme: dark) {
-    background-color: var(--mdc-theme-primary-dark);      
+    background-color: var(--mdc-theme-primary-dark);
   }
 }
 
 // this is google places autocomplete
 .pac-container{
   margin-top: -45px !important;
-  margin-left: -18px !important;  
+  margin-left: -18px !important;
   box-shadow: 0 14px 14px rgba(0,0,0,.3) !important;
   width: 400px!important;
-  @media (max-width: 430px){
-    width: calc(100% - 38px)!important;    
+  @media (max-width:440px){
+    width: calc(100% - 38px)!important;
   }
 }
 .pac-logo:after{
   opacity: .7;
   zoom: .7;
-}  
+}
 
 
 .waiting {
-  animation: rotate 2s linear infinite;  
+  animation: rotate 2s linear infinite;
 }
 
 @keyframes rotate{
@@ -64,18 +64,18 @@ body{
 .width-75 { flex:0 1 calc(75% - 5px)!important;width:75%!important;}
 .width-100{ flex:0 1 calc(100% - 5px)!important;width: 100%!important;}
 
-.align-center{     
+.align-center{
   flex: 0 1 auto;
   margin: auto;
 }
 
-.align-right{     
+.align-right{
   flex: 0 1 auto;
   margin-left: auto;
   margin-right:0;
 }
 
-.float-right{     
+.float-right{
   float: right;
 }
 
@@ -96,7 +96,7 @@ body{
     margin: 17px 0;
     padding: 10px;
     color: #333;
-    border-radius: 8px;    
+    border-radius: 8px;
   }
   ol,ul{
     padding:15px;
@@ -130,7 +130,7 @@ body{
   }
 
 }
-.ribbon.left-top, 
+.ribbon.left-top,
 .ribbon.left-bottom {
   right: auto;
   left: 0;
@@ -142,10 +142,10 @@ body{
   display: block;
   width: 15.38em;
   height: 1.54em;
-  
+
   top: 2.23em;
   right: -4.23em;
-  
+
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -210,13 +210,13 @@ body{
 .dashed{
   border-color: #dddddd;
   border-style: dashed;
-  margin: 10px 0;      
+  margin: 10px 0;
 }
 
 .breaker {
   &.ridge{
     border-bottom: 1px ridge #aaa;
-    border-style: ridge;    
+    border-style: ridge;
   }
   &:before{
     content: "• • •";
@@ -226,7 +226,7 @@ body{
     color: #999;
     letter-spacing: 4px;
     position: relative;
-    top: -16px;    
+    top: -16px;
     font-size: 26px;
   }
   height: 1px;
@@ -241,10 +241,10 @@ body{
   &.big{
     margin: 1rem auto;
     &:before{
-      top: -22px;    
+      top: -22px;
       font-size: 40px;
     }
-  
+
   }
 }
 
@@ -318,37 +318,37 @@ body{
 
 .theme-bisque{
   background: bisque!important;
-  color: black!important;  
+  color: black!important;
 }
 
 .theme-crimson{
   background: crimson!important;
-  color: white!important;  
+  color: white!important;
 }
 
 .theme-gray{
   background: slategrey!important;
-  color: white!important;  
+  color: white!important;
 }
 
 .theme-lime{
   background: lawngreen!important;
-  color: black!important;  
+  color: black!important;
 }
 
 .theme-red{
   background: red!important;
-  color: black!important;  
+  color: black!important;
 }
 
 .theme-violet{
   background: violet!important;
-  color: black!important;  
+  color: black!important;
 }
 
 .theme-violetblue{
   background: blueviolet!important;
-  color: white!important;  
+  color: white!important;
 }
 //
 // text
@@ -365,7 +365,7 @@ body{
   -moz-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: rgba(255,255,255,0.5) 0px 3px 3px;  
+  text-shadow: rgba(255,255,255,0.5) 0px 3px 3px;
 }
 
 .link{
@@ -373,7 +373,7 @@ body{
   color: #007aff;
   font-weight: 400;
   text-decoration: none;
-  border-bottom: 1px dotted #007aff;  
+  border-bottom: 1px dotted #007aff;
   text-decoration:none;
   &.gray{
     border-color:#ddd !important;
@@ -381,8 +381,8 @@ body{
 }
 
 .help-block{
-  color: var(--mdc-theme-text-secondary-on-background);    
-  
+  color: var(--mdc-theme-text-secondary-on-background);
+
   a{
     color: #55a;
   }
@@ -423,13 +423,13 @@ body{
   margin-right: 3px;
   background-size:contain;
   background-position: 50%;
-  background-repeat: no-repeat;  
+  background-repeat: no-repeat;
   transform:translateY(5px);
 }
 .icon-large{
   width:32px;
   height: 32px;
-  font-size: 150%;  
+  font-size: 150%;
 }
 .icon-alcool, .fa-alcool{
   background-image: url(/assets/img/icon-alcool.svg);
@@ -550,7 +550,7 @@ body{
   text-shadow: 1px 1px 0 white;
   width: calc(100% - 20px);
 
-  border-bottom: 1px solid pink;    
+  border-bottom: 1px solid pink;
 
   font-size: 14px;
   padding: 9px;
@@ -575,7 +575,7 @@ body{
   margin-top: 0px;
   margin-bottom: 10px;
   margin-left: 0px;
-}      
+}
 
 
 //
@@ -583,21 +583,21 @@ body{
 progress.kng-progress[value] {
 	/* Get rid of the default appearance */
 	appearance: none;
-	
+
 	/* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
 	border: none;
-	
+
 	/* Add dimensions */
-	width: calc(100% - 10px); 
+	width: calc(100% - 10px);
   height: 6px;
-	
+
   background-color: whitesmoke;
   border-radius: 0px;
   -box-shadow: 0 1px 3px rgba(0,0,0,.2) inset;
 
-	
+
 	position: relative;
-	margin: 0px 5px 10px; 
+	margin: 0px 5px 10px;
 }
 
 
@@ -609,9 +609,9 @@ progress.kng-progress[value]::-webkit-progress-bar {
 
 progress.kng-progress[value]::-webkit-progress-value {
 	position: relative;
-	
+
 	background-size: 35px 20px, 100% 100%, 100% 100%;
-	border-radius:3px;	
+	border-radius:3px;
 }
 
 
@@ -619,10 +619,10 @@ progress.kng-progress[value]::-webkit-progress-value:after {
 	/* Only webkit/blink browsers understand pseudo elements on pseudo classes. A rare phenomenon! */
 	content: '';
 	position: absolute;
-	
+
 	width:5px; height:1px;
 	top:7px; right:7px;
-	
+
 	background-color: white;
 	border-radius: 100%;
 }
@@ -683,14 +683,14 @@ progress.kng-progress::-moz-progress-bar{
 }
 
 
-.wobble-vertical { 
-  animation: wobble-vertical 5s infinite; 
+.wobble-vertical {
+  animation: wobble-vertical 5s infinite;
 }
 
-.wobble { 
-  animation: wobble 7s infinite; 
+.wobble {
+  animation: wobble 7s infinite;
 }
 .rotate {
   animation: roll 3s infinite;
-  transform: rotate(30deg); 
+  transform: rotate(30deg);
 }

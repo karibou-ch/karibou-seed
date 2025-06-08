@@ -7,7 +7,7 @@
   &.minimal,
   &.fit-content{
     margin: 10px 0;
-    width: 100% !important;    
+    width: 100% !important;
     max-width: 360px;
     .calendar-container{
       font-size: 15px;
@@ -34,9 +34,9 @@
 
   @media (min-width:1024px) {
     width: 940px;
-    margin-left: 0px;        
+    margin-left: 0px;
   }
-  @media (max-width:430px) {
+  @media (max-width:440px) {
     padding: 0 10px!important;
     .calendar,.switch-hub{
       width: calc(100% - 20px)!important;
@@ -56,7 +56,7 @@
     font-size: 1.4675rem;
     margin-bottom: 15px;
     margin-top: 25px;
-    margin-left: 0;    
+    margin-left: 0;
   }
 
   .noshipping{
@@ -69,19 +69,19 @@
     border-radius: 15px;
     background-color: var(--mdc-theme-appbar-light) !important;
     padding: 10px;
-    flex: 1;    
+    flex: 1;
     margin: auto 5px;
 
     &::-webkit-scrollbar {
       display: none;
     }
-    
+
     .list{
       display: flex;
       flex-wrap: nowrap;
       gap:3px;
       width: 100%;
-  
+
       .element{
         margin: 0px;
         margin-left: 0;
@@ -96,7 +96,7 @@
         border-radius: 15px;
         font-size: .80em;
         display: flex;
-        flex-flow: column;    
+        flex-flow: column;
         text-align: center;
         cursor: pointer;
         &.disabled {
@@ -107,7 +107,7 @@
           border: none;
           cursor: default;
         }
-      
+
         &.selected{
           background-color: var(--mdc-theme-primary);
           .ei_Title{
@@ -119,8 +119,8 @@
         .ei_Title{
           margin: auto;
           padding: 9px;
-        }        
-           
+        }
+
         &:hover:not(.disabled){
           background-image: linear-gradient(-222deg, var(--mdc-theme-primary), var(--mdc-theme-primary));
           box-shadow: 0px 0px 52px -18px rgba(0, 0, 0, 0.75);
@@ -128,15 +128,15 @@
             color:#fff;
           }
         }
-      }        
-  
+      }
+
     }
 
   }
   .kng-boxed{
 
     width: fit-content;
-    min-height: 30px;    
+    min-height: 30px;
     padding: 0px;
     .label{
       padding: 20px 15px 0;
@@ -151,13 +151,13 @@
   .switch-hub {
     width: 100%;
     flex: 1 1 20%;
-    min-width: 350px;    
+    min-width: 350px;
     -margin: auto 10px;
     .label button {
       min-width: 135px;
       text-overflow: ellipsis;
       white-space: nowrap;
-      overflow: hidden;      
+      overflow: hidden;
     }
     button{
       cursor: pointer;

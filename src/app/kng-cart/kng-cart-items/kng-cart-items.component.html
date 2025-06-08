@@ -30,7 +30,7 @@
   <!-- DISPLAY ACTION HUB ORDER -->
   <div class="list-item action-line border-bottom" [hidden]="!isReady">
     <button class="order" (click)="doCheckout()"
-            [disabled]="!isCheckoutEnabled">
+            [disabled]="!isCheckoutEnabled||hasOrderError">
             {{cart_info_checkout_or_subscription}}
             <span [hidden]="!showCartItems">, {{currentShippingDay|date:'EEE dd':'':locale}}</span>
     </button>

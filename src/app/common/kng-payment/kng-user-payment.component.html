@@ -1,6 +1,7 @@
-<form novalidate 
-      (ngSubmit)="onPayment()" 
-      [formGroup]="stripe" 
+<form novalidate
+      (ngSubmit)="onPayment()"
+      [formGroup]="stripe"
+      [class.working]="isLoading"
       class="stripe-component">
   <h4 [innerHtml]="title" [hidden]="!title"></h4>
   <div class="groupfield fullwidth">
@@ -8,7 +9,7 @@
     <label class="form__field" for="f001" class="form__label" [class.error]="isInvalid('name')">
         {{label.user_display_name}}
     </label>
-  </div>          
+  </div>
 
 
   <div id="card-element" class="field"></div>
@@ -23,4 +24,25 @@
     <h4>{{label.stripe_issue}}</h4>
     {{displayCardError}}
   </div>
-</form>      
+
+</form>
+
+<ul class="payment" [hidden]="isMinimal">
+  <li *ngFor="let payment of userPayments">
+      <label for="">{{label.payment_edit}}</label>
+
+      <div class="image">
+        <img [src]="issuer[payment.issuer].img" alt="">
+      </div>
+
+      <div class="name" >
+        {{issuer[payment.issuer].label}} {{payment.expiryToDate()|date:'MM/y'}}
+      </div>
+      <div>
+        {{payment.number||payment.last4}}
+      </div>
+      <div class="error" [hidden]="!payment.error" [class.invalid]="!payment.isValid()">{{payment.error}}</div>
+
+      <button (click)="onDelete(payment)">{{$i18n[locale].action_del}}</button>
+  </li>
+</ul>

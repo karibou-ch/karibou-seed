@@ -4,7 +4,7 @@ import { i18n } from '../common';
 import { Config,
          LoaderService,
          UserService,
-         User, 
+         User,
          Order} from 'kng2-core';
 import { Location } from '@angular/common';
 
@@ -28,6 +28,7 @@ export class UserProfileComponent implements OnInit {
     fr: {
       profile_title: 'Membre depuis le',
       profile_order: 'Commandes',
+      profile_subscription: 'Abonnement',
       profile_invoices: 'Factures',
       profile_reminder: 'Notification',
       profile_account: 'Compte',
@@ -36,6 +37,7 @@ export class UserProfileComponent implements OnInit {
     en: {
       profile_title: 'Member since',
       profile_order: 'Orders',
+      profile_subscription: 'Subscription',
       profile_invoices: 'Bills',
       profile_reminder: 'Reminder',
       profile_account: 'Account',

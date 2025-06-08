@@ -39,7 +39,7 @@
         color: var(--mdc-theme-primary-on-background);
         margin-left: 10px;
 
-        @media screen and (max-width:430px) {
+        @media screen and (max-width:440px) {
           max-width: 95%;
         }
 
@@ -58,9 +58,9 @@
             border-radius: 10px;
             border: 1px solid var(--mdc-theme-primary);
             padding: 2px 20px;
-            font-weight: 700; 
-            background-color: var(--mdc-theme-primary);           
-            color: var(--mdc-theme-primary-text);           
+            font-weight: 700;
+            background-color: var(--mdc-theme-primary);
+            color: var(--mdc-theme-primary-text);
           }
         }
 

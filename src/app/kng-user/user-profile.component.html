@@ -1,16 +1,16 @@
 <div class="user-container">
   <section>
-      <h1 class="text-capitalize">{{user.display()}} 
+      <h1 class="text-capitalize">{{user.display()}}
         <span [hidden]="!user.isPremium()"><i class="material-symbols-outlined text-secondary">grade</i><i class="material-symbols-outlined text-secondary large">grade</i></span>
-      </h1>      
+      </h1>
       <div class="title" >{{i18n[locale].profile_title}} {{user.created|date:'MMM d, y':'':$i18n.locale}}</div>
       <p class="resume ">
-        <!-- 34 commandes, 5 problèmes, X X X X -->        
+        <!-- 34 commandes, 5 problèmes, X X X X -->
         &nbsp;
-        <a href="javascript:;" (click)="doLogout()" style="float:left" class="link" >        
+        <a href="javascript:;" (click)="doLogout()" style="float:left" class="link" >
           {{$i18n[locale].user_logout}}
         </a>
-          
+
       </p>
 
       <img src="/assets/img/k-user-pink.png"/>
@@ -22,6 +22,7 @@
   <div class="breaker small "></div>
 
   <div class="menu">
+    <div class="elem orders" (click)="menuAction='subscription'" [routerLink]="['./subscriptions']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_subscription}}</div>
     <div class="elem orders" (click)="menuAction='orders'" [routerLink]="['./orders']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_order}}</div>
     <div class="elem invoices" (click)="menuAction='invoices'" [routerLink]="['./invoices']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_invoices}}</div>
     <div class="elem reminder" (click)="menuAction='reminder'" [routerLink]="['./reminder']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_reminder}}</div>
@@ -30,7 +31,7 @@
   </div>
 
   <!-- USING CONTAINER SWITCH CONTENT BASED ON MENU ACTION -->
-  <!-- 
+  <!--
   <container-element [ngSwitch]="menuAction">
     <div *ngSwitchCase="'orders'">order</div>
     <div *ngSwitchCase="'invoices'">invoices</div>
@@ -39,6 +40,6 @@
     <div *ngSwitchCase="'password'">password</div>
   </container-element> -->
 
-  <router-outlet></router-outlet>  
+  <router-outlet></router-outlet>
 
 </div>

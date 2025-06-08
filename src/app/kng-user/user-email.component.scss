@@ -1,7 +1,7 @@
 div.container{
   form,.form{
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;
     margin-bottom: 20px;
     button{
       align-self:center;
@@ -18,7 +18,7 @@ div.container{
   }
   fieldset{
     border: 1px solid #ccc;
-    border-radius: 4px;    
+    border-radius: 4px;
     ul.elem{
       list-style: none;
       padding: 0;
@@ -28,33 +28,33 @@ div.container{
         padding: 10px 15px;
         background: var(--mdc-theme-appbar);
         border-radius: 14px;
-        margin: 10px 0;   
+        margin: 10px 0;
         label{
           position: absolute;
           right: 20px;
           bottom: 9px;
           font-weight: bold;
           font-size: 14px;
-          color: #aaa;        
+          color: #aaa;
         }
         .name::first-letter{
           text-transform: capitalize;
         }
-  
+
         .name{
           font-weight: bold;
-        }   
+        }
         .note{
           margin-top: 3px;
           max-width: 100%;
-          overflow: hidden;          
+          overflow: hidden;
         }
         .street,.postal,.note {
           font-size: 12px;
         }
       }
     }
-  
+
   }
 
   button{
@@ -80,5 +80,5 @@ div.container{
 :host ::ng-deep{
   .mdc-text-field input{
     padding-left: 1px!important;
-  }  
+  }
 }

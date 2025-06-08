@@ -1,0 +1,12 @@
+<div class="kng-wallet-container">
+  <div class="balance">
+    <div class="label">{{llabel.title_wallet}}</div>
+    <div class="cash">{{balance}} CHF</div>
+  </div>
+  <div class="redeem">
+    <input type="text" [placeholder]="llabel.title_code" [(ngModel)]="applyCode">
+    <button (click)="onRedeem()" [disabled]="!applyCode">
+      <span class="material-symbols-outlined">done</span>
+    </button>
+  </div>
+</div>

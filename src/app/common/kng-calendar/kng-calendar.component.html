@@ -11,15 +11,16 @@
     <!-- CALENDAR -->
     <div class="calendar">
       <div class="list">
-          <div class="element" 
-          [class.selected]="day.equalsDate(currentShippingDay)" 
-          [class.disabled]="!isDayAvailable(day)" 
+          <div class="element"
+          [class.selected]="day.equalsDate(currentShippingDay)"
+          [class.disabled]="!isDayAvailable(day)"
           *ngFor="let day of currentWeek;let idx=index"
           (click)="doSetCurrentShippingDay($event,day,idx)">
+            <!-- FIXME: day can be undefined -->
             <div class="ei_Title">{{day|date:'EEE d':'':locale}}</div>
         </div>
       </div>
-    </div>    
+    </div>
 
     <div class="switch-hub kng-boxed" [hidden]="minimal">
       <div class="label">{{label_switch_store}}

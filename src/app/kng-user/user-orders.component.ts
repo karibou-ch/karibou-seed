@@ -4,7 +4,7 @@ import { Order, OrderService, User, OrderItem, Category, ProductService,
           EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService, Product } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
 
-import { flatMap, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { i18n } from '../common';
 import { forkJoin } from 'rxjs';
 
@@ -73,7 +73,7 @@ export class UserOrdersComponent implements OnInit {
       month6: now.plusDays(-(31 * 12)),
       mont3: now.plusDays(-(31 * 3)),
     };
-    this.limitTo = 4;
+    this.limitTo = 10;
     this.filter.current = this.filter.month6;
   }
 
@@ -103,7 +103,7 @@ export class UserOrdersComponent implements OnInit {
   }
 
   //
-  // WARNING always add to card from an OrderItem (vs CartItem) 
+  // WARNING always add to card from an OrderItem (vs CartItem)
   addToCard(item: OrderItem) {
     const variant = (item.variant) ? item.variant.title : null;
     this.$products.get(item.sku).subscribe(product => {
@@ -145,7 +145,7 @@ export class UserOrdersComponent implements OnInit {
   }
 
   getMoreOrders() {
-    this.limitTo += 5;
+    this.limitTo += 10;
   }
 
   getItems() {

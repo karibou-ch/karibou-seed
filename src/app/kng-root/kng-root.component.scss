@@ -7,11 +7,11 @@ div.hub-header{
   flex-flow: column;
   flex-wrap: wrap;
   font-size: 1.2em;
-  font-weight: 200;    
+  font-weight: 200;
   background-size: cover;
   background-color: transparent!important;
-  margin-top: 10px; 
-  margin-bottom: 0px; 
+  margin-top: 10px;
+  margin-bottom: 0px;
   @media (max-width:1024px){
     padding: 10px 10px;
     width: calc( 100% - 20px );
@@ -20,9 +20,10 @@ div.hub-header{
   @media (max-width:431px){
     padding: 10px 0px;
   }
+}
 
-
-
+kng-wallet{
+  padding: 10px 10px;
 }
 
 h2{
@@ -37,7 +38,7 @@ kng-subscription-option,
 kng-nav-marketplace,
 kng-feedback,
 kng-calendar{
-  display: block;  
+  display: block;
   margin: 0;
   width: 100%;
 }
@@ -49,7 +50,7 @@ kng-calendar{
   width: calc(100% - 30px);
   margin-top: 10px;
   .kng-boxed{
-    padding: 10px 10px;  
+    padding: 10px 10px;
     width: 100%;
     min-height: fit-content;
     .end {
@@ -57,9 +58,9 @@ kng-calendar{
       height: 35px;
       padding: 0px;
       margin-right: 10px;
-      span {        
+      span {
         font-size: 20px;
-      }      
+      }
     }
   }
   .kng-boxed.disabled{
@@ -74,10 +75,10 @@ kng-calendar{
     width: auto;
   }
   .kng-boxed kng-slider{
-    width: 100%!important;    
+    width: 100%!important;
   }
-  
-   
+
+
 }
 
 .i18n{
@@ -88,7 +89,7 @@ kng-calendar{
     font-weight: bold;
     padding: 10px;
     height: fit-content;
-    min-height: 70px;    
+    min-height: 70px;
     align-items: center
   }
 }
@@ -97,7 +98,7 @@ kng-calendar{
     display: flex;
     align-items: center;
     justify-content: left;
-    flex-direction: row;    
+    flex-direction: row;
     gap: 10px;
     align-items: center;
     min-height: 50px;
@@ -117,7 +118,7 @@ button{
   background-color: var(--mdc-theme-primary-text);
   color: var(--mdc-theme-primary);
   background-color: white;
-  color: black;  
+  color: black;
   display: inline;
   .material-symbols-outlined{
     transform: translateY(3px);
@@ -130,7 +131,7 @@ button.action{
   padding: 12px 26px;
   border-radius: 50px;
   border-width: 0px;
-  width: auto;  
+  width: auto;
 }
 
 button.goto{

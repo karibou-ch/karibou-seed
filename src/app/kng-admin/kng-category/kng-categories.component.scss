@@ -1,17 +1,17 @@
 .container{
   background: white;
   min-width: 600px;
-  @media (max-width: 430px) {
+  @media (max-width:440px) {
     -min-width: 300px;
   }
 
   mdc-list{
 
-    
+
     .material-symbols-outlined.size-large {
       font-size: 30px;
     }
-       
+
     mdc-list-item{
       &.disabled{
         opacity: 0.4;
@@ -19,7 +19,7 @@
       mdc-form-field{
         align-self: start;
         margin-top: auto;
-        margin-bottom: 12px;    
+        margin-bottom: 12px;
       }
       mdc-list-item-text{
         max-width: 60%;
@@ -30,8 +30,8 @@
           height: 38px;
           border-radius:8px;
         }
-      }  
-  
+      }
+
     }
   }
 }
@@ -64,7 +64,7 @@ mdc-dialog{
           margin-right: 12px;
         }
       }
-  
+
       display: flex;
       gap: 8px;
       flex-flow: column wrap;
@@ -81,7 +81,7 @@ mdc-dialog{
       }
 
       .mdc-text-field{
-        margin-right: 8px;        
+        margin-right: 8px;
       }
 
       .group{
@@ -92,7 +92,7 @@ mdc-dialog{
         width: calc(50% - 20px);
         border-radius: 14px;
         &.bg{
-          background-color: var(--mdc-theme-appbar);          
+          background-color: var(--mdc-theme-appbar);
         }
       }
       .child{

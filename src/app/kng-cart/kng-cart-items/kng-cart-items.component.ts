@@ -393,6 +393,7 @@ export class KngCartItemsComponent implements OnInit {
         this.noshippingMsg = this.getNoShippingMessage();
         this.hasOrderError = this.$cart.hasError(this.hub.slug);
 
+
         //
         // select subs when order view is False
         this.showFooter = this.isReady = (this.items.length>0 || this.hub.slug == this.config.shared.hub.slug);
@@ -412,9 +413,11 @@ export class KngCartItemsComponent implements OnInit {
     );
   }
 
+
   doCheckout(){
     const contract = this.hasUpdateContract;
     const updateItems = this.contractItems.slice();
+
     const ctx = {
       plan:this.plan,
       hub:this.hub,

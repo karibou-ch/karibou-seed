@@ -6,8 +6,8 @@ kng-product-swipe{
   margin: 20px 0px;
   border-bottom: 1px solid #eee;
 
-  @media (max-width:430px) {
-    width: calc(100% - 20px );    
+  @media (max-width:440px) {
+    width: calc(100% - 20px );
     margin: 15px 10px;
     min-height: fit-content !important;
     padding: 0;
@@ -15,10 +15,10 @@ kng-product-swipe{
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--mdc-theme-secondary-dark);
-    color: var(--mdc-theme-secondary-dark-text);      
+    color: var(--mdc-theme-secondary-dark-text);
 
     border-radius: 14px;
-    border-width:0;  
+    border-width:0;
   }
 
 
@@ -29,7 +29,7 @@ kng-product-swipe{
     height: auto;
     section{
       @media (max-width: 429px) {
-        display: none;        
+        display: none;
       }
       position: relative;
       width: 100%;
@@ -43,10 +43,10 @@ kng-product-swipe{
         margin-top:15px;
         margin-left: 0;
         @media (prefers-color-scheme: dark) {
-          color: var(--mdc-theme-primary-dark-text);      
+          color: var(--mdc-theme-primary-dark-text);
 
         }
-  
+
       }
       h3{
         font-weight: 200;
@@ -55,10 +55,10 @@ kng-product-swipe{
         text-shadow:1px 1px 0 white;
         margin-top: -10px;
         @media (prefers-color-scheme: dark) {
-          color: var(--mdc-theme-primary-dark-text);      
+          color: var(--mdc-theme-primary-dark-text);
         }
-  
-      }  
+
+      }
     }
 
     div.content-sm{
@@ -80,7 +80,7 @@ kng-product-swipe{
         img{
           object-fit: cover;
           width: 100%;
-          height: 100%;          
+          height: 100%;
           border-radius: 10px;
         }
       }
@@ -88,7 +88,7 @@ kng-product-swipe{
 
       }
       @media (min-width: 430px) {
-        display: none;        
+        display: none;
       }
     }
 
@@ -97,7 +97,7 @@ kng-product-swipe{
       overflow: hidden;
       overflow-x: auto;
       @media (max-width: 429px) {
-        display: none;        
+        display: none;
       }
       &::-webkit-scrollbar {
         display: none;
@@ -109,17 +109,17 @@ kng-product-swipe{
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         grid-template-columns: repeat(6,minmax(auto,145px));
-        @media (max-width:430px) {
+        @media (max-width:440px) {
           grid-template-columns: repeat(3,minmax(auto,145px));
         }
-      
+
         gap: 16px;
-        justify-items: center;                  
-    
+        justify-items: center;
+
       }
-      
+
     }
 
-  }  
+  }
 }
 

@@ -12,12 +12,12 @@
   <button raised mdc-button (click)="onMenuCreate()" class="primary">
     <span mdcButtonLabel>Ajouter un nouveau menu</span>
     <span class="material-symbols-outlined">save</span>
-  </button>    
-  
+  </button>
+
   <mdc-list avatar="true" border="true"  *ngFor="let group of groups" >
     <mdc-list-divider inset></mdc-list-divider>
     <h3 class="menu-group">{{group}}</h3>
-    <mdc-list-item *ngFor="let menu of getMenuByGroup(group)" 
+    <mdc-list-item *ngFor="let menu of getMenuByGroup(group)"
                     [class.disabled]="!menu.active"
                     (click)="onMenuSelect($event,menu)">
         <span class="material-symbols-outlined"mdcListItemGraphic>folder</span>
@@ -25,19 +25,19 @@
           <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name[$i18n.locale]"></span>
           <mdc-list-item-secondary>
               {{menu.url}}
-          </mdc-list-item-secondary>              
+          </mdc-list-item-secondary>
         </mdc-list-item-text>
         <mdc-list-item-meta>
             <mdc-form-field>
                 <mdc-checkbox [checked]="menu.active" [disabled]="true" ></mdc-checkbox>
                 <span class="hide-md">Active</span>
             </mdc-form-field>
-              
+
             <mdc-chip>
               <mdc-chip-icon leading><span class="material-symbols-outlined">sort</span></mdc-chip-icon>
               <mdc-chip-text>{{menu.weight}}</mdc-chip-text>
             </mdc-chip>
-            
+
         </mdc-list-item-meta>
         <mdc-list-divider></mdc-list-divider>
     </mdc-list-item>

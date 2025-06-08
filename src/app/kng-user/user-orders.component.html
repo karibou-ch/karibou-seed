@@ -3,61 +3,24 @@
   <p class="no-orders" [hidden]="!isReady||orders.length">
     {{i18n[locale].title_no_order}} &#9785;
   </p>
-    
+
   <h3 [hidden]="!orders.length" >{{i18n[locale].title_last_order}}</h3>
 
   <!-- LAST ORDERS -->
   <div class="orders-content">
-    <div class="orders-elem" 
+    <div class="orders-elem"
         [class.selected]="selected?.oid==order.oid"
         *ngFor="let order of getLimitedOrders()" (click)="selectedOrder(order)">
         <div class="main">
-          <kng-feedback [config]="config" [user]="user" [orders]="[order]" [child]="childOrder[order.oid]" boxed="true"></kng-feedback>        
-          <div *ngIf="selected?.oid==order.oid">
-            <ul>
-              <li *ngFor="let item of order.items" [class.strike]="item.fulfillment.status=='failure'">
-                {{item.quantity}}x {{item.title}} ({{item.part}}) 
-                <span class="issue red" [hidden]="!item.fulfillment.refunded">remboursé</span>
-              </li>
-              <li [hidden]="!isPending(order)">
-                <a href="javascript:;" class="black smaller "                    
-                  (click)="cancel(order)" >
-                  <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
-              </li>
-              <li [hidden]="isPending(order)">                
-                <a href="javascript:;" class="black smaller "                    
-                (click)="addAllToCart(order)" >
-                <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
-              </li>
-            </ul>  
-            <!--- ORDER COMPLEMENT -->
-            <ul *ngFor="let complement of childOrder[order.oid]">
-              <li class="bold">En complément</li>
-              <li *ngFor="let item of complement.items" [class.strike]="item.fulfillment.status=='failure'">
-                {{item.quantity}}x {{item.title}} ({{item.part}}) 
-                <span class="issue red" [hidden]="!item.fulfillment.refunded">remboursé</span>
-              </li>
-              <li [hidden]="!isPending(complement)">
-                <a href="javascript:;" class="black smaller "                    
-                  (click)="cancel(complement)" >
-                  <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">cancel</i>{{i18n[locale].title_cancel_order}}</a>
-              </li>
-              <li [hidden]="isPending(complement)">
-                <a href="javascript:;" class="black smaller "                    
-                (click)="addAllToCart(complement)" >
-                <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>             
-              </li>
-            </ul>  
+          <div class="order" (click)="selected=order">
+            <kng-feedback [config]="config" [user]="user" [orders]="[order]" [child]="childOrder[order.oid]"
+            (cancel)="cancel($event)" (addAllToCart)="addAllToCart($event)"></kng-feedback>
           </div>
         </div>
-        <div class="hide-sm end" >
-          <div>{{order.shipping.when|date:'EEE d MMM y'}}</div>
-          <div class="align-right bold">{{order.getTotalPrice()|currency:'CHF'}}</div>
-        </div>          
     </div>
   </div>
 
-  <div class="more-orders" [hidden]="orders.length<4||orders.length<=limitTo">
-      <span class="material-symbols-outlined hide-sm"  (click)="getMoreOrders()">keyboard_arrow_down</span>             
+  <div class="more-orders" [hidden]="orders.length<9||orders.length<=limitTo">
+      <span class="material-symbols-outlined hide-sm"  (click)="getMoreOrders()">keyboard_arrow_down</span>
   </div>
 

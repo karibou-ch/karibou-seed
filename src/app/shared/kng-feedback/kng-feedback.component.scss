@@ -93,55 +93,8 @@ p.block-info{
   .wallet{
     flex: 1 0 auto;
     align-items: center;
-    background-color: var(--mdc-theme-karibou-yellow);
     .boxed{
       display: none;
-    }
-    .cash{
-      font-size: 20px;
-      font-weight: 600;
-      font-family: monospace;
-      width: calc(100% - 205px);
-      color: black;
-    }
-    .digital {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      span{
-        font-size: 17px;
-        display: flex;
-        align-items: center;
-        margin-right: 10px;
-      }
-    }
-    .gift{
-      width: calc(180px);
-      border-radius: 8px;
-      display: flex;
-      overflow: hidden;
-      margin-right: 0;
-      margin-left: auto;
-      input{
-        border: 0;
-        height: 34px;
-        padding-left: 10px;
-        outline: 0;
-        font-weight: bold;
-        font-size: 17px;
-        width: 135px;
-      }
-      button{
-        margin: 0 !important;
-        width: 34px!important;
-        height: 36px!important;
-        border-radius: 0 8px 8px 0;
-        flex: auto;
-        background: var(--mdc-theme-secondary) !important;
-        color: var(--mdc-theme-secondary-text)!important;
-        padding: 0;
-        cursor: pointer;
-      }
     }
   }
   .bill{
@@ -284,172 +237,118 @@ p.block-info{
   }
 }
 
-  //
-  // FEEDBACK
-.container.top{
-  color: #424242;
-  background-color:rgba(255,255,255,0.99);
-  margin:0;
-  padding:0;
-  display:flex;
-  flex-flow: row nowrap;
-  justify-content:center; /*halign*/
-  align-items:center; /*valign*/
-  padding-top: 4vh!important;
-  padding-bottom: 10vh!important;
-  box-sizing: border-box;
-  position: fixed;top: 0;z-index: 4;margin: auto;left: 0;right: 0;
-  min-height: 100vh;
+//
+// FEEDBACK
+.feedback-container{
+  .form{
+    padding: 5px 5px 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    .stars{
+      width: 25px;
+      color: #aaa;
+      transform: translateY(3px);
+      cursor: pointer;
+      &.scored,
+      &:hover{
+        color:var(--mdc-theme-karibou-pink);
+      }
 
-  .close{
-    background: transparent;
-    border: 0;
-    color: #777;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 4;
-    text-shadow: 0px 2px 0px #eee;
-    @media (max-width: 430px) {
-      top: 10px;
-      right: -10px;
     }
   }
 
-  .feedback-container{
+  label{
+    padding: 5px;
+    padding-left:0;
     display: block;
-    max-width: 100%;
-    background: rgba(255,255,255,0.95);
-    position: relative;
-    z-index: 2;
-    text-align:left;
-    transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
-    max-height:calc( 100vh - 60px ); // still have to hard-code a value!
-    top:0;
-    padding: 10px 4px;
-    overflow-y: auto;
-    font-size: 1.1rem;
-    width: 600px;
-    margin: 0 auto 20px auto;
+  }
+  textarea,h2,h3{
+    padding: 0 5px;
+    margin-bottom: 0;
+    color: #333;
+  }
+  p{
+    border-top: 1px solid #eee;
+    margin-top: 30px;
+    white-space: pre-wrap;
+    padding: 5px;
+  }
 
-    @media (max-width: 430px) {
-      padding: 0 5px;
-    }
+  textarea{
+    margin-top: 10px;
+    width: calc(100% - 20px)!important;
+    border: 1px solid #ddd;
+    height: 120px;
+    margin: 0 5px;
+    margin-left: 0;
+  }
+  textarea:focus,
+  textarea:focus{
+    border-color: #ddd!important;
+  }
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  ul{
+    list-style: none;
+    padding: 5px;
+    margin: 0;
 
-    .form{
-      padding: 5px 5px 20px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      .stars{
-        width: 25px;
-        color: #aaa;
-        transform: translateY(3px);
+    li{
+
+      padding: 10px 8px;
+      border-radius: 4px;
+      position: relative;
+      background-color: var(--mdc-theme-appbar-light);
+      height: auto;
+      flex-wrap: wrap;
+
+      &.selected{
+        color: var(--mdc-theme-primary);
+      }
+      .header{
         cursor: pointer;
-        &.scored,
-        &:hover{
-          color:var(--mdc-theme-karibou-pink);
+        width: 100%;
+      }
+
+      color: #999;
+      margin: 8px 0;
+      font-size: 1.1rem;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      .content{
+        display: flex;
+        flex-direction: column;
+        margin: 20px 0;
+        width: 100%;
+        label{
+          color: #777;
         }
 
       }
-    }
-
-    label{
-      padding: 5px;
-      padding-left:0;
-      display: block;
-    }
-    textarea,h2,h3{
-      padding: 0 5px;
-      margin-bottom: 0;
-      color: #333;
-    }
-    p{
-      border-top: 1px solid #eee;
-      margin-top: 30px;
-      white-space: pre-wrap;
-      padding: 5px;
-    }
-
-    textarea{
-      margin-top: 10px;
-      width: calc(100% - 20px)!important;
-      border: 1px solid #ddd;
-      height: 120px;
-      margin: 0 5px;
-      margin-left: 0;
-    }
-    textarea:focus,
-    textarea:focus{
-      border-color: #ddd!important;
-    }
-
-    ul{
-      list-style: none;
-      padding: 5px;
-      margin: 0;
-
-      li{
-
-        padding: 10px 8px;
-        border-radius: 4px;
-        position: relative;
-        background-color: var(--mdc-theme-appbar-light);
-        height: auto;
-        flex-wrap: wrap;
-
-        &.selected{
-          color: var(--mdc-theme-primary);
-        }
-        .header{
-          cursor: pointer;
-          width: 100%;
-        }
-
-        color: #999;
-        margin: 8px 0;
-        font-size: 1.1rem;
-
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        .content{
-          display: flex;
-          flex-direction: column;
-          margin: 20px 0;
-          width: 100%;
-          label{
-            color: #777;
-          }
-
-        }
-        input{
-          float: left;
-          width: 20px;
-          height: 20px;
-          float: left;
-          margin-top: 0px;
-          margin-right: 10px;
-          margin-left: 0;
-        }
+      input{
+        float: left;
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-top: 0px;
+        margin-right: 10px;
+        margin-left: 0;
       }
-
     }
 
-    button{
-      margin: 10px auto;
-      display: flex;
-      background-color: #ddd;
-    }
+  }
 
-    @media (max-width: 430px) {
-      box-shadow: none;
-      position: absolute;
-      margin-top: 40px;
-    }
+  button{
+    margin: 10px auto;
+    display: flex;
+    background-color: #ddd;
+  }
+
+  @media (max-width:440px) {
+    box-shadow: none;
+    position: absolute;
+    margin-top: 40px;
   }
 }
 

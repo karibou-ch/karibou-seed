@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
 import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem, OrderCustomerInvoices, CartSubscription } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../../common';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 import { combineLatest, forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -78,21 +79,19 @@ export class KngFeedbackComponent implements OnInit {
   askFeedback = false;
   isReady = false;
   order: Order;
+  isExpandedOrder = false;
   selectedOrder: Order;
   selectedOrderPopup:Order;
   childOrder: { [key: number]: Order[]};
   selected: any = {};
   score: number;
   feedbackText: string;
-  applyCode: string;
   HUBS:any = {};
 
   currentLimit: number;
   premiumLimit: number;
 
   invoices: OrderCustomerInvoices[];
-
-
 
   @Input() child: Order[];
   @Input() config: Config;
@@ -108,6 +107,10 @@ export class KngFeedbackComponent implements OnInit {
     this._orders = (orders||[]);
     this.prepareOrders();
   }
+
+  @Output() onUpdate = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter<Order>();
+  @Output() addAllToCart = new EventEmitter<Order>();
 
   get hubName() {
     return (this.config && this.config.shared) ? this.config.shared.hub.name : '';
@@ -150,10 +153,6 @@ export class KngFeedbackComponent implements OnInit {
     return this._orders;
   }
 
-  get balance(){
-    return this._user.balance||0;
-  }
-
   get hasInvoiceMethod() {
     return this.user.payments.some(payment => payment.issuer == 'invoice');
   }
@@ -190,11 +189,11 @@ export class KngFeedbackComponent implements OnInit {
     private $snack: MdcSnackbar,
     private $user: UserService,
     private $order: OrderService,
-    private $cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef,
+    private router: Router,
   ) {
     this._orders = [];
     this.invoices = [];
-    this.applyCode = "";
   }
 
 
@@ -252,6 +251,7 @@ export class KngFeedbackComponent implements OnInit {
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
     this.config.shared.hubs.forEach(hub => this.HUBS[hub.id]=hub.name);
+
   }
 
   displayEvaluate() {
@@ -263,9 +263,6 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   evaluate(score) {
-    if (!this.order || this.order.score !== undefined) {
-      return false;
-    }
     this.score = score;
   }
 
@@ -377,35 +374,22 @@ export class KngFeedbackComponent implements OnInit {
   }
 
 
-  onAddAllToCart() {
-    let items = this.order.items;
-    items.forEach(item => item.hub = this.HUBS[this.order.hub])
-    this.childOrder[this.order.oid].forEach(order => {
-      order.items.forEach(item => item.hub = this.HUBS[order.hub])
-      items = items.concat(order.items);
-    })
-    //
-    // FIXME, replace load N products in N calls BY N products in one call
-    forkJoin(items.map(item => this.$products.get(item.sku))).subscribe((products) => {
-      const cartItems = products.map((product,i) => {
-        const item = items.find(itm => itm.sku == product.sku);
-        if (!item) {
-          return;
-        }
-        const variant = (item.variant) ? item.variant.title : null;
-        const quantity = item.quantity || 1;
-        return CartItem.fromProduct(product, item.hub, variant, quantity);
-      });
-      this.$cart.addAll(cartItems);
-    });
-
+  onAddAllToCart(order: Order) {
+    this.addAllToCart.emit(this.order);
+    const complements = this.childOrder[this.order.oid];
+    if (complements) {
+      for (const complement of complements) {
+        this.addAllToCart.emit(complement);
+      }
+    }
+    // temporary feedback
+    this.$snack.open('Articles ajoutés');
   }
 
   onBack() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
-    this.askFeedback = false;
     this.selectedOrderPopup = null;
-
+    this.askFeedback = false;
   }
 
   onEvaluate() {
@@ -449,12 +433,19 @@ export class KngFeedbackComponent implements OnInit {
     );
   }
 
-  onRedeem(){
-    this.$user.applyCode(this.applyCode).subscribe(user => {
-      this._user = user;
-      this.applyCode = "";
-    },err => {
-      alert(err.error||err.message)
-    })
+  toggleDetails() {
+    this.isExpandedOrder = !this.isExpandedOrder;
+  }
+
+  isPending(order: Order) {
+    if (!order) {
+      return false;
+    }
+    const status = order.fulfillments.status;
+    return status === 'authorized' || status === 'pending' || status === 'placed';
+  }
+
+  onCancelOrder(order: Order) {
+    this.cancel.emit(order);
   }
 }

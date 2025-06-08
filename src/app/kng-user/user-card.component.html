@@ -1,36 +1,13 @@
 <div>
   <h2>
-    {{label.title_header}} 
+    {{label.title_header}}
   </h2>
 
-
-  <ul class="payment">
-    <li *ngFor="let payment of user.payments" 
-      (click)="setPaymentMethod(payment)"
-      [class.selected]="isSelectedPayment(payment)">
-        <label for="">{{label.payment_edit}}</label>
-
-        <div class="image">
-          <img [src]="issuer[payment.issuer].img" alt="">
-        </div>
-
-        <div class="name" >
-          {{issuer[payment.issuer].label}} {{payment.expiryToDate()|date:'MM/y'}}
-        </div>                 
-        <div>
-          {{payment.number||payment.last4}}          
-        </div>              
-        <div class="error" [hidden]="!payment.error" [class.invalid]="!payment.isValid()">{{payment.error}}</div>   
-        
-        <button (click)="onDelete(payment)" 
-                [hidden]="!isSelectedPayment(payment)" >{{$i18n[locale].action_del}}</button>
-    </li>
-  </ul>
 
   <h2  [hidden]="!user.isReady()">
     {{label.action_add}}
   </h2>
-    
+
   <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePayment($event)"></kng-user-payment>
-  
+
 </div>
