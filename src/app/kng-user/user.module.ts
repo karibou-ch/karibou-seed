@@ -12,7 +12,8 @@ import { UserSignComponent,
          UserEmailComponent,
          UserOrdersComponent,
          UserPasswordComponent,
-         UserProfileComponent } from './';
+         UserProfileComponent,
+         UserSubscriptionComponent} from './';
 
 
 import { NgxStripeModule } from 'ngx-stripe';
@@ -34,6 +35,7 @@ const routes: Routes = [
     canActivateChild: [IsAuthenticatedGard],
     children: [
       { path: '', redirectTo: 'orders', pathMatch: 'full'},
+      { path: 'subscriptions', component: UserSubscriptionComponent, resolve: { loader: LoaderResolve } },
       { path: 'orders', component: UserOrdersComponent, resolve: { loader: LoaderResolve } },
       { path: 'invoices', component: UserInvoicesComponent, resolve: { loader: LoaderResolve } },
       { path: 'reminder', component: KngUserReminderComponent, resolve: { loader: LoaderResolve }  },
@@ -89,6 +91,7 @@ const routes: Routes = [
     UserPasswordComponent,
     UserProfileComponent,
     UserSignComponent,
+    UserSubscriptionComponent,
     KngInvoiceComponent
   ]
 })

@@ -34,9 +34,10 @@ import { KngRippleDirective } from './kng-ripple.directive';
 import { NgxStripeModule } from 'ngx-stripe';
 import { KngAddressComponent } from './kng-address/kng-address.component';
 import { KngPaymentComponent } from './kng-payment/kng-user-payment.component';
-import { KngSubsciptionControlComponent } from './kng-subsciption-control/kng-subsciption-control.component';
+import { KngSubscriptionControlComponent } from './kng-subscription-control/kng-subscription-control.component';
 import { KngSignupComponent } from './kng-signup/kng-signup.component';
 import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
+import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
 
 
 @NgModule({
@@ -53,7 +54,7 @@ import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
     ReactiveFormsModule,
     CommonMdcModule,
     RouterModule,
-    KngSubsciptionControlComponent,
+    KngSubscriptionControlComponent,
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
@@ -71,10 +72,11 @@ import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
     KngRippleDirective,
-    KngSliderComponent
+    KngSliderComponent,
+    KngWalletComponent
   ],
   declarations: [
-    KngSubsciptionControlComponent,
+    KngSubscriptionControlComponent,
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
@@ -92,7 +94,8 @@ import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
     KngFeedbackComponent,
     KngSubscriptionOptionComponent,
     KngRippleDirective,
-    KngSliderComponent
+    KngSliderComponent,
+    KngWalletComponent
   ],
 })
 export class KngCommonModule {
