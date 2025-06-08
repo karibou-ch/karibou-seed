@@ -1,0 +1,10 @@
+<div class="kng-user-subscription-container" *ngIf="isReady">
+  <!-- SUBSCRITION OPTIONS -->
+  <kng-subscription-control [config]="config"></kng-subscription-control>
+
+</div>
+
+<div *ngIf="!isReady">
+  <p>Chargement...</p>
+</div>
+
