@@ -49,6 +49,9 @@
 
 
 
+<!-- MOBILE SEARCH  -->
+<kng-search class="home" [class.active]="availableSearch"></kng-search>
+
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
 <!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
@@ -169,9 +172,6 @@
   </ul>
 </div>
 
-
-<!-- MOBILE SEARCH  -->
-<kng-search class="home" [class.active]="availableSearch"></kng-search>
 
 <div class="product-container " *ngIf="products.length" >
   <kng-product-grouped-list clazz="home"

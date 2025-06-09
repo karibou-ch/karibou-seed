@@ -1,9 +1,9 @@
 
 <kng-news [config]="config"></kng-news>
 
-<div class="mdc-drawer"  drawer="modal" #navigation 
+<div class="mdc-drawer"  drawer="modal" #navigation
     [class.mdc-drawer--modal]="navigation.open"
-    [class.mdc-drawer--open]="navigation.open" (click)="navigation.open = !navigation.open"> 
+    [class.mdc-drawer--open]="navigation.open" (click)="navigation.open = !navigation.open">
   <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
   <div class="mdc-drawer__header" [routerLink]="['/store',store,'home']">
     <h3 class="mdc-drawer__title" [innerHtml]="getTagline('t')"></h3>
@@ -34,7 +34,7 @@
     <ul class="mdc-list" [hidden]="!user.isAdmin()">
       <h3 mdcListGroupSubheader>Administration/Config</h3>
       <li [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;">
-        <a [routerLink]="getRouterLink(menu.url)">{{menu.name[locale]}}</a>        
+        <a [routerLink]="getRouterLink(menu.url)">{{menu.name[locale]}}</a>
       </li>
 
     </ul>
@@ -52,13 +52,13 @@
         <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
         <img class="icon icon-hub" [class.icon-show]="isLockedHUB()"  [src]="hubImage" (click)="navigation.open = ! navigation.open" />
         <mdc-top-app-bar-title class="brand" [routerLink]="['/store',store]" [hidden]="isLockedHUB()">
-          Karibou.ch      
+          Karibou.ch
         </mdc-top-app-bar-title>
       </mdc-top-app-bar-section>
 
 
       <!-- LOGIN / REGISTER -->
-      <mdc-top-app-bar-section align="end"  class="actions">        
+      <mdc-top-app-bar-section align="end"  class="actions">
         <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcTopAppBarNavIcon>
           <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text" >account_circle</span><!-- <div >{{label.nav_account}}</div>-->
           <!-- DISPLAY MULTI USER -->
@@ -70,7 +70,7 @@
       </mdc-top-app-bar-section>
     </mdc-top-app-bar-row>
 
-    <mdc-top-app-bar-row class="navigation ">      
+    <mdc-top-app-bar-row class="navigation ">
 
       <!-- APPBAR-SECTION-START HUB AND DATE -->
       <mdc-top-app-bar-section align="start" class="hide-sm">
@@ -85,22 +85,22 @@
         <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-symbols-outlined start">roofing</i>{{label.nav_bottom_home}}</div>
         <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}} </div>
         <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</div>
-            
+
 
         <!-- <div class="kng-chip bold" [hidden]="!currentThemeName" (click)="opentheme=!opentheme">
-          <i class="material-symbols-outlined start">category</i> {{currentThemeName}} 
+          <i class="material-symbols-outlined start">category</i> {{currentThemeName}}
         </div> -->
 
 
         <div class="kng-chip shopping-cart first"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
-          
+
           <div > <span class="cart-items-count"></span></div>
-          <span  class="end material-symbols-outlined secondary-text" >shopping_cart</span>          
+          <span  class="end material-symbols-outlined secondary-text" >shopping_cart</span>
         </div>
         <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active" [queryParams]="subscriptionQueryParams" [hidden]="!subsItemsSz">
-          
+
           <div > <span class="subs-items-count"></span></div>
-          <span  class="end material-symbols-outlined secondary-text" >more_time</span>          
+          <span  class="end material-symbols-outlined secondary-text" >more_time</span>
         </div>
 
       </mdc-top-app-bar-section>
@@ -114,7 +114,7 @@
         <div hidden class="kng-chip end"  (click)="opentheme=!opentheme">
           <i class="material-symbols-outlined start">category</i> {{currentThemeName}} <i class="material-symbols-outlined end">keyboard_arrow_down</i>
         </div>
-        
+
       </mdc-top-app-bar-section>
 
       <!-- APP RIGHT ACTIONS -->
@@ -142,7 +142,7 @@
           <b><span class="link" (click)="displayLogin=false" [routerLink]="['/store',store,'home','me','login']">Merci de suivre ce lien </span></b>
         </div>
         <div class="install-ios material-symbols-outlined" >sentiment_very_satisfied</div>
-      </div>          
+      </div>
     </div>
   </div>
 
@@ -156,9 +156,9 @@
           Tap the share icon and then<br/>
           <b>Add to homescreen.</b>
         </div>
-        
+
         <div class="install-ios material-symbols-outlined" >arrow_downward</div>
-      </div>          
+      </div>
     </div>
   </div>
   <!-- FOOTER -->
