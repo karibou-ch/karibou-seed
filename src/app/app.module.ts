@@ -37,7 +37,9 @@ import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
 import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class GlobalErrorHandler implements ErrorHandler {
   constructor(
     private $update: SwUpdate
@@ -93,7 +95,11 @@ export class GlobalErrorHandler implements ErrorHandler {
     // For PWA, reload is not enough, activeUpdate is mandatory
     if (!!chunkFailedMessage.test(error.message)) {
 
-      try{ caches.keys().then(keys => keys.forEach(c=>caches.delete(c))); } catch(err){}
+      try{
+        caches.keys().then(keys => keys.forEach(c=>caches.delete(c)));
+      } catch(err){
+        console.error('Failed to clear cache:', err);
+      }
 
       return this.$update.checkForUpdate().then((available)=>{
         this.$update.activateUpdate().then(() => document.location.reload());
@@ -142,9 +148,6 @@ export class GlobalErrorHandler implements ErrorHandler {
     KngValidateMailComponent,
     KngServerErrorFoundComponent,
     KngPageNotFoundComponent,
-  ],
-  // List of components that aren't used in templates directly
-  entryComponents:[
   ],
   exports: [
     Kng2CoreModule,

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
+import { Subscription } from 'rxjs';
 
 import { MetricsService } from './common/metrics.service';
 import { i18n } from './common';
@@ -10,9 +11,11 @@ import { LoaderService } from 'kng2-core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
 
   // SENTRY_JS = 'https://browser.sentry-cdn.com/5.12.5/bundle.min.js';
+  private subscription$ = new Subscription();
+
   i18n: any = {
     fr: {
       reload: 'Une nouvelle version est disponible. Recharger la page maintenant'
@@ -26,12 +29,12 @@ export class AppComponent {
     private $loader: LoaderService,
     private $i18n: i18n,
     private $update: SwUpdate,
-    private $mterics: MetricsService
+    private $metrics: MetricsService
   ) {
 
     //
     // init metric/funnel service
-    this.$mterics.init();
+    this.$metrics.init();
 
     //
     // install sentry backend delegate the load bundle
@@ -43,15 +46,21 @@ export class AppComponent {
     //     release: version
     //   });
     // });
-    this.$update.available.subscribe(event => {
-      const local = this.$i18n.locale;
-      alert(this.i18n[local].reload);
-      this.$update.activateUpdate().then(() =>  window.location.href=window.location.href);
-    });
+    this.subscription$.add(
+      this.$update.available.subscribe(event => {
+        const local = this.$i18n.locale;
+        alert(this.i18n[local].reload);
+        this.$update.activateUpdate().then(() => window.location.reload());
+      })
+    );
 
     //
     // load config on boot
     this.$loader.ready().toPromise().then();
 
+  }
+
+  ngOnDestroy() {
+    this.subscription$.unsubscribe();
   }
 }

@@ -1,4 +1,4 @@
-import {Directive, ElementRef, HostListener, Input, Renderer2} from '@angular/core';
+import {Directive, ElementRef, HostListener, Input, Renderer2, OnDestroy} from '@angular/core';
 
 @Directive({
   selector: '[kng-ripple]',
@@ -7,18 +7,17 @@ import {Directive, ElementRef, HostListener, Input, Renderer2} from '@angular/co
   }
 
 })
-export class KngRippleDirective {
+export class KngRippleDirective implements OnDestroy {
 
   hostEl;
 
   constructor(private renderer: Renderer2, el: ElementRef) {
     this.hostEl = el.nativeElement;
-    console.log('---ripple',this.hostEl)
   }
 
   @Input() terminate:boolean;
 
-  ngDestroy() {
+  ngOnDestroy() {
   }
 
   @HostListener('click', ['$event']) onClick(e: MouseEvent) {

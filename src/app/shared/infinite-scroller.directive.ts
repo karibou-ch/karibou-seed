@@ -16,7 +16,7 @@ const DEFAULT_SCROLL_POSITION: ScrollPosition = {
 };
 
 //
-// this is a simple infinite scroll 
+// this is a simple infinite scroll
 // https://codeburst.io/angular-2-simple-infinite-scroller-directive-with-rxjs-observables-a989b12d4fb1
 
 @Directive({
@@ -32,19 +32,21 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
 
   private requestOnScroll$;
 
+  private subscription: Subscription;
+
   //
-  // scrollCallback — callback function which should 
+  // scrollCallback — callback function which should
   // return an observable
   @Input()
   scrollCallback;
 
-  // immediateCallback — a boolean value, if true as soon 
+  // immediateCallback — a boolean value, if true as soon
   // as the directive is initialized call the callback()
   @Input()
   immediateCallback;
 
-  // scrollPercent — until what percentage the user should 
-  // scroll the container for the scrollCallback to be called  
+  // scrollPercent — until what percentage the user should
+  // scroll the container for the scrollCallback to be called
   @Input()
   scrollPercent = 70;
 
@@ -62,8 +64,10 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    //clean only if needed!
-    //this.requestOnScroll$.unsubscribe()
+    // Clean up subscription to prevent memory leaks
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   private registerScrollEvent() {
@@ -109,7 +113,7 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
       );
     }
 
-    this.requestOnScroll$.pipe(
+    this.subscription = this.requestOnScroll$.pipe(
       exhaustMap(() => { return this.scrollCallback(); })
     ).subscribe(() => { });
 

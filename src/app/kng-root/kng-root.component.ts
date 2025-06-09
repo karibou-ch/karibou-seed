@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { i18n, KngNavigationStateService } from '../common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CartService, Order, Product, ProductService, User } from 'kng2-core';
@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './kng-root.component.html',
   styleUrls: ['./kng-root.component.scss']
 })
-export class KngRootComponent implements OnInit {
+export class KngRootComponent implements OnInit, OnDestroy {
 
   config: any;
   currentShippingDay: Date;
@@ -126,7 +126,7 @@ export class KngRootComponent implements OnInit {
     }, 100);
 
   }
-  ngDestroy() {
+  ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
