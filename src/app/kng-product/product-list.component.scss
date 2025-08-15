@@ -15,15 +15,15 @@
     overflow-y: hidden!important;
   }
 
-  @media (min-width: 1025px) {
+  @media (min-width: 1200px) { /* Desktop */
     background-color: rgba(0, 0, 0, 0.57);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) { /* Mobile */
     background: white;
   }
 
-  @media (min-width: 1025px) {
+  @media (min-width: 1200px) { /* Desktop */
     padding: 5px;
 
     .product-backdrop {}
@@ -39,7 +39,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 900px;
+    max-width: 1150px;
     min-height: 70vh;
     border-radius: 4px;
     opacity: 1;
@@ -188,7 +188,7 @@
       transition: all .5s;
       z-index: 1;
 
-      @media (max-width:431px) {
+      @media (max-width: 767px) {
         top:0px
       }
 
@@ -325,11 +325,11 @@
     align-items: flex-start;
 
 
-    @media (min-width: 800px) {
+    @media (min-width: 1200px) {
       top: 20px;
     }
 
-    @media (min-width: 1025px) {
+    @media (min-width: 1200px) {
       transform: none !important;
       left: calc((100% - 865px) / 2);
       top: 20px;
@@ -410,7 +410,7 @@
       overflow: hidden;
       margin-top: 20px;
 
-      @media (max-width: 541px) {
+      @media (max-width: 1199px) {
         margin-left: -300px;
         background: rgba(240, 240, 240, 0.9);
       }
@@ -477,11 +477,11 @@ kng-signup{
     justify-content: flex-start!important;
   }
 
-  @media (max-width:431px) {
+  @media (max-width: 767px) {
     width: calc(100% - 10px);
   }
 
-  @media (max-width:320px) {
+  @media (max-width: 400px) { /* Mobile XXS harmonisé */
     width: calc(100% - 10px);
   }
 

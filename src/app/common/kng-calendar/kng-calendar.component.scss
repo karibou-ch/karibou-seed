@@ -8,7 +8,7 @@
   &.fit-content{
     margin: 10px 0;
     width: 100% !important;
-    max-width: 360px;
+    max-width: 420px; /* Corrigé depuis 360px pour éviter le bug layout à 421px/422px */
     .calendar-container{
       font-size: 15px;
       padding: 0 0px;
@@ -36,7 +36,7 @@
     width: 940px;
     margin-left: 0px;
   }
-  @media (max-width:440px) {
+  @media (max-width:599px) {
     padding: 0 10px!important;
     .calendar,.switch-hub{
       width: calc(100% - 20px)!important;
@@ -70,7 +70,7 @@
     background-color: var(--mdc-theme-appbar-light) !important;
     padding: 10px;
     flex: 1;
-    margin: auto 5px;
+    margin: auto 4px;
 
     &::-webkit-scrollbar {
       display: none;
@@ -150,9 +150,10 @@
   }
   .switch-hub {
     width: 100%;
-    flex: 1 1 20%;
     min-width: 350px;
-    -margin: auto 10px;
+    margin: auto 5px;
+    padding: 10px;
+    flex: 0;
     .label button {
       min-width: 135px;
       text-overflow: ellipsis;

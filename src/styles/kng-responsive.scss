@@ -1,5 +1,38 @@
 
+/**
+ * KARIBOU RESPONSIVE SYSTEM V2.0
+ * ================================
+ *
+ * BREAKPOINTS HARMONISÉS :
+ * - Mobile XXS : ≤400px (très petits mobiles + DPR)
+ * - Mobile : ≤767px (principal mobile)
+ * - Tablet : 768px-1199px
+ * - Desktop : ≥1200px
+ * - Desktop XXL : ≥1920px (limitation affichage)
+ */
 
+/* ==========================================================================
+   VARIABLES CSS POUR LES BREAKPOINTS (usage dans propriétés CSS uniquement)
+   ========================================================================== */
+:root {
+  --mobile-xxs-max: 400px;   /* Très petits mobiles + DPR consideration */
+  --mobile-max: 767px;       /* Mobile principal */
+  --tablet-min: 768px;       /* Début tablet */
+  --tablet-max: 1199px;      /* Fin tablet (corrigé depuis 1023px) */
+  --desktop-min: 1200px;     /* Desktop (corrigé depuis 1024px) */
+  --desktop-xxl-max: 1920px; /* Pour limiter l'affichage */
+}
+
+/* ATTENTION : var() ne fonctionne PAS dans @media queries !
+   Utiliser les valeurs en dur dans les media queries :
+   - Mobile: @media (max-width: 767px)
+   - Tablet: @media (min-width: 768px) and (max-width: 1199px)
+   - Desktop: @media (min-width: 1200px)
+*/
+
+/* ==========================================================================
+   CLASSES EXISTANTES (CONSERVÉES POUR COMPATIBILITÉ)
+   ========================================================================== */
 
 .show-sm     {display: none!important;}
 
@@ -9,10 +42,83 @@
   .inline-show-sm     {display: inline-block!important;}
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
   .hide-md    {display: none!important;}
 }
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1200px) {
   .show-lg    {display: block;}
   .hide-lg    {display: none!important;}
 }
+
+/* ==========================================================================
+   NOUVELLES CLASSES HARMONISÉES (AJOUTS)
+   ========================================================================== */
+
+/* Mobile XXS (≤400px) - Très petits mobiles + DPR */
+.show-mobile-xxs { display: none !important; }
+@media only screen and (max-width: 400px) {
+  .hide-mobile-xxs { display: none !important; }
+  .show-mobile-xxs { display: block !important; }
+  .inline-show-mobile-xxs { display: inline-block !important; }
+}
+
+/* Tablet corrigé (768px - 1199px) au lieu de 1023px */
+@media only screen and (min-width: 768px) and (max-width: 1199px) {
+  .hide-tablet { display: none !important; }
+  .show-tablet { display: block !important; }
+  .inline-show-tablet { display: inline-block !important; }
+}
+
+/* Desktop corrigé (≥1200px) au lieu de 1024px */
+@media only screen and (min-width: 1200px) {
+  .hide-desktop { display: none !important; }
+  .show-desktop { display: block !important; }
+  .inline-show-desktop { display: inline-block !important; }
+}
+
+/* Desktop XXL Limitation (≥1920px) - POUR LIMITER L'AFFICHAGE */
+@media only screen and (min-width: 1920px) {
+  .content-max-width {
+    max-width: 1920px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* ==========================================================================
+   NOTES DE MIGRATION
+   ========================================================================== */
+/*
+MIGRATION RECOMMANDÉE :
+- Garder .hide-sm/.show-sm (mobile ≤767px) ✅
+- Remplacer .hide-md par .hide-tablet (768px-1199px au lieu de 1023px)
+- Remplacer .show-lg/.hide-lg par .show-desktop/.hide-desktop (≥1200px au lieu de 1024px)
+
+PROBLÈME ZOOM CSS BODY À ANALYSER :
+- @media (min-width: 1025px) { zoom: 0.85; } dans styles.scss
+- Conflictuel avec desktop-min: 1200px
+- Zone morte 1025px-1199px avec zoom imprévisible
+
+CORRECTIONS APPLIQUÉES :
+✅ kng-calendar.component.scss: max-width 360px → 420px (bug layout résolu)
+✅ kng-widgets.scss: 599px → 767px (4 corrections, zone morte tablet comblée)
+✅ kng-cart-items.component.scss: 599px → 767px (6 corrections)
+✅ product-list.component.scss: 599px → 767px, 1025px → 1200px, 320px → 400px
+✅ kng-footer.component.scss: 599px → 767px, 1024px → 1200px (4 corrections)
+✅ kng-news.component.scss: 599px → 767px, 1024px → 1199px (6 corrections)
+⚠️  Variables CSS dans @media queries corrigées (var() ne fonctionne pas)
+
+BREAKPOINTS TYPESCRIPT HARMONISÉS :
+✅ product-grouped-list.component.ts: 1025px → 1199px (cohérent avec tablet-max)
+✅ Logique maxcat simplifiée: Mobile=2, Tablet=6, Desktop=8 (-1 si showMore)
+⏳ product-swipe.component.ts: (window.innerWidth < 1025) À CORRIGER
+
+RÈGLES MAXCAT PRODUITS (AJUSTÉES) :
+- Mobile ≤767px: maxcat = 2 (1 si showMore)
+- Tablet 768px-1199px: maxcat = 5 (4 si showMore)
+- Desktop ≥1200px: maxcat = 6 (5 si showMore) - MUST BE LARGEST
+
+RECOMMANDATION : Créer un service Angular pour détecter les breakpoints :
+- BreakpointObserver de @angular/cdk/layout
+- OU service custom basé sur les variables CSS
+- Éviter les window.innerWidth hardcodés dans les composants
+*/

@@ -10,7 +10,7 @@ div.home-header{
   background-color: transparent!important;
   margin-top: 0px;
   margin-bottom: 0px;
-  @media (max-width:1023px){
+  @media (max-width: 767px){
     padding: 10px 10px;
     width: calc( 100% - 20px );
   }
@@ -23,7 +23,7 @@ div.home-header{
     max-width: calc(100% - 1.25rem);
     -box-shadow: 10px -10px 0px 0px deeppink;
 
-    @media (min-width: 1023px) {
+    @media (min-width: 768px) {
       margin: 1rem;
       margin-left: 0;
         width: (30%);
@@ -45,7 +45,7 @@ div.home-header{
     -border: 1px solid #eee;
     background-color: var(--mdc-theme-appbar-light);
     flex: 1;
-    @media (min-width: 1023px) {
+    @media (min-width: 768px) {
       margin-left: .25rem;
     }
 
@@ -98,7 +98,7 @@ div.home-header{
         img{
           height: 100%;
         }
-        @media (max-width:431px) {
+        @media (max-width:599px) {
           max-width:100%;
           overflow: hidden;
           max-height: 230px;
@@ -116,7 +116,7 @@ div.home-header{
       .left{
         flex: 1;
         max-width: 48%;
-        @media (max-width:431px) {
+        @media (max-width: 767px) {
           flex: 1 0 100%;
           max-width:100%;
           font-size:70%;
@@ -139,7 +139,7 @@ div.home-header{
           transform: scale(.9);
           max-height: 200px;
           padding: 0;
-          @media (max-width:431px) {
+          @media (max-width:599px) {
             max-width:100%;
             font-size:70%;
             transform: none;
@@ -154,7 +154,7 @@ div.home-header{
         padding: 20px;
         align-self: center;
         max-width: 45%;
-        @media (max-width:431px) {
+        @media (max-width: 767px) {
           max-width:100%;
         }
       }
@@ -200,7 +200,7 @@ kng-calendar  {
 kng-nav-marketplace,
 kng-product-link,
 kng-product-swipe {
-  @media (max-width:740px) {
+  @media (max-width: 767px) { /* Mobile harmonisé */
     padding: 10px 10px;
     width: calc( 100% - 20px );
   }
@@ -223,7 +223,7 @@ kng-product-swipe{
 
 .kng-boxed.first,
 .kng-boxed.themes{
-  @media (min-width:1025px) {
+  @media (min-width: 1200px) { /* Desktop harmonisé */
     margin: 1rem;
     padding: 1.55rem;
   }
@@ -383,22 +383,22 @@ kng-product-swipe{
   flex-direction: column;
   gap:10px;
   padding-left: 5px;
-  @media (max-width:440px) {
+  @media (max-width: 767px) {
     display: none;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1199px) { /* Tablet + Mobile harmonisé */
     display: none;
   }
 
-  @media (min-width:1024px) and (max-width:1440px) {
+  @media (min-width: 1200px) and (max-width: 1440px) { /* Desktop standard */
   }
 
 
-  @media (min-width:1441px) {
+  @media (min-width: 1441px) { /* Desktop large */
   }
 
-  @media (min-width:1600px) {
+  @media (min-width: 1600px) { /* Desktop XL */
   }
 
   >div{
@@ -436,15 +436,15 @@ kng-product-swipe{
   &.display{
     opacity: 0;
   }
-  @media screen and (min-width:1600px) {
+  @media screen and (min-width: 1600px) {
     margin-left:-290px;
     left: initial;
   }
-  @media screen and (max-width:1440px) and (min-width:1025px){
+  @media screen and (max-width: 1440px) and (min-width: 1200px){ /* Desktop range harmonisé */
     width: 16%;
   }
 
-  @media (max-width:1224px){
+  @media (max-width: 1199px){ /* Tablet + Mobile - harmonisé */
     display: none;
   }
 
@@ -486,7 +486,7 @@ kng-product-swipe{
       background: #888;
     }
 
-    @media (max-width:431px) {
+    @media (max-width: 767px) {
       -background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
     }
 
@@ -572,7 +572,7 @@ div.product-container{
   padding: 0;
   width: 100%;
   min-height: 30vh;
-  @media (max-width:431px) {
+  @media (max-width: 767px) {
     padding: 0;
     width: calc(100vw - 20px);
     margin-left: auto;

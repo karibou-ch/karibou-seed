@@ -6,6 +6,7 @@ div.footer{
   margin-top: 0px;
   width: 100%;
   display: flex;
+  display: none;
   flex-wrap: wrap;
   height: fit-content;
   font-size: .9rem;
@@ -20,7 +21,7 @@ div.footer{
   background-position-x: 40%;
   background-repeat: repeat-x;
   background-color: var(--mdc-theme-appbar);
-  background-color: #fff;  
+  background-color: #fff;
   padding-top: 110px;
   @media (prefers-color-scheme: dark) {
     background-color: var(--mdc-theme-primary-dark);
@@ -28,24 +29,24 @@ div.footer{
   }
 
 
-  @media (max-width:431px) {
+  @media (max-width: 767px) {
     .main{
       display: none!important;
     }
   }
 
   div.main{
-    color: var(--mdc-theme-primary-on-background);  
+    color: var(--mdc-theme-primary-on-background);
     background: #d0d0d9;
     width: 100%;
     margin: auto;
-    box-sizing: border-box;  
+    box-sizing: border-box;
     padding:0;
     margin-top: 0px;
-    margin-bottom: 0px;    
+    margin-bottom: 0px;
     .line{
       padding:2px 0;
-      @media screen and (max-width:431px){
+      @media screen and (max-width: 767px){
         padding-left: 30px;
       }
       display:flex;
@@ -53,13 +54,13 @@ div.footer{
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
-        border-bottom:2px dotted #eee;      
+        border-bottom:2px dotted #eee;
       }
       .elem{
         flex:1 0 calc(33% - 40px);
         padding:0px;
         min-width: 200px;
-        @media screen and (max-width:431px){
+        @media screen and (max-width: 767px){
           flex:1 0 calc(100% - 40px);
           padding:5px;
         }
@@ -70,8 +71,8 @@ div.footer{
           img {
             display: none;
           }
-          @media screen and (min-width:431px){
-            text-align: right;            
+          @media screen and (min-width: 1200px){
+            text-align: right;
           }
         }
 
@@ -82,14 +83,14 @@ div.footer{
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 20px;          
+          gap: 20px;
           li{
             line-height: 1.9em;
           }
           a{
             text-decoration: none;
             color: #000;
-            font-size: 90%;          }          
+            font-size: 90%;          }
         }
       }
     }

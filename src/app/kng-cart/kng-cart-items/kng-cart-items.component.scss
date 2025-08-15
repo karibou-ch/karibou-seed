@@ -35,7 +35,7 @@ kng-subscription-option{
         color: red;
         font-weight: 200;
       }
-      @media (max-width:431px) {
+      @media (max-width: 767px) {
         max-width: 190px;
         font-size: 14px;
       }
@@ -148,7 +148,7 @@ kng-subscription-option{
     color: var(--mdc-theme-karibou-pink);
   }
 
-  @media (max-width:431px) {
+  @media (max-width: 767px) {
     padding-left: 5px;
   }
 
@@ -262,7 +262,7 @@ kng-subscription-option{
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      @media (max-width:431px) {
+      @media (max-width: 767px) {
         font-size: 90%;
       }
 
@@ -331,7 +331,7 @@ kng-subscription-option{
     font-size: 1rem;
     flex-wrap: nowrap;
     align-items: center;
-    @media (max-width:431px) {
+    @media (max-width: 767px) {
       zoom: .85;
     }
 
@@ -424,7 +424,7 @@ kng-subscription-option{
     white-space: nowrap;
     display: flex;
     align-items: center;
-    @media (max-width:431px) {
+    @media (max-width: 767px) {
       margin-right: auto;
       width: 100%;
       margin-top: 10px;
@@ -434,6 +434,7 @@ kng-subscription-option{
   }
   kng-calendar{
     border-radius: 8px;
+    flex:2;
   }
   button.order{
     cursor: pointer;
@@ -447,7 +448,7 @@ kng-subscription-option{
     height: 56px;
     font-weight: bold;
     margin-left: 0;
-    @media (max-width:431px) {
+    @media (max-width: 767px) {
       width: 100%;
     }
 

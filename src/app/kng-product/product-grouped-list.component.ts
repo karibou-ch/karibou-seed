@@ -307,15 +307,27 @@ export class ProductGroupedListComponent implements OnInit {
     if (!this.products.length) {
       return;
     }
-    // const maxcat = this.useMaxCat? (this.isMobile ? 8 : 12):100;
-    // const divider = this.isMobile ? 2 : 4;
     // IMPORTANT: maxcat limit the display of products
-    const maxcat = this.useMaxCat ? (this.isMobile ? 2 : (
-      (window.innerWidth < 1025) ? 6 : 5
-    )) : 200;
+    // Cohérent avec breakpoints: Mobile ≤767px, Tablet 768px-1199px, Desktop ≥1200px
+    let maxcat = 200; // Par défaut si useMaxCat = false
+
+    if (this.useMaxCat) {
+      if (this.isMobile) {
+        maxcat = 2; // Mobile ≤767px
+      } else if (window.innerWidth <= 1199) {
+        maxcat = 5; // Tablet 768px-1199px
+      } else {
+        maxcat = 6; // Desktop ≥1200px IT MUST BE LARGEST
+      }
+
+      // Si showMore est true, on réduit de 1
+      if (this.showMore) {
+        maxcat = Math.max(1, maxcat - 1);
+      }
+    }
 
     const divider = this.isMobile ? 2 : (
-      (window.innerWidth < 1025) ? 6 : 4
+      (window.innerWidth <= 1199) ? 6 : 4
     );
 
     const inferedCategories = [];
