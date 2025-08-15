@@ -3,27 +3,27 @@
   <div *ngIf="vendor" class="right-card">
     <h1>{{vendor.name}}</h1>
 
-    <div class="description" [kng-markdown]="vendor.description"></div>  
-    <div class="contact">      
-      <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-symbols-outlined">phone</i> {{vendor.address.phone}}</a>      
+    <div class="description" [kng-markdown]="vendor.description"></div>
+    <div class="contact">
+      <a href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-symbols-outlined">phone</i> {{vendor.address.phone}}</a>
     </div>
     <!-- MARQUE -->
     <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">
     </div> -->
     <img class="logo" [src]="vendor.photo.logo"  [hidden]="!vendor.photo.logo">
-    
-        
+
+
   </div>
 </div>
 <div class="content" *ngIf="vendor">
   <!-- SHOP PRODUCTS -->
   <!-- <section class="products" >
-    <kng-product-grouped-list 
+    <kng-product-grouped-list
       *ngIf="products.length"
       alphasort="true"
-      [config]="config" 
-      [user]="user" 
-      [contentCategories]="categories" 
+      [config]="config"
+      [user]="user"
+      [contentCategories]="categories"
       [contentProducts]="products">
       </kng-product-grouped-list>
 
@@ -41,10 +41,10 @@
       <br>
       {{vendor.address.streetAdress}} / {{vendor.address.postalCode}} / {{vendor.address.region}}
       <br>
-      <a [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
+      <a [href]="getValidUrl(vendor.url)" target="_new" [hidden]="!vendor.url">{{getDisplayUrl(vendor.url)}}</a>
       <!-- <a class="" ng-show="vendor.photo.source&&user.isOwnerOrAdmin(vendor.name)" ng-href="{{vendor.photo.source}}" target="_new">[Votre galerie photo]</a> -->
     </address>
-  </section>                        
+  </section>
 
   <!-- SHOP FAQ -->
   <section class="FAQ" *ngIf="vendor.faq&&vendor.faq.length">
@@ -56,7 +56,7 @@
         <div [kng-markdown]="faq.a" removeRoot="true" ></div>
       </li>
     </ul>
-  </section>      
+  </section>
 
 
 </div>

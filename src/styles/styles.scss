@@ -5,8 +5,8 @@ body{
   margin-top: 0;
   background: white;
   font-size: 17px;
-  @media (min-width: 1025px) {
-    zoom:0.9;
+  @media (min-width: 768px) {
+    zoom:0.85;
     transform-origin: top left;
   }
 

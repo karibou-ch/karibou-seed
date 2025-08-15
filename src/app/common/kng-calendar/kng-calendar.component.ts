@@ -84,6 +84,7 @@ export class KngCalendarComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.$loader.update().subscribe(emit => {
       if(emit.state &&  this.config) {
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
@@ -93,6 +94,9 @@ export class KngCalendarComponent implements OnInit {
       if(!emit.config) {
         return;
       }
+      this.currentWeek = [];
+      this.availableDays = [];
+      this.multipleHubsDays = [];
       this.config = emit.config;
       this.currentHub = this.config.shared.hub as Hub;
       this.labelTime = this.config.shared.hub.shippingtimes[16]

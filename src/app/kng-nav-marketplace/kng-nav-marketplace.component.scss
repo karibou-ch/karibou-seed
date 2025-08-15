@@ -5,7 +5,7 @@
     font-size: 1.4675rem;
     margin-top: 20px;
     margin-left: 10px;
-    margin-right: 10px;      
+    margin-right: 10px;
   }
   h3{
     font-weight: 200;
@@ -14,32 +14,32 @@
     text-shadow: 1px 1px 0 white;
     margin-top: -10px;
     margin-left: 10px;
-    margin-right: 10px;  
+    margin-right: 10px;
   }
-  
+
   .marketplace {
     overflow-x: auto;
     -webkit-overflow-scrolling:touch;
     &::-webkit-scrollbar {
       display: none;
     }
-  
+
     width: 100%;
     margin-left: 0px;
-    @media (max-width:431px) {
+    @media (max-width:599px) {
       margin-left: 0px;
     }
-  
+
     .container {
       display: flex;
       flex-flow: row nowrap;
       width: 100%;
-      @media (max-width:431px) {
+      @media (max-width:599px) {
         padding: 10px 0;
         flex-flow: row wrap;
       }
-  
-  
+
+
       .hub{
         position: relative;
         padding: 0px;
@@ -53,12 +53,12 @@
         margin-right: 10px;
         cursor: pointer;
         display: flex;
-        flex-flow: column nowrap;   
+        flex-flow: column nowrap;
         @media (prefers-color-scheme: dark) {
           -color: var(--mdc-theme-secondary-dark-text);
           -background-color: var(--mdc-theme-secondary-dark);
         }
-              
+
 
         @media (max-width:3429px) {
           max-height: 320px;
@@ -66,7 +66,7 @@
           border: none;
           width: calc(100% );
         }
-          
+
         &.selected{
           .change {
             display: none;
@@ -78,30 +78,30 @@
           top: 10px;
           color: var(--mdc-theme-primary);
           height: 36px;
-          text-align: center;       
+          text-align: center;
           button{
             border-radius: 10px;
             cursor: pointer;
             border: 1px solid #aaa;
             background-color: white;
-            padding: 2px 8px;       
-            font-size: 12px;     
-          } 
+            padding: 2px 8px;
+            font-size: 12px;
+          }
           .stars{
             font-size: 38px;
           }
         }
         .logo{
-          @media (max-width:431px) {
+          @media (max-width:599px) {
             -width: 65px;
             height:210px;
             margin: 0px auto 0;
-            border-radius: 0px;    
+            border-radius: 0px;
           }
-  
+
           width: 100%;
-          height: 43%;        
-          min-height: 42%;        
+          height: 43%;
+          min-height: 42%;
           overflow: hidden;
           text-align: center;
           border-bottom: 1px solid #eee;
@@ -111,7 +111,7 @@
             margin: 0;
             object-position: center center;
             object-fit: cover;
-            width: 100%;          
+            width: 100%;
           }
         }
         .content{
@@ -138,7 +138,7 @@
             color: #444;
           }
           .cart{
-            @media (max-width:431px) {
+            @media (max-width:599px) {
               display: none;
             }
             margin-bottom: 0;
@@ -147,7 +147,7 @@
             margin-right: -10px;
             text-align: center;
             background-color: #efefef;
-            padding: 5px 0;          
+            padding: 5px 0;
             color:var(--mdc-theme-primary);
             font-size: 16px;
             font-weight: bold;
@@ -180,12 +180,12 @@
             .schedule{
               color: black;
               margin: auto;
-              margin-left: 0px;            
+              margin-left: 0px;
               span{
                 font-size: 20px;
                 color: #000;
               }
-        
+
               span.txt{
                 font-size: 14px;
                 padding: 1px 4px;
@@ -195,22 +195,22 @@
             }
           }
         }
-      }  
+      }
     }
-  
+
     ul.availability{
       padding-left: 0;
       margin: 0;
       list-style: none;
       margin-left: auto;
       margin-right: 5px;
-  
+
       li{
         font-size: 14px;
         display: inline-block;
         padding-right: 4px;
         padding-left: 4px;
-        text-align: center;      
+        text-align: center;
         .icon{
           font-size: 10px;
           color: var(--mdc-theme-primary);
@@ -218,5 +218,5 @@
       }
     }
   }
-  
+
 }

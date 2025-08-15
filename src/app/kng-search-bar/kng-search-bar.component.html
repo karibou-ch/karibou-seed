@@ -2,9 +2,18 @@
   <i class="left material-symbols-outlined">search</i>
   <span #stats class="stats"></span>
   <input type="text" #search
-        (keydown.enter)="doInput($event.target.value)" 
-        (focus)="onFocus()" 
-        [placeholder]="label.search_placeholder" >    
+        (keydown.enter)="doInput($event.target.value)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        [placeholder]="label.search_placeholder" >
   <i class="hide right-favorite material-symbols-outlined" (click)="doFavorite()">favorite</i>
-  <i class="hide right-favorite material-symbols-outlined" [class.cleared]="isCleared" (click)="doClear()">close</i>
-</form>  
+  <i class="right material-symbols-outlined" [class.cleared]="isCleared" (click)="doClear()">close</i>
+
+  <!-- THEMES -->
+  <div class="themes" [hidden]="!showThemes">
+    <div class="" *ngFor="let theme of themes" (click)="doSearch(theme.name)">
+      <span>{{theme.name}} </span>
+    </div>
+  </div>
+
+</form>

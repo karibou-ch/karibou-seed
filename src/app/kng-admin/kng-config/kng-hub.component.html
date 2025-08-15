@@ -17,30 +17,30 @@
                       [(ngModel)]="currentHub.status.reason[$i18n.locale]"
                       [checked]="currentHub.status.active"
                       (checkChange)="currentHub.status.active=$event"></kng-config-input>
-  
+
   <button raised mdc-button (click)="onAdminHubSave()" class="primary">
     <span mdcButtonLabel>Sauver vos modifications admin</span>
     <span class="material-symbols-outlined">save</span>
-  </button>    
-                    
+  </button>
+
   <!-- HUB Address -->
   <h3 >Adresse </h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Adresse rue" name="address.stree" format="text" 
+  <kng-config-input clazz="config" label="Adresse rue" name="address.stree" format="text"
                     [address]="currentHub.address"
                     [(ngModel)]="currentHub.address.streetAdress" (ngModelChange)="updateGeo($event)"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Adresse code postal" name="address.postalcode" format="text" 
+  <kng-config-input clazz="config" label="Adresse code postal" name="address.postalcode" format="text"
                     [address]="currentHub.address"
                     [(ngModel)]="currentHub.address.postalCode" (ngModelChange)="updateGeo($event)"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Adresse région" name="address.region" format="text" 
+  <kng-config-input clazz="config" label="Adresse région" name="address.region" format="text"
                     [(ngModel)]="currentHub.address.region"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Adresse téléphone" name="address.phone" format="text" 
+  <kng-config-input clazz="config" label="Adresse téléphone" name="address.phone" format="text"
                     [(ngModel)]="currentHub.address.phone"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Adresse www" name="address.phone" format="text" 
+  <kng-config-input clazz="config" label="Adresse www" name="address.phone" format="text"
                     [(ngModel)]="currentHub.address.url"></kng-config-input>
 
   <kng-config-input clazz="config" label="Geo" name="address.geo" format="geo" [config]="config"
@@ -49,91 +49,110 @@
   <!-- HUB Schedule -->
   <h3 >Core informations</h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Order qty limit" name="currentLimit" format="text" 
+  <kng-config-input clazz="config" label="Order qty limit" name="currentLimit" format="text"
                     [(ngModel)]="currentHub.currentLimit"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Service fees" name="serviceFees" format="text" 
+  <kng-config-input clazz="config" label="Service fees" name="serviceFees" format="text"
                     [(ngModel)]="currentHub.serviceFees"></kng-config-input>
 
-  <kng-config-input clazz="config" label="timelimit" name="timelimit" format="text" 
+  <kng-config-input clazz="config" label="Reserved amount" name="reservedAmount" format="text"
+                    [(ngModel)]="currentHub.reservedAmount"></kng-config-input>
+
+
+  <kng-config-input clazz="config" label="timelimit" name="timelimit" format="text"
                     [(ngModel)]="currentHub.timelimit"></kng-config-input>
 
-  <kng-config-input clazz="config" label="timelimitH" name="timelimitH" format="text" 
+  <kng-config-input clazz="config" label="timelimitH" name="timelimitH" format="text"
                     [(ngModel)]="currentHub.timelimitH"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Ouverture: Dim(0), Lun(1),Mar(2),Merc(3),Jeu(4),Vend(5),Sam(6)" name="weekdays" format="text" 
+  <kng-config-input clazz="config" label="Ouverture: Dim(0), Lun(1),Mar(2),Merc(3),Jeu(4),Vend(5),Sam(6)" name="weekdays" format="text"
                     [(ngModel)]="currentHub.weekdays"></kng-config-input>
-                  
+
   <hr class="dashed"/>
   <section class="shippingtime">
     <h3 >Shipping Time</h3>
     <kng-config-input *ngFor="let time of [0,10,12,16,19]"
-                  clazz="config" label="Boundaries for start time: {{time}}h {{time?'':'collect'}}" name="shippingtime-{{time}}" format="text" 
+                  clazz="config" label="Boundaries for start time: {{time}}h {{time?'':'collect'}}" name="shippingtime-{{time}}" format="text"
                   [(ngModel)]="currentHub.shippingtimes[time+'']"></kng-config-input>
   </section>
 
   <!-- HUB Mail -->
   <h3 >Mail informations</h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Subject" name="mail.subject" format="text" 
+  <kng-config-input clazz="config" label="Subject" name="mail.subject" format="text"
                     [(ngModel)]="currentHub.mail.subject"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Signature" name="mail.signature" format="area" 
+  <kng-config-input clazz="config" label="Signature" name="mail.signature" format="area"
                     [(ngModel)]="currentHub.mail.signature"></kng-config-input>
 
-  <!-- HUB SiteName -->
+  <!-- HUB design -->
   <h3 >Colors </h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Color Mixer" name="colors.colormix" format="text" 
+  <kng-config-input clazz="config" label="Color Mixer" name="colors.colormix" format="text"
                     [(ngModel)]="currentHub.colors.colormix"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text" 
+  <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text"
                     [style.background]="currentHub.colors.primary"
                     [(ngModel)]="currentHub.colors.primary"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Text Color" name="colors.text" format="text" 
+  <kng-config-input clazz="config" label="Text Color" name="colors.text" format="text"
                     [style.background]="currentHub.colors.primary"
                     [(ngModel)]="currentHub.colors.primaryText"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Action Color" name="colors.action" format="text" 
+  <kng-config-input clazz="config" label="Action Color" name="colors.action" format="text"
                     [style.background]="currentHub.colors.action"
                     [(ngModel)]="currentHub.colors.action"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Action Text Color" name="colors.action-text" format="text" 
+  <kng-config-input clazz="config" label="Action Text Color" name="colors.action-text" format="text"
                     [style.background]="currentHub.colors.action"
                     [(ngModel)]="currentHub.colors.actionText"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Appbar Color (optional)" name="colors.action-appbar" format="text" 
+  <kng-config-input clazz="config" label="Appbar Color (optional)" name="colors.action-appbar" format="text"
                     [style.background]="currentHub.colors.appbar"
                     [(ngModel)]="currentHub.colors.appbar"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Appbar Text Color (optional)" name="colors.action-appbar-text" format="text" 
+  <kng-config-input clazz="config" label="Appbar Text Color (optional)" name="colors.action-appbar-text" format="text"
                     [style.background]="currentHub.colors.appbar"
                     [(ngModel)]="currentHub.colors.appbarText"></kng-config-input>
+
+  <!-- HUB design -->
+  <h3 >Design </h3>
+  <hr class="dashed"/>
+  <kng-config-input clazz="config" label="Activer les Thématiques" name="pageOptions.themas" format="checkbox"
+                    [(ngModel)]="currentHub.pageOptions.themas"></kng-config-input>
+
+  <kng-config-input clazz="config" label="UX Minimale" name="pageOptions.minimal" format="checkbox"
+                    [(ngModel)]="currentHub.pageOptions.minimal"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Nombre de catégories" name="pageOptions.maxcat" format="text"
+                    [(ngModel)]="currentHub.pageOptions.maxcat"></kng-config-input>
 
   <!-- HUB Links -->
   <h3 >Links </h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Links" name="links" format="area" 
-                    [(ngModel)]="currentHub.defaultTags"></kng-config-input>
+  <kng-config-input clazz="config" label="Home Link Label" name="home.customLink.label" format="text"
+                    [(ngModel)]="currentHub.home.customLink.label[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Home Link URL" name="home.customLink.url" format="text"
+                    [(ngModel)]="currentHub.home.customLink.url"></kng-config-input>
 
   <!-- HUB SiteName -->
   <h3 >Site Name </h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Hub Name" name="site.name" format="text" 
+  <kng-config-input clazz="config" label="Hub Name" name="site.name" format="text"
                     [(ngModel)]="currentHub.name"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Site Name" name="site.titre" format="text" 
+  <kng-config-input clazz="config" label="Site Name" name="site.titre" format="text"
                     [(ngModel)]="currentHub.siteName[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Description" name="site.desc" format="area" 
+  <kng-config-input clazz="config" label="Description" name="site.desc" format="area"
                     [(ngModel)]="currentHub.description[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Site Name Image" name="site.image" format="image" 
+  <kng-config-input clazz="config" label="Site Name Image" name="site.image" format="image"
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.siteName.image"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Icon Logo" name="site.logo" format="image" 
+  <kng-config-input clazz="config" label="Icon Logo" name="site.logo" format="image"
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.logo"></kng-config-input>
 
@@ -141,16 +160,16 @@
   <!-- HUB Tagline -->
   <h3 >Tagline <span class="gray">(welcome top)</span></h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Titre tagLine" name="tagLine.titre" format="text" 
+  <kng-config-input clazz="config" label="Titre tagLine" name="tagLine.titre" format="text"
                     [(ngModel)]="currentHub.tagLine.t[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Header tagLine" name="tagLine.h" format="text" 
+  <kng-config-input clazz="config" label="Header tagLine" name="tagLine.h" format="text"
                     [(ngModel)]="currentHub.tagLine.h[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Paragraphe tagLine" name="tagLine.p" format="area" 
+  <kng-config-input clazz="config" label="Paragraphe tagLine" name="tagLine.p" format="area"
                     [(ngModel)]="currentHub.tagLine.p[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Image tagLine" name="tagLine.image" format="image" 
+  <kng-config-input clazz="config" label="Image tagLine" name="tagLine.image" format="image"
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.tagLine.image"></kng-config-input>
 
@@ -158,34 +177,34 @@
   <!-- HUB About -->
   <h3 >About <span class="gray">(welcome middle)</span></h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text" 
+  <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text"
                     [(ngModel)]="currentHub.about.t[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Header about" name="about.h" format="text" 
+  <kng-config-input clazz="config" label="Header about" name="about.h" format="text"
                     [(ngModel)]="currentHub.about.h[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Paragraphe about" name="about.p" format="area" 
+  <kng-config-input clazz="config" label="Paragraphe about" name="about.p" format="area"
                     [(ngModel)]="currentHub.about.p[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Image about" name="about.image" format="image" 
+  <kng-config-input clazz="config" label="Image about" name="about.image" format="image"
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="currentHub.about.image"></kng-config-input>
 
   <!-- HUB Footer -->
   <h3 >Footer <span class="gray">(welcome bottom)</span></h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
+  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text"
                     [(ngModel)]="currentHub.footer.t[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Header footer" name="footer.h" format="text" 
+  <kng-config-input clazz="config" label="Header footer" name="footer.h" format="text"
                     [(ngModel)]="currentHub.footer.h[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area" 
+  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area"
                     [(ngModel)]="currentHub.footer.p[$i18n.locale]"></kng-config-input>
 
   <button raised mdc-button (click)="onHubSave()" class="primary">
     <span mdcButtonLabel>Sauver vos modifications</span>
     <span class="material-symbols-outlined">save</span>
-  </button>    
+  </button>
 
 </div>

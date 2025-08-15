@@ -42,10 +42,10 @@
       display: flex;
       flex-direction: column;
 
-      @media (max-width:431px) {
+      @media (max-width:599px) {
         margin: 5px;
         width: 100%;
-        height: auto;        
+        height: auto;
       }
 
       .svg {
@@ -80,7 +80,7 @@
           text-transform: uppercase;
         }
         .date{
-          margin-top: 20px;          
+          margin-top: 20px;
         }
       }
 
@@ -111,7 +111,7 @@
             margin-top: -1px;
             font-size: 13px;
             margin-bottom: 5px;
-            color: #555;  
+            color: #555;
           }
 
           div {
@@ -198,5 +198,5 @@
   .page-break {
     page-break-after: always;
     break-after:always;
-  }  
+  }
 }

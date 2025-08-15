@@ -45,12 +45,12 @@
 
 
 <!-- DISCOUNT -->
-<kng-product-swipe [user]="user" [hidden]="useTheme||isMobile" discount="true" [hub]="store" ></kng-product-swipe>
+<kng-product-swipe *ngIf="!isMinimal&&!isMobile" [user]="user"  discount="true" [hub]="store" ></kng-product-swipe>
 
 
 
 <!-- MOBILE SEARCH  -->
-<kng-search class="home" [class.active]="availableSearch"></kng-search>
+<kng-search class="home" [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search>
 
 <!-- CATEGORY -->
 <!-- FIXED SIZE -->
@@ -66,8 +66,7 @@
   <!-- NEED HELP? -->
   <div class="kng-boxed first hide-sm">
     <div class="content">
-      <div class="items">
-        {{hub.description[locale]}}
+      <div class="items" [innerHtml]="hub.description[locale]">
       </div>
       <div class="bottom">
         <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}</a>
@@ -76,15 +75,9 @@
   </div>
 
   <!-- SEARH -->
-  <kng-search-bar [class.active]="availableSearch"></kng-search-bar>
+  <kng-search-bar [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
 
   <!-- THEMES -->
-  <div class="kng-boxed themes">
-    <div class="kng-chip bold" *ngFor="let theme of themes" (click)="doSearch(theme.name)" [style.background]="theme.color">
-      <span>{{theme.name}} </span>
-    </div>
-  </div>
-
 
 
 
@@ -112,10 +105,17 @@
 </div>
 
 
-<div class="home" [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile" [hidden]="availableSearch && isMobile">
+<div class="home"
+     [hidden]="availableSearch && isMobile || isMinimal"
+     [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile" >
   <!-- MOBILE -->
   <ul class="subs">
-    <li class="subs-item " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <li class="subs-item " [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
+      <i class="material-symbols-outlined icon">person_celebrate</i>
+      <span>{{hub.home.customLink.label[locale]}}</span>
+    </li>
+
+    <li class="subs-item " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="hub.home.customLink.url">
       <i class="material-symbols-outlined icon    ">person_celebrate</i>
       <span>{{label.nav_subscription_b2b}}</span>
     </li>
@@ -144,7 +144,12 @@
       <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
 
     </li>
-    <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/business'">
+    <!-- DISPLAYCUSTOM LINK -->
+    <li class="hide-sm " [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
+      <b>{{hub.home.customLink.label[locale]}}</b>
+    </li>
+
+    <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
       <b>{{label.nav_subscription_b2b}}</b>
     </li>
 
@@ -172,13 +177,13 @@
   </ul>
 </div>
 
-
 <div class="product-container " *ngIf="products.length" >
-  <kng-product-grouped-list clazz="home"
-       [useMaxCat]="!useTheme && products.length>40"
-       [alphasort]="useTheme"
+
+  <kng-product-grouped-list clazz="home {{products.length<10?'large':''}}"
+       [useMaxCat]="products.length>40"
+       [alphasort]="false"
        [displayVendor]="true"
-       [showMore]="!useTheme && products.length>10"
+       [showMore]="products.length>10"
        [config]="config"
        [user]="user"
        [contentCategories]="sortedCategories"

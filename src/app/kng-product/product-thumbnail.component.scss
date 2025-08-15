@@ -104,7 +104,7 @@
   .media{
     position: relative;
     overflow: hidden;
-    height: 9rem;
+    aspect-ratio:1/1.1;
 
     border-radius: 12px;
     transition: background-color .2s ease-in-out;

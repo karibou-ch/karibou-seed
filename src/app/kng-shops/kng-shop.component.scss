@@ -8,7 +8,7 @@
   // left: 0;
   // z-index: 2;
   // padding: 32px;
-  @media (max-width:440px){
+  @media (max-width:599px){
     padding: 5px;
   }
 
@@ -180,7 +180,7 @@
       width: 760px;
       margin: auto;
 
-      @media screen and (max-width:431px){
+      @media screen and (max-width:599px){
         width: calc( 100vw - 20px );
       }
     }

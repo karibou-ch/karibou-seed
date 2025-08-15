@@ -76,6 +76,8 @@ div.navbar{
 
 
   .mdc-content{
+    // BASE STYLES (Desktop par défaut)
+    // Écrans: Desktop standard (1025px+), Laptops 13"-15"
     margin: auto;
     min-height: calc(100vh - 414px);
     margin-bottom:50px;
@@ -92,34 +94,52 @@ div.navbar{
       color: var(--mdc-theme-primary-dark-text);
     }
 
-    @media (max-width:440px) {
+    // MOBILE : 0px - 599px ✅ CONFORME RÈGLE
+    // Appareils : iPhone SE (375px), iPhone 12/13/14 (390px), Motorola Edge 30 (393px),
+    //            Samsung Galaxy S21/S22/S23 (360px-412px), Google Pixel (411px)
+    @media (max-width:599px) {
       padding: 0px;
       margin-top: 105px;
       min-width: 326px;
       width: var(--mdc-theme-width-sm);
     }
 
+    // ZONE PROBLÉMATIQUE : 600px - 1024px ❌
+    // Appareils : iPad mini (768px), iPad (1024px), tablets Android (800px-1024px)
+    // PROBLÈME : Overlaps avec mobile (599px) et crée une zone morte (600px-1023px)
     @media (max-width: 1024px) {
       padding: 0px;
       width: var(--mdc-theme-width-sm);
     }
 
+    // DESKTOP RANGE : 1024px - 1440px ❌ DEVRAIT ÊTRE 1280px+ selon la règle
+    // Appareils : MacBook Pro 13" (1440x900), Laptops 14"-15" (1366x768, 1440x900),
+    //            Desktop 1440p monitors, Smaller desktop screens
     @media (min-width:1024px) and (max-width:1440px) {
       max-width: 940px;
       width: var(--mdc-theme-width-md);
       margin-right: calc((100% - 980px) / 2.5);
     }
 
-
+    // LARGE DESKTOP : 1441px - 1599px ❌ SUBDIVISION INUTILE
+    // Appareils : MacBook Pro 16" (1728x1117), Desktop monitors 1440p-1600p
+    //            iMac 21.5" (1920x1080), Standard desktop monitors
     @media (min-width:1441px) {
       max-width: var(--mdc-theme-max-width-lg);
       width: var(--mdc-theme-width-lg);
     }
 
+    // WIDE DESKTOP : 1600px - 1849px ⚠️ PEUT ÊTRE CONSERVÉ
+    // Appareils : MacBook Pro 16" M1/M2 (1728x1117 scaled), Desktop 1600p+ monitors,
+    //            Ultrawide monitors 21:9, Gaming monitors 1920x1080+
     @media (min-width:1600px) {
       margin-right: auto;
     }
 
+    // ULTRA-WIDE : 1850px+ ⚠️ PEUT ÊTRE CONSERVÉ
+    // Appareils : iMac 27" (2560x1440), iMac Pro (5120x2880 scaled to ~2560x1440),
+    //            Ultrawide monitors 34"+ (3440x1440), 4K monitors (3840x2160),
+    //            Multi-monitor setups, Gaming ultrawide displays
     @media (min-width:1850px) {
       margin-right: auto;
     }
@@ -177,7 +197,7 @@ div.navbar{
 
       display: flex;
       justify-content: center;
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         display: flex!important;
       }
     }
@@ -194,7 +214,7 @@ div.navbar{
       padding-left: 10px;
       font-weight: 400;
       font-size: 1.1rem;
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         font-weight: 200;
       }
     }
@@ -212,7 +232,7 @@ div.navbar{
       &.icon-hub.icon-show {
         display: block!important;
       }
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         display: none;
       }
 

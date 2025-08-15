@@ -81,7 +81,7 @@ h3{
     top: 10px;
     right: 10px;
     z-index: 4;
-    @media (max-width:440px) {
+    @media (max-width:599px) {
       top: 10px;
       right: -10px;
     }
@@ -105,7 +105,7 @@ h3{
     width: 600px;
     margin: 0 auto 20px auto;
 
-    @media (max-width:440px) {
+    @media (max-width:599px) {
       padding: 0 5px;
     }
 
@@ -136,7 +136,7 @@ h3{
       width: fit-content;
       font-weight: 300;
       margin-bottom: 10px;
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         width: 100%;
         padding:8px 2px;
       }
@@ -151,7 +151,7 @@ h3{
       span::after {
         padding-left: 5px;
       }
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         width: 100%;
       }
 
@@ -181,7 +181,7 @@ h3{
       display: flex;
       align-items: center;
       justify-content: center;
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         width: calc(100% - 50px);
         margin-left: 0;
       }
@@ -252,7 +252,7 @@ h3{
         height: auto;
         flex-wrap: wrap;
 
-        @media (max-width:440px) {
+        @media (max-width:599px) {
           margin: 4px 0;
         }
 
@@ -271,7 +271,7 @@ h3{
 
 
         &.contrasted-sm{
-          @media (max-width:431px) {
+          @media (max-width:599px) {
             color: #777;
             background-color: #efefef;
           }
@@ -284,7 +284,7 @@ h3{
           font-size: 1rem;
           flex-wrap: nowrap;
           align-items: center;
-          @media (max-width:431px) {
+          @media (max-width:599px) {
             zoom: .85;
           }
           button{
@@ -372,7 +372,7 @@ h3{
     }
 
 
-    @media (max-width:440px) {
+    @media (max-width:599px) {
       box-shadow: none;
       position: absolute;
       margin-top: 40px;

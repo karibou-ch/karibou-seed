@@ -6,7 +6,7 @@ kng-product-swipe{
   margin: 20px 0px;
   border-bottom: 1px solid #eee;
 
-  @media (max-width:440px) {
+  @media (max-width:599px) {
     width: calc(100% - 20px );
     margin: 15px 10px;
     min-height: fit-content !important;
@@ -108,10 +108,13 @@ kng-product-swipe{
         margin: 0;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        grid-template-columns: repeat(6,minmax(auto,145px));
-        @media (max-width:440px) {
-          grid-template-columns: repeat(3,minmax(auto,145px));
+        @media (max-width: 1199px) { /* Tablet */
+          grid-template-columns: repeat(5,minmax(auto,180px));
         }
+        @media (max-width: 767px) { /* Mobile */
+          grid-template-columns: repeat(3,minmax(auto,140px));
+        }
+
 
         gap: 16px;
         justify-items: center;

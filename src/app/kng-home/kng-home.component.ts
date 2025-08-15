@@ -17,7 +17,8 @@ import {
   User,
   CartAction,
   Shop,
-  Order
+  Order,
+  Hub
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n, KngNavigationStateService } from '../common';
@@ -36,6 +37,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   isReady: boolean = false;
   isLoading: boolean = false;
   isMobile: boolean = false;
+
 
   shops: Shop[];
   pendingOrders: Order[];
@@ -270,6 +272,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.$navigation.isLocked();
   }
 
+  get isThemas() {
+    return this.hub.pageOptions.themas;
+  }
+
+  get isMinimal() {
+    return this.hub.pageOptions.minimal;
+  }
+
   get isJamesAvailable() {
     if(!this.user) {
       return false
@@ -295,7 +305,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.user.plan.name == 'b2b-school';
   }
 
-  get hub(){
+  get hub():Hub{
     return this.config.shared.hub ||{};
   }
 
@@ -347,13 +357,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.categories.filter(c => c.type === 'theme');
   }
 
+  //
+  // FIXME: remove this and use hub.pageOptions.maxcat
   get useMaxcat() {
     return !this.availableSearch && !this.options.theme;
   }
 
-  get useTheme() {
-    return this.options.theme;
-  }
+  //
+  // FIXME: remove this and use hub.pageOptions.themas
 
 
   get tagline() {
@@ -509,7 +520,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // with new navigation, we dont need to load products on mobile/tablet
     //
     this.clearCategory();
-    if(this.isMobile) {
+    if(this.isMobile &&
+      !this.isMinimal) {
       this.isReady = true;
       this.isLoading = false;
       // this.hub.categories.forEach(cat=> this.availableCategories[cat.name] = true);
@@ -521,8 +533,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
     options.when = this.currentShippingDay.toISOString();
-    options.maxcat = this.isMobile? 2:options.maxcat;
+    options.maxcat = this.isMobile? 5:options.maxcat;
     options.hub = this.$navigation.store;
+
 
     if(this.options.theme) {
       delete options.when;
@@ -530,6 +543,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       delete options.status;
     }
 
+    options.popular = this.isMinimal? false :options.popular;
 
     this.$product.select(options).subscribe((products: Product[]) => {
       this.products = products.filter(product => product.categories && product.categories.name);

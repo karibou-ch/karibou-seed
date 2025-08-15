@@ -100,7 +100,7 @@
       }
     }
 
-    @media (max-width:431px) {
+    @media (max-width:599px) {
       padding-right: 0px;
       width: calc(100% - 0px);
       max-width: calc(100% - 0px)!important;
@@ -118,7 +118,7 @@
         margin-right: auto;
         margin-left: 10px;
         padding: 0 4px;
-      @media (max-width:431px) {
+      @media (max-width:599px) {
           margin-right: 0;
           margin-left: auto;
           font-size: 14px;
@@ -132,7 +132,7 @@
       -webkit-box-align: baseline;
       align-items: baseline;
       width: 100%;
-      @media (max-width:431px) {
+      @media (max-width:599px) {
         -width:calc(100% - 65px);
       }
       div.item:first-child {

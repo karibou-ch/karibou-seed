@@ -107,7 +107,7 @@ export class KngShopComponent implements OnInit {
 
       if (vendor.photo && vendor.photo.fg) {
         this.ngStyleBck = {
-          'background-image': this.bgGradient 
+          'background-image': this.bgGradient
         };
       }
 
@@ -118,7 +118,7 @@ export class KngShopComponent implements OnInit {
 
     }, error => {
       this.error = error.error;
-    });    
+    });
 
 
     //
@@ -127,10 +127,27 @@ export class KngShopComponent implements OnInit {
       try {window.scroll(0, 0); } catch (e) {}
     }, 100);
   }
-  
+
 
   doOpen(shop){
     this.open.emit(shop);
+  }
+
+  //
+  // Ensure the URL is clean and always has a protocol (https://) for links
+  getValidUrl(url: string): string {
+    if (!url) { return ''; }
+    if(/^https?:\/\//i.test(url)) {
+      return url;
+    }
+    return 'https://' + url;
+  }
+
+  //
+  // Ensure the URL is clean and always without protocol for display
+  getDisplayUrl(url: string): string {
+    if (!url) { return ''; }
+    return url.replace(/^https?:\/\//i, '');
   }
 
   getCleanPhone(phone: string) {
@@ -162,7 +179,7 @@ export class KngShopsComponent extends KngShopComponent{
   ngOnInit(){
     this.ngStyleBck = {};
     this.shops = [];
-    super.ngOnInit();    
+    super.ngOnInit();
     if(this.urlpath) {
       return;
     }
@@ -172,7 +189,7 @@ export class KngShopsComponent extends KngShopComponent{
 
     this.$shop.query({active:true,hub:this.$navigation.store}).subscribe(shops=>{
       this.shops = shops.filter(shop => shop.status).sort(this.sortByName.bind(this));
-      this.shops.forEach(shop => {        
+      this.shops.forEach(shop => {
         let letter = shop.name.toLowerCase().replace(/[èéëê]/gi,'E').toUpperCase()[0];
         letter = letter.replace(/[CDEFG]/, 'C...G').replace(/[PQRSTUVXYZ]/, 'P...Z').replace(/[HIJKLMNO]/, 'H...O').replace(/[1-9]/, '1..9');
         this.group[letter]=this.group[letter]||[];

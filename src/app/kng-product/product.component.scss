@@ -66,7 +66,7 @@
       transition: all .5s;
       z-index: 1;
 
-      @media (max-width:431px) {
+      @media (max-width:599px) {
         top:0px
       }
 
@@ -210,7 +210,7 @@
     }
 
 
-    @media (max-width:440px) {
+    @media (max-width:599px) {
       margin-top: 0px;
     }
 
@@ -260,7 +260,7 @@
       padding: 2px;
       border: 1px solid #ddd;
       border-radius: 50%;
-      @media (max-width:431px) {
+      @media (max-width:599px) {
         border-radius: 0;
       }
     }
@@ -370,7 +370,7 @@
         height: 550px;
       }
 
-      @media (max-width:440px) {
+      @media (max-width:599px) {
         height: 270px;
         border-radius: 0px;
         margin: 20px 26px;
@@ -629,7 +629,7 @@
     padding:10px 5px;
   }
 
-  @media (max-width:431px) {
+  @media (max-width:599px) {
     width: calc( 100% - 10px );
   }
   @media (max-width:320px) {

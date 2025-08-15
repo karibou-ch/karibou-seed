@@ -9,6 +9,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { i18n, KngNavigationStateService } from '../common';
+import { Category } from 'kng2-core';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class KngSearchBarComponent implements OnInit {
   //
   // @ContentChild vs @ViewChild
   // https://stackoverflow.com/a/34327754/680373
- 
+
   @ViewChild('search', { static: true }) search: ElementRef;
   @ViewChild('stats', { static: true }) stats: ElementRef;
 
@@ -30,7 +31,9 @@ export class KngSearchBarComponent implements OnInit {
   // avoid double search
   searchLastValue: string;
 
-
+  //
+  // track focus state for themes display
+  isSearchFocused: boolean = false;
 
   @HostBinding('class.search-desktop') appbar = true;
   @HostBinding('style.z-index') isOpen = 'auto';
@@ -44,10 +47,13 @@ export class KngSearchBarComponent implements OnInit {
     return false;
   }
 
+  @Input() themes:Category[]=[];
+
+
   constructor(
     public $i18n: i18n,
     public $navigation: KngNavigationStateService
-  ) { 
+  ) {
     this.$navigation.search$().subscribe((keyword)=>{
       if(keyword == 'clear'||keyword == 'favoris'||keyword == 'discount') {
         this.search.nativeElement.value = '';
@@ -80,6 +86,10 @@ export class KngSearchBarComponent implements OnInit {
 
   get isCleared() {
     return (!this.searchLastValue || this.searchLastValue=='')
+  }
+
+  get showThemes() {
+    return this.isSearchFocused && this.themes.length > 0;
   }
 
 
@@ -118,7 +128,21 @@ export class KngSearchBarComponent implements OnInit {
   onFocus() {
     try {
       this.search.nativeElement.select();
+      this.isSearchFocused = true;
     } catch (e) {}
+  }
+
+  onBlur() {
+    // Use setTimeout to allow theme click to register before hiding
+    setTimeout(() => {
+      this.isSearchFocused = false;
+    }, 200);
+  }
+
+  doSearch(themeName: string) {
+    this.search.nativeElement.value = themeName;
+    this.doInput(themeName);
+    this.isSearchFocused = false;
   }
 
   doClear() {
@@ -140,6 +164,6 @@ export class KngSearchComponent extends KngSearchBarComponent implements OnInit 
   @HostBinding('class') mobile = 'search-mobile';
 
   ngOnInit(): void {
-    
+
   }
 }

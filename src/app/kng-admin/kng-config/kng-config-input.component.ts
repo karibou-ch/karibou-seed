@@ -142,7 +142,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   }
 
   // onGeloc(address) {
-  //   const street = (address.streetAddress || address.street);
+  //   const street = (address.streetAddress || address.street);o
   //   if (!street) {
   //        return;
   //   }

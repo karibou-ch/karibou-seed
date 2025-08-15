@@ -22,7 +22,7 @@
       float: right;
       color: var(--mdc-theme-secondary);
       font-weight: bold;
-      @media (min-width:431px) {
+      @media (min-width:1024px) {
         display: none;
       }
     }
@@ -107,7 +107,7 @@
           margin-left: calc(-27px - 0.75rem);
           margin-top: 10px;
           overflow: hidden;
-          @media (max-width:431px) {
+          @media (max-width:599px) {
             width: calc( 100vw - 40px );
             margin: 0;
 
@@ -372,7 +372,7 @@
           line-height: 22px;
           background-color: var(--mdc-theme-appbar);
           color: var(--mdc-theme-appbar-text);
-          @media (max-width: 431px) {
+          @media (max-width: 432px) {
             font-size: 12px;
           }
           &.end{
@@ -391,7 +391,7 @@
 
       }
 
-      @media (max-width: 431px) {
+      @media (max-width: 432px) {
         width: 100%;
         border-radius: 0;
         box-shadow: none;
@@ -402,7 +402,7 @@
         margin: auto;
         width: 100%;
         margin-top: 5px;
-        @media (max-width:440px) {
+        @media (max-width:599px) {
           input[type='text'],
           textarea,
           button.push{

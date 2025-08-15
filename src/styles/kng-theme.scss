@@ -22,7 +22,7 @@ body{
   margin-left: -18px !important;
   box-shadow: 0 14px 14px rgba(0,0,0,.3) !important;
   width: 400px!important;
-  @media (max-width:440px){
+  @media (max-width:599px){
     width: calc(100% - 38px)!important;
   }
 }
