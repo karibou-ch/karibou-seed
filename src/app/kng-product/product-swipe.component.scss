@@ -109,7 +109,7 @@ kng-product-swipe{
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         @media (max-width: 1199px) { /* Tablet */
-          grid-template-columns: repeat(5,minmax(auto,180px));
+          grid-template-columns: repeat(5,minmax(auto,140px));
         }
         @media (max-width: 767px) { /* Mobile */
           grid-template-columns: repeat(3,minmax(auto,140px));
