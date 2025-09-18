@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { i18n, KngNavigationStateService, KngUtils } from '../../common';
-import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService } from 'kng2-core';
+import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { MdcSnackbar } from '@angular-mdc/web';
@@ -62,7 +62,7 @@ export class KngCartCheckoutComponent implements OnInit {
   selectPaymentIsDone: boolean;
   paymentTWINT: UserCard;
 
-  // FIXME remove hardcoded reserved value 0.11!
+  // FIXME remove hardcoded reserved value 0.11! and implement it on shared.order.reservedAmount
   amountReserved = 1.11;
 
   // order stuffs
@@ -79,7 +79,8 @@ export class KngCartCheckoutComponent implements OnInit {
     private $snack: MdcSnackbar,
     private $user: UserService,
     private $route: ActivatedRoute,
-    private $router: Router
+    private $router: Router,
+    private $calendar: CalendarService
   ) {
     this._open = false;
     this.i18n = {};
@@ -255,8 +256,14 @@ export class KngCartCheckoutComponent implements OnInit {
   }
 
   get subscriptionNextShippingDay() {
-    const oneWeek = Order.fullWeekShippingDays(this.hub);
-    return oneWeek.find(date => date.getDay() == this.subscriptionParams.dayOfWeek);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
+    const oneWeek = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 7 });
+    const foundDate = oneWeek.find(date => date.getDay() == this.subscriptionParams.dayOfWeek);
+
+    // ✅ CORRECTION CRITIQUE: Fallback si dayOfWeek n'existe pas dans les dates valides
+    // Cela peut arriver après la correction de kng-subscription-option si l'utilisateur
+    // a une ancienne sélection incompatible
+    return foundDate || oneWeek[0] || this.$calendar.nextShippingDay(this.hub, this._user);
   }
 
   get currentTotalSubscription(){
@@ -340,15 +347,24 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.$cart.computeShippingFees(ctx);
   }
 
+  get displayShippingDay() {
+    // ✅ FIXED: Use subscription date for contracts, currentShippingDay for normal orders
+    return this.useCartSubscriptionView
+      ? this.subscriptionNextShippingDay
+      : this.currentShippingDay();
+  }
+
   get currentShippingTime() {
     //
-    // update shipping time
-    const shippingDay = this.currentShippingDay();
+    // ✅ FIXED: Use subscription date for contracts, currentShippingDay for normal orders
+    const shippingDay = this.useCartSubscriptionView
+      ? this.subscriptionNextShippingDay
+      : this.currentShippingDay();
 
     //
-    // special hours for saturday
-    const specialHours = ((shippingDay.getDay() == 6)? 12:this.shippingTime);
-    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+    // ✅ FIXED: Use CalendarService for time logic instead of hardcoded values
+    const specialHours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || parseInt(this.shippingTime);
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours.toString());
 
     return this.config.shared.hub.shippingtimes[shippingHours];
 
@@ -447,6 +463,7 @@ export class KngCartCheckoutComponent implements OnInit {
     return this.$cart.getCurrentShippingDay();
   }
 
+
   currentShipping() {
     const address = this.$cart.getCurrentShippingAddress();
 
@@ -490,9 +507,9 @@ export class KngCartCheckoutComponent implements OnInit {
     this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
       //
       // set default payment
-      // FIXME me this.orders[0].payment.issue is crashing
+      // ✅ FIXED: Robust payment alias extraction with null checks
       this._user = user;
-      const lastAlias = (this.orders.length && this.orders[0].payment) ? this.orders[0].payment.alias:null;
+      const lastAlias = (this.orders.length && this.orders[0]?.payment?.alias) ? this.orders[0].payment.alias : null;
       const payments = this._user.payments.filter(payment => !payment.error);
       const currentPayment = this.$cart.getCurrentPaymentMethod();
       const previousPayment = payments.find(payment => payment.alias == lastAlias);
@@ -552,7 +569,8 @@ export class KngCartCheckoutComponent implements OnInit {
 
   // available day for order,
   isOpen() {
-    const next = Order.nextShippingDay(this._user);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
+    const next = this.$calendar.nextShippingDay(this.hub, this._user);
 
     return !!next;
   }
@@ -680,7 +698,6 @@ export class KngCartCheckoutComponent implements OnInit {
 
     this.errorMessage = null;
 
-
     this.$stripe.getInstance()['confirmTwintPayment'](intent.client_secret,{
       payment_method:{
         twint:{}
@@ -701,24 +718,38 @@ export class KngCartCheckoutComponent implements OnInit {
         this.$cart.broadcastState();
         return;
       }
+
+      // ✅ FIXED: Uncomment and fix TWINT payment confirmation logic
       // The payment must be confirmed for an order
-      // if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
-      //   const payment = this.$cart.getCurrentPaymentMethod();
-      //   //
-      //   // include oid reference as payment DATA
-      //   //({...this.currentPayment,oid:intent.oid,intent_id:intent.intent_id})
-      //   const intent = {
-      //     oid:target.oid,
-      //     intent_id:result.paymentIntent.id,
-      //     ...payment
-      //   }
+      if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+        const payment = this.$cart.getCurrentPaymentMethod();
+        //
+        // include oid reference as payment DATA
+        const intentData = {
+          oid:target.oid,
+          intent_id:result.paymentIntent.id,
+          ...payment
+        }
 
-      //   this.doOrder(intent);
-      // }
-      // if(target.subscription&& ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
-      //   this.doSubscriptionPaymentConfirm(target.subscription,result.paymentIntent);
-      // }
+        this.doOrder(intentData);
+      }
 
+      // ✅ FIXED: Handle subscription TWINT payments
+      if(target.subscription && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
+        this.doSubscriptionPaymentConfirm(target.subscription, result.paymentIntent);
+      }
+
+    }).catch((error) => {
+      // ✅ ADDED: Handle TWINT promise rejection
+      console.error('TWINT payment error:', error);
+      this.errorMessage = error.message || 'Erreur de paiement TWINT';
+      this.$snack.open(
+        this.errorMessage,
+        this.$i18n.label().thanks,
+        this.$i18n.snackOpt
+      );
+      this.isRunning = false;
+      this.$cart.broadcastState();
     });
   }
 
@@ -731,11 +762,11 @@ export class KngCartCheckoutComponent implements OnInit {
   doOrder(intent?) {
     //
     // prepare shipping
-    // FIXME hour selection should be better
+    // ✅ FIXED: Use CalendarService for hour selection instead of hardcoded values
     const defaultHours = this.$cart.getCurrentShippingTime();
     const shippingDay = this.currentShippingDay();
-    const specialHours = ((shippingDay.getDay() == 6)? 12:16);
-    const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
+    const specialHours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || 16;
+    const shippingHours = (this.isCartDeposit() ? '0' : specialHours.toString());
     const address = this.currentShipping();
     const shipping = new ShippingAddress(address, shippingDay, shippingHours);
 
@@ -854,11 +885,15 @@ export class KngCartCheckoutComponent implements OnInit {
       return this.confirmPaymenIntent(this.contract.latestPaymentIntent, {subscription:this.contract});
     }
 
-    const items = this.items.map(item => item.toDEPRECATED());
+    const items = this.items.map(item => {
+      const deprecatedItem = item.toDEPRECATED();
+      // ✅ FIXED: Set frequency properly during mapping instead of after
+      if (this.subscriptionParams?.frequency) {
+        deprecatedItem.frequency = this.subscriptionParams.frequency;
+      }
+      return deprecatedItem;
+    });
     const updated = (this._updateItems ||[]).filter(item=> item['updated']);
-    //
-    // FIXME that should not be there (item.frequency = this.subscriptionParams.frequency)
-    items.forEach(item => item.frequency = this.subscriptionParams.frequency);
     const subParams = {
       hub,
       shipping,

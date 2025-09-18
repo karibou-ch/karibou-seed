@@ -39,7 +39,7 @@
           <div class="payment {{payment.issuer}}" *ngFor="let payment of userPayments"
             [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
             (click)="setPaymentMethod(payment)">
-            <label class=""> Choisir </label>
+            <label class=""><input type="checkbox" [checked]="payment.alias == currentPayment.alias"> </label>
             <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
             <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>
           </div>
@@ -274,7 +274,7 @@
     <!-- Date de livraison -->
     <div class="bill">
       <span>
-        <b class="text-capitalize highlight">{{ currentShippingDay() | date: 'EEEE dd/M':'':locale }}</b>
+        <b class="text-capitalize highlight">{{ displayShippingDay | date: 'EEEE dd/M':'':locale }}</b>
         &nbsp;
       </span>
       <span class="highlight align-right">
@@ -403,7 +403,7 @@
     <!-- Date de livraison -->
     <div class="bill">
       <span>
-        <b class="text-capitalize highlight">{{ currentShippingDay() | date: 'EEEE dd/M':'':locale }}</b>
+        <b class="text-capitalize highlight">{{ displayShippingDay | date: 'EEEE dd/M':'':locale }}</b>
         &nbsp;
       </span>
       <span class="highlight align-right">
