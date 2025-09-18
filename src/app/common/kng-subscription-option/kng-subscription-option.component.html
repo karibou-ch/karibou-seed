@@ -11,7 +11,7 @@
     <div class="elem" id="time">
       <div class="item time"
           *ngFor="let time of shippingtimes|keyvalue;let idx=index"
-          (click)="selTime = time.key;onSave()"
+          (click)="onTimeChange(time.key)"
           [class.selected]="selTime == time.key">{{time.value}}</div>
     </div>
   </div>
@@ -24,7 +24,7 @@
       <div class="item "
           *ngFor="let iteration of iterations;let idx=index"
           (click)="selIteration = iteration;onSave()"
-          [class.selected]="selIteration.id == iteration.id">{{iteration.label[locale]}}</div>
+          [class.selected]="selIteration?.id == iteration.id">{{iteration.label[locale]}}</div>
 
     </div>
   </div>
@@ -34,7 +34,7 @@
       <div class="item "
           *ngFor="let day of dayOfWeek;let idx=index"
           (click)="selDayOfWeek = day;onSave()"
-          [class.selected]="selDayOfWeek.id == day.id">{{day.label}}</div>
+          [class.selected]="selDayOfWeek?.id == day.id">{{day.label}}</div>
     </div>
   </div>
   <div class="info" [hidden]="quiet">

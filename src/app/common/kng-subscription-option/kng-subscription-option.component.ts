@@ -10,7 +10,9 @@ import {
   LoaderService,
   Order,
   Hub,
-  CartAction
+  CartAction,
+  CalendarService,
+  User
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
 
@@ -41,6 +43,7 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
   @Input() contract:CartSubscription;
   @Input() contractId:string;
   @Input() hub: Hub;
+  @Input() user: User;
   @Input() shippingDay: Date;
 
   iterations=[
@@ -67,7 +70,8 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     private $i18n: i18n,
     private $cart: CartService,
     private $loader: LoaderService,
-    private $cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef,
+    private $calendar: CalendarService
   ) {
     this._subscription = new Subscription();
     this.items = [];
@@ -78,32 +82,52 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
         activeForm: false
     };
     this.selTime = 16;
-    const aweek = Order.fullWeekShippingDays(this.hub);
-    this.oneWeek = Array.from({length: 30}).map((id,idx) => (new Date(aweek[0])).plusDays(idx));
-    // this.oneWeek = Order.fullWeekShippingDays(this.hub);
-    this.selDayOfWeek = this.findDayOfWeek(this.subscriptionParams.dayOfWeek);
-    this.selIteration = this.findIteration(this.subscriptionParams.frequency);
+
+    // ✅ CORRECTION CRITIQUE: Ne PAS utiliser @Input dans le constructeur
+    // Les inputs ne sont pas encore disponibles ! Attendre ngOnInit
+    this.oneWeek = [];
     this.shippingtimes = {};
 
-    // const shippingDay = this.currentShippingDay();
-    // const specialHours = ((shippingDay.getDay() == 6)? 12:16);
+    // ✅ INITIALISATION SAFE : Valeurs par défaut sans dépendre des @Input
+    this.selIteration = this.findIteration(this.subscriptionParams.frequency);
   }
 
   get dayOfWeek() {
-    const weekdays = (this.hub && this.hub.weekdays)? this.hub.weekdays:[2,3,5];
+    // ✅ CORRECTION CRITIQUE: Utiliser seulement les jours de livraison VALIDES selon CalendarService
+    if (!this.hub) {
+      return [];
+    }
+
     const weekLabels = this.label.weekdays.split('_');
-    const label:any = {};
-    // label[this.locale]
-    const result = weekdays.map( day => ({label:weekLabels[day],id:day}));
-    return result;
+    const weekdays = this.hub.weekdays || [2,3,5];
+
+    // ✅ NOUVEAU: Vérifier que ces jours sont réellement disponibles selon CalendarService
+    const validDates = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 30, user: this.user });
+    const availableWeekdays = [...new Set(validDates.map(date => date.getDay()))];
+
+    // ✅ FILTRER: Ne présenter que les jours qui sont à la fois dans hub.weekdays ET dans les dates valides
+    const validWeekdays = weekdays.filter(day => availableWeekdays.includes(day));
+
+    return validWeekdays.map(day => ({
+      label: weekLabels[day],
+      id: day
+    }));
   }
 
   get nextShippingDay() {
-    if(!this.selDayOfWeek) {
-      return this.oneWeek[0];
+    if (!this.selDayOfWeek || !this.hub) {
+      // ✅ FALLBACK sécurisé: Utiliser CalendarService pour obtenir la prochaine date valide
+      return this.$calendar.nextShippingDay(this.hub, this.user) || new Date();
     }
+
     const day = this.selDayOfWeek.id;
-    return this.oneWeek.find(date => date.getDay() == day);
+    // ✅ CORRECTION CRITIQUE: Utiliser les dates valides de CalendarService
+    // au lieu de chercher dans une liste générée incorrectement
+    const validDates = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 30, user: this.user });
+    const foundDate = validDates.find(date => date.getDay() == day);
+
+    // ✅ SAFETY: Si le jour sélectionné n'existe pas dans les dates valides, fallback
+    return foundDate || this.$calendar.nextShippingDay(this.hub, this.user) || new Date();
   }
 
   get label() {
@@ -133,6 +157,64 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * ✅ CORRECTION CRITIQUE: Initialiser les dates valides selon CalendarService
+   * Cette méthode remplace la logique buggée qui générait 30 jours consécutifs
+   */
+  private initializeValidDates() {
+    // ✅ Attendre que hub soit disponible (Input non défini dans constructor)
+    if (!this.hub) {
+      this.oneWeek = [];
+      return;
+    }
+
+    // ✅ LOGIQUE CORRECTE: Utiliser seulement les dates VALIDES de CalendarService
+    this.oneWeek = this.$calendar.getValidShippingDatesForHub(this.hub, {
+      days: 30,
+      user: this.user
+    });
+
+    console.log('🔍 DEBUG kng-subscription-option initializeValidDates:', this.oneWeek);
+  }
+
+  /**
+   * ✅ CORRECTION CRITIQUE: Initialiser les sélections seulement quand hub et config sont disponibles
+   * Évite les crashes lors de l'initialisation du composant
+   */
+  private initializeSelectionsSafely() {
+    // ✅ GUARD: Vérifier que les dépendances sont disponibles
+    if (!this.hub || !this.config) {
+      console.log('🔍 DEBUG initializeSelectionsSafely: hub ou config non disponible, attendre...');
+      return;
+    }
+
+    // ✅ SAFE: Initialiser selDayOfWeek seulement quand tout est prêt
+    if (!this.selDayOfWeek && this.subscriptionParams) {
+      this.selDayOfWeek = this.findDayOfWeek(this.subscriptionParams.dayOfWeek);
+      // ✅ SAFETY: Si findDayOfWeek retourne null, utiliser le premier jour disponible
+      if (!this.selDayOfWeek && this.dayOfWeek.length > 0) {
+        this.selDayOfWeek = this.dayOfWeek[0];
+        this.subscriptionParams.dayOfWeek = this.selDayOfWeek.id;
+        console.warn('initializeSelectionsSafely: fallback vers premier jour disponible:', this.selDayOfWeek.id);
+      }
+    }
+
+    // ✅ SAFE: Initialiser selIteration (pas de dépendance aux inputs)
+    if (!this.selIteration && this.subscriptionParams) {
+      this.selIteration = this.findIteration(this.subscriptionParams.frequency);
+    }
+
+    // ✅ SAFE: Initialiser selTime avec les valeurs du config ou fallback
+    if (!this.selTime && this.subscriptionParams && this.subscriptionParams.time) {
+      this.selTime = this.subscriptionParams.time;
+    } else if (!this.selTime) {
+      // ✅ FALLBACK: Utiliser 16h par défaut
+      this.selTime = 16;
+    }
+
+    console.log('🔍 DEBUG initializeSelectionsSafely: selDayOfWeek=', this.selDayOfWeek, 'selIteration=', this.selIteration, 'selTime=', this.selTime);
+  }
+
   ngOnDestroy() {
     this._subscription.unsubscribe();
   }
@@ -140,6 +222,10 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
   async ngOnInit(){
     this._subscription.add(
       this.$loader.update().subscribe(emit => {
+        // ✅ CORRECTION CRITIQUE: Écouter emit.user pour mise à jour après login
+        if (emit.user) {
+          this.user = emit.user;
+        }
 
         // ITEM_ADD       = 1,
         // ITEM_REMOVE    = 2,
@@ -154,14 +240,19 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
         if(emit.state && emit.state.action) {
           //this.currentShippingDay = this.$cart.getCurrentShippingDay();
           this.subscriptionParams = this.$cart.subscriptionGetParams();
-          this.selDayOfWeek = this.findDayOfWeek(this.subscriptionParams.dayOfWeek);
-          this.selIteration = this.findIteration(this.subscriptionParams.frequency);
+          // ✅ ATTENDRE que config et hub soient disponibles avant d'initialiser selDayOfWeek
+          this.initializeSelectionsSafely();
           this.$cdr.markForCheck();
         }
         if(!emit.config) {
           return;
         }
         this.config = emit.config;
+
+        // ✅ CORRECTION CRITIQUE: Initialiser les dates valides après réception de la config
+        this.initializeValidDates();
+        this.initializeSelectionsSafely();
+
         const times = Object.keys(this.config.shared.shipping.pricetime || {});
         this.shippingtimes = times.reduce((shippingtimes,time)=> {
           shippingtimes[time]=emit.config.shared.hub.shippingtimes[time];
@@ -172,17 +263,56 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
   }
 
   findDayOfWeek(day:number) {
-    const find = this.dayOfWeek.find(dayOf => dayOf.id==day);
-    if(find) return find;
-    // FIXME this should be done in the change hub service
-    this.selDayOfWeek = this.dayOfWeek[0];
-    this.subscriptionParams.dayOfWeek = this.selDayOfWeek.id;
+    const availableDays = this.dayOfWeek;
+
+    // ✅ GUARD CRITIQUE: Vérifier que dayOfWeek n'est pas vide
+    if (!availableDays || availableDays.length === 0) {
+      console.warn('findDayOfWeek: aucun jour disponible, attendre que hub soit chargé');
+      return null;
+    }
+
+    const find = availableDays.find(dayOf => dayOf.id == day);
+    if (find) return find;
+
+    // ✅ FALLBACK SAFE: Utiliser le premier jour disponible
+    const fallbackDay = availableDays[0];
+    if (!fallbackDay) {
+      console.error('findDayOfWeek: fallbackDay est undefined, hub non configuré?');
+      return null;
+    }
+
+    console.warn(`findDayOfWeek: jour ${day} non disponible, utilise fallback ${fallbackDay.id}`);
+    this.selDayOfWeek = fallbackDay;
+    this.subscriptionParams.dayOfWeek = fallbackDay.id;
     this.$cart.subscriptionSetParams(this.subscriptionParams, true);
     return this.selDayOfWeek;
   }
 
   findIteration(iteration:string|CartItemFrequency) {
     return this.iterations.find(it => it.id==iteration);
+  }
+
+  /**
+   * ✅ NOUVELLE MÉTHODE: Sauvegarder seulement l'heure sans affecter le jour
+   */
+  onTimeChange(newTime: string | number) {
+    this.selTime = Number(newTime);
+
+    // ✅ CRITIQUE: Récupérer les paramètres actuels du service avant modification
+    const currentParams = this.$cart.subscriptionGetParams();
+
+    // ✅ SAFE: Mettre à jour seulement le temps, préserver le reste
+    const updatedParams = {
+      ...currentParams,
+      time: this.selTime
+    };
+
+
+    // ✅ PRESERVATION: Sauvegarder avec synchronisation complète
+    this.$cart.subscriptionSetParams(updatedParams);
+
+    // ✅ SYNC: Mettre à jour l'état local aussi
+    this.subscriptionParams = updatedParams;
   }
 
   onSave(){
