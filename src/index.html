@@ -61,12 +61,29 @@
     }
   </style>
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQKN27KZGG"></script>
+  <!-- Google Analytics - Disabled in development -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){window.dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WQKN27KZGG',{ 'send_page_view': false });
+    // ✅ Désactiver Google Analytics en local/dev
+    if (location.protocol==='https:') {
+      // ✅ Charger Google Analytics uniquement en production HTTPS
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-WQKN27KZGG';
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){window.dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WQKN27KZGG',{ 'send_page_view': false });
+
+      console.log('📊 Google Analytics: ENABLED (production)');
+    } else {
+      console.log('🚫 Google Analytics: DISABLED (development/localhost)');
+      // ✅ Mock gtag pour éviter les erreurs
+      window.gtag = function() {
+        console.log('📊 gtag (mock):', arguments);
+      };
+    }
   </script>
 
 

@@ -88,6 +88,18 @@ export class KngSubscriptionControlComponent implements OnInit {
   selPaymentAlias: string;
   paymentErrorFromUrl: { action?: string; reason?: string; message?: string };
 
+  // ✅ NOUVEAU : Gestion moderne des erreurs de paiement
+  paymentError: {
+    action: string;
+    reason: string;
+    intent?: string;
+    message: string;
+    urgency: 'high' | 'medium' | 'low';
+    icon: string;
+    teamContact?: boolean;
+    teamMessage?: string;
+  } | null = null;
+
   constructor(
     public $products: ProductService,
     public $cart: CartService,
@@ -156,6 +168,25 @@ export class KngSubscriptionControlComponent implements OnInit {
 
   get openContracts() {
     return this.contracts.filter(contract => contract.status=='active');
+  }
+
+  // ✅ NOUVEAU : Getters pour l'interface moderne d'erreurs
+  get hasModernPaymentError(): boolean {
+    return !!this.paymentError;
+  }
+
+  get shouldShowLegacyError(): boolean {
+    return !this.hasModernPaymentError && (this.contract_requires_action || this.contract_requires_method);
+  }
+
+  get errorUrgencyClass(): string {
+    if (!this.paymentError) return '';
+    switch (this.paymentError.urgency) {
+      case 'high': return 'error-high';
+      case 'medium': return 'error-medium';
+      case 'low': return 'error-low';
+      default: return '';
+    }
   }
 
   ngOnDestroy(){
@@ -274,6 +305,36 @@ export class KngSubscriptionControlComponent implements OnInit {
     };
   }
 
+  /**
+   * ✅ NOUVEAU : Détermine le niveau d'urgence selon l'action et la raison
+   */
+  getErrorUrgency(action: string, reason: string): 'high' | 'medium' | 'low' {
+    if (action === 'authenticate' || action === 'replace' || action === 'setup') {
+      return 'high';
+    }
+    if (action === 'update' && reason === 'declined') {
+      return 'high';
+    }
+    return 'medium';
+  }
+
+  /**
+   * ✅ NOUVEAU : Obtient l'icône appropriée selon le type d'erreur
+   */
+  getErrorIcon(action: string, reason: string): string {
+    switch (action) {
+      case 'authenticate': return '🔐';
+      case 'replace':
+        return reason === 'expired' ? '💳' : '🔄';
+      case 'update':
+        return reason === 'declined' ? '🚫' : '⚠️';
+      case 'setup': return '➕';
+      case 'contact': return '📞';
+      case 'retry': return '🔄';
+      default: return '⚠️';
+    }
+  }
+
   getPaymentErrorMessage(action: string, reason: string): string {
     const llabel = this.i18n[this.locale];
     switch (action) {
@@ -355,10 +416,31 @@ export class KngSubscriptionControlComponent implements OnInit {
       return;
     }
 
+    // ✅ NOUVEAU : Parser tous les paramètres d'erreur modernes
     const action = params['action'];
     const reason = params['reason'];
-    if (action) {
-      this.paymentErrorFromUrl = { action, reason, message: this.getPaymentErrorMessage(action, reason) };
+    const intent = params['intent'];
+
+    // ✅ Réinitialiser l'erreur précédente
+    this.paymentError = null;
+    this.paymentErrorFromUrl = {};
+
+    // ✅ NOUVEAU : Créer l'objet d'erreur moderne si paramètres présents
+    if (action && reason) {
+      this.paymentError = {
+        action,
+        reason,
+        intent,
+        message: this.getPaymentErrorMessage(action, reason),
+        urgency: this.getErrorUrgency(action, reason),
+        icon: this.getErrorIcon(action, reason),
+        teamContact: action === 'contact' || (action === 'setup' && reason === 'missing'),
+        teamMessage: action === 'setup' && reason === 'missing' ?
+          'Notre équipe va vous contacter dans les plus brefs délais pour résoudre ce problème de configuration.' : undefined
+      };
+
+      // ✅ Maintenir la compatibilité avec l'ancien système
+      this.paymentErrorFromUrl = { action, reason, message: this.paymentError.message };
     }
 
     const contract = this.contracts.find(c => c.id === contractId);

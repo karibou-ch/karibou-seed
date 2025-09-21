@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order, OrderService, User, OrderItem, Category, ProductService,
-          EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService, Product } from 'kng2-core';
+          EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService, Product, LoaderService } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 import { switchMap } from 'rxjs/operators';
@@ -54,20 +54,22 @@ export class UserOrdersComponent implements OnInit {
     private $i18n: i18n,
     private $order: OrderService,
     private $products: ProductService,
-    private $route: ActivatedRoute,
     private $photos: PhotoService,
-    private $snack: MdcSnackbar
+    private $snack: MdcSnackbar,
+    private $loader: LoaderService
   ) {
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    //
-    // system ready
-    this.user   = loader[1];
-    this.config = loader[0];
-    this.categories = loader[2];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user, categories, orders } = this.$loader.getLatestCoreData();
+
+    this.config = config;
+    this.user = user;
+    this.categories = categories || [];
+    this.orders = orders || [];
+
+    // ✅ INITIALISATION: childOrder pour éviter undefined access
+    this.childOrder = {};
+
     const now = new Date();
-    this.orders = [];
     this.filter = {
       all: now.plusDays(-(31 * 1000)),
       month6: now.plusDays(-(31 * 12)),

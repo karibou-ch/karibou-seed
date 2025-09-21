@@ -174,7 +174,7 @@ export class KngNavigationStateService  {
 
 
   get hasHistory() {
-    return this._history.length>2;
+    return this._history.length>1;
   }
   get landingHubSlug() {
     return KngNavigationStateService.forceLandingHub;
@@ -193,8 +193,8 @@ export class KngNavigationStateService  {
       return;
     }
     this.currentStore = store;
-    this.$config.get(store).subscribe();
-    this.$shops.query({hub: store}).subscribe();
+    // this.$config.get(store).subscribe();
+    // this.$shops.query({hub: store}).subscribe();
     console.log('---- DBG set $navigation.store',store);
   }
 

@@ -51,7 +51,7 @@ div.home-header{
 
     ul{
       list-style: none;
-      padding: 1rem;
+      padding: 1rem 0;
     }
     >a{
       text-decoration: none;
@@ -213,7 +213,8 @@ kng-search.home{
 
 kng-search-bar{
   margin:1rem;
-  width: 100%;
+  margin-left: 0.5rem;
+  width: calc(100% - 2rem);
 }
 //
 // HOME SELECTION
@@ -224,8 +225,8 @@ kng-product-swipe{
 .kng-boxed.first,
 .kng-boxed.themes{
   @media (min-width: 1200px) { /* Desktop harmonisé */
-    margin: 1rem;
-    padding: 1.55rem;
+    margin: 0.5rem;
+    padding: 1.125rem;
   }
 }
 .kng-boxed.themes{
@@ -302,23 +303,34 @@ kng-product-swipe{
     margin: 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
+    column-gap: 0.5rem;
     justify-items: center;
     li.subs-item{
-      width: calc(100% - 20px );
+      width: calc(100% - 1rem );
       display: flex;
       justify-content: flex-start;
-      border-radius: 10px;
-      background-color: var(--mdc-theme-appbar);
+      border-radius: 0.5rem;
+      background-color: var(--mdc-theme-appbar-light);
+      border: 1px solid var(--mdc-theme-appbar);
       color: var(--mdc-theme-appbar-text);
       font-weight: 500;
       padding: 9px;
-      margin: auto auto 15px;
+      margin: auto auto 0.5rem;
       align-items: center;
-      height: 55px;
+      height: 3rem;
+      &.inverted{
+        color: var(--mdc-theme-appbar-light);
+        background-color: var(--mdc-theme-appbar-text);
+        i{
+          color: var(--mdc-theme-appbar-light);
+        }
+      }
       i{
         margin-right: 5px;
         color: var(--mdc-theme-secondary);
+      }
+      i.icon{
+        margin-top: -8px;
       }
     }
     li:not(.subs-item){
@@ -328,18 +340,21 @@ kng-product-swipe{
       align-items: center;
       width: 100%;
       min-width: 100%;
-      height: 135px;
+      height: 3rem;
       overflow: hidden;
-      border-radius: 10px;
-      border: 0 solid #fff;
+      border-radius: 0.5rem;
+      background-color: var(--mdc-theme-appbar-light);
+      border: 1px solid var(--mdc-theme-appbar);
+      color: var(--mdc-theme-appbar-text);
+      font-weight: 500;
 
       img{
+        display: none;
         height: 100%;
         width: 100%;
         min-width: 100%;
         object-fit: cover;
         object-position: center center;
-        -display: none;
       }
       span{
         position: absolute;
@@ -376,7 +391,7 @@ kng-product-swipe{
   left: auto;
   height: calc(100% - 160px);
   right: initial;
-  margin-left: calc(var(--mdc-theme-width-md) + 10px ) ;
+  margin-left: calc(var(--mdc-theme-container-width) + 10px ) ;
   border-left:1px dotted #ddd;
   padding-left: 0px;
   display: flex;
@@ -410,9 +425,6 @@ kng-product-swipe{
       color: lightyellow;
     }
 
-    button{
-      width: fit-content!important;
-    }
 
 
   }
@@ -463,9 +475,10 @@ kng-product-swipe{
     margin-top: 0px;
     margin-left: 0px;
     border-right: 1px solid #ddd;
-    height: 100%;
+    height: fit-content;
     overflow: auto;
     margin-right: 10px;
+    margin-bottom: 0px;
     &.subs{
       display: none;
       height: auto;

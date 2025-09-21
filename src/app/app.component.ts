@@ -54,9 +54,6 @@ export class AppComponent implements OnDestroy {
       })
     );
 
-    //
-    // load config on boot
-    this.$loader.ready().toPromise().then();
 
   }
 

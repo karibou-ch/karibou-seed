@@ -39,7 +39,7 @@
           <div class="payment {{payment.issuer}}" *ngFor="let payment of userPayments"
             [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
             (click)="setPaymentMethod(payment)">
-            <label class=""><input type="checkbox" [checked]="payment.alias == currentPayment.alias"> </label>
+            <label class=""><input type="checkbox" [checked]="currentPayment && payment.alias == currentPayment.alias"> </label>
             <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
             <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>
           </div>
@@ -80,7 +80,7 @@
           <!-- USER ADDRESS -->
           <div class="address" *ngFor="let address of userAddresses"
               (click)="setShippingAddress(address)" [hidden]="selectAddressIsDone && currentAddress.streetAdress">
-              <label> Choisir </label>
+              <label class=""><input type="checkbox" [checked]="isSelectedAddress(address)"> </label>
               <div class="name">{{address.name}}</div>
               <div class="street text-overflow">{{address.streetAdress}} / {{address.postalCode}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>
@@ -90,7 +90,7 @@
           <div class="address deposit"  *ngFor="let address of getDepositAddress()"
               [hidden]="selectAddressIsDone && currentAddress.streetAdress || !address.active || useCartSubscriptionView"
               (click)="setShippingAddress(address)" >
-              <label> Choisir </label>
+              <label class=""><input type="checkbox" [checked]="isSelectedAddress(address)"> </label>
               <div class="name collect">{{address.name}}</div>
               <div class="street text-overflow">{{address.streetAdress}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{label.cart_deposit}}</div>

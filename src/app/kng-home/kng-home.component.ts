@@ -18,10 +18,12 @@ import {
   CartAction,
   Shop,
   Order,
-  Hub
+  Hub,
+  CalendarService,
+  AssistantService
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
-import { i18n, KngNavigationStateService } from '../common';
+import { AudioNoteType, i18n, KngNavigationStateService } from '../common';
 
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
@@ -81,6 +83,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   };
 
+  // ✅ Audio context pour messages
+  audioContext: {
+    type: string;
+    audioUrl: string;
+    transcription: string;
+    cartUrl?: string;
+  } | null = null;
+
 
   //
   // products for home
@@ -106,21 +116,22 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   constructor(
     public $cart: CartService,
     public $i18n: i18n,
-    //private $routeCache:RouteReuseStrategy,
     private $cdr: ChangeDetectorRef,
     private $loader: LoaderService,
     private $metric: MetricsService,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
-    private $route: ActivatedRoute,
-    private $router: Router
+    private $router: Router,
+    private $calendar: CalendarService,
+    private $assistant: AssistantService
   ) {
     // bind infinite scroll callback function
-    const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user, categories, orders } = this.$loader.getLatestCoreData();
     this.isReady = false;
-    this.config = loader[0];
-    this.user = loader[1];
-    this.categories = loader[2] || [];
+    this.config = config;
+    this.user = user;
+    this.categories = categories || [];
     this.subscription = new Subscription();
 
     this.products = [];
@@ -131,10 +142,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     this.availableSearch = false;
 
-    this.pendingOrders = [];
-    if(loader.length>3) {
-      this.pendingOrders = <Order[]>loader[4];
-    }
+    // ✅ FIXED: Utiliser orders de getLatestCoreData
+    this.pendingOrders = orders || [];
   }
 
   ngOnDestroy() {
@@ -143,26 +152,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     window.scroll(0, 0);
-    this.isMobile = this.$navigation.isMobileOrTablet();
-    this.subscription.add(
-      this.$route.params.subscribe(params => {
-
-      // if(params.theme && this.options.theme!== params.theme) {
-      //   const theme = this.categories.find(c=>c.slug === params.theme);
-      //   this.options.theme = theme.slug;
-      //   this.products = [];
-      //   this.cached.categories = [];
-      //   this.$navigation.currentTheme = theme;
-
-      //   this.productsGroupByCategory({state:{action:CartAction.CART_INIT}});
-      //   return;
-      // }
-
-      if(params.store) {
-        this.$navigation.store = params['store'];
-        return;
-      }
-    }));
     // this.subscription.add(
     //   this.$route.queryParams.subscribe(query => {
     // }));
@@ -186,6 +175,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
     this.subscription.add(this.$loader.update().subscribe(emit => {
+      this.isMobile = this.$navigation.isMobileOrTablet();
 
       // emit signal for order
       if(emit.orders) {
@@ -253,7 +243,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
   get currentShippingDay() {
-    return this.$cart.getCurrentShippingDay() || Order.nextShippingDay(this.user,this.config.shared.hub);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
+    return this.$cart.getCurrentShippingDay() || this.$calendar.nextShippingDay(this.config.shared.hub, this.user);
   }
 
   get store(){
@@ -560,8 +551,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if(!day){
       return;
     }
-    // DEPRECATED FIXME move this.config.getDefaultTimeByDay(day) in $cart.getCurrentShippingTime()
-    const hours = time || this.config.getDefaultTimeByDay(day);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu de config (FIXME résolu)
+    const hours = time || this.$calendar.getDefaultTimeByDay(day, this.config.shared.hub);
 
     this.$cart.setShippingDay(day,hours);
   }
@@ -589,6 +580,43 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   onFavorites(){
     this.$navigation.searchAction('favoris');
   }
+
+
+  onAudioStopAndSave(ctx: {type: string, audioUrl: string, transcription: string, cartUrl?: string}) {
+    // prepare context to send message
+    this.audioContext = {
+      type: ctx.type,
+      audioUrl: ctx.audioUrl,
+      transcription: ctx.transcription,
+      cartUrl: ctx.cartUrl
+    }
+  }
+
+  onSendAudioNote() {
+    if (!this.audioContext) return;
+
+    // ✅ Utiliser AssistantService.message avec contexte audio intégré dans content
+    const content = `${this.audioContext.transcription || 'Message audio sans transcription'}
+
+Audio: ${this.audioContext.audioUrl}
+${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
+
+    this.$assistant.message(content, 'Message audio support').subscribe(
+      (response) => {
+        console.log('✅ Message audio envoyé:', response);
+        // Reset context
+        this.audioContext = null;
+      },
+      (error) => {
+        console.error('❌ Erreur envoi message audio:', error);
+      }
+    );
+  }
+
+  onAudioError($event) {
+    console.log('----audio error',$event);
+  }
+
 
   //
   // detect child overlay

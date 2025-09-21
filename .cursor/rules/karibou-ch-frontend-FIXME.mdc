@@ -1,9 +1,9 @@
 ---
-description:
-globs: karibou-seed/**
+description: suppression des FIXME
+globs: src/**
 alwaysApply: false
 ---
-# Tâches Techniques Frontend (karibou-seed)
+# FIXME Frontend (karibou-seed)
 
 Cette liste est générée en scannant les commentaires `FIXME` et `TODO` dans le code source du projet.
 * Vérifier la racine du projet `~/nodejs/karibou.ch/karibou-seed` avant un git ou la création de fichiers.

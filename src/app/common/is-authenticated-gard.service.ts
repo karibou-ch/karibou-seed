@@ -58,17 +58,13 @@ export class IsWelcomeGard implements CanActivate, CanActivateChild {
       if (!user.isAuthenticated()) {
         return true;
       }
-      //
-      // FIXME, the default HUB value should only be managed by $navigation service
-      // if (user.reminder && user.reminder.defaultHub) {
-      //   this.$navigation.store = user.reminder.defaultHub;
-      // }
+      // DEPRECATED paramLookup favour of store navigation state service
       const store = this.$navigation.store || paramLookup('store');
       console.log('------ IsWelcomeGard', user.display(), user.isAuthenticated(),store);
       if(store) {
         this.$router.navigate(['/store', store, 'home']);
       }
-      
+
       return true;
     });
   }

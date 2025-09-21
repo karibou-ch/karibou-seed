@@ -8,13 +8,13 @@ import { KngNavigationStateService } from '../navigation.service';
   templateUrl: './kng-empty-root.component.html',
   styleUrls: ['./kng-empty-root.component.scss']
 })
-export class KngEmptyRootComponent implements OnInit {
+export class KngEmptyRootComponent  {
 
   private subscription$: Subscription;
   constructor(
     private $route: ActivatedRoute,
     private $navigation: KngNavigationStateService
-  ) { 
+  ) {
     this.subscription$ = new Subscription();
   }
 
@@ -22,15 +22,5 @@ export class KngEmptyRootComponent implements OnInit {
     this.subscription$.unsubscribe();
   }
 
-  ngOnInit(): void {
-    this.subscription$.add(
-      this.$route.params.subscribe(params => {
-      if(!params.store) {
-        return;
-      }
-      this.$navigation.store = params['store'];
-    }));
-
-  }
 
 }

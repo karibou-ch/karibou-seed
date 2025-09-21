@@ -28,13 +28,24 @@ kng-product-swipe{
     -webkit-overflow-scrolling: touch;
     height: auto;
     section{
-      @media (max-width: 429px) {
+      @media (max-width: 599px) {
         display: none;
       }
       position: relative;
       width: 100%;
       text-align:left;
       margin-bottom: 20px;
+      .title{
+        .kng-chip{
+          float: right;
+          .inlink{
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2f2fe4;
+          }
+        }
+
+      }
       h2,h3{
         font-weight: 500;
         color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
@@ -61,64 +72,13 @@ kng-product-swipe{
       }
     }
 
-    div.content-sm{
-      width: calc(100% - 20px);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-radius: 10px;
-      background-color: var(--mdc-theme-appbar);
-      color: var(--mdc-theme-appbar-text);
-      font-weight: 500;
-      padding: 9px;
-      margin: auto auto 15px;
-
-      div.product{
-        overflow: hidden;
-        width: 60px;
-        height: 60px;
-        img{
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
-          border-radius: 10px;
-        }
-      }
-      .action {
-
-      }
-      @media (min-width: 430px) {
-        display: none;
-      }
-    }
 
     div.content{
       margin-bottom:-15px;
       overflow: hidden;
       overflow-x: auto;
-      @media (max-width: 429px) {
-        display: none;
-      }
       &::-webkit-scrollbar {
         display: none;
-      }
-      .mdc-layout-grid{
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        @media (max-width: 1199px) { /* Tablet */
-          grid-template-columns: repeat(5,minmax(auto,140px));
-        }
-        @media (max-width: 767px) { /* Mobile */
-          grid-template-columns: repeat(3,minmax(auto,140px));
-        }
-
-
-        gap: 16px;
-        justify-items: center;
-
       }
 
     }

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { i18n } from '../common/i18n.service';
-import { Config, CartService, User, UserService, CartSubscription } from 'kng2-core';
+import { Config, CartService, User, UserService, CartSubscription, LoaderService } from 'kng2-core';
 import { KngNavigationStateService } from '../common/navigation.service';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,13 +33,15 @@ export class KngPatreonComponent implements OnInit {
     public $router: Router,
     public $route: ActivatedRoute,
     public $user: UserService,
-    private $stripe: StripeService
+    private $stripe: StripeService,
+    private $loader: LoaderService
   ) {
 
 
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
-    this.user = loader[1];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
     this.products =[];
     this.isRunning = false;
 
@@ -68,7 +70,7 @@ export class KngPatreonComponent implements OnInit {
   }
 
   get contractIsActive() {
-    return (this.contract && this.contract.patreon && this.contract.status!=='canceled') 
+    return (this.contract && this.contract.patreon && this.contract.status!=='canceled')
   }
   get contractAmount() {
     if(!this.contract || !this.contract.patreon ) {
@@ -124,11 +126,11 @@ export class KngPatreonComponent implements OnInit {
   clean() {
     this.isReady = false;
     document.body.classList.remove('mdc-dialog-scroll-lock');
-  } 
+  }
 
   confirmPaymenIntent(intent: any, contract) {
     const intentOpt: any = {
-      payment_method: intent.source 
+      payment_method: intent.source
     };
 
     this.isRunning = true;
@@ -153,7 +155,7 @@ export class KngPatreonComponent implements OnInit {
     });
   }
 
-   
+
   async onSubscribe($event){
     if(!this.payment) {
       this.$router.navigate(['../../me/login-or-patreon'],{ relativeTo: this.$route });
@@ -170,13 +172,13 @@ export class KngPatreonComponent implements OnInit {
       this.error = null;
       this.isRunning = true;
       this.contract = await this.$cart.subscriptionCreatePatreon(options).toPromise();
-      
+
       console.log('----',this.contract);
-      
+
       //
-      // confirm 3ds 
-      if(this.contract && 
-        this.contract.latestPaymentIntent && 
+      // confirm 3ds
+      if(this.contract &&
+        this.contract.latestPaymentIntent &&
         this.contract.latestPaymentIntent.status=='requires_action') {
         return await this.confirmPaymenIntent(this.contract.latestPaymentIntent, this.contract);
       }
@@ -186,7 +188,7 @@ export class KngPatreonComponent implements OnInit {
 
       this.error = err.message;
     }finally{
-      this.isRunning = false;      
+      this.isRunning = false;
     }
 
   }

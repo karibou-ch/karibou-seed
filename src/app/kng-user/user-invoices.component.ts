@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { OrderService, User, OrderCustomerInvoices, Order } from 'kng2-core';
+import { OrderService, User, OrderCustomerInvoices, Order, LoaderService } from 'kng2-core';
 import { MdcSnackbar } from '@angular-mdc/web';
 
 import { i18n } from '../common';
@@ -49,18 +49,14 @@ export class UserInvoicesComponent implements OnInit {
   constructor(
     private $i18n: i18n,
     private $order: OrderService,
-    private $route: ActivatedRoute
+    private $route: ActivatedRoute,
+    private $loader: LoaderService
   ) {
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    console.log('---',loader)
-
-    //
-    // system ready
-    this.user   = loader[1];
-    this.config = loader[0];
-    this.order  = loader[4]?loader[4][0]:null;
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user, orders } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
+    this.order = orders && orders[0] ? orders[0] : null;
     this.invoices = [];
   }
 

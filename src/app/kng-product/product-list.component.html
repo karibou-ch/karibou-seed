@@ -8,31 +8,31 @@
         <button (click)="onClose(true)" class="close" >
           <span class="material-symbols-outlined size-large">arrow_back</span>
         </button>
-  
+
         <div class="page-title text-overflow" [hidden]="isForSubscriptionList">{{category.current.name}}</div>
         <div class="cart visible"  >
-          <div class="subscription-cart" [hidden]="!activeSubscription"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" [queryParams]="subscriptionQueryParams">            
-            <button> 
+          <div class="subscription-cart" [hidden]="!activeSubscription"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" [queryParams]="subscriptionQueryParams">
+            <button>
               <span>
-                {{subscriptionAmount}} fr &nbsp; 
+                {{subscriptionAmount}} fr &nbsp;
                 <span class="end material-symbols-outlined">shopping_cart</span>
               </span>
-              Votre Abo →&nbsp;   
-              
+              Votre Abo →&nbsp;
+
             </button>
-          </div>  
-          <div class="subscription-cart" [hidden]="activeSubscription" href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >            
-            <button> 
+          </div>
+          <div class="subscription-cart" [hidden]="activeSubscription" href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >
+            <button>
               <span>
-                {{cartAmount}}&nbsp;fr&nbsp; 
+                {{cartAmount}}&nbsp;fr&nbsp;
                 <span class="end material-symbols-outlined">shopping_cart</span>
               </span>
               <span [hidden]="!isForSubscriptionBusiness">Votre projet →&nbsp;</span>
-              
-            </button>
-          </div>  
 
-        </div>  
+            </button>
+          </div>
+
+        </div>
 
       </div>
 
@@ -40,7 +40,7 @@
       <!-- TITLE -->
       <div class="banner" >
         <h1 [innerHtml]="category.current.name"></h1>
-        <h2 [innerHtml]="category.current.description"></h2>  
+        <h2 [innerHtml]="category.current.description"></h2>
       </div>
 
 
@@ -50,9 +50,9 @@
           {{label_souscription}}
         </kng-slider>
       </div>
-      
-      <!-- SUBSCRIPTION OPTIONS  -->
-      <div class="subscription" [hidden]="!isForSubscriptionCustomer||!activeSubscription">
+
+      <!-- SUBSCRIPTION OPTIONS  [hidden]="!isForSubscriptionCustomer||!activeSubscription" -->
+      <div class="subscription" hidden >
         <kng-subscription-option [hub]="hub"  [contract]="subscriptionContract"></kng-subscription-option>
       </div>
 
@@ -71,12 +71,12 @@
         </div>
         <ul  #subcategory>
           <li class="kng-chip" (click)="scrollTo($event,child.name)"
-                    [id]="'child'+j"                    
+                    [id]="'child'+j"
                     [class.selected]="child.name == filterChild"
                     *ngFor="let child of getChildCategory(category.current);trackBy:trackerCategories;let j=index">
             <span>{{child.name}}</span>
           </li>
-        </ul>      
+        </ul>
       </div>
     </div>
     <!-- JAMES-->
@@ -84,21 +84,21 @@
 
     <!-- FURTHER -->
     <div class="further-product-container" [class.large]="isForSubscriptionBusiness" [hidden]="scrollLocked">
-      <kng-product-grouped-list class=""        
+      <kng-product-grouped-list class=""
       *ngIf="products.length"
         alphasort="true"
         showSection="true"
         [clazz]="isForSubscriptionBusiness?'large':''"
         [displayVendor]="true"
         [displaySubscription]="activeSubscription"
-        [config]="config" 
+        [config]="config"
         [user]="user"
-        [selections]="selections"         
-        [selectionsTitle]="jamesTitle"         
+        [selections]="selections"
+        [selectionsTitle]="jamesTitle"
         [useGroupedCategory]="isForSubscriptionCustomer"
         [scrollContainer]="getDialog()"
         [scrollToSlug]="scrollToCategory"
-        [contentCategories]="getChildCategory(category.current)" 
+        [contentCategories]="getChildCategory(category.current)"
         [contentProducts]="getProducts()"
         (currentCategory)="filterChild=$event"
         (direction)="scrollDirection=$event"> </kng-product-grouped-list>

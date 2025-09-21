@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.service';
+import { KngAudioRecorderEnhancedService } from '../../common/kng-audio/services/kng-audio-recorder-enhanced.service';
+import { RecorderState } from '../../common/kng-audio/interfaces/audio.interfaces';
 import { i18n } from 'src/app/common';
 import { Subscription } from 'rxjs';
 import { Config, CartService, User, ProductService, Product, AssistantService, Assistant, AnalyticsService } from 'kng2-core';
@@ -7,7 +8,7 @@ import { Router } from '@angular/router';
 
 export interface AssistantQuery extends Assistant{
   content:string;
-  role:string;  
+  role:string;
 }
 export interface AssistantMessage extends AssistantQuery {
   assistant:boolean;
@@ -19,7 +20,7 @@ export interface AssistantMessage extends AssistantQuery {
   tool?:any
 }
 
-export interface AssistantState {  
+export interface AssistantState {
   status:"init"|"start"|"running"|"end"|"record"|string;
   audioDetected: boolean|undefined;
   audioRecorded: boolean;
@@ -90,20 +91,20 @@ export class KngAssistantComponent implements OnInit {
   subscription$:any;
 
   constructor(
-    private $audio: KngAudioRecorderService,
+    private $audio: KngAudioRecorderEnhancedService,
     private $i18n: i18n,
     private $assistant: AssistantService,
     private $metric: AnalyticsService,
     private $products: ProductService,
     private $router: Router,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
     this.user = new User({
       displayName:'Anonymous'
     })
-    this.widget = true;    
-    
-    this.subscription$ = new Subscription();    
+    this.widget = true;
+
+    this.subscription$ = new Subscription();
 
     this.prompts = [];
     this.tips = [];
@@ -114,7 +115,7 @@ export class KngAssistantComponent implements OnInit {
     return this.$i18n.label();
   }
 
-  get displayName () {    
+  get displayName () {
     return this.user.displayName;
   }
 
@@ -168,7 +169,7 @@ export class KngAssistantComponent implements OnInit {
       const chars = message.content.replace(/\s+/gm, "");
       return tokens + (chars.length) * 0.8;
     },0.0);
-  }  
+  }
 
   ngOnDestroy() {
     this.subscription$.unsubscribe();
@@ -186,13 +187,13 @@ export class KngAssistantComponent implements OnInit {
     //   fromEvent<MouseEvent>(window,eventName).pipe(map ($evt => $evt.screenX * $evt.screenY),debounceTime(50),distinctUntilChanged()).subscribe(this.audioStopAndSave.bind(this))
     // );
 
-    
+
     const module = await import('markdown-it');
     this.markdown = new module.default({
       html:true,
       breaks:true,
       typographer:true
-    });  
+    });
     this.audioDetected = true;
     this.audioError = !(await this.$audio.isAudioGranted());
 
@@ -203,7 +204,7 @@ export class KngAssistantComponent implements OnInit {
     this.subscription$.add(
       this.$audio.recorderState.subscribe(state =>  {
         if(state == RecorderState.SILENCE) {
-          this.audioStopAndSave();          
+          this.audioStopAndSave();
         }
       })
     );
@@ -250,7 +251,7 @@ export class KngAssistantComponent implements OnInit {
         }
         return message;
       })
-  
+
       if(this.messages.length) {
         this.currentMessage = this.messages[this.messages.length-1];
         await this.products(this.currentMessage);
@@ -262,7 +263,7 @@ export class KngAssistantComponent implements OnInit {
     }
   }
 
-  onChat(base64?:string) {    
+  onChat(base64?:string) {
     const assistant:AssistantMessage = this.currentMessage = {
       role:'James',
       content:'',
@@ -299,7 +300,7 @@ export class KngAssistantComponent implements OnInit {
     this.messages.push(assistant);
     this.prompt = "";
     this.error = null;
-    // 
+    //
     // force change detection
     this.messages = this.messages.slice();
 
@@ -320,13 +321,13 @@ export class KngAssistantComponent implements OnInit {
 
     this.isAssistantRuning = this.$assistant.chat(params).subscribe(chunk => {
       setTimeout(()=> {
-        assistant.assistant = true;      
-        assistant.audio = false;      
+        assistant.assistant = true;
+        assistant.audio = false;
         assistant.content += chunk.text||'';
         assistant.tool = chunk.tool;
         assistant.content = assistant.content.replace(/\(\([0-9]*\)\)/gm,'')
 
-        assistant.html = this.markdownRender(assistant.content);  
+        assistant.html = this.markdownRender(assistant.content);
         state.message = assistant;
         state.status = "running";
         state.tokensIn=this.tokensIn;
@@ -349,11 +350,11 @@ export class KngAssistantComponent implements OnInit {
       state.messagesCount=this.messages.length;
     this.assistant.emit(state);
 
-    },async ()=>{ 
+    },async ()=>{
       //complete == finally
       this.isFeedbackReady = true;
       this.isAssistantRuning = null;
-      assistant.running = false;      
+      assistant.running = false;
 
       await this.products(assistant);
       state.message = assistant;
@@ -371,7 +372,7 @@ export class KngAssistantComponent implements OnInit {
   }
 
   //
-  // stop assistant 
+  // stop assistant
   abort() {
     if(!this.isAssistantRuning) {
       return;
@@ -430,10 +431,10 @@ export class KngAssistantComponent implements OnInit {
 
         //
         // detect sound on audio, and convert buffer
-        this.audioDetected = audioDetected;  
+        this.audioDetected = audioDetected;
 
         //
-        // should exit 
+        // should exit
         if(!this.audioDetected){
           this.prompt = "";
           return;
@@ -448,9 +449,9 @@ export class KngAssistantComponent implements OnInit {
         // use sentry to report the error
         this.isAssistantRuning = null;
         throw error;
-      }  
+      }
     });
-  }  
+  }
 
 
 
@@ -465,24 +466,24 @@ export class KngAssistantComponent implements OnInit {
     const href = target.getAttribute('href')||'';
 
     const rules =[
-      {regexp:/^\/store\/.*$/,prompt:"-", param:false},      
-      {regexp:/quote\/orders/,prompt:"5 exemples de produits pour ma demande de devis ", param:false},      
-      {regexp:/products\/cart/,prompt:"Quelques recettes avec mon panier ", param:false},      
-      {regexp:/products\/box/,prompt:"Le panier de fruits et légumes de la semaine", param:false},      
-      {regexp:/products\/school/,prompt:"Une sélection pour 100 enfants", param:false},      
-      {regexp:/products\/orders/,prompt:"Informations sur mes dernières commandes", param:false},      
-      {regexp:/popular\/([^)]+)/,prompt:"Quelques recettes avec les produits populaires", param:false},      
-      {regexp:/recipe\/([^)]+)/,prompt:"Le détail de la recette ", param:true},      
-      {regexp:/search\/([^)]+)/,prompt:"Cherche les aliments séparés pour ", param:true},      
-      {regexp:/theme\/([^)]+)/,prompt:"10 recettes de la thématique ", param:true},      
-      {regexp:/document\/([^)]+)/,prompt:"Je souhaite connaître ", param:true},      
-      {regexp:/sku\/([^)]+)/,prompt:"Je souhaite des variations de ", param:true},      
+      {regexp:/^\/store\/.*$/,prompt:"-", param:false},
+      {regexp:/quote\/orders/,prompt:"5 exemples de produits pour ma demande de devis ", param:false},
+      {regexp:/products\/cart/,prompt:"Quelques recettes avec mon panier ", param:false},
+      {regexp:/products\/box/,prompt:"Le panier de fruits et légumes de la semaine", param:false},
+      {regexp:/products\/school/,prompt:"Une sélection pour 100 enfants", param:false},
+      {regexp:/products\/orders/,prompt:"Informations sur mes dernières commandes", param:false},
+      {regexp:/popular\/([^)]+)/,prompt:"Quelques recettes avec les produits populaires", param:false},
+      {regexp:/recipe\/([^)]+)/,prompt:"Le détail de la recette ", param:true},
+      {regexp:/search\/([^)]+)/,prompt:"Cherche les aliments séparés pour ", param:true},
+      {regexp:/theme\/([^)]+)/,prompt:"10 recettes de la thématique ", param:true},
+      {regexp:/document\/([^)]+)/,prompt:"Je souhaite connaître ", param:true},
+      {regexp:/sku\/([^)]+)/,prompt:"Je souhaite des variations de ", param:true},
     ]
 
     //
     // apply URL action
     for(const rule of rules) {
-      const values = rule.regexp.exec(href);  
+      const values = rule.regexp.exec(href);
       if(!values || !values.length) {
         continue;
       }
@@ -525,7 +526,7 @@ export class KngAssistantComponent implements OnInit {
   async onMail(message){
     try{
       await this.$assistant.message(message.html).toPromise();
-      this.isMailSent = true;  
+      this.isMailSent = true;
     }catch(err){
       this.error = err.error||err.message;
       this.prompt = this.error;

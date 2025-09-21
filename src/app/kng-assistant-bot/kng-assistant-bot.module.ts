@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { KngSharedModule } from '../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Kng2CoreModule, LoaderResolve } from 'kng2-core';
+import { Kng2CoreModule } from 'kng2-core';
 import { KngCommonModule } from '../common/common.module';
 import { KngAssistantBotComponent } from './kng-assistant-bot.component';
 
@@ -12,7 +12,7 @@ import { KngAssistantBotComponent } from './kng-assistant-bot.component';
 //
 // define routes module
 const routes: Routes = [
-  { path: ':name', component: KngAssistantBotComponent, resolve: { loader: LoaderResolve }}
+  { path: ':name', component: KngAssistantBotComponent}
 ];
 
 //

@@ -4,46 +4,38 @@
 body{
   margin-top: 0;
   background: white;
-  font-size: 17px;
+  font-size: 1rem;
   @media (min-width: 768px) {
     zoom:0.85;
     transform-origin: top left;
   }
 
   @media (min-width: 1850px) {
-    zoom:1.2;
+    zoom:1;
   }
 
   @media (min-width: 2500px) {
-    zoom:1.4;
+    zoom:1.2;
   }
 
 }
 
 
+@import 'kng-responsive.scss';
 @import 'kng-custom-mdc-theme.scss';
 @import 'kng-custom-mdc-admin-theme.scss';
 
 @import 'kng-theme.scss';
 @import 'kng-root.scss';
 @import 'kng-widgets.scss';
-@import 'kng-responsive.scss';
 @import 'kng-mdc.scss';
 @import 'kng-card-skeleton.scss';
 
 :root {
 
-  //100% mobile up 1024px
-  //m740px up 1024px
-  //940px up 1440px
-  //940px up 1850px
-  --mdc-theme-width-sm: 100%;
-  --mdc-theme-width-md: 930px;
-  --mdc-theme-width-lg: 930px;
-  --mdc-theme-max-width-sm: 740px;
-  --mdc-theme-max-width-md: 930px;
-  --mdc-theme-max-width-lg: 930px;//1170px;
+  // 🧭 NAVIGATION - Hauteur navbar fixe
   --mdc-theme-top-bar: 70px;
+
 
   --mdc-theme-karibou-pink: #da1c5c;
   --mdc-theme-karibou-green: #62dd2a;

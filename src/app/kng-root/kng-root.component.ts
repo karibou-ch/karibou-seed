@@ -51,14 +51,13 @@ export class KngRootComponent implements OnInit, OnDestroy {
     private $route: ActivatedRoute,
     private $router: Router,
   ) {
-    const loader = this.$route.snapshot.parent.data['loader'] || this.$route.snapshot.data['loader'];
-    this.config = loader[0];
-    this.user = loader[1];
-    this.orders = loader[4] || [];
+    const { config, user, orders } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
+    this.orders = orders || [];
     this.currentShippingDay = new Date();
     this.selected = [];
     this.subscription = new Subscription();
-    //console.log('---- ROOT component orders:',this.orders)
   }
 
 
@@ -98,19 +97,16 @@ export class KngRootComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.subscription.add(
-      this.$route.params.subscribe(params => {
-      if(!params.store) {
-        return;
-      }
-
-      this.$navigation.store = params['store'];
-    }));
-
+    console.log('ngOnInit --> kng-root');
     this.subscription.add(
       this.$loader.update().subscribe(emit => {
       if (emit.state && emit.state.order){
         this.orders.unshift(emit.state.order);
+      }
+
+      // ✅ CORRECTION CRITIQUE: Écouter emit.user pour mise à jour après login
+      if (emit.user) {
+        this.user = emit.user;
       }
 
       if (!emit.config) {

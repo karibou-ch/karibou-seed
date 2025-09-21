@@ -6,7 +6,7 @@ import { KngInputValidator } from '../shared';
 import { KngNavigationStateService, i18n } from '../common';
 
 import { MdcSnackbar } from '@angular-mdc/web';
-import { Config, User, UserService } from 'kng2-core';
+import { Config, User, UserService, LoaderService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 import { KngPaymentComponent } from '../common/kng-payment/kng-user-payment.component';
 
@@ -100,21 +100,19 @@ export class UserSignComponent {
     private $location: Location,
     private $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
-    private $metric: MetricsService
+    private $metric: MetricsService,
+    private $loader: LoaderService
   ) {
     //
     // initialize HTML content (check on route definition)
     this.askAction = this.$route.snapshot.data.action;
     this.sendRecover = false;
 
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    //
-    // system ready
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
     this.isReady = true;
-    this.config = loader[0];
-    this.user   = loader[1];
 
     this.mandatory = {
       address: this.$route.snapshot.data.address,
@@ -127,8 +125,14 @@ export class UserSignComponent {
 
     const postalCodeValidator= (control) => {
       if(this.mandatory.minimal){
-        return;
+        return null;
       }
+      // ✅ VALIDATION: Vérifier que config et location.list sont chargés
+      if(!this.config || !this.config.shared || !this.config.shared.user ||
+         !this.config.shared.user.location || !this.config.shared.user.location.list){
+        return null; // Ne pas bloquer si config non disponible
+      }
+      // ✅ VALIDATION: Vérifier si le code postal est dans la liste des zones livrables
       if(this.config.shared.user.location.list.indexOf(control.value)==-1){
         return {invalidPostalcode:true};
       }
@@ -210,14 +214,12 @@ export class UserSignComponent {
   //
   // release data
   ngOnDestroy() {
+    // nothing to do
     this.config = null;
-    console.log('---DEBUG ngDestroy',this.config);
-
   }
 
   ngOnInit() {
-    if (this.askAction === 'payment') {
-    }
+    // nothing to do
   }
 
 
@@ -290,14 +292,19 @@ export class UserSignComponent {
   // @HostListener('document:click')
   onBack() {
     const referrer = this.$route.snapshot.queryParams['referrer'];
+    const action = this.$route.snapshot.queryParams['action'];
 
 
     if (referrer) {
-      return this.$router.navigate([referrer]);
+      return this.$router.navigate([referrer], {
+        queryParams: { action }
+      });
     }
 
     if (this.mandatory.referrer) {
-      return this.$router.navigate([this.mandatory.referrer]);
+      return this.$router.navigate([this.mandatory.referrer], {
+        queryParams: { action }
+      });
     }
 
     //
@@ -353,6 +360,7 @@ export class UserSignComponent {
       provider: 'local'
     }).subscribe(
     (user: User) => {
+      this.user = user;
       if (!user.isAuthenticated()) {
         return this.$snack.open(this.$i18n.label().user_login_ko, this.$i18n.label().thanks, this.$i18n.snackOpt);
       }
@@ -375,6 +383,7 @@ export class UserSignComponent {
     };
     this.$user.register(user).subscribe(
       (user) => {
+        this.user = user;
         const hub = this.config.shared.hub.slug;
         this.$metric.event(EnumMetrics.metric_account_create,{hub});
         this.$snack.open(this.$i18n.label().user_register_ok, this.$i18n.label().thanks, {

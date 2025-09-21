@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { i18n, KngNavigationStateService } from 'src/app/common';
-import { Product } from 'kng2-core';
+import { Product, Config, LoaderService } from 'kng2-core';
 
 @Component({
   selector: 'kng-product-link',
@@ -24,11 +24,12 @@ export class KngProductLinkComponent implements OnInit {
     private $i18n: i18n,
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
-    private $router: Router
+    private $router: Router,
+    private $loader: LoaderService
   ) {
-    const loader  = this.$route.snapshot.data.loader ||
-                  this.$route.snapshot.parent.data.loader;
-    this.config = loader[0];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config } = this.$loader.getLatestCoreData();
+    this.config = config;
   }
 
   get hideIfEmpty() {
@@ -37,7 +38,7 @@ export class KngProductLinkComponent implements OnInit {
   get i18n(){
     return this.$i18n;
   }
-  ngOnInit() {    
+  ngOnInit() {
   }
 
 

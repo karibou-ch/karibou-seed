@@ -49,18 +49,16 @@ export class UserProfileComponent implements OnInit {
     public  $i18n: i18n,
     private $user: UserService,
     private $route: ActivatedRoute,
-    private $router: Router
+    private $router: Router,
+    private $loader: LoaderService
   ) {
     //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    console.log('--',this.$route.snapshot.data)
-    //
-    // system ready
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user, orders } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
+    this.order = orders && orders[0] ? orders[0] : null;
     this.isReady = true;
-    this.user   = loader[1];
-    this.config = loader[0];
-    this.order = loader[2];
     this.menuAction = 'orders';
   }
 

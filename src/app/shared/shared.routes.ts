@@ -1,5 +1,4 @@
 import { Routes, Route } from '@angular/router';
-import { LoaderResolve } from 'kng2-core';
 
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngProductListByShopComponent, ProductListComponent, ProductComponent } from '../kng-product';
@@ -29,12 +28,12 @@ export const appRoutes: Routes = [
   },
   { path: 'cart', loadChildren: () => import('../kng-cart/kng-cart.module').then(m => m.KngCartModule) },
   { path: 'landing', loadChildren: () => import('../kng-shops/kng-shops.module').then(m => m.KngShopsModule) },
-  { path: 'shops', component: KngShopsComponent, resolve: { loader: LoaderResolve }},
+  { path: 'shops', component: KngShopsComponent},
   { path: 'shops/:shop/:child', component: KngProductListByShopComponent },
   { path: 'shops/:shop', component: KngProductListByShopComponent },
   { path: 'me', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule) },
 
   // FIXME path construction is ugly
-  { path: '', component: KngHomeComponent, data: { departement: 'home' }, resolve: { loader: LoaderResolve }, children: childrenRoute},
+  { path: '', component: KngHomeComponent, data: { departement: 'home' }, children: childrenRoute},
   { path: '', pathMatch: 'full' },
 ];

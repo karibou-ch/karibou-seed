@@ -5,11 +5,11 @@
   </section>
 
   <!-- <div class="kng-layout-card" [class]="clazz">
-    <kng-product-thumbnail 
-      *ngFor="let product of selections;let j=index" 
+    <kng-product-thumbnail
+      *ngFor="let product of selections;let j=index"
       [displayVendor]="displayVendor"
-      [visibility]="true" 
-      [sku]="product.sku"         
+      [visibility]="true"
+      [sku]="product.sku"
       [class]="clazz">
     </kng-product-thumbnail>
   </div> -->
@@ -18,27 +18,26 @@
 <ng-template ngFor let-i="index" let-category [ngForOf]="sortedCategories" [ngForTrackBy]="trackerCategories">
   <ng-content  *ngIf="i==categoryMiddle && contentIf"></ng-content>
   <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>
-    <section  class="category-hide-sm" [class.display]="showSection" [ngClass]="isChildCategory ? 'child':'title'">
-      <h2>{{getCategoryI18n(category)}}</h2>
+    <section  class="category-hide-sm category-title" [class.display]="showSection" [ngClass]="isChildCategory ? 'child':'title'">
+      <h2>{{getCategoryI18n(category)}}
+        <div class="kng-chip" [routerLink]="['category',category.slug]" [hidden]="!showMore">
+          <span class="inlink">/ plus ...</span>
+        </div>
+      </h2>
       <!-- <h3 class="hide" [innerHtml]="category.description"></h3> -->
     </section>
 
 
     <div class="kng-layout-card" [class]="clazz">
         <!-- [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor" -->
-        <kng-product-thumbnail 
-        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index" 
+        <kng-product-thumbnail
+        *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index"
         [displayVendor]="displayVendor"
         [displaySubscription]="displaySubscription"
-        [visibility]="visibility[category.slug]" 
-        [sku]="product.sku"         
+        [visibility]="visibility[category.slug]"
+        [sku]="product.sku"
         [class]="clazz">
       </kng-product-thumbnail>
-      <div class="kng-product-more" [hidden]="!visibility[category.slug] || !showMore" 
-        [routerLink]="['category',category.slug]">
-        <div class="icon"><i class="material-symbols-outlined">playlist_add</i></div>
-        <div>{{getCategoryI18n(category)}} </div>
-      </div>
     </div>
   </div>
 </ng-template>

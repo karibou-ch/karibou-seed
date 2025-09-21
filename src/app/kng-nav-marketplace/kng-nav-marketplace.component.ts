@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding, ElementRef } from '@angular/core';
 import { i18n, KngNavigationStateService } from '../common';
-import { CartItemsContext, CartService, Config, LoaderService, Order } from 'kng2-core';
+import { CartItemsContext, CartService, Config, LoaderService, Order, CalendarService, User } from 'kng2-core';
 import pkgInfo from '../../../package.json';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
   @Input() config: Config;
+  @Input() user: User;
   @Input() orders: Order[];
   @Input() currentShippingDay: Date;
   @Input() isPremium: boolean;
@@ -38,6 +39,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
     public $navigation: KngNavigationStateService,
     public $loader: LoaderService,
     public $router: Router,
+    private $calendar: CalendarService
   ) {
     this.weekdays = {
       fr:[],
@@ -54,12 +56,17 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
 
     this.$loader.update().subscribe(emit=> {
+      // ✅ CORRECTION CRITIQUE: Écouter emit.user pour mise à jour après login
+      if (emit.user) {
+        this.user = emit.user;
+      }
+
       if(emit.state){
         this.config.shared.hubs.forEach(hub => {
           const ctx:CartItemsContext = {
             forSubscription:false,
             hub:hub.slug
-          }    
+          }
           const items = this.$cart.getItems(ctx);
           this.currentCart[hub.slug]={
             count:items.length,
@@ -94,16 +101,16 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
           try {
             document.querySelector('kng-nav-marketplace .marketplace').scrollLeft = 274*index;
           } catch (e) {}
-        },100);      
-  
+        },100);
 
-      
+
+
       // console.log('----cfg',this.config.shared.hub);
       // const hub = this.config.shared.hub;
       // hub.tagline.image;
       // hub.siteName.image;
       // hub.about.image;
-  
+
 
       if(this.lockedHUB) {
         const native: HTMLElement =this.$elem.nativeElement;
@@ -140,10 +147,8 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
 
   getWeekDay(idx) {
-    if(!this.weekdays[this.locale].length){
-      this.weekdays[this.locale] = this.$i18n.label().weekdays.split('_').map(day=>day.slice(0,3)+'.');
-    }
-    return this.weekdays[this.locale][idx];
+    // ✅ MIGRATION: Utiliser CalendarService centralisé au lieu de logique dupliquée
+    return this.$calendar.getWeekDay(idx, this.locale);
   }
 
   onLang($event, lang) {
@@ -164,8 +169,11 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
   // FIXME, scheduler should be in API
   isDayAvailable(day: Date) {
-    const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return (this.currentRanks[day.getDay()] <= maxLimit);
+    // ✅ MIGRATION: Utiliser CalendarService avec logique complète (currentRanks only)
+    // Note: ce composant n'a pas d'Input user, CalendarService utilisera isPremium du service
+    return this.$calendar.isDayAvailable(day, [], {
+      hub: this.config.shared.hub
+    });
   }
 
   getShippingDays() {

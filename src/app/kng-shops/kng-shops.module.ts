@@ -2,9 +2,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { KngShopsComponent, KngShopComponent } from './kng-shops.component';
 
-import { Kng2CoreModule, LoaderResolve  } from 'kng2-core';
 
 
 //

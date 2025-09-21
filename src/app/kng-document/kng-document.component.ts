@@ -61,17 +61,19 @@ export class KngDocumentComponent implements OnInit {
     public $fb: FormBuilder,
     public $i18n: i18n,
     public $document: DocumentService,
-    public $loader: LoaderService,
     public $route: ActivatedRoute,
     public $router: Router,
-    public $snack: MdcSnackbar
+    public $snack: MdcSnackbar,
+    private $loader: LoaderService
   ) {
 
     this.create = this.$route.snapshot.data.create;
-    const loader = this.$route.snapshot.data.loader[0];
-    this.document = this.$route.snapshot.data.loader[1];
-    this.config = <Config>loader[0];
-    this.user = <User>loader[1];
+    // ✅ KngDocumentLoaderService
+    this.document = this.$route.snapshot.data.document;
+    // ✅ SYNCHRONE: Config/User via getLatestCoreData()
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
     this.isReady = true;
     document.title = this.document.title[$i18n.locale];
 

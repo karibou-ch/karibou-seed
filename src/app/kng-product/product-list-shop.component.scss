@@ -29,7 +29,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 865px;
+    max-width: var(--mdc-theme-dlg-width); // ✅ DIALOGUES: Adaptatif selon écran
     min-height: 70vh;
     border-radius: 4px;
     opacity: 1;
@@ -38,41 +38,105 @@
     margin-bottom: 40px;
     margin-left: auto;
     margin-right: auto;
+    padding-bottom: 100px;
+    position: relative;
+
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--mdc-theme-secondary-dark);
+      color: var(--mdc-theme-secondary-dark-text);
+    }
 
     @media (max-width: 769px) {
       margin-top: 0px;
     }
 
     @media (min-width: 1640px) {
-      max-width: 945px;
+      max-width: var(--mdc-theme-dlg-width); // ✅ DIALOGUES: Backdrop adaptatif
     }
 
-    button.close{
-      cursor: pointer;
-      background: transparent;
-      border: 0;
-      color: #111;
+    .topbar {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      -width: calc(100% - 2rem);// Not for FIXED position
+      padding: 1rem;
       position: fixed;
-      top: 60px;
-      left: calc(( 100vw - 860px ) / 2 );
-      z-index: 4;
-      @media (prefers-color-scheme: dark) {
-        color: var(--mdc-theme-secondary-dark-text);
-    }
+      top: 2rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: all .5s;
+      z-index: 1;
 
-      @media (min-width: 1640px) {
-        left: calc(( 100vw - 945px ) / 2 );
+      @media (max-width:599px) {
+        top:0px
       }
 
-      @media (max-width: 769px) {
-        top: 30px;
-        left: -10px;
-        padding: 2px 3px;
-        background: white;
-        color: #000;
-        width: 60px;
-        height: 60px;
-        border-radius: 30px;
+      &.sticked {
+        background-color: rgba(255, 255, 255, .9);
+        top: 0px;
+        .title { opacity: 1;}
+      }
+
+      .title{
+        opacity: 0;
+        font-size: 1.375rem;
+        margin-left: 3%;
+        text-align: left;
+        width: 100%;
+      }
+
+      button.close {
+        cursor: pointer;
+        background: transparent;
+        border: 0;
+        color: #111;
+        left: calc((100% - 860px) / 2);
+        z-index: 4;
+
+        @media (prefers-color-scheme: dark) {
+          color: var(--mdc-theme-secondary-dark-text);
+        }
+
+        .size-large {
+          font-size: 2rem;
+          font-weight: bold;
+        }
+
+      }
+
+      .cart {
+        margin-right: 15px;
+        margin-left: auto;
+        opacity: 0;
+      }
+
+      .cart.visible {
+        opacity: 1;
+      }
+
+      .subscription-cart {
+
+        display: flex;
+        button {
+          margin-right: 0;
+          margin-left: auto;
+          text-align: left;
+          padding: 10px 25px;
+          font-size: 18px;
+          line-height: 24px;
+          font-weight: bold;
+          border: 0px solid var(--mdc-theme-primary);
+          border-radius: 28px;
+          color: var(--mdc-theme-appbar-text);
+          background-color: var(--mdc-theme-appbar);
+          cursor: pointer;
+
+          span {
+            float: right;
+            font-weight: 400;
+          }
+        }
       }
 
     }
@@ -91,6 +155,7 @@
   text-decoration: inherit;
   text-transform: inherit;
   line-height: 1.3rem;
+  font-size: 1.25rem;
 
   .title,
   .subtitle{
@@ -112,14 +177,24 @@
   }
   img.shop{
     width: 100%;
-    max-width: calc(100% - 30px);
+    max-width: calc(100% - 2rem);
+
+    height: 100%; /* Dimension explicite requise pour object-fit */
     object-fit: contain;
+    object-position: center; /* Centre l'image dans le conteneur */
     margin: auto;
     box-shadow: 0px 2px 10px rgba(0,0,0,0.18);
-    border-radius: 40px;
-    min-height: 600px;
-    @media (max-width:599px) {
-      min-height: 300px;
+    border-radius: 2rem;
+    aspect-ratio: 1/1;
+    /* Fallback pour navigateurs sans aspect-ratio */
+    padding-bottom: 100%; /* Simule aspect-ratio 1:1 */
+    position: relative;
+  }
+
+  /* Reset padding-bottom pour les navigateurs supportant aspect-ratio */
+  @supports (aspect-ratio: 1) {
+    img.shop {
+      padding-bottom: 0;
     }
   }
 
@@ -136,17 +211,16 @@
     flex-flow: row wrap;
     justify-content: flex-start;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 1rem;
     padding-left: 5px;
     padding-top: 5px;
-    max-width: 700px;
+    max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 700px hardcoded
     div.description{
-      max-width: calc(100% - 70px);
-      margin-left: 15px;
+      max-width: calc(100% - 2rem);
       min-height: 100px;
-      border-radius: 40px;
+      border-radius: 2rem;
       background-color: var(--mdc-theme-appbar-light);
-      padding: 20px;
+      padding: 1rem;
     }
 
     div.owner{
@@ -165,7 +239,7 @@
 }
 
 .products-container {
-  max-width: 740px;
+  max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 740px hardcoded
   margin: auto;
   flex: 1;
   align-items: center;

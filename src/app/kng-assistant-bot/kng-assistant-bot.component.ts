@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User, AssistantService } from 'kng2-core';
+import { AnalyticsService, CartService,CartItemsContext, Config, ProductService, User, AssistantService, LoaderService } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
 import { Subscription } from 'rxjs';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
@@ -47,8 +47,8 @@ export class KngAssistantBotComponent implements OnInit {
   prompts = [
     "j'aimerais préparer un événement pour mon entreprise",
     "Les 5 meilleures recettes de cuisine française",
-    "Les 5 meilleures recettes de cuisine italienne", 
-    "Les 5 meilleures recettes de cuisine de la mer", 
+    "Les 5 meilleures recettes de cuisine italienne",
+    "Les 5 meilleures recettes de cuisine de la mer",
     "La recette du Hamburgers texans",
     "La recette de Viande hachée façon Cambodgienne",
     "La recette Gyudon Japonais",
@@ -76,10 +76,11 @@ export class KngAssistantBotComponent implements OnInit {
     private $cart: CartService,
     private $metrics: MetricsService,
     private $navigation: KngNavigationStateService,
+    private $loader: LoaderService,
     private $router: Router,
     private $route: ActivatedRoute,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
     const recipe = this.$route.snapshot.queryParamMap.get('recipe');
     if(recipe) {
       this.prompt = "Les 5 meilleures recettes avec "+recipe;
@@ -99,13 +100,12 @@ export class KngAssistantBotComponent implements OnInit {
     }
 
 
-    this.subscription$ = new Subscription();    
+    this.subscription$ = new Subscription();
 
-    const loader = this.$route.snapshot.parent.data.loader || this.$route.snapshot.data.loader;
-    if(loader) {
-      this.config = loader[0];
-      this.user = loader[1];  
-    }
+        // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
 
     this.messages = [];
     this.scrollBottomPosition = 0;
@@ -118,7 +118,7 @@ export class KngAssistantBotComponent implements OnInit {
     return this.dialog;
   }
 
-  get displayName () {    
+  get displayName () {
     return this.user.displayName;
   }
 
@@ -134,14 +134,27 @@ export class KngAssistantBotComponent implements OnInit {
     if(!this.dialog || !this.dialog.nativeElement){
       return 0;
     }
-    return this.dialog.nativeElement.children[1].clientWidth    
+
+    //
+    // container.className == "product-dialog__surface"
+    const container = this.dialog.nativeElement.children[1];
+
+    // FIXME rem should be on utility class
+    // Calcul de la largeur réelle
+    const width = container.clientWidth;
+
+    // Soustrait 2rem (conversion dynamique des rem vers pixels)
+    const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const widthMinus2rem = width - (2 * remValue);
+
+    return Math.max(0, widthMinus2rem); // Empêche les valeurs négatives
   }
 
   get cartAmount() {
     const ctx:CartItemsContext = {
       forSubscription:false,
       hub:this.store
-    }    
+    }
     return this.$cart.subTotal(ctx).toFixed(2)
   }
 
@@ -206,7 +219,7 @@ export class KngAssistantBotComponent implements OnInit {
       this.$navigation.registerScrollEvent(this.container,10).subscribe(scroll => {
         this.scrollToBottom = scroll.direction<=0 && (scroll.position+100)> this.scrollBottomPosition;
         this.$cdr.markForCheck();
-      })  
+      })
     );
 
     if(this.prompt) {
@@ -230,10 +243,10 @@ export class KngAssistantBotComponent implements OnInit {
   clean() {
     this.isReady = false;
     document.body.classList.remove('mdc-dialog-scroll-lock');
-  }  
+  }
 
   //
-  // stop assistant 
+  // stop assistant
   onAbort() {
   }
 
@@ -241,7 +254,7 @@ export class KngAssistantBotComponent implements OnInit {
   onScrollToBottom() {
     setTimeout(()=>{
       this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
-      this.scrollBottomPosition = this.container.nativeElement.scrollTop;        
+      this.scrollBottomPosition = this.container.nativeElement.scrollTop;
       this.scrollStickedToolbar = (this.container.nativeElement.scrollTop>40);
     },500);
   }
@@ -262,15 +275,15 @@ export class KngAssistantBotComponent implements OnInit {
   }
   // //
   // // capture mic control
-  // @HostListener('window:keydown.m',['$event']) 
+  // @HostListener('window:keydown.m',['$event'])
   // async onKeydownCtrl($event) {
   //   console.log('down')
-  //   this.audioRecord(0); 
+  //   this.audioRecord(0);
   // }
 
-  // @HostListener('window:keyup.m',['$event']) 
+  // @HostListener('window:keyup.m',['$event'])
   // async onKeyupCtrl($event) {
-  //   this.audioStopAndSave(0); 
+  //   this.audioStopAndSave(0);
   // }
 
   onAudioRecord($event) {

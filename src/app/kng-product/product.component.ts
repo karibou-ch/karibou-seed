@@ -14,10 +14,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Category,
   CartService,
+  LoaderService,
   ProductService,
   Product,
   User,
-  CartItem
+  CartItem,
+  CalendarService,
+  ProductOrderTiming
 } from 'kng2-core';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 
@@ -84,7 +87,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   departement = 'home';
 
-  hoursLeftBeforeOrder: number;
+  productTiming: ProductOrderTiming;
   isHighlighted: boolean;
   WaitText = false;
   rootProductPath: string;
@@ -123,11 +126,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     private $meta: Meta,
     private $metric: MetricsService,
     private $cart: CartService,
+    private $loader: LoaderService,
     public $i18n: i18n,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
-    private $router: Router
+    private $router: Router,
+    private $calendar: CalendarService
   ) {
 
     this.timestamp = Date.now();
@@ -137,23 +142,39 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (this.isRedirect) {
       this.$router.navigate(['/store', this.store, 'home']);
     }
+    // ✅ PARENT BROADCASTER: Récupération immédiate des données cached
+    const { config, user, categories } = this.$loader.getLatestCoreData();
 
     //
     // open product from departement
     this.departement = this.$route.snapshot.data.departement || this.$route.parent.snapshot.data.departement || 'home';
 
-    const loader = this.$route.snapshot.data.loader || this.$route.parent.snapshot.data.loader;
-    if (loader && loader.length) {
-      this.config = loader[0];
-      this.user = loader[1];
-      this.categories = loader[2];
-    }
+
+    this.config = config;
+    this.user = user;
+    this.categories = categories;
 
     this.products = [];
     this.scrollCallback = this.getNextPage.bind(this);
     this.scrollStickedToolbar = false;
   }
 
+  /**
+   * Calcule la largeur effective du conteneur de dialogue produit, soustrait 2rem.
+   *
+   * Le toolbar étant en position fixed, les calculs CSS purs sont imprécis car :
+   * - Le positionnement fixed sort l'élément du flux normal du document
+   * - Les calculs de largeur ne tiennent pas compte du z-index et layering
+   * - Les dimensions peuvent être affectées par les propriétés CSS du fixed positioning
+   * - Le JavaScript permet un calcul précis basé sur le DOM réel
+   *
+   * Cette approche garantit la synchronisation parfaite entre :
+   * - Le dialogue modal et ses dimensions
+   * - Le toolbar fixed et son positionnement
+   * - Les calculs de layout responsives
+   *
+   * @returns {number} Largeur en pixels du conteneur moins 2rem, 0 si non disponible
+   */
   get clientWidth() {
     if(!this.dialog || !this.dialog.nativeElement){
       return 0;
@@ -162,7 +183,16 @@ export class ProductComponent implements OnInit, OnDestroy {
     //
     // container.className == "product-dialog__surface"
     const container = this.dialog.nativeElement.children[1];
-    return container.clientWidth;
+
+    // FIXME rem should be on utility class
+    // Calcul de la largeur réelle
+    const width = container.clientWidth;
+
+    // Soustrait 2rem (conversion dynamique des rem vers pixels)
+    const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const widthMinus2rem = width - (2 * remValue);
+
+    return Math.max(0, widthMinus2rem); // Empêche les valeurs négatives
   }
 
   get store() {
@@ -215,36 +245,20 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   get isOutOfTimelimitForOrder() {
-    return !this.displaySubscription && this.hoursLeftBeforeOrder < 0;
+    return !this.displaySubscription && this.productTiming?.isOutOfTimeLimit;
   }
 
   get getTimelimitForOrder() {
-    return !this.displaySubscription &&
-           this.product.attributes.timelimit>0 &&
-           this.hoursLeftBeforeOrder>0 &&
-           this.hoursLeftBeforeOrder < 10;
+    return !this.displaySubscription && this.productTiming?.shouldShowCountdown;
   }
 
   get hoursAndMinutesLeftBeforeOrder() {
-    const hours = Math.floor(this.hoursLeftBeforeOrder);
-    const minutes = Math.floor((this.hoursLeftBeforeOrder - hours) * 60);
-    if(hours>0){
-      return `${hours} h ${minutes} minutes`;
-    }
-    return `${minutes} minutes`;
+    return this.productTiming?.formattedTimeLeft || '0 minutes';
   }
 
   // display hours and minutes after the timelimit
-  // hoursLeftBeforeOrder equal -1.5hours means that current time minus 1.5 compute the limit of time
   get hoursAndMinutesAfterOrder() {
-    // Reconstruct the exact deadline time by adding the (negative) hoursLeftBeforeOrder to the current time.
-    const now = new Date();
-    const deadline = new Date(now.getTime() + this.hoursLeftBeforeOrder * 3600000); // 3,600,000 ms in an hour
-
-    const deadlineHours = deadline.getHours();
-    const deadlineMinutes = deadline.getMinutes().toString().padStart(2, '0');
-
-    return `${deadlineHours}h${deadlineMinutes}`;
+    return this.productTiming?.formattedDeadline || '00h00';
   }
 
 
@@ -335,17 +349,24 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     }
 
-    // Start timer to update hoursLeftBeforeOrder
+    // Start timer to update productTiming
     const updateTime = () => {
       const now = Date.now();
       if (now - this.lastUpdate >= this.UPDATE_INTERVAL) {
         if (this.product && this.config) {
           const shippingDay = this.$cart.getCurrentShippingDay();
-          const newValue = this.config.timeleftBeforeCollect(this.config.shared.hub, this.product.attributes.timelimit, shippingDay);
+          // ✅ MIGRATION CRITIQUE: Utiliser CalendarService avec interface ProductOrderTiming complète
+          const newTiming = this.$calendar.timeleftBeforeCollect(
+            this.config.shared.hub,
+            this.product.attributes.timelimit,
+            shippingDay,
+            { includeInterface: true }
+          ) as ProductOrderTiming;
+
           // Only update if the value has changed significantly (more than 1 minute)
-          if (Math.abs(newValue - this.hoursLeftBeforeOrder) > 1/60) {
+          if (!this.productTiming || Math.abs(newTiming.hoursLeft - this.productTiming.hoursLeft) > 1/60) {
             this.zone.run(() => {
-              this.hoursLeftBeforeOrder = newValue;
+              this.productTiming = newTiming;
               this.lastUpdate = now;
             });
           }
@@ -375,9 +396,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     console.log('---DBG audio error',error);
   }
 
-  onAudioStopAndSave(ctx:{src, audio: string,note?:string}) {
-    this.cartItemAudio = ctx.src; // use audio url instead of audio base64
-    this.cartItemNote = ctx.note;
+  onAudioStopAndSave(ctx:{type: string, audioUrl: string, transcription: string, cartUrl?: string}) {
+    this.cartItemAudio = ctx.audioUrl;
+    this.cartItemNote = ctx.transcription;
     //
     // update note product, no qty, no variant and audio
     const item = this.$cart.findBySku(this.product.sku,this.store);
@@ -524,7 +545,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.product = product;
     const shippingDay = this.$cart.getCurrentShippingDay();
 
-    this.hoursLeftBeforeOrder = this.config.timeleftBeforeCollect(this.config.shared.hub,this.product.attributes.timelimit,shippingDay);
+    // ✅ MIGRATION CRITIQUE: Utiliser CalendarService avec interface ProductOrderTiming complète
+    this.productTiming = this.$calendar.timeleftBeforeCollect(
+      this.config.shared.hub,
+      this.product.attributes.timelimit,
+      shippingDay,
+      { includeInterface: true }
+    ) as ProductOrderTiming;
 
     //
     // updated product is hilighted for 2 weeks

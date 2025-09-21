@@ -80,7 +80,7 @@
         type="support"
         [key]="config.shared.keys.pubUpcare"
         filename="support-ticket-home"
-        (onAudioReady)="onSupportAudio($event)"
+        (onAudioReady)="onAudioStopAndSave($event)"
         (onAudioError)="onAudioError($event)">
 
         <div slot="header">
@@ -92,9 +92,9 @@
         </div>
       </kng-audio-note-enhanced>
     </div>
-    <div class="bottom" hidden>
-      <button class="width-100 default small secondary  " (click)="onSendAudioNote()" disabled>
-        Envoyer votre message à notre équipe
+    <div class="bottom" [hidden]="!audioContext?.audioUrl">
+      <button class="width-100 default small secondary  " (click)="onSendAudioNote()">
+        {{ label.audio_support_send }}
       </button>
 
     </div>

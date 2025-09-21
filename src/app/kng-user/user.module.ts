@@ -3,17 +3,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { LoaderResolve } from 'kng2-core';
 import { KngSharedModule } from '../shared/shared.module';
 
-import { UserSignComponent,
-         AddressComponent,
-         CardComponent,
-         UserEmailComponent,
-         UserOrdersComponent,
-         UserPasswordComponent,
-         UserProfileComponent,
-         UserSubscriptionComponent} from './';
+import {
+  UserSignComponent,
+  AddressComponent,
+  CardComponent,
+  UserEmailComponent,
+  UserOrdersComponent,
+  UserPasswordComponent,
+  UserProfileComponent,
+  UserSubscriptionComponent
+} from './';
 
 
 import { NgxStripeModule } from 'ngx-stripe';
@@ -29,40 +30,43 @@ import { KngInvoiceComponent } from '../kng-invoice/kng-invoice.component';
 // define routes module
 // get an EmptyError: no elements in sequence with this route
 const routes: Routes = [
-  { path: '',
+  {
+    path: '',
     component: UserProfileComponent,
-    resolve: { loader: LoaderResolve },
     canActivateChild: [IsAuthenticatedGard],
     children: [
-      { path: '', redirectTo: 'orders', pathMatch: 'full'},
-      { path: 'subscriptions', component: UserSubscriptionComponent, resolve: { loader: LoaderResolve } },
-      { path: 'orders', component: UserOrdersComponent, resolve: { loader: LoaderResolve } },
-      { path: 'invoices', component: UserInvoicesComponent, resolve: { loader: LoaderResolve } },
-      { path: 'reminder', component: KngUserReminderComponent, resolve: { loader: LoaderResolve }  },
-      { path: 'email', component: UserEmailComponent, resolve: { loader: LoaderResolve }  },
-      { path: 'password', component: UserPasswordComponent, resolve: { loader: LoaderResolve }  }
+      { path: '', redirectTo: 'orders', pathMatch: 'full' },
+      { path: 'subscriptions', component: UserSubscriptionComponent },
+      { path: 'orders', component: UserOrdersComponent },
+      { path: 'invoices', component: UserInvoicesComponent },
+      { path: 'reminder', component: KngUserReminderComponent },
+      { path: 'email', component: UserEmailComponent },
+      { path: 'password', component: UserPasswordComponent }
     ]
   },
-  { path: 'login', component: UserSignComponent, resolve: { loader: LoaderResolve }},
-  { path: 'login-or-register',
+  { path: 'login', component: UserSignComponent },
+  {
+    path: 'login-or-register',
     component: UserSignComponent,
-    data: {address: false, payment: false, validation: true},
-    resolve: { loader: LoaderResolve } },
-  { path: 'login-or-address',
+    data: { address: false, payment: false, validation: true },
+  },
+  {
+    path: 'login-or-address',
     component: UserSignComponent,
-    data: {address: true, payment: false, validation: true},
-    resolve: { loader: LoaderResolve } },
-  { path: 'login-or-payment',
+    data: { address: true, payment: false, validation: true },
+  },
+  {
+    path: 'login-or-payment',
     component: UserSignComponent,
-    data: {address: false, payment: true, validation: true},
-    resolve: { loader: LoaderResolve } },
-    { path: 'login-or-patreon',
+    data: { address: false, payment: true, validation: true },
+  },
+  {
+    path: 'login-or-patreon',
     component: UserSignComponent,
-    data: {address: false, payment: true, validation: true, minimal:true},
-    resolve: { loader: LoaderResolve } },
-
-  { path: 'logout', component: UserSignComponent, data: {action: 'logout'}, resolve: { loader: LoaderResolve } },
-  { path: 'register', component: UserSignComponent, data: {action: 'signup'}, resolve: { loader: LoaderResolve } },
+    data: { address: false, payment: true, validation: true, minimal: true },
+  },
+  { path: 'logout', component: UserSignComponent, data: { action: 'logout' } },
+  { path: 'register', component: UserSignComponent, data: { action: 'signup' } },
 ];
 
 
@@ -79,7 +83,7 @@ const routes: Routes = [
     KngCommonModule,
     RouterModule.forChild(routes)
   ],
-  exports:[
+  exports: [
     MdcChipsModule, AddressComponent, CardComponent, KngInvoiceComponent
   ],
   declarations: [

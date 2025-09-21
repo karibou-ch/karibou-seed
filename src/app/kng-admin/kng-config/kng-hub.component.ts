@@ -47,11 +47,11 @@ import { ActivatedRoute } from '@angular/router';
   //
   // HUB dedicated settings
 
-  // HUB can be inactive, under construction 
+  // HUB can be inactive, under construction
   status.reason.en|fr|de
   status.reason.active: boolean;
 
-  // display message web maintenance (that mean that all shipping are off) 
+  // display message web maintenance (that mean that all shipping are off)
   maintenance.reason.en|fr|de
   maintenance.reason.active: boolean;
 
@@ -122,10 +122,10 @@ import { ActivatedRoute } from '@angular/router';
 
   //
   // HUB dedicated configuration
-  // limit HUB orders 
+  // limit HUB orders
   currentLimit: number;
 
-  // additional limit for premium users. max orders = (currentLimit + premiumLimit) 
+  // additional limit for premium users. max orders = (currentLimit + premiumLimit)
   premiumLimit: number;
 
   // HUB fees added to the product price
@@ -140,10 +140,10 @@ import { ActivatedRoute } from '@angular/router';
 
   //
   // stripe uncaptured charges expire in 7 days
-  // https://support.stripe.com/questions/does-stripe-support-authorize-and-capture 
+  // https://support.stripe.com/questions/does-stripe-support-authorize-and-capture
   uncapturedTimeLimit: number;
 
-  // order date range between day1 to day2 max 11:00. Lapse time = timelimit 
+  // order date range between day1 to day2 max 11:00. Lapse time = timelimit
   timelimitH: number;
 
   //
@@ -197,11 +197,12 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     public $utils: KngUtils,
     public $navigation: KngNavigationStateService
   ) {
+    // Cas normal: utilisation getLatestCoreData()
+    const { config, categories } = this.$loader.getLatestCoreData();
     this.isLoading = false;
     this.isReady = true;
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
-    this.categories = loader[2];
+    this.config = config;
+    this.categories = categories;
     //
     // HUB from config
     // this.currentHub = Object.assign({}, this.config.shared.hub);
@@ -312,7 +313,7 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     }
     this.isReady = false;
     this.isLoading = true;
-    
+
     this.$hub.save(this.currentHub).subscribe(
       (hub) => {
         this.isReady = true;

@@ -89,57 +89,118 @@
           <button class=""  (click)="onUpdateCart()">{{i18n[locale].subtitle_subscription_action}}</button>
         </li>
 
-        <!---3D secure -->
-        <li [hidden]="!contract_requires_action" >
-          <div class="title_payment red">Votre abonnement n'est pas encore actif </div>
-          <button class=""  (click)="onConfirmPaymentIntent()">{{i18n[locale].subtitle_subscription_confirm_method}}</button>
-        </li>
+        <!-- ✅ NOUVEAU : Interface moderne d'erreurs de paiement -->
+        <ng-container *ngIf="hasModernPaymentError">
 
-        <!---new payment method -->
-        <!--
-        TODO: Moderniser cette section pour être alignée avec le nouveau système d'erreurs de paiement backend
+          <!-- 🔐 3D Secure Authentication Required -->
+          <li *ngIf="paymentError.action === 'authenticate'" [class]="errorUrgencyClass">
+            <div class="title_payment orange pulse">
+              {{paymentError.icon}} Confirmation de paiement requise
+            </div>
+            <p class="error-message">{{paymentError.message}}</p>
+            <button class="authenticate-btn" (click)="onConfirmPaymentIntent()">
+              Confirmer le paiement (3D Secure)
+            </button>
+          </li>
 
-        1. PARSER LES PARAMÈTRES D'URL:
-           - contract: ID du contrat concerné
-           - action: authenticate|update_payment|setup_payment|contact|retry
-           - reason: invalid_method|expired|declined|missing|canceled
-           - intent: ID du PaymentIntent pour 3D Secure
+          <!-- 💳 Replace Payment Method (Expired/Invalid) -->
+          <li *ngIf="paymentError.action === 'replace'" [class]="errorUrgencyClass">
+            <div class="title_payment red">
+              {{paymentError.icon}}
+              <span *ngIf="paymentError.reason === 'expired'">Votre carte a expiré</span>
+              <span *ngIf="paymentError.reason === 'invalid_method'">Méthode de paiement invalide</span>
+              <span *ngIf="paymentError.reason !== 'expired' && paymentError.reason !== 'invalid_method'">Remplacer la méthode de paiement</span>
+            </div>
+            <p class="error-message">{{paymentError.message}}</p>
+            <div class="method" *ngIf="userPayment">
+              Méthode actuelle →
+              <span class="method name">{{userPayment.issuer}} **{{userPayment.last4}}</span>&nbsp;
+              <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>
+            </div>
+            <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+          </li>
 
-        2. ADAPTER L'AFFICHAGE SELON LE TYPE D'ERREUR:
-           - requires_action → Interface 3D Secure + bouton "Confirmer le paiement"
-           - requires_payment_method → Interface "Ajouter une nouvelle carte"
-           - card_declined → Message "Carte refusée" + interface mise à jour
-           - card_expired → Message "Carte expirée" + interface remplacement
-           - no_payment_intent → Message "Équipe va vous contacter" + interface optionnelle
+          <!-- 🚫 Update Payment Method (Declined) -->
+          <li *ngIf="paymentError.action === 'update'" [class]="errorUrgencyClass">
+            <div class="title_payment red">
+              {{paymentError.icon}}
+              <span *ngIf="paymentError.reason === 'declined'">Carte refusée</span>
+              <span *ngIf="paymentError.reason !== 'declined'">Mise à jour requise</span>
+            </div>
+            <p class="error-message">{{paymentError.message}}</p>
+            <div class="method" *ngIf="userPayment">
+              Méthode concernée →
+              <span class="method name">{{userPayment.issuer}} **{{userPayment.last4}}</span>&nbsp;
+              <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>
+            </div>
+            <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+          </li>
 
-        3. NIVEAUX D'URGENCE:
-           - high → Affichage rouge avec animation/pulse
-           - medium → Affichage orange standard
+          <!-- ➕ Setup Payment Method (Missing) -->
+          <li *ngIf="paymentError.action === 'setup'" [class]="errorUrgencyClass">
+            <div class="title_payment red">
+              {{paymentError.icon}} Aucune méthode de paiement configurée
+            </div>
+            <p class="error-message">{{paymentError.message}}</p>
+            <p *ngIf="paymentError.teamMessage" class="team-message">
+              <strong>ℹ️ Information :</strong> {{paymentError.teamMessage}}
+            </p>
+            <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+          </li>
 
-        4. MESSAGES PERSONNALISÉS:
-           - Afficher des messages spécifiques selon errorInfo.message du backend
-           - Inclure errorInfo.teamMessage si teamContact = true
+          <!-- 📞 Contact Support -->
+          <li *ngIf="paymentError.action === 'contact'" [class]="errorUrgencyClass">
+            <div class="title_payment orange">
+              {{paymentError.icon}} Contactez votre banque
+            </div>
+            <p class="error-message">{{paymentError.message}}</p>
+            <div class="contact-info">
+              <p><strong>Que faire ?</strong></p>
+              <ul>
+                <li>Contactez votre banque pour plus d'informations</li>
+                <li>Vérifiez les limites de votre carte</li>
+                <li>Ou utilisez une autre méthode de paiement</li>
+              </ul>
+            </div>
+            <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+          </li>
 
-        5. ACTIONS SPÉCIFIQUES:
-           - authenticate → Redirection vers 3D Secure avec PaymentIntent
-           - replace/setup → Interface sélection nouvelle carte
-           - contact → Interface contact support avec détails erreur
-           - update → Interface modification carte existante
+          <!-- 🔄 Retry Payment -->
+          <li *ngIf="paymentError.action === 'retry'" [class]="errorUrgencyClass">
+            <div class="title_payment orange">
+              {{paymentError.icon}}
+              <span *ngIf="paymentError.reason === 'canceled'">Paiement annulé</span>
+              <span *ngIf="paymentError.reason !== 'canceled'">Réessayer le paiement</span>
+            </div>
+            <p class="error-message">{{paymentError.message}}</p>
+            <button class="retry-btn" (click)="onConfirmPaymentIntent()">
+              Réessayer le paiement
+            </button>
+          </li>
 
-        6. INTÉGRATION:
-           - Utiliser les nouveaux paramètres au lieu de contract_requires_method simple
-           - Synchroniser avec les URLs générées par Carts.subscriptionPaymentError()
-        -->
-        <li [hidden]="!contract_requires_method">
-          <div class="title_payment red">Activer votre abonnement avec une nouvelle méthode de paiement</div>
-          <div class="method" *ngIf="userPayment">
-            Celle-ci ne fonctione plus →
-            <span class="method name">{{userPayment.issuer}}  **{{userPayment.last4}}</span>&nbsp;
-            <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>
-          </div>
-          <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+        </ng-container>
 
-        </li>
+        <!-- ✅ FALLBACK : Interface legacy pour compatibilité -->
+        <ng-container *ngIf="shouldShowLegacyError">
+
+          <!---3D secure (Legacy) -->
+          <li [hidden]="!contract_requires_action" >
+            <div class="title_payment red">Votre abonnement n'est pas encore actif </div>
+            <button class=""  (click)="onConfirmPaymentIntent()">{{i18n[locale].subtitle_subscription_confirm_method}}</button>
+          </li>
+
+          <!---new payment method (Legacy) -->
+          <li [hidden]="!contract_requires_method">
+            <div class="title_payment red">Activer votre abonnement avec une nouvelle méthode de paiement</div>
+            <div class="method" *ngIf="userPayment">
+              Celle-ci ne fonctionne plus →
+              <span class="method name">{{userPayment.issuer}}  **{{userPayment.last4}}</span>&nbsp;
+              <span class="note">{{userPayment.expiryToDate()|date:'MM/y'}}</span>
+            </div>
+            <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
+          </li>
+
+        </ng-container>
 
 
         <li class="contrasted-sm" [hidden]="contract_requires_method">

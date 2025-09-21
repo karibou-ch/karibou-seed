@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { i18n } from '../common';
-import { Config, User } from 'kng2-core';
+import { Config, User, CalendarService } from 'kng2-core';
 import pkgInfo from '../../../package.json';
 
 @Component({
@@ -27,7 +27,8 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
   currentHub: any;
 
   constructor(
-    private $i18n: i18n
+    private $i18n: i18n,
+    private $calendar: CalendarService
   ) {
     this._open = false;
   }
@@ -89,8 +90,11 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
   }
 
   isDayAvailable(day: Date) {
-    const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return (this.currentRanks[day.getDay()] <= maxLimit);
+    // ✅ MIGRATION: Utiliser CalendarService avec logique complète (currentRanks only)
+    // Note: ce composant n'a pas d'Input user, CalendarService utilisera isPremium du service
+    return this.$calendar.isDayAvailable(day, [], {
+      hub: this.currentHub
+    });
   }
 
   getShippingText(day: Date) {

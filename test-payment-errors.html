@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Test URLs - Erreurs de Paiement</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .test-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .test-case h3 {
+            margin: 0 0 12px 0;
+            color: #495057;
+        }
+        .url {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+            margin: 8px 0;
+        }
+        .expected {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .test-link {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin: 8px 8px 8px 0;
+            transition: background 0.2s;
+        }
+        .test-link:hover {
+            background: #0056b3;
+        }
+        .urgency-high { border-left: 4px solid #dc3545; }
+        .urgency-medium { border-left: 4px solid #fd7e14; }
+        .urgency-low { border-left: 4px solid #ffc107; }
+        .quick-tests {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+        .matrix-table th {
+            background: #e9ecef;
+            font-weight: bold;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 URLs de Test - Erreurs de Paiement Modernes</h1>
+        <p><strong>Guide de test pour kng-subscription-control</strong></p>
+
+        <div class="quick-tests">
+            <h2>⚡ Tests Rapides</h2>
+            <p>Cliquez sur les liens ci-dessous pour tester directement :</p>
+
+            <a href="http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=authenticate&reason=requires_action&intent=pi_test"
+               class="test-link" target="_blank">🔐 3D Secure</a>
+
+            <a href="http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=replace&reason=expired"
+               class="test-link" target="_blank">💳 Carte Expirée</a>
+
+            <a href="http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=update&reason=declined"
+               class="test-link" target="_blank">🚫 Carte Refusée</a>
+
+            <a href="http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=setup&reason=missing"
+               class="test-link" target="_blank">➕ Pas de Carte</a>
+
+            <a href="http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=contact&reason=bank_declined"
+               class="test-link" target="_blank">📞 Contact Banque</a>
+
+            <a href="http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=retry&reason=canceled"
+               class="test-link" target="_blank">🔄 Retry</a>
+        </div>
+
+        <h2>📋 Tests Détaillés</h2>
+
+        <div class="test-case urgency-high">
+            <h3>🔐 3D Secure Authentication Required</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=authenticate&reason=requires_action&intent=pi_3D_secure_test
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface orange avec animation pulse, icône 🔐, bouton "Confirmer le paiement (3D Secure)", classe CSS error-high
+            </div>
+        </div>
+
+        <div class="test-case urgency-high">
+            <h3>💳 Carte Expirée</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=replace&reason=expired
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface rouge, icône 💳 "Votre carte a expiré", affichage méthode actuelle, interface kng-user-payment
+            </div>
+        </div>
+
+        <div class="test-case urgency-high">
+            <h3>💳 Méthode de Paiement Invalide</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=replace&reason=invalid_method
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface rouge, icône 🔄 "Méthode de paiement invalide", interface de remplacement
+            </div>
+        </div>
+
+        <div class="test-case urgency-high">
+            <h3>🚫 Carte Refusée</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=update&reason=declined
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface rouge, icône 🚫 "Carte refusée", affichage méthode concernée, interface de mise à jour
+            </div>
+        </div>
+
+        <div class="test-case urgency-medium">
+            <h3>⚠️ Mise à Jour Générale</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=update&reason=generic
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface rouge, icône ⚠️ "Mise à jour requise", interface de modification, classe error-medium
+            </div>
+        </div>
+
+        <div class="test-case urgency-high">
+            <h3>➕ Aucune Méthode de Paiement (Setup)</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=setup&reason=missing
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface rouge, icône ➕, message équipe "Notre équipe va vous contacter...", interface d'ajout de carte
+            </div>
+        </div>
+
+        <div class="test-case urgency-medium">
+            <h3>📞 Contacter la Banque</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=contact&reason=bank_declined
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface orange, icône 📞, section "Que faire ?" avec instructions, interface alternative de paiement
+            </div>
+        </div>
+
+        <div class="test-case urgency-medium">
+            <h3>🔄 Paiement Annulé (Retry)</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890&action=retry&reason=canceled
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface orange, icône 🔄 "Paiement annulé", bouton "Réessayer le paiement", classe error-medium
+            </div>
+        </div>
+
+        <h2>🔄 Test Legacy (Fallback)</h2>
+        <div class="test-case">
+            <h3>Interface Legacy - Pas de Paramètres Modernes</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_1234567890
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected">
+                <strong>Attendu :</strong> Interface legacy si contract_requires_action ou contract_requires_method, fallback vers ancien système
+            </div>
+        </div>
+
+        <h2>📊 Matrice de Test</h2>
+        <table class="matrix-table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Reason</th>
+                    <th>Urgency</th>
+                    <th>Icon</th>
+                    <th>Interface</th>
+                    <th>CSS Class</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>authenticate</td>
+                    <td>requires_action</td>
+                    <td>high</td>
+                    <td>🔐</td>
+                    <td>3D Secure</td>
+                    <td>error-high</td>
+                </tr>
+                <tr>
+                    <td>replace</td>
+                    <td>expired</td>
+                    <td>high</td>
+                    <td>💳</td>
+                    <td>Remplacement</td>
+                    <td>error-high</td>
+                </tr>
+                <tr>
+                    <td>replace</td>
+                    <td>invalid_method</td>
+                    <td>high</td>
+                    <td>🔄</td>
+                    <td>Remplacement</td>
+                    <td>error-high</td>
+                </tr>
+                <tr>
+                    <td>update</td>
+                    <td>declined</td>
+                    <td>high</td>
+                    <td>🚫</td>
+                    <td>Mise à jour</td>
+                    <td>error-high</td>
+                </tr>
+                <tr>
+                    <td>update</td>
+                    <td>generic</td>
+                    <td>medium</td>
+                    <td>⚠️</td>
+                    <td>Mise à jour</td>
+                    <td>error-medium</td>
+                </tr>
+                <tr>
+                    <td>setup</td>
+                    <td>missing</td>
+                    <td>high</td>
+                    <td>➕</td>
+                    <td>Setup + équipe</td>
+                    <td>error-high</td>
+                </tr>
+                <tr>
+                    <td>contact</td>
+                    <td>bank_declined</td>
+                    <td>medium</td>
+                    <td>📞</td>
+                    <td>Contact banque</td>
+                    <td>error-medium</td>
+                </tr>
+                <tr>
+                    <td>retry</td>
+                    <td>canceled</td>
+                    <td>medium</td>
+                    <td>🔄</td>
+                    <td>Retry</td>
+                    <td>error-medium</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>🐛 Tests de Cas d'Edge</h2>
+        <div class="test-case">
+            <h3>Paramètres Manquants</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=authenticate
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected"><strong>Test :</strong> Action sans reason</div>
+
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&reason=expired
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected"><strong>Test :</strong> Reason sans action</div>
+        </div>
+
+        <div class="test-case">
+            <h3>Valeurs Inattendues</h3>
+            <div class="url">http://localhost:4200/store/artamis/home/me/subscriptions?contract=sub_test&action=unknown&reason=test
+                <button class="copy-btn" onclick="copyToClipboard(this.previousSibling.textContent.trim())">Copier</button>
+            </div>
+            <div class="expected"><strong>Test :</strong> Action inconnue</div>
+        </div>
+
+        <h2>🚀 Instructions</h2>
+        <ol>
+            <li><strong>Démarrer le serveur :</strong> <code>ng serve</code></li>
+            <li><strong>Cliquer sur un lien</strong> de test ci-dessus</li>
+            <li><strong>Vérifier l'interface</strong> selon le comportement attendu</li>
+            <li><strong>Tester les interactions</strong> (boutons, formulaires)</li>
+            <li><strong>Vérifier la console</strong> pour les erreurs</li>
+        </ol>
+
+        <div style="margin-top: 40px; padding: 16px; background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 6px;">
+            <strong>💡 Astuce :</strong> Utilisez les boutons "Copier" pour copier rapidement les URLs dans votre navigateur !
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Feedback visuel temporaire
+                event.target.textContent = '✅ Copié !';
+                event.target.style.background = '#28a745';
+                setTimeout(() => {
+                    event.target.textContent = 'Copier';
+                    event.target.style.background = '#28a745';
+                }, 1500);
+            }).catch(function(err) {
+                console.error('Erreur de copie: ', err);
+                // Fallback pour navigateurs plus anciens
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    event.target.textContent = '✅ Copié !';
+                    setTimeout(() => {
+                        event.target.textContent = 'Copier';
+                    }, 1500);
+                } catch (err) {
+                    console.error('Fallback copy failed: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+    </script>
+</body>
+</html>
+

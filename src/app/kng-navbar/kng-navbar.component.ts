@@ -10,7 +10,8 @@ import {
   Category,
   Shop,
   Order,
-  LoaderService
+  LoaderService,
+  CalendarService
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -87,28 +88,16 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     public $navigation: KngNavigationStateService,
     private $snack: MdcSnackbar,
     private $cdr: ChangeDetectorRef,
+    private $calendar: CalendarService
   ) {
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user, categories, orders, shops } = this.$loader.getLatestCoreData();
 
-    let loader = this.$route.snapshot.data.loader;
-    if (loader[0].length) {
-      loader = loader[0];
-    }
-
-    this.config = <Config>loader[0];
-    this.user = <User>loader[1];
-
-
-    //
-    // not mandatory
-    this.categories = <Category[]>loader[2] || [];
-    this.shops = <Shop[]>loader[3] || [];
-    this.orders = [];
-
-    //
-    // use latest orders
-    if(loader.length>3) {
-      this.orders = <Order[]>loader[4];
-    }
+    this.config = config;
+    this.user = user;
+    this.categories = categories || [];
+    this.orders = orders || [];
+    this.shops = shops || [];
 
     // console.log('')
     this.primary = [];
@@ -185,7 +174,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         if (emit.config) {
           this.store = this.$navigation.store;
 
-          Object.assign(this.config, emit.config);
+          // ✅ FIX CRASH: Assignment direct au lieu d'Object.assign sur undefined
+          this.config = emit.config;
           if(!this.config.shared.hub){
             return;
           }
@@ -209,8 +199,8 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         //
         // update user
         if (emit.user) {
-          this.user = this.user || {} as User;
-          Object.assign(this.user, emit.user);
+          // ✅ FIX CRASH: Assignment direct au lieu d'Object.assign
+          this.user = emit.user;
           window['sentry.id'] = this.user.email.address;
           //
           // FIXME avoid multiple update of same value
@@ -376,13 +366,16 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     if(!day){
       return false;
     }
-
-    const maxLimit = this.user.isPremium() ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return (this.currentRanks[day.getDay()] <= maxLimit);
+    // ✅ MIGRATION: Utiliser CalendarService avec logique complète (currentRanks only)
+    return this.$calendar.isDayAvailable(day, [], {
+      user: this.user,
+      hub: this.config.shared.hub
+    });
   }
 
   isOpen() {
-    const next = Order.nextShippingDay(this.user);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
+    const next = this.$calendar.nextShippingDay(this.config.shared.hub, this.user);
 
     return !!next;
   }

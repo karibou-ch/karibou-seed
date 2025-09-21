@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 
 import {
-  PhotoService, Config
+  PhotoService, Config, LoaderService
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
@@ -68,16 +68,18 @@ export class KngWelcomeComponent implements OnInit {
     private $navigation: KngNavigationStateService,
     private $metric: MetricsService,
     private $router: Router,
-    private $route: ActivatedRoute
+    private $route: ActivatedRoute,
+    private $loader: LoaderService
   ) {
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config } = this.$loader.getLatestCoreData();
+    this.config = config;
     this.exited = false;
     this.b2b = false;
     this.waiting = false;
     // Object.assign(this.config, loader[0]);
 
-  
+
     // this.$photo.shops({active: true, random: 40}).subscribe((photos: any) => {
     //   // remove underconstruction shops with missing photos //
     //   this.photos = photos.filter(s => s.photo).map(shop => shop.photo.fg);
@@ -170,7 +172,7 @@ export class KngWelcomeComponent implements OnInit {
   get shippingkeyCode() {
     const code = ['hypercenter','periphery','others'].find(key => {
       let codes = this.config.shared.shipping.district[key] || [];
-      return (codes.indexOf(this.postalCode) > -1)  
+      return (codes.indexOf(this.postalCode) > -1)
     })
     return code;
   }
@@ -199,7 +201,7 @@ export class KngWelcomeComponent implements OnInit {
       return new CanvasRenderingContext2D();
     }
     return this.canvas.getContext('2d') as CanvasRenderingContext2D;
-  }  
+  }
 
 
   get homeDestination() {
@@ -239,10 +241,10 @@ export class KngWelcomeComponent implements OnInit {
     // this.image.src = url;
     // this.image.onload = () => {
     //   this.drawBackground();
-    // }  
+    // }
 
   }
-  
+
   drawBackground () {
     const lum = Math.min(this.pi*0.3,70)|0;
     const light = (Math.cos(this.pi * 0.1)+1)*10+50|0;
@@ -250,7 +252,7 @@ export class KngWelcomeComponent implements OnInit {
     const saturation = `hsl(${angle},100%,${lum}%)`;
     this.pi+=2;
 
-    
+
     //
     // cover image instead of stretch
     // https://stackoverflow.com/a/66560970
@@ -259,11 +261,11 @@ export class KngWelcomeComponent implements OnInit {
     this.ctx.globalCompositeOperation = "multiply";
     this.ctx.fillStyle = saturation;  // saturation at 100%
     this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);  // apply the comp filter
-    this.ctx.globalCompositeOperation = "source-over";  // restore default comp    
+    this.ctx.globalCompositeOperation = "source-over";  // restore default comp
     setTimeout(()=>{
       requestAnimationFrame(this.drawBackground.bind(this))
     },80)
-  }   
+  }
 
 
   getShippingDiscount(key:"A"|"B") {
@@ -272,7 +274,7 @@ export class KngWelcomeComponent implements OnInit {
       return ""
     }
 
-  
+
 
     const label = this.i18n[this.locale].title_discount;
     const limit = this.config.shared.shipping['discount'+key];
@@ -327,7 +329,7 @@ export class KngWelcomeComponent implements OnInit {
     const href = target.getAttribute('href');
     //
     // verify if it's a routerLink
-    if(href && href.length > 2 && 
+    if(href && href.length > 2 &&
       (href.indexOf('http') === -1&&href.indexOf('mailto:') === -1&&href.indexOf('tel:') === -1)) {
       $event.stopPropagation();
       $event.preventDefault();

@@ -5,8 +5,8 @@
  *
  * BREAKPOINTS HARMONISÉS :
  * - Mobile XXS : ≤400px (très petits mobiles + DPR)
- * - Mobile : ≤767px (principal mobile)
- * - Tablet : 768px-1199px
+ * - Mobile : ≤599px (principal mobile)
+ * - Tablet : 600px-1199px
  * - Desktop : ≥1200px
  * - Desktop XXL : ≥1920px (limitation affichage)
  */
@@ -16,19 +16,100 @@
    ========================================================================== */
 :root {
   --mobile-xxs-max: 400px;   /* Très petits mobiles + DPR consideration */
-  --mobile-max: 767px;       /* Mobile principal */
-  --tablet-min: 768px;       /* Début tablet */
+  --mobile-max: 599px;       /* Mobile principal */
+  --tablet-min: 600px;       /* Début tablet */
   --tablet-max: 1199px;      /* Fin tablet (corrigé depuis 1023px) */
   --desktop-min: 1200px;     /* Desktop (corrigé depuis 1024px) */
-  --desktop-xxl-max: 1920px; /* Pour limiter l'affichage */
+  --desktop-xxl-max: 1920px; /* Pour limiter l’affichage */
+
+  /* 🏗️ SYSTÈME UNIFIÉ - Toutes les largeurs adaptatives */
+  --mdc-theme-container-width: 420px;          /* Containers généraux */
+  --mdc-theme-dlg-width: 100vw;               /* Dialogues backdrop */
+  --mdc-theme-dlg-container-width: 100%;      /* Dialogues container */
+
+  /* 🎯 SYSTÈME GLOBAL (conservée) */
+  --mdc-theme-top-bar: 70px;                  /* Hauteur navbar */
+  --mdc-theme-toolbox-width: 225px;           /* Dialog menu width */
 }
 
 /* ATTENTION : var() ne fonctionne PAS dans @media queries !
    Utiliser les valeurs en dur dans les media queries :
-   - Mobile: @media (max-width: 767px)
-   - Tablet: @media (min-width: 768px) and (max-width: 1199px)
+   - Mobile: @media (max-width: 599px)
+   - Tablet: @media (min-width: 600px) and (max-width: 1199px)
    - Desktop: @media (min-width: 1200px)
 */
+
+/* 📱 MOBILE XXS (≤400px) - Très petits écrans */
+@media (max-width: 400px) {
+  :root {
+    --mdc-theme-container-width: 100%;         /* Containers: plein écran */
+    --mdc-theme-dlg-width: 100vw;             /* Dialogues: plein écran */
+    --mdc-theme-dlg-container-width: 100%;    /* Dialogues: sans marge */
+  }
+}
+
+/* 📱 MOBILE (401px - 599px) - Mobiles standards */
+@media (min-width: 401px) and (max-width: 599px) {
+  :root {
+    --mdc-theme-container-width: 100%;         /* Containers: plein écran */
+    --mdc-theme-dlg-width: 100vw;             /* Dialogues: plein écran */
+    --mdc-theme-dlg-container-width: 95vw;    /* Dialogues: marge 5% */
+  }
+}
+
+/* TABLET STANDARD (600px - 899px) - Tablettes classiques */
+@media (min-width: 600px) and (max-width: 899px) {
+  :root {
+    --mdc-theme-container-width: 850px;        /* ✅ CONSERVER pour vraies tablettes */
+    --mdc-theme-dlg-container-width: 9500px;    /* ✅ CONSERVER pour vraies tablettes */
+  }
+}
+
+/* TABLET LARGE (900px - 1199px) - iPad Pro et similaires */
+@media (min-width: 900px) and (max-width: 1199px) {
+  :root {
+    --mdc-theme-container-width: 950px;        /* ✅ MIEUX ADAPTÉ */
+    --mdc-theme-dlg-container-width: 950px;    /* ✅ UTILISE MIEUX L'ESPACE */
+  }
+}
+
+
+/* 💻 DESKTOP SMALL (1200px - 1440px) - Petits desktops */
+@media (min-width: 1200px) and (max-width: 1440px) {
+  :root {
+    --mdc-theme-container-width: 930px;        /* Containers: standard 930px */
+    --mdc-theme-dlg-width: 1200px;            /* Dialogues: ✅ comme demandé */
+    --mdc-theme-dlg-container-width: 900px;   /* Dialogues: ✅ comme demandé */
+  }
+}
+
+/* 🖥️ DESKTOP LARGE (1441px - 1599px) - Grands écrans */
+@media (min-width: 1441px) and (max-width: 1599px) {
+  :root {
+    --mdc-theme-container-width: 930px;        /* Containers: standard 930px */
+    --mdc-theme-dlg-width: 1280px;            /* Dialogues: backdrop étendu */
+    --mdc-theme-dlg-container-width: 930px;   /* Dialogues: container standard */
+  }
+}
+
+/* 🖥️ WIDE DESKTOP (1600px - 1849px) - Écrans ultrawide */
+@media (min-width: 1600px) and (max-width: 1849px) {
+  :root {
+    --mdc-theme-container-width: 1170px;       /* Containers: étendu 1170px */
+    --mdc-theme-dlg-width: 1220px;            /* Dialogues: backdrop large */
+    --mdc-theme-dlg-container-width: 1170px;  /* Dialogues: container étendu */
+  }
+}
+
+/* 🖥️ ULTRA-WIDE (1850px+) - Très grands écrans */
+@media (min-width: 1850px) {
+  :root {
+    --mdc-theme-container-width: 1170px;       /* Containers: étendu 1170px */
+    --mdc-theme-dlg-width: 1220px;            /* Dialogues: backdrop large */
+    --mdc-theme-dlg-container-width: 1170px;  /* Dialogues: container étendu */
+  }
+}
+
 
 /* ==========================================================================
    CLASSES EXISTANTES (CONSERVÉES POUR COMPATIBILITÉ)
@@ -36,13 +117,13 @@
 
 .show-sm     {display: none!important;}
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 599px) {
   .hide-sm    {display: none!important;}
   .show-sm     {display: block!important;}
   .inline-show-sm     {display: inline-block!important;}
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1199px) {
+@media only screen and (min-width: 600px) and (max-width: 1199px) {
   .hide-md    {display: none!important;}
 }
 @media only screen and (min-width: 1200px) {
@@ -62,8 +143,8 @@
   .inline-show-mobile-xxs { display: inline-block !important; }
 }
 
-/* Tablet corrigé (768px - 1199px) au lieu de 1023px */
-@media only screen and (min-width: 768px) and (max-width: 1199px) {
+/* Tablet corrigé (600px - 1199px) au lieu de 1023px */
+@media only screen and (min-width: 600px) and (max-width: 1199px) {
   .hide-tablet { display: none !important; }
   .show-tablet { display: block !important; }
   .inline-show-tablet { display: inline-block !important; }
@@ -83,42 +164,3 @@
     margin: 0 auto !important;
   }
 }
-
-/* ==========================================================================
-   NOTES DE MIGRATION
-   ========================================================================== */
-/*
-MIGRATION RECOMMANDÉE :
-- Garder .hide-sm/.show-sm (mobile ≤767px) ✅
-- Remplacer .hide-md par .hide-tablet (768px-1199px au lieu de 1023px)
-- Remplacer .show-lg/.hide-lg par .show-desktop/.hide-desktop (≥1200px au lieu de 1024px)
-
-PROBLÈME ZOOM CSS BODY À ANALYSER :
-- @media (min-width: 1025px) { zoom: 0.85; } dans styles.scss
-- Conflictuel avec desktop-min: 1200px
-- Zone morte 1025px-1199px avec zoom imprévisible
-
-CORRECTIONS APPLIQUÉES :
-✅ kng-calendar.component.scss: max-width 360px → 420px (bug layout résolu)
-✅ kng-widgets.scss: 599px → 767px (4 corrections, zone morte tablet comblée)
-✅ kng-cart-items.component.scss: 599px → 767px (6 corrections)
-✅ product-list.component.scss: 599px → 767px, 1025px → 1200px, 320px → 400px
-✅ kng-footer.component.scss: 599px → 767px, 1024px → 1200px (4 corrections)
-✅ kng-news.component.scss: 599px → 767px, 1024px → 1199px (6 corrections)
-⚠️  Variables CSS dans @media queries corrigées (var() ne fonctionne pas)
-
-BREAKPOINTS TYPESCRIPT HARMONISÉS :
-✅ product-grouped-list.component.ts: 1025px → 1199px (cohérent avec tablet-max)
-✅ Logique maxcat simplifiée: Mobile=2, Tablet=6, Desktop=8 (-1 si showMore)
-⏳ product-swipe.component.ts: (window.innerWidth < 1025) À CORRIGER
-
-RÈGLES MAXCAT PRODUITS (AJUSTÉES) :
-- Mobile ≤767px: maxcat = 2 (1 si showMore)
-- Tablet 768px-1199px: maxcat = 5 (4 si showMore)
-- Desktop ≥1200px: maxcat = 6 (5 si showMore) - MUST BE LARGEST
-
-RECOMMANDATION : Créer un service Angular pour détecter les breakpoints :
-- BreakpointObserver de @angular/cdk/layout
-- OU service custom basé sur les variables CSS
-- Éviter les window.innerWidth hardcodés dans les composants
-*/

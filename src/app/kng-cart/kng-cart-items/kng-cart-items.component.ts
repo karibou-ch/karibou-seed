@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Config, CartSubscription, CartItemsContext, CartItem, CartService, LoaderService, Hub, User, Order, CartSubscriptionParams, CartSubscriptionProductItem, ShippingAddress } from 'kng2-core';
+import { Config, CartSubscription, CartItemsContext, CartItem, CartService, LoaderService, Hub, User, Order, CartSubscriptionParams, CartSubscriptionProductItem, ShippingAddress, CalendarService } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
 
@@ -14,6 +14,7 @@ export interface CheckoutCtx {
   plan:string;
   forSubscription: boolean;
 }
+
 
 
 @Component({
@@ -32,17 +33,10 @@ export class KngCartItemsComponent implements OnInit {
       return;
     }
 
-    //
-    // _showCartItems determine items for subscription
-    const ctx:CartItemsContext = {
-      forSubscription:!this._showCartItems,
-      hub:this.hub.slug
-    }
-
+    // ✅ SIMPLE: Utiliser context centralisé
+    const ctx = this.createCartContext(!this._showCartItems);
     this.items = this.$cart.getItems(ctx);
     this.itemsAmount = this.$cart.subTotal(ctx);
-
-
   }
   @Input() showFooter: boolean;
   @Input() showSeparator: boolean;
@@ -78,14 +72,17 @@ export class KngCartItemsComponent implements OnInit {
   // used for angular refresh
   __v:number;
 
-
   constructor(
     private $cart:CartService,
     private $i18n:i18n,
     private $loader: LoaderService,
     private $route: ActivatedRoute,
-    private $router: Router
+    private $router: Router,
+    private $calendar: CalendarService
   ) {
+    // ✅ PARENT BROADCASTER: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
+
     this.items = [];
     this.displaySharedSeparator = 0;
     this._subscription = new Subscription();
@@ -93,7 +90,8 @@ export class KngCartItemsComponent implements OnInit {
     this.weekdays = this.$i18n.label().weekdays.split('_');
     this.contracts =[];
     this.contractItems = [];
-    this._config = {shared:{}} as Config;
+    this._config = config;
+    this.user = user;
     this.__v =0;
 
     //
@@ -102,6 +100,14 @@ export class KngCartItemsComponent implements OnInit {
 
   }
 
+  // ✅ SIMPLE: Centraliser création CartItemsContext (sans cache)
+  private createCartContext(forSubscription?: boolean): CartItemsContext {
+    return {
+      forSubscription: forSubscription ?? !this.showCartItems,
+      onSubscription: forSubscription ?? !this.showCartItems,
+      hub: this.hub.slug
+    };
+  }
 
   get config() {
     return this._config;
@@ -149,14 +155,9 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get cart_info_service_k() {
+    // ✅ SIMPLE: Utiliser context centralisé
+    const ctx = this.createCartContext();
 
-      //
-      // _showCartItems determine items for subscription
-      const ctx:CartItemsContext = {
-        forSubscription:!this.showCartItems,
-        onSubscription:!this.showCartItems,
-        hub:this.hub.slug
-      }
     //
     // adding gateway fees
     const gateway = this.$cart.getCurrentGateway();
@@ -224,7 +225,8 @@ export class KngCartItemsComponent implements OnInit {
     if(!currentDay || currentDay<now) {
       return false;
     }
-    const week = this.config.potentialShippingWeek(this.hub);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu de config
+    const week = this.$calendar.potentialShippingWeek(this.hub);
     const available =week.some(day => day.getDay() == currentDay.getDay());
     return available;
   }
@@ -363,30 +365,25 @@ export class KngCartItemsComponent implements OnInit {
         //console.log(this.hub.slug,emit.state.action)
 
 
+        // ✅ SIMPLE: Obtenir shipping day
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
         if(!this.isCrossMarketShippingDate){
-          this.currentShippingDay = Order.nextShippingDay(this.user,this.hub);
+          // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
+          this.currentShippingDay = this.$calendar.nextShippingDay(this.hub, this.user);
         }
 
-        //
-        // _showCartItems determine items for subscription
-        // onSubscription:!this.showCartItems,
-        const ctx:CartItemsContext = {
-          forSubscription:!this.showCartItems,
-          hub:this.hub.slug
-        }
-
+        // ✅ SIMPLE: Utiliser context centralisé
+        const ctx = this.createCartContext();
         if(this.showCartItems) {
           ctx.onSubscription = false;
         }
 
-        //
-        // select items for Cart or for Subscription
         this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
         this.itemsAmount = this.$cart.subTotal(ctx);
 
-        const lastSharedItemIdx = this.items.length - this.items.reverse().findIndex(item => item.shared);
+        // ✅ FIXED: Bug #6 - Éviter mutation de l'array original avec reverse()
+        const lastSharedItemIdx = this.items.length - [...this.items].reverse().findIndex(item => item.shared);
         this.displaySharedSeparator = lastSharedItemIdx>this.items.length? 0:lastSharedItemIdx;
 
 
@@ -429,35 +426,31 @@ export class KngCartItemsComponent implements OnInit {
       user: this.user
     } as CheckoutCtx;
     if(!this.user.isAuthenticated()) {
-      return this.$router.navigate(['/store/'+this.hub.slug+'/home/me/login-or-register']);
+      const currentUrl = this.$router.url; // URL actuelle du panier
+      return this.$router.navigate(['/store/'+this.hub.slug+'/home/me/login-or-register'], {
+        queryParams: { referrer: currentUrl, action: 'checkout' }
+      });
     }
     this.checkoutEvent.emit(ctx);
   }
 
   currentServiceFees() {
-    //
-    // _showCartItems determine items for subscription
-    const ctx:CartItemsContext = {
-      forSubscription:!this.showCartItems,
-      onSubscription:!this.showCartItems,
-      hub:this.hub.slug
-    }
+    // ✅ SIMPLE: Utiliser context centralisé
+    const ctx = this.createCartContext();
     return this.$cart.totalHubFees(ctx);
   }
 
-  // FIXME remove repeated code
+  // ✅ MIGRATION: Utiliser CalendarService centralisé
   getNoShippingMessage() {
-    //
-    // check window delivery
-    if (this.currentShippingDay &&
-      this.currentRanks[this.currentShippingDay.getDay()] > this.currentLimit) {
-      return this.$i18n[this.locale].nav_no_shipping_long;
+    if (!this.currentShippingDay || !this.hub) {
+      return null;
     }
 
-    const noshipping = this.config.noShippingMessage(this.hub).find(shipping => {
-      return shipping.equalsDate(this.currentShippingDay) && shipping.message;
-    });
-    return noshipping && noshipping.message[this.locale];
+    return this.$calendar.getNoShippingMessage(
+      this.hub,
+      this.currentShippingDay,
+      this.locale
+    );
   }
 
 
@@ -483,19 +476,14 @@ export class KngCartItemsComponent implements OnInit {
 
 
   subTotal() {
-    //
-    // _showCartItems determine items for subscription
-    const ctx:CartItemsContext = {
-      forSubscription:!this.showCartItems,
-      onSubscription:!this.showCartItems,
-      hub:this.hub.slug
-    }
-
+    // ✅ SIMPLE: Utiliser context centralisé
+    const ctx = this.createCartContext();
     return this.$cart.subTotal(ctx);
   }
 
   sortedItems(hub?) {
-    const slug = hub? hub.slug:this.hub;
+    // ✅ FIXED: Bug #7 - Type error, this.hub est un objet, pas un string
+    const slug = hub? hub.slug : this.hub.slug;
     return this.items.filter(item => item.hub == slug).sort((a,b) => {
       return a.category.slug.localeCompare(b.category.slug);
     });
@@ -512,6 +500,7 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   removeAll(item: CartItem, variant?: string) {
+    console.log('removeAll', item, variant);
     this.$cart.removeAll(item, variant);
     this.__v++;
   }
@@ -524,7 +513,8 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   sub_remove(item: CartItem, variant?: string) {
-    if(item.quantity == 0) {
+    // ✅ FIXED: Bug #8 - Validation quantity plus robuste
+    if(item.quantity <= 0) {
       return;
     }
     item.quantity--;
@@ -552,8 +542,8 @@ export class KngCartItemsComponent implements OnInit {
     }
     // this.dialogRef.close(day);
 
-    // DEPRECATED FIXME move this.config.getDefaultTimeByDay(day) in $cart.getCurrentShippingTime()
-    time = time|| this.config.getDefaultTimeByDay(day);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu de config (FIXME résolu)
+    time = time|| this.$calendar.getDefaultTimeByDay(day, this.hub);
     this.$cart.setShippingDay(day,time);
     this.currentShippingDay = day;
   }

@@ -219,6 +219,10 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
 
     this._subscription.add(
       this.$loader.update().subscribe(emit => {
+        // ✅ CORRECTION CRITIQUE: Écouter emit.user pour mise à jour après login
+        if (emit.user) {
+          this.user = emit.user;
+        }
 
         // ITEM_ADD       = 1,
         // ITEM_REMOVE    = 2,

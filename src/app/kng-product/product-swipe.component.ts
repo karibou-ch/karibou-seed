@@ -11,7 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 import {
   ProductService,
   Product,
-  User
+  User,
+  Config,
+  LoaderService
 } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '../common';
 
@@ -43,7 +45,7 @@ export class ProductSwipeComponent implements OnInit {
     } else{
       native.classList.remove('hide');
     }
-    
+
   }
   @Input() set autoload(any) {
     this.loadProducts();
@@ -53,7 +55,7 @@ export class ProductSwipeComponent implements OnInit {
 
 
   hideIfEmpty: boolean;
-  options:any = {    
+  options:any = {
     available: true,
     status: true,
     when: true,
@@ -63,7 +65,7 @@ export class ProductSwipeComponent implements OnInit {
   i18n: any = {
     fr: {
       action_favorites:'Tous les produits populaires',
-      action_discount:'Toutes les offres du moment',  
+      action_discount:'Toutes les offres du moment',
       title_discount: 'Les offres du moment %',
       title_mailchimp:'Les plus prisés `ღ´',
       title_select:'Les plus prisés'
@@ -83,12 +85,13 @@ export class ProductSwipeComponent implements OnInit {
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
     private $route: ActivatedRoute,
-    private $cdr: ChangeDetectorRef
+    private $cdr: ChangeDetectorRef,
+    private $loader: LoaderService
   ) {
 
-    const loader  = this.$route.snapshot.data.loader ||
-                  this.$route.snapshot.parent.data.loader;
-    this.config = loader[0];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config } = this.$loader.getLatestCoreData();
+    this.config = config;
     this.limit  = 10;
     this.products = [];
   }
@@ -144,10 +147,10 @@ export class ProductSwipeComponent implements OnInit {
   }
 
   doSearch(link){
-    this.$navigation.searchAction(link);    
-  }  
+    this.$navigation.searchAction(link);
+  }
 
-  loadProducts(force?) {    
+  loadProducts(force?) {
     if(this.hub) {
       this.options.hub=this.hub;
     }
@@ -155,7 +158,7 @@ export class ProductSwipeComponent implements OnInit {
     if(this.mailchimp && this.config.shared.mailchimp) {
       const mailchimp = this.config.shared.mailchimp[this.hub] || [];
       if(mailchimp.length){
-        this.options.skus = mailchimp.map(media=>media.sku).filter(sku=>!!sku);    
+        this.options.skus = mailchimp.map(media=>media.sku).filter(sku=>!!sku);
       }
     } else if(this.discount) {
       this.options.discount = true;
@@ -163,8 +166,8 @@ export class ProductSwipeComponent implements OnInit {
       this.options.home = true;
     }
 
-    const divider = this.$navigation.isMobile() ? 1 : (
-      (window.innerWidth < 1025)? 4:5
+    const divider = this.$navigation.isMobile() ? 4 : (
+      (window.innerWidth < 1025)? 5:6
     );
 
 
@@ -175,7 +178,7 @@ export class ProductSwipeComponent implements OnInit {
       // setTimeout(()=>{
       //   try {
       //     this.$scrollEl.nativeElement.scrollLeft = 75;
-      //   } catch (e) {}    
+      //   } catch (e) {}
       // },100);
     });
   }

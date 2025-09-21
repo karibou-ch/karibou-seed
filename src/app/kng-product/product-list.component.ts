@@ -19,7 +19,8 @@ import {
   CartItemsContext,
   ShopService,
   Order,
-  CartSubscription
+  CartSubscription,
+  CalendarService
 } from 'kng2-core';
 
 import { combineLatest, timer } from 'rxjs';
@@ -96,7 +97,8 @@ export class ProductListComponent implements OnInit {
     public $product: ProductService,
     public $router: Router,
     public $route: ActivatedRoute,
-    public cdr: ChangeDetectorRef
+    public cdr: ChangeDetectorRef,
+    private $calendar: CalendarService
   ) {
     this.cache = {
       products: []
@@ -136,7 +138,20 @@ export class ProductListComponent implements OnInit {
     if(!this.dialog || !this.dialog.nativeElement){
       return 0;
     }
-    return this.dialog.nativeElement.children[1].clientWidth
+
+    //
+    // container.className == "product-dialog__surface"
+    const container = this.dialog.nativeElement.children[1];
+
+    // FIXME rem should be on utility class
+    // Calcul de la largeur réelle
+    const width = container.clientWidth;
+
+    // Soustrait 2rem (conversion dynamique des rem vers pixels)
+    const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const widthMinus2rem = width - (2 * remValue);
+
+    return Math.max(0, widthMinus2rem); // Empêche les valeurs négatives
   }
 
   get store(){
@@ -192,6 +207,27 @@ export class ProductListComponent implements OnInit {
       params.id=contractId;
     }
     return params;
+  }
+
+  /**
+   * URL du vendeur avec préfixe https automatique si manquant.
+   * Gère les cas où l'URL n'a pas de protocole ou utilise http.
+   *
+   * @returns {string} URL complète avec https://
+   */
+  get vendorUrl() {
+    const url = this.vendor?.url || '';
+
+    // Si l'URL est vide, retourner vide
+    if (!url) return '';
+
+    // Si l'URL commence déjà par http:// ou https://, la retourner telle quelle
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+
+    // Sinon, ajouter automatiquement https://
+    return `https://${url}`;
   }
 
   get activeSubscription(){
@@ -455,7 +491,7 @@ export class ProductListComponent implements OnInit {
 
   productsByCategory(category) {
     this.selections = [];
-    const when = (this.$cart.getCurrentShippingDay()|| Order.nextShippingDay(this.user,this.hub)) as Date;
+    const when = (this.$cart.getCurrentShippingDay()|| this.$calendar.nextShippingDay(this.user,this.hub)) as Date;
     this.options.hub = this.store;
     this.options.when = when.toISOString();
     this.options.bundle = false;

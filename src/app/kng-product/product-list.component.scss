@@ -39,7 +39,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1150px;
+    max-width: var(--mdc-theme-dlg-width); // ✅ DIALOGUES: Adaptatif selon écran
     min-height: 70vh;
     border-radius: 4px;
     opacity: 1;
@@ -61,17 +61,17 @@
     }
 
     @media (min-width: 1640px) {
-      max-width: 945px;
+      max-width: var(--mdc-theme-dlg-width); // ✅ DIALOGUES: Backdrop adaptatif
     }
 
-    .material-symbols-outlined.size-large {
-      font-size: 30px !important;
-      font-weight: 700;
+    .size-large {
+      font-size: 2rem;
+      font-weight: bold;
     }
 
     .subscription {
       display: flex;
-      width: calc(740px - 10px);
+      width: calc(var(--mdc-theme-dlg-container-width) - 10px); // ✅ DIALOGUES: Largeur adaptatif avec marge
       margin: auto;
       padding: 12px 5px;
       flex-wrap: wrap;
@@ -84,7 +84,7 @@
         background: #f6f6f6;
         margin-top: 10px;
         padding: 12px 16px;
-        width: calc(740px - 32px);
+        width: calc(var(--mdc-theme-dlg-container-width) - 32px); // ✅ DIALOGUES: Largeur adaptatif avec marge
       }
 
       @media (max-width:827px) {
@@ -129,7 +129,7 @@
       color: #333;
       font-weight: normal;
       padding: 12px 16px 0;
-      max-width: calc(740px);
+      max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was calc(740px) hardcoded
       width: calc(95%);
       margin: auto;
       margin-top: 50px;
@@ -180,7 +180,7 @@
       padding: 0;
       display: flex;
       align-items:center;
-      width: 865px;
+      width: var(--mdc-theme-dlg-width); // ✅ FIXED: was 865px hardcoded
       padding: 15px 0;
       position: fixed;
       top: 30px;
@@ -212,7 +212,7 @@
         background: transparent;
         border: 0;
         color: #111;
-        left: calc((100% - 860px) / 2);
+        left: calc((100% - var(--mdc-theme-dlg-width)) / 2); // ✅ FIXED: was 860px hardcoded
         z-index: 4;
         margin-left: 10px;
 
@@ -287,7 +287,7 @@
   .further-product-container {
     display: relative;
     width: 95%;
-    max-width: 600px;
+    max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 600px hardcoded
     margin: auto;
     flex: 1;
     align-items: center;
@@ -325,16 +325,13 @@
     align-items: flex-start;
 
 
-    @media (min-width: 1200px) {
-      top: 20px;
-    }
 
-    @media (min-width: 1200px) {
+    @media (min-width: 1441px) {
       transform: none !important;
-      left: calc((100% - 865px) / 2);
+      left: calc((100% - var(--mdc-theme-dlg-width)) / 2); // ✅ FIXED: was 865px hardcoded
       top: 20px;
       margin-top: 0;
-      margin-left: -250px;
+      margin-left: calc(var(--mdc-theme-toolbox-width) * -1);
       opacity: 1 !important;
       ul{
         align-items: flex-end;
@@ -343,7 +340,7 @@
     }
 
     @media (min-width: 1640px) {
-      left: calc((100% - 945px) / 2);
+      left: calc((100% - var(--mdc-theme-dlg-width)) / 2); // ✅ FIXED: was 945px hardcoded - use same width for consistency
     }
 
 
@@ -404,11 +401,12 @@
       transition: all 200ms;
 
       list-style: none;
-      padding: 4px;
+      padding: 0.25rem;
       margin-left: 0px;
-      border-radius: 14px;
+      border-radius: 1rem;
       overflow: hidden;
-      margin-top: 20px;
+      margin-top: 1.25rem;
+      width: var(--mdc-theme-toolbox-width);
 
       @media (max-width: 1199px) {
         margin-left: -300px;
@@ -420,8 +418,11 @@
         box-shadow: 0 0 1px 1px rgba(100, 100, 100, 0.4);
         color: #000;
         font-size: 1.1em;
-        max-width: 250px;
-
+        white-space: normal;
+        width: fit-content;
+        overflow: visible;
+        height: auto;
+        min-height: 2rem;
         &.selected {
           background-color: black !important;
           color: var(--mdc-theme-primary-text, #fff) !important;
@@ -444,7 +445,7 @@ kng-signup{
 }
 
 .kng-informations{
-  max-width: 760px;
+  max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 760px hardcoded
 }
 
 .kng-assistant{
@@ -452,7 +453,7 @@ kng-signup{
   width: 225px;
   margin-left: 10px;
   border-radius: 7px;
-  max-width: 740px;
+  max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 740px hardcoded
   padding: 0px 5px!important;
 
   position: relative;
@@ -464,7 +465,7 @@ kng-signup{
 .owner-title,
 .vendor,
 .further-product-container {
-  max-width: 880px;
+  max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 970px hardcoded
   padding: 0px 0;
 
   position: relative;
@@ -486,7 +487,7 @@ kng-signup{
   }
 
   @media (min-width:1640px) {
-    max-width: 740px;
+    max-width: var(--mdc-theme-dlg-container-width); // ✅ FIXED: was 740px hardcoded
   }
 
 }

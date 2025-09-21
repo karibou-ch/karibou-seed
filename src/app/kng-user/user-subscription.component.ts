@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from 'kng2-core';
+import { User, LoaderService } from 'kng2-core';
 import { i18n } from '../common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'kng-user-subscription',
   templateUrl: './user-subscription.component.html',
   styleUrls: ['./user-subscription.component.scss']
 })
-export class UserSubscriptionComponent implements OnInit {
+export class UserSubscriptionComponent implements OnInit, OnDestroy {
   isReady = false;
   user: User;
   config: any;
+  private subscription: Subscription;
 
   i18n: any = {
     fr: {
@@ -24,15 +26,35 @@ export class UserSubscriptionComponent implements OnInit {
 
   constructor(
     private $i18n: i18n,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private $loader: LoaderService
   ) {
-    const loader = this.route.snapshot.data.loader;
-    this.user   = loader[1];
-    this.config = loader[0];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
+
+    this.config = config;
+    this.user = user;
+    this.subscription = new Subscription();
   }
 
   ngOnInit() {
+    // ✅ CORRECTION CRITIQUE: Écouter emit.user pour mise à jour après login
+    this.subscription.add(
+      this.$loader.update().subscribe(emit => {
+        if (emit.user) {
+          this.user = emit.user;
+        }
+        if (emit.config) {
+          this.config = emit.config;
+        }
+      })
+    );
+
     this.isReady = true;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   get locale() {

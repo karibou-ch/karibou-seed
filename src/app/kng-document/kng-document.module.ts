@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 import { KngDocumentComponent, KngEditDocumentComponent } from './kng-document.component';
 
-import { Kng2CoreModule, LoaderResolve  } from 'kng2-core';
+import { Kng2CoreModule  } from 'kng2-core';
 import { KngDocumentMdcModule } from './kng-document-mdc.module';
 import { KngSharedModule } from '../shared/shared.module';
 import { KngCommonModule } from '../common/common.module';
@@ -15,10 +15,10 @@ import { KngDocumentLoaderService } from './kng-document-loader.service';
 //
 // define routes module
 const routes: Routes = [
-  { path: 'create', component: KngEditDocumentComponent, data: {create: true}, resolve: { loader: KngDocumentLoaderService } },
-  { path: 'category/:category', component: KngDocumentComponent, resolve: { loader: LoaderResolve } },
-  { path: ':slug/edit', component: KngEditDocumentComponent, data: {edit: true}, resolve: { loader: KngDocumentLoaderService } },
-  { path: ':slug', component: KngDocumentComponent, resolve: { loader: KngDocumentLoaderService } }
+  { path: 'create', component: KngEditDocumentComponent, data: {create: true}, resolve: { document: KngDocumentLoaderService } },
+  { path: 'category/:category', component: KngDocumentComponent, },
+  { path: ':slug/edit', component: KngEditDocumentComponent, data: {edit: true}, resolve: { document: KngDocumentLoaderService } },
+  { path: ':slug', component: KngDocumentComponent, resolve: { document: KngDocumentLoaderService } }
 //  { path: '', component: KngDocumentComponent,resolve:{ loader:LoaderResolve }, data:{ cards:true }}
 ];
 

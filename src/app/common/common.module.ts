@@ -38,6 +38,7 @@ import { KngSubscriptionControlComponent } from './kng-subscription-control/kng-
 import { KngSignupComponent } from './kng-signup/kng-signup.component';
 import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
 import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
+import { KngAudioModule } from './kng-audio/kng-audio.module';
 
 
 @NgModule({
@@ -47,13 +48,15 @@ import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
     ReactiveFormsModule,
     RouterModule,
     NgxStripeModule.forRoot(),
-    CommonMdcModule
+    CommonMdcModule,
+    KngAudioModule
   ],
   exports: [
     FormsModule,
     ReactiveFormsModule,
     CommonMdcModule,
     RouterModule,
+    KngAudioModule,
     KngSubscriptionControlComponent,
     KngPaymentComponent,
     KngAddressComponent,

@@ -22,7 +22,7 @@ export class KngSignupComponent implements OnInit {
       signup_phone: 'Le téléphone mobile est important pour communiquer avec vous.',
     },
     en: {
-      signup_create: 'Continue', 
+      signup_create: 'Continue',
       signup_phone: 'Mobile phone is essential if you want to place an order',
     }
   };
@@ -44,7 +44,7 @@ export class KngSignupComponent implements OnInit {
     public  $i18n: i18n,
     private $fb: FormBuilder
   ) {
-    
+
   }
 
   get isValid() {
@@ -52,9 +52,9 @@ export class KngSignupComponent implements OnInit {
   }
 
   get isClear() {
-    return this.user.name.givenName === '' && 
-           this.user.name.familyName === '' && 
-           this.user.email.address === ''; 
+    return this.user.name.givenName === '' &&
+           this.user.name.familyName === '' &&
+           this.user.email.address === '';
   }
 
   get user() {
@@ -63,7 +63,7 @@ export class KngSignupComponent implements OnInit {
         givenName: this.$user.value.forname as string,
         familyName: this.$user.value.name as string
       },
-      email: this.$user.value.email as string   
+      email: this.$user.value.email as string
     };
     const phone = this.$user.value.phone;
     if(phone)user.phoneNumbers = [phone]
@@ -72,11 +72,11 @@ export class KngSignupComponent implements OnInit {
 
   get glabel() {
     return this.$i18n.label();
-  }  
+  }
 
   get label() {
     return this.i18n[this.$i18n.locale];
-  }  
+  }
   get locale() {
     return this.$i18n.locale;
   }
@@ -126,7 +126,7 @@ export class KngSignupComponent implements OnInit {
     const postalCodeValidator= (control) => {
       if(this.config.shared.user.location.list.indexOf(control.value)==-1){
         return {invalidPostalcode:true};
-      }    
+      }
       return null;
     }
     if(this._signin) {
@@ -135,7 +135,7 @@ export class KngSignupComponent implements OnInit {
         'password': ['', [Validators.required, KngInputValidator.passwordValidator]],
       });
 
-    } else {  
+    } else {
       this.$user = this.$fb.group({
         'name': ['', [Validators.required]],
         'forname': ['', [Validators.required]],
@@ -145,8 +145,8 @@ export class KngSignupComponent implements OnInit {
         'postalcode':['', [postalCodeValidator]],
         'phone': ['', [Validators.required, Validators.minLength(9)]]
       });
-  
-    }   
+
+    }
 
   }
 
@@ -188,6 +188,6 @@ export class KngSignupComponent implements OnInit {
       password: '',
       confirm: '',
       postalcode: ''
-    });    
+    });
   }
 }

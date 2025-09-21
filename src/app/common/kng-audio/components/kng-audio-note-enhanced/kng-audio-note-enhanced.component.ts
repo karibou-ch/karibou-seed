@@ -28,7 +28,7 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
   @Input() locale: string = 'fr';
 
   // ✅ Events
-  @Output() onAudioReady = new EventEmitter<{src: string, audio: string, note?: string, duration?: number, waveformData?: number[]}>();
+  @Output() onAudioReady = new EventEmitter<{type: AudioNoteType, audioUrl: string, transcription: string, cartUrl?: string}>();
   @Output() onAudioError = new EventEmitter<{case: ErrorCase, message: string}>();
   @Output() onAudioLoading = new EventEmitter<boolean>();
   @Output() onStateChange = new EventEmitter<AudioNoteState>();
@@ -263,10 +263,10 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
           this.audioState.transcription = '';
           // Émettre quand même l'audio sans transcription
           this.onAudioReady.emit({
-            src: audioUrl,
-            audio: base64,
-            duration,
-            waveformData
+            type: this.type,
+            audioUrl: audioUrl,
+            transcription: '',
+            cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
           });
         },
         () => {
@@ -275,11 +275,10 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
 
           // Émettre le résultat final
           this.onAudioReady.emit({
-            src: audioUrl,
-            audio: base64,
-            note: this.audioState.transcription,
-            duration,
-            waveformData
+            type: this.type,
+            audioUrl: audioUrl,
+            transcription: this.audioState.transcription,
+            cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
           });
 
           this.emitStateChange();
@@ -290,12 +289,18 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
       console.error('❌ Whisper processing failed:', error);
       // Émettre l'audio sans transcription
       this.onAudioReady.emit({
-        src: audioUrl,
-        audio: base64,
-        duration,
-        waveformData
+        type: this.type,
+        audioUrl: audioUrl,
+        transcription: '',
+        cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
       });
     }
+  }
+
+  // ✅ Génération URL panier partagé
+  private getCartUrl(): string {
+    // TODO: Implémenter génération URL panier partagé
+    return `${window.location.origin}/cart/shared/${Date.now()}`;
   }
 
   // ✅ Génération contexte selon type (identique à la version originale)
@@ -374,9 +379,10 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
     }
 
     this.onAudioReady.emit({
-      src: '',
-      audio: '',
-      note: ''
+      type: this.type,
+      audioUrl: '',
+      transcription: '',
+      cartUrl: undefined
     });
 
     this.emitStateChange();

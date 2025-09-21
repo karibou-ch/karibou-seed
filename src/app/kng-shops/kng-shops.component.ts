@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
-import { Config, User, Shop, PhotoService, Product, ProductService, Category } from 'kng2-core';
+import { Config, User, Shop, PhotoService, Product, ProductService, Category, LoaderService } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
 import { ShopService } from 'kng2-core';
 import { combineLatest } from 'rxjs';
@@ -62,12 +62,14 @@ export class KngShopComponent implements OnInit {
     public $photo: PhotoService,
     public $shop: ShopService,
     public $product: ProductService,
-    public $route: ActivatedRoute
+    public $route: ActivatedRoute,
+    private $loader: LoaderService
   ) {
-    const loader = this.$route.snapshot.data.loader;
-    this.config = <Config>loader[0];
-    this.user = <User>loader[1];
-    this.categories = loader[2];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user, categories } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
+    this.categories = categories;
 
     this.urlpath = this.$route.snapshot.params.urlpath;
     this.products = [];

@@ -17,7 +17,6 @@ import { KngConfigComponent,
          KngShopComponent,
          KngPageContentComponent} from './kng-config/kng-config.component';
 import { AdminMdcModule } from './admin-mdc.module';
-import { LoaderResolve } from 'kng2-core';
 import { KngHUBComponent, KngHUBManagerComponent, KngInformationCfgComponent } from './kng-config/kng-hub.component';
 import { KngConfigInputComponent } from './kng-config/kng-config-input.component';
 import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-deposit.component';
@@ -25,16 +24,16 @@ import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-de
 //
 // define routes module
 const routes: Routes = [
-  { path: 'cat', component: KngCategoriesComponent, resolve: { loader: LoaderResolve } },
-  { path: 'category', component: KngCategoriesComponent, resolve: { loader: LoaderResolve } },
-  { path: 'config', component: KngConfigComponent, resolve: { loader: LoaderResolve } },
-  { path: 'information', component: KngInformationCfgComponent, resolve: { loader: LoaderResolve } },
-  { path: 'welcome', component: KngWelcomeCfgComponent, resolve: { loader: LoaderResolve } },
-  { path: 'main-hub', component: KngHUBComponent, resolve: { loader: LoaderResolve } },
-  { path: 'manager-hub', component: KngHUBManagerComponent, resolve: { loader: LoaderResolve } },
-  { path: 'shop', component: KngShopComponent, resolve: { loader: LoaderResolve } },
-  { path: 'navigation', component: KngNavigationComponent , data: {menu: true}, resolve: { loader: LoaderResolve }},
-  { path: 'deposit', component: KngDepositComponent , data: {deposit: true}, resolve: { loader: LoaderResolve }},
+  { path: 'cat', component: KngCategoriesComponent },
+  { path: 'category', component: KngCategoriesComponent },
+  { path: 'config', component: KngConfigComponent },
+  { path: 'information', component: KngInformationCfgComponent },
+  { path: 'welcome', component: KngWelcomeCfgComponent },
+  { path: 'main-hub', component: KngHUBComponent },
+  { path: 'manager-hub', component: KngHUBManagerComponent },
+  { path: 'shop', component: KngShopComponent },
+  { path: 'navigation', component: KngNavigationComponent , data: {menu: true}},
+  { path: 'deposit', component: KngDepositComponent , data: {deposit: true}},
   { path: 'page', component: KngPageContentComponent, children: [
     { path: 'list', loadChildren: () => import('../kng-document/kng-document.module').then(m => m.KngDocumentModule)}
   ]},

@@ -1,31 +1,25 @@
 <div class="selected">
   <ng-content></ng-content>
   <section>
-    <h2 class="">{{title}}</h2>
+    <h2 class="title">
+      {{title}}
+      <div class="kng-chip" (click)="doSearch(action)" >
+        <span class="inlink">{{actionLabel}} ...</span>
+      </div>
+    </h2>
+
   </section>
-  <div class="content-sm">
-    <div class="product" *ngIf="firstProduct">
-      <img [src]="firstProduct.photo.url" alt="">
-    </div>
-    <div class="action">
-      <div class="icon"><i class="material-symbols-outlined">playlist_add</i></div>
-      <div class="title" (click)="doSearch(action)">{{actionLabel}} </div>
-    </div>
-  </div>
-  <div class="content" #scrollEl >    
-      <div class="mdc-layout-grid">
-        <kng-product-thumbnail 
+  <div class="content" #scrollEl >
+      <div class="kng-layout-card">
+        <kng-product-thumbnail
           [visibility]="true"
+          [displayVendor]="false"
           [sku]="section.sku"
           *ngFor="let section of products;let j=index"
           class="">
         </kng-product-thumbnail>
-        <div class="kng-product-more">
-          <div class="icon"><i class="material-symbols-outlined">playlist_add</i></div>
-          <div class="title" (click)="doSearch(action)">{{actionLabel}} </div>
-        </div>
-  
-      </div>      
+
+      </div>
   </div>
 
 </div>

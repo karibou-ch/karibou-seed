@@ -23,37 +23,37 @@ export const appRoutes: Routes = [
   {
     path: 'store',
     component: KngRootComponent,
-    resolve: { loader: LoaderResolve},
+    resolve: { loader: LoaderResolve },
     loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
   },
 
   {
     path: 'store/:store',
     component: KngRootComponent,
-    resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
+    resolve: { loader: KngNavigationStoreResolve },
     loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
   },
   {
     path: 'store/:store/home',
     component: KngEmptyRootComponent,
-    resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
+    resolve: { loader: KngNavigationStoreResolve },
     loadChildren: () => import('./shared/shared.module').then( m => m.KngSharedModule)
   },
 
-  { 
-    path: 'store/:store/admin', 
+  {
+    path: 'store/:store/admin',
     component: KngEmptyRootComponent,
-    resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
-    loadChildren: () => import('./kng-admin/admin.module').then(m => m.AdminModule) 
+    resolve: { loader: KngNavigationStoreResolve },
+    loadChildren: () => import('./kng-admin/admin.module').then(m => m.AdminModule)
   },
 
-  { path: 'store/:store/content', 
+  { path: 'store/:store/content',
   component: KngEmptyRootComponent,
-  resolve: { loader: LoaderResolve, shops: KngNavigationStoreResolve },
-  loadChildren: () => import('./kng-document/kng-document.module').then(m => m.KngDocumentModule) 
+  resolve: { loader: KngNavigationStoreResolve },
+  loadChildren: () => import('./kng-document/kng-document.module').then(m => m.KngDocumentModule)
   },
 
-  /* ALIAS */ 
+  /* ALIAS */
 
   { path: 'store/:store/cellar', pathMatch: 'full', redirectTo: '/store/:store/home' },
   { path: 'store/:store/grocery', pathMatch: 'full', redirectTo: '/store/:store/home' },

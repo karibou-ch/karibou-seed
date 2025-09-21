@@ -10,7 +10,8 @@ import { CartService,
          OrderService,
          Shop,
          Order,
-         ConfigService } from 'kng2-core';
+         ConfigService,
+         CalendarService } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
@@ -107,7 +108,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       cart_nextshipping: 'Livraison',
       cart_shared_name:'Nommez votre panier',
-      cart_shared_copy: 'Vous pouvez partager vos paniers avec quelqu\'un avant de valider la commande',
+      cart_shared_copy: 'Vous voulez partager ce panier ? Envoyez-le à un proche pour qu’il le modifie ou le valide.',
       cart_shared_title1: 'Une liste d\'achats à été créée à votre attention',
       cart_shared_title2: 'Finalisez votre commande en un clin d\'œil : confirmez la date de livraison, identifiez-vous, sélectionnez votre adresse et le mode de paiement. Merci et savourez votre achat !',
       cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
@@ -170,7 +171,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
       cart_nextshipping: 'Next delivery',
       cart_shared_name:'Name your shopping cart',
-      cart_shared_copy: 'You can share this cart with someone before to checkout',
+      cart_shared_copy: 'Do you want to share this cart? Send it to someone close so they can modify or validate it.',
       cart_shared_title1: 'A shopping cart has been created for you',
       cart_shared_title2: 'Quickly finalize your order: confirm the delivery date, log in, select your address and payment method. Thank you and enjoy your purchase!',
       cart_error: 'Your cart has to be modified!',
@@ -212,18 +213,17 @@ export class KngCartComponent implements OnInit, OnDestroy {
     private $order: OrderService,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $stripe: StripeService
+    private $stripe: StripeService,
+    private $calendar: CalendarService
   ) {
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
+    // ✅ PARENT BROADCASTER: Récupération immédiate des données cached
+    const { config, user, shops, orders } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
+    this.shops = shops || [];
+    this.orders = orders || [];
 
     this.items = [];
-
-    this.user = loader[1];
-    this.shops = loader[3];
-    this.orders = [];
 
     this.subscription$ = new Subscription();
     this.loadOrders();
@@ -295,10 +295,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.store = this.$navigation.store;
     this.currentHub = this.config.shared.hub;
 
-    console.log(this.store,this.currentHub)
     this.currentShippingDay = this.$cart.getCurrentShippingDay();
     this.shippingTime = this.$cart.getCurrentShippingTime()|0;
-    this.shippingTime = this.shippingTime || this.config.getDefaultTimeByDay(this.currentShippingDay);
+    // ✅ CORRECTION: getDefaultTimeByDay sera appelé APRÈS config chargé dans $loader
 
     //
     // save the plan for the subscription (business, customer)
@@ -328,6 +327,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
           //
           // update local config
           this.currentHub = this.config.shared.hub.slug;
+
+          // ✅ CORRECTION: Appeler getDefaultTimeByDay APRÈS config chargé
+          if (!this.shippingTime && this.currentShippingDay) {
+            this.shippingTime = this.$calendar.getDefaultTimeByDay(this.currentShippingDay, this.config.shared.hub);
+          }
         }
         // emit signal for user
         if (emit.user) {
@@ -355,7 +359,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
           //
           // if customer have only one valid payment method,
           // and payment is not set
-          const payment = this.user.payments.find((method,idx,all) => method.isValid && all.length==1 && method.isValid());
+          // ✅ FIXED: Bug #1 - Double validation inutile corrigée
+          const payment = this.user.payments.find((method,idx,all) => method.isValid() && all.length==1);
           if(!this.$cart.getCurrentPaymentMethod() && payment) {
             this.$cart.setPaymentMethod(payment);
           }
@@ -577,8 +582,13 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   async onPendingPayment({payment_intent, payment_intent_client_secret, oid}) {
     // const order = await this.$order.get(oid).toPromise();
+  }
 
-
+  // ✅ OPTIMIZATION 2.3: Factoriser code setTimeout clearAfterOrder
+  private clearAfterOrderWithDelay(order: Order) {
+    setTimeout(() => {
+      this.$cart.clearAfterOrder(this.store, order);
+    }, 100);
   }
 
   onCheckout($event:any) {
@@ -593,21 +603,17 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // case of final contract
     if($event.contract) {
       this.checkoutMessage = this.llabel.cart_contract_placed;
+      this.clearAfterOrderWithDelay($event.order);
       return;
     }
 
     //
     // case of final order
     if($event.order) {
-      const hub = $event.order.items[0].hub||this.currentHub;
-      console.log('clearAfterOrder',hub,$event.order.items)
       const day = $event.order.shipping.when.getDate();
       const month = $event.order.shipping.when.getMonth() + 1;
       this.checkoutMessage = this.llabel.cart_order_placed + `(${day}/${month})`;
-      setTimeout(() => {
-        this.$cart.clearAfterOrder(this.store,$event.order);
-      })
-
+      this.clearAfterOrderWithDelay($event.order);
     }
 
     this.orders.unshift($event.order as Order);

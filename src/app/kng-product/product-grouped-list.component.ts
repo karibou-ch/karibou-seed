@@ -308,27 +308,27 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
     // IMPORTANT: maxcat limit the display of products
-    // Cohérent avec breakpoints: Mobile ≤767px, Tablet 768px-1199px, Desktop ≥1200px
+    // ✅ ALIGNÉ sur kng-responsive.scss breakpoints
     let maxcat = 200; // Par défaut si useMaxCat = false
 
     if (this.useMaxCat) {
       if (this.isMobile) {
-        maxcat = 2; // Mobile ≤767px
+        maxcat = 2; // Mobile ≤599px
+      } else if (window.innerWidth <= 899) {
+        maxcat = 5; // Tablet Standard 600px-899px
       } else if (window.innerWidth <= 1199) {
-        maxcat = 5; // Tablet 768px-1199px
+        maxcat = 5; // ✅ Tablet Large 900px-1199px (iPad Pro optimisé)
       } else {
-        maxcat = 6; // Desktop ≥1200px IT MUST BE LARGEST
-      }
-
-      // Si showMore est true, on réduit de 1
-      if (this.showMore) {
-        maxcat = Math.max(1, maxcat - 1);
+        maxcat = 6; // ✅ Desktop ≥1200px (plus d'espace disponible)
       }
     }
 
     const divider = this.isMobile ? 2 : (
-      (window.innerWidth <= 1199) ? 6 : 4
+      (window.innerWidth <= 899) ? 5 :     // Tablet Standard
+      (window.innerWidth <= 1199) ? 7 :    // ✅ Tablet Large (iPad Pro)
+      8                                     // ✅ Desktop
     );
+
 
     const inferedCategories = [];
     this.group = {};

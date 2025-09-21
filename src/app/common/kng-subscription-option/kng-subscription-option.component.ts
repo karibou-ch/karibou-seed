@@ -174,7 +174,6 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
       user: this.user
     });
 
-    console.log('🔍 DEBUG kng-subscription-option initializeValidDates:', this.oneWeek);
   }
 
   /**
@@ -184,7 +183,6 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
   private initializeSelectionsSafely() {
     // ✅ GUARD: Vérifier que les dépendances sont disponibles
     if (!this.hub || !this.config) {
-      console.log('🔍 DEBUG initializeSelectionsSafely: hub ou config non disponible, attendre...');
       return;
     }
 
@@ -212,7 +210,6 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
       this.selTime = 16;
     }
 
-    console.log('🔍 DEBUG initializeSelectionsSafely: selDayOfWeek=', this.selDayOfWeek, 'selIteration=', this.selIteration, 'selTime=', this.selTime);
   }
 
   ngOnDestroy() {

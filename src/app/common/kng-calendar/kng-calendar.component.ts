@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { Hub, User, UserService } from 'kng2-core';
-import { CartService, Config, LoaderService, Order } from 'kng2-core';
+import { CartService, Config, LoaderService, Order, CalendarService } from 'kng2-core';
 import { i18n } from '../i18n.service';
 import { title } from 'process';
 
@@ -45,7 +45,8 @@ export class KngCalendarComponent implements OnInit {
     private $i18n: i18n,
     private $cart: CartService,
     private $user: UserService,
-    private $loader: LoaderService
+    private $loader: LoaderService,
+    private $calendar: CalendarService
   ) {
     this.currentWeek = [];
     this.availableDays = [];
@@ -86,6 +87,11 @@ export class KngCalendarComponent implements OnInit {
   ngOnInit(): void {
 
     this.$loader.update().subscribe(emit => {
+      // ✅ CORRECTION CRITIQUE: Écouter emit.user pour mise à jour après login
+      if (emit.user) {
+        this.user = emit.user;
+      }
+
       if(emit.state &&  this.config) {
         this.currentShippingDay = this.$cart.getCurrentShippingDay();
         this.currentShippingTime = this.$cart.getCurrentShippingTime();
@@ -118,8 +124,27 @@ export class KngCalendarComponent implements OnInit {
       //
       // validate shipping state
       this.noshippingMsg = this.getNoShippingMessage();
-      this.availableDays = Order.fullWeekShippingDays(this.currentHub);
-      this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date(this.availableDays[0])).plusDays(idx));
+            // ✅ MIGRATION COMPLÈTE: Utiliser CalendarService
+      this.availableDays = this.$calendar.getValidShippingDatesForHub(this.currentHub, {
+        days: 7,
+        user: this.user
+      });
+
+      // 🔍 DEBUG: Print dates pour identifier le problème
+      // console.log('🔍 DEBUG kng-calendar availableDays:', this.availableDays);
+      // console.log('🔍 DEBUG kng-calendar currentHub:', this.currentHub?.slug);
+      // console.log('🔍 DEBUG kng-calendar user:', this.user?.email);
+
+      // ✅ PROTECTION: Vérifier que availableDays[0] est valide avant usage
+      if (this.availableDays && this.availableDays.length > 0 && this.availableDays[0] && !isNaN(this.availableDays[0].getTime())) {
+        this.currentWeek = Array.from({length: 7}).map((id,idx) => (new Date(this.availableDays[0])).plusDays(idx));
+      } else {
+        console.warn('⚠️ availableDays[0] est invalide, utilisation fallback');
+        // Fallback: utiliser demain comme base
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        this.currentWeek = Array.from({length: 7}).map((id,idx) => new Date(tomorrow.getTime() + idx * 24 * 3600000));
+      }
       this.multipleHubsDays = this.$cart.getShippingDayForMultipleHUBs();
       this.pendingOrder = this.$cart.hasPendingOrder();
 
@@ -163,14 +188,8 @@ export class KngCalendarComponent implements OnInit {
   //
   // label is 'nav_no_shipping' or 'nav_no_shipping_long'
   getNoShippingMessage() {
-
-    //
-    // check manager message
-    const noshipping = this.config.noShippingMessage(this.currentHub).find(shipping => {
-      return shipping.equalsDate(this.currentShippingDay) && shipping.message;
-    });
-
-    return noshipping && noshipping.message[this.locale];
+    // ✅ MIGRATION: Utiliser CalendarService au lieu de config.noShippingMessage
+    return this.$calendar.getNoShippingMessage(this.currentHub, this.currentShippingDay, this.locale);
   }
 
   doSetCurrentShippingDay($event, day: Date, idx: number) {
@@ -179,7 +198,8 @@ export class KngCalendarComponent implements OnInit {
     }
     // this.dialogRef.close(day);
 
-    const hours = this.config.getDefaultTimeByDay(day);
+    // ✅ MIGRATION: Utiliser CalendarService au lieu de config
+    const hours = this.$calendar.getDefaultTimeByDay(day, this.currentHub);
     this.$cart.setShippingDay(day,hours);
     this.updated.emit({day, time: hours});
   }
@@ -188,12 +208,11 @@ export class KngCalendarComponent implements OnInit {
     if(!day){
       return false;
     }
-    if(!this.availableDays.some(date => date.equalsDate(day))){
-      return false;
-    }
-    // FIXME : check if the day is available with the max ordres Limit
-    const maxLimit = this.isPremium ? (this.currentLimit + this.premiumLimit) : this.currentLimit;
-    return true;//(this.currentRanks[day.getDay()] <= maxLimit);
+    // ✅ MIGRATION: Utiliser CalendarService avec logique complète (FIXME résolu)
+    return this.$calendar.isDayAvailable(day, this.availableDays, {
+      user: this.user,
+      hub: this.currentHub
+    });
   }
 
   getShippingText(day: Date) {

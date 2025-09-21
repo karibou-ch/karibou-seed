@@ -154,8 +154,9 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     public $dlg: MdcDialog,
   ) {
 
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
+    // Cas normal: utilisation getLatestCoreData()
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
     this.isReady = true;
     this.currenHub = this.config.shared.hub || {};
 

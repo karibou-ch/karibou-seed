@@ -81,10 +81,9 @@ div.navbar{
     margin: auto;
     min-height: calc(100vh - 414px);
     margin-bottom:50px;
-    max-width: 740px;
-    width: 740px;
     padding-right: 40px;
     padding-left: 0px;
+    width: var(--mdc-theme-container-width);
     margin-right: auto;
     margin-left: auto;
     margin-top: var(--mdc-theme-top-bar);
@@ -101,7 +100,7 @@ div.navbar{
       padding: 0px;
       margin-top: 105px;
       min-width: 326px;
-      width: var(--mdc-theme-width-sm);
+      width: var(--mdc-theme-container-width);
     }
 
     // ZONE PROBLÉMATIQUE : 600px - 1024px ❌
@@ -109,7 +108,7 @@ div.navbar{
     // PROBLÈME : Overlaps avec mobile (599px) et crée une zone morte (600px-1023px)
     @media (max-width: 1024px) {
       padding: 0px;
-      width: var(--mdc-theme-width-sm);
+      width: var(--mdc-theme-container-width);
     }
 
     // DESKTOP RANGE : 1024px - 1440px ❌ DEVRAIT ÊTRE 1280px+ selon la règle
@@ -117,7 +116,7 @@ div.navbar{
     //            Desktop 1440p monitors, Smaller desktop screens
     @media (min-width:1024px) and (max-width:1440px) {
       max-width: 940px;
-      width: var(--mdc-theme-width-md);
+      width: var(--mdc-theme-container-width);
       margin-right: calc((100% - 980px) / 2.5);
     }
 
@@ -126,7 +125,7 @@ div.navbar{
     //            iMac 21.5" (1920x1080), Standard desktop monitors
     @media (min-width:1441px) {
       max-width: var(--mdc-theme-max-width-lg);
-      width: var(--mdc-theme-width-lg);
+      width: var(--mdc-theme-container-width);
     }
 
     // WIDE DESKTOP : 1600px - 1849px ⚠️ PEUT ÊTRE CONSERVÉ

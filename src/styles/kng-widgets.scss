@@ -143,10 +143,10 @@
 
     font-weight: bold;
     border: 0;
-    padding: 15px 20px;
+    padding: 1rem;
     color: white;
     background-color: #111;
-    border-radius: 30px;
+    border-radius: 1rem;
     font-size: inherit;
 
     span {
@@ -161,6 +161,9 @@
     border-color: #eee!important;
   }
 
+  .bottom{
+    width: 100%;
+  }
 }
 
 .kng-layout-card.home{
@@ -179,32 +182,48 @@
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(6,minmax(auto,180px));
-
+  grid-template-columns: repeat(6,minmax(auto,180px)); /* Desktop par défaut */
   gap: 16px;
   justify-items: center;
   width: 100%;
   margin-left: 0;
 
-    /* Mobile ≤767px */
-  @media (max-width: 767px) {
-    grid-template-columns: repeat(3, auto);
+  /* ✅ Mobile ≤599px (aligné sur kng-responsive.scss) */
+  @media (max-width: 599px) {
+    grid-template-columns: repeat(2, auto); /* 2 colonnes mobile */
+    gap: 12px;
     &.large{
-      grid-template-columns: repeat(2 , auto);
+      grid-template-columns: repeat(2, auto);
       gap: 16px;
     }
   }
 
-  /* Tablet 768px-1199px - Comble la zone morte */
-  @media (min-width: 768px) and (max-width: 1199px) {
-    grid-template-columns: repeat(4, auto);
-    gap: 20px;
+  /* ✅ Tablet Standard 600px-899px */
+  @media (min-width: 600px) and (max-width: 899px) {
+    grid-template-columns: repeat(5, minmax(auto, 160px)); /* 4 colonnes */
+    gap: 18px;
+    &.large{
+      grid-template-columns: repeat(3, auto);
+      gap: 20px;
+    }
   }
 
-  /* Desktop ≥1200px */
-  @media (min-width: 1200px) {
+  /* ✅ Tablet Large 900px-1199px (iPad Pro optimisé) */
+  @media (min-width: 900px) and (max-width: 1199px) {
+    grid-template-columns: repeat(5, minmax(auto, 170px)); /* 5 colonnes iPad Pro */
+    gap: 20px;
     &.large{
-      grid-template-columns: repeat(3,auto);
+      grid-template-columns: repeat(4, auto);
+      gap: 22px;
+    }
+  }
+
+  /* ✅ Desktop ≥1200px */
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(6, minmax(auto, 180px)); /* 6 colonnes desktop */
+    gap: 24px;
+    &.large{
+      grid-template-columns: repeat(5, auto);
       gap: 24px;
     }
   }
@@ -218,7 +237,7 @@
   align-items: center;
   width: 100%;
   min-width: 100%;
-  height: 9rem;
+  height: 10.5rem;
   overflow: hidden;
   border-radius: 10px;
   border: 0 solid #fff;
@@ -358,22 +377,68 @@
 
 
 }
+//
+// BOUTONS
 
-button.default{
+button.default,
+.btn{
+  display: block;
+  width: fit-content;
+
   cursor: pointer;
-  padding: 5px 15px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  display: flex;
-  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+
+  color: var(--mdc-theme-secondary);
+  background-color: var(--mdc-theme-secondary-text);
+  border: 1px solid var(--mdc-theme-appbar);
+  text-decoration: none;
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &.small{
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  &[disabled]{
+    opacity: 0.3;
+  }
+}
+.btn.pill,
+.btn[pill],
+button.pill,
+button[pill]{
+  border-radius: 3rem;
+}
+
+
+.btn.primary{
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-primary-text);
+  border-color: var(--mdc-theme-primary);
+  &:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--mdc-theme-primary) 85%, black);
+    transform: translateY(-1px);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  }
+}
+
+button.default.secondary,
+.btn.secondary{
   background-color: var(--mdc-theme-secondary);
   color: var(--mdc-theme-secondary-text);
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  border-color: var(--mdc-theme-secondary);
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--mdc-theme-secondary) 85%, black);
+    transform: translateY(-1px);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  }
 }
-button.default[disabled] {
-  background-color: #f3f3f3;
-  color: #ddd;
-}
+
+
 
 
 

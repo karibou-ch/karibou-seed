@@ -108,10 +108,12 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     public $snack: MdcSnackbar,
     public $navigation: KngNavigationStateService
   ) {
+    // Cas normal: utilisation getLatestCoreData()
+    const { config } = this.$loader.getLatestCoreData();
+
     this.isLoading = false;
     this.isReady = true;
-    const loader = this.$route.snapshot.data.loader;
-    this.config = loader[0];
+    this.config = config;
     this.currenHub = this.config.shared.hub || {};
     // HUB
     //this.config.shared.maintenance.reason = this.config.shared.maintenance.reason || {};

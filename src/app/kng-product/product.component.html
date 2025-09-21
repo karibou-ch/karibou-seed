@@ -1,16 +1,15 @@
 <div class="product-dialog fadeout" [class.is-searching]="isSearching" #dialog>
   <div class="product-backdrop"></div>
   <div class="product-dialog__surface">
+    <!-- CLOSE OR SUBS CART -->
+    <div class="topbar" [class.sticked]="scrollStickedToolbar" [style.width.px]="clientWidth">
+      <button (click)="onClose(true)" class="close" >
+        <span class="material-symbols-outlined size-large">arrow_back</span>
+      </button>
+      <div class="title text-overflow">{{product.title}}</div>
+    </div>
+
     <div class="product-wide" [class.incart]="cartItemQuantity" >
-
-      <!-- CLOSE OR SUBS CART -->
-      <div class="topbar" [class.sticked]="scrollStickedToolbar" [style.width.px]="clientWidth">
-        <button (click)="onClose(true)" class="close" >
-          <span class="material-symbols-outlined size-large">arrow_back</span>
-        </button>
-        <div class="title text-overflow">{{product.title}}</div>
-      </div>
-
 
       <article class="product-card card-skeleton"
               [class.incart]="cartItemQuantity"
@@ -19,6 +18,7 @@
               [class.timelimit]="isOutOfTimelimitForOrder"
               [class.insubs]="cartSubsQuantity"
               [class.noinstock]="!isInStockForOrder">
+
       <section>
         <div class="media" [ngStyle]="bgStyle">
           <img src="/assets/img/k-highlight.png" class="highlight-new" hidden />
@@ -36,8 +36,8 @@
 
 
           <div class="product-in-subscription">
-            <div class="material-symbols-outlined size-medium">schedule</div>
-            <div>abo en cours</div>
+            <div class="material-symbols-outlined size-medium green">schedule</div>
+            <div>&nbsp;abo en cours</div>
           </div>
 
 
@@ -91,18 +91,6 @@
         </div>
       </section>
 
-      <!-- NOTE -->
-      <kng-audio-note
-          class="product-note"
-          [hidden]="!cartItemQuantity"
-          [filename]="audioFileName"
-          [key]="config.shared.keys.pubUpcare"
-          [amount]="product.pricing.price * cartItemQuantity"
-          [src]="cartItemAudio"
-          [cartItemNote]="cartItemNote"
-          (onCartItemAudio)="onAudioStopAndSave($event)"
-          (onCartItemAudioError)="onAudioError($event)"></kng-audio-note>
-
 
       <!-- DESCRIPTION -->
       <div class="description">
@@ -141,15 +129,41 @@
 
       </div>
 
+      <!-- NOTE -->
+      <kng-audio-note-enhanced
+          type="item"
+          class="product-note"
+          [hidden]="!cartItemQuantity"
+          [filename]="audioFileName"
+          [key]="config.shared.keys.pubUpcare"
+          [amount]="product.pricing.price * cartItemQuantity"
+          (onAudioReady)="onAudioStopAndSave($event)"
+          (onAudioError)="onAudioError($event)">
+          <div slot="header" class="note-header">
+            <div>
+              {{glabel.cart_audio}}
+            </div>
+            <div>
+              <b>📌 Note:</b>
+              {{glabel.cart_audio_note}}
+            </div>
+          </div>
+
+          <div slot="response">
+            <em>{{glabel.cart_audio_vendor}}</em>
+          </div>
+
+      </kng-audio-note-enhanced>
+
       <!-- RECEIPE -->
       <div class="recipe ">
         <div class="content bold">
           {{glabel.james_product_title}}
         </div>
-        <button class="default" [routerLink]="['/store',this.store,'home','assistant','james']" [queryParams]="queryParamsRecipe">
+        <button class="default secondary" [routerLink]="['/store',this.store,'home','assistant','james']" [queryParams]="queryParamsRecipe">
           {{label.james_product_recipe}}
         </button>
-        <button class="default" [routerLink]="['/store',this.store,'home','assistant','james']" [queryParams]="queryParamsVariant">
+        <button class="default secondary" [routerLink]="['/store',this.store,'home','assistant','james']" [queryParams]="queryParamsVariant">
           {{label.james_product_variant}}
         </button>
       </div>

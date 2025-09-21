@@ -18,13 +18,6 @@ export interface PaymentEvent {
   error?: Error|any;
 }
 
-// stripe
-// https://stripe.com/docs/testing
-// visa:     4242424242424242
-// declined: 4000000000000002
-// expired:  4000000000000069
-// sepa:     DE89370400440532013000
-// sepa/err: DE62370400440532013001
 @Component({
   selector: 'kng-user-payment',
   templateUrl: './kng-user-payment.component.html',

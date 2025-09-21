@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserService, Config } from 'kng2-core';
+import { UserService, Config, LoaderService } from 'kng2-core';
 import { i18n } from '../common';
 
 @Component({
@@ -34,11 +34,14 @@ export class KngValidateMailComponent implements OnInit {
   constructor(
     private $i18n:i18n,
     private $route: ActivatedRoute,
-    private $user: UserService
+    private $user: UserService,
+    private $loader: LoaderService
   ) {
     this.uid = this.$route.snapshot.params['uid'];
     this.email = this.$route.snapshot.params['mail'];
-    this.config = this.$route.snapshot.data.loader[0];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config } = this.$loader.getLatestCoreData();
+    this.config = config;
   }
 
   get locale() {

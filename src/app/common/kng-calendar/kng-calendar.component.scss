@@ -66,11 +66,14 @@
     overflow: hidden;
     overflow-x: auto;
     border:1px solid var(--mdc-theme-appbar);
-    border-radius: 15px;
+    border-radius: 1rem;
     background-color: var(--mdc-theme-appbar-light) !important;
-    padding: 10px;
-    flex: 1;
+    padding: 0.5rem;
+    flex: 1 1 40%;
     margin: auto 4px;
+    @media (max-width: 767px) {
+      flex: 1 1 100%;
+    }
 
     &::-webkit-scrollbar {
       display: none;
@@ -80,7 +83,7 @@
       display: flex;
       flex-wrap: nowrap;
       gap:3px;
-      width: 100%;
+      width: fit-content;
 
       .element{
         margin: 0px;
@@ -138,6 +141,7 @@
     width: fit-content;
     min-height: 30px;
     padding: 0px;
+
     .label{
       padding: 20px 15px 0;
       font-weight: 400;
@@ -149,25 +153,36 @@
     }
   }
   .switch-hub {
-    width: 100%;
-    min-width: 350px;
     margin: auto 5px;
     padding: 10px;
-    flex: 0;
-    .label button {
-      min-width: 135px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+    display: flex;
+    border: 1px solid var(--mdc-theme-appbar);
+    @media (min-width: 768px) {
+      flex: 1 1 50%;
     }
+
+    .label {
+      // ✅ 50% par défaut, grandit si bouton au max
+      flex: 1 1 50%;
+      min-width: 0; // Permet à flex de réduire en dessous de la largeur du contenu
+      @media (max-width: 599px) {
+        flex: 1 1 auto;
+      }
+    }
+
     button{
       cursor: pointer;
       color: var(--mdc-theme-secondary);
       background-color: var(--mdc-theme-secondary-text);
-      width: auto;
-      margin-left: 0;
+      flex: 0 0 40%;
+      min-width: 120px;
+      margin-left: auto;
       margin-right: auto;
       border: 1px solid var(--mdc-theme-appbar);
+
+      @media (max-width: 767px) {
+        flex: 0 0 auto;
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User, Config } from 'kng2-core';
+import { User, Config, LoaderService } from 'kng2-core';
 import { i18n, KngNavigationStateService } from '..';
 import pkgInfo from '../../../../package.json';
 
@@ -28,20 +28,14 @@ export class KngFooterComponent implements OnInit {
     private $i18n: i18n,
     private $navigation: KngNavigationStateService,
     private $route: ActivatedRoute,
+    private $loader: LoaderService
   ) {
 
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    //
-    // system ready
-    if (loader[1].constructor.name === 'Document') {
-      this.user   = loader[0][1];
-      this.config = loader[0][0];
-    } else {
-      this.user   = loader[1];
-      this.config = loader[0];
-    }
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    // KngDocumentLoaderService retourne [loaderData, document] - on utilise toujours getLatestCoreData()
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
     this.shared = this.config && this.config.shared;
   }
 

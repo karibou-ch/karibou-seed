@@ -30,7 +30,7 @@ export enum EnumMetrics {
 export class MetricsService {
   isAdmin: boolean;
   currentSource: string;
-  uid:string;
+  private uid:string|number;
 
   //
   //fbc => url from meta link ?="...."
@@ -113,9 +113,12 @@ export class MetricsService {
         // User metrics
         const user = ctx.user || this.$user.currentUser;
         if (user && user.id) {
-          // console.log('-- metrics.identitySet', user.id);
-          this.isAdmin = user.isAdmin();
-          return this.identitySet(user.id);
+          // ✅ FIXED: Déduplication - éviter appel si même uid
+          if (this.uid !== user.id) {
+            console.log('-- metrics.identitySet', user.id);
+            this.isAdmin = user.isAdmin();
+            return this.identitySet(user.id);
+          }
         }
       });
     })).subscribe();
@@ -123,17 +126,23 @@ export class MetricsService {
   }
 
   identitySet(uid) {
-    this.uid = uid;
     if (!this.isEnable()) {
       return;
     }
-    this.getHost('gtag')('config', 'G-WQKN27KZGG', { 
-      'user_id': uid 
+    // ✅ FIXED: Double déduplication - éviter appel si même uid déjà défini
+    if (this.uid === uid) {
+      return;
+    }
+    this.uid = uid;
+    this.getHost('gtag')('config', 'G-WQKN27KZGG', {
+      'user_id': uid
     });
-    
+
   }
 
   identityClear() {
+    // ✅ FIXED: Réinitialiser uid lors du clear pour cohérence état
+    this.uid = null;
     if (!this.isEnable()) {
       return;
     }
@@ -211,10 +220,10 @@ export class MetricsService {
       metrics.source = this.currentSource = params.source;
     }
 
-    if (window.matchMedia('(display-mode: standalone)').matches) {  
+    if (window.matchMedia('(display-mode: standalone)').matches) {
       // PWA mode
       metrics.source = metrics.source || 'pwa';
-    }      
+    }
 
     if(params.hub) {
       metrics.hub = params.hub;
@@ -246,16 +255,16 @@ export class MetricsService {
     // https://developers.google.com/analytics/devguides/collection/ga4/ecommerce?client_type=gtag#view_cart
     if(params.sku) {
       metrics.extra.content_ids=[params.sku];
-      metrics.extra.content_type = 'product';  
+      metrics.extra.content_type = 'product';
     }
 
-    switch (metric) {      
+    switch (metric) {
       case EnumMetrics.metric_view_page:
         gtag('event', 'page_view', { page_location: params.path, page_title: params.title });
         metrics.extra.event='ViewContent';
         if(options.action) {
           metrics.action=options.action;
-          this.$analytics.push(metrics);  
+          this.$analytics.push(metrics);
         }
         break;
       case EnumMetrics.metric_view_home:
@@ -283,7 +292,7 @@ export class MetricsService {
         this.$analytics.push(metrics);
         break;
       case EnumMetrics.metric_order_sent:
-        gtag('event', 'purchase',  {value: params.amount, currency: 'CHF'});        
+        gtag('event', 'purchase',  {value: params.amount, currency: 'CHF'});
         metrics.action='order';
         metrics.amount=params.amount;
         metrics.extra.event='Purchase';
@@ -303,7 +312,7 @@ export class MetricsService {
           'description': params.message||params.error,
           'fatal': false
         });
-        
+
     }
   }
 }

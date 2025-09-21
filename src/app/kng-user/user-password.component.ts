@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User, UserService, Config } from 'kng2-core';
+import { User, UserService, Config, LoaderService } from 'kng2-core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { KngInputValidator } from '../shared';
 import { i18n } from '../common';
@@ -30,15 +30,13 @@ export class UserPasswordComponent {
     private $user: UserService,
     private $route: ActivatedRoute,
     private $snack: MdcSnackbar,
+    private $loader: LoaderService
   ) {
 
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    //
-    // system ready
-    this.user   = loader[1];
-    this.config = loader[0];
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
 
     this.isLoading = false;
     // [ngModelOptions]="{updateOn: 'blur'}"

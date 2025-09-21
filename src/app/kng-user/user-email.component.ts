@@ -1,6 +1,6 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User, UserService, Config } from 'kng2-core';
+import { User, UserService, Config, LoaderService } from 'kng2-core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { KngInputValidator } from '../shared';
 import { i18n, KngNavigationStateService } from '../common';
@@ -32,16 +32,14 @@ export class UserEmailComponent {
     private $user: UserService,
     private $route: ActivatedRoute,
     private $navigation: KngNavigationStateService,
-    private $snack: MdcSnackbar
+    private $snack: MdcSnackbar,
+    private $loader: LoaderService
   ) {
+    // ✅ SYNCHRONE: Récupération immédiate des données cached
+    const { config, user } = this.$loader.getLatestCoreData();
 
-    //
-    // initialize loader
-    const loader = this.$route.snapshot.data.loader;
-    //
-    // system ready
-    this.user   = loader[1];
-    this.config = loader[0];
+    this.config = config;
+    this.user = user;
 
     //
     // in case of missing phone

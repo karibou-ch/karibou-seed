@@ -1,49 +1,50 @@
 <div class="product-dialog " #dialog (scroll)="onScroll($event)">
   <div class="product-backdrop"></div>
   <div class="product-dialog-surface">
-    <div class="shop-wide" >
-
-      <!-- CLOSE -->
+    <!-- CLOSE OR SUBS CART -->
+    <div class="topbar" [class.sticked]="scrollStickedToolbar" [style.width.px]="clientWidth">
       <button (click)="onClose(true)" class="close" >
         <span class="material-symbols-outlined size-large">arrow_back</span>
       </button>
+      <div class="title text-overflow">{{vendor?.name}}</div>
+    </div>
+
+    <div class="shop-wide" >
 
 
       <!-- VENDOR-->
-      <!-- TITLE -->
-      <h4 class="title" >{{vendor?.name}}</h4>
       <div class="vendor" *ngIf="vendor">
         <div class="owner" >
           <img [src]="vendor?.photo.owner">
         </div>
 
-        <div class="description" removeRoot="true" [kng-markdown]="vendor.description"></div>  
-        <div class="contact">      
-          <a class="kng-chip" [href]="vendor.url" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
+        <div class="description" removeRoot="true" [kng-markdown]="vendor.description"></div>
+        <div class="contact">
+          <a class="kng-chip" [href]="vendorUrl" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
 
-          <a class="kng-chip" href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-symbols-outlined start">phone</i> {{vendor.address.phone}}</a>      
+          <a class="kng-chip" href="tel:{{getCleanPhone(vendor.address.phone)}}"><i class="material-symbols-outlined start">phone</i> {{vendor.address.phone}}</a>
         </div>
         <!-- MARQUE -->
         <!-- <div class="logo" [ngStyle]="{'background-image': 'url(' + vendor.photo.logo + ')'}" [hidden]="!vendor.photo.logo">
         </div> -->
-        <img class="shop" [src]="vendor.photo.fg+'/-/resize/600x/fb.jpg'"  [hidden]="!vendor.photo.fg">
+        <img class="shop" [src]="vendor.photo.fg+'/-/resize/1200x/fb.jpg'"  [hidden]="!vendor.photo.fg">
         <img class="logo" [src]="vendor.photo.logo"  [hidden]="!vendor.photo.logo">
       </div>
 
-  
+
     </div>
 
     <!-- FURTHER -->
     <div class="products-container" *ngIf="vendor">
 
-      <kng-product-grouped-list 
+      <kng-product-grouped-list
         *ngIf="products.length"
         alphasort="true"
         showSection="true"
-        [config]="config" 
-        [user]="user" 
+        [config]="config"
+        [user]="user"
         [scrollContainer]="getDialog()"
-        [contentCategories]="category.categories" 
+        [contentCategories]="category.categories"
         [selections]="selections"
         [contentProducts]="products"
         (direction)="scrollDirection=$event">
@@ -59,7 +60,7 @@
           <br>
           {{vendor.address.streetAdress}} / {{vendor.address.postalCode}} / {{vendor.address.region}}
         </address>
-      </section>                                
+      </section>
 
       <!-- SHOP FAQ -->
       <section class="FAQ" *ngIf="vendor && vendor.faq.length">
@@ -70,7 +71,7 @@
             <div [kng-markdown]="faq.a" ></div>
           </li>
         </ul>
-      </section>      
+      </section>
       <div class="breaker"></div>
 
   </div>

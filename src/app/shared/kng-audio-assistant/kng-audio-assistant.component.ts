@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { KngAudioRecorderService, RecorderState } from '../kng-audio-recorder.service';
+import { KngAudioRecorderEnhancedService } from '../../common/kng-audio/services/kng-audio-recorder-enhanced.service';
+import { RecorderState } from '../../common/kng-audio/interfaces/audio.interfaces';
 
 import { i18n } from '../../common';
 import { AssistantService, Product } from 'kng2-core';
@@ -127,7 +128,7 @@ export class KngAudioAssistantComponent implements OnInit {
 
   constructor(
     private $assistant: AssistantService,
-    private $audio: KngAudioRecorderService,
+    private $audio: KngAudioRecorderEnhancedService,
     private $i18n: i18n,
     private $cdr: ChangeDetectorRef
   ) {
