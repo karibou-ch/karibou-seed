@@ -1,0 +1,406 @@
+// ✅ Styles pour kng-audio-note-enhanced
+.audio-note-enhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
+  border-radius: 12px;
+  background: rgba(var(--mdc-theme-surface), 0.02);
+  border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
+  transition: all 0.3s ease;
+
+  &.recording {
+    background: rgba(var(--mdc-theme-primary), 0.05);
+    border-color: rgba(var(--mdc-theme-primary), 0.3);
+    box-shadow: 0 4px 20px rgba(var(--mdc-theme-primary), 0.1);
+  }
+
+  &.processing {
+    background: rgba(var(--mdc-theme-secondary), 0.05);
+    border-color: rgba(var(--mdc-theme-secondary), 0.3);
+  }
+
+  &.error {
+    background: rgba(244, 67, 54, 0.05);
+    border-color: rgba(244, 67, 54, 0.3);
+  }
+
+  .note-header,
+  .header,
+  div[slot="header"] {
+    padding: 0.5rem;
+  }
+}
+
+// ✅ Option panier
+.cart-option {
+  display: flex;
+  justify-content: flex-start;
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(var(--mdc-theme-text-primary-on-background), 0.8);
+
+    input[type="checkbox"] {
+      margin: 0;
+      accent-color: rgb(var(--mdc-theme-primary));
+    }
+
+    .checkmark {
+      // Style personnalisé si nécessaire
+    }
+  }
+}
+
+// ✅ Section d'erreurs
+.error-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d32f2f;
+    font-size: 14px;
+
+    .material-symbols-outlined {
+      font-size: 18px;
+    }
+  }
+  .btn{
+    width: fit-content;
+  }
+
+  .retry-btn, .dismiss-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+  }
+
+  .retry-btn {
+    background: rgb(var(--mdc-theme-primary));
+    color: white;
+
+    &:hover {
+      background: rgba(var(--mdc-theme-primary), 0.8);
+      transform: translateY(-1px);
+    }
+  }
+
+  .dismiss-btn {
+    background: transparent;
+    color: rgba(var(--mdc-theme-text-primary-on-background), 0.6);
+    border: 1px solid rgba(var(--mdc-theme-text-primary-on-background), 0.2);
+
+    &:hover {
+      background: rgba(var(--mdc-theme-text-primary-on-background), 0.05);
+    }
+  }
+}
+
+// ✅ Contrôles audio compacts avec positioning par margins
+.audio-controls {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  width: 100%;
+  position: relative;
+
+  // ✅ État 1: Bouton micro initial - centré
+  .btn{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+
+  // ✅ État 2: Visualiseur - à gauche
+  .visual-audio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(var(--mdc-theme-primary), 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(var(--mdc-theme-primary), 0.2);
+    margin-right: auto;
+    margin-left: 0;
+    width: 100%;
+
+    .timer {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgb(var(--mdc-theme-primary));
+      min-width: 30px;
+      text-align: center;
+    }
+  }
+
+  // ✅ État 3: Lecteur audio - à gauche
+  .audio-player {
+    height: 40px;
+    border-radius: 20px;
+    background: rgba(var(--mdc-theme-surface), 0.1);
+    border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
+    margin-right: auto;
+    margin-left: 0;
+    min-width: 200px;
+  }
+
+
+  // ✅ État Processing - centré
+  .processing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(var(--mdc-theme-secondary), 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(var(--mdc-theme-secondary), 0.2);
+    color: rgb(var(--mdc-theme-secondary));
+    margin-left: auto;
+    margin-right: auto;
+
+    .spinning {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// ✅ Anciens styles supprimés - remplacés par control-row
+
+// ✅ Section transcription
+.transcription-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+
+  background: var(--mdc-theme-colormix);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
+  padding: 0.5rem;
+
+  .transcription-header, .cart-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: rgb(var(--mdc-theme-primary));
+    margin-bottom: 0.5rem;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+    }
+  }
+
+  .transcription-content {
+    line-height: 1.5;
+    color: rgba(var(--mdc-theme-text-primary-on-background), 0.9);
+    padding: 0;
+    background: rgba(var(--mdc-theme-background-container), 0.5);
+    border-radius: 6px;
+    border-left: 3px solid rgb(var(--mdc-theme-primary));
+  }
+
+  .default-response {
+    // Styles pour la réponse par défaut
+  }
+}
+
+// ✅ Lien panier
+.cart-link {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(var(--mdc-theme-primary), 0.1);
+
+  .cart-url-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgb(var(--mdc-theme-primary));
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(var(--mdc-theme-primary), 0.8);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(var(--mdc-theme-primary), 0.3);
+    }
+
+    &::before {
+      content: "🔗";
+      margin-right: 4px;
+    }
+  }
+}
+
+// ✅ Métadonnées audio
+.audio-metadata {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(var(--mdc-theme-text-primary-on-background), 0.6);
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(var(--mdc-theme-surface), 0.02);
+  border-radius: 4px;
+
+  .duration, .type {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+      font-family: 'Material Symbols Outlined';
+      font-size: 14px;
+    }
+  }
+
+  .duration::before {
+    content: "schedule";
+  }
+
+  .type::before {
+    content: "label";
+  }
+}
+
+// ✅ Animations
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes pulse-recording {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+}
+
+// ✅ Responsive design
+@media (max-width: 768px) {
+  .audio-note-enhanced {
+    padding: 12px;
+    gap: 12px;
+
+    .audio-controls {
+      min-height: 40px;
+
+      .btn-mic {
+        width: 40px;
+        height: 40px;
+
+        .material-symbols-outlined {
+          font-size: 20px;
+        }
+      }
+
+      .visual-audio {
+        padding: 6px 10px;
+
+        .timer {
+          font-size: 12px;
+          min-width: 25px;
+        }
+      }
+
+      .btn-stop {
+        width: 36px;
+        height: 36px;
+
+        .material-symbols-outlined {
+          font-size: 18px;
+        }
+      }
+
+      .audio-player {
+        height: 36px;
+        min-width: 150px;
+      }
+
+      .btn-clear {
+        width: 28px;
+        height: 28px;
+
+        .material-symbols-outlined {
+          font-size: 14px;
+        }
+      }
+
+      .processing-indicator {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    .transcription-section {
+      padding: 12px;
+    }
+  }
+}
+
+// ✅ Mode compact pour intégration produit
+.audio-note-enhanced.compact {
+  padding: 8px;
+  gap: 8px;
+
+  .note-header .note-title {
+    font-size: 16px;
+  }
+
+  .action-buttons {
+    .record-btn, .clear-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  }
+}
+
+// ✅ Thème sombre (si supporté)
+@media (prefers-color-scheme: dark) {
+  .audio-note-enhanced {
+    background: rgba(var(--mdc-theme-surface), 0.1);
+    border-color: rgba(var(--mdc-theme-primary), 0.2);
+
+    &.recording {
+      background: rgba(var(--mdc-theme-primary), 0.1);
+    }
+
+    .transcription-content {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+}

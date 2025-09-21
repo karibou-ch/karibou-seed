@@ -74,6 +74,32 @@
     </div>
   </div>
 
+  <div class="kng-boxed first hide-sm">
+    <div class="content">
+      <kng-audio-note-enhanced
+        type="support"
+        [key]="config.shared.keys.pubUpcare"
+        filename="support-ticket-home"
+        (onAudioReady)="onSupportAudio($event)"
+        (onAudioError)="onAudioError($event)">
+
+        <div slot="header">
+          <p>{{ label.audio_support_contact }}</p>
+        </div>
+
+        <div slot="response">
+          <em>{{ label.audio_support_response }}</em>
+        </div>
+      </kng-audio-note-enhanced>
+    </div>
+    <div class="bottom" hidden>
+      <button class="width-100 default small secondary  " (click)="onSendAudioNote()" disabled>
+        Envoyer votre message à notre équipe
+      </button>
+
+    </div>
+  </div>
+
   <!-- SEARH -->
   <kng-search-bar [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
 
@@ -104,82 +130,99 @@
 
 </div>
 
-
+<!-- NAVIGATION core -->
 <div class="home"
      [hidden]="availableSearch && isMobile || isMinimal"
      [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile" >
-  <!-- MOBILE -->
+
+  <!-- MOBILE links -->
   <ul class="subs">
-    <li class="subs-item " [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
+
+    <!-- FAVORITE -->
+    <li class="subs-item inverted" (click)="onFavorites()">
+      <i class="material-symbols-outlined">favorite</i>
+
+      <span>{{label.search_bookmark}}</span>
+    </li>
+
+    <!-- CUSTOM LINK -->
+    <li *ngIf="hub.home.customLink.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url" >
       <i class="material-symbols-outlined icon">person_celebrate</i>
       <span>{{hub.home.customLink.label[locale]}}</span>
     </li>
 
-    <li class="subs-item " [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="hub.home.customLink.url">
-      <i class="material-symbols-outlined icon    ">person_celebrate</i>
+    <li *ngIf="!hub.home.customLink.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon">person_celebrate</i>
       <span>{{label.nav_subscription_b2b}}</span>
     </li>
-    <li class="subs-item  " [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon ^  ">update</i>
+
+    <!-- SUBSCRIPTION b2c/b2b-->
+    <li class="subs-item inverted" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon">update</i>
       <span>{{label.nav_subscription}}</span>
     </li>
 
 
-    <li *ngIf="isAuthencated" class="subs-item" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon  ">shopping_cart</i>
+    <!-- JAMES b2c/school -->
+    <li *ngIf="!isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon  ">smart_toy</i>
       <span>{{label.james_title_cta}}</span>
     </li>
-    <li *ngIf="isAuthencated && isB2BSchool" class="subs-item" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon  ">smart_toy</i>
+    <li *ngIf="isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <i class="material-symbols-outlined icon ">smart_toy</i>
       <span>{{label.james_school}}</span>
     </li>
-
   </ul>
 
   <!-- DESKTOP -->
-  <ul>
-    <li class="hide-sm " [routerLink]="userRouterLink">
+  <ul class="hide-sm">
+    <li [routerLink]="userRouterLink">
       <!-- LOGIN / REGISTER -->
       <span class="fa icon hide">👦</span>
       <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
 
     </li>
     <!-- DISPLAYCUSTOM LINK -->
-    <li class="hide-sm " [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
+    <li [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
       <b>{{hub.home.customLink.label[locale]}}</b>
     </li>
 
-    <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
+    <li  [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
       <b>{{label.nav_subscription_b2b}}</b>
     </li>
 
-    <li class="hide-sm "  [routerLink]="'/store/'+store+'/home/subscription'">
+    <li  [routerLink]="'/store/'+store+'/home/subscription'">
       <b>{{label.nav_subscription}}</b>
     </li>
 
-    <li [hidden]="!isAuthencated || !isB2BSchool" class="hide-sm" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <li [hidden]="!isAuthencated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <b>{{label.james_school}}</b>
     </li>
-    <li class="hide-sm separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <li class="separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <b>{{label.james_title_cta}}</b>
     </li>
+  </ul>
 
-
-
-    <li (click)="scrollToSlug(category.slug)"
+  <!-- CATEGORY on mobile+desktop -->
+  <ul class="">
+    <li (click)="scrollToSlug(category.slug)" class="subs-item"
               [id]="'category-'+j"
               [class.selected]="category.slug == displaySlug"
               *ngFor="let category of sortedCategories;let j=index">
-      <img [src]="category.cover" class="show-sm">
-      <i [class]="category.image" class="icon hide "></i>
+      <!-- <img [src]="category.cover" hidden> -->
+      <i [class]="category.image" class="icon hide-md hide-lg"></i>
       <span>{{getCategoryI18n(category)}}</span>
     </li>
   </ul>
+
+
+
+
 </div>
 
 <div class="product-container " *ngIf="products.length" >
 
-  <kng-product-grouped-list clazz="home {{products.length<10?'large':''}}"
+  <kng-product-grouped-list clazz=" {{products.length<10?'large':''}}"
        [useMaxCat]="products.length>40"
        [alphasort]="false"
        [displayVendor]="true"

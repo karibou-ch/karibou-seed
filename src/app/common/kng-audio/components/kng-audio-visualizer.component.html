@@ -1,0 +1,42 @@
+<div class="audio-visualizer"
+     [class.recording]="isRecording"
+     [class.active]="isActive"
+     [class.no-labels]="!showLabel">
+
+  <!-- Visualiseur temps réel -->
+  <canvas #canvas
+          [hidden]="!showRealtime"
+          class="visualizer-canvas">
+  </canvas>
+
+  <!-- Waveform statique -->
+  <div class="waveform-static" [hidden]="!showWaveform || !waveformData?.length">
+    <div class="waveform-bars">
+      <div *ngFor="let amplitude of waveformData; let i = index"
+           class="bar"
+           [style.height.%]="amplitude * 100"
+           [class.active]="i <= currentPosition">
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicateur niveau sonore -->
+  <div class="volume-meter" [hidden]="!showVolumeMeter">
+    <div class="meter-bar">
+      <div class="meter-fill" [style.width.%]="volumeLevel * 100"></div>
+    </div>
+    <!-- Labels conditionnels -->
+    <div class="meter-labels" [hidden]="!showLabel">
+      <span class="quiet">🔇</span>
+      <span class="loud">🔊</span>
+    </div>
+  </div>
+
+  <!-- Indicateur activité -->
+  <div class="activity-indicator" [hidden]="!showActivity">
+    <div class="pulse" [class.active]="isActive"></div>
+    <!-- Status conditionnel -->
+    <span class="status" [hidden]="!showLabel">{{ activityStatus }}</span>
+  </div>
+
+</div>

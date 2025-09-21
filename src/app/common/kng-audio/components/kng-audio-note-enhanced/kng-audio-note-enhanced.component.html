@@ -1,0 +1,128 @@
+<div class="audio-note-enhanced"
+     [class.recording]="audioState.isRecording"
+     [class.processing]="audioState.isProcessing"
+     [class.error]="audioState.hasError">
+
+  <!-- ✅ Titre et contexte selon type -->
+
+  <!-- ✅ Contenu personnalisé via ng-content -->
+  <ng-content select="[slot=header]"></ng-content>
+
+  <!-- ✅ Option panier pour support/helper -->
+  <div class="cart-option" hidden
+       *ngIf="(type === 'support' || type === 'helper') && !audioState.isRecording">
+    <label class="checkbox-label">
+      <input type="checkbox"
+             [(ngModel)]="includeCartInContext"
+             (change)="onToggleCartInclude()">
+      <span class="checkmark"></span>
+      {{ $i18n.message_include_cart }}
+    </label>
+  </div>
+
+  <!-- ✅ Gestion erreurs améliorée -->
+  <div class="error-section" *ngIf="audioState.hasError">
+    <div class="error-message">
+      <span class="material-symbols-outlined">error</span>
+      <span>{{ audioState.errorMessage }}</span>
+    </div>
+    <button *ngIf="audioState.canRetry"
+            class="retry-btn"
+            (click)="onRetry()">
+      <span class="material-symbols-outlined">refresh</span>
+      {{ $i18n.action_retry }}
+    </button>
+    <button class="dismiss-btn" (click)="dismissError()">
+      {{ $i18n.action_dismiss }}
+    </button>
+  </div>
+
+  <!-- ✅ Contrôles audio compacts en ligne avec margin positioning -->
+  <div class="audio-controls">
+
+    <!-- Visualiseur audio - à gauche  -->
+    <div class="visual-audio"
+         [hidden]="!audioState.isRecording">
+      <kng-audio-visualizer
+        [showRealtime]="false"
+        [showWaveform]="false"
+        [showVolumeMeter]="true"
+        [showActivity]="false"
+        [showLabel]="false">
+      </kng-audio-visualizer>
+      <span class="timer">{{ recordingTime }}s</span>
+    </div>
+
+    <!-- Lecteur audio - à gauche quand prêt -->
+    <audio [id]="'audio-' + instanceId"
+           controls
+           class="audio-player"
+           [hidden]="!audioState.hasAudio || audioState.isRecording"
+           (loadeddata)="onAudioLoaded($event)"
+           (timeupdate)="onAudioTimeUpdate($event)">
+    </audio>
+
+    <!-- Indicateur processing - centré -->
+    <div class="processing-indicator"
+         [hidden]="!audioState.isProcessing">
+      <span class="material-symbols-outlined spinning">autorenew</span>
+      <span>{{ getLoadingMessage() }}</span>
+    </div>
+
+
+    <!-- Bouton micro initial - à droite -->
+    <button class="btn small default"
+            [hidden]="audioState.isRecording || audioState.hasAudio || audioState.isProcessing"
+            (click)="toggleRecording()">
+      <span class="material-symbols-outlined">mic</span>
+    </button>
+
+    <!-- Bouton stop - à droite pendant recording -->
+    <button class="btn small default"
+            [hidden]="!audioState.isRecording"
+            (click)="toggleRecording()">
+      <span class="material-symbols-outlined">stop</span>
+    </button>
+
+
+    <!-- Bouton clear - à droite quand audio prêt -->
+    <button class="btn small default"
+            [hidden]="!audioState.hasAudio || audioState.isRecording"
+            (click)="clearAudio()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+  </div>
+
+  <!-- ✅ Section transcription/réponse -->
+  <div class="transcription-section" *ngIf="audioState.transcription">
+
+    <!-- Contenu personnalisé -->
+    <ng-content select="[slot=response]"></ng-content>
+
+    <!-- Fallback par défaut -->
+    <div class="default-response" *ngIf="!hasCustomResponse">
+      <div class="transcription-content" [innerHTML]="audioState.transcription"></div>
+    </div>
+
+    <!-- Lien panier si généré -->
+    <div class="cart-link" *ngIf="cartUrl && includeCartInContext">
+      <div class="cart-header">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span>{{ $i18n.message_cart_shared }}</span>
+      </div>
+      <a [href]="cartUrl" target="_blank" class="cart-url-link">
+        Voir le panier
+      </a>
+    </div>
+
+    <!-- Métadonnées -->
+    <!-- <div class="audio-metadata" *ngIf="audioState.duration">
+      <span class="duration">{{ $i18n.message_duration }}: {{ formatDuration(audioState.duration) }}</span>
+    </div> -->
+  </div>
+
+  <!-- ✅ Contenu personnalisé final -->
+  <ng-content select="[slot=footer]"></ng-content>
+
+</div>

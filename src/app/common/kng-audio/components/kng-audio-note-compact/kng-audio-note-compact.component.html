@@ -1,0 +1,38 @@
+<!-- ✅ Version compacte sur une ligne -->
+<div class="audio-note-compact" [class]="buttonClass">
+
+  <!-- Bouton principal avec indicateurs -->
+  <button class="compact-btn"
+          [disabled]="disabled || isProcessing"
+          (click)="toggleRecording()"
+          [title]="getTooltip()">
+
+    <!-- Icône principale -->
+    <span class="material-symbols-outlined icon">{{ buttonIcon }}</span>
+
+    <!-- Indicateur volume temps réel -->
+    <div class="volume-indicator"
+         [hidden]="!isRecording"
+         [style.width.%]="volumeLevel * 100">
+    </div>
+
+    <!-- Status text -->
+    <span class="status" [hidden]="!statusText">{{ statusText }}</span>
+
+  </button>
+
+  <!-- Lecteur audio intégré (minimal) -->
+  <audio [id]="'audio-compact-' + instanceId"
+         [hidden]="!hasAudio"
+         controls>
+  </audio>
+
+  <!-- Bouton clear (si audio présent) -->
+  <button class="clear-btn"
+          *ngIf="hasAudio && !isRecording"
+          (click)="clearAudio()"
+          [title]="$i18n.action_clear">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+
+</div>

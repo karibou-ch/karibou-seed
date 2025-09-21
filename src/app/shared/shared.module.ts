@@ -30,8 +30,6 @@ import { KngSharedMdcModule } from './shared.mdc.module';
 
 import { appRoutes } from './shared.routes';
 import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
-import { KngAudioNoteComponent } from './kng-audio-note/kng-audio-note.component';
-import { KngAudioRecorderService } from './kng-audio-recorder.service';
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
 import { KngAssistantComponent } from './kng-assistant/kng-assistant.component';
@@ -53,7 +51,6 @@ import { KngBusinessOptionComponent } from './kng-business-option/kng-business-o
     RouterModule,
     KngCommonModule,
     KngAssistantComponent,
-    KngAudioNoteComponent,
     KngAudioAssistantComponent,
     KngBusinessOptionComponent,
     KngControlMessagesComponent,
@@ -63,10 +60,9 @@ import { KngBusinessOptionComponent } from './kng-business-option/kng-business-o
     ProductGroupedListComponent,
     ProductThumbnailComponent,
     ProductSwipeComponent,
-    UcWidgetComponent,    
+    UcWidgetComponent,
   ],
   declarations: [
-    KngAudioNoteComponent,
     KngAudioAssistantComponent,
     KngAssistantComponent,
     KngBusinessOptionComponent,
@@ -94,7 +90,7 @@ export class KngSharedModule {
     return {
       ngModule: KngSharedModule,
       providers: [
-        KngAudioRecorderService
+        // Les services audio sont maintenant dans KngAudioModule
       ]
     };
   }
