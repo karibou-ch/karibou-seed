@@ -35,8 +35,19 @@
     <div class="subscription-container" >
       <h2>{{getContractDescription(currentContract)}} </h2>
 
-      <h3>{{i18n[locale].subtitle_subscription_items}} {{getFrequency(currentContract)}}</h3>
+      <h3 hidden>{{i18n[locale].subtitle_subscription_items}} {{getFrequency(currentContract)}}</h3>
       <!-- <kng-cart-items (checkoutEvent)="doInitateCheckout($event)" [showCartItems]="false" [i18n]="i18n" [config]="config" [currentHub]="hub" [showSeparator]="idx>0" [showFooter]="!last"></kng-cart-items> -->
+
+      <ul>
+        <li class="contrasted-sm" [hidden]="contract_requires_method">
+          <div class="-title" >
+            {{i18n[locale].subtitle_subscription_start}}
+            {{currentContract.start|date:'EEEE d MMM YYYY'}}
+          </div>
+        </li>
+
+      </ul>
+
 
       <ul *ngIf="currentContract.patreon.length; else shippingTemplate">
         <li class="contrasted" *ngFor="let item of currentContract.patreon"><b>{{item.quantity}}x</b> <span class="left">{{item.title}}</span> <b>{{(item.unit_amount/100)|number:'1.2-2'}} fr</b></li>
@@ -44,51 +55,37 @@
 
       <!-- Display Items, Shipping, Services -->
       <ng-template #shippingTemplate>
-        <!-- Display Items -->
-        <ul>
-          <li class="contrasted" *ngFor="let item of currentContract.items">
-            <b>{{item.quantity}}x</b> <span class="left">{{item.title}}</span>
-            <div class="item-actions end">
-              <!-- <div class="action left" >
-                <button (click)="onSubRemove(item,item.variant)"><span class="material-symbols-outlined">remove</span></button>
-              </div>
-              <div class="quantity">
-                  {{item.quantity}}
-              </div>
-              <div class="action right" >
-                  <button (click)="onSubAdd(item,item.variant)"><span class="material-symbols-outlined">add</span></button>
-              </div> -->
-              <div class="price" [class.hidden]="item.selected">
-                  {{item.fees*item.quantity|number:'1.2-2'}} fr
-              </div>
-            </div>
-          </li>
-          <li [hidden]="currentContract.status=='canceled' || currentContract.patreon.length || contract_requires_action || contract_requires_method" class="contrasted-sm">
-            <button class=""  (click)="onAddItemToCart()">{{i18n[locale].subtitle_subscription_add}}</button>
-          </li>
+        <!-- ✅ NOUVEAU : Utilisation du composant kng-subscription-item -->
+        <kng-subscription-item
+          [contract]="currentContract"
+          [config]="config"
+          [locale]="locale"
+          [showTitle]="true"
+          [allowSave]="currentContract.status!='canceled' && !currentContract.patreon.length && !contract_requires_action && !contract_requires_method"
+          [allowAddItem]="currentContract.status!='canceled' && !currentContract.patreon.length && !contract_requires_action && !contract_requires_method"
+          (updateComplete)="onSubscriptionItemUpdated($event)"
+          (updateError)="onSubscriptionItemError($event)"
+          (addItemClick)="onAddItemToCart()">
+        </kng-subscription-item>
 
-        </ul>
-
-        <!-- Display Services -->
-        <h3>{{i18n[locale].subtitle_subscription_service}} </h3>
-        <ul>
-          <li class="contrasted" *ngFor="let item of currentContract.services"><b>{{item.quantity}}x</b> <span class="left">{{item.title}}</span> <b>{{item.fees|number:'1.2-2'}} fr</b></li>
-        </ul>
+        <!-- Add Item Button -->
+        <div class="add-item-action"
+             [hidden]="currentContract.status=='canceled' || currentContract.patreon.length || contract_requires_action || contract_requires_method">
+          <button class="secondary" (click)="onAddItemToCart()">
+            <i class="material-symbols-outlined">add_shopping_cart</i>
+            {{i18n[locale].subtitle_subscription_add}}
+          </button>
+        </div>
       </ng-template>
 
       <div class="block-info red" *ngIf="currentContract.status=='canceled'">
         {{i18n[locale].subtitle_subscription_end}}
       </div>
 
-      <h3 [hidden]="contract_requires_method">{{i18n[locale].subtitle_subscription_options}} </h3>
+      <h3 [hidden]="hasModernPaymentError">{{i18n[locale].subtitle_subscription_options}} </h3>
 
 
       <ul>
-        <!---Update content -->
-        <li [hidden]="currentContract.status=='canceled' || currentContract.patreon.length || contract_requires_action || contract_requires_method" class="contrasted-sm">
-          <button class=""  (click)="onUpdateCart()">{{i18n[locale].subtitle_subscription_action}}</button>
-        </li>
-
         <!-- ✅ NOUVEAU : Interface moderne d'erreurs de paiement -->
         <ng-container *ngIf="hasModernPaymentError">
 
@@ -203,10 +200,6 @@
         </ng-container>
 
 
-        <li class="contrasted-sm" [hidden]="contract_requires_method">
-          <div class="title">{{i18n[locale].subtitle_subscription_start}}   </div>
-          <label class="date bold kng-chip">{{currentContract.start|date:'EEEE d MMM YYYY'}}</label>
-        </li>
 
         <li class="contrasted-sm" *ngIf="!currentContract.patreon?.length">
           <div class="title">{{llabel.subtitle_subscription_status}}   </div>

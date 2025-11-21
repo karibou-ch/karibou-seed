@@ -82,6 +82,43 @@
   100% { opacity: 1; }
 }
 
+// ✅ NOUVEAU : Style pour le bouton "Ajouter un article"
+.add-item-action {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  text-align: center;
+
+  button.secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    color: var(--mdc-theme-secondary);
+    border: 2px solid var(--mdc-theme-secondary);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    i {
+      font-size: 1.25rem;
+    }
+
+    &:hover {
+      background-color: var(--mdc-theme-secondary);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
 h2{
   font-size: 1.4675rem;
   margin-top: 20px;

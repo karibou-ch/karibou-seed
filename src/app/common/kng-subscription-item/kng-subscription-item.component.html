@@ -1,0 +1,281 @@
+<div class="subscription-items">
+
+  <!--                                -->
+  <!-- SECTION 1 : ITEMS DU CONTRAT  -->
+  <!--                                -->
+  <h4 class="title-separator" *ngIf="showTitle && contractItems.length > 0">
+    {{label.title_items}}
+  </h4>
+
+  <!-- Liste des items existants du contrat -->
+  <div class="list-item auto-line"
+       [class.error-line]="item.error"
+       *ngFor="let item of contractItems; let idx = index">
+
+    <!-- Icon status -->
+    <div class="graphic">
+      <i class="material-symbols-outlined icon"
+         [class.red]="item.deleted">
+        update
+      </i>
+    </div>
+
+    <!-- Item information -->
+    <div class="item">
+      <div class="title">{{item.title}}</div>
+      <div class="subtitle">
+
+        <!-- Variant -->
+        <div class="cart-variant red"
+             [hidden]="!item.variant">
+          » {{item.variant}}
+        </div>
+
+        <!-- Note indicator -->
+        <a href="javascript:;"
+           class="note"
+           [hidden]="!item.note && !item.audio"
+           [title]="label.label_note">
+          <i class="material-symbols-outlined">mail</i>&nbsp;
+          {{label.label_note}}
+        </a>
+
+        <!-- Deleted chip -->
+        <small class="kng-chip"
+               [hidden]="!item.deleted">
+          {{label.label_deleted}}
+        </small>
+      </div>
+    </div>
+
+    <!-- Quantity controls + Price + Delete -->
+    <div class="item-actions end">
+      <!-- Decrease quantity -->
+      <div class="action">
+        <button (click)="onContractRemove(item)"
+                [disabled]="item.quantity <= 0"
+                [attr.aria-label]="'Diminuer ' + item.title">
+          <span class="material-symbols-outlined">remove</span>
+        </button>
+      </div>
+
+      <!-- Current quantity -->
+      <div class="quantity"
+           [attr.aria-label]="label.label_quantity">
+        {{item.quantity}}
+      </div>
+
+      <!-- Increase quantity -->
+      <div class="action">
+        <button (click)="onContractAdd(item)"
+                [attr.aria-label]="'Augmenter ' + item.title">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+
+      <!-- Delete button -->
+      <div class="action">
+        <button class="delete-btn"
+                (click)="onContractRemoveAll(item)"
+                [attr.aria-label]="'Supprimer ' + item.title">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Price display -->
+      <div class="price"
+           [class.hidden]="item.selected"
+           [attr.aria-label]="label.label_price">
+        {{item.fees * item.quantity | number:'1.2-2'}} fr
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div class="message-error"
+         [hidden]="!item.error">
+      {{item.error}}
+
+      <!-- Delete action on error -->
+      <a href="javascript:;"
+         class="action-delete"
+         (click)="onContractRemoveAll(item)">
+        {{label.action_remove}}
+      </a>
+    </div>
+  </div>
+
+  <!--                                    -->
+  <!-- SECTION 2 : ITEMS DU PANIER (pending) -->
+  <!--                                    -->
+  <h4 class="title-separator" *ngIf="pendingItems.length > 0">
+    {{label.title_pending_items}}
+  </h4>
+
+  <!-- Liste des items en attente d'ajout -->
+  <div class="list-item one-line"
+       [class.error-line]="item.error"
+       *ngFor="let item of pendingItems; let idx = index">
+
+    <!-- Avatar -->
+    <div class="graphic">
+      <div class="avatar"
+        [ngStyle]="{'background-image': 'url(' + item.thumb + '/-/resize/128x/)'}"></div>
+    </div>
+
+    <!-- Item information -->
+    <div class="item">
+      <div class="title">{{item.title}}</div>
+      <div class="subtitle">
+
+        <!-- Variant -->
+        <div class="cart-variant red"
+             [hidden]="!item.variant">
+          » {{item.variant}}
+        </div>
+
+        <!-- Note indicator -->
+        <a href="javascript:;"
+           class="note"
+           [hidden]="!item.note && !item.audio"
+           [title]="label.label_note">
+          <i class="material-symbols-outlined">mail</i>&nbsp;
+          {{label.label_note}}
+        </a>
+      </div>
+    </div>
+
+    <!-- Quantity controls + Price + Delete -->
+    <div class="item-actions end">
+      <!-- Decrease quantity -->
+      <div class="action">
+        <button (click)="onPendingRemove(item, item.variant)"
+                [disabled]="item.quantity <= 0"
+                [attr.aria-label]="'Diminuer ' + item.title">
+          <span class="material-symbols-outlined">remove</span>
+        </button>
+      </div>
+
+      <!-- Current quantity -->
+      <div class="quantity"
+           [attr.aria-label]="label.label_quantity">
+        {{item.quantity}}
+      </div>
+
+      <!-- Increase quantity -->
+      <div class="action">
+        <button (click)="onPendingAdd(item, item.variant)"
+                [attr.aria-label]="'Augmenter ' + item.title">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+
+      <!-- Delete button -->
+      <div class="action">
+        <button class="delete-btn"
+                (click)="onPendingRemoveAll(item, item.variant)"
+                [attr.aria-label]="'Supprimer ' + item.title">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Price display -->
+      <div class="price"
+           [attr.aria-label]="label.label_price">
+        {{item.finalprice | number:'1.2-2'}} fr
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div class="message-error"
+         [hidden]="!item.error">
+      {{item.error}}
+
+      <!-- Delete action on error -->
+      <a href="javascript:;"
+         class="action-delete"
+         (click)="onPendingRemoveAll(item, item.variant)">
+        {{label.action_remove}}
+      </a>
+    </div>
+  </div>
+
+  <!-- No items message -->
+  <div class="no-items"
+       *ngIf="contractItems.length === 0 && pendingItems.length === 0">
+    <p>{{label.msg_no_items}}</p>
+  </div>
+
+  <!--                                -->
+  <!-- SECTION 3 : RÉCAPITULATIF (calculé manuellement) -->
+  <!--                                -->
+  <div class="services-section" *ngIf="contractItems.length > 0 || pendingItems.length > 0">
+
+    <!-- Sous-total articles [hidden for now]-->
+    <div class="service-item subtotal" hidden>
+      <span class="service-label">{{label.label_items_subtotal}}</span>
+      <span class="service-amount">{{getItemsSubTotal() | number:'1.2-2'}} fr</span>
+    </div>
+
+    <!-- Frais de service Karibou -->
+    <div class="service-item" *ngIf="getServiceFees() > 0">
+      <span class="service-label">{{label.label_service_fees}}</span>
+      <span class="service-amount">{{getServiceFees() | number:'1.2-2'}} fr</span>
+    </div>
+
+    <!-- Frais de livraison -->
+    <div class="service-item">
+      <span class="service-label">{{label.label_shipping_fees}}</span>
+      <span class="service-amount">{{getShippingFees() | number:'1.2-2'}} fr</span>
+    </div>
+
+    <!-- Total général -->
+    <div class="service-item total">
+      <span class="service-label"><strong>{{label.label_total_amount}}</strong></span>
+      <span class="service-amount"><strong>{{getTotalAmount() | number:'1.2-2'}} fr</strong></span>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions" *ngIf="(contractItems.length > 0 || pendingItems.length > 0)">
+
+    <!-- Changes indicator (si allowSave activé) -->
+    <div class="changes-indicator"
+         *ngIf="hasChanges() && !isRunning && allowSave">
+      <i class="material-symbols-outlined">info</i>
+      {{label.msg_confirm_changes}}
+    </div>
+
+    <!-- Save button -->
+    <button
+      class="primary"
+      (click)="onSave()"
+      *ngIf="allowSave && hasChanges()"
+      [disabled]="isRunning">
+      <span *ngIf="!isRunning">{{label.action_save}}</span>
+      <span *ngIf="isRunning">{{label.action_saving}}</span>
+    </button>
+
+    <!-- Success message -->
+    <div class="success-message"
+         *ngIf="successMessage">
+      <i class="material-symbols-outlined">check_circle</i>
+      {{successMessage}}
+    </div>
+
+    <!-- Error message -->
+    <div class="error-message"
+         *ngIf="error">
+      <i class="material-symbols-outlined">error</i>
+      {{error}}
+    </div>
+
+
+    <!-- Blocked by payment indicator (si allowSave désactivé mais hasChanges) -->
+    <div class="blocked-message"
+         *ngIf="hasChanges() && !allowSave">
+      <i class="material-symbols-outlined">lock</i>
+      {{label.msg_blocked_by_payment}}
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,503 @@
+:host {
+  padding: .5rem;
+  width: calc(100% - 1rem);
+  display: block;
+  border-bottom: 2px solid var(--mdc-theme-primary);
+}
+
+// ✅ RESET CSS - Design minimaliste et mobile-first optimisé
+.subscription-items {
+
+  // Container principal
+  .title-separator {
+    margin: 1.5rem 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--mdc-theme-primary);
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  // ✅ Liste des items - Design optimisé mobile
+  .list-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #e0e0e0; // ✅ Border-bottom pour chaque item
+    transition: background-color 0.2s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.auto-line,
+    &.one-line {
+      flex-wrap: nowrap;
+
+      @media (max-width: 430px) {
+        flex-wrap: wrap;
+      }
+    }
+
+    &.error-line {
+      background-color: rgba(244, 67, 54, 0.05);
+      border-left: 3px solid #f44336;
+      padding-left: 0.75rem;
+    }
+
+    // Icon ou Avatar
+    .graphic {
+      flex-shrink: 0;
+      margin-right: 0.75rem;
+
+      @media (max-width: 430px) {
+        margin-right: 0.5rem;
+      }
+
+      .icon {
+        font-size: 1.5rem;
+        color: var(--mdc-theme-secondary);
+
+        &.red {
+          color: #f44336;
+        }
+      }
+
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #f5f5f5;
+
+        @media (max-width: 430px) {
+          width: 40px;
+          height: 40px;
+        }
+      }
+    }
+
+    // Informations item
+    .item {
+      flex: 1;
+      min-width: 0;
+      margin-right: 0.5rem;
+
+      .title {
+        font-weight: 500;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media (max-width: 430px) {
+          font-size: 0.875rem;
+        }
+      }
+
+      .subtitle {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        color: #666;
+        flex-wrap: wrap;
+
+        @media (max-width: 430px) {
+          font-size: 0.75rem;
+          gap: 0.3rem;
+        }
+
+        .cart-variant {
+          font-style: italic;
+
+          &.red {
+            color: #f44336;
+          }
+        }
+
+        .action-delete {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.2rem;
+          color: #f44336;
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+          }
+
+          i {
+            font-size: 0.9rem;
+          }
+        }
+
+        .note {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.2rem;
+          color: var(--mdc-theme-secondary);
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+          }
+
+          i {
+            font-size: 0.9rem;
+          }
+        }
+
+        .kng-chip {
+          padding: 0.125rem 0.375rem;
+          background-color: #f44336;
+          color: white;
+          border-radius: 10px;
+          font-size: 0.7rem;
+        }
+      }
+    }
+
+    // ✅ OPTIMISATION MOBILE : Actions compactes
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+
+      @media (max-width: 430px) {
+        gap: 0.2rem;
+      }
+
+      &.end {
+        margin-left: auto;
+      }
+
+      // ✅ Boutons RONDS et compacts
+      .action button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        padding: 0;
+        border: 1px solid #ccc;
+        border-radius: 50%; // ✅ ROND
+        background: white;
+        cursor: pointer;
+        transition: all 0.15s;
+
+        @media (max-width: 430px) {
+          width: 28px;
+          height: 28px;
+          min-width: 28px;
+        }
+
+        &:hover:not(:disabled) {
+          background-color: var(--mdc-theme-primary-light);
+          border-color: var(--mdc-theme-primary);
+        }
+
+        &:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        &.delete-btn {
+          border-color: #f44336;
+
+          &:hover:not(:disabled) {
+            background-color: #f44336;
+
+            span {
+              color: white;
+            }
+          }
+
+          span {
+            color: #f44336;
+          }
+        }
+
+        span {
+          font-size: 1.1rem;
+
+          @media (max-width: 430px) {
+            font-size: 1rem;
+          }
+        }
+      }
+
+      .quantity {
+        min-width: 32px;
+        padding: 0 0.25rem;
+        text-align: center;
+        font-weight: 500;
+        font-size: 0.95rem;
+
+        @media (max-width: 430px) {
+          min-width: 28px;
+          font-size: 0.875rem;
+        }
+      }
+
+      .price {
+        min-width: 60px;
+        text-align: right;
+        font-weight: 500;
+        font-size: 0.95rem;
+        white-space: nowrap;
+
+        @media (max-width: 430px) {
+          min-width: 50px;
+          font-size: 0.875rem;
+        }
+
+        &.hidden {
+          visibility: hidden;
+        }
+      }
+    }
+
+    // Message d'erreur
+    .message-error {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background-color: rgba(244, 67, 54, 0.08);
+      border-radius: 4px;
+      color: #f44336;
+      font-size: 0.875rem;
+
+      .action-delete {
+        display: inline-block;
+        margin-left: 0.5rem;
+        color: #f44336;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  // ✅ Services section (fees et shipping)
+  .services-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e0e0e0;
+
+    .service-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      background-color: #f9f9f9;
+      border-radius: 4px;
+      font-size: 0.95rem;
+
+      @media (max-width: 430px) {
+        font-size: 0.875rem;
+        padding: 0.4rem;
+      }
+
+      .service-label {
+        font-weight: 400;
+        color: #666;
+      }
+
+      .service-amount {
+        font-weight: 500;
+        color: #333;
+      }
+
+      &.subtotal {
+        background-color: transparent;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        font-size: 1rem;
+      }
+
+      &.total {
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+        font-size: 1rem;
+
+        .service-label,
+        .service-amount {
+          color: #333;
+        }
+      }
+    }
+  }
+
+  // Message "pas d'items"
+  .no-items {
+    padding: 2rem;
+    text-align: center;
+    color: #999;
+
+    p {
+      margin: 0;
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+  }
+
+  // Boutons d'actions
+  .actions {
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-direction:column;
+    border-top: 2px solid #e0e0e0;
+
+    @media (max-width: 430px) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    button {
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      @media (max-width: 430px) {
+        width: 100%;
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem;
+      }
+
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+
+    button.primary {
+      background-color: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
+      flex: 1;
+      max-width: 300px;
+
+      @media (max-width: 430px) {
+        width: 100%;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: var(--mdc-theme-primary-dark);
+      }
+    }
+
+    button.secondary,
+    button.add-item-btn {
+      background-color: white;
+      color: var(--mdc-theme-secondary);
+      border: 2px solid var(--mdc-theme-secondary);
+      flex: 0 0 auto;
+
+      @media (max-width: 430px) {
+        width: 100%;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: var(--mdc-theme-secondary);
+        color: white;
+      }
+    }
+
+    // Messages de feedback
+    .success-message,
+    .error-message,
+    .changes-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+
+    .success-message {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+
+      i {
+        color: #4caf50;
+      }
+    }
+
+    .error-message {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+
+      i {
+        color: #f44336;
+      }
+    }
+
+    .changes-indicator {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: #ff9800;
+
+      i {
+        color: #ff9800;
+      }
+    }
+
+    .blocked-message {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      background-color: rgba(156, 39, 176, 0.1);
+      color: #9c27b0;
+      border: 1px solid #9c27b0;
+
+      i {
+        font-size: 1.25rem;
+        color: #9c27b0;
+      }
+    }
+  }
+}
+

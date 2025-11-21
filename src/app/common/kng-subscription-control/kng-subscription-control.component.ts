@@ -167,7 +167,24 @@ export class KngSubscriptionControlComponent implements OnInit {
   }
 
   get openContracts() {
-    return this.contracts.filter(contract => contract.status=='active');
+    return this.contracts.filter(contract => {
+      // ✅ Contrats actifs
+      if (contract.status === 'active') {
+        return true;
+      }
+
+      // ✅ Contrats incomplete nécessitant une action utilisateur
+      // - requires_action : 3D Secure à confirmer
+      // - requires_payment_method : Carte invalide/expirée à remplacer
+      if (contract.status === 'incomplete' && contract.latestPaymentIntent) {
+        const needsAction = ['requires_action', 'requires_payment_method'].includes(
+          contract.latestPaymentIntent.status
+        );
+        return needsAction;
+      }
+
+      return false;
+    });
   }
 
   // ✅ NOUVEAU : Getters pour l'interface moderne d'erreurs
@@ -254,33 +271,35 @@ export class KngSubscriptionControlComponent implements OnInit {
 
   getContractDescription(contract){
 
-    //
-    // contract is active even if the latest payment failed
-    const active = contract.status=='active';
-    //
-    // without payment intent, contract is ready
-    if (active){
-      return this.getDayOfWeek(contract.dayOfWeek)+ ' ' + this.getFrequency(contract);
-    }
+    return this.getDayOfWeek(contract.dayOfWeek)+ ' ' + this.getFrequency(contract);
 
-    //
-    // pending requires_payment_method
-    if(!contract.latestPaymentIntent||
-        contract.latestPaymentIntent.status=='requires_payment_method'){
-      return this.i18n[this.locale].subtitle_subscription_update_method;
-    }
+    // //
+    // // contract is active even if the latest payment failed
+    // const active = contract.status=='active';
+    // //
+    // // without payment intent, contract is ready
+    // if (active){
+    //   return this.getDayOfWeek(contract.dayOfWeek)+ ' ' + this.getFrequency(contract);
+    // }
 
-    //
-    // pending requires_payment_method
-    if(contract.latestPaymentIntent.status=='requires_action'){
-      return this.i18n[this.locale].subtitle_subscription_confirm_method;
-    }
+    // //
+    // // pending requires_payment_method
+    // if(!contract.latestPaymentIntent||
+    //     contract.latestPaymentIntent.status=='requires_payment_method'){
+    //   return this.i18n[this.locale].subtitle_subscription_update_method;
+    // }
 
-      //
-      // special case of patreon
-      if(contract.patreon && contract.patreon.length) {
-        return this.i18n[this.locale].subtitle_subscription_premium;
-      }
+    // //
+    // // pending requires_payment_method
+    // if(contract.latestPaymentIntent.status=='requires_action'){
+    //   return this.i18n[this.locale].subtitle_subscription_confirm_method;
+    // }
+
+    //   //
+    //   // special case of patreon
+    //   if(contract.patreon && contract.patreon.length) {
+    //     return this.i18n[this.locale].subtitle_subscription_premium;
+    //   }
 
   }
 
@@ -448,6 +467,35 @@ export class KngSubscriptionControlComponent implements OnInit {
       return;
     }
 
+    // ✅ FALLBACK : Détecter automatiquement l'erreur depuis le contrat si pas d'URL params
+    if (!this.paymentError && contract.latestPaymentIntent) {
+      const status = contract.latestPaymentIntent.status;
+      let autoAction: string | null = null;
+      let autoReason: string | null = null;
+
+      // Mapper les status PaymentIntent vers action/reason
+      if (status === 'requires_action') {
+        autoAction = 'authenticate';
+        autoReason = '3ds';
+      } else if (status === 'requires_payment_method') {
+        autoAction = 'replace';
+        autoReason = 'invalid_method';
+      }
+
+      // Créer l'erreur auto-détectée
+      if (autoAction && autoReason) {
+        this.paymentError = {
+          action: autoAction,
+          reason: autoReason,
+          intent: contract.latestPaymentIntent.id,
+          message: this.getPaymentErrorMessage(autoAction, autoReason),
+          urgency: this.getErrorUrgency(autoAction, autoReason),
+          icon: this.getErrorIcon(autoAction, autoReason),
+          teamContact: false
+        };
+      }
+    }
+
     document.body.classList.add('mdc-dialog-scroll-lock');
     this.currentContract=contract;
     if (this.currentContract) {
@@ -478,21 +526,10 @@ export class KngSubscriptionControlComponent implements OnInit {
       return;
     }
 
-    const hub = this.currentContract.items[0].hub;
+    // ✅ Fallback vers config.shared.hub.slug si items est vide (contrat shipping-only)
+    const hub = this.currentContract.items?.[0]?.hub || this.config.shared.hub.slug;
     const plan = (this.currentContract.plan)?('&plan='+this.currentContract.plan):'';
     const url = `/store/${hub}/home/subscription?view=subscription&id=${this.currentContract.id}${plan}`;
-    this.$router.navigateByUrl(url);
-  }
-
-
-  onUpdateCart() {
-    if(!this.currentContract) {
-      return;
-    }
-
-    const hub = this.currentContract.items[0].hub;
-    const plan = (this.currentContract.plan)?('&plan='+this.currentContract.plan):'';
-    const url = `/store/${hub}/home/cart/default?view=subscription&id=${this.currentContract.id}${plan}`;
     this.$router.navigateByUrl(url);
   }
 
@@ -524,5 +561,25 @@ export class KngSubscriptionControlComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true
     });
+  }
+
+  /**
+   * ✅ NOUVEAU : Callback après mise à jour réussie des items de souscription
+   */
+  onSubscriptionItemUpdated(updatedContract: CartSubscription) {
+    // Rafraîchir la liste complète des contrats
+    this.$cart.subscriptionsGet().subscribe(contracts => {
+      this.contracts = contracts;
+      // Mettre à jour le contrat courant
+      this.currentContract = contracts.find(c => c.id === updatedContract.id) || updatedContract;
+    });
+  }
+
+  /**
+   * ✅ NOUVEAU : Callback en cas d'erreur de mise à jour des items
+   */
+  onSubscriptionItemError(error: any) {
+    this.error = error.error || error.message || 'Erreur lors de la mise à jour des articles';
+    console.error('Subscription item update error:', error);
   }
 }

@@ -35,6 +35,7 @@ import { NgxStripeModule } from 'ngx-stripe';
 import { KngAddressComponent } from './kng-address/kng-address.component';
 import { KngPaymentComponent } from './kng-payment/kng-user-payment.component';
 import { KngSubscriptionControlComponent } from './kng-subscription-control/kng-subscription-control.component';
+import { KngSubscriptionItemComponent } from './kng-subscription-item/kng-subscription-item.component';
 import { KngSignupComponent } from './kng-signup/kng-signup.component';
 import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
 import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
@@ -58,6 +59,7 @@ import { KngAudioModule } from './kng-audio/kng-audio.module';
     RouterModule,
     KngAudioModule,
     KngSubscriptionControlComponent,
+    KngSubscriptionItemComponent,
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
@@ -80,6 +82,7 @@ import { KngAudioModule } from './kng-audio/kng-audio.module';
   ],
   declarations: [
     KngSubscriptionControlComponent,
+    KngSubscriptionItemComponent,
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
