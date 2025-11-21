@@ -21,7 +21,11 @@ div.home-header{
     margin: auto;
     margin-top: 1rem;
     max-width: calc(100% - 1.25rem);
-    -box-shadow: 10px -10px 0px 0px deeppink;
+
+    // iOS 14.1 fix
+    @supports not (aspect-ratio: 1 / 1) {
+      max-height: 170px;
+    }
 
     @media (min-width: 768px) {
       margin: 1rem;

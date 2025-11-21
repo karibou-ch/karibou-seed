@@ -74,21 +74,23 @@
     </div>
   </div>
 
-  <div class="kng-boxed first hide-sm">
+  <div class="kng-boxed first ">
     <div class="content">
       <kng-audio-note-enhanced
         type="support"
+        [locale]="locale"
+        [compact]="true"
         [key]="config.shared.keys.pubUpcare"
         filename="support-ticket-home"
         (onAudioReady)="onAudioStopAndSave($event)"
         (onAudioError)="onAudioError($event)">
 
-        <div slot="header">
-          <p>{{ label.audio_support_contact }}</p>
-        </div>
+        <div slot="header-compact">
+          <p>
+            {{ label.audio_support_contact }}
+             <a hidden class="show-sm"  href="tel:{{hub.address.phone}}">(téléhone)</a>
+          </p>
 
-        <div slot="response">
-          <em>{{ label.audio_support_response }}</em>
         </div>
       </kng-audio-note-enhanced>
     </div>

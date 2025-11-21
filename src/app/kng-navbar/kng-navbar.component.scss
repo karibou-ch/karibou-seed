@@ -115,9 +115,8 @@ div.navbar{
     // Appareils : MacBook Pro 13" (1440x900), Laptops 14"-15" (1366x768, 1440x900),
     //            Desktop 1440p monitors, Smaller desktop screens
     @media (min-width:1024px) and (max-width:1440px) {
-      max-width: 940px;
       width: var(--mdc-theme-container-width);
-      margin-right: calc((100% - 980px) / 2.5);
+      margin-right: calc((100% - var(--mdc-theme-container-width)) / 2);
     }
 
     // LARGE DESKTOP : 1441px - 1599px ❌ SUBDIVISION INUTILE

@@ -247,12 +247,14 @@ button.CTA {
         img{
           margin-left: -25px;
           margin-right: -25px;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
         }
         .bottom{
           margin-top: auto;
           margin-bottom: 0;
           height: fit-content;
+          display: flex;
+          flex-direction: column;
         }
 
         .button{

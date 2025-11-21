@@ -190,20 +190,20 @@
 
   /* ✅ Mobile ≤599px (aligné sur kng-responsive.scss) */
   @media (max-width: 599px) {
-    grid-template-columns: repeat(2, auto); /* 2 colonnes mobile */
+    grid-template-columns: repeat(2, 1fr); /* ✅ CORRECTION : 2 colonnes égales */
     gap: 12px;
     &.large{
-      grid-template-columns: repeat(2, auto);
+      grid-template-columns: repeat(2, 1fr); /* ✅ CORRECTION : 2 colonnes égales */
       gap: 16px;
     }
   }
 
   /* ✅ Tablet Standard 600px-899px */
   @media (min-width: 600px) and (max-width: 899px) {
-    grid-template-columns: repeat(5, minmax(auto, 160px)); /* 4 colonnes */
+    grid-template-columns: repeat(5, minmax(auto, 160px)); /* 5 colonnes */
     gap: 18px;
     &.large{
-      grid-template-columns: repeat(3, auto);
+      grid-template-columns: repeat(3, 1fr); /* ✅ CORRECTION : 3 colonnes égales */
       gap: 20px;
     }
   }
@@ -213,7 +213,7 @@
     grid-template-columns: repeat(5, minmax(auto, 170px)); /* 5 colonnes iPad Pro */
     gap: 20px;
     &.large{
-      grid-template-columns: repeat(4, auto);
+      grid-template-columns: repeat(4, 1fr); /* ✅ CORRECTION : 4 colonnes égales */
       gap: 22px;
     }
   }
@@ -223,7 +223,7 @@
     grid-template-columns: repeat(6, minmax(auto, 180px)); /* 6 colonnes desktop */
     gap: 24px;
     &.large{
-      grid-template-columns: repeat(5, auto);
+      grid-template-columns: repeat(5, 1fr); /* ✅ CORRECTION : 5 colonnes égales */
       gap: 24px;
     }
   }
@@ -393,12 +393,18 @@ button.default,
   background-color: var(--mdc-theme-secondary-text);
   border: 1px solid var(--mdc-theme-appbar);
   text-decoration: none;
+
+  &.inverted {
+    color: var(--mdc-theme-secondary-text);
+    background-color: var(--mdc-theme-secondary);
+    border: 1px solid var(--mdc-theme-appbar);
+  }
   &:active:not(:disabled) {
     transform: translateY(0);
   }
 
   &.small{
-    padding: 0.5rem;
+    padding: 0.25rem;
     border-radius: 0.5rem;
   }
 
@@ -413,11 +419,17 @@ button[pill]{
   border-radius: 3rem;
 }
 
-
+button.default.primary,
 .btn.primary{
   background-color: var(--mdc-theme-primary);
   color: var(--mdc-theme-primary-text);
   border-color: var(--mdc-theme-primary);
+  &.inverted {
+    color: var(--mdc-theme-primary-text);
+    background-color: var(--mdc-theme-primary);
+    border: 1px solid var(--mdc-theme-appbar);
+  }
+
   &:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--mdc-theme-primary) 85%, black);
     transform: translateY(-1px);
@@ -430,6 +442,8 @@ button.default.secondary,
   background-color: var(--mdc-theme-secondary);
   color: var(--mdc-theme-secondary-text);
   border-color: var(--mdc-theme-secondary);
+
+
 
   &:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--mdc-theme-secondary) 85%, black);
