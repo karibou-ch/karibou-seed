@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { User,
          UserCard,
          UserService,
@@ -40,6 +40,11 @@ export class KngPaymentComponent {
 
   displayCardError: string;
   isValid: boolean;
+
+  //
+  // tracking form state
+  formTouched: boolean;
+  formNeedsSave: boolean;
 
   //
   // payment
@@ -102,7 +107,8 @@ export class KngPaymentComponent {
     public  $i18n: i18n,
     private $fb: FormBuilder,
     private $stripe: StripeService,
-    private $user: UserService
+    private $user: UserService,
+    private cdr: ChangeDetectorRef
   ) {
     //
     // payment method
@@ -111,6 +117,8 @@ export class KngPaymentComponent {
     });
 
     this.isLoading = false;
+    this.formTouched = false;
+    this.formNeedsSave = false;
 
   }
 
@@ -203,12 +211,43 @@ export class KngPaymentComponent {
           // event.value=> {postalCode: ""}
           // console.log('--- DEBUG event',event);
           this.isValid = event.complete;
+
+          // ✅ Track que l'utilisateur a commencé à éditer
+          if (!event.empty) {
+            this.formTouched = true;
+            this.checkFormNeedsSave();
+          }
         });
 
         this.card.mount('#card-element');
       }, 100);
     });
 
+    // ✅ Track changes sur le champ name
+    this.stripe.get('name')?.valueChanges.subscribe(() => {
+      this.formTouched = true;
+      this.checkFormNeedsSave();
+    });
+
+  }
+
+  //
+  // Check si le formulaire est valide mais pas sauvegardé
+  checkFormNeedsSave() {
+    // ✅ Utiliser setTimeout pour déférer au prochain cycle
+    // Cela évite ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.formNeedsSave = this.formTouched && this.isValid && this.stripe.valid;
+      this.cdr.detectChanges();
+    });
+  }
+
+  //
+  // Appelé quand le formulaire perd le focus
+  onFormBlur() {
+    if (this.formTouched && !this.isLoading) {
+      this.checkFormNeedsSave();
+    }
   }
 
 
@@ -269,6 +308,9 @@ export class KngPaymentComponent {
           this.$user.addPaymentMethod(card, this.user.id, force_replace).subscribe(
             user => {
               this.isLoading = false;
+              // ✅ Réinitialiser les flags après succès
+              this.formTouched = false;
+              this.formNeedsSave = false;
               this.onEmit(<PaymentEvent>({card: card}));
             },
             err => {

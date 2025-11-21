@@ -13,6 +13,8 @@ form{
   padding: 8px;
   border: 2px solid #aaa;
   border-radius: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
   input{
     font-size: 18px;
   }
@@ -22,7 +24,13 @@ form{
     opacity: .3;
     background: #ddd;
     color: #aaa;
+  }
 
+  // ✅ Style pour indiquer qu'il faut sauvegarder
+  &.needs-save {
+    border: 2px solid #e74c3c;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+    animation: pulse-border 2s ease-in-out infinite;
   }
 
 
@@ -34,6 +42,14 @@ form{
     position: absolute;
     top: 5px;
     right: 5px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    // ✅ Style bouton pour indiquer qu'il faut sauvegarder
+    &.needs-save {
+      border: 2px solid #e74c3c;
+      box-shadow: 0 0 6px rgba(231, 76, 60, 0.5);
+      animation: pulse-border 2s ease-in-out infinite;
+    }
   }
 
   //
@@ -272,5 +288,17 @@ ul.payment{
   }
   .InputElement::placeholder {
     color: #444;
+  }
+}
+
+// ✅ Animation pour la bordure rouge pulsante
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: #e74c3c;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+  }
+  50% {
+    border-color: #c0392b;
+    box-shadow: 0 0 16px rgba(231, 76, 60, 0.7);
   }
 }

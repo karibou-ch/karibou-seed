@@ -1,5 +1,6 @@
 <form novalidate
       (ngSubmit)="onPayment()"
+      (blur)="onFormBlur()"
       [formGroup]="stripe"
       [class.working]="isLoading"
       class="stripe-component">
@@ -13,7 +14,7 @@
 
 
   <div id="card-element" class="field"></div>
-  <button type="submit" [disabled]="isLoading||!isValid" class="save default">
+  <button type="submit" [disabled]="isLoading||!isValid" class="save default" [class.needs-save]="formNeedsSave">
     <span class="material-symbols-outlined">
       credit_card
     </span>
