@@ -175,14 +175,28 @@ export class ProductComponent implements OnInit, OnDestroy {
    *
    * @returns {number} Largeur en pixels du conteneur moins 2rem, 0 si non disponible
    */
+  // ✅ CORRECTION : Cache la largeur pour éviter ExpressionChangedAfterItHasBeenCheckedError
+  private _cachedClientWidth: number = 0;
+  private _lastWidthUpdate: number = 0;
+  private _resizeObserver?: ResizeObserver;
+
   get clientWidth() {
+    // ✅ CORRECTION : Cache pendant 100ms pour éviter les recalculs constants
+    const now = Date.now();
+    if (now - this._lastWidthUpdate < 100 && this._cachedClientWidth > 0) {
+      return this._cachedClientWidth;
+    }
+
     if(!this.dialog || !this.dialog.nativeElement){
-      return 0;
+      return this._cachedClientWidth;
     }
 
     //
     // container.className == "product-dialog__surface"
     const container = this.dialog.nativeElement.children[1];
+    if (!container) {
+      return this._cachedClientWidth;
+    }
 
     // FIXME rem should be on utility class
     // Calcul de la largeur réelle
@@ -192,7 +206,20 @@ export class ProductComponent implements OnInit, OnDestroy {
     const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const widthMinus2rem = width - (2 * remValue);
 
-    return Math.max(0, widthMinus2rem); // Empêche les valeurs négatives
+    // ✅ CORRECTION : Cache le résultat
+    this._cachedClientWidth = Math.max(0, widthMinus2rem);
+    this._lastWidthUpdate = now;
+
+    return this._cachedClientWidth;
+  }
+
+  /**
+   * ✅ CORRECTION : Invalide le cache de largeur
+   * Utile lors de changements de layout ou redimensionnement
+   */
+  private invalidateWidthCache(): void {
+    this._cachedClientWidth = 0;
+    this._lastWidthUpdate = 0;
   }
 
   get store() {
@@ -270,6 +297,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.i18n[this.$i18n.locale];
   }
 
+  get locale() {
+    return this.$i18n.locale;
+  }
 
   get urlTitle(){
     return this.product.title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
@@ -303,19 +333,12 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.photosz = '/-/resize/600x/';
       // this.sku = this.$route.snapshot.params['sku'];
       this.$route.params.subscribe(params => {
+        if(!params.sku){
+          return;
+        }
         this.sku = params.sku;
         this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
-
-        //
-        // spec: scrollTop; when open nested product we should scrollTop
-        //try {this.dialog.nativeElement.scrollTop = 0; } catch (e) {}
-
       });
-
-      //
-      // DIALOG INIT HACK
-      document.body.classList.add('mdc-dialog-scroll-lock');
-
     } else {
       this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
     }
@@ -324,24 +347,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     // simple animation
     // capture escape only for dialog instance
     if (this.dialog) {
-      this.dialog.nativeElement.classList.remove('fadeout');
-      //
-      // capture event escape
-      const escape = (e) => {
-        if (e.key === 'Escape') {
-          this.onClose(this.dialog);
-          document.removeEventListener('keyup', escape);
-        }
-      };
-      document.addEventListener('keyup', escape);
-
-      //
-      // Alerts when navigating away from a web page
-      // https://stackoverflow.com/questions/1289234/alerts-when-navigating-away-from-a-web-page/1289260#1289260
-      // window.onbeforeunload = function() {
-      //   return false;
-      // }
-
       //
       // Expression has changed after it was checked
       // https://angular.io/errors/NG0100
@@ -377,6 +382,33 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.updateTimer = this.zone.runOutsideAngular(() => requestAnimationFrame(updateTime));
   }
 
+  ngAfterViewInit() {
+    if (this.isDialog) {
+      console.log('DEBUG dialog display', this.sku);
+      document.body.classList.add('mdc-dialog-scroll-lock');
+
+      this.dialog.nativeElement.classList.remove('fadeout');
+
+      //
+      // capture event escape
+      const escape = (e) => {
+        if (e.key === 'Escape') {
+          this.onClose(this.dialog);
+          document.removeEventListener('keyup', escape);
+        }
+      };
+      document.addEventListener('keyup', escape);
+
+      //
+      // Alerts when navigating away from a web page
+      // https://stackoverflow.com/questions/1289234/alerts-when-navigating-away-from-a-web-page/1289260#1289260
+      // window.onbeforeunload = function() {
+      //   return false;
+      // }
+
+
+    }
+  }
 
   ngOnDestroy() {
     this.scrollCallback = null;
@@ -389,6 +421,15 @@ export class ProductComponent implements OnInit, OnDestroy {
     // Clear the update timer
     if (this.updateTimer) {
       cancelAnimationFrame(this.updateTimer);
+    }
+
+    // ✅ CORRECTION : Nettoyer le cache de largeur
+    this.invalidateWidthCache();
+
+    // ✅ CORRECTION : Nettoyer ResizeObserver si utilisé
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = undefined;
     }
   }
 
@@ -495,11 +536,9 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   getAvailability(product: Product, pos: number) {
-    if (!product.vendor.available || !product.vendor.available.weekdays) {
-      return 'radio_button_unchecked';
-    }
-    return (product.vendor.available.weekdays.indexOf(pos) > -1) ?
-      'radio_button_unchecked' : 'radio_button_checked';
+    const weekdays = product.vendor?.available?.weekdays ||[];
+    return (weekdays.indexOf(pos) > -1) ?
+      'radio_button_checked' : 'radio_button_unchecked';
   }
 
 
@@ -558,6 +597,13 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;
     this.updateBackground();
 
+    // ✅ CORRECTION : DIALOG INIT HACK - Appliqué après chargement du produit
+    if (this.isDialog) {
+      setTimeout(() => {
+        document.body.classList.add('mdc-dialog-scroll-lock');
+      }, 0);
+    }
+
     // FIXME categories can contains shops
     // get category
     // this.category=this.categories.find(c=>this.product.categories._id==c._id);
@@ -595,22 +641,22 @@ export class ProductComponent implements OnInit, OnDestroy {
       });
 
       //
-      // FIXME wait for cart loaded before to get content
-      setTimeout(()=>{
-        //
-        // get cart value
-        const useFrequency = (this.displaySubscription && this.productActiveSubscription);
-        const cartItem = this.$cart.findBySku(product.sku,this.config.shared.hub.slug, useFrequency);
-        if(!cartItem) {
-          return
-        }
-        // this.$dom.bypassSecurityTrustUrl
-        this.cartItemAudio = (cartItem.audio);
-        this.cartItemNote = cartItem.note;
-        if(this.cartItemAudio){
-          document.querySelector('#audio').setAttribute('src', this.cartItemAudio);
-        }
-      },100)
+      // FIXME default url should be set in <kng-audio-note-enhanced>
+      // setTimeout(()=>{
+      //   //
+      //   // get cart value
+      //   const useFrequency = (this.displaySubscription && this.productActiveSubscription);
+      //   const cartItem = this.$cart.findBySku(product.sku,this.config.shared.hub.slug, useFrequency);
+      //   if(!cartItem) {
+      //     return
+      //   }
+      //   // this.$dom.bypassSecurityTrustUrl
+      //   this.cartItemAudio = (cartItem.audio);
+      //   this.cartItemNote = cartItem.note;
+      //   if(this.cartItemAudio){
+      //     document.querySelector('#audio').setAttribute('src', this.cartItemAudio);
+      //   }
+      // },100)
 
       //
       // others products for this vendor

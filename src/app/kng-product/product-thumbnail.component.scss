@@ -105,6 +105,9 @@
     position: relative;
     overflow: hidden;
     aspect-ratio:1/1.1;
+    @supports not (aspect-ratio: 1 / 1.1) {
+      padding-top: 100%;
+    }
 
     border-radius: 12px;
     transition: background-color .2s ease-in-out;

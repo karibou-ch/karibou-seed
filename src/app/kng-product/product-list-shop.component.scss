@@ -187,16 +187,12 @@
     border-radius: 2rem;
     aspect-ratio: 1/1;
     /* Fallback pour navigateurs sans aspect-ratio */
-    padding-bottom: 100%; /* Simule aspect-ratio 1:1 */
+    @supports not (aspect-ratio: 1 / 1) {
+      padding-top: 100%;
+    }
     position: relative;
   }
 
-  /* Reset padding-bottom pour les navigateurs supportant aspect-ratio */
-  @supports (aspect-ratio: 1) {
-    img.shop {
-      padding-bottom: 0;
-    }
-  }
 
   .contact{
     display: flex;

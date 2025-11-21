@@ -135,11 +135,12 @@
           class="product-note"
           [hidden]="!cartItemQuantity"
           [filename]="audioFileName"
+          [locale]="locale"
           [key]="config.shared.keys.pubUpcare"
           [amount]="product.pricing.price * cartItemQuantity"
           (onAudioReady)="onAudioStopAndSave($event)"
           (onAudioError)="onAudioError($event)">
-          <div slot="header" class="note-header">
+          <div slot="header-full" class="note-header">
             <div>
               {{glabel.cart_audio}}
             </div>

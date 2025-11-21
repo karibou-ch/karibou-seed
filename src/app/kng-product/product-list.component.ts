@@ -134,14 +134,44 @@ export class ProductListComponent implements OnInit {
     ProductListComponent.SCROLL_CACHE = 0;
   }
 
+  /**
+   * Calcule la largeur effective du conteneur de dialogue produit, soustrait 2rem.
+   *
+   * Le toolbar étant en position fixed, les calculs CSS purs sont imprécis car :
+   * - Le positionnement fixed sort l'élément du flux normal du document
+   * - Les calculs de largeur ne tiennent pas compte du z-index et layering
+   * - Les dimensions peuvent être affectées par les propriétés CSS du fixed positioning
+   * - Le JavaScript permet un calcul précis basé sur le DOM réel
+   *
+   * Cette approche garantit la synchronisation parfaite entre :
+   * - Le dialogue modal et ses dimensions
+   * - Le toolbar fixed et son positionnement
+   * - Les calculs de layout responsives
+   *
+   * @returns {number} Largeur en pixels du conteneur moins 2rem, 0 si non disponible
+   */
+  // ✅ CORRECTION : Cache la largeur pour éviter ExpressionChangedAfterItHasBeenCheckedError
+  private _cachedClientWidth: number = 0;
+  private _lastWidthUpdate: number = 0;
+  private _resizeObserver?: ResizeObserver;
+
   get clientWidth() {
+    // ✅ CORRECTION : Cache pendant 100ms pour éviter les recalculs constants
+    const now = Date.now();
+    if (now - this._lastWidthUpdate < 100 && this._cachedClientWidth > 0) {
+      return this._cachedClientWidth;
+    }
+
     if(!this.dialog || !this.dialog.nativeElement){
-      return 0;
+      return this._cachedClientWidth;
     }
 
     //
     // container.className == "product-dialog__surface"
     const container = this.dialog.nativeElement.children[1];
+    if (!container) {
+      return this._cachedClientWidth;
+    }
 
     // FIXME rem should be on utility class
     // Calcul de la largeur réelle
@@ -151,7 +181,20 @@ export class ProductListComponent implements OnInit {
     const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const widthMinus2rem = width - (2 * remValue);
 
-    return Math.max(0, widthMinus2rem); // Empêche les valeurs négatives
+    // ✅ CORRECTION : Cache le résultat
+    this._cachedClientWidth = Math.max(0, widthMinus2rem);
+    this._lastWidthUpdate = now;
+
+    return this._cachedClientWidth;
+  }
+
+  /**
+   * ✅ CORRECTION : Invalide le cache de largeur
+   * Utile lors de changements de layout ou redimensionnement
+   */
+  private invalidateWidthCache(): void {
+    this._cachedClientWidth = 0;
+    this._lastWidthUpdate = 0;
   }
 
   get store(){
@@ -270,6 +313,7 @@ export class ProductListComponent implements OnInit {
 
   ngOnDestroy() {
     this.clean();
+    this.invalidateWidthCache();
     if (this.childSub$) {
       this.childSub$.unsubscribe();
     }

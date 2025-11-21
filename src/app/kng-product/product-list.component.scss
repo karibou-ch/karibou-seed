@@ -328,10 +328,9 @@
 
     @media (min-width: 1441px) {
       transform: none !important;
-      left: calc((100% - var(--mdc-theme-dlg-width)) / 2); // ✅ FIXED: was 865px hardcoded
+      left: calc(var(--mdc-theme-toolbox-width) - 1rem);
       top: 20px;
       margin-top: 0;
-      margin-left: calc(var(--mdc-theme-toolbox-width) * -1);
       opacity: 1 !important;
       ul{
         align-items: flex-end;
@@ -339,9 +338,6 @@
 
     }
 
-    @media (min-width: 1640px) {
-      left: calc((100% - var(--mdc-theme-dlg-width)) / 2); // ✅ FIXED: was 945px hardcoded - use same width for consistency
-    }
 
 
     &.show {
