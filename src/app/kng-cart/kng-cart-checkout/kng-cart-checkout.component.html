@@ -124,10 +124,20 @@
       </div>
 
       <div class="order-address">
-            <!-- INFO HELP MOBILE -->
-            <div class="bill help ">
-              <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
-            </div>
+        <!-- Info sur le montant (exclusif panier) -->
+        <div class="block-info  info-amount">
+          <div class="info"> 📌
+            {{ label.cart_amount_1 }}
+            {{ label.cart_amount_2 }}
+          </div>
+        </div>
+
+
+        <!-- INFO HELP MOBILE -->
+        <div class="bill help ">
+          <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
+        </div>
+
 
       </div>
     </div>
@@ -147,7 +157,7 @@
           <div class="bill" [hidden]="isCartDeposit()">
             <div class="small">{{glabel.user_address_note}}</div>
             <div class="input-text">
-              <input type="text" placeholder="code, note, etc" [(ngModel)]="shippingNote" />
+              <input type="text" class="highlight" placeholder="code, note, etc" [(ngModel)]="shippingNote" />
             </div>
           </div>
 
@@ -328,13 +338,6 @@
       </div>
     </div>
 
-    <!-- Info sur le montant (exclusif panier) -->
-    <div class="bill info-amount">
-      <div class="info">
-        {{ label.cart_amount_1 }}
-        {{ label.cart_amount_2 }}
-      </div>
-    </div>
   </div>
 </ng-template>
 

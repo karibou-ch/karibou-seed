@@ -411,8 +411,17 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
       //
       // we should sync with deleted address,
-      const missingAddress = !this.userAddresses.some(address => address.streetAdress == this.currentAddress?.streetAdress);
+      // ✅ FIXED: Comparaison robuste d'adresses (streetAdress + postalCode + region)
+      const missingAddress = this.currentAddress && !this.userAddresses.some(address => {
+        const normalize = (str: string) => (str || '').trim().toLowerCase();
+        return normalize(address.streetAdress || address.streetAddress) ===
+               normalize(this.currentAddress.streetAdress || this.currentAddress.streetAddress) &&
+               normalize(address.postalCode) === normalize(this.currentAddress.postalCode) &&
+               normalize(address.region) === normalize(this.currentAddress.region);
+      });
+
       if(this.selectAddressIsDone && this.currentAddress && missingAddress){
+        console.log('🔄 Address removed, clearing current selection:', this.currentAddress);
         this.setShippingAddress(null);
       }
       //
@@ -621,10 +630,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     }
 
 
-    if (!payment.isValid()) {
-      this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
-      return;
-    }
+    // ✅ FIXED: Don't block checkout based on isValid() - let Stripe decide
+    // if (!payment.isValid()) {
+    //   this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
+    //   return;
+    // }
+
     this.$cart.setPaymentMethod(payment);
     this.selectPaymentIsDone = true;
   }

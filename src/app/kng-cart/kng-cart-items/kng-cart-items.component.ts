@@ -196,7 +196,17 @@ export class KngCartItemsComponent implements OnInit {
 
 
 
-    if(!contract || contract.items[0].hub !== this.hub.slug) {
+    if(!contract) {
+      return;
+    }
+    // Fallback, contract without items AND with shipping is a valid contract to update
+    // ✅ Si le contrat a un shipping, c'est un contrat valide à updater
+    if(!contract.items?.length && contract.shipping) {
+      return contract;
+    }
+
+    // ✅ Sinon, vérifier le hub des items
+    if(contract.items?.length && contract.items[0].hub !== this.hub.slug) {
       return;
     }
 
@@ -381,6 +391,7 @@ export class KngCartItemsComponent implements OnInit {
 
         this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
         this.itemsAmount = this.$cart.subTotal(ctx);
+        console.log('items', ctx, this.items);
 
         // ✅ FIXED: Bug #6 - Éviter mutation de l'array original avec reverse()
         const lastSharedItemIdx = this.items.length - [...this.items].reverse().findIndex(item => item.shared);

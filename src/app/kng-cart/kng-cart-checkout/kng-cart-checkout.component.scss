@@ -2,12 +2,12 @@
   color: var(--mdc-theme-primary-text);
   background: white;
   position: fixed;
-  top: calc(100vh * -1.85);
+  top: calc(100%);
   left: 0;
   width: 100%;
   min-height: 300px;
-  @media (max-width: 769px) {
-    height: 100vh;
+  @media (max-width: 899px) {
+    height: 100%;
   }
   transition: top 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
   overflow: hidden;
@@ -23,14 +23,15 @@
     }
   }
 
+
   .k-brand {
     position: absolute;
-    left: 10px;
-    top: 5px;
-    font-size: 11px;
+    left:  max(calc((100% - var(--mdc-theme-container-width)) / 2),1rem);
+    top: 2rem;
+    font-size: .8rem;
     z-index: 100;
     opacity: 1;
-    color: #333;
+    color: #999;
     background-color: white;
     width: fit-content;
     height: fit-content;
@@ -43,11 +44,11 @@
     color: #333;
     border: 0;
     position: absolute;
-    top: 12px;
-    right: 10px;
+    top: 1rem;
+    right: calc((100% - var(--mdc-theme-container-width)) / 2  - 1rem);
     width: 100px;
     text-align: right;
-    @media (max-width: 769px) {
+    @media (max-width: 899px) {
       top: 8px;
       right: 2px !important;
     }
@@ -59,13 +60,13 @@
 
   .checkout {
     color: var(--mdc-theme-text-primary-on-background);
-    min-height: calc(100vh - 40px);
+    min-height: calc(100% - 40px);
     margin-top: 50px;
     padding: 0 5px;
     overflow-y: auto;
-    height: calc(100vh - 40px);
+    height: calc(100% - 40px);
     @media print {
-      height: 100vh;
+      height: 100%;
     }
   }
 
@@ -81,7 +82,7 @@
 .checkout{
   display: none;
   flex-wrap: wrap;
-  max-width: 1100px;
+  max-width: calc(var(--mdc-theme-container-width) + 2rem);
   margin: auto;
   position: relative;
 
@@ -96,28 +97,28 @@
     background: #888;
   }
 
-  @media (min-width: 1024px) {
+  @media (max-width: 599px) {
+    .cart-container:last-child{
+      margin-top: 1rem;
+      margin-bottom: 3rem;
+    }
+  }
+
+  @media (min-width: 600px) {
     flex-wrap: nowrap;
     .cart-container:last-child{
       order: 1;
-      flex: 0 0 55%;
       padding-left: 0px;
       margin-top: 0rem;
+      width: min(calc(100% - 1rem), calc(var(--mdc-theme-container-width)/2 + 2rem));
+      border-right: 4px solid var(--mdc-theme-appbar);
+      padding-right: .5rem;
+      margin-left: 0;
 
       .order-resume{
         border:none;
-      }
-      &::before{
-        animation-fill-mode: both;
-        content: " ";
-        height: 100%;
-        position: absolute;
-        right: 0;
-        top: 0;
-        transform-origin: right;
-        width: 100%;
-        box-shadow: 5px 0 15px 0 rgba(0,0,0,0.09);
-        z-index: 0;
+        padding-top: 0;
+        margin-top: 0;
       }
     }
   }
@@ -128,14 +129,10 @@
 
 .cart-container {
   padding-top: 0px;
-  padding-bottom: 20px;
-  padding-left: 10px;
-  min-width: min(calc(100% - 10px), 450px);
+  padding-left: 0.5rem;
+  width: min(calc(100% - 1rem), calc(var(--mdc-theme-container-width)/2 - 5rem));
   margin: auto;
   margin-top: 3rem;
-  margin-bottom: 3rem;
-  width: 100%;
-  flex: 0 0 42%;
   position: relative;
 
   order: 2;
@@ -145,12 +142,12 @@
     color: #333;
   }
 
-  @media (max-width: 432px) {
-    width: calc(100% - 10px);
-    margin-left: 0px;
+  @media (max-width: 599px) {
+    width: calc(100% - 1rem);
+    margin-left: 0;
     margin-right: 0;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
     flex: 1;
 
   }
@@ -211,7 +208,7 @@
         margin-bottom: 10px;
         width: calc(100% - 35px);
         border: 2px solid #eee;
-        border-radius: 14px;
+        border-radius: 1rem;
         padding: 15px;
 
         &.twint .note{
@@ -223,7 +220,7 @@
           background-color: white;
         }
 
-        @media (max-width: 432px) {
+        @media (max-width: 599px) {
           width: calc(100% - 35px);
           margin-right: 0px;
         }
@@ -289,11 +286,11 @@
         width: calc(100% - 30px);
         cursor: pointer;
         border: 2px solid #eee;
-        border-radius: 14px;
+        border-radius: 1rem;
         padding: 15px;
         background-color: #efefef;
         margin-bottom: 10px;
-        @media (max-width: 432px) {
+        @media (max-width: 599px) {
           width: calc(100% - 40px);
           margin-right: 0px;
         }
@@ -305,7 +302,7 @@
         div.button,
         button {
           border: 0;
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 600;
           color: #007aff !important;
           span {
@@ -325,10 +322,11 @@
     justify-content: space-between;
     flex-wrap: wrap;
     flex-direction: row;
-    padding: 14px;
+    padding: 1rem;
+    padding-bottom: 40px;
     margin: 10px 0;
     border: 2px solid #ccc;
-    border-radius: 14px;
+    border-radius: 1rem;
 
     h3 {
       font-weight: 200;
@@ -343,7 +341,7 @@
       padding: 10px 0px 0;
       margin: 0;
 
-      @media (max-width: 432px) {
+      @media (max-width: 599px) {
         width: calc(100% - 0px);
       }
 
@@ -361,6 +359,7 @@
         display: flex;
         flex-wrap: wrap;
         padding-left: 5px;
+        line-height: 1.25rem;
 
         input {
           margin-right: 16px;
@@ -381,7 +380,7 @@
         &.wallet {
           border-top: 4px solid black;
           padding-top: 8px;
-          margin-top: 16px;
+          margin-top: 0px;
           font-weight: normal;
         }
 
@@ -437,8 +436,7 @@
 
         > div {
           height: fit-content;
-          min-height: 30px;
-          line-height: 30px;
+          min-height: 28px;
           width: 100%;
         }
 
@@ -474,14 +472,13 @@
         }
 
         .small {
-          font-size: 14px !important;
+          font-size: 1rem !important;
           font-weight: bold;
         }
 
         .info {
-          line-height: 1rem;
           color: #888;
-          font-size: 14px;
+          font-size: 1rem;
           margin-top: 16px;
           height: fit-content;
         }
@@ -497,11 +494,9 @@
 
         input[type='text'] {
           border: 1px solid #eee;
-          padding: 1rem 5px;
-          border-radius: 4px;
+          padding: .5rem 5px;
           font-size: 1em;
           width: calc(100% - 10px);
-          color: var(--mdc-theme-secondary);
           font-weight: bold;
         }
 
@@ -524,12 +519,12 @@
 
     button {
       img{
-        max-height: 40px;
+        max-height: 2rem;
         margin-left: 16px;
         background-color: white;
       }
       div{
-        margin:5px auto;
+        margin:0px auto;
         width: fit-content;
         display: flex;
         align-items: center;
