@@ -68,10 +68,10 @@ export class AddressComponent implements OnDestroy{
 
   ngOnInit() {
     this.address = new UserAddress({});
-    if(this.user.addresses.length){
-      this.address = this.user.addresses[0];
-      this.idx = 0;
-    }
+    // if(this.user.addresses.length){
+    //   this.address = this.user.addresses[0];
+    //   this.idx = 0;
+    // }
   }
 
   get defaultUser() {

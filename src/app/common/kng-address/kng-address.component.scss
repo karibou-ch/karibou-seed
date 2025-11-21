@@ -1,7 +1,15 @@
 :host{
   border: 2px solid #aaa;
-  border-radius: 14px;    
+  border-radius: 14px;
   display: block;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+// ✅ Style pour indiquer qu'il faut sauvegarder
+:host:has(form.needs-save) {
+  border: 2px solid #e74c3c;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+  animation: pulse-border 2s ease-in-out infinite;
 }
 form{
     display: flex;
@@ -21,7 +29,7 @@ form{
       position: absolute;
       background: white;
       width: 120%;
-      z-index: 1;      
+      z-index: 1;
       max-height: 330px;
       overflow: hidden;
       overflow-y: auto;
@@ -40,20 +48,20 @@ form{
         height: 8px;
         background-color: transparent; /* or add it to the track */
       }
-      
+
       /* Add a thumb */
       &::-webkit-scrollbar-thumb {
         background: #888;
-      }    
-  
-  
+      }
+
+
     }
 
     select,
     kng-control-messages {
       flex: 0 1 calc(100% - 0px);
     }
-  
+
     select{
       align-self: flex-end;
       padding: 6px;
@@ -61,20 +69,27 @@ form{
       background: #fff;
       font-size: 1em;
       border-bottom: 1px solid #aaa;
-      font-size: 1em;      
+      font-size: 1em;
     }
 
     button{
-      margin: 5px 0;
+      margin: 0px 0;
       position: absolute;
-      top: 5px;
+      top: 0px;
       right: 5px;
+      display: flex;
+      align-items: center;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
       &.align-right{
         right: 70px;
       }
-      &.secondary{
-        background: var(--mdc-theme-secondary);
-        color: var(--mdc-theme-secondary-text);
+
+      // ✅ Style bouton pour indiquer qu'il faut sauvegarder
+      &.needs-save {
+        border: 2px solid #e74c3c;
+        box-shadow: 0 0 6px rgba(231, 76, 60, 0.5);
+        animation: pulse-border 2s ease-in-out infinite;
       }
     }
 
@@ -96,15 +111,25 @@ form{
     .help-block{
         color: #ccc;
         text-align: center;
-        padding: 0 20px;        
+        padding: 0 20px;
     }
 
-    .align-right{     
+    .align-right{
       flex: 0 1 auto;
       margin-left: auto;
     }
 
-  
+
 }
 
-
+// ✅ Animation pour la bordure rouge pulsante
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: #e74c3c;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+  }
+  50% {
+    border-color: #c0392b;
+    box-shadow: 0 0 16px rgba(231, 76, 60, 0.7);
+  }
+}

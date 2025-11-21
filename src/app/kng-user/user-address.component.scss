@@ -15,7 +15,7 @@ div{
   }
   .help-block{
     text-align: center;
-    color: #ccc;    
+    color: #ccc;
     text-align: center;
     padding: 0 20px;
   }
@@ -25,18 +25,21 @@ div{
     padding: 0;
     cursor: pointer;
     li{
+      &.selected{
+        border: 2px dashed blue;
+      }
       position: relative;
       padding: 10px 15px;
       background: #efeffe;
       border-radius: 14px;
-      margin: 10px 0;   
+      margin: 10px 0;
       label{
         position: absolute;
         right: 20px;
         bottom: 9px;
         font-weight: bold;
         font-size: 14px;
-        color: #aaa;        
+        color: #aaa;
       }
       .name::first-letter{
         text-transform: capitalize;
@@ -44,7 +47,7 @@ div{
 
       .name{
         font-weight: bold;
-      }   
+      }
       button{
         border: 0;
         position: absolute;
@@ -53,12 +56,12 @@ div{
         padding: 5px 15px;
         border-radius: 8px;
         font-weight: bold;
-        color: red;        
+        color: red;
         background-color: white;
       }
     }
   }
-  
+
   kng-address{
     padding: 8px;
   }

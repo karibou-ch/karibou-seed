@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Config, UserAddress, geoadmin, geolocation } from 'kng2-core';
 import { i18n } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime, distinctUntilChanged, filter, skip } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 declare const google;
 
 @Component({
@@ -38,6 +38,11 @@ export class KngAddressComponent implements OnInit {
   regions: string[];
   $address: FormGroup;
 
+  //
+  // tracking form state
+  formTouched: boolean;
+  formNeedsSave: boolean;
+
   @ViewChild('street') street!: ElementRef;
   @ViewChild('floor') floor!: ElementRef;
 
@@ -66,7 +71,8 @@ export class KngAddressComponent implements OnInit {
   constructor(
     public  $i18n: i18n,
     private $fb: FormBuilder,
-    private $http: HttpClient
+    private $http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {
     this.$address = this.$fb.group({
       'name':   ['', [Validators.required, Validators.minLength(3)]],
@@ -78,16 +84,19 @@ export class KngAddressComponent implements OnInit {
       'phone':  ['', [Validators.required, Validators.minLength(10)]]
     });
 
-    // Listen to changes on the 'street' field with a debounce of 3 seconds
+    this.formTouched = false;
+    this.formNeedsSave = false;
+
+    // Listen to changes on the 'street' field with a debounce of 500ms
     this.$address.get('street').valueChanges
       .pipe(
+        debounceTime(500),
+        filter(value => value && value.length >= 5), // ✅ Ne déclenche que si la valeur a au moins 5 caractères
         distinctUntilChanged((prev, curr) => {
-          return prev === "" || curr === "" || prev.toLowerCase() === curr.toLowerCase()
-        }),
-        skip(1),
-        debounceTime(500)
-
-      ) // .5 seconds and address len > 6 chars
+          // ✅ Ignore seulement si les valeurs sont identiques (case-insensitive)
+          return prev?.toLowerCase() === curr?.toLowerCase();
+        })
+      )
       .subscribe(value => {
         this.onStreetChange(value);
       });
@@ -153,6 +162,31 @@ export class KngAddressComponent implements OnInit {
       this.$address.get('phone').setValue(this.phone);
     }
 
+    // ✅ Track changes sur tous les champs du formulaire
+    this.$address.valueChanges.subscribe(() => {
+      this.formTouched = true;
+      this.checkFormNeedsSave();
+    });
+
+  }
+
+  //
+  // Check si le formulaire est valide mais pas sauvegardé
+  checkFormNeedsSave() {
+    // ✅ Utiliser setTimeout pour déférer au prochain cycle
+    // Cela évite ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.formNeedsSave = this.formTouched && this.$address.valid;
+      this.cdr.detectChanges();
+    });
+  }
+
+  //
+  // Appelé quand le formulaire perd le focus
+  onFormBlur() {
+    if (this.formTouched) {
+      this.checkFormNeedsSave();
+    }
   }
 
   isInvalid(controlName: string): boolean {
@@ -203,6 +237,12 @@ export class KngAddressComponent implements OnInit {
     const context = {config:this.config,$http:this.$http};
     this.addresses = await geoadmin(street,context).toPromise();
     if(this.addresses.length==1) {
+      // ✅ FIX: Mettre à jour les coordonnées GPS
+      this.location = {
+        lat: this.addresses[0].lat,
+        lng: this.addresses[0].lng
+      };
+
       this.$address.patchValue({ street:this.addresses[0].street.trim() });
       this.$address.patchValue({ postalCode: this.addresses[0].postal });
       this.$address.patchValue({ region: this.addresses[0].region });
@@ -226,6 +266,10 @@ export class KngAddressComponent implements OnInit {
     if(!address.geo || !address.geo.lat) {
       this.address.geo = await this.onGeoloc();
     }
+
+    // ✅ Réinitialiser les flags après succès
+    this.formTouched = false;
+    this.formNeedsSave = false;
 
     this.updated.emit(address);
   }
