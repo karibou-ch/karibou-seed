@@ -36,6 +36,7 @@ export interface AudioError {
   message: string;
   retry?: boolean;
   technical?: string;
+  instructions?: string; // ✅ NOUVEAU : Instructions détaillées pour l'utilisateur
 }
 
 export type AudioNoteType = 'item' | 'support' | 'helper';
@@ -47,6 +48,7 @@ export interface AudioNoteState {
   errorMessage?: string;
   canRetry: boolean;
   hasAudio: boolean;
+  started: boolean;
   transcription?: string;
   duration?: number;
   waveformData?: number[];

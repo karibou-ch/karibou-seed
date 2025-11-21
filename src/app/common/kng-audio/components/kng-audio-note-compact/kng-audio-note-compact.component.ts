@@ -42,7 +42,7 @@ export class KngAudioNoteCompactComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private audioService: KngAudioRecorderEnhancedService,
+    private $audioService: KngAudioRecorderEnhancedService,
     private cdr: ChangeDetectorRef
   ) {
     this.instanceId = `compact-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
@@ -50,8 +50,9 @@ export class KngAudioNoteCompactComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // ✅ Écouter états
+    this.$audioService.setLocale(this.locale);
     this.subscription.add(
-      this.audioService.recorderState.subscribe(state => {
+      this.$audioService.recorderState.subscribe(state => {
         this.isRecording = state === RecorderState.RECORDING;
         this.isProcessing = state === RecorderState.PROCESSING;
 
@@ -61,13 +62,18 @@ export class KngAudioNoteCompactComponent implements OnInit, OnDestroy {
           this.stopTimer();
         }
 
+        // ✅ CORRECTION : Gestion auto-stop par détection de silence
+        if (state === RecorderState.SILENCE) {
+          this.stopRecording();
+        }
+
         this.cdr.detectChanges();
       })
     );
 
     // ✅ Écouter erreurs
     this.subscription.add(
-      this.audioService.recorderError.subscribe(error => {
+      this.$audioService.recorderError.subscribe(error => {
         this.hasError = true;
         this.onAudioError.emit({ case: error.case, message: error.message });
         this.cdr.detectChanges();
@@ -76,7 +82,7 @@ export class KngAudioNoteCompactComponent implements OnInit, OnDestroy {
 
     // ✅ Écouter activité pour volume
     this.subscription.add(
-      this.audioService.audioActivity.subscribe(data => {
+      this.$audioService.audioActivity.subscribe(data => {
         this.volumeLevel = Math.min(data.volume * 3, 1);
         this.cdr.detectChanges();
       })
@@ -119,7 +125,7 @@ export class KngAudioNoteCompactComponent implements OnInit, OnDestroy {
 
   private async startRecording() {
     this.hasError = false;
-    await this.audioService.startRecording({
+    await this.$audioService.startRecording({
       timeout: 30000,
       quality: 'medium'
     });
@@ -127,14 +133,14 @@ export class KngAudioNoteCompactComponent implements OnInit, OnDestroy {
 
   private async stopRecording() {
     try {
-      const result = await this.audioService.stopRecording();
+      const result = await this.$audioService.stopRecording();
 
       if (!result.blob) {
         throw new Error('Aucun audio enregistré');
       }
 
       // Détecter le son
-      const hasSound = await this.audioService.detectSound({ blob: result.blob });
+      const hasSound = await this.$audioService.detectSound({ blob: result.blob });
       if (!hasSound) {
         this.hasError = true;
         return;

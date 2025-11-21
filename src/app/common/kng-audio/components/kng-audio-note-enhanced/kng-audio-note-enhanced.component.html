@@ -6,7 +6,7 @@
   <!-- ✅ Titre et contexte selon type -->
 
   <!-- ✅ Contenu personnalisé via ng-content -->
-  <ng-content select="[slot=header]"></ng-content>
+  <ng-content select="[slot=header-full]" *ngIf="!compact"></ng-content>
 
   <!-- ✅ Option panier pour support/helper -->
   <div class="cart-option" hidden
@@ -27,7 +27,7 @@
       <span>{{ audioState.errorMessage }}</span>
     </div>
     <button *ngIf="audioState.canRetry"
-            class="retry-btn"
+            class="retry-btn btn default"
             (click)="onRetry()">
       <span class="material-symbols-outlined">refresh</span>
       {{ $i18n.action_retry }}
@@ -39,6 +39,8 @@
 
   <!-- ✅ Contrôles audio compacts en ligne avec margin positioning -->
   <div class="audio-controls">
+    <!-- ✅ Contenu personnalisé via ng-content en mode compact -->
+    <ng-content select="[slot=header-compact]" *ngIf="compact && !audioState.started"></ng-content>
 
     <!-- Visualiseur audio - à gauche  -->
     <div class="visual-audio"
@@ -53,6 +55,13 @@
       <span class="timer">{{ recordingTime }}s</span>
     </div>
 
+    <!-- Indicateur processing - centré -->
+    <div class="processing-indicator"
+         [hidden]="!isProcessingOrTranscribing">
+      <span class="material-symbols-outlined spinning">autorenew</span>
+      <span>{{ getLoadingMessage() }}</span>
+    </div>
+
     <!-- Lecteur audio - à gauche quand prêt -->
     <audio [id]="'audio-' + instanceId"
            controls
@@ -62,17 +71,9 @@
            (timeupdate)="onAudioTimeUpdate($event)">
     </audio>
 
-    <!-- Indicateur processing - centré -->
-    <div class="processing-indicator"
-         [hidden]="!audioState.isProcessing">
-      <span class="material-symbols-outlined spinning">autorenew</span>
-      <span>{{ getLoadingMessage() }}</span>
-    </div>
-
-
     <!-- Bouton micro initial - à droite -->
-    <button class="btn small default"
-            [hidden]="audioState.isRecording || audioState.hasAudio || audioState.isProcessing"
+    <button class="btn small primary"
+            [hidden]="audioState.isRecording || audioState.hasAudio || isProcessingOrTranscribing"
             (click)="toggleRecording()">
       <span class="material-symbols-outlined">mic</span>
     </button>
@@ -87,7 +88,7 @@
 
     <!-- Bouton clear - à droite quand audio prêt -->
     <button class="btn small default"
-            [hidden]="!audioState.hasAudio || audioState.isRecording"
+            [hidden]="!audioState.hasAudio || audioState.isRecording || isProcessingOrTranscribing"
             (click)="clearAudio()">
       <span class="material-symbols-outlined">close</span>
     </button>

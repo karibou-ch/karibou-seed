@@ -26,6 +26,7 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
   @Input() key: string = ''; // Uploadcare key
   @Input() amount: number = 0;
   @Input() locale: string = 'fr';
+  @Input() compact: boolean = false;
 
   // ✅ Events
   @Output() onAudioReady = new EventEmitter<{type: AudioNoteType, audioUrl: string, transcription: string, cartUrl?: string}>();
@@ -39,8 +40,14 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
     isProcessing: false,
     hasError: false,
     canRetry: false,
-    hasAudio: false
+    hasAudio: false,
+    started: false
   };
+
+  audioTimeout: number = 30;
+
+  // ✅ État transcription
+  private isTranscribing = false;
 
   includeCartInContext: boolean = false;
   latestOrder: any;
@@ -72,6 +79,11 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
     this.latestOrder = orders && orders[0] ? orders[0] : null;
   }
 
+  // ✅ Getter pour l'état processing complet (processing + transcription)
+  get isProcessingOrTranscribing(): boolean {
+    return this.audioState.isProcessing || this.isTranscribing;
+  }
+
   ngOnInit() {
     this.setupAudioServiceListeners();
   }
@@ -94,6 +106,12 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
           this.startRecordingTimer();
         } else {
           this.stopRecordingTimer();
+        }
+
+        // ✅ CORRECTION : Gestion auto-stop par détection de silence
+        if (state === RecorderState.SILENCE) {
+          console.log('🔇 Silence detected, stopping recording');
+          this.stopRecording();
         }
 
         this.emitStateChange();
@@ -146,22 +164,18 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
   private async startRecording() {
     try {
       this.dismissError();
+      this.audioState.started = true;
 
       // Vérifier support et permissions
       if (!this.$audioEnhanced.isSupported) {
         throw new Error('Enregistrement audio non supporté par ce navigateur');
       }
 
-      const hasPermission = await this.$audioEnhanced.isAudioGranted();
-      if (!hasPermission) {
-        throw new Error('Permission microphone requise');
-      }
-
       // Démarrer enregistrement
       await this.$audioEnhanced.startRecording({
-        timeout: 30000, // 30 secondes max
+        timeout: this.audioTimeout * 1000, // 30 secondes max
         quality: 'medium',
-        stopOnSilence: false
+        stopOnSilence: true
       });
 
     } catch (error: any) {
@@ -251,7 +265,10 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
         q: 'whisper'
       };
 
+      // ✅ CORRECTION : Démarrer l'état transcription
       this.audioState.transcription = '';
+      this.isTranscribing = true;
+      this.cdr.detectChanges();
 
       this.$assistant.chat(params).subscribe(
         (content) => {
@@ -261,6 +278,10 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
         (error) => {
           console.error('❌ Whisper error:', error);
           this.audioState.transcription = '';
+
+          // ✅ CORRECTION : Arrêter l'état transcription
+          this.isTranscribing = false;
+
           // Émettre quand même l'audio sans transcription
           this.onAudioReady.emit({
             type: this.type,
@@ -268,10 +289,15 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
             transcription: '',
             cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
           });
+
+          this.cdr.detectChanges();
         },
         () => {
           // Nettoyage final
           this.audioState.transcription = this.audioState.transcription?.trim().replace('**traitement...**', '') || '';
+
+          // ✅ CORRECTION : Arrêter l'état transcription
+          this.isTranscribing = false;
 
           // Émettre le résultat final
           this.onAudioReady.emit({
@@ -282,11 +308,16 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
           });
 
           this.emitStateChange();
+          this.cdr.detectChanges();
         }
       );
 
     } catch (error: any) {
       console.error('❌ Whisper processing failed:', error);
+
+      // ✅ CORRECTION : Arrêter l'état transcription en cas d'erreur
+      this.isTranscribing = false;
+
       // Émettre l'audio sans transcription
       this.onAudioReady.emit({
         type: this.type,
@@ -294,6 +325,8 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
         transcription: '',
         cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
       });
+
+      this.cdr.detectChanges();
     }
   }
 
@@ -371,7 +404,11 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
     this.audioState.transcription = undefined;
     this.audioState.duration = undefined;
     this.audioState.waveformData = undefined;
+    this.audioState.started = false;
     this.cartUrl = '';
+
+    // ✅ CORRECTION : Reset état transcription
+    this.isTranscribing = false;
 
     const audioElement = document.querySelector(`#audio-${this.instanceId}`) as HTMLAudioElement;
     if (audioElement) {
@@ -424,6 +461,9 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
   getLoadingMessage(): string {
     if (this.audioState.isProcessing) {
       return this.$i18n.state_processing;
+    }
+    if (this.isTranscribing) {
+      return this.$i18n.state_transcribing;
     }
     return this.$i18n.message_processing;
   }

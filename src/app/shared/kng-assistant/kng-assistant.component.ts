@@ -195,7 +195,8 @@ export class KngAssistantComponent implements OnInit {
       typographer:true
     });
     this.audioDetected = true;
-    this.audioError = !(await this.$audio.isAudioGranted());
+    // ✅ CORRECTION : Utiliser isSupported au lieu de isAudioGranted (lazy check)
+    this.audioError = !this.$audio.isSupported;
 
     //
     // markdown must be available before

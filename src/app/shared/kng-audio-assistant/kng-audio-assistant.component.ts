@@ -209,6 +209,13 @@ export class KngAudioAssistantComponent implements OnInit {
         breaks:true,
         typographer:true
       });
+
+      this.$audio.recorderState.subscribe(state =>  {
+        if(state == RecorderState.SILENCE) {
+          this.audioStopAndSave();
+        }
+      })
+
     });
 
     //
@@ -335,9 +342,21 @@ export class KngAudioAssistantComponent implements OnInit {
     if(this.audioIsRecording ) {
       return this.audioStopAndSave();
     }
-    this.audioError = !(await this.$audio.isAudioGranted());
 
-    await this.$audio.startRecording({timeout:15000});
+    // ✅ CORRECTION : Utiliser isSupported au lieu de isAudioGranted (lazy check)
+    if (!this.$audio.isSupported) {
+      this.audioError = true;
+      return;
+    }
+
+    try {
+      await this.$audio.startRecording({timeout:15000});
+      this.audioError = false;
+    } catch (error) {
+      this.audioError = true;
+      console.error('❌ Audio recording failed:', error);
+    }
+
     this.$cdr.markForCheck()
   }
 

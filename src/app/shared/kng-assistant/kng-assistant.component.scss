@@ -372,7 +372,7 @@
           line-height: 22px;
           background-color: var(--mdc-theme-appbar);
           color: var(--mdc-theme-appbar-text);
-          @media (max-width: 432px) {
+          @media (max-width: 599px) {
             font-size: 12px;
           }
           &.end{
@@ -391,7 +391,7 @@
 
       }
 
-      @media (max-width: 432px) {
+      @media (max-width: 599px) {
         width: 100%;
         border-radius: 0;
         box-shadow: none;

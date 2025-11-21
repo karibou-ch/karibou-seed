@@ -82,15 +82,11 @@
   }
 
   .retry-btn, .dismiss-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 4px;
     transition: all 0.2s ease;
+    margin: auto;
 
     .material-symbols-outlined {
       font-size: 16px;
@@ -125,7 +121,7 @@
   min-height: 48px;
   width: 100%;
   position: relative;
-
+  gap: .25rem;
   // ✅ État 1: Bouton micro initial - centré
   .btn{
     width: fit-content;
