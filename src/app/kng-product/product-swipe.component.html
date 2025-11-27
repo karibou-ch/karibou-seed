@@ -3,7 +3,7 @@
   <section>
     <h2 class="title">
       {{title}}
-      <div class="kng-chip" (click)="doSearch(action)" >
+      <div class="kng-chip" [hidden]="boost" (click)="doSearch(action)" >
         <span class="inlink">{{actionLabel}} ...</span>
       </div>
     </h2>

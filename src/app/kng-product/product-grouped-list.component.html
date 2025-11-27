@@ -19,11 +19,7 @@
   <ng-content  *ngIf="i==categoryMiddle && contentIf"></ng-content>
   <div [attr.name]="category.slug" class="group" [hidden]="!category.active" #section>
     <section  class="category-hide-sm category-title" [class.display]="showSection" [ngClass]="isChildCategory ? 'child':'title'">
-      <h2>{{getCategoryI18n(category)}}
-        <div class="kng-chip" [routerLink]="['category',category.slug]" [hidden]="!showMore">
-          <span class="inlink">/ plus ...</span>
-        </div>
-      </h2>
+      <h2>{{getCategoryI18n(category)}}</h2>
       <!-- <h3 class="hide" [innerHtml]="category.description"></h3> -->
     </section>
 
@@ -39,5 +35,12 @@
         [class]="clazz">
       </kng-product-thumbnail>
     </div>
+    <section class="category-title">
+      <div class="kng-chip float-right" [routerLink]="['category',category.slug]" [hidden]="!showMore">
+        <span class="inlink">Voir tout</span>
+      </div>
+
+    </section>
+
   </div>
 </ng-template>

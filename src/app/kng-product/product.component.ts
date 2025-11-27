@@ -213,15 +213,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this._cachedClientWidth;
   }
 
-  /**
-   * ✅ CORRECTION : Invalide le cache de largeur
-   * Utile lors de changements de layout ou redimensionnement
-   */
-  private invalidateWidthCache(): void {
-    this._cachedClientWidth = 0;
-    this._lastWidthUpdate = 0;
-  }
-
   get store() {
     return this.$navigation.store;
   }
@@ -303,6 +294,15 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   get urlTitle(){
     return this.product.title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
+  }
+
+  /**
+   * ✅ CORRECTION : Invalide le cache de largeur
+   * Utile lors de changements de layout ou redimensionnement
+   */
+  private invalidateWidthCache(): void {
+    this._cachedClientWidth = 0;
+    this._lastWidthUpdate = 0;
   }
 
   //

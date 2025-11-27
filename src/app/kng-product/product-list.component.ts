@@ -86,6 +86,7 @@ export class ProductListComponent implements OnInit {
     shopname?: string;
     subscription?: boolean;
     business?: boolean;
+    lastMinute?: boolean;
   };
 
   constructor(
@@ -534,11 +535,16 @@ export class ProductListComponent implements OnInit {
   }
 
   productsByCategory(category) {
+
+
     this.selections = [];
     const when = (this.$cart.getCurrentShippingDay()|| this.$calendar.nextShippingDay(this.user,this.hub)) as Date;
     this.options.hub = this.store;
     this.options.when = when.toISOString();
     this.options.bundle = false;
+
+    this.options.lastMinute = this.$cart.isCurrentShippingLastMinute();
+
 
     this.category.slug = category;
     this.category.current = this.category.categories.find(cat => cat.slug == category);

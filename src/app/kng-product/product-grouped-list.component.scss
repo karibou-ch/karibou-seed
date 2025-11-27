@@ -66,9 +66,10 @@
     }
 
     h2,h3{
+      font-family: var(--mdc-theme-font);
       font-weight: 600;
       color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.9));
-      font-size: 1.4675rem;
+      font-size: 1.75rem;
       margin-top: 20px;
       margin-left: 0px;
       margin-right: 10px;

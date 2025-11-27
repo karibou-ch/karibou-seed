@@ -25,9 +25,12 @@ import { i18n, KngNavigationStateService } from '../common';
   //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductSwipeComponent implements OnInit {
-  private _products:Product[];
+  @ViewChild('scrollEl') $scrollEl:ElementRef<HTMLElement>;
+
+
 
   bgStyle = '/-/resize/200x/';
+  private _products:Product[];
 
   @Input() user: User;
   @Input() hub: string;
@@ -35,6 +38,8 @@ export class ProductSwipeComponent implements OnInit {
   @Input() config: any;
   @Input() mailchimp: boolean;
   @Input() discount: boolean;
+  @Input() pinned: boolean;
+  @Input() boost: boolean;
   @Input() set products(products: Product[]){
     const native: HTMLElement =this.$elem.nativeElement;
     this._products = products;
@@ -51,7 +56,6 @@ export class ProductSwipeComponent implements OnInit {
     this.loadProducts();
   }
 
-  @ViewChild('scrollEl') $scrollEl:ElementRef<HTMLElement>;
 
 
   hideIfEmpty: boolean;
@@ -59,23 +63,29 @@ export class ProductSwipeComponent implements OnInit {
     available: true,
     status: true,
     when: true,
-    limit: 8
+    limit: 14
   };
 
   i18n: any = {
     fr: {
       action_favorites:'Tous les produits populaires',
       action_discount:'Toutes les offres du moment',
+      action_pinned:'Tous les épinglés',
       title_discount: 'Les offres du moment %',
       title_mailchimp:'Les plus prisés `ღ´',
-      title_select:'Les plus prisés'
+      title_select:'Les plus prisés',
+      title_pinned:'📌Les épinglés',
+      title_boost:'À table!'
     },
     en: {
       action_favorites:'All most popular',
       action_discount:'All current offers',
+      action_pinned:'All pinned',
       title_discount: 'Current offers %',
       title_mailchimp: 'Best sellers `ღ´',
-      title_select:'Best sellers'
+      title_select:'Best sellers',
+      title_pinned:'📌 Pinned',
+      title_boost:'Let’s eat!'
     }
   }
 
@@ -84,7 +94,6 @@ export class ProductSwipeComponent implements OnInit {
     private $i18n: i18n,
     private $navigation: KngNavigationStateService,
     private $product: ProductService,
-    private $route: ActivatedRoute,
     private $cdr: ChangeDetectorRef,
     private $loader: LoaderService
   ) {
@@ -101,19 +110,32 @@ export class ProductSwipeComponent implements OnInit {
       return 'favoris';
     }
 
-    return 'discount';
+    if(this.discount){
+      return 'discount';
+    }
+    if(this.pinned){
+      return 'pinned';
+    }
+    if(this.boost){
+      return 'boost';
+    }
+
+    return 'popular';
   }
 
   get actionLabel() {
-    if(this.mailchimp) {
-      return this.i18n[this.$i18n.locale].action_favorites;
-    }
-
     if(this.discount){
       return this.i18n[this.$i18n.locale].action_discount;
     }
+    if(this.pinned){
+      return this.i18n[this.$i18n.locale].action_pinned;
+    }
 
-    return 'click';
+    if(this.boost){
+      return this.i18n[this.$i18n.locale].action_boost;
+    }
+    return this.i18n[this.$i18n.locale].action_favorites;
+
   }
 
   get products() {
@@ -131,6 +153,12 @@ export class ProductSwipeComponent implements OnInit {
 
     if(this.discount){
       return this.i18n[this.$i18n.locale].title_discount;
+    }
+    if(this.pinned){
+      return this.i18n[this.$i18n.locale].title_pinned;
+    }
+    if(this.boost){
+      return this.i18n[this.$i18n.locale].title_boost;
     }
     return this.i18n[this.$i18n.locale].title_select;
   }
@@ -155,19 +183,40 @@ export class ProductSwipeComponent implements OnInit {
       this.options.hub=this.hub;
     }
 
+    this.options.swipe = true;
+    //
+    // mailchimp
     if(this.mailchimp && this.config.shared.mailchimp) {
       const mailchimp = this.config.shared.mailchimp[this.hub] || [];
       if(mailchimp.length){
         this.options.skus = mailchimp.map(media=>media.sku).filter(sku=>!!sku);
       }
-    } else if(this.discount) {
+    }
+    //
+    // discount
+    else if(this.discount) {
       this.options.discount = true;
-    } else {
-      this.options.home = true;
+      this.options.popular = false;
+    }
+    //
+    // pinned
+    else if(this.pinned) {
+      this.options.pinned = true;
+      delete this.options.popular;
+    }
+    //
+    // boost
+    else if(this.boost) {
+      this.options.boost = true;
+      delete this.options.popular;
+    }
+    // default to popular
+    else {
+      this.options.popular = true;
     }
 
-    const divider = this.$navigation.isMobile() ? 4 : (
-      (window.innerWidth < 1025)? 5:6
+    const divider = this.$navigation.isMobile() ? 8 : (
+      (window.innerWidth < 1025)? 14:14
     );
 
 
