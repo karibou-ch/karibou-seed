@@ -29,7 +29,7 @@ div.footer{
   }
 
 
-  @media (max-width: 767px) {
+  @media (max-width: 899px) {
     .main{
       display: none!important;
     }
@@ -46,7 +46,7 @@ div.footer{
     margin-bottom: 0px;
     .line{
       padding:2px 0;
-      @media screen and (max-width: 767px){
+      @media screen and (max-width: 899px){
         padding-left: 30px;
       }
       display:flex;
@@ -60,7 +60,7 @@ div.footer{
         flex:1 0 calc(33% - 40px);
         padding:0px;
         min-width: 200px;
-        @media screen and (max-width: 767px){
+        @media screen and (max-width: 899px){
           flex:1 0 calc(100% - 40px);
           padding:5px;
         }

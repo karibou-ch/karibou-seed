@@ -21,11 +21,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   @Input() exited: boolean;
   @Input() group: string;
   @Input() defaultMenu: string;
-  
+
   themes: Category[];
   primary: ConfigMenu[];
 
-  show: boolean;
+  private _show: boolean;
   findGetNull: boolean;
   products: Product[] = [];
   autocompletes:any[];
@@ -54,17 +54,54 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     private $metric: MetricsService,
     private $products: ProductService,
     private $cdr: ChangeDetectorRef
-  ) { 
+  ) {
     this.exited = false;
     this.autocompletes = [];
+  }
+
+
+  get isAdminAndTheme() {
+    return this.user && this.user.isAdmin() && this.lastTheme;
+  }
+
+  get store() {
+    return this.$navigation.store;
+  }
+
+  get locale() {
+    return this.$i18n.locale;
+  }
+
+  get label(){
+    return this.$i18n.label();
+  }
+
+  get i18n() {
+    return this.$i18n;
+  }
+
+  get show() {
+    return this._show;
+  }
+
+  set show(show: boolean) {
+    if(show == this._show ){
+      return;
+    }
+    this._show = show;
+    if(show) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+    }
   }
 
   ngOnInit() {
     // FIXME release subscribe
     this.$navigation.search$().subscribe((keyword)=>{
-      if(keyword == 'favoris'||keyword == 'discount') {
+      if( ['favoris','discount','pinned'].includes(keyword)) {
         this.doClear();
-        this.doPreferred((keyword == 'discount'));
+        this.doPreferred((keyword));
         this.show = true;
         return;
       }
@@ -94,28 +131,9 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
-  get isAdminAndTheme() {
-    return this.user && this.user.isAdmin() && this.lastTheme;
-  }
-
-  get store() {
-    return this.$navigation.store;
-  }
-
-  get locale() {
-    return this.$i18n.locale;
-  }
-
-  get label(){
-    return this.$i18n.label();
-  }
-
-  get i18n() {
-    return this.$i18n;
-  }
 
   addToCard(product) {
-    const item = CartItem.fromProduct(product,this.store);    
+    const item = CartItem.fromProduct(product,this.store);
     this.$cart.add(item);
   }
 
@@ -126,9 +144,9 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
       const theme = this.themes.find(c => c.name == this.lastSearch);
       product.themeDel = theme.name;
       await this.$products.save(product).toPromise();
-  
+
       const idx = this.products.findIndex(p => p.sku === product.sku);
-      this.products.splice(idx, 1);  
+      this.products.splice(idx, 1);
       this.$cdr.markForCheck();
 
     }catch(e) {
@@ -142,7 +160,7 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   doClearScroll() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
+    this.show = false;
   }
 
   doClear() {
@@ -156,13 +174,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.selected.emit(slug);
     this.doClear();
     this.show = false;
-    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   doSearch(value: string) {
     const blur = !value;
     const tokens = value.split(' ').map(val => (val || '').length);
-    document.body.classList.add('mdc-dialog-scroll-lock');
     this.lastTheme = this.themes.find(c => c.name == value);
     //
     // on search open window
@@ -191,7 +207,6 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
         const name = (this.lastTheme||value == 'popular'||value == 'discount')? 'kng_action_theme':'kng_action_search';
         const params = {name,value:{value}};
         this.$metric.event(EnumMetrics.metric_custom,params);
-        console.log('---DBG custom',params.name,params.value);
 
 
         this.findGetNull = !products.length;
@@ -201,22 +216,31 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
         this.$cdr.markForCheck();
         setTimeout(() => {
           this.results.nativeElement.scrollTop = 0;
-        }, 0);        
+        }, 0);
       });
     }
   }
 
-  doPreferred(discountOnly?:boolean) {
+  doPreferred(label:string) {
     const options: any = {
-      discount: true,
       status: true,
       available: true,
       when : this.$cart.getCurrentShippingDay()
     };
 
-    if(!discountOnly) {
-      options.popular=true;
+    // discount
+    if(label == 'discount') {
+      options.discount = true;
     }
+    // pinned
+    else if(label == 'pinned') {
+      options.pinned = true;
+    }
+    // default to popular
+    else {
+      options.popular = true;
+    }
+
     //
     // case of multihub
     if (this.config && this.config.shared.hub) {
@@ -227,12 +251,12 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     if (this.group) {
       options.group = this.group;
     }
-    this.lastTheme = this.lastSearch = null;
-    
+    // this.lastTheme = this.lastSearch = null;
+    this.show = true;
+
     this.$products.select(options).subscribe((products: Product[]) => {
       this.findGetNull = !products.length;
       this.products = products.sort(this.sortByScore);
-      this.show = true;
       this.$cdr.markForCheck();
     });
 
@@ -242,17 +266,14 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.show = !this.show;
     if (this.show) {
       this.products = [];
-      document.body.classList.add('mdc-dialog-scroll-lock');
       // this.search.nativeElement.focus();
     } else {
       this.doClear();
-      document.body.classList.remove('mdc-dialog-scroll-lock');
     }
   }
 
   @HostListener('window:popstate', ['$event'])
   onPopState($event) {
-    console.log('---DBG popstate', $event);
     if(this.show){
       this.show = false;
       this.$cdr.markForCheck();

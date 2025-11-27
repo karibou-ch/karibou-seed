@@ -187,7 +187,7 @@
         .left{
           flex: 1;
           max-width: 48%;
-          @media (max-width: 767px) {
+          @media (max-width: 899px) {
             flex: 1 0 100%;
             max-width:100%;
             font-size:70%;
@@ -227,7 +227,7 @@
           padding: 20px;
           align-self: center;
           max-width: 45%;
-          @media (max-width: 767px) {
+          @media (max-width: 899px) {
             max-width:100%;
           }
         }
@@ -295,7 +295,7 @@
         padding: 20px;
         border: none;
         height: 250px;
-        @media  (max-width: 767px){
+        @media  (max-width: 899px){
           max-width: 100%;
           width: 100%;
           padding: 50px 4px;

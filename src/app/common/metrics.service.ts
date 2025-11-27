@@ -115,7 +115,6 @@ export class MetricsService {
         if (user && user.id) {
           // ✅ FIXED: Déduplication - éviter appel si même uid
           if (this.uid !== user.id) {
-            console.log('-- metrics.identitySet', user.id);
             this.isAdmin = user.isAdmin();
             return this.identitySet(user.id);
           }
