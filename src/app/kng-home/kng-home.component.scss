@@ -10,7 +10,7 @@ div.home-header{
   background-color: transparent!important;
   margin-top: 0px;
   margin-bottom: 0px;
-  @media (max-width: 767px){
+  @media (max-width: 899px){
     padding: 10px 10px;
     width: calc( 100% - 20px );
   }
@@ -120,7 +120,7 @@ div.home-header{
       .left{
         flex: 1;
         max-width: 48%;
-        @media (max-width: 767px) {
+        @media (max-width: 899px) {
           flex: 1 0 100%;
           max-width:100%;
           font-size:70%;
@@ -158,7 +158,7 @@ div.home-header{
         padding: 20px;
         align-self: center;
         max-width: 45%;
-        @media (max-width: 767px) {
+        @media (max-width: 899px) {
           max-width:100%;
         }
       }
@@ -190,6 +190,10 @@ div.home-header{
 }
 
 kng-calendar  {
+  @media (max-width: 899px) {
+    padding: 1rem;
+    width: calc(100% - 2rem)!important;
+  }
   .calendar-container{
     .calendar{
       background-color: var(--mdc-theme-appbar-light)!important;
@@ -197,19 +201,37 @@ kng-calendar  {
       flex:1;
     }
 
+    .calendar .list .element {
+      width: 45px;
+      height: 55px;
+    }
+
+
   }
+
+
 }
 
 .product-container,
 kng-nav-marketplace,
 kng-product-link,
 kng-product-swipe {
-  @media (max-width: 767px) { /* Mobile harmonisé */
-    padding: 10px 10px;
-    width: calc( 100% - 20px );
+  position: relative;
+  @media (max-width: 899px) { /* Mobile harmonisé */
+    padding: 1rem;
+    width: calc( 100% - 2rem );
   }
 }
 
+kng-product-swipe.boost{
+  background-color: var(--mdc-theme-secondary-light);
+  padding: 1rem;
+  width: calc(100% - 2rem);
+  @media (min-width: 899px) {
+    border-radius: 1rem;
+  }
+
+}
 kng-search.search-mobile,
 kng-search.home{
   margin: 20px 10px;
@@ -264,8 +286,7 @@ kng-product-swipe{
 
 .kng-boxed {
   a {
-    font-weight: 500;
-    font-size: 17px;
+    font-size: 1rem;
   }
 
   .label{
@@ -402,7 +423,7 @@ kng-product-swipe{
   flex-direction: column;
   gap:10px;
   padding-left: 5px;
-  @media (max-width: 767px) {
+  @media (max-width: 899px) {
     display: none;
   }
 
@@ -503,7 +524,7 @@ kng-product-swipe{
       background: #888;
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 899px) {
       -background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
     }
 
@@ -589,9 +610,9 @@ div.product-container{
   padding: 0;
   width: 100%;
   min-height: 30vh;
-  @media (max-width: 767px) {
+  @media (max-width: 899px) {
     padding: 0;
-    width: calc(100vw - 20px);
+    width: calc(100% - 2rem);
     margin-left: auto;
     margin-right: auto;
   }

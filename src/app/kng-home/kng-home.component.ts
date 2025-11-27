@@ -77,7 +77,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   pageOptions: any = {
     home: {
       maxcat: 7,
-      _home: true,
       popular: true,
       showMore: true
     }
@@ -523,7 +522,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.when = this.currentShippingDay.toISOString();
+    options.lastMinute = this.$cart.isCurrentShippingLastMinute();
     options.maxcat = this.isMobile? 5:options.maxcat;
     options.hub = this.$navigation.store;
 
@@ -533,8 +532,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       delete options.available;
       delete options.status;
     }
+    if(this.isMinimal||options.lastMinute){
+      delete options.popular;
+    }
 
-    options.popular = this.isMinimal? false :options.popular;
 
     this.$product.select(options).subscribe((products: Product[]) => {
       this.products = products.filter(product => product.categories && product.categories.name);
@@ -547,14 +548,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   }
 
-  onSetCurrentShippingDay({day, time}){
+  onSetCurrentShippingDay({day, time, lastMinute}){
     if(!day){
       return;
     }
     // ✅ MIGRATION: Utiliser CalendarService au lieu de config (FIXME résolu)
     const hours = time || this.$calendar.getDefaultTimeByDay(day, this.config.shared.hub);
 
-    this.$cart.setShippingDay(day,hours);
+    this.$cart.setShippingDay(day,hours,{ lastMinute });
   }
   //
   // catch click on innerHtml and apply navigate() behavior

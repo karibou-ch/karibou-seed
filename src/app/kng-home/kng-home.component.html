@@ -32,7 +32,7 @@
   <figure [innerHtml]="hub.header.message[locale]" ></figure>
 </div>
 <!-- CalENDAR -->
-<kng-calendar  [user]="user" [title]="theme.name" [hidden]="availableSearch" class="fit-content" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
+<kng-calendar  [user]="user" [title]="theme.name" [hidden]="availableSearch"  [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
 
 <!-- BUSINESS
@@ -41,11 +41,12 @@
 
 
 <!-- SELECTION -->
-<kng-product-swipe [user]="user" [hidden]="sortedCategories.length<5" mailchimp="true" [hub]="store" ></kng-product-swipe>
+<!-- <kng-product-swipe [user]="user" [hidden]="sortedCategories.length<5" mailchimp="true" [hub]="store" ></kng-product-swipe> -->
 
 
-<!-- DISCOUNT -->
-<kng-product-swipe *ngIf="!isMinimal&&!isMobile" [user]="user"  discount="true" [hub]="store" ></kng-product-swipe>
+<!-- PINNED (isMinimal for b2b-school)-->
+<kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user"  [boost]="true" [hub]="store" >
+</kng-product-swipe>
 
 
 
