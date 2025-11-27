@@ -1,0 +1,133 @@
+<div class="order-resume-block">
+
+  <!-- Section haut de page / résumé -->
+  <section
+    [class.deposit]="isCartDeposit"
+    [innerHtml]="config?.shared?.hub?.checkout?.resume?.[locale]">
+  </section>
+
+  <!-- Info frais de livraison groupée -->
+  <div class="bill grouped" *ngIf="hasShippingReductionMultipleOrder">
+    <div>
+      <i class="material-symbols-outlined black">info</i>&nbsp;{{ label.cart_info_shipping_group }}
+    </div>
+  </div>
+
+  <!-- Infos contrat (subscription uniquement) -->
+  <div class="bill border contract" *ngIf="isSubscription && hasUpdateContract">
+    <div class="label">
+      <span [innerHtml]="label.cart_info_contract_total"></span>
+    </div>
+    <div class="amount-light">
+      {{ contractTotal | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Sous-total -->
+  <div class="bill">
+    <div class="label">
+      <span [innerHtml]="label_cart_info_subtotal"></span>
+      &nbsp;<i
+        class="material-symbols-outlined gray"
+        (click)="doToggleFees = !doToggleFees"
+        >info</i
+      >
+    </div>
+    <div class="amount">
+      {{ itemsAmount | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Ligne subtotal fees (masquée par défaut) -->
+  <div class="bill border" hidden>
+    <div class="label">
+      <span [innerHtml]="label_cart_info_subtotal_fees"></span>
+    </div>
+    <div class="amount-light">
+      {{ currentFeesAmount | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Info complémentaire sur les frais -->
+  <div class="bill" *ngIf="doToggleFees">
+    <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
+  </div>
+
+  <!-- Frais de livraison (masqués si hasUpdateContract pour subscription) -->
+  <div class="bill" *ngIf="!hasUpdateContract || isCart">
+    <div class="label">
+      <span [innerHtml]="label.cart_info_shipping"></span>
+    </div>
+    <div class="amount">
+      {{ currentShippingFees | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Date de livraison -->
+  <div class="bill">
+    <span>
+      <b class="text-capitalize highlight">
+        <span [hidden]="isLastMinuteShipping">
+          {{ displayShippingDay | date: 'EEEE dd/M':'':locale }}
+        </span>
+        <span [hidden]="!isLastMinuteShipping" class="last-minute">{{ last_minute_label }}</span>
+      </b>
+      &nbsp;
+    </span>
+    <span class="highlight align-right">
+      <span class="bold">{{ currentShippingTime }}</span>
+    </span>
+  </div>
+
+  <!-- Réduction sur frais de livraison -->
+  <div
+    class="bill shipping-discount"
+    *ngIf="!isCartDeposit && (!hasUpdateContract || isCart)"
+  >
+    <div [innerHtml]="shippingDiscount"></div>
+  </div>
+
+  <!-- Total discount -->
+  <div class="bill" *ngIf="totalDiscount != 0">
+    <div class="label">
+      {{ label.cart_info_discount }}
+    </div>
+    <div class="amount">
+      -{{ totalDiscount | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Total général (PANIER ou SUBSCRIPTION) -->
+  <div class="bill total">
+    <div class="label">
+      {{ isCart ? label.cart_info_total :
+         (hasUpdateContract ? label.cart_info_total_subscription_update : label.cart_info_total_subscription) }}
+    </div>
+    <div class="amount">
+      {{ isCart ? (currentTotalMinusBalance | currency: 'CHF') : (currentTotalSubscription | currency: 'CHF') }}
+    </div>
+  </div>
+
+  <!-- Montant wallet / balance utilisateur (cart uniquement) -->
+  <div class="bill wallet" *ngIf="isCart">
+    <div class="label">
+      {{ label.cart_info_wallet }}
+    </div>
+    <div class="amount-light">
+      {{ currentTotalUserBalance * -1 | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Montant réservé (cart uniquement) -->
+  <div class="bill reserved" *ngIf="isCart">
+    <div class="label">
+      {{ label.cart_info_reserved }}
+      <span class="highlight">{{ data?.payment?.issuer }}</span>
+    </div>
+    <div class="amount-light">
+      {{ currentTotalMinusBalance * amountReserved | currency: 'CHF' }}
+    </div>
+  </div>
+
+</div>
+

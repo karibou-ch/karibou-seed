@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KngCommonModule } from '../common/common.module';
 import { KngCartItemsComponent } from './kng-cart-items/kng-cart-items.component';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
+import { KngCartInvoiceComponent } from './kng-cart-invoice/kng-cart-invoice.component';
 
 
 //
@@ -43,7 +44,8 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
   declarations: [
     KngCartComponent,
     KngCartItemsComponent,
-    KngCartCheckoutComponent
+    KngCartCheckoutComponent,
+    KngCartInvoiceComponent
   ]
 })
 export class KngCartModule { }
