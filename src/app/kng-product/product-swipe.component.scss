@@ -1,88 +1,71 @@
-
-kng-product-swipe{
-  min-height: 280px !important;
+kng-product-swipe {
+  min-height: 17.5rem;
   overflow: hidden;
   display: block;
-  margin: 20px 0px;
-  border-bottom: 1px solid #eee;
+  margin: 1.25rem auto;
+  border-bottom: 0.0625rem solid #eee;
+  padding: 1rem;
 
-  @media (max-width:599px) {
-    width: calc(100% - 20px );
-    margin: 15px 10px;
-    min-height: fit-content !important;
+  @media (max-width: 599px) {
+    width: calc(100% - 2rem)!important;
+    margin: 1rem auto;
+    min-height: fit-content;
     padding: 0;
   }
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--mdc-theme-secondary-dark);
     color: var(--mdc-theme-secondary-dark-text);
-
-    border-radius: 14px;
-    border-width:0;
+    border-radius: 0.875rem;
+    border: 0;
   }
 
 
-  .selected{
+  .selected {
     display: flex;
     flex-flow: column;
     -webkit-overflow-scrolling: touch;
-    height: auto;
-    section{
-      @media (max-width: 599px) {
-        display: none;
-      }
+
+    section {
       position: relative;
       width: 100%;
-      text-align:left;
-      margin-bottom: 20px;
-      .title{
-        .kng-chip{
+      text-align: left;
+      margin-bottom: 1.25rem;
+
+      .title {
+        .kng-chip {
           float: right;
-          .inlink{
+
+          .inlink {
             font-size: 1rem;
             font-weight: 500;
             color: #2f2fe4;
           }
         }
-
       }
-      h2,h3{
-        font-weight: 500;
+
+      h2 {
+        font-family: var(--mdc-theme-font);
+        font-weight: 600;
         color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
-        font-size: 1.4675rem;
-        margin-bottom: 5px;
-        margin-top:15px;
-        margin-left: 0;
-        @media (prefers-color-scheme: dark) {
-          color: var(--mdc-theme-primary-dark-text);
+        font-size: 1.75rem;
+        margin: 1rem 0 0.3125rem;
 
-        }
-
-      }
-      h3{
-        font-weight: 200;
-        font-size: 1.275rem;
-        color: #aaa;
-        text-shadow:1px 1px 0 white;
-        margin-top: -10px;
         @media (prefers-color-scheme: dark) {
           color: var(--mdc-theme-primary-dark-text);
         }
-
       }
     }
 
-
-    div.content{
-      margin-bottom:-15px;
+    div.content {
+      margin-bottom: -1rem;
       overflow: hidden;
       overflow-x: auto;
+
       &::-webkit-scrollbar {
         display: none;
       }
-
     }
-
   }
 }
 
