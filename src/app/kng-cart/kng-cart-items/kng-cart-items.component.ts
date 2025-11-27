@@ -232,12 +232,19 @@ export class KngCartItemsComponent implements OnInit {
     if(this.currentSubscription||!this.isReady) {
       return true;
     }
+
+    // ✅ FIXED: lastMinute est une exception valide (livraison aujourd'hui)
+    if (this.$cart.isCurrentShippingLastMinute()) {
+      return true;
+    }
+
     if(!currentDay || currentDay<now) {
       return false;
     }
+
     // ✅ MIGRATION: Utiliser CalendarService au lieu de config
     const week = this.$calendar.potentialShippingWeek(this.hub);
-    const available =week.some(day => day.getDay() == currentDay.getDay());
+    const available = week.some(day => day.getDay() == currentDay.getDay());
     return available;
   }
 
@@ -457,6 +464,12 @@ export class KngCartItemsComponent implements OnInit {
       return null;
     }
 
+    // ✅ FIXED: Ne pas afficher le message pour les livraisons lastMinute
+    // lastMinute est une exception qui permet de livrer aujourd'hui même si ce n'est pas un jour normal
+    if (this.$cart.isCurrentShippingLastMinute()) {
+      return null;
+    }
+
     return this.$calendar.getNoShippingMessage(
       this.hub,
       this.currentShippingDay,
@@ -547,7 +560,7 @@ export class KngCartItemsComponent implements OnInit {
   }
 
 
-  onSetCurrentShippingDay({day,time}) {
+  onSetCurrentShippingDay({day,time,lastMinute}) {
     if (!(day)) {
       return;
     }
@@ -555,7 +568,7 @@ export class KngCartItemsComponent implements OnInit {
 
     // ✅ MIGRATION: Utiliser CalendarService au lieu de config (FIXME résolu)
     time = time|| this.$calendar.getDefaultTimeByDay(day, this.hub);
-    this.$cart.setShippingDay(day,time);
+    this.$cart.setShippingDay(day,time,{ lastMinute });
     this.currentShippingDay = day;
   }
 

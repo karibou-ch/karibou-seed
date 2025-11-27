@@ -31,8 +31,8 @@
   <div class="list-item action-line border-bottom" [hidden]="!isReady">
     <button class="order" (click)="doCheckout()"
             [disabled]="!isCheckoutEnabled||hasOrderError">
-            {{cart_info_checkout_or_subscription}}
-            <span [hidden]="!showCartItems">, {{currentShippingDay|date:'EEE dd':'':locale}}</span>
+            {{cart_info_checkout_or_subscription}}&nbsp;
+            <span [hidden]="!showCartItems">: {{currentShippingDay|date:'EEEE dd':'':locale}}</span>
     </button>
 
 
