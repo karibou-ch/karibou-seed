@@ -26,6 +26,7 @@ body{
 @import 'kng-custom-mdc-admin-theme.scss';
 
 @import 'kng-theme.scss';
+@import 'kng-theme-ribbon.scss';
 @import 'kng-root.scss';
 @import 'kng-widgets.scss';
 @import 'kng-mdc.scss';
@@ -36,6 +37,7 @@ body{
   // 🧭 NAVIGATION - Hauteur navbar fixe
   --mdc-theme-top-bar: 70px;
 
+  --mdc-theme-font: "Gentium Plus";
 
   --mdc-theme-karibou-pink: #da1c5c;
   --mdc-theme-karibou-green: #62dd2a;
@@ -76,6 +78,15 @@ body{
     --mdc-theme-secondary-light:color-mix(in srgb, var(--mdc-theme-secondary) 30%, var(--mdc-theme-colormix));
     --mdc-theme-appbar-light:color-mix(in srgb, var(--mdc-theme-appbar) 30%, var(--mdc-theme-colormix));
   }
+
+  .theme-gradient {
+    background:
+      radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
+      radial-gradient(circle at top right, var(--mdc-theme-secondary-light) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom, var(--mdc-theme-secondary-light) 0%, transparent 60%);
+    background-color: var(--mdc-theme-appbar-light);
+  }
+
 
   /** theme colors
   //
@@ -125,6 +136,7 @@ body{
   */
 
 }
+
 
 
 .StripeElement {
