@@ -73,6 +73,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_subtotal_fees: '__FEES__ de Service',
       cart_info_shipping_when: 'Date de livraison',
       cart_info_shipping: 'Livraison 100% cycliste',
+      cart_info_shipping_lastminute: '⚡ Livraison aujourd\'hui',
       cart_info_shipping_group: 'Vous complétez une commande en cours',
       cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
       cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
@@ -93,7 +94,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount_info: 'Rabais commerçant',
       cart_discount: 'rabais quantité',
       cart_discount_title: 'rabais de ',
-      cart_checkout: 'Finaliser la commande',
+      cart_checkout: 'Finaliser pour',
       cart_subscription: 'Confirmer l\'abonnement',
       cart_subscription_title: 'Vérifier votre abonnement',
       cart_create_subscription: 'Créer votre abonnement',
@@ -115,7 +116,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_cg: 'J\'accepte les conditions générales de vente',
       cart_cg_middle:' et je confirme que ',
       cart_cg_18: 'j\'ai l\'âge légal pour l\'achat d\'alcool',
-      cart_order: 'Commander',
+      cart_order: 'Enregistrer la commande',
       cart_order_pending_twint: 'Le paiement TWINT est en cours de traitement',
       cart_order_unknownerror_twint: 'Erreur inconnue lors du paiement TWINT',
       cart_order_error_twint: 'Votre paiement TWINT est refusé',
@@ -138,6 +139,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_info_subtotal_fees:'Service fee  __FEES__ ',
       cart_info_shipping_when: 'Shipping date',
       cart_info_shipping: 'Delivery 100% ecological ',
+      cart_info_shipping_lastminute: '⚡ Delivery today',
       cart_info_shipping_group: 'You are close to complete an order in progress',
       cart_info_shipping_discount: 'From <b>_AMOUNT_</b> chf of purchase, you get delivery to your door for <b>_DISCOUNT_</b> !',
       cart_info_shipping_applied: 'You get a delivery discount!',
@@ -158,7 +160,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_discount: 'discount',
       cart_discount_info: 'Vendor delivery discount ',
       cart_discount_title: 'delivery discount ',
-      cart_checkout: 'Go to checkout',
+      cart_checkout: 'Checkout for',
       cart_subscription: 'Confirm Subscription',
       cart_subscription_title: 'Check your subscription',
       cart_create_subscription: 'Create your subscription',
@@ -497,7 +499,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // only items for this view!
     const ctx:CartItemsContext = {
       forSubscription:!this.currentCartView,
-      hub:this.currentHub
+      hub:this.currentHub,
+      lastMinute: this.$cart.isCurrentShippingLastMinute() // ✅ Filtre lastMinute
     }
     if(this.currentCartView) {
       ctx.onSubscription = false;
