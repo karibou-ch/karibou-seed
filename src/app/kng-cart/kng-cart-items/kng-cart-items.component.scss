@@ -35,7 +35,7 @@ kng-subscription-option{
         color: red;
         font-weight: 200;
       }
-      @media (max-width: 767px) {
+      @media (max-width: 899px) {
         max-width: 190px;
         font-size: 14px;
       }
@@ -88,9 +88,9 @@ kng-subscription-option{
 
   &.action-line {
     height: auto;
-    padding: 0px 14px 15px;
-    margin-bottom: 30px;
-    margin-top: 20px;
+    padding: 0px 1rem 1rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
     flex-flow:wrap;
   }
 
@@ -148,8 +148,8 @@ kng-subscription-option{
     color: var(--mdc-theme-karibou-pink);
   }
 
-  @media (max-width: 767px) {
-    padding-left: 5px;
+  @media (max-width: 899px) {
+    padding-left: 0.5rem;
   }
 
 }
@@ -159,9 +159,10 @@ kng-subscription-option{
   display: flex;
   position: relative;
   align-items: center;
+  gap: .5rem;
   justify-content: flex-start;
   height: 90px;
-  padding: 0 14px;
+  padding: 0 1.5rem;
   overflow: hidden;
   &.subscription-item{
     background: #eee;
@@ -262,7 +263,7 @@ kng-subscription-option{
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      @media (max-width: 767px) {
+      @media (max-width: 899px) {
         font-size: 90%;
       }
 
@@ -331,7 +332,7 @@ kng-subscription-option{
     font-size: 1rem;
     flex-wrap: nowrap;
     align-items: center;
-    @media (max-width: 767px) {
+    @media (max-width: 899px) {
       zoom: .85;
     }
 
@@ -424,7 +425,7 @@ kng-subscription-option{
     white-space: nowrap;
     display: flex;
     align-items: center;
-    @media (max-width: 767px) {
+    @media (max-width: 899px) {
       margin-right: auto;
       width: 100%;
       margin-top: 10px;
@@ -439,16 +440,14 @@ kng-subscription-option{
   button.order{
     cursor: pointer;
     border: 1px solid var(--mdc-theme-appbar-text);
-    border-radius: 8px;
-    padding: 4px 10px;
-    width: 42%;
-    max-width: 400px;
+    border-radius: .5rem;
+    padding: 4px 0;
+    width: 48%;
     margin-right: auto;
-    font-size: 17px;
-    height: 56px;
+    font-size: 1.125rem;
+    height: 4rem;
     font-weight: bold;
-    margin-left: 0;
-    @media (max-width: 767px) {
+    @media (max-width: 899px) {
       width: 100%;
     }
 
