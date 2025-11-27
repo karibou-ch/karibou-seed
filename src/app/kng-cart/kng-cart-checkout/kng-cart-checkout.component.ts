@@ -24,7 +24,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   private _config: Config;
   private _user: User;
   private _currentHub: Hub;
-  private _totalDiscount : number;
   private _items: CartItem[];
   private _updateItems:CartSubscriptionProductItem[];
   private _isReady: boolean;
@@ -44,16 +43,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   VERSION = pkgInfo.version;
   cgAccepted = false;
   cg18Accepted = false;
-  shipping;
   shippingNote: string;
-  shippingDiscount: string;
-  showInfoAmount: boolean;
-  showInfoFees: boolean;
-  requestIntent: string;
-  currentCart:any;
-  itemsAmount:number;
-  doToggleFees: boolean;
-  useCartSubscriptionView:boolean;
+  useCartSubscriptionView: boolean;
   subscriptionParams:CartSubscriptionParams
   subscriptionPlan:string;
   contract:CartSubscription;
@@ -133,17 +124,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this.i18n[this.locale];
   }
 
-  get label_cart_info_subtotal_fees(){
-    return this.i18n[this.locale].cart_info_subtotal_fees.replace('__FEES__',this.currentFeesName);
-  }
-  get label_cart_info_subtotal(){
-    return this.i18n[this.locale].cart_info_subtotal.replace('__FEES__',this.currentFeesName);
-  }
-
-  get label_payment_method() {
-    return this.currentPayment?.issuer;
-  }
-
   get glabel() {
     return this.$i18n.label();
   }
@@ -157,14 +137,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this._items;
   }
 
-  get contractTotal() {
-    if(!this.contract) {
-      return 0;
-    }
-    if(this._updateItems.length) {
-      return this._updateItems.reduce((sum,item)=>(item.fees*item.quantity)+sum,0);
-    }
-    return this.contract.items.reduce((sum,item)=>(item.fees*item.quantity)+sum,0);
+  get updateItems() {
+    return this._updateItems;
   }
 
   get currentAddress() {
@@ -269,16 +243,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this.currentPaymentMethod();
   }
 
-  get currentTotalUserBalance() {
-    const userBalance = this._user.balance>0? this._user.balance:0;
-    return Math.min(this.currentTotal(), userBalance);
-  }
-
-  get currentTotalMinusBalance(){
-    const userBalance = this._user.balance>0? this._user.balance:0;
-    return Math.max(this.currentTotal() - userBalance, 0);
-  }
-
   get subscriptionNextShippingDay() {
     // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
     const oneWeek = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 7 });
@@ -288,10 +252,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     // Cela peut arriver après la correction de kng-subscription-option si l'utilisateur
     // a une ancienne sélection incompatible
     return foundDate || oneWeek[0] || this.$calendar.nextShippingDay(this.hub, this._user);
-  }
-
-  get currentTotalSubscription(){
-    return this.currentTotal();
   }
 
   get hasUpdateContract() {
@@ -324,17 +284,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return (['requires_payment_method','requires_action'].indexOf(this.contract.latestPaymentIntent.status)>-1);
   }
 
-  get currentFeesName() {
-    if(!this._currentHub){
-      return '0%'
-    }
-    //
-    // adding gateway fees
-    const gateway = this.$cart.getCurrentGateway();
-    const fees = this._currentHub.serviceFees + gateway.fees;
-    return Math.round(fees*100) + '%';
-  }
-
   get currentPaymentIcon() {
     const method = this.currentPaymentMethod();
     if(!method || !method.issuer){
@@ -342,52 +291,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     }
     return this.issuer[method.issuer].img;
   }
-
-
-  get currentFeesAmount() {
-    if(!this._currentHub){
-      return 0;
-    }
-    // ✅ SIMPLE: Utiliser context centralisé
-    return this.currentServiceFees();
-  }
-
-
-  get currentShippingFees() {
-    if(!this._currentHub){
-      return 0;
-    }
-
-    const address = this.currentShipping();
-    // ✅ SIMPLE: Utiliser context centralisé avec address dynamique
-    const ctx = { ...this.createCartContext(), address };
-    return this.$cart.computeShippingFees(ctx);
-  }
-
-  get displayShippingDay() {
-    // ✅ FIXED: Use subscription date for contracts, currentShippingDay for normal orders
-    return this.useCartSubscriptionView
-      ? this.subscriptionNextShippingDay
-      : this.currentShippingDay();
-  }
-
-  get currentShippingTime() {
-    //
-    // ✅ FIXED: Use subscription date for contracts, currentShippingDay for normal orders
-    const shippingDay = this.useCartSubscriptionView
-      ? this.subscriptionNextShippingDay
-      : this.currentShippingDay();
-
-    //
-    // ✅ FIXED: Use CalendarService for time logic instead of hardcoded values
-    const specialHours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || parseInt(this.shippingTime);
-    const shippingHours = (this.isCartDeposit() ? '0' : specialHours.toString());
-
-    return this.config.shared.hub.shippingtimes[shippingHours];
-
-  }
-
-
 
   ngOnInit(): void {
     // ensure state
@@ -441,36 +344,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     });
 
   }
-
-  buildDiscountLabel() {
-    // ✅ SIMPLE: Utiliser context centralisé avec address dynamique
-    const ctx = { ...this.createCartContext(), address: this.currentShipping() };
-    const {price, status} = this.$cart.estimateShippingFeesWithoutReduction(ctx);
-    const {multiple, discountA,discountB, deposit} = this.$cart.hasShippingReduction(ctx);
-
-    const label = this.i18n[this.locale]['cart_info_shipping_discount'];
-
-    //
-    // grouped discount or deposit
-    if(multiple || deposit){
-      return  this.shippingDiscount = '';
-    }
-
-    //
-    // Maximum discount
-    if(discountB) {
-      return this.shippingDiscount = this.i18n[this.locale]['cart_info_shipping_applied'];
-    //
-    // Minimum discount
-    } else if (discountA) {
-      return this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountB).replace('_DISCOUNT_',Math.max(price - this.shipping.priceB,0).toFixed(2));
-    //
-    // Missing amount
-    } else {
-      return  this.shippingDiscount = label.replace('_AMOUNT_',this.shipping.discountA).replace('_DISCOUNT_',Math.max(price - this.shipping.priceA,0).toFixed(2));
-    }
-  }
-
 
   computeShippingByAddress(address: UserAddress) {
     // ✅ SIMPLE: Utiliser context centralisé avec address paramétrisée
@@ -548,10 +421,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         this.open = false;
       }
     });
-  }
-
-  getTotalDiscount() {
-    return this._totalDiscount;
   }
 
   getStaticMap(address: UserAddress) {
@@ -773,14 +642,15 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   doOrder(intent?) {
     //
-    // prepare shipping
-    // ✅ FIXED: Use CalendarService for hour selection instead of hardcoded values
-    const defaultHours = this.$cart.getCurrentShippingTime();
+    // prepare shipping (simplifié)
     const shippingDay = this.currentShippingDay();
-    const specialHours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || 16;
-    const shippingHours = (this.isCartDeposit() ? '0' : specialHours.toString());
+    const hours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || 16;
+    const hoursValue = this.isCartDeposit() ? 0 : hours;
     const address = this.currentShipping();
-    const shipping = new ShippingAddress(address, shippingDay, shippingHours);
+    const shipping = new ShippingAddress(address, shippingDay, hoursValue);
+
+    // ✅ Flag lastMinute simple
+    shipping.lastMinute = this.$cart.isCurrentShippingLastMinute();
 
     //needed from backend
     //paymentData && paymentData.oid && paymentData.intent_id
@@ -993,7 +863,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._currentHub = checkoutCtx.hub;
     this._items = checkoutCtx.items;
     this._updateItems = checkoutCtx.updated || [];
-    this._totalDiscount = checkoutCtx.totalDiscount;
     this._user = checkoutCtx.user;
     this.open = true;
     this.errorMessage = null;
@@ -1035,16 +904,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         this.setShippingAddress(address);
       }
     }
-
-    //
-    // FIXME we provide only one shipping time!
-    this.shipping = this.config.shared.shipping;
-
-    // ✅ SIMPLE: Utiliser context centralisé
-    const ctx = this.createCartContext();
-    this.itemsAmount = this.$cart.subTotal(ctx);
-
-    this.buildDiscountLabel();
 
     //
     // Metric ORDER

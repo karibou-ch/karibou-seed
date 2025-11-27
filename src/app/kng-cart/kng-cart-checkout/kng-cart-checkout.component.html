@@ -1,21 +1,21 @@
 <!-- NAVIGATION  -->
-<div class="kng-drawer" [class.kng-drawer-open]="open" >
+<div class="kng-checkout-drawer" [class.kng-drawer-open]="open">
 
   <!-- brand -->
-  <div class="k-brand ">
+  <div class="k-brand">
     <b>v{{VERSION}}-{{iOS||'n'}}</b>
   </div>
 
-  <button class="close " (click)="open = false">
-    <span class="size-large material-symbols-outlined" >close</span>
+  <button class="close" (click)="open = false">
+    <span class="size-large material-symbols-outlined">close</span>
   </button>
 
   <!-- CHECKOUT-->
   <div class="checkout" *ngIf="isReady">
     <div class="cart-container">
       <!-- PAYMENT-->
-      <div class="order-address " [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&user.isReady() && isOpen()">
-        <section hidden  [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
+      <div class="order-address" [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&user.isReady() && isOpen()">
+        <section hidden [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
 
 
         <!-- FIXME hide wallet method -->
@@ -39,25 +39,25 @@
           <div class="payment {{payment.issuer}}" *ngFor="let payment of userPayments"
             [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
             (click)="setPaymentMethod(payment)">
-            <label class=""><input type="checkbox" [checked]="currentPayment && payment.alias == currentPayment.alias"> </label>
+            <label><input type="checkbox" [checked]="currentPayment && payment.alias == currentPayment.alias"></label>
             <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
             <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>
           </div>
 
           <!-- MANAGE PAYMENTS -->
-          <div class="profile-action"  [hidden]="selectPaymentIsDone && currentPayment || !userPaymentsCard.length" [routerLink]="['./user/login-or-payment']">
+          <div class="profile-action" [hidden]="selectPaymentIsDone && currentPayment || !userPaymentsCard.length" [routerLink]="['./user/login-or-payment']">
             <div class="button">
               <span class="material-symbols-outlined black">add_box</span>  {{glabel.user_payment_add}}
             </div>
           </div>
         </section>
 
-        <kng-wallet  [user]="user" hidden></kng-wallet>
+        <kng-wallet [user]="user" hidden></kng-wallet>
       </div>
 
       <!-- ADDRESS IFF isAuth()-->
-      <div class="order-address " [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!user.isReady()||!isOpen()">
-        <section class="address-title"  [innerHtml]="config?.shared.hub.checkout.address[locale]" ></section>
+      <div class="order-address" [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!user.isReady()||!isOpen()">
+        <section class="address-title" [innerHtml]="config?.shared.hub.checkout.address[locale]"></section>
 
         <!-- USER ADDRESS -->
         <section class="addresses">
@@ -65,7 +65,7 @@
               (click)="selectAddressIsDone=!selectAddressIsDone"
               [class.on-selection]="!selectAddressIsDone"
               [hidden]="!currentShipping()||!currentAddress.streetAdress">
-              <label  [hidden]="!selectAddressIsDone"> Changer </label>
+              <label [hidden]="!selectAddressIsDone">Changer</label>
 
               <div class="name" [class.deposit]="currentAddressIsDeposit">{{currentAddress.name}}</div>
               <div class="street text-overflow">{{currentAddress.streetAdress}} / {{currentAddress.postalCode}}</div>
@@ -73,24 +73,24 @@
               <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
           </div>
           <!-- INLINE NEW ADDRESS IN FIRST PLACE -->
-          <div class=" address-new" *ngIf="!userAddresses.length && !selectAddressIsDone">
+          <div class="address-new" *ngIf="!userAddresses.length && !selectAddressIsDone">
             <kng-address [phone]="userPhone" [title]="glabel.user_shipping_title" [config]="config" (updated)="onAddressSave($event)"></kng-address>
           </div>
 
           <!-- USER ADDRESS -->
           <div class="address" *ngFor="let address of userAddresses"
               (click)="setShippingAddress(address)" [hidden]="selectAddressIsDone && currentAddress.streetAdress">
-              <label class=""><input type="checkbox" [checked]="isSelectedAddress(address)"> </label>
+              <label><input type="checkbox" [checked]="isSelectedAddress(address)"></label>
               <div class="name">{{address.name}}</div>
               <div class="street text-overflow">{{address.streetAdress}} / {{address.postalCode}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>
               <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
           </div>
           <!-- DEPOSIT ADDRESS -->
-          <div class="address deposit"  *ngFor="let address of getDepositAddress()"
+          <div class="address deposit" *ngFor="let address of getDepositAddress()"
               [hidden]="selectAddressIsDone && currentAddress.streetAdress || !address.active || useCartSubscriptionView"
-              (click)="setShippingAddress(address)" >
-              <label class=""><input type="checkbox" [checked]="isSelectedAddress(address)"> </label>
+              (click)="setShippingAddress(address)">
+              <label><input type="checkbox" [checked]="isSelectedAddress(address)"></label>
               <div class="name collect">{{address.name}}</div>
               <div class="street text-overflow">{{address.streetAdress}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{label.cart_deposit}}</div>
@@ -98,8 +98,8 @@
           </div>
 
           <!-- MANAGE ADDRESSES -->
-          <div class="profile-action"  [hidden]="selectAddressIsDone && currentAddress.streetAdress || !userAddresses.length">
-            <button class="" [routerLink]="['./user/login-or-address']" >
+          <div class="profile-action" [hidden]="selectAddressIsDone && currentAddress.streetAdress || !userAddresses.length">
+            <button [routerLink]="['./user/login-or-address']">
               <span class="material-symbols-outlined black">add_box</span> {{glabel.user_address_add}}
             </button>
           </div>
@@ -125,19 +125,17 @@
 
       <div class="order-address">
         <!-- Info sur le montant (exclusif panier) -->
-        <div class="block-info  info-amount">
-          <div class="info"> 📌
+        <div class="block-info info-amount">
+          <div class="info">📌
             {{ label.cart_amount_1 }}
             {{ label.cart_amount_2 }}
           </div>
         </div>
 
-
         <!-- INFO HELP MOBILE -->
-        <div class="bill help ">
+        <div class="bill help">
           <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
         </div>
-
 
       </div>
     </div>
@@ -145,9 +143,21 @@
       <!-- RESUME -->
       <!-- RESUME subscription or simple order -->
       <div class="order-resume" *ngIf="isOpen && !hasPendingSubscription">
-        <ng-container
-          *ngTemplateOutlet="!useCartSubscriptionView ? templateCartItems : templateSubscriptionItems">
-        </ng-container>
+        <kng-cart-invoice
+          [type]="useCartSubscriptionView ? 'subscription' : 'cart'"
+          [user]="user"
+          [data]="{
+            items: items,
+            address: currentAddress,
+            payment: currentPayment,
+            contract: contract,
+            updateItems: updateItems,
+            subscriptionParams: subscriptionParams
+          }"
+          [config]="config"
+          [hub]="hub"
+          [i18n]="i18n">
+        </kng-cart-invoice>
 
         <!-- BLOCK DE RIGHT -->
         <div class="order-resume-block border-left">
@@ -185,7 +195,6 @@
               <button class="default" [disabled]="isFinalizeDisabled"  (click)="doOrderRouting()" >
                 <div>
                   <b>{{label.cart_order}}</b>
-                  <img [src]="currentPaymentIcon" />
                   <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>
 
                 </div>
@@ -220,230 +229,3 @@
     </div>
   </div>
 </div>
-
-
-
-<!-- Template pour le PANIER -->
-<ng-template #templateCartItems>
-  <div class="order-resume-block">
-
-    <!-- Section haut de page / résumé (réservé au panier) -->
-    <!-- deposit is hidding inner paragraph  -->
-    <section
-      [class.deposit]="isCartDeposit()"
-      [innerHtml]="config?.shared.hub.checkout.resume[locale]">
-    </section>
-
-    <!-- Info frais de livraison groupée (spécifique au panier) -->
-    <div class="bill grouped" *ngIf="hasShippingReductionMultipleOrder()">
-      <div>
-        <i class="material-symbols-outlined black">info</i>&nbsp;{{ label.cart_info_shipping_group }}
-      </div>
-    </div>
-
-    <!-- Sous-total -->
-    <div class="bill">
-      <div class="label">
-        <span [innerHtml]="label_cart_info_subtotal"></span>
-        &nbsp;<i
-          class="material-symbols-outlined gray"
-          (click)="doToggleFees = !doToggleFees"
-          >info</i
-        >
-      </div>
-      <div class="amount">
-        {{ itemsAmount | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Ligne (subtotal fees) masquée par défaut -->
-    <div class="bill border" hidden>
-      <div class="label">
-        <span [innerHtml]="label_cart_info_subtotal_fees"></span>
-      </div>
-      <div class="amount-light">
-        {{ currentFeesAmount | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Info complémentaire sur les frais -->
-    <div class="bill" *ngIf="doToggleFees">
-      <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
-    </div>
-
-    <!-- Frais de livraison -->
-    <div class="bill">
-      <div class="label">
-        <span [innerHtml]="label.cart_info_shipping"></span>
-      </div>
-      <div class="amount">
-        {{ currentShippingFees | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Date de livraison -->
-    <div class="bill">
-      <span>
-        <b class="text-capitalize highlight">{{ displayShippingDay | date: 'EEEE dd/M':'':locale }}</b>
-        &nbsp;
-      </span>
-      <span class="highlight align-right">
-        <span class="bold">{{ currentShippingTime }}</span>
-      </span>
-    </div>
-
-    <!-- Réduction sur frais de livraison (si pas de souscription ni dépôt) -->
-    <div class="bill shipping-discount" *ngIf="!isCartDeposit()">
-      <div [innerHtml]="shippingDiscount"></div>
-    </div>
-
-    <!-- Total discount (pour le panier) -->
-    <div class="bill" *ngIf="getTotalDiscount() != 0">
-      <div class="label">
-        {{ label.cart_info_discount }}
-      </div>
-      <div class="amount">
-        -{{ getTotalDiscount() | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Total général (PANIER) -->
-    <div class="bill total">
-      <div class="label">
-        {{ label.cart_info_total }}
-      </div>
-      <div class="amount">
-        {{ currentTotalMinusBalance | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Montant wallet / balance utilisateur -->
-    <div class="bill wallet">
-      <div class="label">
-        {{ label.cart_info_wallet }}
-      </div>
-      <div class="amount-light">
-        {{ currentTotalUserBalance * -1 | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Montant réservé -->
-    <div class="bill reserved">
-      <div class="label">
-        {{ label.cart_info_reserved }}
-        <span class="highlight">{{ currentPayment?.issuer }}</span>
-      </div>
-      <div class="amount-light">
-        {{ currentTotalMinusBalance * amountReserved | currency: 'CHF' }}
-      </div>
-    </div>
-
-  </div>
-</ng-template>
-
-<!-- Template pour la SOUSCRIPTION -->
-<ng-template #templateSubscriptionItems>
-  <div class="order-resume-block">
-    <!-- TITLE -->
-    <section
-      [innerHtml]="config?.shared.hub.checkout.resume[locale]">
-    </section>
-
-    <!-- Info frais de livraison groupée -->
-    <div class="bill grouped" *ngIf="hasShippingReductionMultipleOrder()">
-      <div>
-        <i class="material-symbols-outlined black">info</i>&nbsp;{{ label.cart_info_shipping_group }}
-      </div>
-    </div>
-
-    <!-- Infos quand on met à jour un contrat -->
-    <div class="bill border contract" *ngIf="hasUpdateContract">
-      <div class="label">
-        <span [innerHtml]="label.cart_info_contract_total"></span>
-      </div>
-      <div class="amount-light">
-        {{ contractTotal | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Sous-total -->
-    <div class="bill">
-      <div class="label">
-        <span [innerHtml]="label_cart_info_subtotal"></span>
-        &nbsp;<i
-          class="material-symbols-outlined gray"
-          (click)="doToggleFees = !doToggleFees"
-          >info</i
-        >
-      </div>
-      <div class="amount">
-        {{ itemsAmount | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <div class="bill border" hidden>
-      <div class="label">
-        <span [innerHtml]="label_cart_info_subtotal_fees"></span>
-      </div>
-      <div class="amount-light">
-        {{ currentFeesAmount | currency: 'CHF' }}
-      </div>
-    </div>
-    <div class="bill" *ngIf="doToggleFees">
-      <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
-    </div>
-
-    <!-- Frais de livraison masqués si hasUpdateContract est true -->
-    <div class="bill" *ngIf="!hasUpdateContract">
-      <div class="label">
-        <span [innerHtml]="label.cart_info_shipping"></span>
-      </div>
-      <div class="amount">
-        {{ currentShippingFees | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Date de livraison -->
-    <div class="bill">
-      <span>
-        <b class="text-capitalize highlight">{{ displayShippingDay | date: 'EEEE dd/M':'':locale }}</b>
-        &nbsp;
-      </span>
-      <span class="highlight align-right">
-        <span class="bold">{{ currentShippingTime }}</span>
-      </span>
-    </div>
-
-    <!-- Réduction sur frais de livraison (cachée si hasUpdateContract) -->
-    <div
-      class="bill shipping-discount"
-      *ngIf="!isCartDeposit() && !hasUpdateContract"
-    >
-      <div [innerHtml]="shippingDiscount"></div>
-    </div>
-
-    <!-- Remise éventuelle -->
-    <div class="bill" *ngIf="getTotalDiscount() != 0">
-      <div class="label">
-        {{ label.cart_info_discount }}
-      </div>
-      <div class="amount">
-        -{{ getTotalDiscount() | currency: 'CHF' }}
-      </div>
-    </div>
-
-    <!-- Total souscription -->
-    <div class="bill total">
-      <div class="label">
-        {{ hasUpdateContract
-            ? label.cart_info_total_subscription_update
-            : label.cart_info_total_subscription
-        }}
-      </div>
-      <div class="amount">
-        {{ currentTotalSubscription | currency: 'CHF' }}
-      </div>
-    </div>
-
-  </div>
-</ng-template>
