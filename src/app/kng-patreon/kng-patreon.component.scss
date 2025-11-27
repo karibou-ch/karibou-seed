@@ -76,7 +76,7 @@
       }
 
       .banner{
-        font-family: "Gentium Plus";
+        font-family: var(--mdc-theme-font);
         position: relative;
         background: #f6f6f6;
         border-radius: 15px;
@@ -214,7 +214,7 @@
   background-image: linear-gradient(45deg,#fff 90%,#fff,#fff,var(--mdc-theme-appbar-light));
   height: 100%;
   .welcome{
-    font-family: 'Gentium Plus';
+    font-family: var(--mdc-theme-font);
     padding-top: 20px;
     display: flex;
     flex-wrap: wrap;

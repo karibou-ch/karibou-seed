@@ -110,7 +110,7 @@ button.CTA {
     font-weight: 500;
   }
   .welcome{
-    font-family: 'Gentium Plus';
+    font-family: var(--mdc-theme-font);
     padding-top: 20px;
     padding-bottom: 50px;
     display: flex;
@@ -299,7 +299,7 @@ button.CTA {
       line-height: 32px;
       font-weight: 400;
       color: #666;
-      font-family: 'Gentium Plus';
+      font-family: var(--mdc-theme-font);
 
     }
     .actions{
@@ -315,7 +315,7 @@ button.CTA {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    @media (min-width: 767px) {
+    @media (min-width: 899px) {
       margin: 10px auto;
       max-width: 1160px;
       overflow-y: auto;
@@ -340,7 +340,7 @@ button.CTA {
     text-align: center;
     padding: 10px;
     width: 100%;
-    font-family: 'Gentium Plus';
+    font-family: var(--mdc-theme-font);
 
   }
   .faq-box{

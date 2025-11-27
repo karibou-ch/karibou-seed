@@ -19,7 +19,7 @@
     background-color: rgba(0, 0, 0, 0.57);
   }
 
-  @media (max-width: 767px) { /* Mobile */
+  @media (max-width: 899px) { /* Ipad */
     background: white;
   }
 
@@ -122,7 +122,7 @@
 
     .banner {
       position: relative;
-      font-family: 'Gentium Plus';
+      font-family: var(--mdc-theme-font);
 
       min-height: 120px;
       border-radius: 15px;
@@ -188,7 +188,7 @@
       transition: all .5s;
       z-index: 1;
 
-      @media (max-width: 767px) {
+      @media (max-width: 899px) {
         top:0px
       }
 
@@ -474,7 +474,7 @@ kng-signup{
     justify-content: flex-start!important;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 899px) {
     width: calc(100% - 10px);
   }
 
@@ -510,6 +510,6 @@ kng-signup{
 
 // /* Tablet
 // ------------------------- */
-// @media (max-width: 767px) {
+// @media (max-width: 899px) {
 
 // }
