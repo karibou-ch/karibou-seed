@@ -24,6 +24,9 @@ export class KngInvoiceComponent implements OnInit {
 
   headerImg = '/assets/img/k-puce-v.png';
   headerImgB64 ='';
+
+  //
+  //
   creditor = {
     name: "Karibou.ch SA",
     address: "5 ch. du 23-Aout",

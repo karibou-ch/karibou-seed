@@ -79,14 +79,14 @@ export class KngNavCalendarComponent implements OnInit,OnDestroy {
     this.$i18n.locale = lang;
   }
 
-  doSetCurrentShippingDay({day, time}) {
+  doSetCurrentShippingDay({day, time, lastMinute}) {
     if (!day || !this.isDayAvailable(day)) {
       return;
     }
     // this.dialogRef.close(day);
     this.currentShippingDay=day;
     this.open = false;
-    this.updated.emit({day, time});
+    this.updated.emit({day, time, lastMinute});
   }
 
   isDayAvailable(day: Date) {
