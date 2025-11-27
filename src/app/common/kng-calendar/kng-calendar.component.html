@@ -19,6 +19,13 @@
             <!-- FIXME: day can be undefined -->
             <div class="ei_Title">{{day|date:'EEE d':'':locale}}</div>
         </div>
+        <div class="element last-minute"
+             *ngIf="lastMinuteOption"
+             [class.selected]="isLastMinuteSelected"
+             (click)="selectLastMinute()">
+          <div class="ei_Title" [innerHtml]="i18n.lastMinuteLabel"></div>
+          <div class="ei_Copy">🗲{{ lastMinuteTime }}h</div>
+        </div>
       </div>
     </div>
 

@@ -2,7 +2,6 @@ import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@an
 import { Hub, User, UserService } from 'kng2-core';
 import { CartService, Config, LoaderService, Order, CalendarService } from 'kng2-core';
 import { i18n } from '../i18n.service';
-import { title } from 'process';
 
 @Component({
   selector: 'kng-calendar',
@@ -12,6 +11,14 @@ import { title } from 'process';
 export class KngCalendarComponent implements OnInit {
   private _minimal:boolean;
 
+  private _i18n = {
+    'fr': {
+      'lastMinuteLabel': "Livré<br/>Aujourd'hui"
+    },
+    'en': {
+      'lastMinuteLabel': 'Delivered<br/>Today'
+    }
+  }
 
   @Input() user: User;
   @Input() title: string;
@@ -32,6 +39,8 @@ export class KngCalendarComponent implements OnInit {
   currentLimit: number;
   premiumLimit: number;
   isPremium:boolean;
+  lastMinuteOption: { when: Date; hours: number } | null = null;
+  isLastMinuteSelected = false;
 
   currentShippingDay: Date;
   currentShippingTime: number;
@@ -83,6 +92,36 @@ export class KngCalendarComponent implements OnInit {
     return this.title || this.currentHub?.siteName[this.locale];
   }
 
+  get minimal() {
+    return this._minimal;
+  }
+
+
+  get i18n() {
+    return this._i18n[this.locale];
+  }
+
+
+
+  get label() {
+    return this.$i18n.label();
+  }
+
+  get label_switch_store() {
+    return (this.currentHub.weekdays.length == 3)?this.label.nav_store_sublong:this.label.nav_store_subshort;
+  }
+
+  get locale() {
+    return this.$i18n.locale;
+  }
+
+  get pendingOrderShipping() {
+    return this.pendingOrder && this.pendingOrder.shipping.when;
+  }
+
+  get lastMinuteTime() {
+    return this.currentHub?.acceptLastMinuteOrder || 0;
+  }
 
   ngOnInit(): void {
 
@@ -93,9 +132,12 @@ export class KngCalendarComponent implements OnInit {
       }
 
       if(emit.state &&  this.config) {
-        this.currentShippingDay = this.$cart.getCurrentShippingDay();
-        this.currentShippingTime = this.$cart.getCurrentShippingTime();
-        this.updated.emit({day: this.currentShippingDay, time: this.currentShippingTime});
+        this.refreshCurrentSelection();
+        this.updated.emit({
+          day: this.currentShippingDay,
+          time: this.currentShippingTime,
+          lastMinute: this.isLastMinuteSelected
+        });
       }
       if(!emit.config) {
         return;
@@ -151,32 +193,13 @@ export class KngCalendarComponent implements OnInit {
       if(!this.isDayAvailable(this.currentWeek[0])){
         this.currentWeek.shift();
       }
+      this.updateLastMinuteAvailability();
     })
   }
 
   ngOnChanges()  {
     this.pendingOrder = this.$cart.hasPendingOrder();
 
-  }
-
-  get minimal() {
-    return this._minimal;
-  }
-
-  get label() {
-    return this.$i18n.label();
-  }
-
-  get label_switch_store() {
-    return (this.currentHub.weekdays.length == 3)?this.label.nav_store_sublong:this.label.nav_store_subshort;
-  }
-
-  get locale() {
-    return this.$i18n.locale;
-  }
-
-  get pendingOrderShipping() {
-    return this.pendingOrder && this.pendingOrder.shipping.when;
   }
 
   ngAfterViewInit() {
@@ -224,6 +247,42 @@ export class KngCalendarComponent implements OnInit {
 
   getShippingDays() {
     return this.config.shared.shippingweek;
+  }
+
+  private refreshCurrentSelection() {
+    this.currentShippingDay = this.$cart.getCurrentShippingDay();
+    this.currentShippingTime = this.$cart.getCurrentShippingTime();
+    this.isLastMinuteSelected = this.$cart.isCurrentShippingLastMinute();
+  }
+
+  private updateLastMinuteAvailability() {
+    try {
+      const availability = this.$calendar.isLastMinuteAvailable(this.currentHub, { now: new Date() });
+      this.lastMinuteOption = (availability && availability.available) ? {
+        when: availability.when,
+        hours: availability.hours || 16
+      } : null;
+    } catch (err) {
+      this.lastMinuteOption = null;
+    }
+  }
+
+
+  selectLastMinute() {
+    if (!this.lastMinuteOption) {
+      return;
+    }
+    try {
+      this.$cart.selectLastMinuteShipping();
+      this.refreshCurrentSelection();
+      this.updated.emit({
+        day: this.currentShippingDay,
+        time: this.currentShippingTime,
+        lastMinute: true
+      });
+    } catch (err) {
+      console.warn('Last-minute selection failed:', err?.message || err);
+    }
   }
 
 }

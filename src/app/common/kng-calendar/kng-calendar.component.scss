@@ -1,47 +1,19 @@
 :host {
 
-  margin: 0 10px;
-  margin-bottom: 50px;
-  width: calc( 100%  - 30px );
+  margin:auto;
+  width: 100%;
+  height: 100%;
+  display: block;
 
-  &.minimal,
-  &.fit-content{
-    margin: 10px 0;
-    width: 100% !important;
-    max-width: 420px; /* Corrigé depuis 360px pour éviter le bug layout à 421px/422px */
-    .calendar-container{
-      font-size: 15px;
-      padding: 0 0px;
-      max-width: calc(100% - 0px);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      .calendar {
-
-      }
-      .calendar .list .element {
-        width: 45px;
-        height: 55px;
-      }
-    }
-  }
 }
 .calendar-container{
   width: 100%;
-  padding: 5px;
-  width: calc(100% - 20px);
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
 
-  @media (min-width:1024px) {
-    width: 940px;
-    margin-left: 0px;
-  }
-  @media (max-width:599px) {
-    padding: 0 10px!important;
-    .calendar,.switch-hub{
-      width: calc(100% - 20px)!important;
-    }
-  }
   h2{
     width: 100%;
     font-weight: 600;
@@ -69,9 +41,9 @@
     border-radius: 1rem;
     background-color: var(--mdc-theme-appbar-light) !important;
     padding: 0.5rem;
-    flex: 1 1 40%;
-    margin: auto 4px;
-    @media (max-width: 767px) {
+    flex: 1 1 calc(50% - 1rem);
+    margin: auto;
+    @media (max-width: 899px) {
       flex: 1 1 100%;
     }
 
@@ -83,7 +55,7 @@
       display: flex;
       flex-wrap: nowrap;
       gap:3px;
-      width: fit-content;
+      width: 100%;
 
       .element{
         margin: 0px;
@@ -102,6 +74,26 @@
         flex-flow: column;
         text-align: center;
         cursor: pointer;
+        &.last-minute{
+          width: auto;
+          min-width: 4rem;
+          padding: 0.125rem;
+          margin-left: auto;
+          margin-right: 0;
+          border-radius: 0.5rem;
+          .ei_Title{
+            padding: 0;
+            margin-top: .1rem;
+            margin-bottom: 0;
+            line-height: 1rem;
+            color: var(--mdc-theme-primary);
+          }
+          .ei_Copy{
+            font-size: 1rem;
+            font-weight: 600;
+          }
+        }
+
         &.disabled {
           .ei_Title{
             color: #333;
@@ -112,10 +104,13 @@
         }
 
         &.selected{
-          background-color: var(--mdc-theme-primary);
+          background-color: var(--mdc-theme-secondary);
           .ei_Title{
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--mdc-theme-primary-text);
+          }
+          .ei_Copy{
             color: var(--mdc-theme-primary-text);
           }
         }
@@ -153,12 +148,12 @@
     }
   }
   .switch-hub {
-    margin: auto 5px;
-    padding: 10px;
+    margin: auto;
+    padding: .5rem;
     display: flex;
     border: 1px solid var(--mdc-theme-appbar);
     @media (min-width: 768px) {
-      flex: 1 1 50%;
+      flex: 1 1 calc(50% - 2rem);
     }
 
     .label {
@@ -180,7 +175,7 @@
       margin-right: auto;
       border: 1px solid var(--mdc-theme-appbar);
 
-      @media (max-width: 767px) {
+      @media (max-width: 899px) {
         flex: 0 0 auto;
       }
     }
