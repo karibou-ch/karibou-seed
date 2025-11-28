@@ -15,7 +15,6 @@ import {
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n, NotifyService } from '../common';
-import { MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';

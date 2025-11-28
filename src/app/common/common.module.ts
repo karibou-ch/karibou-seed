@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 //
@@ -11,8 +11,6 @@ import { i18n } from './i18n.service';
 import { MetricsService } from './metrics.service';
 
 import { KngHttpInterceptorService } from './kng-http-interceptor.service';
-
-import { CommonMdcModule } from './common.mdc.module';
 
 import { KngLazyLoadDirective } from './kng-lazy-load.directive';
 
@@ -40,6 +38,7 @@ import { KngSignupComponent } from './kng-signup/kng-signup.component';
 import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
 import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
 import { KngAudioModule } from './kng-audio/kng-audio.module';
+import { KngTopAppbarComponent } from './kng-top-appbar/kng-top-appbar.component';
 
 
 @NgModule({
@@ -49,13 +48,11 @@ import { KngAudioModule } from './kng-audio/kng-audio.module';
     ReactiveFormsModule,
     RouterModule,
     NgxStripeModule.forRoot(),
-    CommonMdcModule,
     KngAudioModule
   ],
   exports: [
     FormsModule,
     ReactiveFormsModule,
-    CommonMdcModule,
     RouterModule,
     KngAudioModule,
     KngSubscriptionControlComponent,
@@ -78,7 +75,8 @@ import { KngAudioModule } from './kng-audio/kng-audio.module';
     KngSubscriptionOptionComponent,
     KngRippleDirective,
     KngSliderComponent,
-    KngWalletComponent
+    KngWalletComponent,
+    KngTopAppbarComponent
   ],
   declarations: [
     KngSubscriptionControlComponent,
@@ -101,8 +99,10 @@ import { KngAudioModule } from './kng-audio/kng-audio.module';
     KngSubscriptionOptionComponent,
     KngRippleDirective,
     KngSliderComponent,
-    KngWalletComponent
+    KngWalletComponent,
+    KngTopAppbarComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class KngCommonModule {
   public static forRoot(options?: any): ModuleWithProviders<KngCommonModule> {
