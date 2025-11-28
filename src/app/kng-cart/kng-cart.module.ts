@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { KngSharedModule } from '../shared/shared.module';
-import { CartMdcModule } from './mdc.module';
 import { KngCartComponent } from './kng-cart.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KngCommonModule } from '../common/common.module';
@@ -33,7 +32,6 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     FormsModule,
     RouterModule,
     ReactiveFormsModule,
-    CartMdcModule,
     KngCommonModule,
     KngSharedModule,
     routing
