@@ -31,35 +31,35 @@
     section {
       position: relative;
       margin-top: 30px;
-      
+
       h1 {
         margin-bottom: 4px;
         font-weight: 400!important;
-        
+
         .pink.large {
           font-size: 36px;
           transform: translateY(8px);
           margin-top: -8px;
         }
       }
-      
+
       div.title, h3 {
         color: rgba(0, 0, 0, 0.76);
       }
-      
+
       p.resume {
         color: rgba(0, 0, 0, 0.54);
         font-size: 14px;
         min-height: 40px;
       }
-      
+
       img {
         position: absolute;
         right: 10px;
         top: -10px;
         width: 80px;
         height: 80px;
-        
+
         @media (max-width:599px) {
           width: 60px;
           height: 60px;
@@ -77,23 +77,23 @@
       border-bottom: 1px solid #eee;
       font-size: 19px;
       cursor: pointer;
-      
+
       .elem {
         padding: 8px 10px;
         position: relative;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        
+
         @media (max-width:599px) {
           font-size: 13px;
           max-width: 45px;
         }
-        
+
         &.active {
           font-weight: 700;
         }
-        
+
         &.active:after {
           content: "";
           display: block;
