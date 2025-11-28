@@ -378,4 +378,128 @@ export class KngNavigationStateService  {
     }
   }
 
+  // ============================================================================
+  // GRID LAYOUT - Mobile Swipe Navigation
+  // ============================================================================
+
+  private _mobileWrapper: HTMLElement | null = null;
+  private _currentPanel: number = 1; // 0=side, 1=center, 2=right
+
+  /**
+   * Enregistre l'élément wrapper mobile pour le swipe
+   * À appeler depuis le composant root avec ViewChild
+   */
+  setMobileWrapper(element: HTMLElement | null): void {
+    this._mobileWrapper = element;
+  }
+
+  /**
+   * Retourne le panel actif (0=side, 1=center, 2=right)
+   */
+  get currentPanel(): number {
+    return this._currentPanel;
+  }
+
+  /**
+   * Utilitaire pour replacer le scroll au centre (colonne center) sur mobile
+   *
+   * @param wrapperElement - L'élément HTML du wrapper mobile (mobile-columns-wrapper)
+   * @param behavior - Comportement du scroll : 'auto' (instantané) ou 'smooth' (animé)
+   * @returns true si le scroll a été effectué, false sinon
+   */
+  scrollToCenter(wrapperElement?: HTMLElement | null | undefined, behavior: ScrollBehavior = 'auto'): boolean {
+    const wrapper = wrapperElement || this._mobileWrapper;
+
+    if (!wrapper) {
+      console.warn('scrollToCenter: wrapperElement is null or undefined');
+      return false;
+    }
+
+    // Vérifier si on est sur mobile (max-width: 599px)
+    if (window.innerWidth > 599) {
+      // Pas sur mobile, ne rien faire
+      return false;
+    }
+
+    // Calculer la position de la colonne center (index 1 = 100vw)
+    const centerPosition = window.innerWidth;
+
+    // Scroller vers la colonne center
+    wrapper.scrollTo({
+      left: centerPosition,
+      behavior: behavior
+    });
+
+    this._currentPanel = 1;
+    return true;
+  }
+
+  /**
+   * Scroll vers un panel spécifique (0=side, 1=center, 2=right)
+   *
+   * @param panelIndex - Index du panel (0, 1 ou 2)
+   * @param wrapperElement - L'élément wrapper (optionnel si déjà enregistré)
+   * @param behavior - Comportement du scroll
+   * @returns true si le scroll a été effectué
+   */
+  scrollToPanel(panelIndex: number, wrapperElement?: HTMLElement | null, behavior: ScrollBehavior = 'smooth'): boolean {
+    const wrapper = wrapperElement || this._mobileWrapper;
+
+    if (!wrapper) {
+      console.warn('scrollToPanel: wrapperElement is null or undefined');
+      return false;
+    }
+
+    // Vérifier si on est sur mobile
+    if (window.innerWidth > 599) {
+      return false;
+    }
+
+    // Limiter l'index entre 0 et 2
+    const validIndex = Math.max(0, Math.min(2, panelIndex));
+
+    // Calculer la position
+    const targetPosition = validIndex * window.innerWidth;
+
+    wrapper.scrollTo({
+      left: targetPosition,
+      behavior: behavior
+    });
+
+    this._currentPanel = validIndex;
+    return true;
+  }
+
+  /**
+   * Scroll vers le panel de gauche (side menu)
+   */
+  scrollToSide(wrapperElement?: HTMLElement | null, behavior: ScrollBehavior = 'smooth'): boolean {
+    return this.scrollToPanel(0, wrapperElement, behavior);
+  }
+
+  /**
+   * Scroll vers le panel de droite (right sidebar)
+   */
+  scrollToRight(wrapperElement?: HTMLElement | null, behavior: ScrollBehavior = 'smooth'): boolean {
+    return this.scrollToPanel(2, wrapperElement, behavior);
+  }
+
+  /**
+   * Détecte le panel actuellement visible basé sur la position de scroll
+   */
+  detectCurrentPanel(wrapperElement?: HTMLElement | null): number {
+    const wrapper = wrapperElement || this._mobileWrapper;
+
+    if (!wrapper || window.innerWidth > 599) {
+      return 1; // Center par défaut
+    }
+
+    const scrollLeft = wrapper.scrollLeft;
+    const panelWidth = window.innerWidth;
+
+    // Calculer l'index basé sur le scroll
+    this._currentPanel = Math.round(scrollLeft / panelWidth);
+    return this._currentPanel;
+  }
+
 }

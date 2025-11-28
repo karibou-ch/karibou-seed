@@ -1,3 +1,6 @@
+// Import styles MDC admin (lazy-loaded avec le module)
+@import '../admin-mdc-theme.scss';
+
 .container{
   min-width: 600px;
   z-index: 1;

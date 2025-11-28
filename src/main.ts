@@ -9,5 +9,9 @@ if (environment.production) {
   enableProdMode();
 }
 
+// Web Awesome Components - Imports pour kng-top-appbar
+import './app/common/kng-top-appbar/kng-top-appbar.awesome';
+
+
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));

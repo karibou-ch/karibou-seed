@@ -4,7 +4,12 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "allowSyntheticDefaultImports": true,
-    "types": []
+    "skipLibCheck": true,
+    "types": [],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
   "files": [
     "src/main.ts",

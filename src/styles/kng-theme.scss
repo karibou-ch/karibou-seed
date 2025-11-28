@@ -288,6 +288,16 @@ body{
   }
 }
 
+
+.icon-label{
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  transform: translateY(0.06em);  // ajuste finement le centrage vertical
+  .icon{
+  }
+}
+
 //
 // icons
 .icon-link-solid,

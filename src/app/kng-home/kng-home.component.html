@@ -1,243 +1,174 @@
 
+<!-- ============================================================================ -->
+<!-- PANEL SIDE - Menu de navigation (catégories, liens)                         -->
+<!-- ============================================================================ -->
+<div class="swipe-panel side">
 
-<!-- HUB -->
-<!-- <div class="home-header" [hidden]="hub.header.active">
-  <div class="banner" >
-    <h1>{{config.shared.hub.siteName[locale]}}</h1>
-    <h2>{{config.shared.hub.description[locale]}}</h2>
+  <!-- NAVIGATION core (menu catégories) -->
+  <div class="home menu-panel"
+       [hidden]="availableSearch && isMobile || isMinimal">
+
+    <!-- MOBILE links -->
+    <ul class="subs">
+      <!-- FAVORITE -->
+      <li class="subs-item inverted" (click)="onFavorites()">
+        <i class="material-symbols-outlined">favorite</i>
+        <span>{{label.search_bookmark}}</span>
+      </li>
+
+      <!-- CUSTOM LINK -->
+      <li *ngIf="hub.home.customLink.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url">
+        <i class="material-symbols-outlined icon">person_celebrate</i>
+        <span>{{hub.home.customLink.label[locale]}}</span>
+      </li>
+
+      <li *ngIf="!hub.home.customLink.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">person_celebrate</i>
+        <span>{{label.nav_subscription_b2b}}</span>
+      </li>
+
+      <!-- SUBSCRIPTION b2c/b2b-->
+      <li class="subs-item inverted" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">update</i>
+        <span>{{label.nav_subscription}}</span>
+      </li>
+
+      <!-- JAMES b2c/school -->
+      <li *ngIf="!isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_title_cta}}</span>
+      </li>
+      <li *ngIf="isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_school}}</span>
+      </li>
+    </ul>
+
+    <!-- DESKTOP LINKS -->
+    <ul class="hide-sm">
+      <li [routerLink]="userRouterLink">
+        <span class="fa icon hide">👦</span>
+        <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
+      </li>
+      <li [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
+        <b>{{hub.home.customLink.label[locale]}}</b>
+      </li>
+      <li [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
+        <b>{{label.nav_subscription_b2b}}</b>
+      </li>
+      <li [routerLink]="'/store/'+store+'/home/subscription'">
+        <b>{{label.nav_subscription}}</b>
+      </li>
+      <li [hidden]="!isAuthencated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <b>{{label.james_school}}</b>
+      </li>
+      <li class="separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <b>{{label.james_title_cta}}</b>
+      </li>
+    </ul>
+
+    <!-- CATEGORY on mobile+desktop -->
+    <ul class="">
+      <li (click)="scrollToSlug(category.slug)" class="subs-item"
+          [id]="'category-'+j"
+          [class.selected]="category.slug == displaySlug"
+          *ngFor="let category of sortedCategories;let j=index">
+        <i [class]="category.image" class="icon hide-md hide-lg"></i>
+        <span>{{getCategoryI18n(category)}}</span>
+      </li>
+    </ul>
   </div>
-</div> -->
 
-
-<!-- DESKTOP -->
- <!--
-<div class="home mobile-categories" [class.menu-on-top]="!isMobile" [hidden]="availableSearch && isMobile">
-  <ul >
-    <li [id]="'group-'+j"
-        [class.selected]="group.slug == displaySlug"
-        *ngFor="let group of sortedGroups;let j=index">
-      <img [src]="group.cover" >
-      <span>{{(group.name)}}</span>
-    </li>
-  </ul>
-</div> -->
-
-
-
-
-
-<!-- INFORMATION -->
-<div class="home-header" [hidden]="!hub.header.active">
-  <img [src]="tagline.image" [hidden]="!tagline.image"/>
-  <figure [innerHtml]="hub.header.message[locale]" ></figure>
 </div>
-<!-- CalENDAR -->
-<kng-calendar  [user]="user" [title]="theme.name" [hidden]="availableSearch"  [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
+<!-- ============================================================================ -->
+<!-- PANEL CENTER - Contenu principal (produits, calendrier)                     -->
+<!-- ============================================================================ -->
+<div class="swipe-panel center">
 
-<!-- BUSINESS
-<kng-business-option [hub]="hub" [user]="user"   (onOpen)="scrollLocked = $event"></kng-business-option>
--->
-
-
-<!-- SELECTION -->
-<!-- <kng-product-swipe [user]="user" [hidden]="sortedCategories.length<5" mailchimp="true" [hub]="store" ></kng-product-swipe> -->
-
-
-<!-- PINNED (isMinimal for b2b-school)-->
-<kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user"  [boost]="true" [hub]="store" >
-</kng-product-swipe>
-
-
-
-<!-- MOBILE SEARCH  -->
-<kng-search class="home" [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search>
-
-<!-- CATEGORY -->
-<!-- FIXED SIZE -->
-<!-- on scroll HIDE==> [class.display]="scrollDirection > 1 || (!scrollDirection)" -->
-<div class="home" [class.menu-on-right]="!isMobile" [class.mobile-categories]="isMobile">
-  <!-- JAMES
-  <div class="kng-boxed hide-sm" [hidden]="!isJamesAvailable">
-    <div class="content">
-      <kng-audio-assistant [store]="store" agent="feedback" (onAction)="onAssistantClick($event)"></kng-audio-assistant>
-    </div>
-  </div> -->
-
-  <!-- NEED HELP? -->
-  <div class="kng-boxed first hide-sm">
-    <div class="content">
-      <div class="items" [innerHtml]="hub.description[locale]">
-      </div>
-      <div class="bottom">
-        <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}</a>
-      </div>
-    </div>
+  <!-- INFORMATION HEADER -->
+  <div class="home-header" [hidden]="!hub.header.active">
+    <img [src]="tagline.image" [hidden]="!tagline.image"/>
+    <figure [innerHtml]="hub.header.message[locale]"></figure>
   </div>
 
-  <div class="kng-boxed first ">
-    <div class="content">
-      <kng-audio-note-enhanced
-        type="support"
-        [locale]="locale"
-        [compact]="true"
-        [key]="config.shared.keys.pubUpcare"
-        filename="support-ticket-home"
-        (onAudioReady)="onAudioStopAndSave($event)"
-        (onAudioError)="onAudioError($event)">
+  <!-- CALENDAR -->
+  <kng-calendar [user]="user" [title]="theme.name" [hidden]="availableSearch" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
-        <div slot="header-compact">
-          <p>
-            {{ label.audio_support_contact }}
-             <a hidden class="show-sm"  href="tel:{{hub.address.phone}}">(téléhone)</a>
-          </p>
+  <!-- PINNED PRODUCTS (isMinimal for b2b-school) -->
+  <kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user" [boost]="true" [hub]="store"></kng-product-swipe>
 
+  <!-- MOBILE SEARCH -->
+  <kng-search class="home" [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search>
+
+  <!-- PRODUCTS -->
+  <div class="product-container" *ngIf="products.length">
+    <kng-product-grouped-list clazz="{{products.length<10?'large':''}}"
+         [useMaxCat]="products.length>40"
+         [alphasort]="false"
+         [displayVendor]="true"
+         [showMore]="products.length>10"
+         [config]="config"
+         [user]="user"
+         [contentCategories]="sortedCategories"
+         [contentProducts]="products"
+         [scrollToSlug]="categorySlug"
+         (currentCategory)="displaySlug=($event || displaySlug)"
+         (direction)="scrollDirection=$event">
+    </kng-product-grouped-list>
+  </div>
+
+  <!-- ROUTER OUTLET -->
+  <router-outlet></router-outlet>
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL RIGHT - Sidebar (aide, recherche, infos)                              -->
+<!-- ============================================================================ -->
+<div class="swipe-panel right">
+
+  <div class="home sidebar-panel">
+    <!-- NEED HELP? -->
+    <div class="kng-boxed first">
+      <div class="content">
+        <div class="items" [innerHtml]="hub.description[locale]"></div>
+        <div class="bottom">
+          <a class="phone" href="tel:{{hub.address.phone}}">
+            <i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}
+          </a>
         </div>
-      </kng-audio-note-enhanced>
-    </div>
-    <div class="bottom" [hidden]="!audioContext?.audioUrl">
-      <button class="width-100 default small secondary  " (click)="onSendAudioNote()">
-        {{ label.audio_support_send }}
-      </button>
-
-    </div>
-  </div>
-
-  <!-- SEARH -->
-  <kng-search-bar [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
-
-  <!-- THEMES -->
-
-
-
-  <!-- SPECIAL LINKS -->
-  <!--
-  <div   class="kng-boxed subscription hide-sm " hidden>
-    <div class="label" hidden>
-      <h2>Les tendances <i class="material-symbols-outlined icon   ">update</i>  </h2>
-    </div>
-
-    <div class="content">
-      <div class="items">
-        <ul class="subs">
-          <li class="subs-item "  *ngFor="let theme of themes;let j=index"
-             [routerLink]="['/store',store,'home','theme',theme.slug]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >
-            <h3>{{theme.name}}</h3>
-            <span class="">{{theme.description}}</span>
-          </li>
-        </ul>
       </div>
     </div>
+
+    <!-- AUDIO SUPPORT -->
+    <div class="kng-boxed first">
+      <div class="content">
+        <kng-audio-note-enhanced
+          type="support"
+          [locale]="locale"
+          [compact]="true"
+          [key]="config.shared.keys.pubUpcare"
+          filename="support-ticket-home"
+          (onAudioReady)="onAudioStopAndSave($event)"
+          (onAudioError)="onAudioError($event)">
+          <div slot="header-compact">
+            <p>
+              {{ label.audio_support_contact }}
+              <a hidden class="show-sm" href="tel:{{hub.address.phone}}">(téléphone)</a>
+            </p>
+          </div>
+        </kng-audio-note-enhanced>
+      </div>
+      <div class="bottom" [hidden]="!audioContext?.audioUrl">
+        <button class="width-100 default small secondary" (click)="onSendAudioNote()">
+          {{ label.audio_support_send }}
+        </button>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <kng-search-bar [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
   </div>
-  -->
 
 </div>
-
-<!-- NAVIGATION core -->
-<div class="home"
-     [hidden]="availableSearch && isMobile || isMinimal"
-     [class.menu-on-left]="!isMobile" [class.mobile-categories]="isMobile" >
-
-  <!-- MOBILE links -->
-  <ul class="subs">
-
-    <!-- FAVORITE -->
-    <li class="subs-item inverted" (click)="onFavorites()">
-      <i class="material-symbols-outlined">favorite</i>
-
-      <span>{{label.search_bookmark}}</span>
-    </li>
-
-    <!-- CUSTOM LINK -->
-    <li *ngIf="hub.home.customLink.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url" >
-      <i class="material-symbols-outlined icon">person_celebrate</i>
-      <span>{{hub.home.customLink.label[locale]}}</span>
-    </li>
-
-    <li *ngIf="!hub.home.customLink.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon">person_celebrate</i>
-      <span>{{label.nav_subscription_b2b}}</span>
-    </li>
-
-    <!-- SUBSCRIPTION b2c/b2b-->
-    <li class="subs-item inverted" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon">update</i>
-      <span>{{label.nav_subscription}}</span>
-    </li>
-
-
-    <!-- JAMES b2c/school -->
-    <li *ngIf="!isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon  ">smart_toy</i>
-      <span>{{label.james_title_cta}}</span>
-    </li>
-    <li *ngIf="isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon ">smart_toy</i>
-      <span>{{label.james_school}}</span>
-    </li>
-  </ul>
-
-  <!-- DESKTOP -->
-  <ul class="hide-sm">
-    <li [routerLink]="userRouterLink">
-      <!-- LOGIN / REGISTER -->
-      <span class="fa icon hide">👦</span>
-      <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
-
-    </li>
-    <!-- DISPLAYCUSTOM LINK -->
-    <li [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
-      <b>{{hub.home.customLink.label[locale]}}</b>
-    </li>
-
-    <li  [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
-      <b>{{label.nav_subscription_b2b}}</b>
-    </li>
-
-    <li  [routerLink]="'/store/'+store+'/home/subscription'">
-      <b>{{label.nav_subscription}}</b>
-    </li>
-
-    <li [hidden]="!isAuthencated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <b>{{label.james_school}}</b>
-    </li>
-    <li class="separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <b>{{label.james_title_cta}}</b>
-    </li>
-  </ul>
-
-  <!-- CATEGORY on mobile+desktop -->
-  <ul class="">
-    <li (click)="scrollToSlug(category.slug)" class="subs-item"
-              [id]="'category-'+j"
-              [class.selected]="category.slug == displaySlug"
-              *ngFor="let category of sortedCategories;let j=index">
-      <!-- <img [src]="category.cover" hidden> -->
-      <i [class]="category.image" class="icon hide-md hide-lg"></i>
-      <span>{{getCategoryI18n(category)}}</span>
-    </li>
-  </ul>
-
-
-
-
-</div>
-
-<div class="product-container " *ngIf="products.length" >
-
-  <kng-product-grouped-list clazz=" {{products.length<10?'large':''}}"
-       [useMaxCat]="products.length>40"
-       [alphasort]="false"
-       [displayVendor]="true"
-       [showMore]="products.length>10"
-       [config]="config"
-       [user]="user"
-       [contentCategories]="sortedCategories"
-       [contentProducts]="products"
-       [scrollToSlug]="categorySlug"
-       (currentCategory)="displaySlug=($event || displaySlug)"
-       (direction)="scrollDirection=$event">
-  </kng-product-grouped-list>
-</div>
-
-<router-outlet ></router-outlet>

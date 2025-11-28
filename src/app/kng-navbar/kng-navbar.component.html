@@ -1,166 +1,168 @@
 
 <kng-news [config]="config"></kng-news>
 
-<div class="mdc-drawer"  drawer="modal" #navigation
-    [class.mdc-drawer--modal]="navigation.open"
-    [class.mdc-drawer--open]="navigation.open" (click)="navigation.open = !navigation.open">
-  <!-- <img class="logo" [src]="hubImage" [routerLink]="['/']" /> -->
-  <div class="mdc-drawer__header" [routerLink]="['/store',store,'home']">
-    <h3 class="mdc-drawer__title" [innerHtml]="getTagline('t')"></h3>
-  </div>
-  <div mdc-drawer-content>
+<!-- DRAWER MODAL (menu latéral) - Web Awesome -->
+<wa-drawer placement="start" light-dismiss
+    [attr.open]="drawerOpen || null"
+    (wa-hide)="closeDrawer()">
 
-    <ul class="mdc-list">
-      <li [hidden]="!user.isAuthenticated()" class="">
-        <a [routerLink]="['/store',store,'home','me','orders']">{{label.nav_account}}</a>
-      </li>
-      <li [hidden]="user.isAuthenticated()">
-        <a [routerLink]="['/store',store,'home','me','login']">{{label.nav_login}}</a>
-      </li>
+  <!-- Header personnalisé -->
+  <span slot="label" [routerLink]="['/store',store,'home']" (click)="closeDrawer()"
+        [innerHtml]="getTagline('t')"></span>
 
-      <li>
-        {{label.nav_i18n}}
-        <input type="radio" class="radio-primary align-right" value="en"  name="lang" id="lang-en" [checked]="$i18n.locale=='en'" (click)="onLang($event,'en')">
-        <label for="lang-en">En</label>
-        <input type="radio" class="radio-primary" value="fr" name="lang" id="lang-fr" [checked]="$i18n.locale=='fr'" (click)="onLang($event,'fr')">
-        <label for="lang-en">Fr</label>
-      </li>
+  <!-- Contenu du drawer -->
+  <ul class="drawer-menu">
+    <li [hidden]="!user.isAuthenticated()">
+      <a [routerLink]="['/store',store,'home','me','orders']" (click)="closeDrawer()">
+        <span class="material-symbols-outlined">account_circle</span>
+        {{label.nav_account}}
+      </a>
+    </li>
+    <li [hidden]="user.isAuthenticated()">
+      <a [routerLink]="['/store',store,'home','me','login']" (click)="closeDrawer()">
+        <span class="material-symbols-outlined">login</span>
+        {{label.nav_login}}
+      </a>
+    </li>
+    <li class="lang-switcher">
+      <span class="material-symbols-outlined">language</span>
+      {{label.nav_i18n}}
+      <div class="lang-options">
+        <input type="radio" class="radio-primary" value="en" name="lang" id="drawer-lang-en"
+               [checked]="$i18n.locale=='en'" (click)="onLang($event,'en')">
+        <label for="drawer-lang-en">En</label>
+        <input type="radio" class="radio-primary" value="fr" name="lang" id="drawer-lang-fr"
+               [checked]="$i18n.locale=='fr'" (click)="onLang($event,'fr')">
+        <label for="drawer-lang-fr">Fr</label>
+      </div>
+    </li>
+    <li *ngFor="let elem of getMenuItems('links')">
+      <a [routerLink]="['/store',store,elem.url]" (click)="closeDrawer()"
+         [innerHtml]="elem.name[locale]"></a>
+    </li>
+  </ul>
 
-      <li *ngFor="let elem of getMenuItems('links')">
-        <a [routerLink]="['/store',store,elem.url]" [innerHtml]="elem.name[locale]"></a>
-      </li>
-    </ul>
-    <!-- ADMIN -->
-    <ul class="mdc-list" [hidden]="!user.isAdmin()">
-      <h3 mdcListGroupSubheader>Administration/Config</h3>
-      <li [id]="20+i" class="admin-item " *ngFor="let menu of $navigation.getMenuItems('admin');let i=index;">
-        <a [routerLink]="getRouterLink(menu.url)">{{menu.name[locale]}}</a>
-      </li>
+  <!-- ADMIN -->
+  <ul class="drawer-menu drawer-menu--admin" [hidden]="!user.isAdmin()">
+    <li class="menu-header">Administration</li>
+    <li *ngFor="let menu of $navigation.getMenuItems('admin'); let i = index">
+      <a [routerLink]="getRouterLink(menu.url)" (click)="closeDrawer()">
+        {{menu.name[locale]}}
+      </a>
+    </li>
+  </ul>
 
-    </ul>
-  </div>
-</div>
+</wa-drawer>
 
-<!-- MAIN LAYOUT -->
-<div [hidden]="!isAppReady()" class="navbar">
+<!-- ============================================================================ -->
+<!-- GRID LAYOUT PRINCIPAL - 3 colonnes avec swipe mobile                        -->
+<!-- ============================================================================ -->
+<div [hidden]="!isAppReady()" class="grid-container-3">
 
-  <!-- [dense]="$navigation.isMobile()" -->
-  <mdc-top-app-bar [fixed]="!$navigation.isMobile()">
-    <mdc-top-app-bar-row hidden >
-      <!-- APPBAR LEFT ACTIONS -->
-      <mdc-top-app-bar-section align="start" >
-        <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
-        <img class="icon icon-hub" [class.icon-show]="isLockedHUB()"  [src]="hubImage" (click)="navigation.open = ! navigation.open" />
-        <mdc-top-app-bar-title class="brand" [routerLink]="['/store',store]" [hidden]="isLockedHUB()">
-          Karibou.ch
-        </mdc-top-app-bar-title>
-      </mdc-top-app-bar-section>
+  <!-- ========================================================================== -->
+  <!-- HEADER - Navigation (span 3 colonnes)                                      -->
+  <!-- ========================================================================== -->
+  <header class="grid-header">
+    <kng-top-appbar>
 
-
-      <!-- LOGIN / REGISTER -->
-      <mdc-top-app-bar-section align="end"  class="actions">
-        <a class="label " [routerLink]="['/store',store,'home','me','orders']" [hidden]="!user.isAuthenticated()" mdcTopAppBarNavIcon>
-          <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text" >account_circle</span><!-- <div >{{label.nav_account}}</div>-->
-          <!-- DISPLAY MULTI USER -->
-          <!-- <span class="cart-users-count">2</span> -->
-        </a>
-        <a class="label" [routerLink]="['/store',store,'home','me','login']" [hidden]="user.isAuthenticated()" mdcTopAppBarNavIcon>
-          <span mdcTopAppBarActionItem class="material-symbols-outlined secondary-text">account_circle</span><!-- <div >{{label.nav_login2}}</div> -->
-        </a>
-      </mdc-top-app-bar-section>
-    </mdc-top-app-bar-row>
-
-    <mdc-top-app-bar-row class="navigation ">
-
-      <!-- APPBAR-SECTION-START HUB AND DATE -->
-      <mdc-top-app-bar-section align="start" class="hide-sm">
-        <!-- <img class="icon hide-sm hide"  [src]="Kimage" (click)="navigation.open = ! navigation.open" [hidden]="isLockedHUB()"/> -->
-
-        <div class="mdc-top-app-bar-left" >
-          <img class="icon icon-hub" [class.icon-show]="isLockedHUB()"  [src]="hubImage" (click)="navigation.open = ! navigation.open" />
+      <!-- ================================================================ -->
+      <!-- SLOT: start (gauche) - Logo/Icon aligné à droite de la colonne  -->
+      <!-- ================================================================ -->
+      <div slot="start" class="appbar-start">
+        <div class="appbar-left-content">
+          <img class="icon icon-hub" [class.icon-show]="isLockedHUB()" [src]="hubImage" (click)="toggleDrawer()" />
           <span [hidden]="isLockedHUB()" [routerLink]="['/store',store]" class="title">Karibou.ch</span>
-
         </div>
+      </div>
 
-        <div class="kng-chip" [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()"> <i class="material-symbols-outlined start">roofing</i>{{label.nav_bottom_home}}</div>
-        <div class="kng-chip" [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}} </div>
-        <div class="kng-chip" [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</div>
+      <!-- ================================================================ -->
+      <!-- SLOT: center - Navigation menus                                 -->
+      <!-- Desktop: chips navigation | Mobile: titre hub                   -->
+      <!-- ================================================================ -->
+      <div slot="center" class="appbar-center">
+        <!-- Desktop navigation -->
+        <nav class="appbar-nav hide-sm">
+          <wa-button size="small" appearance="filled-outlined" pill [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()">
+            <span slot="start" class="material-symbols-outlined secondary-text">home</span>
 
+            {{label.nav_bottom_home}}
+          </wa-button>
+          <wa-button size="small" appearance="filled-outlined" pill [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}}</wa-button>
+          <wa-button size="small" appearance="filled-outlined" pill [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</wa-button>
+        </nav>
+        <!-- Mobile title -->
+        <span class="mobile-title hide-md hide-lg">{{hubTitle}}</span>
+      </div>
 
-        <!-- <div class="kng-chip bold" [hidden]="!currentThemeName" (click)="opentheme=!opentheme">
-          <i class="material-symbols-outlined start">category</i> {{currentThemeName}}
-        </div> -->
+      <!-- ================================================================ -->
+      <!-- SLOT: end (droite) - Paniers                                    -->
+      <!-- ================================================================ -->
+      <div slot="end" class="appbar-end">
+        <wa-button size="small" appearance="filled-outlined" class="first" pill [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
+          <span slot="start" class="material-symbols-outlined secondary-text">shopping_cart</span>
+          <span class="cart-items-count"></span>
+        </wa-button>
+        <wa-button size="small" appearance="filled-outlined" class="shopping-cart" pill [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active" [queryParams]="subscriptionQueryParams" [hidden]="!subsItemsSz">
+          <span slot="start" class="material-symbols-outlined secondary-text">more_time</span>
+          <span class="subs-items-count"></span>
+        </wa-button>
+      </div>
 
+    </kng-top-appbar>
+  </header>
 
-        <div class="kng-chip shopping-cart first"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
-
-          <div > <span class="cart-items-count"></span></div>
-          <span  class="end material-symbols-outlined secondary-text" >shopping_cart</span>
-        </div>
-        <div class="kng-chip shopping-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active" [queryParams]="subscriptionQueryParams" [hidden]="!subsItemsSz">
-
-          <div > <span class="subs-items-count"></span></div>
-          <span  class="end material-symbols-outlined secondary-text" >more_time</span>
-        </div>
-
-      </mdc-top-app-bar-section>
-
-
-      <!-- APPBAR-SECTION-MIDDLE -->
-      <!-- NOTE: [routerLinkActiveOptions]="{exact:true}" ONLY FOR LINK == '/' -->
-
-      <mdc-top-app-bar-section class="title hide-md hide-lg" >
-        <span class="start">{{hubTitle}} </span>
-        <div hidden class="kng-chip end"  (click)="opentheme=!opentheme">
-          <i class="material-symbols-outlined start">category</i> {{currentThemeName}} <i class="material-symbols-outlined end">keyboard_arrow_down</i>
-        </div>
-
-      </mdc-top-app-bar-section>
-
-      <!-- APP RIGHT ACTIONS -->
-
-    </mdc-top-app-bar-row>
-
-  </mdc-top-app-bar>
-
-  <!-- CONTENT APP -->
-  <div class="mdc-content" #scrollContent>
+  <!-- ========================================================================== -->
+  <!-- CONTENT WRAPPER - Structure des colonnes déléguée aux composants enfants -->
+  <!-- Les enfants (kng-home, etc.) définissent leur propre layout :            -->
+  <!--   - 3 panels pour swipe mobile                                           -->
+  <!--   - ou structure libre                                                    -->
+  <!-- ========================================================================== -->
+  <div class="mobile-columns-wrapper" #mobileWrapper #scrollContent>
     <ng-content></ng-content>
   </div>
 
-  <!-- FAB  [exited]="scrollDirection<-5" -->
-  <kng-ui-bottom-actions [config]="config" [categories]="categories" [user]="user">  </kng-ui-bottom-actions>
+  <!-- ========================================================================== -->
+  <!-- FOOTER (span 3 colonnes)                                                   -->
+  <!-- ========================================================================== -->
+  <footer class="grid-footer">
+    <!-- Bottom Actions Mobile -->
+    <kng-ui-bottom-actions [config]="config" [categories]="categories" [user]="user"></kng-ui-bottom-actions>
+    <!-- Footer Desktop -->
+    <kng-footer [config]="config" class="hide-sm"></kng-footer>
+  </footer>
 
-  <!-- ASK LOGIN  -->
-  <div class="overlay-pane" [class.overlay-open]="displayLogin">
-    <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
-      <div class="mdc-snackbar__surface">
-        <div class="close" (click)="displayLogin=false"><i class="material-symbols-outlined">close</i> </div>
-        <div class="mdc-snackbar__label install-ios" >
-          Pour effectuer une commande nous avons <br/>
-          besoin de vérifier votre identité.<br/>
-          <b><span class="link" (click)="displayLogin=false" [routerLink]="['/store',store,'home','me','login']">Merci de suivre ce lien </span></b>
-        </div>
-        <div class="install-ios material-symbols-outlined" >sentiment_very_satisfied</div>
+</div>
+
+<!-- ============================================================================ -->
+<!-- OVERLAYS                                                                     -->
+<!-- ============================================================================ -->
+
+<!-- ASK LOGIN -->
+<div class="overlay-pane" [class.overlay-open]="displayLogin">
+  <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
+    <div class="mdc-snackbar__surface">
+      <div class="close" (click)="displayLogin=false"><i class="material-symbols-outlined">close</i></div>
+      <div class="mdc-snackbar__label install-ios">
+        Pour effectuer une commande nous avons <br/>
+        besoin de vérifier votre identité.<br/>
+        <b><span class="link" (click)="displayLogin=false" [routerLink]="['/store',store,'home','me','login']">Merci de suivre ce lien</span></b>
       </div>
+      <div class="install-ios material-symbols-outlined">sentiment_very_satisfied</div>
     </div>
   </div>
+</div>
 
-  <!-- IOS INSTALL -->
-  <div class="overlay-pane" [class.overlay-open]="displayIosInstall">
-    <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
-      <div class="mdc-snackbar__surface">
-        <div class="close" (click)="displayIosInstall=false"><i class="material-symbols-outlined">close</i> </div>
-        <div class="mdc-snackbar__label install-ios" [innerHtml]="label.action_install_ios">
-          Install this app on your device.<br/>
-          Tap the share icon and then<br/>
-          <b>Add to homescreen.</b>
-        </div>
-
-        <div class="install-ios material-symbols-outlined" >arrow_downward</div>
+<!-- IOS INSTALL -->
+<div class="overlay-pane" [class.overlay-open]="displayIosInstall">
+  <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
+    <div class="mdc-snackbar__surface">
+      <div class="close" (click)="displayIosInstall=false"><i class="material-symbols-outlined">close</i></div>
+      <div class="mdc-snackbar__label install-ios" [innerHtml]="label.action_install_ios">
+        Install this app on your device.<br/>
+        Tap the share icon and then<br/>
+        <b>Add to homescreen.</b>
       </div>
+      <div class="install-ios material-symbols-outlined">arrow_downward</div>
     </div>
   </div>
-  <!-- FOOTER -->
-  <kng-footer [config]="config"></kng-footer>
 </div>

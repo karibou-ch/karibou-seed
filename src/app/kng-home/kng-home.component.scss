@@ -1,3 +1,33 @@
+// ============================================================================
+// HOST - Le composant devient transparent pour que les swipe-panel
+// participent directement au layout parent (grid ou flex)
+// ============================================================================
+:host {
+  display: contents; // Transparent sur tous les devices
+}
+
+// ============================================================================
+// STYLES SPÉCIFIQUES HOME - Adaptation des composants dans le layout 3 cols
+// ============================================================================
+
+// KNG-BOXED dans le sidebar right
+.swipe-panel.right .kng-boxed {
+  width: calc(100% - 2rem); // Compte les marges internes
+}
+
+// KNG-BOXED dans le menu side (desktop)
+.swipe-panel.side .kng-boxed {
+  @media (min-width: 600px) {
+    width: calc(100% - 2rem);
+  }
+}
+
+// KNG-BOXED sur mobile (tous les panels)
+@media (max-width: 599px) {
+  .swipe-panel .kng-boxed {
+    width: calc(100% - 2rem);
+  }
+}
 
 //
 // BOX INFO
@@ -5,14 +35,11 @@ div.home-header{
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  font-weight: 200;
   background-size: cover;
   background-color: transparent!important;
-  margin-top: 0px;
-  margin-bottom: 0px;
   @media (max-width: 899px){
-    padding: 10px 10px;
-    width: calc( 100% - 20px );
+    padding: 1rem;
+    width: calc( 100% - 2rem );
   }
 
   img{
@@ -21,17 +48,17 @@ div.home-header{
     margin: auto;
     margin-top: 1rem;
     max-width: calc(100% - 1.25rem);
-
+    max-height: 300px;
+    object-fit: cover;
     // iOS 14.1 fix
     @supports not (aspect-ratio: 1 / 1) {
       max-height: 170px;
     }
 
-    @media (min-width: 768px) {
-      margin: 1rem;
+    @media (min-width: 900px) {
+      margin: .5rem;
       margin-left: 0;
-        width: (30%);
-      object-fit: fill;
+        width: (49%);
     }
   }
   &:has(figure:empty) img {
@@ -42,12 +69,14 @@ div.home-header{
     display: none;
   }
   figure {
-    margin: 1rem 5px;
+    display: flex;
+    align-items: center;
+    margin: .5rem;
     padding: 0.5rem;
     border-radius: 1rem;
     width: calc(100% - 2rem);
-    -border: 1px solid #eee;
     background-color: var(--mdc-theme-appbar-light);
+    border: 1px solid var(--mdc-theme-appbar);
     flex: 1;
     @media (min-width: 768px) {
       margin-left: .25rem;
@@ -79,114 +108,7 @@ div.home-header{
 
 
 
-  .welcome{
-    margin-bottom:20px;
-    position: relative;
-    min-height: 120px;
-    width: 100%;
-    b{
-      font-weight: bold!important;
-    }
-
-    >div{
-      display: flex;
-      flex-flow: row wrap;
-      padding: 0px;
-      font-size: 18px;
-      overflow: hidden;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .16);
-      .left-half{
-        max-width: 40%;
-        height: 200px;
-        img{
-          height: 100%;
-        }
-        @media (max-width:599px) {
-          max-width:100%;
-          overflow: hidden;
-          max-height: 230px;
-          transform: rotate(180deg);
-          zoom: 1;
-          display: block;
-          img {
-            transform: rotate(180deg) translateY(20%);
-            height: auto !important;
-            zoom: 1;
-          }
-        }
-      }
-
-      .left{
-        flex: 1;
-        max-width: 48%;
-        @media (max-width: 899px) {
-          flex: 1 0 100%;
-          max-width:100%;
-          font-size:70%;
-        }
-        margin-bottom:-6px;
-        img{
-          width: 100%;
-        }
-      }
-
-      .right{
-        &.text-left{
-          text-align: left;
-          h1,h2,h3,h4,div{
-            text-align: left;
-          }
-        }
-        &.full{
-          max-width: 80%;
-          transform: scale(.9);
-          max-height: 200px;
-          padding: 0;
-          @media (max-width:599px) {
-            max-width:100%;
-            font-size:70%;
-            transform: none;
-            padding: 20px;
-          }
-        }
-        p{
-          margin-bottom:2px;
-          margin-top: 10px;
-        }
-        flex: 1;
-        padding: 20px;
-        align-self: center;
-        max-width: 45%;
-        @media (max-width: 899px) {
-          max-width:100%;
-        }
-      }
-
-    }
-  }
-
-
-  &.cover{
-    color: #fff!important;
-
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    transform: translateX(-4px);
-    min-height: 350px;
-    text-align: center;
-    >h2,
-    >div,
-    >p{
-      color: white;
-      text-shadow: 0 0 1px rgba(0,0,0,.71);
-    }
-  }
-
+  // NOTE: .welcome et &.cover supprimés - non utilisés dans kng-home
 }
 
 kng-calendar  {
@@ -226,7 +148,8 @@ kng-product-swipe {
 kng-product-swipe.boost{
   background-color: var(--mdc-theme-secondary-light);
   padding: 1rem;
-  width: calc(100% - 2rem);
+  width: calc(100% - 0rem);
+  margin-left: -1rem;
   @media (min-width: 899px) {
     border-radius: 1rem;
   }
@@ -240,7 +163,7 @@ kng-search.home{
 kng-search-bar{
   margin:1rem;
   margin-left: 0.5rem;
-  width: calc(100% - 2rem);
+  width: calc(100% - 1rem);
 }
 //
 // HOME SELECTION
@@ -315,293 +238,164 @@ kng-product-swipe{
 
 
 
-//
-// CATEGORY FOR MOBILE OR DESKTOP
-.mobile-categories {
-  margin: 0 10px;
-  ul{
+// ============================================================================
+// NOTE: .mobile-categories supprimé - remplacé par .swipe-panel.side .menu-panel
+// ============================================================================
 
-    border-radius: 14px;
-    margin: 10px 0px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    column-gap: 0.5rem;
-    justify-items: center;
-    li.subs-item{
-      width: calc(100% - 1rem );
-      display: flex;
-      justify-content: flex-start;
-      border-radius: 0.5rem;
-      background-color: var(--mdc-theme-appbar-light);
-      border: 1px solid var(--mdc-theme-appbar);
-      color: var(--mdc-theme-appbar-text);
-      font-weight: 500;
-      padding: 9px;
-      margin: auto auto 0.5rem;
-      align-items: center;
-      height: 3rem;
-      &.inverted{
-        color: var(--mdc-theme-appbar-light);
-        background-color: var(--mdc-theme-appbar-text);
-        i{
-          color: var(--mdc-theme-appbar-light);
+// ============================================================================
+// SWIPE PANELS - Layout 3 colonnes
+// ============================================================================
+
+// PANEL SIDE - Menu de navigation
+.swipe-panel.side {
+  .menu-panel {
+    // Sticky on scroll (Desktop)
+    @media (min-width: 600px) {
+      position: sticky;
+      top: -3rem; // Espace sous la navbar
+      max-height: calc(100vh - var(--mdc-theme-top-bar, 70px) - 2rem);
+      overflow-y: auto;
+    }
+
+    // DESKTOP: style menu-on-left original
+    @media (min-width: 600px) {
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border-right: 1px solid #ddd;
+        padding-right: 10px;
+
+        // Masquer les chips sur desktop
+        &.subs { display: none; }
+
+        li {
+          cursor: pointer;
+          padding: 5px;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 20px;
+          color: rgb(52, 53, 56);
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          margin-left: 5px;
+
+          &:hover { background-color: #eee; }
+
+          &.selected {
+            color: #333;
+            font-weight: 500;
+            margin-left: 0;
+            border-left: 5px solid #333;
+          }
+
+          &.separator {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+          }
+
+          b { color: #333; }
+
+          i { color: var(--mdc-theme-secondary); }
+
+          // Catégories: masquer icônes sur desktop
+          &.subs-item {
+            i.icon { display: none; }
+          }
+
+          .icon, .fa {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            filter: grayscale(1);
+            opacity: 0.7;
+          }
         }
       }
-      i{
-        margin-right: 5px;
-        color: var(--mdc-theme-secondary);
-      }
-      i.icon{
-        margin-top: -8px;
-      }
-    }
-    li:not(.subs-item){
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      min-width: 100%;
-      height: 3rem;
-      overflow: hidden;
-      border-radius: 0.5rem;
-      background-color: var(--mdc-theme-appbar-light);
-      border: 1px solid var(--mdc-theme-appbar);
-      color: var(--mdc-theme-appbar-text);
-      font-weight: 500;
-
-      img{
-        display: none;
-        height: 100%;
-        width: 100%;
-        min-width: 100%;
-        object-fit: cover;
-        object-position: center center;
-      }
-      span{
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
-        left: 0px;
-        padding: 8px 4px;
-        text-align: center;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        font-size: 14px;
-        line-height: 16px;
-        background-color: rgba(70, 90, 70,0.7);
-        color: #ffed00;
-        font-weight: bold;
-      }
     }
 
-    li.subs-item:last-child:nth-child(odd) {
-      grid-column: span 2;
-    }
+    // MOBILE: style mobile-categories original
+    @media (max-width: 599px) {
+      margin: 0 10px;
 
-  }
-}
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        column-gap: 0.5rem;
+        justify-items: center;
 
-.menu-on-right{
-  transition: all 200ms;
-  position: fixed;
-  overflow-x: visible;
-  top: var(--mdc-theme-top-bar);
-  width: 350px;
-  padding: 0;
-  left: auto;
-  height: calc(100% - 160px);
-  right: initial;
-  margin-left: calc(var(--mdc-theme-container-width) + 10px ) ;
-  border-left:1px dotted #ddd;
-  padding-left: 0px;
-  display: flex;
-  flex-direction: column;
-  gap:10px;
-  padding-left: 5px;
-  @media (max-width: 899px) {
-    display: none;
-  }
+        // Masquer les liens texte sur mobile
+        &.hide-sm { display: none !important; }
 
-  @media (max-width: 1199px) { /* Tablet + Mobile harmonisé */
-    display: none;
-  }
+        li.subs-item {
+          width: calc(100% - 1rem);
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          border-radius: 0.5rem;
+          background-color: var(--mdc-theme-appbar-light);
+          border: 1px solid var(--mdc-theme-appbar);
+          color: var(--mdc-theme-appbar-text);
+          font-weight: 500;
+          padding: 9px;
+          margin: auto auto 0.5rem;
+          height: 3rem;
 
-  @media (min-width: 1200px) and (max-width: 1440px) { /* Desktop standard */
-  }
+          &.inverted {
+            color: var(--mdc-theme-appbar-light);
+            background-color: var(--mdc-theme-appbar-text);
+            i { color: var(--mdc-theme-appbar-light); }
+          }
 
+          i {
+            margin-right: 5px;
+            color: var(--mdc-theme-secondary);
+            &.icon { margin-top: -8px; }
+          }
+        }
 
-  @media (min-width: 1441px) { /* Desktop large */
-  }
+        li:not(.subs-item) {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          min-width: 100%;
+          height: 3rem;
+          overflow: hidden;
+          border-radius: 0.5rem;
+          background-color: var(--mdc-theme-appbar-light);
+          border: 1px solid var(--mdc-theme-appbar);
+          color: var(--mdc-theme-appbar-text);
+          font-weight: 500;
+        }
 
-  @media (min-width: 1600px) { /* Desktop XL */
-  }
-
-  >div{
-    width: calc(100% - 40px);
-    height: fit-content;
-    margin-top: 0;
-    &.premium{
-      background-color: #555;
-      color: lightyellow;
-    }
-
-
-
-  }
-
-}
-
-.menu-on-left{
-  transition: all 200ms;
-  position: fixed;
-  overflow-x: visible;
-  top: var(--mdc-theme-top-bar);
-  width: 270px;
-  padding: 0;
-  left: 10px;
-  height: calc(100% - 160px);
-
-  margin-top: 1rem;
-
-  /* scale:.9 broke naviation and pointer on some devices */
-
-  &.display{
-    opacity: 0;
-  }
-  @media screen and (min-width: 1600px) {
-    margin-left:-290px;
-    left: initial;
-  }
-  @media screen and (max-width: 1440px) and (min-width: 1200px){ /* Desktop range harmonisé */
-    width: 16%;
-  }
-
-  @media (max-width: 1199px){ /* Tablet + Mobile - harmonisé */
-    display: none;
-  }
-
-  /* iPad/Iphone Landscape  https://stackoverflow.com/a/10360310 */
-  @media  only screen and (max-width:1365px) and (-webkit-min-device-pixel-ratio: 1.5) and (orientation:landscape),
-          only screen and (max-width:1365px) and (-o-min-device-pixel-ratio: 3/2) and (orientation:landscape),
-          only screen and (max-width:1365px) and (min--moz-device-pixel-ratio: 1.5) and (orientation:landscape),
-          only screen and (max-width:1365px) and (min-device-pixel-ratio: 1.5) and (orientation:landscape) {
-    display: none;
-  }
-
-  ul{
-    list-style: none;
-    padding: 0;
-    padding-top: 10px;
-    margin-top: 0px;
-    margin-left: 0px;
-    border-right: 1px solid #ddd;
-    height: fit-content;
-    overflow: auto;
-    margin-right: 10px;
-    margin-bottom: 0px;
-    &.subs{
-      display: none;
-      height: auto;
-      overflow: hidden;
-      background-color: var(--mdc-theme-appbar);
-      margin-top: 10px;
-
-    }
-
-    &::-webkit-scrollbar {
-      width: 1px;
-      height: 8px;
-      background-color: transparent; /* or add it to the track */
-    }
-
-    /* Add a thumb */
-    &::-webkit-scrollbar-thumb {
-      background: #888;
-    }
-
-    @media (max-width: 899px) {
-      -background: linear-gradient(#f7f9f9,rgba(255,255,255,.3));
-    }
-
-    li{
-      &:hover{
-        background-color: #eee;
-      }
-
-      &.selected{
-        color:#333;
-        font-weight: 500;
-        margin-left: 0;
-        border-left: 5px solid #333;
-      }
-      &.subs{
-        display: flex;
-        padding: 8px 14px;
-      }
-      &.separator {
-        border-bottom: 1px solid #aaa;
-        margin-bottom: 8px;
-        padding-bottom: 12px;
-      }
-      cursor: pointer;
-      padding: 5px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      font-size: 15px;
-      font-weight: 400;
-      line-height: 20px;
-      margin-left: 5px;
-      color: rgb(52, 53, 56);
-      b{
-        color: #333;
-        -font-weight: 400;
-      }
-      a{
-        text-decoration: none;
-        color: black;
-        margin-left: 0px;
-        span{
-          transform: translateY(6px);
+        li.subs-item:last-child:nth-child(odd) {
+          grid-column: span 2;
         }
       }
-
-      i{
-        color: var(--mdc-theme-secondary);
-      }
-
-      .icon,
-      .fa{
-        &.invisible{
-          opacity: 0;
-        }
-        margin-left: 0px;
-        margin-right: 10px;
-        width: 18px;
-        height: 18px;
-        display: inline-block;
-        border: 0px solid #eee;
-        border-radius: 14px;
-        padding-top:2px;
-        padding-left: 2px;
-        filter: grayscale(1);
-        opacity: .7;
-      }
     }
   }
 }
 
-h2.root{
-  display: none;
-  margin-left: 20px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+// PANEL CENTER - styles hérités des composants enfants (pas de styles spécifiques)
+
+// PANEL RIGHT - Sidebar
+.swipe-panel.right {
+  .sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
+
+// NOTE: h2.root supprimé - non utilisé
 
 div.product-container{
   margin-top: 0px;

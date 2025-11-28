@@ -1,0 +1,184 @@
+// ============================================================================
+// KNG TOP APPBAR - Layout container avec sticky et ombre on scroll
+// ============================================================================
+// DOIT correspondre EXACTEMENT au grid-container-3 de styles.scss :
+// grid-template-columns: 1fr var(--mdc-theme-container-width) 1fr;
+//
+// Variables utilisées :
+// - --mdc-theme-top-bar           : Hauteur de la navbar (70px)
+// - --mdc-theme-toolbox-width     : Largeur max colonne gauche (225px)
+// - --mdc-theme-container-width   : Largeur colonne centrale (fixe)
+// - --mdc-theme-right-width       : Largeur max colonne droite (420px)
+// - --mdc-theme-appbar            : Couleur de fond
+// - --mdc-theme-appbar-text       : Couleur du texte
+// ============================================================================
+
+// Variables locales
+$appbar-height: var(--mdc-theme-top-bar, 70px);
+$appbar-bg: var(--mdc-theme-appbar, rgba(227, 236, 235, 0.97));
+$appbar-text: var(--mdc-theme-appbar-text, rgba(19, 83, 20, 0.97));
+$transition-speed: 0.2s;
+
+// ============================================================================
+// MAIN CONTAINER
+// ============================================================================
+
+.kng-appbar {
+  position: fixed;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  background-color: $appbar-bg;
+  color: $appbar-text;
+  transition: box-shadow $transition-speed ease;
+
+  // État scrollé : ombre en bas
+  &.kng-appbar--scrolled {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+    transition: box-shadow .2s linear;
+  }
+
+  // Dark mode support
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--mdc-theme-primary-dark);
+    color: var(--mdc-theme-primary-dark-text);
+  }
+}
+
+// ============================================================================
+// ROWS - Utilise EXACTEMENT le même grid que grid-container-3
+// ============================================================================
+
+.kng-appbar__row {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+
+  // ========================================================================
+  // DESKTOP (≥1200px) - MÊME GRID QUE grid-container-3
+  // ========================================================================
+  grid-template-columns:
+    1fr
+    var(--mdc-theme-container-width)
+    1fr;
+
+  // Row secondaire (cachée si vide)
+  &.kng-appbar__row--secondary {
+    min-height: 0;
+
+    &:empty,
+    &:has(> :only-child:empty) {
+      display: none;
+    }
+
+    &:not(:empty) {
+      height: 40px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  // Row principale
+  &.kng-appbar__row--primary {
+    height: $appbar-height;
+    align-items: center;
+  }
+
+  // ========================================================================
+  // TABLET (600px - 1199px) - 1 colonne centrée
+  // ========================================================================
+  @media (min-width: 600px) and (max-width: 1199px) {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+
+  // ========================================================================
+  // MOBILE (≤599px) - 1 colonne
+  // ========================================================================
+  @media (max-width: 599px) {
+    grid-template-columns: 1fr;
+    padding: 0 0.5rem;
+  }
+}
+
+// ============================================================================
+// SECTIONS - MÊME COMPORTEMENT QUE .swipe-panel dans grid-container-3
+// ============================================================================
+
+.kng-appbar__section {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  // ------------------------------------------------------------------
+  // Colonne START (gauche) - Comme .swipe-panel.side
+  // Contenu aligné à DROITE, max-width: toolbox-width
+  // ------------------------------------------------------------------
+  &.kng-appbar__section--start {
+    grid-column: 1;
+    justify-content: flex-end; // Aligné à droite comme .swipe-panel.side
+    padding: 0 1rem;
+
+    > ::slotted(*) {
+      width: 100%;
+      max-width: var(--mdc-theme-toolbox-width, 225px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 1199px) {
+      display: none;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Colonne CENTER (milieu) - Comme .swipe-panel.center
+  // Prend toute la largeur de la colonne
+  // ------------------------------------------------------------------
+  &.kng-appbar__section--center {
+    grid-column: 2;
+    justify-content: flex-start;
+
+    > ::slotted(*) {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    @media (min-width: 600px) and (max-width: 1199px) {
+      grid-column: 1;
+      max-width: var(--mdc-theme-container-width);
+      margin: 0 auto;
+    }
+
+    @media (max-width: 599px) {
+      grid-column: 1;
+      justify-content: center;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Colonne END (droite) - Comme .swipe-panel.right
+  // Contenu aligné à GAUCHE, max-width: right-width
+  // ------------------------------------------------------------------
+  &.kng-appbar__section--end {
+    grid-column: 3;
+    justify-content: flex-start; // Aligné à gauche comme .swipe-panel.right
+    padding: 0 1rem;
+
+    > ::slotted(*) {
+      width: 100%;
+      max-width: var(--mdc-theme-right-width, 420px);
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    @media (max-width: 1199px) {
+      display: none;
+    }
+  }
+}

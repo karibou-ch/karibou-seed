@@ -5,25 +5,14 @@ body{
   margin-top: 0;
   background: white;
   font-size: 1rem;
-  @media (min-width: 768px) {
-    zoom:0.85;
-    transform-origin: top left;
-  }
-
-  @media (min-width: 1850px) {
-    zoom:1;
-  }
-
-  @media (min-width: 2500px) {
-    zoom:1.2;
-  }
-
+  zoom: var(--mdc-theme-body-zoom);
+  transform-origin: top left;
 }
 
 
 @import 'kng-responsive.scss';
+@import 'kng-awesome.scss';
 @import 'kng-custom-mdc-theme.scss';
-@import 'kng-custom-mdc-admin-theme.scss';
 
 @import 'kng-theme.scss';
 @import 'kng-theme-ribbon.scss';
@@ -162,3 +151,187 @@ input[type="submit"],
   border-radius: 0;
 }
 
+
+// ============================================================================
+// GRID CONTAINER 3 COLONNES - Layout Principal (STRUCTURE UNIQUEMENT)
+// Variables utilisées :
+// - --mdc-theme-top-bar         : Hauteur header (70px)
+// - --mdc-theme-toolbox-width   : Largeur max menu side (225px)
+// - --mdc-theme-container-width : Largeur center (fixe, responsive)
+// - --mdc-theme-right-width     : Largeur max sidebar right (420px)
+// - --mdc-theme-body-zoom       : Zoom du body (affecte 100vw)
+// ============================================================================
+
+.grid-container-3 {
+  display: grid;
+  width: 100%;
+  min-height: 100dvh;
+  gap: 0;
+
+  // DESKTOP (≥1200px) - 3 colonnes
+  // Side et Right prennent le reste de l'espace (1fr)
+  // Center a une taille fixe
+  grid-template-columns:
+    1fr
+    var(--mdc-theme-container-width)
+    1fr;
+  grid-template-rows: var(--mdc-theme-top-bar) 1fr auto;
+  grid-template-areas:
+    "header header header"
+    "side   center right"
+    "footer footer footer";
+
+  // Header
+  > .grid-header {
+    grid-area: header;
+    grid-column: 1 / -1;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  // Wrapper - sous-grid pour les 3 colonnes
+  > .mobile-columns-wrapper {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: subgrid;
+    -overflow: hidden;
+
+    > * { display: contents; } // Composant enfant transparent
+  }
+
+  // Footer
+  > .grid-footer {
+    grid-area: footer;
+    grid-column: 1 / -1;
+  }
+
+  // PANELS - Desktop (structure uniquement)
+  .swipe-panel {
+    -overflow-y: auto;
+
+    &.side {
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; // Contenu aligné à droite
+      padding: 1rem;
+
+      > * {
+        width: 100%;
+        max-width: var(--mdc-theme-toolbox-width);
+      }
+    }
+
+    &.center {
+      grid-column: 2;
+    }
+
+    &.right {
+      grid-column: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; // Contenu aligné à gauche
+      padding: 1rem;
+
+      > * {
+        width: 100%;
+        max-width: var(--mdc-theme-right-width);
+      }
+    }
+  }
+
+  // MOBILE (≤599px) - Swipe horizontal 3 × 100vw
+  @media (max-width: 599px) {
+    width: 100vw;
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--mdc-theme-top-bar) 1fr 60px;
+
+    > .mobile-columns-wrapper {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .swipe-panel {
+      flex: 0 0 100vw;
+      min-width: 100vw;
+      max-width: 100vw;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      padding: 1rem;
+      display: block;
+      align-items: initial;
+
+      > * {
+        width: 100%;
+        max-width: none;
+      }
+    }
+
+    > .grid-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+  }
+
+  // TABLET (600px - 1199px) - Center seul
+  @media (min-width: 600px) and (max-width: 1199px) {
+    grid-template-columns: 1fr;
+
+    > .mobile-columns-wrapper {
+      display: block;
+      overflow-y: auto;
+      > * { display: block; }
+    }
+
+    .swipe-panel.side,
+    .swipe-panel.right { display: none; }
+
+    .swipe-panel.center {
+      display: block;
+      max-width: var(--mdc-theme-container-width);
+      margin: 0 auto;
+      padding: 1rem;
+    }
+  }
+}
+
+// ============================================================================
+// INDICATEURS DE SWIPE (points de navigation mobile)
+// ============================================================================
+.swipe-indicators {
+  display: none;
+
+  @media (max-width: 599px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background: transparent;
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ccc;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        background-color: var(--mdc-theme-primary);
+        transform: scale(1.3);
+      }
+    }
+  }
+}

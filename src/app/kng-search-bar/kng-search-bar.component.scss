@@ -108,16 +108,14 @@ kng-search{
 	}
 	input{
 		outline: 0;
-		border: 1px solid #333;
-		border-radius: 25px;
-		background: var(--mdc-theme-appbar-light);
-		width:500px;
-		height: 100%;
-		max-width: fit-content;
-		max-width: calc( 100vw - 60px);
-		padding-left: 28px;
-		font-size: 17px;
-		margin: 0 5px;
+    border: 1px solid var(--mdc-theme-primary);
+    border-radius: 2rem;
+    background: var(--mdc-theme-appbar-light);
+    width: calc(100% - 2rem);
+    height: 100%;
+    padding-left: 2rem;
+    font-size: 1rem;
+    margin: .25rem;
 	}
 
 	// Themes dropdown styles

@@ -552,3 +552,134 @@
 .mdc-chip-set--choice .mdc-chip.mdc-chip--selected.mdc-ripple-upgraded {
   --mdc-ripple-fg-opacity: 0.2
 }
+
+// ============================================================================
+// STYLES .mdc-list-item - Module Admin Uniquement
+// Ces styles supportent les composants Angular MDC utilisés dans l'admin
+// ============================================================================
+
+.mdc-list-item {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  height: 48px;
+  padding: 0 16px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.mdc-list-item:focus {
+  outline: none;
+}
+
+.mdc-list-item--selected {
+  color: #423f3b;
+  color: var(--mdc-theme-primary, #423f3b);
+}
+
+.mdc-list-item--selected .mdc-list-item__graphic {
+  color: #423f3b;
+  color: var(--mdc-theme-primary, #423f3b);
+}
+
+// Graphic (icône gauche)
+.mdc-list-item__graphic {
+  margin-left: 0;
+  margin-right: 32px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  background-color: transparent;
+  color: hsla(0,0%,100%,.5);
+  color: var(--mdc-theme-text-icon-on-background, hsla(0,0%,100%,.5));
+}
+
+.mdc-list .mdc-list-item__graphic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  fill: currentColor;
+}
+
+// Meta (contenu droite)
+.mdc-list-item__meta {
+  margin-left: auto;
+  margin-right: 0;
+  color: hsla(0,0%,100%,.5);
+  color: var(--mdc-theme-text-hint-on-background, hsla(0,0%,100%,.5));
+}
+
+.mdc-list-item__meta:not(.material-symbols-outlined) {
+  font-family: Roboto, sans-serif;
+  font-size: .75rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: .03333333em;
+}
+
+// Text
+.mdc-list-item__text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.mdc-list-item__primary-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: 0;
+  line-height: normal;
+  margin-bottom: -20px;
+  display: block;
+}
+
+.mdc-list-item__secondary-text {
+  font-family: Roboto, sans-serif;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: .01785714em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: 0;
+  line-height: normal;
+  display: block;
+  color: hsla(0,0%,100%,.7);
+  color: var(--mdc-theme-text-secondary-on-background, hsla(0,0%,100%,.7));
+}
+
+// Divider
+.mdc-list-divider {
+  height: 0;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid;
+  border-bottom-color: hsla(0,0%,100%,.2);
+}
+
+// Dense variant
+.mdc-list--dense {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: .812rem;
+}
+
+.mdc-list--dense .mdc-list-item {
+  height: 40px;
+}
+
+.mdc-list--dense .mdc-list-item__graphic {
+  margin-left: 0;
+  margin-right: 36px;
+  width: 20px;
+  height: 20px;
+}
+
+// Links
+a.mdc-list-item {
+  color: inherit;
+  text-decoration: none;
+}

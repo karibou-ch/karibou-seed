@@ -1,13 +1,4 @@
 
-mdc-snackbar{
-  z-index: 5;
-}
-
-mdc-list{
-  mdc-text-field{
-    margin-top: -24px;
-  }
-}
 
 .mdc-list{
   list-style: none;
@@ -98,13 +89,6 @@ mdc-list{
 
 .mdc-dialog-scroll-lock .mdc-top-app-bar{
     top: 0!important;
-}
-
-
-.mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background,
-.mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background{
-  background-color:var(--mdc-theme-primary);
-  border-color:var(--mdc-theme-primary);
 }
 
 .ng-valid[required], .ng-valid.required  {

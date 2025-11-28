@@ -1,0 +1,17 @@
+// ============================================================================
+// Web Awesome - Styles globaux pour les composants wa-*
+// ============================================================================
+// Note: ::part() ne peut PAS avoir de sélecteurs descendants (> *)
+// On ne peut styliser QUE le part lui-même
+// ============================================================================
+
+
+span[slot='start'] {
+  margin-inline-end: 0.25em;
+}
+
+//
+// kng-top-appbar
+wa-button::part(base) {
+  background-color: white;
+}

@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, Injectable, ErrorHandler, NgZone } from '@angular/core';
+import { LOCALE_ID, NgModule, Injectable, ErrorHandler, NgZone, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 
@@ -178,6 +178,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     { provide: ErrorHandler, useClass: GlobalErrorHandler},
     { provide: RouteReuseStrategy, useClass: CacheRouteReuseStrategy }
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

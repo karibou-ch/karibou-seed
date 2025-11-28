@@ -30,6 +30,8 @@
   /* 🎯 SYSTÈME GLOBAL (conservée) */
   --mdc-theme-top-bar: 70px;                  /* Hauteur navbar */
   --mdc-theme-toolbox-width: 225px;           /* Dialog menu width */
+  --mdc-theme-right-width: minmax(100%, 300px);           /* Sidebar width */
+  --mdc-theme-body-zoom: 1;                 /* adaptative body zoom */
 }
 
 /* ATTENTION : var() ne fonctionne PAS dans @media queries !
@@ -63,6 +65,7 @@
     --mdc-theme-dlg-width: 100%;
     --mdc-theme-container-width: 100%;        /* ✅ CONSERVER pour vraies tablettes */
     --mdc-theme-dlg-container-width: 95%;    /* ✅ CONSERVER pour vraies tablettes */
+    --mdc-theme-body-zoom: 0.85;
   }
 }
 
@@ -71,6 +74,7 @@
   :root {
     --mdc-theme-container-width: 950px;        /* ✅ MIEUX ADAPTÉ */
     --mdc-theme-dlg-container-width: 850px;    /* ✅ UTILISE MIEUX L'ESPACE */
+    --mdc-theme-body-zoom: 0.85;
   }
 }
 
@@ -81,6 +85,7 @@
     --mdc-theme-container-width: 930px;        /* Containers: standard 930px */
     --mdc-theme-dlg-width: 1200px;            /* Dialogues: ✅ comme demandé */
     --mdc-theme-dlg-container-width: 900px;   /* Dialogues: ✅ comme demandé */
+    --mdc-theme-body-zoom: 0.85;
   }
 }
 
@@ -90,6 +95,7 @@
     --mdc-theme-container-width: 930px;        /* Containers: standard 930px */
     --mdc-theme-dlg-width: 1170px;            /* Dialogues: backdrop étendu */
     --mdc-theme-dlg-container-width: 930px;   /* Dialogues: container standard */
+    --mdc-theme-body-zoom: 0.85;
   }
 }
 
@@ -108,6 +114,7 @@
     --mdc-theme-container-width: 1170px;       /* Containers: étendu 1170px */
     --mdc-theme-dlg-width: 1220px;            /* Dialogues: backdrop large */
     --mdc-theme-dlg-container-width: 1170px;  /* Dialogues: container étendu */
+    --mdc-theme-body-zoom: 1.2;
   }
 }
 
