@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService, User, OrderCustomerInvoices, Order, LoaderService } from 'kng2-core';
-import { MdcSnackbar } from '@angular-mdc/web';
 
-import { i18n } from '../common';
+import { i18n, NotifyService } from '../common';
 
 
 @Component({
