@@ -3,8 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User, UserService, Config, LoaderService } from 'kng2-core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { KngInputValidator } from '../shared';
-import { i18n } from '../common';
-import { MdcSnackbar } from '@angular-mdc/web';
+import { i18n, NotifyService } from '../common';
 
 @Component({
   selector: 'kng-user-password',
@@ -29,7 +28,7 @@ export class UserPasswordComponent {
     private $fb: FormBuilder,
     private $user: UserService,
     private $route: ActivatedRoute,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $loader: LoaderService
   ) {
 

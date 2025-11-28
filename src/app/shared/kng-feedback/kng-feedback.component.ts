@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
 import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem, OrderCustomerInvoices, CartSubscription } from 'kng2-core';
-import { KngNavigationStateService, i18n } from '../../common';
-import { MdcSnackbar } from '@angular-mdc/web';
+import { KngNavigationStateService, i18n, NotifyService } from '../../common';
 
 import { combineLatest, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
@@ -186,7 +185,7 @@ export class KngFeedbackComponent implements OnInit {
     public $cart: CartService,
     public  $i18n: i18n,
     private $navigation: KngNavigationStateService,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $user: UserService,
     private $order: OrderService,
     private $cdr: ChangeDetectorRef,

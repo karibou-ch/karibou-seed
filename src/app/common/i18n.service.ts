@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Config, ConfigService } from 'kng2-core';
-import { MdcSnackbarConfig } from '@angular-mdc/web';
+import { NotifyOptions } from './notify.service';
 
 
 /**
@@ -12,8 +12,8 @@ import { MdcSnackbarConfig } from '@angular-mdc/web';
 })
 export class i18n  {
 
-  public snackOpt: MdcSnackbarConfig = {
-    timeoutMs: 5000
+  public snackOpt: NotifyOptions = {
+    duration: 5000
   };
 
 

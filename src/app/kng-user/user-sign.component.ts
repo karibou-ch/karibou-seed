@@ -3,9 +3,8 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { KngInputValidator } from '../shared';
-import { KngNavigationStateService, i18n } from '../common';
+import { KngNavigationStateService, i18n, NotifyService } from '../common';
 
-import { MdcSnackbar } from '@angular-mdc/web';
 import { Config, User, UserService, LoaderService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 import { KngPaymentComponent } from '../common/kng-payment/kng-user-payment.component';
@@ -99,7 +98,7 @@ export class UserSignComponent {
     private $fb: FormBuilder,
     private $location: Location,
     private $navigation: KngNavigationStateService,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $metric: MetricsService,
     private $loader: LoaderService
   ) {

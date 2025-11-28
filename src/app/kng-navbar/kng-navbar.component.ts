@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewEncapsulation, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   CartService,
@@ -14,8 +14,8 @@ import {
   CalendarService
 } from 'kng2-core';
 
-import { KngNavigationStateService, i18n } from '../common';
-import { MdcSnackbar, MdcTopAppBarSection } from '@angular-mdc/web';
+import { KngNavigationStateService, i18n, NotifyService } from '../common';
+import { MdcTopAppBarSection } from '@angular-mdc/web';
 
 import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';
@@ -28,11 +28,14 @@ import { formatDate } from '@angular/common';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class KngNavbarComponent implements OnInit, OnDestroy {
+export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   //
   // used top open login form ones
   static ASK_FOR_LOGIN: boolean;
+
+  // ViewChild pour le mobile swipe wrapper
+  @ViewChild('mobileWrapper') mobileWrapper: ElementRef<HTMLElement>;
 
 
   //
@@ -65,7 +68,24 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   currentShippingDay: Date;
   isFixed = true;
   displayIosInstall: boolean;
-  displayLogin:boolean;
+  displayLogin: boolean;
+  drawerOpen = false;
+
+  /**
+   * Ferme le drawer et déclenche la détection de changements
+   */
+  closeDrawer(): void {
+    this.drawerOpen = false;
+    this.$cdr.markForCheck();
+  }
+
+  /**
+   * Toggle le drawer
+   */
+  toggleDrawer(): void {
+    this.drawerOpen = !this.drawerOpen;
+    this.$cdr.markForCheck();
+  }
   subscription : Subscription;
   scrollDirection = 0;
   //
@@ -86,7 +106,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
     private $router: Router,
     private $loader: LoaderService,
     public $navigation: KngNavigationStateService,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $cdr: ChangeDetectorRef,
     private $calendar: CalendarService
   ) {
@@ -142,6 +162,18 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // FIXME, better to use declarative pipe(takeUntil(destroyed$))
     this.subscription.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+    // Enregistrer le wrapper mobile dans le service de navigation pour le swipe
+    if (this.mobileWrapper?.nativeElement) {
+      this.$navigation.setMobileWrapper(this.mobileWrapper.nativeElement);
+
+      // Scroll vers le center par défaut sur mobile
+      setTimeout(() => {
+        this.$navigation.scrollToCenter();
+      }, 100);
+    }
   }
 
   ngOnInit() {

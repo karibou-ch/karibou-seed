@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ViewEncapsulation } from '@angular/core';
 import { UserService, User } from 'kng2-core';
-import { MdcSnackbar } from '@angular-mdc/web';
-import { i18n } from '../../common';
+import { i18n, NotifyService } from '../../common';
 
 import { timer ,  Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -40,7 +39,7 @@ export class KngMailConfirmationComponent implements OnInit, OnDestroy {
   constructor(
     private $i18n: i18n,
     private $user: UserService,
-    private $snack: MdcSnackbar
+    private $snack: NotifyService
   ) {
 
   }

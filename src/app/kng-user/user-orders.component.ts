@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order, OrderService, User, OrderItem, Category, ProductService,
           EnumCancelReason, CartService, CartItem, EnumFulfillments, PhotoService, Product, LoaderService } from 'kng2-core';
-import { MdcSnackbar } from '@angular-mdc/web';
 
 import { switchMap } from 'rxjs/operators';
-import { i18n } from '../common';
+import { i18n, NotifyService } from '../common';
 import { forkJoin } from 'rxjs';
 
 interface ScoredItem {
@@ -55,7 +54,7 @@ export class UserOrdersComponent implements OnInit {
     private $order: OrderService,
     private $products: ProductService,
     private $photos: PhotoService,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $loader: LoaderService
   ) {
     // ✅ SYNCHRONE: Récupération immédiate des données cached

@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
-import { i18n, KngNavigationStateService, KngUtils } from '../../common';
+import { i18n, KngNavigationStateService, KngUtils, NotifyService } from '../../common';
 import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
-import { MdcSnackbar } from '@angular-mdc/web';
 import { CheckoutCtx } from '../kng-cart-items/kng-cart-items.component';
 import { CartSubscription } from 'kng2-core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -73,7 +72,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     private $metric: MetricsService,
     private $order: OrderService,
     private $stripe: StripeService,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $user: UserService,
     private $route: ActivatedRoute,
     private $router: Router,

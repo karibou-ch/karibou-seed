@@ -2,9 +2,6 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MdcSnackbar } from '@angular-mdc/web';
-
-
 import { mergeMap, filter } from 'rxjs/operators';
 
 // import { forkJoin } from 'rxjs/observable/forkJoin';
@@ -12,7 +9,7 @@ import { mergeMap, filter } from 'rxjs/operators';
 // import { merge } from 'rxjs/observable/merge';
 
 
-import { i18n } from '../common';
+import { i18n, NotifyService } from '../common';
 
 
 import {
@@ -63,7 +60,7 @@ export class KngDocumentComponent implements OnInit {
     public $document: DocumentService,
     public $route: ActivatedRoute,
     public $router: Router,
-    public $snack: MdcSnackbar,
+    public $snack: NotifyService,
     private $loader: LoaderService
   ) {
 

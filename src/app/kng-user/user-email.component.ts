@@ -3,8 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User, UserService, Config, LoaderService } from 'kng2-core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { KngInputValidator } from '../shared';
-import { i18n, KngNavigationStateService } from '../common';
-import { MdcSnackbar } from '@angular-mdc/web';
+import { i18n, KngNavigationStateService, NotifyService } from '../common';
 
 @Component({
   selector: 'kng-user-email',
@@ -32,7 +31,7 @@ export class UserEmailComponent {
     private $user: UserService,
     private $route: ActivatedRoute,
     private $navigation: KngNavigationStateService,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $loader: LoaderService
   ) {
     // ✅ SYNCHRONE: Récupération immédiate des données cached

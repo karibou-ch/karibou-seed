@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { User, UserService, LoaderService } from 'kng2-core';
 import { ActivatedRoute } from '@angular/router';
-import { i18n } from '../../common';
-import { MdcSnackbar } from '@angular-mdc/web';
+import { i18n, NotifyService } from '../../common';
 
 @Component({
   selector: 'kng-user-reminder',
@@ -58,7 +57,7 @@ export class KngUserReminderComponent implements OnInit {
     public  $i18n: i18n,
     private $user: UserService,
     private $route: ActivatedRoute,
-    private $snack: MdcSnackbar,
+    private $snack: NotifyService,
     private $loader: LoaderService
   ) {
     // ✅ SYNCHRONE: Récupération immédiate des données cached
