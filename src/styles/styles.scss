@@ -196,7 +196,10 @@ input[type="submit"],
     grid-row: 2;
     display: grid;
     grid-template-columns: subgrid;
-    -overflow: hidden;
+    // NOTE: overflow: hidden a été supprimé car il empêche position: sticky
+    // des éléments enfants (ex: menu-panel sticky). Les éléments sticky
+    // nécessitent un ancêtre scrollable direct, overflow:hidden casse ce
+    // comportement en créant un nouveau contexte de scroll.
 
     > * { display: contents; } // Composant enfant transparent
   }
@@ -209,7 +212,10 @@ input[type="submit"],
 
   // PANELS - Desktop (structure uniquement)
   .swipe-panel {
-    -overflow-y: auto;
+    // NOTE: overflow-y: auto désactivé car il empêche position: sticky
+    // des éléments enfants. Le scroll vertical est géré au niveau body/html.
+    // Activer overflow-y crée un nouveau contexte de scroll qui casse le
+    // comportement sticky (ex: menu-panel sticky).
 
     &.side {
       grid-column: 1;
@@ -252,9 +258,12 @@ input[type="submit"],
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
+      scroll-padding-inline: 1rem;  // Compense le padding des panels pour snap précis
+      scroll-behavior: smooth;      // Transitions fluides lors du snap
       scrollbar-width: none;
       &::-webkit-scrollbar { display: none; }
+      // NOTE: -webkit-overflow-scrolling: touch supprimé (legacy iOS)
+      // Peut interférer avec scroll-snap moderne
     }
 
     .swipe-panel {
