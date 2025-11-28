@@ -683,3 +683,50 @@ a.mdc-list-item {
   color: inherit;
   text-decoration: none;
 }
+
+// ============================================================================
+// VALIDATION FORMULAIRES MDC - Admin Uniquement
+// ============================================================================
+
+.ng-valid[required], .ng-valid.required {
+  mdc-floating-label {
+    color: inherit;
+  }
+}
+
+.ng-invalid:not(form):not(.mdc-text-field--focused):not(.ng-untouched) {
+  mdc-floating-label {
+    color: red !important;
+  }
+  
+  input,
+  .mdc-text-field__input {
+    border-bottom-color: red !important;
+    border-width: 2px;
+  }
+
+  input,
+  .mdc-text-field__input::placeholder {
+    color: red;
+  }
+}
+
+// ============================================================================
+// MDC FAB - Admin/Document Uniquement
+// ============================================================================
+
+.mdc-fab {
+  color: var(--mdc-theme-secondary-text) !important;
+  background: var(--mdc-theme-secondary) !important;
+  
+  &.text-primary {
+    // color: var(--mdc-theme-primary-text);
+  }
+
+  &.bottom-right {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    z-index: 2;
+  }
+}
