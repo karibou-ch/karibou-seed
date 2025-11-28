@@ -51,7 +51,6 @@
   color: #333;
   display: flex;
   flex-wrap: wrap;
-  width: calc(30% - 0px);
   min-height: 100px;
   height: 100%;
   overflow: hidden;
@@ -316,6 +315,7 @@
   position: relative;
   padding: 16px 0 0;
   margin-top: 5px;
+  width: 100%;
 
 
   .form__field {
@@ -367,6 +367,26 @@
     padding-bottom: 6px;
     border-bottom: 2px solid var(--mdc-theme-primary);
   }
+
+  // Styles d'erreur pour validation
+  &.error .form__field {
+    border-bottom-color: red;
+  }
+
+  &.error .form__label {
+    color: red;
+  }
+
+  .form__field.ng-invalid.ng-touched,
+  .form__field.ng-invalid.ng-dirty {
+    border-bottom-color: red;
+  }
+
+  .form__field.ng-invalid.ng-touched ~ .form__label,
+  .form__field.ng-invalid.ng-dirty ~ .form__label {
+    color: red;
+  }
+
   input:-internal-autofill-selected,
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset !important; /* Masque le fond automatique */
