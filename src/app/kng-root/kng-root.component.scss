@@ -1,4 +1,26 @@
-.root-container {
+// ============================================================================
+// HOST - Le composant devient transparent pour participer au layout parent
+// ============================================================================
+:host {
+  display: contents; // Transparent sur tous les devices
+}
+
+// ============================================================================
+// PANEL SIDE - Vide pour l'instant
+// ============================================================================
+.swipe-panel.side {
+  .root-menu-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+// ============================================================================
+// PANEL CENTER - Contenu principal
+// ============================================================================
+.swipe-panel.center {
+  .root-container {
 
 //
 // BOX INFO
@@ -150,6 +172,16 @@ button.goto{
   line-height: 33px;
 }
 
+  } // Fermeture .root-container
+} // Fermeture .swipe-panel.center
 
-
+// ============================================================================
+// PANEL RIGHT - Vide pour l'instant
+// ============================================================================
+.swipe-panel.right {
+  .root-sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
