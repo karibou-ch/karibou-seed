@@ -1,22 +1,43 @@
-div.content{
-  display: flex;
-  flex-flow: column wrap;
-  width: 100%;
+// ============================================================================
+// HOST - Le composant devient transparent pour participer au layout parent
+// ============================================================================
+:host {
+  display: contents; // Transparent sur tous les devices
+}
 
-  justify-content: center;
-  line-height: 1.4;
+// ============================================================================
+// PANEL SIDE - Vide pour l'instant
+// ============================================================================
+.swipe-panel.side {
+  .shops-menu-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
 
-  flex: 1 0 100vw;
+// ============================================================================
+// PANEL CENTER - Liste des boutiques
+// ============================================================================
+.swipe-panel.center {
+  div.content {
+    display: flex;
+    flex-flow: column wrap;
+    width: 100%;
 
-  line-height: 1.3em;
-  font-size: 1.2em;
-  font-weight: 200;
-  font-style: normal;
-  letter-spacing: -.003em;
+    justify-content: center;
+    line-height: 1.4;
 
-  margin-top: 10px;
-  margin-bottom: 100px;
-  section.header{
+    line-height: 1.3em;
+    font-size: 1.2em;
+    font-weight: 200;
+    font-style: normal;
+    letter-spacing: -.003em;
+
+    margin-top: 10px;
+    margin-bottom: 100px;
+    
+    section.header {
 
     padding-left: 10px;
     margin: 10px auto;
@@ -102,4 +123,16 @@ div.content{
 
   }
   
+  } // Fermeture .content
+} // Fermeture .swipe-panel.center
+
+// ============================================================================
+// PANEL RIGHT - Vide pour l'instant
+// ============================================================================
+.swipe-panel.right {
+  .shops-sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
