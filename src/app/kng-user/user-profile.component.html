@@ -1,45 +1,61 @@
-<div class="user-container">
-  <section>
-      <h1 class="text-capitalize">{{user.display()}}
-        <span [hidden]="!user.isPremium()"><i class="material-symbols-outlined text-secondary">grade</i><i class="material-symbols-outlined text-secondary large">grade</i></span>
-      </h1>
-      <div class="title" >{{i18n[locale].profile_title}} {{user.created|date:'MMM d, y':'':$i18n.locale}}</div>
-      <p class="resume ">
-        <!-- 34 commandes, 5 problèmes, X X X X -->
-        &nbsp;
-        <a href="javascript:;" (click)="doLogout()" style="float:left" class="link" >
-          {{$i18n[locale].user_logout}}
-        </a>
+<!-- ============================================================================ -->
+<!-- PANEL SIDE - Vide pour l'instant                                            -->
+<!-- ============================================================================ -->
+<div class="swipe-panel side">
+  <div class="user-menu-panel">
+    <!-- Espace disponible pour menu latéral -->
+  </div>
+</div>
 
-      </p>
+<!-- ============================================================================ -->
+<!-- PANEL CENTER - Contenu principal (profil, formulaires)                      -->
+<!-- ============================================================================ -->
+<div class="swipe-panel center">
 
-      <img src="/assets/img/k-user-pink.png"/>
+  <div class="user-container">
+    <section>
+        <h1 class="text-capitalize">{{user.display()}}
+          <span [hidden]="!user.isPremium()"><i class="material-symbols-outlined text-secondary">grade</i><i class="material-symbols-outlined text-secondary large">grade</i></span>
+        </h1>
+        <div class="title" >{{i18n[locale].profile_title}} {{user.created|date:'MMM d, y':'':$i18n.locale}}</div>
+        <p class="resume ">
+          <!-- 34 commandes, 5 problèmes, X X X X -->
+          &nbsp;
+          <a href="javascript:;" (click)="doLogout()" style="float:left" class="link" >
+            {{$i18n[locale].user_logout}}
+          </a>
 
-  </section>
+        </p>
 
-  <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()||true"></kng-mail-confirmation>
+        <img src="/assets/img/k-user-pink.png"/>
 
-  <div class="breaker small "></div>
+    </section>
 
-  <div class="menu">
-    <div class="elem orders" (click)="menuAction='subscription'" [routerLink]="['./subscriptions']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_subscription}}</div>
-    <div class="elem orders" (click)="menuAction='orders'" [routerLink]="['./orders']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_order}}</div>
-    <div class="elem invoices" (click)="menuAction='invoices'" [routerLink]="['./invoices']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_invoices}}</div>
-    <div class="elem reminder" (click)="menuAction='reminder'" [routerLink]="['./reminder']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_reminder}}</div>
-    <div class="elem email" (click)="menuAction='email'" [routerLink]="['./email']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_account}}</div>
-    <div class="elem password" (click)="menuAction='password'" [routerLink]="['./password']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_password}}</div>
+    <kng-mail-confirmation [user]="user" *ngIf="!user.isReady()||true"></kng-mail-confirmation>
+
+    <div class="breaker small "></div>
+
+    <div class="menu">
+      <div class="elem orders" (click)="menuAction='subscription'" [routerLink]="['./subscriptions']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_subscription}}</div>
+      <div class="elem orders" (click)="menuAction='orders'" [routerLink]="['./orders']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_order}}</div>
+      <div class="elem invoices" (click)="menuAction='invoices'" [routerLink]="['./invoices']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_invoices}}</div>
+      <div class="elem reminder" (click)="menuAction='reminder'" [routerLink]="['./reminder']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_reminder}}</div>
+      <div class="elem email" (click)="menuAction='email'" [routerLink]="['./email']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_account}}</div>
+      <div class="elem password" (click)="menuAction='password'" [routerLink]="['./password']" routerLinkActive="active" #rla="routerLinkActive">{{i18n[locale].profile_password}}</div>
+    </div>
+
+    <!-- ROUTER OUTLET -->
+    <router-outlet></router-outlet>
+
   </div>
 
-  <!-- USING CONTAINER SWITCH CONTENT BASED ON MENU ACTION -->
-  <!--
-  <container-element [ngSwitch]="menuAction">
-    <div *ngSwitchCase="'orders'">order</div>
-    <div *ngSwitchCase="'invoices'">invoices</div>
-    <div *ngSwitchCase="'reminder'">reminder</div>
-    <div *ngSwitchCase="'email'">email</div>
-    <div *ngSwitchCase="'password'">password</div>
-  </container-element> -->
+</div>
 
-  <router-outlet></router-outlet>
-
+<!-- ============================================================================ -->
+<!-- PANEL RIGHT - Sidebar (vide pour l'instant)                                 -->
+<!-- ============================================================================ -->
+<div class="swipe-panel right">
+  <div class="user-sidebar-panel">
+    <!-- Espace disponible pour des infos supplémentaires -->
+  </div>
 </div>

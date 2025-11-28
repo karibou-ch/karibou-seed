@@ -23,17 +23,19 @@
       </p>
 
       <form [formGroup]="sign" (submit)="onSign()">
-          <mdc-text-field  [label]="$i18n[locale].user_email" autocomplete autofocus fullwidth  [type]="authlink" formControlName="email">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>person</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" autocomplete autofocus [type]="authlink" [placeholder]="$i18n[locale].user_email" formControlName="email" />
+            <label class="form__label">{{$i18n[locale].user_email}}</label>
+          </div>
           <kng-control-messages [control]="sign.controls.email"></kng-control-messages>
 
-          <mdc-text-field  [label]="$i18n[locale].user_password" autocomplete fullwidth  type="password" formControlName="password">
-            <span class="material-symbols-outlined"  trailing>vpn_key</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" autocomplete type="password" [placeholder]="$i18n[locale].user_password" formControlName="password" />
+            <label class="form__label">{{$i18n[locale].user_password}}</label>
+          </div>
           <kng-control-messages [control]="sign.controls.password"></kng-control-messages>
 
-          <button primary mdc-button unelevated  [disabled]="!sign.valid" class="align-center">
+          <button class="button primary" [disabled]="!sign.valid">
             <span class="material-symbols-outlined">account_circle</span>
             <span >Login</span>
           </button>
@@ -47,11 +49,12 @@
     <div class="inner" *ngIf="askAction=='recover'">
       <h3 >{{i18n[locale].login_reset_password}}</h3>
       <form [formGroup]="recover" (submit)="onRecover()">
-          <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <span class="material-symbols-outlined" mdcTextFieldIcon trailing>email</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" type="email" [placeholder]="$i18n[locale].user_email" formControlName="email" />
+            <label class="form__label">{{$i18n[locale].user_email}}</label>
+          </div>
           <kng-control-messages [control]="recover.controls.email"><span >{{i18n[locale].login_wait_msg}}</span></kng-control-messages>
-          <button primary  mdc-button unelevated  [disabled]="!recover.valid || sendRecover" class="align-center">
+          <button class="button primary" [disabled]="!recover.valid || sendRecover">
             <span class="material-symbols-outlined">account_circle</span>
             <span >{{sendRecover ? i18n[locale].action_reset_done : i18n[locale].action_reset}}</span>
           </button>
@@ -62,41 +65,51 @@
     <!-- SIGNUP -->
     <div class="inner" *ngIf="askAction=='signup'">
       <form [formGroup]="signup" (submit)="onSignup()">
-          <mdc-text-field  [label]="$i18n[locale].user_name" fullwidth type="text" formControlName="name">
-            <span tabindex="-1" class="material-symbols-outlined "  trailing>person</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" type="text" [placeholder]="$i18n[locale].user_name" formControlName="name" />
+            <label class="form__label">{{$i18n[locale].user_name}}</label>
+          </div>
           <kng-control-messages [control]="signup.controls.name"></kng-control-messages>
-          <mdc-text-field  [label]="$i18n[locale].user_firstname" fullwidth type="text" formControlName="forname">
-          </mdc-text-field>
+          
+          <div class="groupfield">
+            <input class="form__field" type="text" [placeholder]="$i18n[locale].user_firstname" formControlName="forname" />
+            <label class="form__label">{{$i18n[locale].user_firstname}}</label>
+          </div>
           <kng-control-messages [control]="signup.controls.forname"></kng-control-messages>
 
-          <mdc-text-field  [label]="$i18n[locale].user_postalcode" fullwidth type="text" formControlName="postalcode" [hidden]="mandatory.minimal">
-          </mdc-text-field>
+          <div class="groupfield" [hidden]="mandatory.minimal">
+            <input class="form__field" type="text" [placeholder]="$i18n[locale].user_postalcode" formControlName="postalcode" />
+            <label class="form__label">{{$i18n[locale].user_postalcode}}</label>
+          </div>
           <kng-control-messages [hidden]="mandatory.minimal" [control]="signup.controls.postalcode"></kng-control-messages>
 
-          <mdc-text-field  [label]="$i18n[locale].user_phone" fullwidth  type="text" formControlName="phone" >
-            </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" type="text" [placeholder]="$i18n[locale].user_phone" formControlName="phone" />
+            <label class="form__label">{{$i18n[locale].user_phone}}</label>
+          </div>
           <p class="help-block phone-hide" >
             {{i18n[locale].signup_phone}}
           </p>
 
-
-          <mdc-text-field  [label]="$i18n[locale].user_email" fullwidth formControlName="email">
-            <span tabindex="-1" class="material-symbols-outlined "   trailing>email</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" type="email" [placeholder]="$i18n[locale].user_email" formControlName="email" />
+            <label class="form__label">{{$i18n[locale].user_email}}</label>
+          </div>
           <kng-control-messages [control]="signup.controls.email"></kng-control-messages>
 
-          <mdc-text-field  [label]="$i18n[locale].user_password" fullwidth type="password" formControlName="password">
-            <span tabindex="-1" class="material-symbols-outlined "  trailing>vpn_key</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" type="password" [placeholder]="$i18n[locale].user_password" formControlName="password" />
+            <label class="form__label">{{$i18n[locale].user_password}}</label>
+          </div>
           <kng-control-messages [control]="signup.controls.password"></kng-control-messages>
 
-          <mdc-text-field  [label]="$i18n[locale].user_repassword" fullwidth type="password" formControlName="confirm">
-            <span tabindex="-1" class="material-symbols-outlined "  trailing>vpn_key</span>
-          </mdc-text-field>
+          <div class="groupfield">
+            <input class="form__field" type="password" [placeholder]="$i18n[locale].user_repassword" formControlName="confirm" />
+            <label class="form__label">{{$i18n[locale].user_repassword}}</label>
+          </div>
           <kng-control-messages [control]="signup.controls.confirm"></kng-control-messages>
 
-          <button primary  mdc-button unelevated  [disabled]="!signup.valid" class="align-center">
+          <button class="button primary" [disabled]="!signup.valid">
             <span tabindex="-1" class="material-symbols-outlined">account_circle</span>
             <span >{{i18n[locale].signup_create}}</span>
           </button>

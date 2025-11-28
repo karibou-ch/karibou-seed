@@ -7,24 +7,30 @@
     <fieldset>
       <legend>Vos informations privées</legend>
 
-      <mdc-text-field fullwidth  [label]="$i18n[locale].user_name" type="text" formControlName="name" [ngModel]="user.name.familyName">
-        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >face</span>
-      </mdc-text-field>
+      <div class="groupfield">
+        <input class="form__field" type="text" [placeholder]="$i18n[locale].user_name" formControlName="name" [ngModel]="user.name.familyName" />
+        <label class="form__label">{{$i18n[locale].user_name}}</label>
+      </div>
 
-      <mdc-text-field fullwidth  [label]="$i18n[locale].user_firstname" type="text" formControlName="forname" [ngModel]="user.name.givenName">
-      </mdc-text-field>
+      <div class="groupfield">
+        <input class="form__field" type="text" [placeholder]="$i18n[locale].user_firstname" formControlName="forname" [ngModel]="user.name.givenName" />
+        <label class="form__label">{{$i18n[locale].user_firstname}}</label>
+      </div>
 
-      <mdc-text-field fullwidth  [label]="$i18n[locale].user_phone" type="text" formControlName="phone" [ngModel]="phone">
-        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing>phone</span>
-      </mdc-text-field>
+      <div class="groupfield">
+        <input class="form__field" type="text" [placeholder]="$i18n[locale].user_phone" formControlName="phone" [ngModel]="phone" />
+        <label class="form__label">{{$i18n[locale].user_phone}}</label>
+      </div>
 
-      <mdc-text-field fullwidth  [label]="$i18n[locale].user_email" type="email" formControlName="email" [ngModel]="user.email.address">
-      </mdc-text-field>
+      <div class="groupfield">
+        <input class="form__field" type="email" [placeholder]="$i18n[locale].user_email" formControlName="email" [ngModel]="user.email.address" />
+        <label class="form__label">{{$i18n[locale].user_email}}</label>
+      </div>
 
-
-      <mdc-text-field fullwidth  [label]="$i18n[locale].user_confirm_password"  type="password" formControlName="password">
-        <span class="material-symbols-outlined primary" mdcTextFieldIcon trailing >vpn_key</span>
-      </mdc-text-field>
+      <div class="groupfield">
+        <input class="form__field" type="password" [placeholder]="$i18n[locale].user_confirm_password" formControlName="password" />
+        <label class="form__label">{{$i18n[locale].user_confirm_password}}</label>
+      </div>
 
       <div class="bottom">
         <button class="button cta" [disabled]="!$profile.valid">
