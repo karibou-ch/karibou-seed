@@ -25,8 +25,6 @@ import { ProductSwipeComponent,
          ProductTinyComponent} from '../kng-product';
 import { CommonModule } from '@angular/common';
 import { Kng2CoreModule } from 'kng2-core';
-import { KngSharedMdcModule } from './shared.mdc.module';
-
 
 import { appRoutes } from './shared.routes';
 import { KngProductLinkComponent } from './kng-product-link/kng-product-link.component';
@@ -43,7 +41,6 @@ import { KngBusinessOptionComponent } from './kng-business-option/kng-business-o
     CommonModule,
     RouterModule,
     Kng2CoreModule,
-    KngSharedMdcModule,
     KngCommonModule,
     RouterModule.forChild(appRoutes),
   ],
