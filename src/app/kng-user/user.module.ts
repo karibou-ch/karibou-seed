@@ -23,7 +23,6 @@ import { UserMdcModule } from './user-mdc.module';
 import { IsAuthenticatedGard } from '../common';
 import { KngCommonModule } from '../common/common.module';
 import { KngUserReminderComponent } from '../shared/kng-user-reminder/kng-user-reminder.component';
-import { MdcChipsModule } from '@angular-mdc/web';
 import { UserInvoicesComponent } from './user-invoices.component';
 import { KngInvoiceComponent } from '../kng-invoice/kng-invoice.component';
 //
@@ -78,13 +77,12 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     UserMdcModule,
-    MdcChipsModule,
     KngSharedModule,
     KngCommonModule,
     RouterModule.forChild(routes)
   ],
   exports: [
-    MdcChipsModule, AddressComponent, CardComponent, KngInvoiceComponent
+    AddressComponent, CardComponent, KngInvoiceComponent
   ],
   declarations: [
     AddressComponent,
