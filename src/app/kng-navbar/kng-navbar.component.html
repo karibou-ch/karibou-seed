@@ -117,7 +117,7 @@
   <!--   - 3 panels pour swipe mobile                                           -->
   <!--   - ou structure libre                                                    -->
   <!-- ========================================================================== -->
-  <div class="mobile-columns-wrapper" #mobileWrapper #scrollContent>
+  <div class="mobile-columns-wrapper" #mobileWrapper #scrollContent (scroll)="onScrollToSnap($event)">
     <ng-content></ng-content>
   </div>
 

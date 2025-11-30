@@ -448,4 +448,23 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     marketplace.open = true;
 
   }
+
+  /**
+   * Détecte le panel actif après un swipe et émet le signal via le service
+   * Panel index: 0=side, 1=center, 2=custom, 3=right
+   */
+  private swipeTimeout: any;
+  onScrollToSnap($event: Event) {
+    // Debounce pour éviter les appels multiples pendant le scroll
+    clearTimeout(this.swipeTimeout);
+    this.swipeTimeout = setTimeout(() => {
+      const wrapper = $event.target as HTMLElement;
+      const panelWidth = window.innerWidth;
+      const scrollLeft = wrapper.scrollLeft;
+      const currentPanelIndex = Math.round(scrollLeft / panelWidth);
+
+      // Émet le panel actif via le service
+      this.$navigation.emitSwipePanel(currentPanelIndex);
+    }, 100);
+  }
 }
