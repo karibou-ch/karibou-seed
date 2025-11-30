@@ -1,0 +1,170 @@
+// ============================================================================
+// KNG-SIDE-MENU - Styles partagés pour le menu latéral swipeable
+// Utilisé par: kng-home.component.scss, product-list.component.scss
+// ============================================================================
+
+// PANEL SIDE - Menu de navigation
+// FIXME: Option 2 - Remplacer le swipe scroll-snap par des transitions CSS avec
+// transform: translateX(), contrôlées par JavaScript. Cela permettrait au body
+// de redevenir le "scrolling ancestor" et le position: sticky fonctionnerait
+// naturellement sans avoir besoin du sticky simulé via translateY().
+// Voir: styles.scss MOBILE/TABLET .mobile-columns-wrapper
+.swipe-panel.side {
+  @media (max-width: 1199px) {
+  overflow-y: hidden;
+  }
+
+  .menu-panel {
+    // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
+    // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
+    will-change: transform; // Optimisation GPU pour translateY
+
+    // DESKTOP: style menu-on-left original
+    @media (min-width: 1200px) {
+      // Sticky + Largeur maximale
+      position: sticky;
+      top: -3rem; // Espace sous la navbar
+      max-height: calc(100vh - var(--mdc-theme-top-bar, 70px) - 2rem);
+      overflow-y: auto;
+      width: 100%;
+      max-width: var(--mdc-theme-toolbox-width);
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border-right: 1px solid #ddd;
+        padding-right: 10px;
+
+        // Masquer les chips sur desktop
+        &.subs { display: none; }
+
+        li {
+          cursor: pointer;
+          padding: 5px;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 20px;
+          color: rgb(52, 53, 56);
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          margin-left: 5px;
+
+          &:hover { background-color: #eee; }
+
+          &.selected {
+            color: #333;
+            font-weight: 500;
+            margin-left: 0;
+            border-left: 5px solid #333;
+          }
+
+          &.separator {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+          }
+
+          b { color: #333; }
+
+          i { color: var(--mdc-theme-secondary); }
+
+          // Catégories: masquer icônes sur desktop
+          &.subs-item {
+            i.icon { display: none; }
+          }
+
+          .icon, .fa {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            filter: grayscale(1);
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+
+    // MOBILE: style mobile-categories original
+    @media (max-width: 599px) {
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.25rem;
+        justify-items: center;
+        margin-bottom: .25rem;
+
+        // Masquer les liens texte sur mobile
+        &.hide-sm { display: none !important; }
+
+        li.subs-item {
+          width: calc(100% - 1rem);
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          border-radius: 0.5rem;
+          background-color: var(--mdc-theme-appbar-light);
+          border: 1px solid var(--mdc-theme-appbar);
+          color: var(--mdc-theme-appbar-text);
+          font-weight: 500;
+          font-size: var(--wa-font-size-xs);
+          padding: 0.25rem;
+          margin: auto;
+          height: 2.125rem;
+
+          &.inverted {
+            color: var(--mdc-theme-appbar-light);
+            background-color: var(--mdc-theme-appbar-text);
+            i { color: var(--mdc-theme-appbar-light); }
+          }
+
+          i {
+            margin-right: 5px;
+            color: var(--mdc-theme-secondary);
+            &.icon { margin-top: -8px; }
+          }
+        }
+
+        li.subs-item:last-child:nth-child(odd) {
+          grid-column: span 2;
+        }
+      }
+    }
+  }
+}
+
+// PANEL RIGHT - Sidebar (vide par défaut, peut être customisé par composant)
+// NOTE: Pas de overflow-y: hidden ici, sinon le contenu est masqué sur desktop
+.swipe-panel.right {
+  @media (max-width: 1199px) {
+    overflow-y: hidden;
+  }
+  padding-top: 0;
+
+
+  .sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0;
+    // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
+    // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
+    will-change: transform; // Optimisation GPU pour translateY
+
+    // Desktop: Largeur maximale
+    @media (min-width: 1200px) {
+      width: 100%;
+      max-width: var(--mdc-theme-right-width);
+      // Sticky + Largeur maximale
+      position: sticky;
+      top: 5rem; // Espace sous la navbar
+
+    }
+  }
+}
+
