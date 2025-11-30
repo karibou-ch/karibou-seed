@@ -20,7 +20,7 @@
   list-style-type: none;
   color: #423f3b;
   color: var(--mdc-theme-text-primary-on-background, #fff);
-  
+
   h3 {
     padding: 5px 10px;
     color: rgba(0, 0, 0, 0.87);
@@ -32,11 +32,11 @@
     &.twoline {
       height: 74px;
     }
-    
+
     a {
       text-decoration: none;
     }
-    
+
     a.avatar {
       margin-left: 0;
       margin-right: 16px;
@@ -49,14 +49,14 @@
       justify-content: center;
       fill: currentColor;
       text-decoration: none;
-      
+
       img {
         object-fit: cover;
         width: 100%;
         height: 100%;
       }
     }
-    
+
     font-family: Roboto, sans-serif;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -75,11 +75,11 @@
     align-items: center;
     justify-content: flex-start;
     background-color: #efefef;
-    
+
     .list-text {
       font-size: 17px;
     }
-    
+
     .list-text-secondary {
       color: inherit;
     }
