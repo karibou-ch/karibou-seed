@@ -25,6 +25,7 @@ body{
 
   // 🧭 NAVIGATION - Hauteur navbar fixe
   --mdc-theme-top-bar: 70px;
+  --mdc-theme-wrapper-zoom: .33;
 
   --mdc-theme-font: "Gentium Plus";
 
@@ -148,6 +149,7 @@ input[type="button"],
 input[type="submit"],
 .input-checkbox {
   -webkit-appearance: none;
+  appearance: none;
   border-radius: 0;
 }
 
@@ -168,18 +170,15 @@ input[type="submit"],
   min-height: 100dvh;
   gap: 0;
 
-  // DESKTOP (≥1200px) - 3 colonnes
+  // DESKTOP (≥1200px) - 4 colonnes (side, center, custom, right)
   // Side et Right prennent le reste de l'espace (1fr)
-  // Center a une taille fixe
-  grid-template-columns:
-    1fr
-    var(--mdc-theme-container-width)
-    1fr;
+  // Center a une taille fixe, Custom facultatif (0 ou auto)
+  grid-template-columns:1fr var(--mdc-theme-container-width) 1fr;
   grid-template-rows: var(--mdc-theme-top-bar) 1fr auto;
   grid-template-areas:
-    "header header header"
-    "side   center right"
-    "footer footer footer";
+    "header header header header"
+    "side   center custom right"
+    "footer footer footer footer";
 
   // Header
   > .grid-header {
@@ -223,15 +222,19 @@ input[type="submit"],
       flex-direction: column;
       align-items: flex-end; // Contenu aligné à droite
       padding: 1rem;
-
-      > * {
-        width: 100%;
-        max-width: var(--mdc-theme-toolbox-width);
-      }
     }
 
     &.center {
       grid-column: 2;
+    }
+
+    &.custom {
+      grid-column: 4;
+      display: none; // Masqué par défaut en desktop
+
+      &:not(:empty) {
+        display: block; // Affiche seulement si contenu
+      }
     }
 
     &.right {
@@ -240,44 +243,59 @@ input[type="submit"],
       flex-direction: column;
       align-items: flex-start; // Contenu aligné à gauche
       padding: 1rem;
-
-      > * {
-        width: 100%;
-        max-width: var(--mdc-theme-right-width);
-      }
     }
   }
 
   // MOBILE (≤599px) - Swipe horizontal 3 × 100vw
+  // FIXME: Option 2 - Remplacer scroll-snap par des transitions CSS avec
+  // transform: translateX(-100vw), contrôlées par JavaScript pour le geste swipe.
+  // Avantage: Le body redevient le "scrolling ancestor", position: sticky fonctionne.
+  // Actuel: overflow-x: auto crée un contexte de scroll qui casse le sticky natif.
+  // Contournement: Sticky simulé via translateY() dans kng-home.component.ts
   @media (max-width: 599px) {
     width: 100vw;
     grid-template-columns: 1fr;
     grid-template-rows: var(--mdc-theme-top-bar) 1fr 60px;
 
     > .mobile-columns-wrapper {
-      display: flex;
-      overflow-x: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 100vw);  // 3 colonnes: side, center, right
+      overflow-x: auto;  // ⚠️ Casse position: sticky des enfants
       scroll-snap-type: x mandatory;
-      scroll-padding-inline: 1rem;  // Compense le padding des panels pour snap précis
       scroll-behavior: smooth;      // Transitions fluides lors du snap
       scrollbar-width: none;
       &::-webkit-scrollbar { display: none; }
-      // NOTE: -webkit-overflow-scrolling: touch supprimé (legacy iOS)
-      // Peut interférer avec scroll-snap moderne
+
+      &.zoomed {
+        zoom: var(--mdc-theme-wrapper-zoom);
+        align-items: center;
+      }
+
+
     }
 
     .swipe-panel {
-      flex: 0 0 100vw;
-      min-width: 100vw;
-      max-width: 100vw;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      padding: 1rem;
+      // Grid gère déjà la largeur via grid-template-columns
+      min-width: 100vw;             // Force minimum 100vw
+      max-width: 100vw;             // Force maximum 100vw
+      height: 100%;                 // Hauteur fixe
+      // NOTE: overflow-x: hidden est CRUCIAL pour le snap précis !
+      // Sans lui, les marges internes des composants (ex: kng-search.home margin: 20px 10px)
+      // créent un "espace de liberté" qui permet un scroll horizontal AVANT le snap,
+      // causant un décalage entre swipe gauche (direct) et swipe droite (avec jeu).
+      overflow-x: hidden;           // Empêche le scroll horizontal interne
+      overflow-y: auto;
+      scroll-snap-align: start;     // Snap au début du panel
+      scroll-snap-stop: normal;     // Force l'arrêt sur chaque panel
+      box-sizing: border-box;       // Padding inclus dans la largeur
       display: block;
       align-items: initial;
+      padding: 0;                   // Reset padding desktop
 
+      // Padding sur le contenu interne, pas sur le panel
       > * {
-        width: 100%;
+        width: calc(100% - 2rem);   // Largeur moins padding
+        padding: 0 1rem;            // Padding horizontal
         max-width: none;
       }
     }
@@ -291,24 +309,50 @@ input[type="submit"],
     }
   }
 
-  // TABLET (600px - 1199px) - Center seul
+  // TABLET (600px - 1199px) - Swipe horizontal comme mobile
   @media (min-width: 600px) and (max-width: 1199px) {
+    width: 100vw;
     grid-template-columns: 1fr;
+    grid-template-rows: var(--mdc-theme-top-bar) 1fr 60px;
 
     > .mobile-columns-wrapper {
-      display: block;
-      overflow-y: auto;
-      > * { display: block; }
+      display: grid;
+      grid-template-columns: repeat(4, 100vw);  // 4 colonnes pour swipe
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+
+      &.zoomed {
+        zoom: var(--mdc-theme-wrapper-zoom);
+        align-items: center;
+      }
     }
 
-    .swipe-panel.side,
-    .swipe-panel.right { display: none; }
-
-    .swipe-panel.center {
-      display: block;
-      max-width: var(--mdc-theme-container-width);
-      margin: 0 auto;
+    .swipe-panel {
+      width: 100vw;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      box-sizing: border-box;
       padding: 1rem;
+      display: block;
+      align-items: initial;
+
+      > * {
+        width: 100%;
+        padding: 0;
+        max-width: none;
+      }
+    }
+
+    > .grid-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
     }
   }
 }
