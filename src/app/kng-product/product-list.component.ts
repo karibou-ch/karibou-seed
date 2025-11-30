@@ -32,15 +32,20 @@ import { EnumMetrics, MetricsService } from '../common/metrics.service';
   selector: 'kng-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent implements OnInit {
   static SCROLL_CACHE = 0;
 
   @ViewChild('dialog', { static: true }) dialog: ElementRef;
+  @ViewChild('mobileWrapper') mobileWrapper: ElementRef<HTMLElement>;
   currentPage = 10;
   bgStyle = '/-/resize/200x/';
+
+  // Swipe panel support
+  menuStickyTransform: number = 0;
+  private _lastScrollTop: number = 0;
+  private _scrollDebounce: any = null;
 
   isReady = false;
   config: any;
@@ -382,6 +387,9 @@ export class ProductListComponent implements OnInit {
     // DIALOG INIT HACK
     document.body.classList.add('mdc-dialog-scroll-lock');
     this.isReady = true;
+
+    // Centre sur le panel center pour mobile/tablet
+    this.scrollToCenter();
   }
 
   //
@@ -637,11 +645,47 @@ export class ProductListComponent implements OnInit {
   }
 
   //
-  // detect scrall motion and hide component
+  // detect scroll motion and hide component
   onScroll($event) {
     ProductListComponent.SCROLL_CACHE = this.dialog.nativeElement.scrollTop;
   }
 
+  /**
+   * Gère le snap horizontal sur mobile/tablet
+   * Détecte le panel actif et émet l'événement via NavigationService
+   */
+  onScrollToSnap($event: Event) {
+    if (!this.mobileWrapper?.nativeElement) return;
+
+    // Debounce pour éviter les émissions multiples
+    if (this._scrollDebounce) {
+      clearTimeout(this._scrollDebounce);
+    }
+
+    this._scrollDebounce = setTimeout(() => {
+      const wrapper = this.mobileWrapper.nativeElement;
+      const scrollLeft = wrapper.scrollLeft;
+      const panelWidth = wrapper.clientWidth;
+
+      // Calcule l'index du panel actif (0=side, 1=center, 2=right)
+      const currentPanelIndex = Math.round(scrollLeft / panelWidth);
+      this.$navigation.emitSwipePanel(currentPanelIndex);
+    }, 50);
+  }
+
+  /**
+   * Centre automatiquement sur le panel center au chargement
+   */
+  scrollToCenter() {
+    if (!this.mobileWrapper?.nativeElement) return;
+    if (window.innerWidth >= 1200) return; // Desktop: pas de swipe
+
+    setTimeout(() => {
+      const wrapper = this.mobileWrapper.nativeElement;
+      const panelWidth = wrapper.clientWidth;
+      wrapper.scrollLeft = panelWidth; // Panel center = index 1
+    }, 100);
+  }
 
   scrollTo($event, name) {
     this.scrollToCategory = name;
@@ -650,6 +694,11 @@ export class ProductListComponent implements OnInit {
     this.showSubCategory = false;
     $event.stopPropagation();
     $event.preventDefault();
+
+    // Sur mobile/tablet, retourne au panel center après sélection
+    if (window.innerWidth < 1200) {
+      this.scrollToCenter();
+    }
   }
 
   //
