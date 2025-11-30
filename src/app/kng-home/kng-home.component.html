@@ -5,8 +5,10 @@
 <div class="swipe-panel side">
 
   <!-- NAVIGATION core (menu catégories) -->
+  <!-- FIXME: Sticky simulé via translateY, voir Option 2 dans kng-home.component.ts -->
   <div class="home menu-panel"
-       [hidden]="availableSearch && isMobile || isMinimal">
+       [hidden]="isMinimal"
+       [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
     <!-- MOBILE links -->
     <ul class="subs">
@@ -98,8 +100,8 @@
   <!-- PINNED PRODUCTS (isMinimal for b2b-school) -->
   <kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user" [boost]="true" [hub]="store"></kng-product-swipe>
 
-  <!-- MOBILE SEARCH -->
-  <kng-search class="home" [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search>
+  <!-- MOBILE SEARCH  [hidden]="isMinimal"  use right panel for search -->
+  <kng-search class="home" hidden [themes]="themes" [class.active]="availableSearch"></kng-search>
 
   <!-- PRODUCTS -->
   <div class="product-container" *ngIf="products.length">
@@ -118,17 +120,17 @@
     </kng-product-grouped-list>
   </div>
 
-  <!-- ROUTER OUTLET -->
-  <router-outlet></router-outlet>
 
 </div>
+
+<!-- <div class="swipe-panel custom"></div> -->
 
 <!-- ============================================================================ -->
 <!-- PANEL RIGHT - Sidebar (aide, recherche, infos)                              -->
 <!-- ============================================================================ -->
 <div class="swipe-panel right">
 
-  <div class="home sidebar-panel">
+  <div class="home sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
     <!-- NEED HELP? -->
     <div class="kng-boxed first">
       <div class="content">
@@ -167,8 +169,12 @@
       </div>
     </div>
 
-    <!-- SEARCH BAR -->
-    <kng-search-bar [hidden]="isMinimal" [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
+    <!-- SEARCH BAR [hidden]="isMinimal" use right panel for search -->
+    <kng-search-bar  [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
   </div>
 
 </div>
+
+
+  <!-- ROUTER OUTLET -->
+  <router-outlet></router-outlet>

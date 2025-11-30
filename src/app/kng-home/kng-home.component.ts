@@ -55,6 +55,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   scrollDirection:number;
   scrollLocked:boolean;
 
+  // Sticky menu simulé avec translateY (contournement overflow-x: auto cassant position: sticky)
+  menuStickyTransform: number = 0;
+
   //
   // search
   availableSearch:boolean;
@@ -147,10 +150,19 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    // S'assurer de déverrouiller le scroll du body
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   ngOnInit() {
     window.scroll(0, 0);
+
+    // S'abonner aux changements de panel après swipe
+    this.subscription.add(
+      this.$navigation.swipePanel$().subscribe(panelIndex => {
+        this.onSwipePanelChanged(panelIndex);
+      })
+    );
     // this.subscription.add(
     //   this.$route.queryParams.subscribe(query => {
     // }));
@@ -522,10 +534,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.lastMinute = this.$cart.isCurrentShippingLastMinute();
+    options.when = this.currentShippingDay.toISOString();
     options.maxcat = this.isMobile? 5:options.maxcat;
     options.hub = this.$navigation.store;
 
+    if(this.$cart.isCurrentShippingLastMinute()){
+      delete options.popular;
+      options.lastMinute = true;
+    }
 
     if(this.options.theme) {
       delete options.when;
@@ -535,6 +551,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if(this.isMinimal||options.lastMinute){
       delete options.popular;
     }
+
+
 
 
     this.$product.select(options).subscribe((products: Product[]) => {
@@ -629,6 +647,49 @@ ${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
     }, 400);
   }
 
+  /**
+   * Sticky menu simulé via translateY pour contourner le problème CSS :
+   * position: sticky ne fonctionne pas quand un ancêtre a overflow-x: auto (swipe)
+   *
+   * FIXME: Option 2 - Remplacer scroll-snap par des transitions CSS avec transform,
+   * contrôlées par JavaScript pour le geste de swipe. Cela permettrait au body
+   * de redevenir le "scrolling ancestor" et le sticky fonctionnerait naturellement.
+   * Voir: styles.scss section MOBILE/TABLET .mobile-columns-wrapper
+   */
+  @HostListener('window:scroll', ['$event'])
+  onScrollToStick($event) {
+    // Active seulement en mode swipe (mobile/tablet ≤1199px)
+    if (window.innerWidth >= 1200) {
+      this.menuStickyTransform = 0;
+      return;
+    }
+
+    // Calcul du translateY pour simuler le sticky
+    // Le menu suit le scroll pour rester visible en haut
+    const scrollY = window.scrollY || window.pageYOffset;
+    const navbarHeight = 0*70; // --mdc-theme-top-bar
+
+    // Commence à transformer après avoir passé la navbar
+    if (scrollY > navbarHeight) {
+      this.menuStickyTransform = scrollY - navbarHeight;
+    } else {
+      this.menuStickyTransform = 0;
+    }
+  }
+
+  /**
+   * Réagit aux changements de panel après un swipe.
+   * Verrouille le scroll body si on n'est pas sur center pour permettre le sticky.
+   * Panel index: 0=side, 1=center, 2=custom, 3=right
+   */
+  private onSwipePanelChanged(panelIndex: number) {
+    // Verrouille le scroll si on n'est PAS sur le panel center (index 1)
+    if (panelIndex !== 1) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
 
   scrollToSlug(slug: string) {
     this.categorySlug = slug;
