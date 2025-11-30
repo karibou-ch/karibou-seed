@@ -36,7 +36,7 @@
 
     margin-top: 10px;
     margin-bottom: 100px;
-    
+
     section.header {
 
     padding-left: 10px;
@@ -44,13 +44,13 @@
     width: 100%;
     @media (prefers-color-scheme: dark) {
       background-color: var(--mdc-theme-secondary-dark);
-      color: var(--mdc-theme-secondary-dark-text);      
+      color: var(--mdc-theme-secondary-dark-text);
       border-radius: 15px;
-    }  
+    }
 
     @media screen and (max-width:426px){
-      width: calc( 100vw - 40px );        
-    }  
+      width: calc( 100vw - 40px );
+    }
 
 
     h2{
@@ -61,7 +61,7 @@
       font-size: 1.275rem;
       color: #aaa;
       -text-shadow: 1px 1px 0 #fff;
-      margin-top: -10px;      
+      margin-top: -10px;
     }
   }
 
@@ -72,7 +72,7 @@
     }
   }
 
-  
+
   .shops-list {
     display: flex;
     flex-wrap: wrap;
@@ -80,25 +80,25 @@
     padding: 0;
 
     width: 100%;
-    margin: auto;      
+    margin: auto;
 
     @media screen and (max-width:426px){
-      width: calc( 100vw - 20px );        
-    }  
+      width: calc( 100vw - 20px );
+    }
 
     article{
       cursor: pointer;
       width: calc( 100% / 4 - 10px );
       @media screen and (max-width:426px){
-        width: calc(50% - 10px );        
-      }  
-  
+        width: calc(50% - 10px );
+      }
+
       margin: 5px;
       margin-bottom: 1px;
       .shop-image{
         height: 170px;
         position: relative;
-        overflow: hidden;        
+        overflow: hidden;
         border-radius: 12px;
         img{
           object-position: center center;
@@ -110,7 +110,7 @@
           padding: 0;
         }
       }
-  
+
       .shop-description{
         margin:6px 8px;
         padding: 10px 0;
@@ -122,7 +122,7 @@
     }
 
   }
-  
+
   } // Fermeture .content
 } // Fermeture .swipe-panel.center
 
