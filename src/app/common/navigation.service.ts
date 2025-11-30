@@ -28,6 +28,7 @@ export class KngNavigationStateService  {
 
   private _search$: Subject<string>;
   private _logout$: Subject<void>;
+  private _swipePanel$: Subject<number>;
 
   private theme:{
     slug?:string;
@@ -50,7 +51,8 @@ export class KngNavigationStateService  {
     this._authlink = '';
 
     this._search$ = new Subject<string>();
-    this._logout$ = new Subject<void>()
+    this._logout$ = new Subject<void>();
+    this._swipePanel$ = new Subject<number>();
     this._logout$.pipe(
       debounceTime(1000),
       switchMap(()=>this.$user.logout())
@@ -364,6 +366,26 @@ export class KngNavigationStateService  {
     return this._search$.asObservable().pipe(
       filter(keyword => !!keyword && keyword.length>3),
       debounceTime(600)
+    );
+  }
+
+  /**
+   * Émet le panel actif après un swipe (0=side, 1=center, 2=custom, 3=right)
+   * À appeler depuis le composant avec l'event scroll du wrapper
+   */
+  emitSwipePanel(panelIndex: number) {
+    this._currentPanel = panelIndex;
+    console.log('----swipePanel$',panelIndex);
+    this._swipePanel$.next(panelIndex);
+  }
+
+  /**
+   * Observable pour s'abonner aux changements de panel après swipe
+   * Les composants peuvent réagir quand on swipe vers un nouveau panel
+   */
+  swipePanel$() {
+    return this._swipePanel$.asObservable().pipe(
+      distinctUntilChanged()
     );
   }
 
