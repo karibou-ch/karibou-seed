@@ -522,17 +522,25 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
     const options = Object.assign({}, this.options, this.pageOptions.home);
-    options.lastMinute = this.$cart.isCurrentShippingLastMinute();
+    options.when = this.currentShippingDay.toISOString();
     options.maxcat = this.isMobile? 5:options.maxcat;
     options.hub = this.$navigation.store;
-
+    options.pinned = true;
+    delete options.popular;
+    if(this.$cart.isCurrentShippingLastMinute()){
+      delete options.popular;
+      delete options.pinned;
+      options.lastMinute = true;
+    }
 
     if(this.options.theme) {
+      delete options.pinned;
       delete options.when;
       delete options.available;
       delete options.status;
     }
     if(this.isMinimal||options.lastMinute){
+      delete options.pinned;
       delete options.popular;
     }
 
