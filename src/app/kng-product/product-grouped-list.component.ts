@@ -313,7 +313,7 @@ export class ProductGroupedListComponent implements OnInit {
 
     if (this.useMaxCat) {
       if (this.isMobile) {
-        maxcat = 2; // Mobile ≤599px
+        maxcat = 4; // Mobile ≤599px
       } else if (window.innerWidth <= 899) {
         maxcat = 5; // Tablet Standard 600px-899px
       } else if (window.innerWidth <= 1199) {

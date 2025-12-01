@@ -375,8 +375,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
     const shared = this.config.shared;
     const hub = this.config.shared.hub;
-    return (hub && hub.name && shared.hub.domainOrigin) ? hub.tagLine : shared.tagLine;
-
+    // return (hub && hub.name && shared.hub.domainOrigin) ? hub.tagLine : shared.tagLine;
+    return hub && hub.tagLine || shared.tagLine;
   }
 
   add(product: Product) {
@@ -537,9 +537,11 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     options.when = this.currentShippingDay.toISOString();
     options.maxcat = this.isMobile? 5:options.maxcat;
     options.hub = this.$navigation.store;
+    options.pinned = true;
 
     if(this.$cart.isCurrentShippingLastMinute()){
       delete options.popular;
+      delete options.pinned;
       options.lastMinute = true;
     }
 

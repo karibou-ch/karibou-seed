@@ -260,7 +260,10 @@ input[type="submit"],
       grid-template-columns: repeat(3, 100vw);  // 3 colonnes: side, center, right
       overflow-x: auto;  // ⚠️ Casse position: sticky des enfants
       scroll-snap-type: x mandatory;
+      scroll-snap-stop: always;     // ✅ PHASE 1: Force l'arrêt sur CHAQUE panel
       scroll-behavior: smooth;      // Transitions fluides lors du snap
+      touch-action: pan-x;          // ✅ PHASE 1: Limite au scroll horizontal seulement
+      overscroll-behavior-x: contain; // ✅ PHASE 1: Empêche le rebond horizontal
       scrollbar-width: none;
       &::-webkit-scrollbar { display: none; }
 
@@ -283,8 +286,8 @@ input[type="submit"],
       // causant un décalage entre swipe gauche (direct) et swipe droite (avec jeu).
       overflow-x: hidden;           // Empêche le scroll horizontal interne
       overflow-y: auto;
-      scroll-snap-align: start;     // Snap au début du panel
-      scroll-snap-stop: normal;     // Force l'arrêt sur chaque panel
+      scroll-snap-align: center;    // ✅ PHASE 1: Centrage pour plus de précision
+      scroll-snap-stop: always;     // ✅ PHASE 1: Force l'arrêt sur chaque panel (double sécurité)
       box-sizing: border-box;       // Padding inclus dans la largeur
       display: block;
       align-items: initial;
@@ -315,11 +318,14 @@ input[type="submit"],
 
     > .mobile-columns-wrapper {
       display: grid;
-      grid-template-columns: repeat(4, 100vw);  // 4 colonnes pour swipe
+      grid-template-columns: repeat(3, 100vw);  // 3 colonnes pour swipe
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
+      scroll-snap-stop: always;     // ✅ PHASE 1: Force l'arrêt sur CHAQUE panel
       scroll-behavior: smooth;
+      touch-action: pan-x;          // ✅ PHASE 1: Limite au scroll horizontal seulement
+      overscroll-behavior-x: contain; // ✅ PHASE 1: Empêche le rebond horizontal
       scrollbar-width: none;
       &::-webkit-scrollbar { display: none; }
 
@@ -331,8 +337,8 @@ input[type="submit"],
 
     .swipe-panel {
       width: 100vw;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
+      scroll-snap-align: center;    // ✅ PHASE 1: Centrage pour plus de précision
+      scroll-snap-stop: always;     // ✅ PHASE 1: Force l'arrêt sur chaque panel
       box-sizing: border-box;
       padding: 1rem;
       display: block;

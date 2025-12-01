@@ -168,6 +168,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.mobileWrapper?.nativeElement) {
       this.$navigation.setMobileWrapper(this.mobileWrapper.nativeElement);
 
+      // ✅ PHASE 2: Attacher l'événement scrollend si supporté par le navigateur
+      const wrapper = this.mobileWrapper.nativeElement;
+      if ('onscrollend' in wrapper) {
+        wrapper.addEventListener('scrollend', (event) => {
+          this.onScrollToSnap(event);
+        });
+      }
+
       // Scroll vers le center par défaut sur mobile
       setTimeout(() => {
         this.$navigation.scrollToCenter();
@@ -450,21 +458,65 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Détecte le panel actif après un swipe et émet le signal via le service
-   * Panel index: 0=side, 1=center, 2=custom, 3=right
+   * ✅ PHASE 2: Détecte le panel actif après un swipe avec tolérance et correction automatique
+   * Panel index: 0=side, 1=center, 2=right
+   * 
+   * Améliorations :
+   * - Tolérance large pour le panel center (0.3-1.3) pour éviter les sauts involontaires
+   * - Correction automatique si le snap CSS est imprécis (>50px d'écart)
+   * - Utilise scrollend si disponible, sinon fallback vers debounce
    */
   private swipeTimeout: any;
   onScrollToSnap($event: Event) {
-    // Debounce pour éviter les appels multiples pendant le scroll
-    clearTimeout(this.swipeTimeout);
-    this.swipeTimeout = setTimeout(() => {
-      const wrapper = $event.target as HTMLElement;
-      const panelWidth = window.innerWidth;
-      const scrollLeft = wrapper.scrollLeft;
-      const currentPanelIndex = Math.round(scrollLeft / panelWidth);
+    // ✅ PHASE 2: Utiliser scrollend si disponible, sinon debounce classique
+    const isScrollEndEvent = $event.type === 'scrollend';
+    
+    if (!isScrollEndEvent) {
+      // Fallback : debounce pour navigateurs sans scrollend
+      clearTimeout(this.swipeTimeout);
+      this.swipeTimeout = setTimeout(() => this.processSnapPosition($event), 100);
+      return;
+    }
+    
+    // scrollend supporté : traitement immédiat
+    this.processSnapPosition($event);
+  }
 
-      // Émet le panel actif via le service
-      this.$navigation.emitSwipePanel(currentPanelIndex);
-    }, 100);
+  /**
+   * ✅ PHASE 2: Traite la position de snap avec tolérance et correction
+   */
+  private processSnapPosition($event: Event) {
+    const wrapper = $event.target as HTMLElement;
+    const panelWidth = window.innerWidth;
+    const scrollLeft = wrapper.scrollLeft;
+    
+    // Calculer position relative (0.0 = side, 1.0 = center, 2.0 = right)
+    const position = scrollLeft / panelWidth;
+    
+    // ✅ PHASE 2: Déterminer le panel cible avec TOLÉRANCE
+    // Plage large pour center (0.3-1.3) pour éviter les sauts involontaires
+    let targetPanel: number;
+    if (position < 0.3) {
+      targetPanel = 0; // side
+    } else if (position < 1.3) {
+      targetPanel = 1; // center (plage large = plus "sticky")
+    } else {
+      targetPanel = 2; // right
+    }
+    
+    // ✅ PHASE 2: Correction automatique si le snap CSS est imprécis
+    const targetScrollLeft = targetPanel * panelWidth;
+    const snapTolerance = 50; // pixels de tolérance
+    
+    if (Math.abs(scrollLeft - targetScrollLeft) > snapTolerance) {
+      // Snap imprécis détecté, correction automatique
+      wrapper.scrollTo({ 
+        left: targetScrollLeft, 
+        behavior: 'smooth' 
+      });
+    }
+    
+    // Émettre le panel actif via le service
+    this.$navigation.emitSwipePanel(targetPanel);
   }
 }

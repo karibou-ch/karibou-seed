@@ -153,8 +153,8 @@ kng-product-swipe {
 kng-product-swipe.boost{
   background-color: var(--mdc-theme-secondary-light);
   padding: 1rem!important;
-  width: calc(100% - 0rem)!important;
-  margin-left: -1rem!important;
+  width: calc(100% - 2rem)!important;
+  -margin-left: -1rem!important;
   @media (min-width: 899px) {
     border-radius: 1rem;
   }
