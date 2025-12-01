@@ -365,9 +365,9 @@ export class ProductGroupedListComponent implements OnInit {
     );
     cats.forEach(cat => {
       this.group[cat] = this.group[cat].sort(sortByAlphaOrScore).slice(0, maxcat);
-      if (this.group[cat].length % divider === 0 && this.showMore) {
-        this.group[cat].pop();
-      }
+      // if (this.group[cat].length % divider === 0 && this.showMore) {
+      //   this.group[cat].pop();
+      // }
     });
 
     //

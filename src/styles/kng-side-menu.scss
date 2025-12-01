@@ -18,6 +18,7 @@
     // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
     // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
     will-change: transform; // Optimisation GPU pour translateY
+    padding-top: 1rem;
 
     // DESKTOP: style menu-on-left original
     @media (min-width: 1200px) {

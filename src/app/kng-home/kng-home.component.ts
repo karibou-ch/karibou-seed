@@ -522,14 +522,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     // with new navigation, we dont need to load products on mobile/tablet
     //
     this.clearCategory();
-    if(this.isMobile &&
-      !this.isMinimal) {
-      this.isReady = true;
-      this.isLoading = false;
-      // this.hub.categories.forEach(cat=> this.availableCategories[cat.name] = true);
-      this.categories.forEach(cat=> this.availableCategories[cat.name] = (this.hub.categories.indexOf(cat._id)>-1||!this.hub.categories.length));
-      return;
-    }
+    // if(this.isMobile &&
+    //   !this.isMinimal) {
+    //   this.isReady = true;
+    //   this.isLoading = false;
+    //   // this.hub.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+    //   this.categories.forEach(cat=> this.availableCategories[cat.name] = (this.hub.categories.indexOf(cat._id)>-1||!this.hub.categories.length));
+    //   return;
+    // }
 
 
 
@@ -559,11 +559,14 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     this.$product.select(options).subscribe((products: Product[]) => {
       this.products = products.filter(product => product.categories && product.categories.name);
-      this.products.forEach((product: Product) => {
-        this.availableCategories[product.categories.name] = product.categories;
-      });
+      // this.products.forEach((product: Product) => {
+      //   this.availableCategories[product.categories.name] = product.categories;
+      // });
       this.isReady = true;
       this.isLoading = false;
+      // this.hub.categories.forEach(cat=> this.availableCategories[cat.name] = true);
+      this.categories.forEach(cat=> this.availableCategories[cat.name] = (this.hub.categories.indexOf(cat._id)>-1||!this.hub.categories.length));
+
     });
 
   }
@@ -696,10 +699,10 @@ ${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
   scrollToSlug(slug: string) {
     this.categorySlug = slug;
     this.displaySlug = slug;
-    setTimeout(()=> {
-      this.scrollDirection = 0;
-      this.$router.navigate(['/store', this.$navigation.store,'home', 'category',slug]);
-    },500);
+    // setTimeout(()=> {
+    //   this.scrollDirection = 0;
+    //   this.$router.navigate(['/store', this.$navigation.store,'home', 'category',slug]);
+    // },500);
   }
 
   sortByScore(a, b) {

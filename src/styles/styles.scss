@@ -221,7 +221,6 @@ input[type="submit"],
       display: flex;
       flex-direction: column;
       align-items: flex-end; // Contenu aligné à droite
-      padding: 1rem;
     }
 
     &.center {
@@ -242,7 +241,6 @@ input[type="submit"],
       display: flex;
       flex-direction: column;
       align-items: flex-start; // Contenu aligné à gauche
-      padding: 1rem;
     }
   }
 
