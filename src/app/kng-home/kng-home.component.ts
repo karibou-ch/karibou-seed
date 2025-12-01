@@ -544,11 +544,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
 
     if(this.options.theme) {
+      delete options.pinned;
       delete options.when;
       delete options.available;
       delete options.status;
     }
     if(this.isMinimal||options.lastMinute){
+      delete options.pinned;
       delete options.popular;
     }
 
