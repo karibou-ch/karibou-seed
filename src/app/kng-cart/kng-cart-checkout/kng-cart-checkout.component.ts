@@ -531,13 +531,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
 
   confirmPaymenIntent(intent: any, target:any) {
-    const intentOpt: any = {
-      payment_method: intent.source
-    };
-
     this.errorMessage = null;
 
-    this.$stripe.confirmCardPayment(intent.client_secret, intentOpt).subscribe((result) => {
+    // ✅ FIX: Selon Stripe moderne, quand status="requires_action",
+    // le payment_method est déjà attaché au PaymentIntent.
+    // On passe seulement client_secret pour déclencher la 3DS.
+    this.$stripe.confirmCardPayment(intent.client_secret).subscribe((result) => {
       if (result.error) {
         //
         // Show error to our customer (e.g., insufficient funds)
