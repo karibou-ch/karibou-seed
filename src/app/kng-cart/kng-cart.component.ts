@@ -431,7 +431,8 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
         this.checkoutMessageError = this.llabel.cart_order_pending_twint;
         setTimeout(()=> window.location.reload(),1000);
-    }
+        return;
+      }
 
       //
       // list all kind of errors
@@ -451,7 +452,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
       setTimeout(()=>{
-
         // clean url
         this.$router.navigate([], {
           queryParams: {
