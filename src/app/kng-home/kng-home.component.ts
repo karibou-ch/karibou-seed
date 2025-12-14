@@ -363,8 +363,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
     const shared = this.config.shared;
     const hub = this.config.shared.hub;
-    return (hub && hub.name && shared.hub.domainOrigin) ? hub.tagLine : shared.tagLine;
-
+    // return (hub && hub.name && shared.hub.domainOrigin) ? hub.tagLine : shared.tagLine;
+    return hub && hub.tagLine || shared.tagLine;
   }
 
   add(product: Product) {
