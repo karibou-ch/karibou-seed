@@ -1,6 +1,6 @@
 {
   "name": "karibou-seed",
-  "version": "5.5.112",
+  "version": "5.5.118",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
