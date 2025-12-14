@@ -13,10 +13,10 @@ export class KngCalendarComponent implements OnInit {
 
   private _i18n = {
     'fr': {
-      'lastMinuteLabel': "Livré<br/>Aujourd'hui"
+      'lastMinuteLabel': "Jusqu'à"
     },
     'en': {
-      'lastMinuteLabel': 'Delivered<br/>Today'
+      'lastMinuteLabel': 'Until'
     }
   }
 
@@ -108,7 +108,7 @@ export class KngCalendarComponent implements OnInit {
   }
 
   get label_switch_store() {
-    return (this.currentHub.weekdays.length == 3)?this.label.nav_store_sublong:this.label.nav_store_subshort;
+    return (this.currentHub.weekdays.length <= 4)?this.label.nav_store_sublong:this.label.nav_store_subshort;
   }
 
   get locale() {
