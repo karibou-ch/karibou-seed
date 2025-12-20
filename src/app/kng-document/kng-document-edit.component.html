@@ -18,40 +18,40 @@
       <form [formGroup]="edit.form" (submit)="onSave()">
         <!-- TOP ACTIONS -->
         <div class="check">
-          <mdc-form-field>
-              <mdc-switch [ngModel]="document.available" formControlName="available"></mdc-switch>
-              <label >Actif</label>
-          </mdc-form-field>
-          <mdc-form-field>
-              <mdc-switch [ngModel]="document.published" formControlName="published"></mdc-switch>
-              <label >Publié</label>
-          </mdc-form-field>        
+          <div class="form-field">
+              <input type="checkbox" [ngModel]="document.available" formControlName="available">
+              <label>Actif</label>
+          </div>
+          <div class="form-field">
+              <input type="checkbox" [ngModel]="document.published" formControlName="published">
+              <label>Publié</label>
+          </div>        
           <select placeholder="Type"  [ngModel]="document.type" formControlName="type" >
             <option [value]="null"></option>
             <option *ngFor="let cat of getCategories()" [value]="cat">{{cat}}</option>
           </select>
 
-          <button mdc-button (click)="onShow()" >Apperçu</button>    
+          <button class="btn" (click)="onShow()" >Apperçu</button>    
         </div>
         <!-- TOP SLUGS ACTION -->
-        <mdc-list dense="true" interactive="false" border="true">
-          <mdc-list-item *ngFor="let slug of document.slug;let idx=index">
+        <div class="mdc-list dense">
+          <div class="mdc-list-item" *ngFor="let slug of document.slug;let idx=index">
             /content/{{slug}}
-              <button mdc-button mdc-list-item-meta (click)="document.slug.splice(idx,1)" [disabled]="document.slug.length<2">clear</button>
-          </mdc-list-item>
-        </mdc-list>
+            <button class="btn meta" (click)="document.slug.splice(idx,1)" [disabled]="document.slug.length<2">clear</button>
+          </div>
+        </div>
 
         <!-- TOP IMAGES ACTIONS -->
         <div class="images" [hidden]="!isDocumentReady()">
-          <mdc-list dense="true" interactive="false" border="true">
-            <mdc-list-item *ngFor="let photo of document.photo.bundle;let idx=index">
+          <div class="mdc-list dense">
+            <div class="mdc-list-item" *ngFor="let photo of document.photo.bundle;let idx=index">
               ![votre titre image]({{photo}})            
-              <button mdc-button mdc-list-item-meta (click)="document.photo.bundle.splice(idx,1)">clear</button>
-            </mdc-list-item>
-          </mdc-list>
+              <button class="btn meta" (click)="document.photo.bundle.splice(idx,1)">clear</button>
+            </div>
+          </div>
             
           <ngx-uploadcare-widget
-            images-only="true"
+            [images-only]="true"
             [validator]="ucValidator"
             (on-upload-complete)="onUpload($event)"
             (on-dialog-open)="onDialogOpen($event)"
@@ -60,8 +60,10 @@
         </div>
         <!-- SIGNATURE -->
         <div class="signature">
-          <mdc-text-field  label="Signature"  type="text" [ngModel]="document.signature||user.display()" formControlName="signature">
-          </mdc-text-field>                
+          <div class="groupfield">
+            <label>Signature</label>
+            <input type="text" [ngModel]="document.signature||user.display()" formControlName="signature">
+          </div>                
         </div>
 
                       
@@ -69,24 +71,26 @@
               
         <!-- TITLE -->
         <h1>
-          <mdc-text-field  label="Titre"  type="text" [ngModel]="document.title[locale]" formControlName="title">
-          </mdc-text-field>                
+          <div class="groupfield">
+            <label>Titre</label>
+            <input type="text" [ngModel]="document.title[locale]" formControlName="title">
+          </div>                
         </h1>
-        <mdc-textarea  label="En tête" formControlName="header"
-                      kng-autosize rows="3" outline="false"
-                      [ngModel]="document.header[locale]">
-        </mdc-textarea>                    
+        <div class="groupfield">
+          <label>En tête</label>
+          <textarea kng-autosize rows="3" formControlName="header" [ngModel]="document.header[locale]"></textarea>
+        </div>                    
         <br />   
-        <mdc-textarea  label="Que souhaitez vous écrire?" 
-                      kng-autosize rows="4" formControlName="body"
-                      [ngModel]="document.content[locale]">
-        </mdc-textarea>                              
+        <div class="groupfield">
+          <label>Que souhaitez vous écrire?</label>
+          <textarea kng-autosize rows="4" formControlName="body" [ngModel]="document.content[locale]"></textarea>
+        </div>                              
        
       </form>
 
       <div class="flex-row">
-        <button mdc-button class="important "  unelevated="true"  [hidden]="!user.isAdmin()" (click)="doDelete()" >Supprimer cette page</button>
-        <button mdc-button class="align-right "  unelevated="true"   (click)="onSave()" >Enregistrer</button>  
+        <button class="btn important"  [hidden]="!user.isAdmin()" (click)="doDelete()" >Supprimer cette page</button>
+        <button class="btn align-right"  (click)="onSave()" >Enregistrer</button>  
       </div>
 
       
@@ -96,4 +100,3 @@
   </div>  
   <kng-footer [config]="config"></kng-footer>  
 </div>
-

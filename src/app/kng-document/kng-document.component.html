@@ -17,7 +17,7 @@
   </h3>
 
   <h1>{{document?.title[$i18n.locale]}}</h1> 
-  <h2 class="header" ><span removeRoot="true" [kng-markdown]="document?.header[$i18n.locale]"  ></span></h2>
+  <h2 class="header" ><span [removeRoot]="true" [kng-markdown]="document?.header[$i18n.locale]"  ></span></h2>
 
   <h3 class="byline">
     <time>{{document?.created| date: 'mediumDate'}}</time> - <span class="author">{{document?.signature}} </span>
