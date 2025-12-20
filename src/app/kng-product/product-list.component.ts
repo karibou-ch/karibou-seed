@@ -725,8 +725,9 @@ export class ProductListComponent implements OnInit {
   }
 
 
-  trackerCategories(index, category: Category) {
-    return category.slug;
+  // Type union: Category (full) or child category (partial with name/weight)
+  trackerCategories(index: number, category: Category | { name: string; weight: number }): string {
+    return (category as Category).slug || category.name;
   }
 
   trackerProducts(index, product: Product) {

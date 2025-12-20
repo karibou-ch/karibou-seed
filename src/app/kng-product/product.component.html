@@ -94,7 +94,7 @@
 
       <!-- DESCRIPTION -->
       <div class="description">
-        <div [kng-markdown]="product.details.description" removeRoot="true"></div>
+        <div [kng-markdown]="product.details.description" [removeRoot]="true"></div>
         <div [hidden]="!product.details?.origin" class="light" [innerHtml]="product.details.origin"></div>
       </div>
 
@@ -199,7 +199,7 @@
           alt="160x160" class="thumbnail-owner photo-owner">
 
         <strong>{{product.vendor.name}}</strong>&nbsp;|&nbsp;
-        <span removeRoot="true" [kng-markdown]="product.vendor.description"></span>
+        <span [removeRoot]="true" [kng-markdown]="product.vendor.description"></span>
       </div>
 
       <!-- AVAILABLE -->
@@ -252,7 +252,7 @@
           <h3>{{product.belong.name}}</h3>
         </section>
         <div infiniteScroller
-             scrollPercent="0"
+             [scrollPercent]="0"
              immediateCallback="false"
              [infiniteScrollContainer]="getDialog()"
              [scrollCallback]="scrollCallback"

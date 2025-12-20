@@ -406,8 +406,8 @@ export class ProductGroupedListComponent implements OnInit {
     return true; // currentIndex < this.images.length - 1;
   }
 
-  trackerCategories(index, category: Category) {
-    return category.slug;
+  trackerCategories(index: number, category: CategoryView): string {
+    return category.slug || category.name;
   }
 
   trackerProducts(index, product: Product) {

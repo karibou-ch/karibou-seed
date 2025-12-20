@@ -18,7 +18,7 @@
           <img [src]="vendor?.photo.owner">
         </div>
 
-        <div class="description" removeRoot="true" [kng-markdown]="vendor.description"></div>
+        <div class="description" [removeRoot]="true" [kng-markdown]="vendor.description"></div>
         <div class="contact">
           <a class="kng-chip" [href]="vendorUrl" target="_new" [hidden]="!vendor.url">{{vendor.url}}</a>
 
@@ -39,8 +39,8 @@
 
       <kng-product-grouped-list
         *ngIf="products.length"
-        alphasort="true"
-        showSection="true"
+        [alphasort]="true"
+        [showSection]="true"
         [config]="config"
         [user]="user"
         [scrollContainer]="getDialog()"

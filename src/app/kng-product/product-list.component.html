@@ -86,8 +86,8 @@
     <div class="further-product-container" [class.large]="isForSubscriptionBusiness" [hidden]="scrollLocked">
       <kng-product-grouped-list class=""
       *ngIf="products.length"
-        alphasort="true"
-        showSection="true"
+        [alphasort]="true"
+        [showSection]="true"
         [clazz]="isForSubscriptionBusiness?'large':''"
         [displayVendor]="true"
         [displaySubscription]="activeSubscription"
