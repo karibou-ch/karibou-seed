@@ -11,8 +11,8 @@
     <div class="elem" id="time">
       <div class="item time"
           *ngFor="let time of shippingtimes|keyvalue;let idx=index"
-          (click)="onTimeChange(time.key)"
-          [class.selected]="selTime == time.key">{{time.value}}</div>
+          (click)="onTimeChange($any(time.key))"
+          [class.selected]="selTime == $any(time.key)">{{time.value}}</div>
     </div>
   </div>
   <div class="selector time" [hidden]="!checkout || !contract">

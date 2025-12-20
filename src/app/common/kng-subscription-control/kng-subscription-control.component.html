@@ -212,7 +212,7 @@
           <div class="title" [hidden]="currentContract.status=='paused'">
             <span >{{llabel.subtitle_subscription_pause}}&nbsp;</span>
             <span class="bold">{{pauseUntil|date:'EEE d MMM'}} ?</span>
-            <input type="date" id="subdate" (change)="pauseUntil = $event.target.valueAsDate"  [valueAsDate]="until" [min]="until| date:'yyyy-MM-dd'"  />
+            <input type="date" id="subdate" #subdate (change)="pauseUntil = subdate.valueAsDate"  [valueAsDate]="until" [min]="until| date:'yyyy-MM-dd'"  />
 
           </div>
 

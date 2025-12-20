@@ -96,7 +96,7 @@ export class KngSubscriptionItemComponent implements OnInit, OnChanges, OnDestro
   @Output() addItemClick = new EventEmitter<void>();
 
   // ===== STATE =====
-  contractItems: CartSubscriptionProductItem[] = []; // Items existants du contrat
+  contractItems: CartSubscriptionProductItem[] = []; // Items existants du contrat (avec UI state)
   pendingItems: any[] = []; // Items du panier en attente d'ajout
   isRunning: boolean = false;
   error: string | null = null;
