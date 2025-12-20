@@ -398,7 +398,6 @@ export class KngCartItemsComponent implements OnInit {
 
         this.items = this.$cart.getItems(ctx).sort((a,b)=> (a.active||b.active)?0:1);
         this.itemsAmount = this.$cart.subTotal(ctx);
-        console.log('items', ctx, this.items);
 
         // ✅ FIXED: Bug #6 - Éviter mutation de l'array original avec reverse()
         const lastSharedItemIdx = this.items.length - [...this.items].reverse().findIndex(item => item.shared);
