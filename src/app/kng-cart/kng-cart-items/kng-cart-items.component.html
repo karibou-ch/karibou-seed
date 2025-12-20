@@ -40,7 +40,7 @@
     <button class="continue hide"   [routerLink]="routerLinkForMoreProducts"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
 
     <!-- CALENDAR-->
-    <kng-calendar  [hidden]="!showCartItems"  [user]="user" minimal="true" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
+    <kng-calendar  [hidden]="!showCartItems"  [user]="user" [minimal]="true" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
     <!-- SUBSCRIPTION OPTIONS  -->
     <kng-subscription-option *ngIf="!showCartItems" [hub]="hub" [contract]="hasUpdateContract"></kng-subscription-option>
 

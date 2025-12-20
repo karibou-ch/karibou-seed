@@ -528,14 +528,14 @@ export class KngCartItemsComponent implements OnInit {
     this.__v++;
   }
 
-  sub_add(item: CartItem, variant?: string) {
+  sub_add(item: CartItem | CartSubscriptionProductItem, variant?: string) {
     item.quantity++;
     item['updated']=true;
     delete (item.deleted);
     this.__v++;
   }
 
-  sub_remove(item: CartItem, variant?: string) {
+  sub_remove(item: CartItem | CartSubscriptionProductItem, variant?: string) {
     // ✅ FIXED: Bug #8 - Validation quantity plus robuste
     if(item.quantity <= 0) {
       return;
@@ -545,7 +545,7 @@ export class KngCartItemsComponent implements OnInit {
     this.__v++;
   }
 
-  sub_removeAll(item: CartItem, variant?: string) {
+  sub_removeAll(item: CartItem | CartSubscriptionProductItem, variant?: string) {
     item.quantity=0;
     item['updated']=true;
     item.deleted=true;

@@ -6,7 +6,7 @@ import { StripeService } from 'ngx-stripe';
 import { CheckoutCtx } from '../kng-cart-items/kng-cart-items.component';
 import { CartSubscription } from 'kng2-core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { KngPaymentComponent } from 'src/app/common/kng-payment/kng-user-payment.component';
+import { KngPaymentComponent, PaymentEvent } from 'src/app/common/kng-payment/kng-user-payment.component';
 
 import pkgInfo from '../../../../package.json';
 
@@ -33,7 +33,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   @Input() i18n: any;
   @Input() orders: Order[];
-  @Input() shippingTime: string;
+  @Input() shippingTime: string | number;
 
 
 
@@ -912,7 +912,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   //
   // payment method is valid and saved
-  onPaymentSave(payment: UserCard) {
+  onPaymentSave(payment: PaymentEvent) {
     // set payment method is done by user.update$.subscribe()
   }
 
