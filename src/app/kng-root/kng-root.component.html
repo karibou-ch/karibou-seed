@@ -24,7 +24,7 @@
       </div>
 
       <!-- USER login -->
-      <div class="kng-boxed theme with-border" [hidden]="user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/login'" [relativeTo]="'/store/'+store+'/home'">
+      <div class="kng-boxed theme with-border" [hidden]="user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/login'">
         <div class="label" [innerHtml]="llabel.title_account_sign"></div>
         <button class="end">
           <span class="material-symbols-outlined">arrow_forward_ios</span>
@@ -37,7 +37,7 @@
       <kng-wallet [user]="user" *ngIf="user.isAuthenticated()"></kng-wallet>
 
       <!-- USER cmd -->
-      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/orders'" [relativeTo]="'/store/'+store+'/home'">
+      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/orders'">
         <div class="label" [innerHtml]="llabel.title_orders"></div>
         <button class="end" >
           <span class="material-symbols-outlined">arrow_forward_ios</span>
@@ -45,7 +45,7 @@
       </div>
 
       <!-- USER invoice -->
-      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/invoices'" [relativeTo]="'/store/'+store+'/home'">
+      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/invoices'">
         <div class="label" [innerHtml]="llabel.title_invoices_open"></div>
         <button class="end" >
           <span class="material-symbols-outlined">arrow_forward_ios</span>
@@ -53,7 +53,7 @@
       </div>
 
       <!-- USER account email -->
-      <div class="kng-boxed bill with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'" [relativeTo]="'/store/'+store+'/home'">
+      <div class="kng-boxed bill with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
         <div class="label" [innerHtml]="llabel.title_account_mail"></div>
         <button class="end" >
           <span class="material-symbols-outlined">arrow_forward_ios</span>
@@ -61,7 +61,7 @@
       </div>
 
         <!-- USER account shipping -->
-        <div class="kng-boxed bill with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'" [relativeTo]="'/store/'+store+'/home'">
+        <div class="kng-boxed bill with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
           <div class="label" [innerHtml]="llabel.title_account_shipping"></div>
           <button class="end" >
             <span class="material-symbols-outlined">arrow_forward_ios</span>
@@ -82,7 +82,7 @@
 
 
       <!-- SUBSCRITION OPTIONS -->
-      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/subscriptions'" [relativeTo]="'/store/'+store+'/home'">
+      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/subscriptions'">
         <div class="label" [innerHtml]="llabel.title_account_subscriptions"></div>
         <button class="end" >
           <span class="material-symbols-outlined">arrow_forward_ios</span>

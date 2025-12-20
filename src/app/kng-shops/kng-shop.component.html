@@ -53,7 +53,7 @@
     <ul>
       <li *ngFor="let faq of vendor.faq">
         <h4>{{faq.q}}</h4>
-        <div [kng-markdown]="faq.a" removeRoot="true" ></div>
+        <div [kng-markdown]="faq.a" [removeRoot]="true" ></div>
       </li>
     </ul>
   </section>
