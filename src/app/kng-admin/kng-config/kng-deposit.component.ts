@@ -3,7 +3,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UserAddress, Hub, DepositAddress } from 'kng2-core';
 import { i18n, KngUtils } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
-import { MDC_DIALOG_DATA, MdcDialogRef, MdcSnackbar } from '@angular-mdc/web';
+// @deprecated MDC removed - TODO: replace with native alternatives
+// import { MDC_DIALOG_DATA, MdcDialogRef, MdcSnackbar } from '@angular-mdc/web';
+type MdcSnackbar = any;
+type MdcDialogRef<T> = any;
+const MDC_DIALOG_DATA = 'MDC_DIALOG_DATA';
 import { KngHUBComponent } from './kng-hub.component';
 
 @Component({

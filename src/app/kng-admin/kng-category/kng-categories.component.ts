@@ -7,7 +7,14 @@ import {
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../../common';
-import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
+// @deprecated MDC removed - TODO: replace with native alternatives
+// import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
+type MdcSnackbar = any;
+type MdcDialogComponent = any;
+type MdcRadioChange = any;
+type MdcDialogRef<T> = any;
+type MdcDialog = any;
+const MDC_DIALOG_DATA = 'MDC_DIALOG_DATA';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 

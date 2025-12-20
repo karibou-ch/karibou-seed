@@ -2,7 +2,12 @@ import { Component, OnInit, OnDestroy, Inject, Input, Output, EventEmitter, forw
 
 import { KngNavigationStateService, i18n, KngUtils } from '../../common';
 
-import { MdcSnackbar, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
+// @deprecated MDC removed - TODO: replace with native alternatives
+// import { MdcSnackbar, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
+type MdcSnackbar = any;
+type MdcDialogRef<T> = any;
+type MdcDialog = any;
+const MDC_DIALOG_DATA = 'MDC_DIALOG_DATA';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 

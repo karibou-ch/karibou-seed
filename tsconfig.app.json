@@ -3,17 +3,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "types": [],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ]
+    "types": []
   },
   "files": [
     "src/main.ts",
-    "src/polyfills.ts"
+    "src/zone-flags.ts"
   ],
   "include": [
     "src/**/*.d.ts"

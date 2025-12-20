@@ -1,32 +1,11 @@
 import { NgModule } from '@angular/core';
 
-//
-// import material components
-import {
-  MdcButtonModule,
-  MdcCheckboxModule,
-  MdcElevationModule,
-  MdcFabModule,
-  MdcFormFieldModule,
-  MdcListModule,
-  MdcSelectModule,
-  MdcSwitchModule,
-  MdcTextFieldModule
-} from '@angular-mdc/web';
-
-
+/**
+ * @deprecated MDC components removed - use native HTML + CSS or Web Awesome components
+ * This module is kept empty for backwards compatibility during migration
+ */
 @NgModule({
-  exports: [
-    MdcButtonModule,
-    MdcCheckboxModule,
-    MdcElevationModule,
-    MdcFabModule,
-    MdcFormFieldModule,
-    MdcListModule,
-    MdcSelectModule,
-    MdcSwitchModule,
-    MdcTextFieldModule
-  ],
+  exports: [],
   declarations: []
 })
 export class KngDocumentMdcModule { }
