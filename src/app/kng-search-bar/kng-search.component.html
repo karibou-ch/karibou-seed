@@ -2,7 +2,7 @@
   <i class="left material-symbols-outlined">search</i>
   <span #stats class="stats"></span>
   <input type="text" #search
-        (keydown.enter)="doInput($event.target.value)"
+        (keydown.enter)="doInput(search.value)"
         (focus)="onFocus()"
         (blur)="onBlur()"
         [placeholder]="label.search_placeholder" >
