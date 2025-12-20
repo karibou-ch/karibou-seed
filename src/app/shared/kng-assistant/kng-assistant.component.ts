@@ -52,7 +52,7 @@ export class KngAssistantComponent implements OnInit {
   @Input() widget:boolean;
   @Input() agent: "productsagent"|"quote"|"checkout"|"feedback"|"recipefull" = "recipefull";
 
-  @Input() tips:string[];
+  @Input() tips: Array<{clazz?: string, label: string, action: string}>;
   @Input() prompts:string[];
   @Input() set prompt(value:string){
     this._prompt = value;
