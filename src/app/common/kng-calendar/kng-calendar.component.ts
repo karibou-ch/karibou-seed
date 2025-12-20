@@ -168,7 +168,7 @@ export class KngCalendarComponent implements OnInit {
       this.noshippingMsg = this.getNoShippingMessage();
             // ✅ MIGRATION COMPLÈTE: Utiliser CalendarService
       this.availableDays = this.$calendar.getValidShippingDatesForHub(this.currentHub, {
-        days: 7,
+        days: this.currentHub.uncapturedTimeLimit,
         user: this.user
       });
 

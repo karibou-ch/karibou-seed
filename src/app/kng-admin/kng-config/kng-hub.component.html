@@ -71,6 +71,9 @@
   <kng-config-input clazz="config" label="Ouverture: Dim(0), Lun(1),Mar(2),Merc(3),Jeu(4),Vend(5),Sam(6)" name="weekdays" format="text"
                     [(ngModel)]="currentHub.weekdays"></kng-config-input>
 
+  <kng-config-input clazz="config" label="Capture limit (jours)" name="uncapturedTimeLimit" format="text"
+                    [(ngModel)]="currentHub.uncapturedTimeLimit" min="0" max="30"></kng-config-input>
+
   <hr class="dashed"/>
   <section class="shippingtime">
     <h3 >Shipping Time</h3>
