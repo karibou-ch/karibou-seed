@@ -1,0 +1,98 @@
+<!-- ============================================================================ -->
+<!-- ADMIN LAYOUT - Style swipe-panel standard (side/center)                   -->
+<!-- ============================================================================ -->
+
+<!-- PANEL SIDE - Menu de navigation admin -->
+<div class="swipe-panel side">
+  <div class="admin-menu">
+
+    <!-- SIDEBAR HEADER -->
+    <div class="admin-header">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      <span class="title">Administration</span>
+    </div>
+
+    <!-- HUB SELECTOR -->
+    <div class="admin-section">
+      <div class="section-label">
+        <span class="material-symbols-outlined">store</span>
+        Hub
+      </div>
+      <wa-select size="small" [value]="store" (wa-change)="onHubChange($any($event.target).value)">
+        <wa-option *ngFor="let hub of hubs" [value]="hub.slug">{{hub.name}}</wa-option>
+      </wa-select>
+    </div>
+
+    <!-- LANGUAGE SWITCH -->
+    <div class="admin-section">
+      <div class="section-label">
+        <span class="material-symbols-outlined">language</span>
+        Langue
+      </div>
+      <div class="lang-switch">
+        <wa-button size="small" [appearance]="locale === 'fr' ? 'filled' : 'outlined'" (click)="onLocaleChange('fr')">FR</wa-button>
+        <wa-button size="small" [appearance]="locale === 'en' ? 'filled' : 'outlined'" (click)="onLocaleChange('en')">EN</wa-button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- NAVIGATION -->
+    <ul class="admin-nav">
+
+      <!-- GÉNÉRAL -->
+      <li class="nav-group-header">
+        <span class="material-symbols-outlined">settings</span>
+        Général
+      </li>
+      <li><a routerLink="./config" routerLinkActive="active" class="nav-item">Configuration</a></li>
+
+      <!-- CONTENU -->
+      <li class="nav-group-header">
+        <span class="material-symbols-outlined">article</span>
+        Contenu
+      </li>
+      <li><a routerLink="./welcome" routerLinkActive="active" class="nav-item">Welcome</a></li>
+      <li><a routerLink="./navigation" routerLinkActive="active" class="nav-item">Navigation</a></li>
+      <li><a routerLink="./page" routerLinkActive="active" class="nav-item">Pages</a></li>
+
+      <!-- HUB -->
+      <li class="nav-group-header">
+        <span class="material-symbols-outlined">storefront</span>
+        Hub
+      </li>
+      <li><a routerLink="./main-hub" routerLinkActive="active" class="nav-item">Paramètres</a></li>
+      <li><a routerLink="./manager-hub" routerLinkActive="active" class="nav-item">Manager</a></li>
+      <li><a routerLink="./information" routerLinkActive="active" class="nav-item">Information</a></li>
+
+      <!-- PRODUITS -->
+      <li class="nav-group-header">
+        <span class="material-symbols-outlined">inventory_2</span>
+        Produits
+      </li>
+      <li><a routerLink="./category" routerLinkActive="active" class="nav-item">Catégories</a></li>
+      <li><a routerLink="./deposit" routerLinkActive="active" class="nav-item">Dépôts</a></li>
+      <li><a routerLink="./shop" routerLinkActive="active" class="nav-item">Boutiques</a></li>
+
+    </ul>
+
+  </div>
+</div>
+
+<!-- PANEL CENTER - Contenu principal -->
+<div class="swipe-panel center">
+  <div class="admin-content">
+
+    <!-- Messages de notification -->
+    <div class="admin-messages" *ngIf="saveMessage || saveError">
+      <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">
+        {{saveMessage}}
+      </wa-callout>
+      <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">
+        {{saveError}}
+      </wa-callout>
+    </div>
+
+    <router-outlet></router-outlet>
+  </div>
+</div>

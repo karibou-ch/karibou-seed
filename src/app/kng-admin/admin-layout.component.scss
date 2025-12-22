@@ -1,0 +1,225 @@
+// ============================================================================
+// ADMIN LAYOUT - Layout simple avec swipe-panel + palette --mdc-theme-*
+// Note: swipe-panel.side/center sont définis globalement dans styles.scss
+// ============================================================================
+
+// Import des styles Web Awesome pour l'admin
+@import './admin-wa';
+
+// ============================================================================
+// HOST - Transparent pour participer au layout grid parent
+// ============================================================================
+:host {
+  display: contents;
+}
+
+// ============================================================================
+// ADMIN MENU (dans swipe-panel.side)
+// ============================================================================
+
+.admin-menu {
+  width: 100%;
+  max-width: var(--mdc-theme-toolbox-width, 220px);
+  padding: 1rem;
+
+  // Header
+  .admin-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--mdc-theme-text-hint-on-background);
+
+    .material-symbols-outlined {
+      font-size: 24px;
+      color: var(--mdc-theme-primary);
+    }
+
+    .title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+  }
+}
+
+// ============================================================================
+// ADMIN SECTIONS (Hub, Langue)
+// ============================================================================
+
+.admin-section {
+  margin-bottom: 1rem;
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mdc-theme-text-hint-on-background);
+    margin-bottom: 0.5rem;
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+  }
+
+  wa-select {
+    width: 100%;
+  }
+}
+
+// Language Switch
+.lang-switch {
+  display: flex;
+  gap: 0.25rem;
+
+  wa-button {
+    flex: 1;
+  }
+}
+
+// Divider
+.divider {
+  border: none;
+  border-top: 1px solid var(--mdc-theme-text-hint-on-background);
+  margin: 1rem 0;
+  opacity: 0.3;
+}
+
+// ============================================================================
+// ADMIN NAVIGATION
+// ============================================================================
+
+.admin-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  .nav-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0 0.25rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mdc-theme-text-hint-on-background);
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  li:not(.nav-group-header) {
+    margin: 0;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 0.5rem 0.75rem 0.5rem 1.75rem;
+    color: var(--mdc-theme-text-primary-on-background);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+    font-size: 0.9rem;
+
+    &:hover {
+      background: var(--mdc-theme-primary-light);
+    }
+
+    &.active {
+      background: var(--mdc-theme-primary);
+      color: var(--mdc-theme-primary-text);
+    }
+  }
+}
+
+// ============================================================================
+// ADMIN CONTENT (dans swipe-panel.center)
+// ============================================================================
+
+.admin-content {
+  padding: 1.5rem;
+  max-width: var(--mdc-theme-container-width, 800px);
+  width: 100%;
+
+  // Messages de notification
+  .admin-messages {
+    margin-bottom: 1rem;
+
+    wa-callout {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  // Style pour les titres des composants enfants
+  h2 {
+    color: var(--mdc-theme-text-primary-on-background);
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0 0 1.5rem;
+  }
+
+  h3 {
+    color: var(--mdc-theme-text-primary-on-background);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--mdc-theme-text-hint-on-background);
+  }
+
+  hr.dashed {
+    border: none;
+    border-top: 1px dashed var(--mdc-theme-text-hint-on-background);
+    margin: 1.5rem 0;
+    opacity: 0.3;
+  }
+}
+
+// ============================================================================
+// RESPONSIVE - Mobile
+// ============================================================================
+
+@media (max-width: 599px) {
+  .admin-menu {
+    max-width: none;
+    padding: 1rem;
+
+    .admin-header {
+      justify-content: center;
+    }
+  }
+
+  .admin-nav {
+    .nav-group-header {
+      justify-content: center;
+    }
+
+    .nav-item {
+      text-align: center;
+      padding-left: 0.75rem;
+    }
+  }
+
+  .admin-content {
+    padding: 1rem;
+  }
+}
+
+// ============================================================================
+// TABLET - Ajustements
+// ============================================================================
+
+@media (min-width: 600px) and (max-width: 1199px) {
+  .admin-menu {
+    max-width: 200px;
+  }
+}
