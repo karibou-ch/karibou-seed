@@ -1,104 +1,97 @@
 <div [ngClass]="clazz + ' input-row-'+format" [ngSwitch]="format">
 
-  <!--- MENU -->
-  <ng-container  *ngSwitchCase="'menu'">
-    <div class="menu">
-      <mdc-chip-set choice [value]="adminMenu">
-        <mdc-chip [routerLink]="'../..'+menu.url"
-                  *ngFor="let menu of menuElements" [value]="menu.url">
-          <mdc-chip-text>{{menu.name[locale]}}</mdc-chip-text>
-        </mdc-chip>
-      </mdc-chip-set>
-    </div>
+  <!-- CHECKBOX -->
+  <ng-container *ngSwitchCase="'checkbox'">
+    <wa-checkbox size="small" [checked]="value" (wa-change)="value = $any($event.target).checked">
+      {{label}}
+    </wa-checkbox>
   </ng-container>
 
-  <!--- HUB -->
-  <ng-container  *ngSwitchCase="'hub'">
-    <span class="material-symbols-outlined ">language</span>
-    <div class="lang">Changer de HUB</div>
-    <div class="menu">
-      <mdc-chip-set choice  [value]="store">
-        <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-        <mdc-chip (click)="changeHub(hub)"
-                  *ngFor="let hub of HUBs" [value]="hub.slug">
-          <mdc-chip-text>{{hub.name}}</mdc-chip-text>
-        </mdc-chip>
-      </mdc-chip-set>
-    </div>
-  </ng-container>
-
-  <!--- CHECKBOX -->
-  <ng-container  *ngSwitchCase="'checkbox'">
-    <div class="checkbox">
-      <input type="checkbox" [id]="label" [(ngModel)]="value"  />
-      <label [for]="label">{{label}}</label>
-    </div>
-  </ng-container>
-
-  <!--- TEXT -->
-  <ng-container  *ngSwitchCase="'text'">
-    <span class="material-symbols-outlined" mdcListItemGraphic>folder_special</span>
-    <div class="input">
-      <mdc-text-field   [label]="label" type="text" [(ngModel)]="value" >
-      </mdc-text-field>
-    </div>
-    <div class="check" [hidden]="!withCheck">
-          <mdc-checkbox [checked]="checked" (change)="onCheck($event)"></mdc-checkbox>
-    </div>
+  <!-- TEXT -->
+  <ng-container *ngSwitchCase="'text'">
+    <wa-input size="small" 
+              [label]="label" 
+              [value]="value" 
+              (wa-input)="value = $any($event.target).value"
+              [disabled]="disabled">
+      <span slot="prefix" class="material-symbols-outlined">folder_special</span>
+    </wa-input>
+    <wa-checkbox *ngIf="withCheck" size="small" [checked]="checked" (wa-change)="onCheck($any($event.target).checked)"></wa-checkbox>
     <ng-content></ng-content>
   </ng-container>
 
   <!-- AREA -->
-  <ng-container  *ngSwitchCase="'area'">
-    <span class="material-symbols-outlined" mdcListItemGraphic>folder_special</span>
-    <div class="input">
-      <mdc-textarea
-                    [label]="label"
-                    kng-autosize
-                    rows="6"
-                    [(ngModel)]="value" ></mdc-textarea>
-    </div>
-    <div class="check" [hidden]="!withCheck">
-      <mdc-checkbox [checked]="checked" (change)="onCheck($event)"></mdc-checkbox>
-    </div>
+  <ng-container *ngSwitchCase="'area'">
+    <wa-textarea size="small" 
+                 [label]="label" 
+                 [value]="value" 
+                 (wa-input)="value = $any($event.target).value"
+                 resize="auto"
+                 rows="3"
+                 [disabled]="disabled">
+    </wa-textarea>
+    <wa-checkbox *ngIf="withCheck" size="small" [checked]="checked" (wa-change)="onCheck($any($event.target).checked)"></wa-checkbox>
   </ng-container>
 
-
   <!-- IMAGE -->
-  <ng-container  *ngSwitchCase="'image'">
-    <div class="label">{{label}}</div>
-    <div class="image ">
-      <img [src]="value" [hidden]="!value" />
-      <button mdc-button outlined="true" class="align-right" [hidden]="!value" (click)="value=null">
-        <span class="material-symbols-outlined ">delete</span>
-      </button>
-      <ngx-uploadcare-widget images-only="true"
-        [value]="value"
-        [validator]="ucValidator"
-        (on-upload-complete)="onUpload($event)"
-        (on-dialog-open)="onDialogOpen($event)"
-        [public-key]="config.shared.keys.pubUpcare">
-      </ngx-uploadcare-widget>
+  <ng-container *ngSwitchCase="'image'">
+    <div class="image-field">
+      <label class="field-label">{{label}}</label>
+      <div class="image-container">
+        <div class="image-preview" *ngIf="value">
+          <img [src]="value">
+          <wa-button size="small" appearance="text" (click)="value=null">
+            <span class="material-symbols-outlined">delete</span>
+          </wa-button>
+        </div>
+        <ngx-uploadcare-widget 
+          [imagesOnly]="true"
+          [value]="value"
+          [validator]="ucValidator"
+          (on-upload-complete)="onUpload($event)"
+          (on-dialog-open)="onDialogOpen($event)"
+          [public-key]="config?.shared?.keys?.pubUpcare">
+        </ngx-uploadcare-widget>
+      </div>
     </div>
   </ng-container>
 
   <!-- LANG -->
   <ng-container *ngSwitchCase="'lang'">
-    <div class="lang">i18n</div>
-    <div class="input-i18n">
-      <a class="" [class.checked]="i18n.locale=='en'" (click)="onLang($event,'en')">en</a>
-      <a class="" [class.checked]="i18n.locale=='fr'" (click)="onLang($event,'fr')">fr</a>
-   </div>
+    <div class="lang-selector">
+      <span class="lang-label">i18n</span>
+      <div class="lang-buttons">
+        <wa-button size="small" [appearance]="i18n.locale=='en' ? 'filled' : 'outlined'" (click)="onLang($event,'en')">EN</wa-button>
+        <wa-button size="small" [appearance]="i18n.locale=='fr' ? 'filled' : 'outlined'" (click)="onLang($event,'fr')">FR</wa-button>
+      </div>
+    </div>
   </ng-container>
 
-
-  <!--- GEO -->
-  <ng-container  *ngSwitchCase="'geo'">
-    <span class="material-symbols-outlined ">map</span>
-    <div class="label">{{label}}</div>
-    <div class="image ">
-      <img [src]="getStaticMap()"  />
+  <!-- GEO -->
+  <ng-container *ngSwitchCase="'geo'">
+    <div class="geo-field">
+      <span class="material-symbols-outlined field-icon">map</span>
+      <label class="field-label">{{label}}</label>
+      <div class="geo-preview">
+        <img [src]="getStaticMap()">
+      </div>
     </div>
+  </ng-container>
+
+  <!-- MENU (navigation admin - now in sidebar) -->
+  <ng-container *ngSwitchCase="'menu'">
+    <wa-callout variant="primary">
+      <span class="material-symbols-outlined" slot="icon">info</span>
+      Navigation disponible dans le menu latéral
+    </wa-callout>
+  </ng-container>
+
+  <!-- HUB (hub selector - now in sidebar) -->
+  <ng-container *ngSwitchCase="'hub'">
+    <wa-callout variant="primary">
+      <span class="material-symbols-outlined" slot="icon">info</span>
+      Sélection du Hub disponible dans le menu latéral
+    </wa-callout>
   </ng-container>
 
 </div>

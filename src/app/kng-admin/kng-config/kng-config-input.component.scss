@@ -1,172 +1,139 @@
+// ============================================================================
+// KNG CONFIG INPUT - Layout minimal, laisse Web Awesome gérer le theming
+// ============================================================================
 
-
-div.input-row-geo,
-div.input-row-image{
-  background-color: #eee;
-  padding: 10px 15px;
-
-  margin: 20px auto;
-  border: 1px solid #ddd;
-
-  div.label{
-    font-weight: 500;
-    width: 50%;
-  }
-
-  ngx-uploadcare-widget,
-  button {
-    padding: 10px 5px;
-  }
-
-  img{
-    height: 48px;
-    margin: auto;
-    margin-right: 30px;
-    border-radius: 4px;
-    background: white;
-  }
-
-  .image {
-    margin-right: 0;
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-  }
-}
-
-div.input-row-lang{
-  background-color: #fff;
-  padding: 5px 0px!important;
-  margin: 5px 0;
-  border-bottom: 1px solid #ddd;
-  .lang{
-    margin-left: 15px;
-    font-weight: bold;
-  }
-  .input-i18n{
-    margin-left: auto;
-    margin-right: 10px;
-    a{
-      padding: 2px 10px;
-      background-color: #fff;
-      color: #333;
-      &.checked{
-        background-color: #333;
-        color: #fff;
-      }
-    }
-  }
-}
-
-div.input-row-geo{
-  .label{
-    margin-left: 30px;
-  }
-  img{
-    height: 168px;
-    margin: auto;
-    margin-right: 30px;
-    border-radius: 4px;
-    background: white;
-  }
-
-}
-
-div.input-row-hub,
-div.input-row-geo,
-div.input-row-lang,
-div.input-row-text,
-div.input-row-area,
-div.input-row-image{
-  &.large{
-
-  }
-
-  padding: 10px 15px;
-  display: flex;
-  align-items: center;
-}
-
-div.checkbox{
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  input{
-    width: 1rem;
-    height: 1rem;
-  }
-  label{
-    margin-left: 10px;
-  }
-}
-
-div.input{
-  width: 100%;
-  .check-i18n {
-    float: right;
-    color: var(--mdc-theme-secondary);
-    font-size: 80%;
-  }
-
-  mdc-text-field{
-    margin-top : -7px;
-    width: 60%;
-    background: transparent;
-    input {
-      transform: translateY(2px)!important;
-    }
-  }
-}
-
-div.center{
-  margin: auto;
-}
-
-div.lang{
-  margin-left: 30px;
-}
-
-
-mdc-textarea,textarea{
-  font-size: 16px;
-  width: 98%;
-  border: 1px solid #ddd;
-}
-
-.mdc-chip--selected {
-  background-color: var(--mdc-theme-primary)!important;
-  color: var(--mdc-theme-primary-text)!important;
-}
-
-:host{
+:host {
   width: 100%;
   display: block;
-  &:nth-child(odd) {
-    --background-color: #eee;
+  margin-bottom: 8px;
+}
+
+// ============================================================================
+// INPUT ROWS - Layout général
+// ============================================================================
+
+div[class*="input-row-"] {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+
+  wa-input, wa-textarea, wa-select {
+    flex: 1;
   }
 }
 
-:host ::ng-deep  textarea{
-  font-size: 16px!important;
-  line-height: 22px!important;
-  padding-top: 8px!important;
-  .mdc-text-field__input,
-  input{
-    color: inherit;
+// Force full width pour les composants WA
+wa-input, wa-textarea, wa-select {
+  width: 100%;
+}
+
+// ============================================================================
+// IMAGE FIELD
+// ============================================================================
+
+.image-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mdc-theme-text-primary-on-background);
+  }
+
+  .image-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .image-preview {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      height: 64px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
   }
 }
 
-:host ::ng-deep .mdc-text-field__input{
-  color: inherit!important;
+// ============================================================================
+// LANG SELECTOR
+// ============================================================================
+
+.lang-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 16px;
+
+  .lang-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mdc-theme-text-hint-on-background);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .lang-buttons {
+    display: flex;
+    gap: 4px;
+  }
 }
 
+// ============================================================================
+// GEO FIELD
+// ============================================================================
 
-:host ::ng-deep .uploadcare--widget__text {
-  font-size: 11px;
-  padding: 0;
-  ;
+.geo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .field-icon {
+    color: var(--mdc-theme-text-hint-on-background);
+    font-size: 18px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    color: var(--mdc-theme-text-hint-on-background);
+    font-weight: 500;
+  }
+
+  .geo-preview img {
+    max-width: 100%;
+    height: 150px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
 }
 
-:host ::ng-deep .uploadcare--widget {
-  margin-top: -20px;
+// ============================================================================
+// UPLOADCARE WIDGET OVERRIDES
+// ============================================================================
+
+:host ::ng-deep {
+  .uploadcare--widget {
+    margin: 0;
+  }
+
+  .uploadcare--widget__text {
+    font-size: 11px;
+  }
+
+  .uploadcare--widget__button {
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
 }

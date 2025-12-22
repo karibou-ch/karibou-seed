@@ -1,51 +1,49 @@
 
-<div class="blured" ></div>
+<div class="blured"></div>
 <!-- EDIT DOCUMENT CONTENT -->
 <router-outlet></router-outlet>
 
-<div class="container" >
+<div class="container">
 
-  <h3 >Pages</h3>
+  <h3>Pages</h3>
   <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
   <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <kng-config-input clazz="config" label="Langue" format="lang"></kng-config-input>
 
-  <mdc-list [twoLine]="true" avatar="true" border="true" >
-    <mdc-list-item [routerLink]="['./create']">
-      <span class="material-symbols-outlined size-large" mdcListItemGraphic >folder</span>
-      <mdc-list-item-text>
-        Ajouter un nouveau contenu
-        <mdc-list-item-secondary>Cliquer ici pour ajouter</mdc-list-item-secondary>
-      </mdc-list-item-text>        
-    </mdc-list-item>
-    <!-- LIST OF PAGES -->
-    <mdc-list-divider></mdc-list-divider>
-    <mdc-list-item *ngFor="let content of contents" 
-                    [routerLink]="['./list',content.slug[0]]"
-                    [class.disabled]="!content.available">
-      <span class="material-symbols-outlined size-large" mdcListItemGraphic >folder</span>
-      <mdc-list-item-text>
-        <span>{{content.type}}</span><b>/</b>{{content.slug[0]}}
-        <mdc-list-item-secondary>
-            <span [innerHtml]="content.title[$i18n.locale]"></span>
-        </mdc-list-item-secondary>              
-      </mdc-list-item-text>
-      <div mdcListItemMeta>
-        <mdc-form-field>
-            <mdc-checkbox [checked]="content.available" [disabled]="true" ></mdc-checkbox>
-            <span class="hide-md">Active</span>
-        </mdc-form-field>
-          
-        <mdc-chip>
-          <mdc-chip-icon leading><span class="material-symbols-outlined" >sort</span></mdc-chip-icon>
-          <mdc-chip-text>{{content.weight}}</mdc-chip-text>
-        </mdc-chip>          
+  <!-- Add new content -->
+  <div class="page-list">
+    <a class="page-item page-item--add" [routerLink]="['./create']">
+      <span class="material-symbols-outlined size-large">add_circle</span>
+      <div class="page-item-text">
+        <span class="page-title">Ajouter un nouveau contenu</span>
+        <span class="page-subtitle">Cliquer ici pour ajouter</span>
       </div>
-      <mdc-list-divider></mdc-list-divider>
-    </mdc-list-item>
-  </mdc-list>
+    </a>
+
+    <wa-divider></wa-divider>
+
+    <!-- LIST OF PAGES -->
+    <a class="page-item" 
+       *ngFor="let content of contents" 
+       [routerLink]="['./list', content.slug[0]]"
+       [class.disabled]="!content.available">
+      <span class="material-symbols-outlined size-large">folder</span>
+      <div class="page-item-text">
+        <span class="page-title">
+          <span class="page-type">{{$any(content).type || 'page'}}</span>
+          <b>/</b>
+          {{content.slug[0]}}
+        </span>
+        <span class="page-subtitle" [innerHtml]="content.title[locale]"></span>
+      </div>
+      <div class="page-item-meta">
+        <wa-checkbox size="small" [checked]="content.available" disabled>Active</wa-checkbox>
+        <span class="page-weight" *ngIf="$any(content).weight">
+          <span class="material-symbols-outlined">sort</span>
+          {{$any(content).weight}}
+        </span>
+      </div>
+    </a>
+  </div>
 </div>
-
-

@@ -1,233 +1,156 @@
-import { Component, OnInit, OnDestroy, Inject, Input, Output, EventEmitter, forwardRef, HostBinding } from '@angular/core';
-
+import { Component, OnInit, OnDestroy, Directive } from '@angular/core';
 import { KngNavigationStateService, i18n, KngUtils } from '../../common';
-
-// @deprecated MDC removed - TODO: replace with native alternatives
-// import { MdcSnackbar, MdcDialogRef, MDC_DIALOG_DATA, MdcDialog } from '@angular-mdc/web';
-type MdcSnackbar = any;
-type MdcDialogRef<T> = any;
-type MdcDialog = any;
-const MDC_DIALOG_DATA = 'MDC_DIALOG_DATA';
-import { HttpClient } from '@angular/common/http';
-import { FormBuilder, Validators, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-
+import { FormBuilder } from '@angular/forms';
 import {
   DocumentService,
   LoaderService,
   ConfigService,
   Config,
-  UserAddress,
   DocumentHeader,
-  Utils,
   Hub
 } from 'kng2-core';
-
-import { ActivatedRoute } from '@angular/router';
-import { KngNavigationStoreResolve } from 'src/app/common/navigation.store.service';
-import { ReplaySubject } from 'rxjs';
-
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
- *  //
-    // display karibou.ch welcome message
-    welcome.message.en|fr
-    welcome.message.active
-
-
-    //
-    // display karibou.ch tagLine
-    tagLine.h.en|fr
-    tagLine.t.en|fr
-    tagLine.p.en|fr
-    tagLine.image
-
-    //
-    // display karibou.ch About
-    about.h.en|fr
-    about.t.en|fr
-    about.o.en|fr
-    about.image
-
-    //
-    // display karibou.ch Footer
-    footer.h.en|fr
-    footer.t.en|fr
-    footer.p.en|fr
-    footer.image
-
-    //
-    // menu
-    menu:[{
-      name.en|fr
-      url
-      weight
-      group
-      active
-    }],
-
-    //
-    // defines keys
-    keys.pubConnect
-    keys.pubStripe
-    keys.pubGithub
-    keys.pubUpcare
-    keys.pubChat
-    keys.pubMap
-    keys.pubDisqus
-    keys.pubGoogle
-    keys.pubFacebook
-
-    mail.signature
-    mail.phone
-    mail.subject
-
-    //
-    // hub specific content
-    hubs:[{name,slug,description,image}],
+ * Base configuration component for admin dashboard
+ * Handles config loading, saving and common functionality
  */
-
-@Component({
-  selector: 'kng-config',
-  templateUrl: './kng-config.component.html',
-  styleUrls: ['./kng-config.component.scss']
-})
-export class KngConfigComponent implements OnInit, OnDestroy {
-
+@Directive()
+export class KngConfigBase implements OnInit, OnDestroy {
   currenHub: Hub;
   config: Config;
   menus: any[];
   groups: string[];
-  isLoading: boolean;
+  isLoading = false;
   isReady = false;
-
-
+  saveMessage = '';
+  saveError = '';
 
   constructor(
-    public $dlg: MdcDialog,
     public $fb: FormBuilder,
     public $i18n: i18n,
     public $config: ConfigService,
     public $loader: LoaderService,
     public $util: KngUtils,
     public $route: ActivatedRoute,
-    public $snack: MdcSnackbar,
     public $navigation: KngNavigationStateService
   ) {
-    // Cas normal: utilisation getLatestCoreData()
     const { config } = this.$loader.getLatestCoreData();
-
-    this.isLoading = false;
-    this.isReady = true;
     this.config = config;
-    this.currenHub = this.config.shared.hub || {};
-    // HUB
-    //this.config.shared.maintenance.reason = this.config.shared.maintenance.reason || {};
-    //this.config.shared.header.message = this.config.shared.header.message || {};
-    // this.config.shared.checkout.address = this.config.shared.checkout.address || {};
-    // this.config.shared.checkout.payment = this.config.shared.checkout.payment || {};
-    // this.config.shared.checkout.message = this.config.shared.checkout.message || {};
-    this.config.shared.welcome.message = this.config.shared.welcome.message || {};
-    this.config.shared.faq_title = this.config.shared.faq_title || {fr:'',en:''};
-
-    //
-    // used by child classes
+    this.currenHub = this.config?.shared?.hub || {} as Hub;
+    
+    // Initialize optional fields
+    if (this.config?.shared) {
+      this.config.shared.welcome = this.config.shared.welcome || { message: {} };
+      this.config.shared.welcome.message = this.config.shared.welcome.message || {};
+      this.config.shared.faq_title = this.config.shared.faq_title || { fr: '', en: '' };
+    }
+    
+    this.isReady = true;
     this.ngConstruct();
   }
 
-  ngConstruct() {
-    this.$config.get(this.currenHub.slug).subscribe(config => {
-      this.config = config;
-    });
-
+  ngConstruct(): void {
+    if (this.currenHub?.slug) {
+      this.$config.get(this.currenHub.slug).subscribe(config => {
+        this.config = config;
+      });
+    }
   }
 
-  ngOnInit() {
-    //
-    // set navigation layout
+  ngOnInit(): void {
     this.formatDates();
     this.buildMenu();
   }
 
-
-
-  buildMenu() {
-    //
-    // make sure to find menu item
-    // this.config.shared.menu.forEach((menu,i)=>{
-    //   menu.id=menu._id||i;
-    //   menu.index=i;
-    // })
-    this.menus = this.config.shared.menu.sort(this.sortByGroupAndWeight);
-    //
-    // get menu groups names
-    this.groups = this.menus.map(menu => menu.group)
-    .filter((item, i, ar) => ar.indexOf(item) === i);
-  }
-
-  getMenuByGroup(group: string) {
-    return this.menus.filter(menu => menu.group === group);
-  }
-
-  findMenuItem(item) {
-    return this.config.shared.menu.findIndex(m => m._id === item._id);
-    // return this.menus.find(menu=>menu.id===item.id).index;
-  }
-
-  formatDates() {
-    const format = (d: Date) => {
-      d = new Date(d);
-      const month = ('0' + (d.getMonth() + 1)).slice(-2);
-      const day = ('0' + d.getDate()).slice(-2);
-      // return day+'-'+month+'-'+d.getFullYear();
-      return d.getFullYear() + '-' + month + '-' + day;
-    };
-    (this.config.shared.noshipping || []).forEach(noshipping => {
-      noshipping.from = format(<Date>noshipping.from);
-      noshipping.to = format(<Date>noshipping.to);
-    });
-  }
-
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.isLoading = false;
   }
 
-  onCreateFAQ() {
-    this.config.shared.faq = this.config.shared.faq || [];
-    this.config.shared.faq.push({
-      q: {en:'',fr:''},
-      a: {en:'',fr:''}
+  get locale(): string {
+    return this.$i18n.locale;
+  }
+
+  buildMenu(): void {
+    if (!this.config?.shared?.menu) return;
+    this.menus = this.config.shared.menu.sort(this.sortByGroupAndWeight);
+    this.groups = this.menus
+      .map(menu => menu.group)
+      .filter((item, i, ar) => ar.indexOf(item) === i);
+  }
+
+  getMenuByGroup(group: string): any[] {
+    return this.menus?.filter(menu => menu.group === group) || [];
+  }
+
+  findMenuItem(item: any): number {
+    return this.config.shared.menu.findIndex(m => m._id === item._id);
+  }
+
+  formatDates(): void {
+    const format = (d: Date | string): string => {
+      const date = new Date(d);
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const day = ('0' + date.getDate()).slice(-2);
+      return date.getFullYear() + '-' + month + '-' + day;
+    };
+    
+    (this.config?.shared?.noshipping || []).forEach(noshipping => {
+      noshipping.from = format(noshipping.from as Date);
+      noshipping.to = format(noshipping.to as Date);
     });
   }
 
-
-
-  onDialogOpen(url) {
-    if(url== 'rejected') {
-      this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
-      return;
-    }
-    // this.onConfigSave();
+  onCreateFAQ(): void {
+    this.config.shared.faq = this.config.shared.faq || [];
+    this.config.shared.faq.push({
+      q: { en: '', fr: '' },
+      a: { en: '', fr: '' }
+    });
   }
 
+  onDialogOpen(url: string): void {
+    if (url === 'rejected') {
+      this.showError(this.$i18n.label().img_max_sz);
+    }
+  }
 
-  onConfigSave() {
+  onConfigSave(): void {
     this.isReady = false;
     this.isLoading = true;
-    this.$config.save(this.config).subscribe(
-      () => {
+    this.saveMessage = '';
+    this.saveError = '';
+    
+    this.$config.save(this.config).subscribe({
+      next: () => {
         this.formatDates();
         this.isReady = true;
-        this.$snack.open(this.$i18n.label().save_ok, 'OK');
-        }, (err) => {
-          this.isReady = true;
-          this.isLoading = false;
-          this.$snack.open(err.error, 'OK')
-        },
-      () => this.isLoading = false
-    );
+        this.showSuccess(this.$i18n.label().save_ok);
+      },
+      error: (err) => {
+        this.isReady = true;
+        this.isLoading = false;
+        this.showError(err.error || 'Erreur lors de la sauvegarde');
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
-  sortByGroupAndWeight(m1, m2) {
+  showSuccess(message: string): void {
+    this.saveMessage = message;
+    this.saveError = '';
+    setTimeout(() => this.saveMessage = '', 3000);
+  }
+
+  showError(message: string): void {
+    this.saveError = message;
+    this.saveMessage = '';
+    setTimeout(() => this.saveError = '', 5000);
+  }
+
+  sortByGroupAndWeight(m1: any, m2: any): number {
     const g1 = m1.group || '';
     const g2 = m2.group || '';
     if (g1 === g2) {
@@ -235,8 +158,26 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     }
     return g1.toLowerCase().localeCompare(g2.toLowerCase());
   }
+}
 
 
+@Component({
+  selector: 'kng-config',
+  templateUrl: './kng-config.component.html',
+  styleUrls: ['./kng-config.component.scss']
+})
+export class KngConfigComponent extends KngConfigBase {
+  constructor(
+    $fb: FormBuilder,
+    $i18n: i18n,
+    $config: ConfigService,
+    $loader: LoaderService,
+    $util: KngUtils,
+    $route: ActivatedRoute,
+    $navigation: KngNavigationStateService
+  ) {
+    super($fb, $i18n, $config, $loader, $util, $route, $navigation);
+  }
 }
 
 
@@ -245,228 +186,147 @@ export class KngConfigComponent implements OnInit, OnDestroy {
   templateUrl: './kng-welcome.component.html',
   styleUrls: ['./kng-config.component.scss']
 })
-export class KngWelcomeCfgComponent extends KngConfigComponent {
+export class KngWelcomeCfgComponent extends KngConfigBase {
+  constructor(
+    $fb: FormBuilder,
+    $i18n: i18n,
+    $config: ConfigService,
+    $loader: LoaderService,
+    $util: KngUtils,
+    $route: ActivatedRoute,
+    $navigation: KngNavigationStateService
+  ) {
+    super($fb, $i18n, $config, $loader, $util, $route, $navigation);
+  }
 }
+
 
 @Component({
   selector: 'kng-shop',
   templateUrl: './kng-shop.component.html',
   styleUrls: ['./kng-config.component.scss']
 })
-export class KngShopComponent extends KngConfigComponent {
+export class KngShopComponent extends KngConfigBase {
+  constructor(
+    $fb: FormBuilder,
+    $i18n: i18n,
+    $config: ConfigService,
+    $loader: LoaderService,
+    $util: KngUtils,
+    $route: ActivatedRoute,
+    $navigation: KngNavigationStateService
+  ) {
+    super($fb, $i18n, $config, $loader, $util, $route, $navigation);
+  }
 }
+
 
 @Component({
   selector: 'kng-page-content',
   templateUrl: './kng-page.component.html',
   styleUrls: ['./kng-config.component.scss']
 })
-export class KngPageContentComponent  {
+export class KngPageContentComponent {
   config: Config;
   contents: DocumentHeader[];
 
   constructor(
-    public $fb: FormBuilder,
     public $i18n: i18n,
-    public $document: DocumentService,
-    public $loader: LoaderService,
-    public $snack: MdcSnackbar,
-    public $navigation: KngNavigationStateService
+    private $doc: DocumentService,
+    private $loader: LoaderService,
+    private $route: ActivatedRoute,
+    private router: Router
   ) {
+    const { config } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.contents = [];
+    this.ngConstruct();
   }
 
-  ngOnInit() {
-    //
-    // set navigation layout
-    // let categories=this.getCategories().map(type=>{
-    //   return this.$document.select(type);
-    // });
-    // concat(categories).subscribe(docs=>{
-    //   this.contents=docs;
-    // });
-
-    this.$document.getAll(true).subscribe((docs: DocumentHeader[]) => {
-      this.contents = docs;
-    }, err => this.$snack.open(err.error));
+  ngConstruct(): void {
+    this.$doc.select('all').subscribe(pages => {
+      this.contents = pages;
+    });
   }
 
-  ngOnDestroy() {
-    //
-    // set navigation layout
-  }
-
-  getCategories() {
-    return this.$document.getCategories();
-  }
-
-}
-
-
-@Component({
-  templateUrl: './kng-navigation-dlg.component.html',
-  styleUrls: ['./kng-config-dlg.component.scss']
-})
-export class KngNavigationDlgComponent {
-  constructor(
-    public $dlgRef: MdcDialogRef<KngNavigationDlgComponent>,
-    public $fb: FormBuilder,
-    public $i18n: i18n,
-    @Inject(MDC_DIALOG_DATA) public data: any
-    ) {
-      this.menu = data;
-    }
-
-    menu: any;
-
-  //
-  // init formBuilder
-  form = this.$fb.group({
-    'weight': ['', [Validators.required]],
-    'active': ['', []],
-    'group': ['', [Validators.required]],
-    'name': ['', [Validators.required]],
-    'url': ['', [Validators.required]]
-  });
-
-  askSave() {
-    if (this.form.invalid) {
-      return;
-    }
-
-    this.$dlgRef.close(this.form.value);
-
-  }
-
-  askDelete() {
-    this.$dlgRef.close('delete');
-  }
-
-  askDecline() {
-    this.$dlgRef.close('decline');
+  get locale(): string {
+    return this.$i18n.locale;
   }
 }
+
 
 @Component({
   selector: 'kng-navigation',
   templateUrl: './kng-navigation.component.html',
   styleUrls: ['./kng-config.component.scss']
 })
-export class KngNavigationComponent extends KngConfigComponent {
-  //
-  // edit content
-  edit: {
-    menu: any;
-    form: any;
-  };
+export class KngNavigationComponent extends KngConfigBase {
+  showDlg = false;
+  dlgItem: any = null;
 
-
-  assign(value) {
-    const lang = this.$i18n.locale;
-    this.edit.menu.weight = value.weight;
-    this.edit.menu.name[lang] = value.name;
-    this.edit.menu.url = value.url;
-    this.edit.menu.group = value.group;
-    this.edit.menu.active = value.active;
+  constructor(
+    $fb: FormBuilder,
+    $i18n: i18n,
+    $config: ConfigService,
+    $loader: LoaderService,
+    $util: KngUtils,
+    $route: ActivatedRoute,
+    $navigation: KngNavigationStateService
+  ) {
+    super($fb, $i18n, $config, $loader, $util, $route, $navigation);
   }
 
-  ngConstruct() {
-    //
-    // init edit struct
-    this.edit = {
-      form: null,
-      menu: null
+  onMenuCreate(): void {
+    this.dlgItem = {
+      name: { en: '', fr: '' },
+      url: '',
+      weight: 0,
+      group: '',
+      active: true,
+      type: 'link'
     };
+    this.showDlg = true;
   }
 
-  ngOnInit() {
-    super.ngOnInit();
-  }
-  onDelete($event) {
-    this.isLoading = true;
-    const toRemove = this.findMenuItem(this.edit.menu);
-    if (toRemove === -1) {
-      return window.alert('Ooops');
-    }
-
-    this.config.shared.menu.splice(toRemove, 1);
-    this.$config.save(this.config).subscribe(() => {
-      this.edit.menu = null;
-      this.$snack.open(this.$i18n.label().save_ok, 'OK');
-      this.buildMenu();
-    },
-    (err) => this.$snack.open(err.error, 'OK'),
-    () => this.isLoading = false
-    );
-    return false;
+  onMenuSelect(event: any, item: any): void {
+    this.dlgItem = { ...item };
+    this.showDlg = true;
   }
 
-  onDecline() {
-    this.edit.menu = null;
-  }
-
-
-  onSave(value) {
-     let toSave = -1;
-    this.isLoading = true;
-    this.isReady = false;
-
-    //
-    // save specific menu
-    this.assign(value);
-    //
-    // create this menu
-    if (!this.edit.menu._id) {
-      toSave = this.config.shared.menu.push(this.edit.menu);
+  onSaveMenu(): void {
+    if (!this.dlgItem) return;
+    
+    const idx = this.findMenuItem(this.dlgItem);
+    if (idx >= 0) {
+      this.config.shared.menu[idx] = this.dlgItem;
     } else {
-      toSave = this.findMenuItem(this.edit.menu);
-      Object.assign(this.config.shared.menu[toSave], this.edit.menu);
+      this.config.shared.menu.push(this.dlgItem);
     }
+    
+    this.buildMenu();
+    this.showDlg = false;
+    this.dlgItem = null;
+  }
 
-    //
-    // never goes there!
-    if (toSave === -1) {
-      return window.alert('Ooops, pas bien ça!');
-    }
-
-    this.$config.save(this.config).subscribe(() => {
-      this.edit.menu = null;
-      this.isReady = true;
-      this.$snack.open(this.$i18n.label().save_ok, 'OK');
+  onDeleteMenu(item: any): void {
+    const idx = this.findMenuItem(item);
+    if (idx >= 0) {
+      this.config.shared.menu.splice(idx, 1);
       this.buildMenu();
-    },
-    (err) => this.$snack.open(err.error, 'OK'),
-    () => this.isLoading = false);
-    return false;
-  }
-  onMenuCreate() {
-    this.edit.menu = {name: {fr: '', en: null, de: null}};
-    const dialogRef = this.$dlg.open(KngNavigationDlgComponent, {
-      data: this.edit.menu
-    });
-    dialogRef.afterClosed().subscribe(value => {
-      this.onSave(value);
-    });
+    }
   }
 
-  onMenuSelect($event, menu) {
-    this.edit.menu = menu;
-    const dialogRef = this.$dlg.open(KngNavigationDlgComponent, {
-      data: this.edit.menu
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      // on delete
-      if (result === 'delete') {
-        return this.onDelete($event);
-      }
-      // on Save
-      if (typeof result === 'object') {
-        return this.onSave(result);
-      }
-      // on close
-      this.onDecline();
-    });
-
+  closeDlg(): void {
+    this.showDlg = false;
+    this.dlgItem = null;
   }
-
 }
 
+
+@Component({
+  selector: 'kng-navigation-dlg',
+  template: `<div>Navigation Dialog - Deprecated</div>`
+})
+export class KngNavigationDlgComponent {
+  // Kept for backwards compatibility, functionality moved to KngNavigationComponent
+}

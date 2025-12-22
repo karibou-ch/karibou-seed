@@ -1,120 +1,149 @@
-import { Component, Inject} from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserAddress, Hub, DepositAddress } from 'kng2-core';
 import { i18n, KngUtils } from 'src/app/common';
-import { HttpClient } from '@angular/common/http';
-// @deprecated MDC removed - TODO: replace with native alternatives
-// import { MDC_DIALOG_DATA, MdcDialogRef, MdcSnackbar } from '@angular-mdc/web';
-type MdcSnackbar = any;
-type MdcDialogRef<T> = any;
-const MDC_DIALOG_DATA = 'MDC_DIALOG_DATA';
-import { KngHUBComponent } from './kng-hub.component';
+import { KngHUBBase } from './kng-hub.component';
 
+/**
+ * Dialog component for deposit editing - inline version (no MDC)
+ */
 @Component({
-  templateUrl: './kng-deposit-dlg.component.html',
-  styleUrls: ['./kng-config-dlg.component.scss']
+  selector: 'kng-deposit-dlg',
+  template: `
+    <wa-dialog [open]="isOpen" (wa-hide)="onClose()">
+      <div slot="label">{{isEdit ? 'Modifier' : 'Ajouter'}} un dépôt</div>
+      
+      <form [formGroup]="form" class="deposit-form">
+        <wa-input size="small" label="Nom" formControlName="name"></wa-input>
+        <wa-input size="small" label="Adresse" formControlName="streetAddress" (wa-input)="onAddressChange()"></wa-input>
+        <wa-input size="small" label="Étage" formControlName="floor"></wa-input>
+        <wa-input size="small" label="Code postal" formControlName="postalCode" (wa-input)="onAddressChange()"></wa-input>
+        <wa-input size="small" label="Région" formControlName="region"></wa-input>
+        <wa-textarea size="small" label="Note" formControlName="note" resize="auto" rows="2"></wa-textarea>
+        <wa-input size="small" label="Frais" type="number" formControlName="fees"></wa-input>
+        <wa-input size="small" label="Poids" type="number" formControlName="weight"></wa-input>
+        <wa-checkbox size="small" formControlName="active">Actif</wa-checkbox>
+        
+        <div class="geo-preview" *ngIf="address?.geo">
+          <img [src]="getStaticMap(address)">
+        </div>
+      </form>
+      
+      <div slot="footer" class="dialog-footer">
+        <wa-button size="small" appearance="text" (click)="onDelete()" *ngIf="isEdit">Supprimer</wa-button>
+        <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
+        <wa-button size="small" appearance="filled" (click)="onSave()" [disabled]="form.invalid">Enregistrer</wa-button>
+      </div>
+    </wa-dialog>
+  `,
+  styles: [`
+    .deposit-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 400px;
+    }
+    .geo-preview img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .dialog-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+  `]
 })
 export class KngDepositDlgComponent {
+  isOpen = false;
+  isEdit = false;
+  address: any = {};
+  idx: number | null = null;
+  pubMap = '';
+  
+  private saveCallback: (value: any) => void;
+  private deleteCallback: () => void;
 
-  error: string;
-  pubMap: string;
-  STATIC_MAP = 'https://maps.googleapis.com/maps/api/staticmap?';
-
-  constructor(
-    public $http: HttpClient,
-    public $dlgRef: MdcDialogRef<KngDepositDlgComponent>,
-    public $fb: FormBuilder,
-    public $i18n: i18n,
-    public $util: KngUtils,
-    private $snackbar: MdcSnackbar,
-    @Inject(MDC_DIALOG_DATA) public data: any
-  ) {
-
-      this.address = data.edit ? data.edit.address : {};
-      this.idx = data.edit ? data.edit.idx : null;
-      this.pubMap = data.pubMap;
-  }
-
-  address: any;
-  idx: any;
-
-  //
-  // init formBuilder
-  // init formBuilder
   form = this.$fb.group({
-    'weight': ['', [Validators.required, Validators.min(0)]],
-    'active': ['', []],
+    'weight': [0, [Validators.required, Validators.min(0)]],
+    'active': [true],
     'name': ['', [Validators.required]],
     'streetAddress': ['', [Validators.required, Validators.minLength(4)]],
     'floor': ['', [Validators.required, Validators.minLength(1)]],
     'postalCode': ['', [Validators.required, Validators.minLength(4)]],
     'region': ['', [Validators.required]],
     'note': ['', [Validators.required]],
-    'fees': ['', [Validators.required, Validators.min(0)]]
+    'fees': [0, [Validators.required, Validators.min(0)]]
   });
 
-  ngOnInit() {
-    this.updateMap();
+  constructor(
+    public $fb: FormBuilder,
+    public $i18n: i18n,
+    public $util: KngUtils
+  ) {}
 
-    this.$util.getGeoCode().subscribe((result) => {
-      if (!result.geo.location ) {return; }
-      this.address.geo = {
-        lat: result.geo.location.lat,
-        lng: result.geo.location.lng
-      };
-    },status => {
-      this.$snackbar.open(status.message || status, undefined, {
-        dismiss: true
-      });
-    });
-  }
-
-  askSave() {
-    if (this.form.invalid) {
-      return;
-    }
-
-    this.$dlgRef.close(this.form.value);
-
-  }
-  addAddress() {
+  open(data: { edit?: { idx: number; address: any }; pubMap: string }, 
+       onSave: (value: any) => void, 
+       onDelete: () => void): void {
+    this.isOpen = true;
+    this.pubMap = data.pubMap;
+    this.saveCallback = onSave;
+    this.deleteCallback = onDelete;
     
+    if (data.edit) {
+      this.isEdit = true;
+      this.idx = data.edit.idx;
+      this.address = { ...data.edit.address };
+      this.form.patchValue({
+        weight: this.address.weight || 0,
+        active: this.address.active !== false,
+        name: this.address.name || '',
+        streetAddress: this.address.streetAdress || this.address.streetAddress || '',
+        floor: this.address.floor || '',
+        postalCode: this.address.postalCode || '',
+        region: this.address.region || '',
+        note: this.address.note || '',
+        fees: this.address.fees || 0
+      });
+    } else {
+      this.isEdit = false;
+      this.idx = null;
+      this.address = {};
+      this.form.reset({ weight: 0, active: true, fees: 0 });
+    }
   }
 
-  askDelete() {
-    this.$dlgRef.close('delete');
+  onClose(): void {
+    this.isOpen = false;
   }
 
-  askDecline() {
-    this.$dlgRef.close('decline');
+  onSave(): void {
+    if (this.form.valid && this.saveCallback) {
+      this.saveCallback(this.form.value);
+      this.isOpen = false;
+    }
   }
 
-  getStaticMap(address: UserAddress) {
+  onDelete(): void {
+    if (this.deleteCallback) {
+      this.deleteCallback();
+      this.isOpen = false;
+    }
+  }
+
+  onAddressChange(): void {
+    const value = this.form.value;
+    if (value.streetAddress && value.postalCode && value.region) {
+      this.$util.updateGeoCode(value.streetAddress, value.postalCode, value.region);
+    }
+  }
+
+  getStaticMap(address: UserAddress): string {
     return KngUtils.getStaticMap(address);
   }
-
-
-  updateMap() {
-    let lastlen = 0, newlen;
-
-     this.form.valueChanges.subscribe(value => {
-      newlen = [value.streetAddress, value.postalCode, value.region].join(',').length;
-      if (Math.abs(lastlen - newlen) < 2 ||
-        !value.name ||
-        !value.streetAddress || (value.streetAddress === '') ||
-        !value.postalCode || (value.postalCode === '') ||
-        !value.region) {
-        return;
-      }
-      lastlen = newlen;
-      // get geo only if last value changed more than 3 chars
-      this.$util.updateGeoCode(value.streetAddress, value.postalCode, value.region)
-    });
-
-  }
-
 }
-
 
 
 @Component({
@@ -122,25 +151,43 @@ export class KngDepositDlgComponent {
   templateUrl: './kng-deposit.component.html',
   styleUrls: ['./kng-config.component.scss']
 })
-export class KngDepositComponent extends KngHUBComponent {
-
-  currentHub: Hub;
-  pubMap: string;
-  //
-  // edit content
+export class KngDepositComponent extends KngHUBBase {
+  pubMap = '';
+  showDialog = false;
+  
   edit: {
-    idx: number;
+    idx: number | null;
     address: any;
     form: any;
+  } = {
+    idx: null,
+    address: null,
+    form: null
   };
 
+  ngOnInit(): void {
+    super.ngOnInit();
+    this.pubMap = this.config?.shared?.keys?.pubMap || '';
+    
+    // Subscribe to geocode updates
+    this.$utils.getGeoCode().subscribe(result => {
+      if (result.geo && this.edit.address) {
+        this.edit.address.geo = {
+          lat: result.geo.location?.lat,
+          lng: result.geo.location?.lng
+        };
+      }
+    });
+  }
 
-  assign(value) {
-    const lang = this.$i18n.locale;
+  getStaticMap(address: UserAddress): string {
+    return KngUtils.getStaticMap(address);
+  }
+
+  assign(value: any): void {
     this.edit.address.fees = value.fees;
     this.edit.address.weight = value.weight;
     this.edit.address.name = value.name;
-    // FIXME streetAddress vs streetAdress !
     this.edit.address.streetAdress = value.streetAddress;
     this.edit.address.floor = value.floor;
     this.edit.address.postalCode = value.postalCode;
@@ -149,112 +196,58 @@ export class KngDepositComponent extends KngHUBComponent {
     this.edit.address.active = value.active;
   }
 
-  ngConstruct() {
-    //
-    // HUB from config
-    const hubSlug = this.config.shared.hub? this.config.shared.hub.slug:'artamis';
-    //
-    // HUB from DB
-    this.$hub.get(hubSlug).subscribe(hub => {
-      this.initHub(hub);
-      Object.assign(this.currentHub, hub);
-    }, (err) => this.$snack.open(err.error, 'OK'));
-
-
-    //
-    // init edit struct
-    this.edit = {
-      idx: null,
-      form: null,
-      address: null
-    };
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-    this.pubMap = this.config.shared.keys.pubMap;
-  }
-
-  getStaticMap(address: UserAddress) {
-    return KngUtils.getStaticMap(address);
-  }
-
-  onDelete($event) {
+  onDelete(): void {
     if (this.edit.idx == null) {
-      // FIXME place the string in our i18n service
-      return window.alert('Impossible de supprimer cet élément');
+      window.alert('Impossible de supprimer cet élément');
+      return;
     }
     this.currentHub.deposits.splice(this.edit.idx, 1);
-    this.$hub.saveManager(this.currentHub).subscribe(() => {
-      this.edit.address = null;
-      this.$snack.open(this.$i18n.label().save_ok, 'OK');
-    },
-    (err) => this.$snack.open(err.error, 'OK'));
-    return false;
+    this.$hub.saveManager(this.currentHub).subscribe({
+      next: () => {
+        this.edit.address = null;
+        this.showDialog = false;
+        this.showSuccess(this.$i18n.label().save_ok);
+      },
+      error: (err) => this.showError(err.error)
+    });
   }
 
-  onDecline() {
+  onDecline(): void {
     this.edit.idx = null;
     this.edit.address = null;
+    this.showDialog = false;
   }
 
-
-  //
-  // save specific address
-  onSave(value) {
-    this.isReady = false;    
+  onSave(value: any): void {
+    this.isReady = false;
     this.assign(value);
+    
     if (this.edit.idx == null) {
       this.currentHub.deposits = this.currentHub.deposits || [];
-      this.edit.idx = this.currentHub.deposits.push(<DepositAddress>{}) - 1;
+      this.edit.idx = this.currentHub.deposits.push({} as DepositAddress) - 1;
     }
     Object.assign(this.currentHub.deposits[this.edit.idx], this.edit.address);
 
-    this.$hub.saveManager(this.currentHub).subscribe(() => {
-      this.edit.address = null;
-      this.isReady = true;
-      this.$snack.open(this.$i18n.label().save_ok, 'OK');
-    },
-    (err) => this.$snack.open(err.error, 'OK'));
-    return false;
+    this.$hub.saveManager(this.currentHub).subscribe({
+      next: () => {
+        this.edit.address = null;
+        this.isReady = true;
+        this.showDialog = false;
+        this.showSuccess(this.$i18n.label().save_ok);
+      },
+      error: (err) => this.showError(err.error)
+    });
   }
-  onAddressCreate() {
-    this.edit.idx = null;
-    this.edit.address = {};
-    this.edit.address.fees = 0;
-    const dialogRef = this.$dlg.open(KngDepositDlgComponent, {
-      data: this.edit
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'close') {
-        this.onDecline();
-      } else if (typeof result === 'object') {
-            this.onSave(result);
-      }
-    });
-}
 
-  onAddressSelect($event, address, i) {
-    this.edit.idx = i;
-    this.edit.address = address;
-    this.edit.address = address;
-    const dialogRef = this.$dlg.open(KngDepositDlgComponent, {
-      data: {
-        pubMap: this.pubMap,
-        edit: this.edit
-      }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      // on delete
-      if (result === 'delete') {
-        return this.onDelete($event);
-      }
-      // on Save
-      if (typeof result === 'object') {
-        return this.onSave(result);
-      }
-      // on close
-      this.onDecline();
-    });
-}
+  onAddressCreate(): void {
+    this.edit.idx = null;
+    this.edit.address = { fees: 0, active: true };
+    this.showDialog = true;
+  }
+
+  onAddressSelect(event: Event, address: any, idx: number): void {
+    this.edit.idx = idx;
+    this.edit.address = { ...address };
+    this.showDialog = true;
+  }
 }

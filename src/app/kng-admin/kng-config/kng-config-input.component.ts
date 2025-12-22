@@ -16,7 +16,7 @@ import { i18n, KngUtils, KngNavigationStateService } from 'src/app/common';
 })
 export class KngConfigInputComponent implements ControlValueAccessor {
   private _value: string | any;
-  @Input() address: UserAddress;
+  @Input() address: any;
   @Input() config: Config;
   @Input() withCheck: boolean;
   @Input() disabled = false;
@@ -27,7 +27,7 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   @Input() checked: boolean;
   @Input() label: string;
   @Input() geo: {};
-  @Output() checkChange = new EventEmitter<string>();
+  @Output() checkChange = new EventEmitter<boolean>();
   @Output() imageChange = new EventEmitter<any>();
 
 
@@ -156,8 +156,8 @@ export class KngConfigInputComponent implements ControlValueAccessor {
 
 
 
-  onCheck($event) {
-    this.checkChange.emit($event.checked);
+  onCheck(checked: boolean) {
+    this.checkChange.emit(checked);
   }
 
   writeValue(value: string): void {
