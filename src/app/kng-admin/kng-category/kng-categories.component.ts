@@ -1,65 +1,150 @@
-import { Component, OnDestroy, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   CategoryService,
   Category,
   LoaderService,
   Hub,
 } from 'kng2-core';
-
 import { KngNavigationStateService, i18n } from '../../common';
-// @deprecated MDC removed - TODO: replace with native alternatives
-// import { MdcSnackbar, MdcDialogComponent, MdcRadioChange, MDC_DIALOG_DATA, MdcDialogRef, MdcDialog } from '@angular-mdc/web';
-type MdcSnackbar = any;
-type MdcDialogComponent = any;
-type MdcRadioChange = any;
-type MdcDialogRef<T> = any;
-type MdcDialog = any;
-const MDC_DIALOG_DATA = 'MDC_DIALOG_DATA';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 
-
-
+/**
+ * Dialog component for category editing - inline version
+ */
 @Component({
-  templateUrl: './kng-category-dlg.component.html',
-  styleUrls: ['./kng-categories.component.scss']
+  selector: 'kng-category-dlg',
+  template: `
+    <wa-dialog [open]="isOpen" (wa-hide)="onClose()">
+      <div slot="label">{{isCreate ? 'Créer' : 'Modifier'}} une catégorie</div>
+      
+      <form [formGroup]="form" class="category-form">
+        <wa-input size="small" label="Nom" formControlName="name"></wa-input>
+        <wa-textarea size="small" label="Description" formControlName="description" resize="auto" rows="2"></wa-textarea>
+        <wa-input size="small" label="Groupe" formControlName="group"></wa-input>
+        <wa-input size="small" label="Poids (ordre)" type="number" formControlName="weight"></wa-input>
+        <wa-input size="small" label="Couleur" formControlName="color"></wa-input>
+        
+        <div class="form-row">
+          <wa-checkbox size="small" formControlName="active">Actif</wa-checkbox>
+          <wa-checkbox size="small" formControlName="home">Afficher sur la page d'accueil</wa-checkbox>
+        </div>
+        
+        <div class="form-group">
+          <label class="field-label">Type</label>
+          <div class="radio-group">
+            <wa-button size="small" 
+                      [appearance]="form.get('type').value === 'Category' ? 'filled' : 'outlined'"
+                      (click)="form.patchValue({type: 'Category'})">Catégorie</wa-button>
+            <wa-button size="small" 
+                      [appearance]="form.get('type').value === 'Cellar' ? 'filled' : 'outlined'"
+                      (click)="form.patchValue({type: 'Cellar'})">Cave</wa-button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="field-label">Image</label>
+          <div class="image-container">
+            <img *ngIf="category?.cover" [src]="category.cover" class="preview-image">
+            <ngx-uploadcare-widget 
+              [imagesOnly]="true"
+              [validator]="ucValidator"
+              (on-upload-complete)="onUpload($event)"
+              (on-dialog-open)="onDialogOpen($event)"
+              [public-key]="pubUpcare">
+            </ngx-uploadcare-widget>
+          </div>
+        </div>
+      </form>
+      
+      <div slot="footer" class="dialog-footer">
+        <wa-button size="small" appearance="text" variant="danger" (click)="onDelete()" *ngIf="!isCreate">Supprimer</wa-button>
+        <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
+        <wa-button size="small" appearance="filled" (click)="onSave()" [disabled]="form.invalid">Enregistrer</wa-button>
+      </div>
+    </wa-dialog>
+  `,
+  styles: [`
+    .category-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 400px;
+    }
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .field-label {
+      font-size: 12px;
+      color: #858585;
+    }
+    .radio-group {
+      display: flex;
+      gap: 8px;
+    }
+    .image-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .preview-image {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #3c3c3c;
+    }
+    .dialog-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+  `]
 })
 export class KngCategoryDlgComponent {
-
-  //
-  // edit.category
-  // edit.id
-  // category:any;
+  isOpen = false;
+  isCreate = false;
   category: Category;
-  pubUpcare: string;
+  pubUpcare = '';
+  
+  private saveCallback: (value: any) => void;
+  private deleteCallback: () => void;
 
-  //
-  // init formBuilder
   form: FormGroup;
 
   constructor(
-    public $dlgRef: MdcDialogRef<KngCategoryDlgComponent>,
     public $fb: FormBuilder,
-    public $i18n: i18n,
-    private $snack: MdcSnackbar,
-    @Inject(MDC_DIALOG_DATA) public data: any
+    public $i18n: i18n
   ) {
+    this.form = this.$fb.group({
+      'weight': [0, [Validators.required]],
+      'active': [false],
+      'home': [false],
+      'color': [''],
+      'image': ['', [Validators.required]],
+      'group': [''],
+      'name': ['', [Validators.required]],
+      'description': ['', [Validators.required]],
+      'type': ['Category', [Validators.required]]
+    });
+  }
+
+  open(data: { category: Category; pubUpcare: string; isCreate: boolean },
+       onSave: (value: any) => void,
+       onDelete: () => void): void {
+    this.isOpen = true;
     this.category = data.category;
     this.pubUpcare = data.pubUpcare;
-    //
-    // init formBuilder
-    this.form = this.$fb.group({
-      'weight': ['', [Validators.required]],
-      'active': ['', []],
-        'home': ['', []],
-        'color': ['', []],
-        'image': ['', [Validators.required]],
-        'group': ['', []],
-        'name': ['', [Validators.required]],
-        'description': ['', [Validators.required]],
-        'type': ['', [Validators.required]]
-    });
+    this.isCreate = data.isCreate;
+    this.saveCallback = onSave;
+    this.deleteCallback = onDelete;
 
     this.form.setValue({
       'weight': this.category.weight || 0,
@@ -70,63 +155,52 @@ export class KngCategoryDlgComponent {
       'group': this.category.group || '',
       'name': this.category.name || '',
       'description': this.category.description || '',
-      'type': this.category.type ||'Category'
+      'type': this.category.type || 'Category'
     });
   }
 
-
-  get isFormValid() {
-    return this.form.valid;
+  onClose(): void {
+    this.isOpen = false;
   }
 
-  ngOnInit() {
+  onSave(): void {
+    if (this.form.valid && this.saveCallback) {
+      this.saveCallback(this.form.value);
+      this.isOpen = false;
+    }
   }
-  ucValidator(info) {
+
+  onDelete(): void {
+    if (this.deleteCallback) {
+      this.deleteCallback();
+      this.isOpen = false;
+    }
+  }
+
+  ucValidator(info: any): void {
     if (info.size !== null && info.size > 150 * 1024) {
       throw new Error('fileMaximumSize');
     }
   }
 
-
-
-  askSave() {
-    if (this.form.invalid) {
-      return;
+  onDialogOpen(dialog: any): void {
+    if (dialog?.done) {
+      dialog.done(dlg => {
+        if (dlg.state() === 'rejected') {
+          console.warn(this.$i18n.label().img_max_sz);
+        }
+      });
     }
-
-    this.$dlgRef.close(this.form.value);
-
   }
 
-  askDelete() {
-    this.$dlgRef.close('delete');
-  }
-
-  askDecline() {
-    this.$dlgRef.close();
-  }
-
-  // FIXME radio button is not working
-  onTypeChange(evt: MdcRadioChange, value: string): void {
-    this.category.type = value;
-  }
-
-  onDialogOpen(dialog) {
-    dialog.done(dlg => {
-      if (dlg.state() === 'rejected') {
-        this.$snack.open(this.$i18n.label().img_max_sz, 'OK');
-      }
-    });
-  }
-
-  onUpload(info: any) {
-    if (this.category.cover === info.cdnUrl) {
-      return;
+  onUpload(info: any): void {
+    if (this.category.cover !== info.cdnUrl) {
+      this.category.cover = info.cdnUrl;
+      this.form.patchValue({ image: info.cdnUrl });
     }
-    this.category.cover = info.cdnUrl; // .replace('https:','');
   }
-
 }
+
 
 @Component({
   selector: 'kng-categories',
@@ -134,12 +208,15 @@ export class KngCategoryDlgComponent {
   styleUrls: ['./kng-categories.component.scss']
 })
 export class KngCategoriesComponent implements OnInit, OnDestroy {
+  @ViewChild(KngCategoryDlgComponent) categoryDialog: KngCategoryDlgComponent;
+  
   isReady = false;
   config: any;
   categories: Category[] = [];
   currenHub: Hub;
-  //
-  // edit content
+  saveMessage = '';
+  saveError = '';
+  
   edit: {
     category: Category;
     form: any;
@@ -147,161 +224,126 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     pubUpcare: string;
   };
 
-
-  errors: any;
-
-
   constructor(
     private $i18n: i18n,
     private $loader: LoaderService,
     private $category: CategoryService,
     private $route: ActivatedRoute,
-    private $snack: MdcSnackbar,
-    private $navigation: KngNavigationStateService,
-    public $dlg: MdcDialog,
+    private $navigation: KngNavigationStateService
   ) {
-
-    // Cas normal: utilisation getLatestCoreData()
-    const { config, user } = this.$loader.getLatestCoreData();
+    const { config } = this.$loader.getLatestCoreData();
     this.config = config;
     this.isReady = true;
-    this.currenHub = this.config.shared.hub || {};
+    this.currenHub = this.config?.shared?.hub || {};
 
-    //
-    // init edit struct
     this.edit = {
       form: null,
       create: false,
       category: null,
-      pubUpcare: this.config.shared.keys.pubUpcare
+      pubUpcare: this.config?.shared?.keys?.pubUpcare || ''
     };
-
   }
 
-  async ngOnInit() {
-    //
-    // init formBuilder
+  async ngOnInit(): Promise<void> {
     await this.loadCategories();
   }
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy(): void {}
 
-
-  getImagePrefix(image) {
+  getImagePrefix(image: string): string {
     if (!/^((http|https):\/\/)/.test(image)) {
       return 'https:' + image;
     }
+    return image;
   }
 
-  async loadCategories() {
-    const categories = await this.$category.select({stats: true}).toPromise();
+  async loadCategories(): Promise<void> {
+    const categories = await this.$category.select({ stats: true }).toPromise();
     this.categories = categories.sort(this.sortByGroupAndWeight.bind(this));
   }
 
-  onSave(value: any) {
+  onSave(value: any): void {
     this.isReady = false;
-    //
-    // copy data
-
-    // FIXME radio button is not working
     Object.assign(this.edit.category, value);
-    console.log('onSave', this.edit.category);
-    const editor = (this.edit.create) ?
-      this.$category.create(this.edit.category) :
-      this.$category.save(this.edit.category.slug, this.edit.category);
-    editor.subscribe(
-      (category) => {
+    
+    const editor = this.edit.create
+      ? this.$category.create(this.edit.category)
+      : this.$category.save(this.edit.category.slug, this.edit.category);
+    
+    editor.subscribe({
+      next: (category) => {
         if (this.edit.create) {
           category.usedBy = [];
           this.categories.push(category);
         }
         this.edit.category = null;
         this.edit.create = false;
-        // FIXME, verify IF name != old.name =>  update SLUG
-        // this.categories.find()
         this.isReady = true;
-        this.$snack.open(this.$i18n.label().save_ok, 'OK');
+        this.showSuccess(this.$i18n.label().save_ok);
       },
-      (err) => {this.$snack.open(err.error, 'OK');this.isReady = true;}
-    );
+      error: (err) => {
+        this.showError(err.error);
+        this.isReady = true;
+      }
+    });
   }
 
-
-  onDecline() {
+  onDecline(): void {
     this.edit.category = null;
   }
 
-  onDelete() {
-    let position = -1;
+  onDelete(): void {
     const pwd = window.prompt(this.$i18n.label().user_confirm_password, 'CONFIRMER AVEC LE PASSWORD');
-    // FIXME, server should always respond an JSON (simple string like "OK" hang)
-    const onOk = () => {
-      this.$snack.open(this.$i18n.label().delete_ok, 'OK');
-      position = this.categories.findIndex(elem => elem.slug === this.edit.category.slug);
-      if (position > -1) {
-        this.categories.splice(position, 1);
-      }
-
-      // this.$dlg.close(); FIXME ici on ferme la fenêtre mais pas dans kng_config
-      this.edit.create = false;
-      this.edit.category = null;
-    };
-
-    this.$category.remove(this.edit.category.slug, pwd).subscribe(
-      () => onOk,
-      (err) => {
+    
+    this.$category.remove(this.edit.category.slug, pwd).subscribe({
+      next: () => this.handleDeleteSuccess(),
+      error: (err) => {
         if (err.status === 200) {
-          return onOk();
+          return this.handleDeleteSuccess();
         }
-        this.$snack.open(err.error, 'OK');
+        this.showError(err.error);
       }
-    );
+    });
   }
 
-  onCategorySelect($event, category) {
+  private handleDeleteSuccess(): void {
+    this.showSuccess(this.$i18n.label().delete_ok);
+    const position = this.categories.findIndex(elem => elem.slug === this.edit.category.slug);
+    if (position > -1) {
+      this.categories.splice(position, 1);
+    }
+    this.edit.create = false;
+    this.edit.category = null;
+  }
+
+  onCategorySelect(event: Event, category: Category): void {
     this.edit.category = category;
     this.edit.create = false;
 
-    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: {category : this.edit.category, pubUpcare : this.edit.pubUpcare}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      // on delete
-      if (result === 'delete') {
-        return this.onDelete();
-      }
-      // on Save
-      if (typeof result === 'object') {
-        return this.onSave(result);
-      }
-      // on close
-      this.onDecline();
-    });
-
-
+    if (this.categoryDialog) {
+      this.categoryDialog.open(
+        { category: this.edit.category, pubUpcare: this.edit.pubUpcare, isCreate: false },
+        (value) => this.onSave(value),
+        () => this.onDelete()
+      );
+    }
   }
 
-  onCategoryCreate() {
+  onCategoryCreate(): void {
     this.edit.category = new Category();
     this.edit.category.usedBy = [];
     this.edit.create = true;
-    const dialogRef = this.$dlg.open(KngCategoryDlgComponent, {
-      data: {category : this.edit.category, pubUpcare : this.edit.pubUpcare}
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (typeof result === 'object') {
-            this.onSave(result);
-      } else {
-            this.onDecline();
-      }
-  });
+    
+    if (this.categoryDialog) {
+      this.categoryDialog.open(
+        { category: this.edit.category, pubUpcare: this.edit.pubUpcare, isCreate: true },
+        (value) => this.onSave(value),
+        () => this.onDecline()
+      );
+    }
   }
 
-
-
-  sortByGroupAndWeight(c1, c2) {
+  sortByGroupAndWeight(c1: Category, c2: Category): number {
     const g1 = c1.group || '';
     const g2 = c2.group || '';
     if (g1 === g2) {
@@ -310,6 +352,15 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     return g1.toLowerCase().localeCompare(g2.toLowerCase());
   }
 
+  showSuccess(message: string): void {
+    this.saveMessage = message;
+    this.saveError = '';
+    setTimeout(() => this.saveMessage = '', 3000);
+  }
 
+  showError(message: string): void {
+    this.saveError = message;
+    this.saveMessage = '';
+    setTimeout(() => this.saveError = '', 5000);
+  }
 }
-
