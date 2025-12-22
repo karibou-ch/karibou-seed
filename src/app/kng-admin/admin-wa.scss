@@ -1,0 +1,298 @@
+// ============================================================================
+// ADMIN WEB AWESOME STYLES
+// Styles spécifiques pour les composants Web Awesome dans l'admin
+// Documentation: https://webawesome.com/docs/
+// ============================================================================
+
+// ============================================================================
+// WA-INPUT & WA-TEXTAREA
+// ============================================================================
+
+wa-input,
+wa-textarea,
+wa-select {
+  // Full width par défaut dans l'admin
+  width: 100%;
+  
+  // Focus ring avec couleur primaire du thème
+  &:focus-within {
+    --wa-focus-ring-color: var(--mdc-theme-primary);
+  }
+}
+
+// ============================================================================
+// WA-BUTTON
+// ============================================================================
+
+wa-button {
+  // Bouton filled utilise la couleur primaire
+  &[appearance="filled"] {
+    --wa-color-brand-600: var(--mdc-theme-primary);
+    --wa-color-brand-700: var(--mdc-theme-secondary);
+  }
+  
+  // Bouton outlined
+  &[appearance="outlined"] {
+    --wa-color-brand-600: var(--mdc-theme-primary);
+  }
+}
+
+// ============================================================================
+// WA-CHECKBOX
+// ============================================================================
+
+wa-checkbox {
+  // Couleur checked
+  --wa-color-brand-600: var(--mdc-theme-primary);
+}
+
+// ============================================================================
+// WA-SELECT & WA-OPTION
+// ============================================================================
+
+wa-select {
+  // Dropdown styling
+  --wa-panel-background-color: var(--mdc-theme-background-container, white);
+  --wa-panel-border-color: var(--mdc-theme-text-hint-on-background);
+}
+
+wa-option {
+  // Option hover
+  &:hover {
+    background-color: var(--mdc-theme-primary-light);
+  }
+  
+  // Option selected
+  &[aria-selected="true"] {
+    --wa-color-brand-600: var(--mdc-theme-primary);
+  }
+}
+
+// ============================================================================
+// WA-CALLOUT
+// ============================================================================
+
+wa-callout {
+  margin: 0.5rem 0;
+  
+  // Variantes avec couleurs du thème
+  &[variant="primary"] {
+    --wa-color-brand-600: var(--mdc-theme-primary);
+  }
+  
+  &[variant="success"] {
+    --wa-color-success-600: #28a745;
+  }
+  
+  &[variant="danger"] {
+    --wa-color-danger-600: #dc3545;
+  }
+}
+
+// ============================================================================
+// WA-DIVIDER
+// ============================================================================
+
+wa-divider {
+  --wa-color-neutral-200: var(--mdc-theme-text-hint-on-background);
+  margin: 1rem 0;
+}
+
+// ============================================================================
+// DIALOG STYLES (pour remplacer mdc-dialog)
+// ============================================================================
+
+.admin-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.32);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-dialog {
+  background: var(--mdc-theme-background-container, white);
+  border-radius: 8px;
+  box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 
+              0 24px 38px 3px rgba(0,0,0,.14), 
+              0 9px 46px 8px rgba(0,0,0,.12);
+  max-width: 560px;
+  max-height: calc(100vh - 64px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
+  @media (max-width: 599px) {
+    max-width: calc(100vw - 32px);
+    margin: 16px;
+  }
+}
+
+.admin-dialog-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--mdc-theme-text-hint-on-background);
+  margin: 0;
+}
+
+.admin-dialog-content {
+  padding: 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.admin-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--mdc-theme-text-hint-on-background);
+}
+
+// ============================================================================
+// CHIP STYLES (pour remplacer mdc-chip)
+// ============================================================================
+
+.admin-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  background-color: #e0e0e0;
+  font-size: 0.875rem;
+  cursor: pointer;
+  user-select: none;
+  margin: 4px;
+  
+  &:hover {
+    background-color: #d0d0d0;
+  }
+  
+  &.selected {
+    background-color: var(--mdc-theme-primary-light);
+    color: var(--mdc-theme-primary);
+  }
+  
+  .chip-icon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+  
+  .chip-remove {
+    margin-left: 8px;
+    font-size: 18px;
+    opacity: 0.6;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// ============================================================================
+// LIST STYLES (pour remplacer mdc-list)
+// ============================================================================
+
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--mdc-theme-text-hint-on-background);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background-color: var(--mdc-theme-primary-light);
+  }
+  
+  &.selected {
+    background-color: var(--mdc-theme-primary-light);
+    color: var(--mdc-theme-primary);
+  }
+  
+  .list-item-icon {
+    margin-right: 16px;
+    color: var(--mdc-theme-text-hint-on-background);
+  }
+  
+  .list-item-text {
+    flex: 1;
+    
+    .primary {
+      font-weight: 500;
+    }
+    
+    .secondary {
+      font-size: 0.875rem;
+      color: var(--mdc-theme-text-hint-on-background);
+    }
+  }
+  
+  .list-item-meta {
+    color: var(--mdc-theme-text-hint-on-background);
+    font-size: 0.75rem;
+  }
+}
+
+// ============================================================================
+// FAB STYLES (pour remplacer mdc-fab)
+// ============================================================================
+
+.admin-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10;
+  
+  wa-button {
+    --wa-button-font-size-medium: 24px;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    
+    &::part(base) {
+      border-radius: 50%;
+      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 
+                  0 6px 10px 0 rgba(0,0,0,.14), 
+                  0 1px 18px 0 rgba(0,0,0,.12);
+    }
+  }
+}
+
+// ============================================================================
+// FORM VALIDATION STYLES
+// ============================================================================
+
+.ng-invalid:not(form):not(.ng-untouched) {
+  wa-input,
+  wa-textarea,
+  wa-select {
+    --wa-input-border-color: #dc3545;
+    --wa-input-focus-ring-color: #dc3545;
+  }
+}
+
+.ng-valid.ng-touched {
+  wa-input[required],
+  wa-textarea[required],
+  wa-select[required] {
+    --wa-input-border-color: #28a745;
+  }
+}
+
