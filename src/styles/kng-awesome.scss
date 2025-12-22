@@ -11,7 +11,7 @@ span[slot='start'] {
 }
 
 //
-// kng-top-appbar
-wa-button::part(base) {
+// kng-top-appbar - Boutons dans la navbar uniquement
+kng-navbar wa-button::part(base) {
   background-color: white;
 }

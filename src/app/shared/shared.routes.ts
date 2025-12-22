@@ -34,6 +34,5 @@ export const appRoutes: Routes = [
   { path: 'me', loadChildren: () => import('../kng-user/user.module').then(m => m.UserModule) },
 
   // FIXME path construction is ugly
-  { path: '', component: KngHomeComponent, data: { departement: 'home' }, children: childrenRoute},
-  { path: '', pathMatch: 'full' },
+  { path: '', component: KngHomeComponent, data: { departement: 'home' }, children: childrenRoute}
 ];
