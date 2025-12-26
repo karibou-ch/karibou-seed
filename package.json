@@ -29,7 +29,7 @@
     "@sentry/angular-ivy": "^7.94.1",
     "@stripe/stripe-js": "^1.54.0",
     "@uploadcare/upload-client": "^3.1.1",
-    "kng2-core": "file:../kng2-core/dist",
+    "kng2-core": "file:../kng2-core/dist/v12",
     "linkify-it": "^5.0.0",
     "markdown-it": "^13.0.1",
     "ngx-stripe": "v12-lts",
