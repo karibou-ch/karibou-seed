@@ -1,0 +1,262 @@
+# Migration CalendarService - karibou-seed
+
+## 🎯 Objectif
+
+Centraliser la gestion des dates via `CalendarService` de `@kng2-core` pour assurer la cohérence timezone entre le backend (UTC) et le frontend (HUB-CENTRIC Europe/Zurich).
+
+## 📋 Principe Fondamental
+
+### Stockage Backend (UTC)
+```typescript
+// ✅ order.shipping.when est TOUJOURS en UTC (stocké en DB)
+order.shipping.when = new Date('2024-12-30T15:00:00.000Z');
+```
+
+### Client Frontend (HUB-CENTRIC)
+```typescript
+// ✅ Le client travaille en timezone Hub (Europe/Zurich)
+// CalendarService centralise TOUTES les créations et comparaisons de dates
+import { CalendarService } from '@kng2-core';
+
+// Injection Angular
+constructor(private $calendar: CalendarService) {}
+
+// Usage
+const hubDate = this.$calendar.toHubTime(order.shipping.when, hub);
+const displayDate = this.$calendar.formatForClient(order.shipping.when, hub);
+```
+
+## 🔧 API CalendarService - 2 Fonctions Principales
+
+### 1. `getValidShippingDatesForHub()` - Dates de Livraison
+```typescript
+// ✅ FONCTION PRINCIPALE : Retourne les dates disponibles
+const availableDates = this.$calendar.getValidShippingDatesForHub(hub, {
+  days: 7,                    // Nombre de jours à chercher
+  user: this.user,            // Pour limites premium
+  currentRanks: config.shared.currentRanks,
+  detailed: false             // true pour format enrichi
+});
+
+// ✅ Premier jour disponible
+const nextDay = availableDates[0];
+```
+
+### 2. `timeleftBeforeCollect()` - Temps Restant
+```typescript
+// ✅ FONCTION PRINCIPALE : Calcule le temps restant avant deadline
+const hoursLeft = this.$calendar.timeleftBeforeCollect(
+  hub,
+  product.attributes.timelimit,  // Durée préparation produit (optionnel)
+  shippingDate                    // Date de livraison choisie
+);
+
+// ✅ Avec interface complète pour UI
+const timing = this.$calendar.timeleftBeforeCollect(
+  hub, productLimit, when,
+  { includeInterface: true }
+) as ProductOrderTiming;
+// → { isOutOfTimeLimit, shouldShowCountdown, hoursLeft, formattedTimeLeft, formattedDeadline }
+```
+
+## 🔄 Fonctions Dépréciées → Migration
+
+| ❌ Ancien (Déprécié) | ✅ Nouveau |
+|---------------------|-----------|
+| `Order.nextShippingDay()` | `$calendar.getValidShippingDatesForHub()[0]` |
+| `Order.fullWeekShippingDays()` | `$calendar.getValidShippingDatesForHub()` |
+| `config.potentialShippingDay()` | `$calendar.potentialShippingDay()` |
+| `config.getDefaultTimeByDay()` | `$calendar.getDefaultTimeByDay()` |
+| `config.timeleftBeforeCollect()` | `$calendar.timeleftBeforeCollect()` |
+
+## 📁 Composants à Migrer
+
+### Priorité Haute (Bugs Critiques)
+- [ ] `product.component.ts` - Countdown timezone
+- [ ] `kng-calendar.component.ts` - Sélection dates
+- [ ] `kng-home.component.ts` - Date principale
+
+### Priorité Moyenne
+- [ ] `kng-navbar.component.ts` - Status ouvert/fermé
+- [ ] `kng-cart-items.component.ts` - Validation panier
+- [ ] `kng-cart.component.ts` - État panier
+- [ ] `kng-cart-checkout.component.ts` - Processus commande
+
+### Pattern de Migration
+```typescript
+// 1. Ajouter injection
+constructor(
+  private $cart: CartService,
+  private config: Config,
+  private $calendar: CalendarService // ✅ NOUVEAU
+) {}
+
+// 2. Remplacer les appels
+// ❌ AVANT
+const nextDay = Order.nextShippingDay(this.user, this.hub);
+const timeLeft = this.config.timeleftBeforeCollect(hub, limit, when);
+
+// ✅ APRÈS
+const nextDay = this.$calendar.getValidShippingDatesForHub(this.hub)[0];
+const timeLeft = this.$calendar.timeleftBeforeCollect(hub, limit, when);
+```
+
+## ✅ Règles de Cohérence
+
+### Comparaison de Dates
+```typescript
+// ❌ AVANT (sensible timezone)
+if (date1.getTime() === date2.getTime()) { ... }
+
+// ✅ APRÈS (compare le jour uniquement)
+if (date1.equalsDate(date2)) { ... }
+// ou
+if (date1.toYYYYMMDD('-') === date2.toYYYYMMDD('-')) { ... }
+```
+
+### Affichage Localisé
+```typescript
+// ✅ Toujours utiliser formatForClient pour l'affichage
+const displayDate = this.$calendar.formatForClient(utcDate, hub);
+// → "lundi 30 décembre 2024" (timezone Swiss)
+```
+
+### Internationalisation
+```typescript
+// ✅ Noms de jours/mois localisés
+const weekdays = this.$calendar.i18n_weekdays('fr'); // ['dimanche', 'lundi', ...]
+const months = this.$calendar.i18n_months('fr');     // ['janvier', 'février', ...]
+const shortDay = this.$calendar.getWeekDay(1, 'fr'); // 'lun.'
+```
+
+## 🔗 Interface ProductOrderTiming
+
+```typescript
+export interface ProductOrderTiming {
+  isOutOfTimeLimit: boolean;      // Trop tard pour commander
+  shouldShowCountdown: boolean;   // Afficher le countdown
+  hoursLeft: number;              // Heures restantes (peut être négatif)
+  formattedTimeLeft: string;      // "2 h 30 minutes"
+  formattedDeadline: string;      // "14h30"
+}
+```
+
+## 📊 Logique Métier
+
+### Configuration Hub
+```typescript
+hub = {
+  timelimit: 12,           // ✅ 12h de préparation par défaut
+  timelimitH: 10,          // ✅ Collecte à 10h Swiss
+  weekdays: [1,2,3,4,5,6], // Jours de livraison
+  timezone: 'Europe/Zurich'
+}
+```
+
+### Calcul Deadline
+```
+Deadline Client = Heure Collecte (timelimitH) - Temps Préparation (timelimit)
+
+Exemple pour livraison MARDI :
+- Collecte = MARDI 10h00 Swiss
+- Préparation = 12h
+- Deadline = MARDI 10h - 12h = LUNDI 22h00
+→ Commander AVANT lundi 22h pour livraison mardi
+```
+
+## 🚨 Fonctions à Centraliser dans CalendarService
+
+### Fonctions Existantes (à utiliser)
+```typescript
+// ✅ UTILISER ces fonctions au lieu de manipuler les dates directement
+$calendar.toHubTime(utcDate, hub)           // UTC → Hub timezone
+$calendar.toUTC(hubDate, hub)               // Hub → UTC
+$calendar.formatForClient(utcDate, hub)     // Affichage localisé
+$calendar.getValidShippingDatesForHub()     // Dates disponibles
+$calendar.timeleftBeforeCollect()           // Temps restant
+$calendar.isInAvailableDays(day, list)      // Vérifier si jour dans liste
+$calendar.isDayAvailable(day, list, opts)   // Validation complète avec currentRanks
+$calendar.getDefaultTimeByDay(day, hub)     // Heure par défaut (16h ou 12h samedi)
+$calendar.i18n_weekdays(lang)               // Noms des jours localisés
+$calendar.i18n_months(lang)                 // Noms des mois localisés
+```
+
+### Fonctions à Ajouter (TODO)
+```typescript
+// 🔧 À IMPLÉMENTER dans CalendarService pour éviter manipulations externes
+
+/**
+ * Normalise une date au début du jour (minuit) en timezone Hub
+ * Remplace: date.setHours(0, 0, 0, 0)
+ */
+normalizeToStartOfDay(date: Date, hub?: Hub): Date
+
+/**
+ * Normalise une date à midi en timezone Hub (safe pour parsing YYYY-MM-DD)
+ * Remplace: date.setHours(12, 0, 0, 0) ou new Date(str + 'T12:00:00')
+ */
+normalizeToNoon(date: Date, hub?: Hub): Date
+
+/**
+ * Compare deux dates par jour uniquement (ignore l'heure)
+ * Remplace: date1.toYYYYMMDD() === date2.toYYYYMMDD()
+ */
+isSameDay(date1: Date, date2: Date): boolean
+
+/**
+ * Crée une date locale pour un jour du mois (calendrier)
+ * Remplace: new Date(year, month, day) + setHours()
+ */
+createLocalDate(year: number, month: number, day: number, hub?: Hub): Date
+
+/**
+ * Parse une string YYYY-MM-DD en Date safe (midi Hub)
+ * Remplace: new Date(str + 'T12:00:00')
+ */
+parseDateString(dateStr: string, hub?: Hub): Date
+
+/**
+ * Retourne la clé string pour Map (YYYY-MM-DD)
+ * Remplace: date.toYYYYMMDD('-')
+ */
+toDateKey(date: Date): string
+
+/**
+ * Ajoute N jours à une date
+ * Remplace: date.plusDays(n) ou manipulation manuelle
+ */
+addDays(date: Date, days: number): Date
+```
+
+### Patterns Interdits → Remplacement
+
+| ❌ Pattern Interdit | ✅ Utiliser CalendarService |
+|--------------------|----------------------------|
+| `date.setHours(0,0,0,0)` | `$calendar.normalizeToStartOfDay(date)` |
+| `date.setUTCHours(0,0,0,0)` | ❌ NE PAS UTILISER côté client |
+| `date.setHours(12,0,0,0)` | `$calendar.normalizeToNoon(date)` |
+| `new Date(str + 'T12:00:00')` | `$calendar.parseDateString(str)` |
+| `date1.toYYYYMMDD() === date2.toYYYYMMDD()` | `$calendar.isSameDay(date1, date2)` |
+| `date.equalsDate(other)` | `$calendar.isSameDay(date, other)` |
+| `new Date(year, month, day)` | `$calendar.createLocalDate(year, month, day)` |
+| `date.toYYYYMMDD('-')` | `$calendar.toDateKey(date)` |
+| `date.plusDays(n)` | `$calendar.addDays(date, n)` |
+| `Order.nextShippingDay()` | `$calendar.getValidShippingDatesForHub()[0]` |
+| `config.timeleftBeforeCollect()` | `$calendar.timeleftBeforeCollect()` |
+
+### Pourquoi Centraliser ?
+
+1. **Cohérence Timezone** : CalendarService gère automatiquement Hub timezone
+2. **Testabilité** : Logique testée une seule fois dans le service
+3. **Maintenabilité** : Un seul endroit pour les corrections de bugs
+4. **Documentation** : API claire avec types TypeScript
+5. **Éviter les Erreurs** : Plus de mélange UTC/local dans les composants
+
+## 🛡️ Stratégie Migration Zero Downtime
+
+1. **Phase 0** : Injection CalendarService dans composants (sans utilisation)
+2. **Phase 1** : Migration fonction par fonction avec try/catch fallback
+3. **Phase 2** : Suppression des anciens appels
+4. **Phase 3** : Nettoyage code déprécié
+
+Voir `karibou-seed/.cursor/rules/karibou-ch-frontend.mdc` section 7-8 pour le plan complet.
