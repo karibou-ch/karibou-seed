@@ -321,9 +321,10 @@ const dayRank = hubRanks[dayInHubTz.getDay()] || 0; // ❌ Conversion répétée
    - `nextShippingDay()` a une logique incorrecte pour les périodes de fermeture
    - `currentShippingDay()` est incomplète et simpliste
 
-2. **Timezone Bug dans `config.ts`** :
-   - `potentialShippingDay()` utilise `getHours()/setHours()` au lieu de `getUTCHours()/setUTCHours()`
-   - Problème critique pour les calculs de livraison
+2. **Timezone Bug dans `config.ts`** (RÉSOLU via CalendarService) :
+   - ~~`potentialShippingDay()` utilisait des méthodes incohérentes (mélange UTC/local)~~
+   - ✅ **CORRIGÉ** : Utiliser `CalendarService.toHubTime()` pour normaliser vers timezone Hub
+   - ✅ **PRINCIPE** : Frontend = Hub-Centric (Europe/Zurich), pas UTC
 
 3. **Duplication de Code** :
    - Logique identique dupliquée entre `config.ts`, `order.ts` et `cart.service.ts`
@@ -799,7 +800,8 @@ static isDayAvailable(day: Date, availableDays: Date[]): boolean {
 // ✅ CENTRALISE la logique d'heure par défaut
 static getDefaultTimeByDay(day: Date, hub: Hub): number {
   // Retourne l'heure par défaut selon jour (16h normalement, 12h samedi)
-  // day est en UTC, comparaison avec hub dans timezone marché
+  // day peut être UTC (du backend) ou Hub timezone (frontend)
+  // La fonction utilise toHubTime() pour normaliser avant comparaison
 }
 ```
 

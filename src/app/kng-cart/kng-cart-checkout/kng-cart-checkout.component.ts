@@ -246,7 +246,13 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   get subscriptionNextShippingDay() {
     // ✅ MIGRATION: Utiliser CalendarService au lieu d'Order
     const oneWeek = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 7 });
-    const foundDate = oneWeek.find(date => date.getDay() == this.subscriptionParams.dayOfWeek);
+
+    // ✅ CORRECTION BUG TIMEZONE: Utiliser toHubTime pour comparer dans timezone Hub
+    // au lieu de date.getDay() qui utilise la timezone locale du navigateur
+    const foundDate = oneWeek.find(date => {
+      const dateHub = this.$calendar.toHubTime(date, this.hub);
+      return dateHub.getDay() == this.subscriptionParams.dayOfWeek;
+    });
 
     // ✅ CORRECTION CRITIQUE: Fallback si dayOfWeek n'existe pas dans les dates valides
     // Cela peut arriver après la correction de kng-subscription-option si l'utilisateur

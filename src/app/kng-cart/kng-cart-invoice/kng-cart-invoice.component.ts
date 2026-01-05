@@ -166,7 +166,13 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   private computeDisplayShippingDay(): Date {
     if (this.isSubscription && this.data?.subscriptionParams) {
       const oneWeek = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 7 });
-      const foundDate = oneWeek.find(date => date.getDay() === this.data.subscriptionParams.dayOfWeek);
+
+      // ✅ CORRECTION BUG TIMEZONE: Utiliser toHubTime pour comparer dans timezone Hub
+      // au lieu de date.getDay() qui utilise la timezone locale du navigateur
+      const foundDate = oneWeek.find(date => {
+        const dateHub = this.$calendar.toHubTime(date, this.hub);
+        return dateHub.getDay() === this.data.subscriptionParams.dayOfWeek;
+      });
       return foundDate || oneWeek[0] || this.$calendar.nextShippingDay(this.hub, this.user);
     }
     return this.$cart.getCurrentShippingDay();
