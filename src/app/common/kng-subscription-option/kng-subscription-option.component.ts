@@ -103,7 +103,14 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
 
     // ✅ NOUVEAU: Vérifier que ces jours sont réellement disponibles selon CalendarService
     const validDates = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 30, user: this.user });
-    const availableWeekdays = [...new Set(validDates.map(date => date.getDay()))];
+
+    // ✅ CORRECTION BUG TIMEZONE: Utiliser toHubTime pour obtenir le jour dans timezone Hub
+    // au lieu de date.getDay() qui utilise la timezone locale du navigateur
+    // Cela évite l'erreur "Le jour de livraison n'est pas disponible pour le marché"
+    const availableWeekdays = [...new Set(validDates.map(date => {
+      const dateHub = this.$calendar.toHubTime(date, this.hub);
+      return dateHub.getDay();
+    }))];
 
     // ✅ FILTRER: Ne présenter que les jours qui sont à la fois dans hub.weekdays ET dans les dates valides
     const validWeekdays = weekdays.filter(day => availableWeekdays.includes(day));
@@ -124,7 +131,12 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     // ✅ CORRECTION CRITIQUE: Utiliser les dates valides de CalendarService
     // au lieu de chercher dans une liste générée incorrectement
     const validDates = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 30, user: this.user });
-    const foundDate = validDates.find(date => date.getDay() == day);
+
+    // ✅ CORRECTION BUG TIMEZONE: Utiliser toHubTime pour comparer dans timezone Hub
+    const foundDate = validDates.find(date => {
+      const dateHub = this.$calendar.toHubTime(date, this.hub);
+      return dateHub.getDay() == day;
+    });
 
     // ✅ SAFETY: Si le jour sélectionné n'existe pas dans les dates valides, fallback
     return foundDate || this.$calendar.nextShippingDay(this.hub, this.user) || new Date();
@@ -186,14 +198,15 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // ✅ SAFE: Initialiser selDayOfWeek seulement quand tout est prêt
-    if (!this.selDayOfWeek && this.subscriptionParams) {
-      this.selDayOfWeek = this.findDayOfWeek(this.subscriptionParams.dayOfWeek);
-      // ✅ SAFETY: Si findDayOfWeek retourne null, utiliser le premier jour disponible
-      if (!this.selDayOfWeek && this.dayOfWeek.length > 0) {
-        this.selDayOfWeek = this.dayOfWeek[0];
+    // ✅ Initialiser selDayOfWeek: utiliser subscriptionParams.dayOfWeek si valide, sinon premier jour disponible
+    if (!this.selDayOfWeek && this.dayOfWeek.length > 0) {
+      const requestedDay = this.subscriptionParams?.dayOfWeek;
+      this.selDayOfWeek = this.dayOfWeek.find(d => d.id === requestedDay) || this.dayOfWeek[0];
+
+      // Synchroniser subscriptionParams avec la sélection réelle
+      if (this.subscriptionParams && this.subscriptionParams.dayOfWeek !== this.selDayOfWeek.id) {
         this.subscriptionParams.dayOfWeek = this.selDayOfWeek.id;
-        console.warn('initializeSelectionsSafely: fallback vers premier jour disponible:', this.selDayOfWeek.id);
+        this.$cart.subscriptionSetParams(this.subscriptionParams, true);
       }
     }
 
@@ -205,11 +218,11 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     // ✅ SAFE: Initialiser selTime avec les valeurs du config ou fallback
     if (!this.selTime && this.subscriptionParams && this.subscriptionParams.time) {
       this.selTime = this.subscriptionParams.time;
-    } else if (!this.selTime) {
-      // ✅ FALLBACK: Utiliser 16h par défaut
+    }
+    // ✅ FIXME: Utiliser 16h par défaut
+    else if (!this.selTime) {
       this.selTime = 16;
     }
-
   }
 
   ngOnDestroy() {

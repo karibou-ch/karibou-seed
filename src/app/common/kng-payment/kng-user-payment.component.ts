@@ -93,6 +93,14 @@ export class KngPaymentComponent {
     twint: {
       img: '/assets/img/payment/twint.png',
       label: 'TWINT (prepaid)'
+    },
+    apple: {
+      img: '/assets/img/payment/visa.jpg',  // TODO: Ajouter apple-pay.png
+      label: 'Apple Pay'
+    },
+    google: {
+      img: '/assets/img/payment/mc.jpg',    // TODO: Ajouter google-pay.png
+      label: 'Google Pay'
     }
   };
 
