@@ -58,7 +58,6 @@
     }
 
     &.wallet {
-      border-top: 0.25rem solid black;
       padding-top: 0.5rem;
       margin-top: 0;
       font-weight: normal;
@@ -69,6 +68,7 @@
     }
 
     &.total {
+      border-top: 0.25rem solid black;
       padding-top: 0;
       margin-top: 0;
       font-weight: bold;

@@ -97,16 +97,6 @@
     </div>
   </div>
 
-  <!-- Total général (PANIER ou SUBSCRIPTION) -->
-  <div class="bill total">
-    <div class="label">
-      {{ isCart ? label.cart_info_total :
-         (hasUpdateContract ? label.cart_info_total_subscription_update : label.cart_info_total_subscription) }}
-    </div>
-    <div class="amount">
-      {{ isCart ? (currentTotalMinusBalance | currency: 'CHF') : (currentTotalSubscription | currency: 'CHF') }}
-    </div>
-  </div>
 
   <!-- Montant wallet / balance utilisateur (cart uniquement) -->
   <div class="bill wallet" *ngIf="isCart">
@@ -115,6 +105,17 @@
     </div>
     <div class="amount-light">
       {{ currentTotalUserBalance * -1 | currency: 'CHF' }}
+    </div>
+  </div>
+
+  <!-- Total général (PANIER ou SUBSCRIPTION) -->
+  <div class="bill total">
+    <div class="label">
+      {{ isCart ? label.cart_info_total :
+         (hasUpdateContract ? label.cart_info_total_subscription_update : label.cart_info_total_subscription) }}
+    </div>
+    <div class="amount">
+      {{ isCart ? (currentTotalMinusBalance | currency: 'CHF') : (currentTotalSubscription | currency: 'CHF') }}
     </div>
   </div>
 

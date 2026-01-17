@@ -149,18 +149,21 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
 
   private computeTotalUserBalance(): number {
     const userBalance = this.user?.balance > 0 ? this.user.balance : 0;
-    const total = this.itemsAmount + this.currentFeesAmount + this.currentShippingFees - this.totalDiscount;
+    // Note: itemsAmount (from subTotal) already includes service fees
+    const total = this.itemsAmount + this.currentShippingFees - this.totalDiscount;
     return Math.min(total, userBalance);
   }
 
   private computeTotalMinusBalance(): number {
     const userBalance = this.user?.balance > 0 ? this.user.balance : 0;
-    const total = this.itemsAmount + this.currentFeesAmount + this.currentShippingFees - this.totalDiscount;
+    // Note: itemsAmount (from subTotal) already includes service fees
+    const total = this.itemsAmount + this.currentShippingFees - this.totalDiscount;
     return Math.max(total - userBalance, 0);
   }
 
   private computeTotalSubscription(): number {
-    return this.itemsAmount + this.currentFeesAmount + this.currentShippingFees - this.totalDiscount;
+    // Note: itemsAmount (from subTotal) already includes service fees
+    return this.itemsAmount + this.currentShippingFees - this.totalDiscount;
   }
 
   private computeDisplayShippingDay(): Date {
