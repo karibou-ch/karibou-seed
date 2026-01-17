@@ -221,7 +221,8 @@ export class KngInvoiceComponent implements OnInit {
     const moduleb = await import("pdfmake/build/vfs_fonts");
     const pdfMake = modulea.default;
     const pdfFonts = moduleb.default;
-    (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+    // pdfmake v0.2.x: vfs is exported directly, not under pdfMake property
+    (pdfMake as any).vfs = pdfFonts.pdfMake?.vfs || pdfFonts;
 
 
     const pageWidth = 595.28;
