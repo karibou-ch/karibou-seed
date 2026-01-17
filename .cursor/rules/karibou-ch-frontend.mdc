@@ -156,6 +156,9 @@ L'état de l'application (panier, utilisateur connecté, etc.) est géré de man
 -   **Convention :** Utiliser le pipe `async` dans les templates autant que possible pour gérer automatiquement les souscriptions et désabonnements, afin d'éviter les fuites de mémoire.
 
 
+## 5.1 Convention
+- utliser  `const $date = new DatePipe('fr-ch');` pour formater une date.
+
 ## 6. Stratégie de Routage et de Cache
 
 Le fichier `app.cache.route.ts` implémente une stratégie de réutilisation des routes (`RouteReuseStrategy`) personnalisée. C'est une pièce maîtresse pour la performance et la fluidité de la navigation.
