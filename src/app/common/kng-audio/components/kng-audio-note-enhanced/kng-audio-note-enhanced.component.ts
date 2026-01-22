@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { KngAudioRecorderEnhancedService } from '../../services/kng-audio-recorder-enhanced.service';
 import { AudioLabels, $i18n } from '../../services/kng-audio-i18n.service';
 import { RecorderState, ErrorCase, AudioNoteType, AudioNoteState } from '../../interfaces/audio.interfaces';
+import { TranscriptionAccumulator } from '../../services/kng-audio-transcription-accumulator';
 import { UploadClient } from '@uploadcare/upload-client';
 
 import { AssistantService, CartService, LoaderService } from 'kng2-core';
@@ -27,6 +28,7 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
   @Input() amount: number = 0;
   @Input() locale: string = 'fr';
   @Input() compact: boolean = false;
+  @Input() displayTranscription: boolean = true; // ✅ Afficher ou non la transcription dans le composant
 
   // ✅ Events
   @Output() onAudioReady = new EventEmitter<{type: AudioNoteType, audioUrl: string, transcription: string, cartUrl?: string}>();
@@ -48,6 +50,7 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
 
   // ✅ État transcription
   private isTranscribing = false;
+  private transcriptionAccumulator = new TranscriptionAccumulator();
 
   includeCartInContext: boolean = false;
   latestOrder: any;
@@ -208,8 +211,13 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // Upload vers Uploadcare
-      await this.uploadAndProcess(result.blob!, result.base64!, result.duration, result.waveformData);
+      // ✅ Pour type 'prompt' ou 'helper': transcription directe SANS upload
+      if (this.type === 'prompt' || this.type === 'helper') {
+        await this.processWithWhisperDirect(result.blob!);
+      } else {
+        // Pour les autres types: upload vers Uploadcare puis transcription
+        await this.uploadAndProcess(result.blob!, result.base64!, result.duration, result.waveformData);
+      }
 
     } catch (error: any) {
       console.error('❌ Stop recording failed:', error);
@@ -252,70 +260,95 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async processWithWhisper(base64: string, audioUrl: string, duration: number, waveformData?: number[]) {
+  /**
+   * ✅ Transcription directe avec whisper() - pour type 'prompt' ou 'helper'
+   * Pas d'upload, pas de player audio - juste la transcription pour le prompt
+   */
+  private async processWithWhisperDirect(audioBlob: Blob) {
     try {
-      const context = await this.generateContext();
-
-      const params = {
-        body: {
-          audio: base64,
-          whisperOnly: true,
-          context: context
-        },
-        q: 'whisper'
-      };
-
-      // ✅ CORRECTION : Démarrer l'état transcription
-      this.audioState.transcription = '';
       this.isTranscribing = true;
       this.cdr.detectChanges();
 
-      this.$assistant.chat(params).subscribe(
-        (content) => {
-          this.audioState.transcription += content.text;
-          this.cdr.detectChanges();
-        },
-        (error) => {
-          console.error('❌ Whisper error:', error);
-          this.audioState.transcription = '';
+      // Obtenir le prompt pour Whisper (dernière phrase comme contexte)
+      const promptForWhisper = this.transcriptionAccumulator.getPromptForWhisper();
 
-          // ✅ CORRECTION : Arrêter l'état transcription
-          this.isTranscribing = false;
+      // Utiliser whisper du service assistant directement avec le blob
+      const transcription = await this.$assistant.whisper({
+        blob: audioBlob,
+        type: this.type,
+        silent: false,
+        previousText: promptForWhisper
+      });
 
-          // Émettre quand même l'audio sans transcription
-          this.onAudioReady.emit({
-            type: this.type,
-            audioUrl: audioUrl,
-            transcription: '',
-            cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
-          });
+      // Ajouter la nouvelle transcription à l'accumulateur
+      if (transcription && transcription.trim()) {
+        this.transcriptionAccumulator.addTranscription(transcription.trim());
+        this.audioState.transcription = this.transcriptionAccumulator.getFullText();
+      }
 
-          this.cdr.detectChanges();
-        },
-        () => {
-          // Nettoyage final
-          this.audioState.transcription = this.audioState.transcription?.trim().replace('**traitement...**', '') || '';
+      this.isTranscribing = false;
+      this.onAudioLoading.emit(false);
 
-          // ✅ CORRECTION : Arrêter l'état transcription
-          this.isTranscribing = false;
+      // Émettre le résultat final - PAS d'audioUrl pour ce mode
+      this.onAudioReady.emit({
+        type: this.type,
+        audioUrl: '',
+        transcription: this.audioState.transcription || '',
+        stream: false
+      } as any);
 
-          // Émettre le résultat final
-          this.onAudioReady.emit({
-            type: this.type,
-            audioUrl: audioUrl,
-            transcription: this.audioState.transcription,
-            cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
-          });
+      this.emitStateChange();
+      this.cdr.detectChanges();
 
-          this.emitStateChange();
-          this.cdr.detectChanges();
-        }
-      );
+    } catch (error: any) {
+      console.error('❌ Whisper direct processing failed:', error);
+      this.isTranscribing = false;
+      this.audioState.transcription = '';
+      this.onAudioLoading.emit(false);
+      this.cdr.detectChanges();
+    }
+  }
+
+  /**
+   * Transcription avec upload Uploadcare - pour les autres types (item, etc.)
+   */
+  private async processWithWhisper(base64: string, audioUrl: string, duration: number, waveformData?: number[]) {
+    try {
+      this.isTranscribing = true;
+      this.cdr.detectChanges();
+
+      // Convertir base64 en Blob pour whisper()
+      const byteCharacters = atob(base64.split(',')[1] || base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'audio/wav' });
+
+      // Utiliser whisper() au lieu de chat()
+      const transcription = await this.$assistant.whisper({
+        blob: blob,
+        type: this.type,
+        silent: false
+      });
+
+      this.audioState.transcription = transcription?.trim() || '';
+      this.isTranscribing = false;
+
+      // Émettre le résultat final
+      this.onAudioReady.emit({
+        type: this.type,
+        audioUrl: audioUrl,
+        transcription: this.audioState.transcription,
+        cartUrl: this.includeCartInContext ? this.getCartUrl() : undefined
+      });
+
+      this.emitStateChange();
+      this.cdr.detectChanges();
 
     } catch (error: any) {
       console.error('❌ Whisper processing failed:', error);
-
-      // ✅ CORRECTION : Arrêter l'état transcription en cas d'erreur
       this.isTranscribing = false;
 
       // Émettre l'audio sans transcription
@@ -409,6 +442,7 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
 
     // ✅ CORRECTION : Reset état transcription
     this.isTranscribing = false;
+    this.transcriptionAccumulator.reset();
 
     const audioElement = document.querySelector(`#audio-${this.instanceId}`) as HTMLAudioElement;
     if (audioElement) {

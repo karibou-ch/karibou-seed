@@ -39,9 +39,12 @@ export interface AudioError {
   instructions?: string; // ✅ NOUVEAU : Instructions détaillées pour l'utilisateur
 }
 
-export type AudioNoteType = 'item' | 'support' | 'helper';
+// ✅ MERGE: Ajout de 'prompt' depuis to-migrate-here
+export type AudioNoteType = 'item' | 'support' | 'helper' | 'prompt';
 
 export interface AudioNoteState {
+  // ✅ MERGE: Ajout de chunkIndex depuis to-migrate-here (pour streaming audio)
+  chunkIndex?: number;
   isRecording: boolean;
   isProcessing: boolean;
   hasError: boolean;

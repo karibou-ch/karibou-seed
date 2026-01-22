@@ -95,8 +95,8 @@
 
   </div>
 
-  <!-- ✅ Section transcription/réponse -->
-  <div class="transcription-section" *ngIf="audioState.transcription">
+  <!-- ✅ Section transcription/réponse (masquée si displayTranscription=false) -->
+  <div class="transcription-section" *ngIf="audioState.transcription && displayTranscription">
 
     <!-- Contenu personnalisé -->
     <ng-content select="[slot=response]"></ng-content>
