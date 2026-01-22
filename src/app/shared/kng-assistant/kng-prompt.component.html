@@ -1,0 +1,120 @@
+<div class="prompt">
+  <!-- ✅ Autocomplete suggestions -->
+  <div *ngIf="suggestions.length" class="suggestions">
+    <div class="suggestion-item"
+         *ngFor="let suggestion of suggestions; let i = index"
+         [class.selected]="i === selectedSuggestionIndex"
+         (click)="onSelectSuggestion(suggestion)">
+      <span [innerHTML]="suggestion.query"></span>
+    </div>
+  </div>
+
+  <!-- ✅ Quick helps display -->
+  <div *ngIf="helps.show" class="suggestions">
+    <div class="block" *ngFor="let help of helps.elems">
+      <button type="button" class="help-btn" (click)="onSelectSuggestion(help)">
+        <span [innerHTML]="help.label"></span>
+      </button>
+    </div>
+  </div>
+
+  <form (submit)="onChat()" [class.streaming]="isAssistantRunning()">
+    <!-- ✅ RESET when limit reached -->
+    <div class="input" [hidden]="!messagesLimit">
+      <button (click)="onClear($event)" type="button" class="record reset">
+        {{label.james_reset_action}}
+      </button>
+    </div>
+
+    <!-- ✅ Main input area with #textarea contenteditable -->
+    <div class="input" [hidden]="messagesLimit">
+      <div #textarea
+           contenteditable="true"
+           [attr.contenteditable]="!isAssistantRunning()"
+           [class.disabled]="isAssistantRunning()"
+           (keydown)="onKeyDown($event)"
+           (input)="onInput($event)"
+           (paste)="onPaste($event)"
+           tabindex="0"
+           class="prompt-editor"
+           [attr.data-placeholder]="placeholder">
+      </div>
+    </div>
+
+    <!-- ✅ Help / Actions bar - Layout: [LEFT: options] [CENTER: audio] [RIGHT: buttons] -->
+    <div class="help">
+      <!-- === LEFT SECTION: Options === -->
+      <!-- Thinking mode toggle -->
+      <button
+        type="button"
+        class="icon-btn start"
+        [class.action-thinking]="thinking"
+        [title]="label.james_thinking || 'Mode réflexion'"
+        (click)="onThinkingChange($event)"
+        [disabled]="isAssistantRunning()">
+        <span class="material-symbols-outlined">psychology</span>
+      </button>
+
+      <!--
+        FIXME: RAG selector dropdown - backend not available for karibou
+        <wa-dropdown class="hide-xs" [hidden]="!availableRags.length" placement="top-start" distance="18">
+          <wa-button slot="trigger" size="small" caret>{{ ragName }}</wa-button>
+          <wa-menu>...</wa-menu>
+        </wa-dropdown>
+      -->
+
+      <!--
+        FIXME: Search options dropdown - not for karibou
+        <wa-dropdown class="start hide-xs" stay-open-on-select placement="top-start" distance="18">
+          <wa-button slot="trigger" size="small">
+            <span class="material-symbols-outlined">search</span>
+          </wa-button>
+          <wa-menu>...</wa-menu>
+        </wa-dropdown>
+      -->
+
+      <!-- === CENTER SECTION: Audio recorder inline === -->
+      <!-- ✅ displayTranscription=false : la transcription est appliquée au prompt, pas affichée ici -->
+      <kng-audio-note-enhanced
+        #audioRecorder
+        class="audio-recorder-inline"
+        [disabled]="isAssistantRunning()"
+        type="prompt"
+        [compact]="true"
+        [filename]="'prompt-audio'"
+        [displayTranscription]="false"
+        (onAudioReady)="onAudioReady($event)"
+        (onAudioError)="onAudioError($event)"
+        (onAudioLoading)="onAudioLoading($event)">
+      </kng-audio-note-enhanced>
+
+      <!-- === RIGHT SECTION: Action buttons === -->
+      <!-- Clear button -->
+      <button
+        type="button"
+        class="icon-btn end"
+        [disabled]="isAssistantRunning()"
+        [title]="label.james_clear || 'Effacer'"
+        (click)="onClear($event)">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- ✅ Tips / quick actions -->
+  <div class="tips" *ngIf="tips.length && !isAssistantRunning()">
+    <button type="button"
+            [disabled]="isAssistantRunning()"
+            class="tag"
+            [ngClass]="tip.clazz"
+            *ngFor="let tip of tips"
+            [innerHtml]="tip.label"
+            (click)="onPromptTip($event, tip.action)">
+    </button>
+  </div>
+
+  <!-- ✅ Disclaimer with i18n -->
+  <div class="disclaimer">
+    <span>{{disclaimer}}</span>
+  </div>
+</div>

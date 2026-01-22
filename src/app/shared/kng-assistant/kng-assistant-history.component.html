@@ -1,0 +1,122 @@
+<div class="assistant-container">
+  <!-- Header optionnel avec sélection agents -->
+  <div class="history-header" [hidden]="!withHeader">
+    <ng-content select="[header]"></ng-content>
+  </div>
+
+  <!-- Welcome screen quand pas de messages -->
+  <div class="assistant-header" *ngIf="!messages.length">
+    <div class="welcome">
+      <h1>{{welcome}}</h1>
+      <p>{{welcomeDescription}}</p>
+    </div>
+    <ul *ngIf="links.length">
+      <li *ngFor="let link of links" (click)="onAsk(link.action)">
+        {{link.name}}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Messages -->
+  <div class="assistant"
+       [class.assistant-user]="msg.role === 'user'"
+       [class.last-message]="last"
+       *ngFor="let msg of messages; let idx = index; let last = last">
+    <div [ngClass]="msg.role === 'assistant' ? 'assistant' : 'user'">
+
+      <!-- Steps pendant l'exécution -->
+      <div class="chat-header" *ngIf="msg.steps?.length" [class.last-running]="last && isAssistantRunning()">
+        <ol>
+          <li *ngFor="let step of msg.steps; let stepLast = last">
+            <div [hidden]="!step.description" [class.loading-shimmer]="stepLast && msg.running">
+              {{step.description}}
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Contenu du message -->
+      <div [id]="'msg-' + msg.id" class="markdown-body" [innerHTML]="msg.html || msg.content"></div>
+
+      <!-- Produits associés -->
+      <div class="products" *ngIf="msg.products?.length">
+        <button class="pinned" (click)="showPinnedProducts = !showPinnedProducts">
+          {{label.james_selection_pinned}} ({{msg.products.length}})
+        </button>
+        <div class="kng-layout-card" [hidden]="!showPinnedProducts">
+          <kng-product-thumbnail
+            *ngFor="let product of msg.products"
+            [displayVendor]="true"
+            [visibility]="true"
+            [sku]="product.sku">
+          </kng-product-thumbnail>
+        </div>
+      </div>
+
+      <!-- Actions du message -->
+      <div class="chat-actions" [class.actions-running]="isActionRunning()">
+        <!-- Copier -->
+        <button
+          class="icon-btn copy-btn"
+          (click)="onCopyWithHtml(msg.id, $event)"
+          title="Copier"
+          [disabled]="isActionRunning()">
+          <span class="material-symbols-outlined">content_copy</span>
+        </button>
+
+        <!-- Feedback positif -->
+        <button
+          [hidden]="isGuest || msg.role !== 'assistant'"
+          class="icon-btn feedback-btn"
+          title="Bonne réponse"
+          (click)="onFeedback(msg.id, 'bien')"
+          [disabled]="isActionRunning()">
+          <span class="material-symbols-outlined">thumb_up</span>
+        </button>
+
+        <!-- Feedback négatif -->
+        <button
+          [hidden]="isGuest || msg.role !== 'assistant'"
+          class="icon-btn feedback-btn"
+          title="Réponse à améliorer"
+          (click)="onFeedback(msg.id, 'moyen')"
+          [disabled]="isActionRunning()">
+          <span class="material-symbols-outlined">thumb_down</span>
+        </button>
+
+        <!-- Épingler -->
+        <button
+          [hidden]="isGuest || msg.role !== 'assistant'"
+          class="icon-btn feedback-btn"
+          title="Épingler cette discussion"
+          (click)="onPin()"
+          [disabled]="isActionRunning()">
+          <span class="material-symbols-outlined">push_pin</span>
+        </button>
+
+        <!-- Mémoriser (dernier message assistant uniquement) -->
+        <button
+          *ngIf="last && msg.role === 'assistant'"
+          class="icon-btn feedback-btn"
+          (click)="onMemorize()"
+          [disabled]="isDiscussionMemorized || !currentDiscussionId || isActionRunning()"
+          [title]="isDiscussionMemorized ? 'Discussion déjà mémorisée' : 'Mémoriser la synthèse'"
+          [style.opacity]="isDiscussionMemorized ? '0.5' : '1'">
+          <span class="material-symbols-outlined">star</span>
+        </button>
+
+        <!-- Chat action -->
+        <button
+          class="icon-btn chat-button"
+          (click)="onChat(msg, idx)"
+          [hidden]="msg.role !== 'assistant'"
+          [disabled]="isActionRunning()">
+          <span class="material-symbols-outlined">chat</span>
+        </button>
+
+        <!-- Spinner -->
+        <wa-spinner [hidden]="!isActionRunning()"></wa-spinner>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,408 @@
+// ✅ MERGE: CSS aligné sur to-migrate-here/kng-history avec variables MDC
+// Structure: .assistant-container > .assistant-header (welcome) + .assistant (messages)
+
+:host {
+  margin: 0.5rem;
+  overflow-y: auto;
+  width: calc(100% - 1rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 0.5rem;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+
+  // ✅ Smooth scroll behavior
+  scroll-behavior: smooth;
+
+  // ✅ Flex layout - prend l'espace disponible
+  flex: 1;
+  min-height: 0; // Important pour overflow dans flex
+}
+
+// ✅ Header optionnel avec sélection d'agents
+.history-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.25rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.5rem 0;
+
+  .start {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .end {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+// ✅ Container principal
+.assistant-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+
+  // ✅ Header de bienvenue (quand pas de messages)
+  .assistant-header {
+    margin: auto;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 2rem 1rem;
+
+    .welcome {
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: var(--mdc-theme-text-primary-on-background);
+      }
+
+      p {
+        color: var(--mdc-theme-text-secondary-on-background);
+        font-size: 0.95rem;
+      }
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+
+      li {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background: var(--mdc-theme-primary-light, rgba(63, 81, 181, 0.1));
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: var(--mdc-theme-primary, #3f51b5);
+          color: var(--mdc-theme-primary-text, #fff);
+        }
+      }
+    }
+
+    kng-audio-note {
+      margin: auto;
+      width: fit-content;
+      display: block;
+    }
+  }
+
+  // ✅ Chaque message (.assistant wrapper)
+  .assistant {
+    border-radius: 0.5rem;
+    padding: 0 0.5rem 2rem;
+
+    .last-running {
+      position: relative;
+      overflow: hidden;
+
+      // Assurer que le contenu reste au-dessus
+      > * {
+        position: relative;
+        z-index: 2;
+      }
+    }
+
+    &.last-message {
+      span.feedback-button {
+        display: flex;
+      }
+    }
+
+    .copy-button {
+      display: block;
+    }
+
+    .chat-button {
+      display: none;
+    }
+
+    .feedback-button,
+    .feedback-btn {
+      display: block;
+    }
+
+    span.feedback-button {
+      display: none;
+      align-items: center;
+      font-size: 0.75rem;
+    }
+
+    // ✅ Header avec steps pendant l'exécution
+    .chat-header {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0.25rem 0;
+
+      .title {
+        display: flex;
+        width: 100%;
+        font-weight: 600;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      ul, ol {
+        padding: 0.1rem 0rem;
+        list-style: none;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        font-size: 0.85rem;
+
+        li {
+          padding: 0.5rem 0;
+        }
+
+        opacity: 0.5;
+        animation: pulseThinking 1s infinite;
+      }
+    }
+
+    // ✅ Contenu du markdown - styles pour ::ng-deep
+    ::ng-deep {
+      ul {
+        padding: 0.1rem 1rem;
+        li > a {
+          padding: 0.2rem 0;
+        }
+      }
+    }
+
+    // ✅ Content styling pour markdown
+    .markdown-body {
+      line-height: 1.6;
+
+      section.thinking {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-style: italic;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+      }
+
+      a {
+        color: var(--mdc-theme-primary, #3f51b5);
+        text-decoration: underline;
+      }
+
+      code {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      pre {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        font-size: 0.85rem;
+      }
+
+      ul, ol {
+        padding: 0.1rem 1rem;
+      }
+    }
+
+    // ✅ Messages utilisateur - alignés à droite avec bulle
+    &.assistant-user {
+      background: var(--mdc-theme-primary-light, rgba(63, 81, 181, 0.1));
+      padding-bottom: 0;
+      max-width: 60%;
+      min-width: 150px;
+      margin-right: 0;
+      margin-left: auto;
+      border-radius: 1rem 1rem 0.25rem 1rem;
+
+      .chat-actions,
+      .chat-button {
+        display: flex;
+      }
+
+      .copy-button,
+      .copy-btn {
+        margin-left: auto;
+        margin-right: 0;
+      }
+
+      .feedback-button,
+      .feedback-btn {
+        display: none;
+      }
+    }
+  }
+}
+
+// ✅ Dernier message avec actions visibles
+.last-message {
+  .chat-actions {
+    wa-spinner {
+      display: block;
+    }
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 0.5rem;
+
+    @media (max-width: 599px) {
+      gap: 0.5rem;
+    }
+  }
+}
+
+// ✅ Barre d'actions des messages
+.chat-actions {
+  display: flex;
+  margin: 0.25rem 0;
+  align-items: center;
+  gap: 0.25rem;
+
+  wa-spinner {
+    display: none;
+  }
+
+  &.actions-running {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+// ✅ Icon buttons avec Material Symbols
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: var(--mdc-theme-text-secondary-on-background, #666);
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--mdc-theme-text-primary-on-background);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &.chat-button {
+    background: var(--mdc-theme-primary-light, rgba(63, 81, 181, 0.1));
+    color: var(--mdc-theme-primary, #3f51b5);
+
+    &:hover:not(:disabled) {
+      background: var(--mdc-theme-primary, #3f51b5);
+      color: var(--mdc-theme-primary-text, #fff);
+    }
+  }
+}
+
+// ✅ Grille de produits
+.products {
+  margin-top: 1rem;
+
+  .pinned {
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--mdc-theme-primary, #3f51b5);
+    background: transparent;
+    color: var(--mdc-theme-primary, #3f51b5);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--mdc-theme-primary-light, rgba(63, 81, 181, 0.1));
+    }
+  }
+
+  .kng-layout-card {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+// ✅ Loading shimmer effect
+.loading-shimmer {
+  background: linear-gradient(90deg, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulseThinking {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+// Animation pour le gradient qui se déplace de gauche à droite
+@keyframes gradientSweep {
+  0% {
+    background: linear-gradient(
+      90deg,
+      rgba(196, 196, 196, 0.1) 100%,
+      rgba(142, 142, 142, 0.1) 100%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      90deg,
+      rgba(142, 142, 142, 0.1) 50%,
+      rgba(196, 196, 196, 0.1) 10%
+    );
+  }
+  100% {
+    background: linear-gradient(
+      90deg,
+      rgba(196, 196, 196, 0.1) 100%,
+      rgba(142, 142, 142, 0.1) 100%
+    );
+  }
+}

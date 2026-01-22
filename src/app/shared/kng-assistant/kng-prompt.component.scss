@@ -1,0 +1,395 @@
+// ✅ MERGE: CSS aligné sur to-migrate-here/kng-prompt avec variables MDC
+// Structure UX: Form avec [input] + [help bar: options | audio | buttons]
+
+:host {
+  padding: 5px;
+  padding-bottom: 0;
+  width: calc(100% - 1rem);
+  max-width: 600px;
+  min-height: 9rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto 0.5rem auto; // Centre horizontalement avec margin auto
+  background: var(--mdc-theme-background, #fff); // Fond pour ne pas voir le contenu derrière
+}
+
+@media (max-width: 599px) {
+  :host {
+    padding: 0px;
+    width: calc(100% - 0.5rem);
+    max-width: calc(100vw - 0.5rem);
+    left: 0;
+    right: 0;
+    margin: 0 auto 0.25rem auto;
+  }
+}
+
+.prompt {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+// ✅ Audio info / error banners
+.audio-info,
+.audio-error {
+  background: rgba(255, 255, 255, 0.93);
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  padding: 20px;
+  color: rgb(160, 0, 0);
+  width: 90%;
+
+  button {
+    padding: 10px;
+    margin-right: 7px;
+    margin-left: auto;
+    border: none;
+    border-radius: 4px;
+  }
+}
+
+.audio-info {
+  justify-content: center;
+}
+
+// ✅ Suggestions autocomplete
+.suggestions {
+  max-height: 300px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  overflow-y: auto;
+  margin: auto;
+  bottom: 7rem;
+  box-shadow: 0 0px 30px rgba(0, 0, 0, 0.15);
+  width: 600px;
+  z-index: 3;
+  background: var(--mdc-theme-background-container, #fff);
+
+  &::-webkit-scrollbar {
+    width: 1px;
+    height: 0.5rem;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--mdc-theme-primary, #3f51b5);
+  }
+
+  // Block style for helps
+  .block {
+    padding: 0.5rem;
+
+    .help-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+
+  .suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &.selected {
+      background-color: var(--mdc-theme-primary, #3f51b5);
+      color: var(--mdc-theme-primary-text, #fff);
+    }
+  }
+}
+
+// ✅ Form container - Structure originale
+form {
+  z-index: 1;
+  width: 100%;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  padding: 1px;
+  background: var(--mdc-theme-background-container, #f5f5f5);
+  position: relative;
+
+  &.streaming {
+    filter: contrast(0.5) opacity(0.5);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+
+  // ✅ Help / Actions bar - Layout: [LEFT] [CENTER] [RIGHT]
+  .help {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+    gap: 0.5rem;
+    max-height: 2.5rem;
+
+    // Éléments à gauche
+    .start {
+      margin-left: 0;
+      margin-right: auto;
+    }
+
+    // Éléments à droite
+    .end {
+      margin-right: 0;
+    }
+
+    .end:first-of-type {
+      margin-left: auto;
+    }
+
+    // Style spécifique pour le thinking mode actif
+    .action-thinking {
+      color: var(--mdc-theme-primary, #3f51b5);
+      background: rgba(63, 81, 181, 0.1);
+      border-radius: 8px;
+    }
+  }
+
+  // ✅ Input area - Structure originale
+  div.input {
+    display: flex;
+    margin: auto;
+    width: 100%;
+    min-height: 5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    margin-top: 5px;
+
+    &::-webkit-scrollbar {
+      width: 0.25rem;
+      height: 0.5rem;
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background: var(--mdc-theme-primary, #3f51b5);
+    }
+
+    @media (max-width: 480px) {
+      input[type='text'],
+      textarea,
+      button.record {
+        width: 100%;
+        cursor: pointer;
+      }
+    }
+
+    button.reset {
+      width: calc(100% - 10px);
+      cursor: pointer;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      background: var(--mdc-theme-primary, #3f51b5);
+      color: var(--mdc-theme-primary-text, #fff);
+      font-size: 14px;
+      margin: 10px auto;
+    }
+
+    input[type='text'],
+    textarea,
+    .prompt-editor {
+      outline: 0;
+      border: 0px;
+      background: var(--mdc-theme-background-container, #f5f5f5);
+      height: fit-content;
+      min-height: 45px;
+      width: calc(100% - 0px);
+      padding-left: 10px;
+      font-size: 16px;
+      line-height: 17px;
+      font-family: sans-serif;
+    }
+
+    // ✅ Styles spécifiques pour le contenteditable
+    .prompt-editor {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+
+      // Placeholder
+      &[data-empty="true"]:before {
+        content: attr(data-placeholder);
+        color: var(--mdc-theme-text-hint-on-background, #999);
+        pointer-events: none;
+      }
+
+      &:empty:not([data-empty="false"]):before {
+        content: attr(data-placeholder);
+        color: var(--mdc-theme-text-hint-on-background, #999);
+        pointer-events: none;
+      }
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      strong, b {
+        font-weight: bold;
+      }
+
+      em, i {
+        font-style: italic;
+      }
+
+      u {
+        text-decoration: underline;
+      }
+
+      ul, ol {
+        margin-left: 1.5rem;
+        padding-left: 0.5rem;
+      }
+
+      li {
+        margin: 0.25rem 0;
+      }
+    }
+
+    // Bouton submit
+    button:not(.reset) {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      margin-left: -50px;
+      border: none;
+      background: var(--mdc-theme-primary, #3f51b5);
+      color: var(--mdc-theme-primary-text, #fff);
+      height: 48px;
+      border-radius: 45px;
+      width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      margin-left: auto;
+
+      &.record {
+        height: 46px;
+        margin: auto;
+        margin-right: 5px;
+      }
+
+      &.recording {
+        background-color: rgb(160, 0, 0);
+        color: white;
+        font-weight: bolder;
+      }
+    }
+  }
+}
+
+// ✅ Icon buttons with Material Symbols
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mdc-theme-text-secondary-on-background, #666);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ✅ Audio recorder inline dans la barre help
+.audio-recorder-inline {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.25rem;
+
+  // Override pour être compact dans la barre
+  --audio-note-padding: 0;
+  --audio-note-gap: 0.25rem;
+}
+
+// ✅ Tips / quick actions
+.tips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  justify-content: center;
+
+  .tag {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--mdc-theme-primary, #3f51b5);
+    border-radius: 2rem;
+    background: transparent;
+    color: var(--mdc-theme-primary, #3f51b5);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+
+    &:hover:not(:disabled) {
+      background: var(--mdc-theme-primary, #3f51b5);
+      color: var(--mdc-theme-primary-text, #fff);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ✅ Disclaimer
+.disclaimer {
+  color: var(--mdc-theme-text-hint-on-background, #999);
+  background: transparent;
+  margin: 0px auto;
+  text-align: center;
+  font-size: 15px;
+  width: 100%;
+}
+
+// ✅ Hide on mobile
+@media (max-width: 599px) {
+  .hide-xs {
+    display: none !important;
+  }
+
+  .suggestions {
+    width: calc(100% - 1rem);
+  }
+}
