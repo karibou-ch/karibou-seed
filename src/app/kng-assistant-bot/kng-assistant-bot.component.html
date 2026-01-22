@@ -2,7 +2,7 @@
   <div class="assistant-backdrop"></div>
   <div class="assistant-dialog__surface" *ngIf="isReady">
 
-    <div class="container" >
+    <div class="container" [class.running]="isAssistantRuning">
 
       <!-- CLOSE -->
       <!-- CLOSE OR SUBS CART -->
@@ -10,18 +10,18 @@
         <button (click)="onClose(true)" class="close" >
           <span class="material-symbols-outlined size-large">arrow_back</span>
         </button>
-  
-        <div class="cart visible"  >
-          <div class="subscription-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >            
-            <button>               
-              <span>
-                {{cartAmount}}&nbsp;fr&nbsp; 
-                <span class="end material-symbols-outlined">shopping_cart</span>
-              </span>              
-            </button>
-          </div>  
 
-        </div>  
+        <div class="cart visible"  >
+          <div class="subscription-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >
+            <button>
+              <span>
+                {{cartAmount}}&nbsp;fr&nbsp;
+                <span class="end material-symbols-outlined">shopping_cart</span>
+              </span>
+            </button>
+          </div>
+
+        </div>
 
       </div>
 
@@ -30,9 +30,40 @@
         <h1 hidden> <img src="/assets/img/food.jpg"/> </h1>
       </div>
 
-      <kng-assistant #assistant [user]="user" [config]="config" [prompt]="prompt" [prompts]="prompts" [tips]="tips" (assistant)="onAssistant($event)">
-      </kng-assistant>
+      <!-- ✅ Pattern kng-sgc: composants séparés history + prompt -->
+      <div class="center grid-item">
+        <!-- Welcome screen si non connecté -->
+        <div class="welcome" *ngIf="!user?.id && !messagesCount">
+          <h2>{{label.james_welcome}}</h2>
+          <p>{{label.james_welcome_desc}}</p>
+        </div>
+
+        <!-- History component -->
+        <kng-assistant-history
+          #history
+          [agent]="agent"
+          [user]="user"
+          [config]="config"
+          [withHeader]="false"
+          (chat)="onHistoryChat($event)">
+        </kng-assistant-history>
+
+        <!-- Prompt component -->
+        <kng-prompt
+          #promptComponent
+          [agent]="agent"
+          [user]="user"
+          [config]="config"
+          [autoRecord]="autoRecord"
+          [messagesLimit]="messagesLimit"
+          [tips]="tips"
+          [prompts]="prompts"
+          [placeholder]="label.james_placeholder || 'Message James…'"
+          [disclaimer]="label.james_disclaimer || 'James peut se tromper. Pensez à vérifier les informations.'"
+          (chatRequest)="onChatRequest($event)"
+          (clearRequest)="onClearRequest()">
+        </kng-prompt>
+      </div>
     </div>
   </div>
 </div>
-

@@ -7,18 +7,33 @@
   overflow: hidden;
 }
 
-.assistant-dialog{
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
+.assistant-dialog {
+  overflow: hidden; // ✅ Changé: le scroll sera dans .center.grid-item
   bottom: 0;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  visibility:visible;
-  z-index: 3;
+  visibility: visible;
+  z-index: var(--kng-z-modal);
   background: white;
+
+  .assistant-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover .assistant-backdrop {
+    opacity: 1;
+  }
 
   @media (min-width: 1025px) {
     padding: 5px;
@@ -41,7 +56,8 @@
     flex-direction: column;
     width: 100%;
     max-width: 865px;
-    min-height: calc(100vh - 30px);
+    height: calc(100vh - 60px); // ✅ Changé: hauteur fixe pour que flex fonctionne
+    max-height: calc(100vh - 60px); // ✅ AJOUTÉ: limite la hauteur max
     border-radius: 4px;
     opacity: 1;
     position: relative;
@@ -49,6 +65,7 @@
     margin-bottom: 40px;
     margin-left: auto;
     margin-right: auto;
+    overflow: hidden; // ✅ AJOUTÉ: empêche le débordement, le scroll sera dans .center.grid-item
 
 
     @media (prefers-color-scheme: dark) {
@@ -142,7 +159,7 @@
       top: 30px;
       background-color: rgba(255, 255, 255, 0.1);
       transition: all .5s;
-      z-index: 1;
+      z-index: var(--kng-z-content);
 
       @media (max-width:599px) {
         top:0px
@@ -170,7 +187,7 @@
         border: 0;
         color: #111;
         left: calc((100vw - 860px) / 2);
-        z-index: 4;
+        z-index: calc(var(--kng-z-content) + 1);
         margin-left: 10px;
 
         @media (prefers-color-scheme: dark) {
@@ -220,16 +237,15 @@
       position: relative;
       display: flex;
       flex-flow: column;
-      justify-content: flex-end;
-      /*halign*/
-      align-items: flex-start;
-      /*valign*/
+      justify-content: flex-start; // ✅ Changé: flex-start au lieu de flex-end
+      align-items: stretch; // ✅ Changé: stretch pour que les enfants prennent toute la largeur
       overflow: hidden;
       letter-spacing: .04em;
       text-decoration: inherit;
       text-transform: inherit;
       line-height: 1.3rem;
-      height: 100%;
+      flex: 1; // ✅ AJOUTÉ: remplit l'espace disponible dans assistant-dialog__surface
+      min-height: 0; // ✅ AJOUTÉ: permet au flex de fonctionner avec overflow
 
       .title {
         margin: auto;
@@ -240,11 +256,57 @@
         margin-left: 3%;
       }
 
-      kng-assistant{
+      // ✅ Pattern kng-sgc: layout pour history + prompt
+      .center.grid-item {
         width: 100%;
+        flex: 1; // ✅ Changé: flex: 1 au lieu de height: 100%
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative; // Nécessaire pour le positionnement absolu de kng-prompt
+        min-height: 0; // ✅ AJOUTÉ: permet au flex de fonctionner avec overflow
+
+        // Welcome screen
+        .welcome {
+          text-align: center;
+          padding: 2rem;
+          h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+          }
+          p {
+            color: var(--mdc-theme-text-secondary-on-background);
+          }
+        }
+
+        // ✅ History prend tout l'espace avec padding-bottom pour le prompt
+        kng-assistant-history {
+          flex: 1;
+          padding-bottom: 12rem; // Espace pour le prompt fixe en bas
+          min-height: 0;
+        }
+
+        // ✅ Prompt est positionné en absolu en bas du .center.grid-item
+        kng-prompt {
+          // Les styles sont dans kng-prompt.component.scss
+          // position: absolute; bottom: 0;
+        }
       }
 
+      kng-assistant {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0 1rem;
 
+        @media (max-width: 599px) {
+          padding: 0 0.5rem;
+        }
+      }
     }
   }
 }
