@@ -305,9 +305,10 @@ export class KngBusinessOptionComponent implements OnInit, OnDestroy {
         return resolve(false);
       }
       this.isRunning = true;
-      this.$assistant.chat(params).subscribe(message=> {
+      // ✅ chat() retourne maintenant Observable<string> au lieu de Observable<{text, tool}>
+      this.$assistant.chat(params).subscribe((text: string)=> {
 
-        this.formError += message.text;
+        this.formError += text;
         if(!this.isValid){
           this.isValid = this.formError.includes('[ok]');
         }

@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 //
 // exported components and directives
@@ -31,6 +31,8 @@ import { KngProductLinkComponent } from './kng-product-link/kng-product-link.com
 import { KngHomeComponent } from '../kng-home/kng-home.component';
 import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.component';
 import { KngAssistantComponent } from './kng-assistant/kng-assistant.component';
+import { KngAssistantHistoryComponent } from './kng-assistant/kng-assistant-history.component';
+import { KngPromptComponent } from './kng-assistant/kng-prompt.component';
 import { KngAudioAssistantComponent } from './kng-audio-assistant/kng-audio-assistant.component';
 import { KngStreamSentenceComponent } from './kng-stream-sentence/kng-stream-sentence.component';
 import { KngBusinessOptionComponent } from './kng-business-option/kng-business-option.component';
@@ -48,6 +50,8 @@ import { KngBusinessOptionComponent } from './kng-business-option/kng-business-o
     RouterModule,
     KngCommonModule,
     KngAssistantComponent,
+    KngAssistantHistoryComponent,
+    KngPromptComponent,
     KngAudioAssistantComponent,
     KngBusinessOptionComponent,
     KngControlMessagesComponent,
@@ -62,6 +66,8 @@ import { KngBusinessOptionComponent } from './kng-business-option/kng-business-o
   declarations: [
     KngAudioAssistantComponent,
     KngAssistantComponent,
+    KngAssistantHistoryComponent,
+    KngPromptComponent,
     KngBusinessOptionComponent,
     KngControlMessagesComponent,
     KngHomeComponent,
@@ -81,6 +87,7 @@ import { KngBusinessOptionComponent } from './kng-business-option/kng-business-o
     KngProductLinkComponent,
     KngStreamSentenceComponent,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class KngSharedModule {
   public static forRoot(options?: any): ModuleWithProviders<KngSharedModule> {

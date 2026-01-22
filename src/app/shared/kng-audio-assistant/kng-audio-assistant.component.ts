@@ -227,9 +227,11 @@ export class KngAudioAssistantComponent implements OnInit {
       return;
     }
 
-    this.$assistant.history({agent:this.agent,trim:true,hub:this.store}).subscribe((content) => {
+    this.$assistant.history({agent:this.agent,trim:true,hub:this.store}).subscribe((content: any) => {
       const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
-      const result = content.filter(item => item['role'] == 'assistant');
+      // ✅ Handle both ClientDiscussion (new) and Assistant[] (legacy) formats
+      const messages = Array.isArray(content) ? content : (content.messages || []);
+      const result = messages.filter(item => item['role'] == 'assistant');
       if(result.length) {
         const msg = (this.withHistory)? result.reduce((note, msg) => note + msg['content']+'\n', ''):(result[result.length-1]['content']);
         this.note = msg.replace("<thinking>","<section class='thinking'>").replace("</thinking>","</section>");
@@ -261,8 +263,9 @@ export class KngAudioAssistantComponent implements OnInit {
     params.q = 'whisper';
     this.whisperNote = '';
     this.isThinking = true;
-    this.$assistant.chat(params).subscribe((content) => {
-      this.whisperNote += content.text;
+    // ✅ chat() retourne maintenant Observable<string>
+    this.$assistant.chat(params).subscribe((text: string) => {
+      this.whisperNote += text;
       this.$cdr.markForCheck();
     },(error) => {
       this.isThinking = false;
@@ -302,20 +305,18 @@ export class KngAudioAssistantComponent implements OnInit {
     params.body = body;
     this.$cdr.markForCheck();
     let streamTxt = '', attach='';
-    this.$assistant.chat(params).subscribe((content) => {
-      console.log('content', content.text);
-      if(content.tool && content.tool.length) {
-        this.onData.emit(content.tool);
-      }
+    // ✅ chat() retourne maintenant Observable<string> au lieu de Observable<{text, tool}>
+    this.$assistant.chat(params).subscribe((text: string) => {
+      console.log('content', text);
 
-      const indexOfSku = content.text.indexOf('---')
+      const indexOfSku = text.indexOf('---')
       if(endprint||indexOfSku>-1) {
-        attach+=content.text;
-        streamTxt+=content.text.substring(0,indexOfSku);
+        attach+=text;
+        streamTxt+=text.substring(0,indexOfSku);
         endprint=true;
         return
       }
-      streamTxt+=(content.text.replace('**traitement...**','').replace(query,''));
+      streamTxt+=(text.replace('**traitement...**','').replace(query,''));
 
       this.$cdr.markForCheck()
     }, err => {
