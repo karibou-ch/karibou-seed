@@ -27,6 +27,14 @@ body{
   --mdc-theme-top-bar: 70px;
   --mdc-theme-wrapper-zoom: .33;
 
+  // 📚 Z-INDEX - Gestion des couches
+  --kng-z-base: 0;
+  --kng-z-content: 1;
+  --kng-z-pop: 1000;
+  --kng-z-backdrop: 1100;
+  --kng-z-modal: 1200;
+  --kng-z-drawer: 1250;
+
   --mdc-theme-font: "Gentium Plus";
 
   --mdc-theme-karibou-pink: #da1c5c;
