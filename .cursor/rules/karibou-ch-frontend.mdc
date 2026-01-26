@@ -62,6 +62,13 @@ src/
 
 Cette section détaille l'architecture et les conventions de style du projet. Une adhésion stricte à ces règles est essentielle pour maintenir un design cohérent et faciliter la personnalisation du thème.
 
+Les composants UX utilisent la base webawesome tu DOIS utiliser les variables css et les éléments :
+- https://webawesome.com/docs/components/
+- https://webawesome.com/docs/utilities/
+- https://webawesome.com/docs/patterns/
+
+
+
 #### **Méthodologie Générale**
 
 -   **Encapsulation :** Les styles sont encapsulés au niveau des composants par défaut (`ViewEncapsulation.None` est à éviter). Cela empêche les styles d'un composant de "fuir" et d'affecter d'autres parties de l'application.

@@ -1,6 +1,6 @@
-# PWA Edgar - Configuration et Maintenance
+# PWA Karibou - Configuration et Maintenance
 
-> **Statut** : ✅ **IMPLÉMENTÉ** (Décembre 2025)
+> **Statut** : 🔄 **PARTIELLEMENT IMPLÉMENTÉ** (Janvier 2026)
 
 ---
 
@@ -39,6 +39,26 @@ Les hashes Angular peuvent être de 8+ caractères (pas forcément 16+). Le patt
 /\.[a-f0-9]{8,}\.(js|css|mjs)$/i
 ```
 
+### 4. Prompt d'installation PWA (Android/Chrome)
+
+**L'événement `beforeinstallprompt` doit être correctement géré** :
+
+```typescript
+// ❌ INCORRECT (code actuel)
+window.addEventListener('beforeinstallprompt', (e) => {
+  console.log('PWA prompt', e); // Ne fait rien d'utile
+});
+
+// ✅ CORRECT
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();           // Empêcher le mini-infobar
+  this.deferredPrompt = e;      // Stocker pour usage ultérieur
+  this.showInstallButton = true; // Afficher bouton custom
+});
+```
+
+Voir la section [📲 Prompt d'Installation PWA](#-prompt-dinstallation-pwa-critique) pour l'implémentation complète.
+
 ---
 
 ## 📋 État actuel
@@ -50,6 +70,11 @@ Les hashes Angular peuvent être de 8+ caractères (pas forcément 16+). Le patt
 - ✅ `src/index.html` - Liens PWA et meta tags
 - ✅ `angular.json` - `serviceWorker: true` + `ngswConfigPath`
 - ✅ `app.component.ts` - Gestion des mises à jour automatiques
+
+### ⚠️ À implémenter
+- ❌ **Prompt d'installation Android/Chrome** - Code incomplet dans `kng-navbar.component.ts`
+- ❌ **`prefer_related_applications: false`** - Actuellement `true` dans le manifest
+- ❌ **Événement `appinstalled`** - Non géré
 
 ---
 
@@ -161,6 +186,167 @@ private initServiceWorkerUpdates(): void {
 
 ### Pourquoi `Date.now()` au lieu de `interval` simple ?
 Quand un onglet du navigateur est inactif, les timers/intervals sont throttle par le browser. En utilisant `Date.now()`, on calcule le temps réel écoulé depuis la dernière vérification, garantissant que la mise à jour se déclenche correctement même après une longue période d'inactivité.
+
+---
+
+## 📲 Prompt d'Installation PWA (CRITIQUE)
+
+> **⚠️ STATUT : À IMPLÉMENTER** - Le code actuel capture l'événement mais ne déclenche pas l'installation.
+
+### Problème Actuel
+
+Le fichier `kng-navbar.component.ts` contient un code incomplet :
+
+```typescript
+// ❌ CODE ACTUEL (incomplet)
+window.addEventListener('beforeinstallprompt', (deferredPrompt) => {
+  // (<any>deferredPrompt).prompt();  // ← COMMENTÉ !
+  console.log('PWA browser prompt', deferredPrompt);
+});
+```
+
+**Problèmes identifiés :**
+- ❌ `event.preventDefault()` non appelé
+- ❌ `deferredPrompt` non stocké dans une propriété
+- ❌ `prompt()` commenté → aucune installation possible
+- ❌ Pas d'UI pour Android/Chrome (seulement iOS)
+- ❌ Pas de gestion de `appinstalled`
+
+### Implémentation Correcte
+
+**Dans le composant (`kng-navbar.component.ts`)** :
+
+```typescript
+// === Propriétés ===
+private deferredPrompt: any = null;
+showInstallPrompt = false;
+
+// === Dans ngOnInit ou méthode dédiée ===
+private setupPWAInstallPrompt(): void {
+  // Vérifier si déjà en mode standalone (déjà installé)
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    return;
+  }
+
+  // Capturer l'événement beforeinstallprompt
+  window.addEventListener('beforeinstallprompt', (event: Event) => {
+    event.preventDefault(); // ✅ Empêcher le mini-infobar automatique
+    this.deferredPrompt = event; // ✅ Stocker pour utilisation ultérieure
+    
+    // Afficher le bouton d'installation après un délai (UX)
+    setTimeout(() => {
+      this.showInstallPrompt = true;
+      this.$cdr.markForCheck();
+    }, 3000);
+  });
+
+  // Détecter quand l'app est installée
+  window.addEventListener('appinstalled', () => {
+    this.showInstallPrompt = false;
+    this.deferredPrompt = null;
+    console.log('[PWA] Application installée avec succès');
+    this.$cdr.markForCheck();
+  });
+}
+
+// === Méthode pour déclencher l'installation ===
+async installPWA(): Promise<void> {
+  if (!this.deferredPrompt) {
+    console.warn('[PWA] Pas de prompt disponible');
+    return;
+  }
+
+  // Afficher le prompt natif du navigateur
+  this.deferredPrompt.prompt();
+
+  // Attendre la réponse de l'utilisateur
+  const { outcome } = await this.deferredPrompt.userChoice;
+  console.log(`[PWA] Résultat installation: ${outcome}`);
+
+  // Reset (le prompt ne peut être utilisé qu'une fois)
+  this.deferredPrompt = null;
+  this.showInstallPrompt = false;
+  this.$cdr.markForCheck();
+}
+
+// === Fermer le prompt sans installer ===
+dismissInstallPrompt(): void {
+  this.showInstallPrompt = false;
+  this.$cdr.markForCheck();
+}
+```
+
+**Dans le template HTML (`kng-navbar.component.html`)** :
+
+```html
+<!-- ANDROID/CHROME INSTALL PROMPT -->
+<div class="overlay-pane" [class.overlay-open]="showInstallPrompt">
+  <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
+    <div class="mdc-snackbar__surface">
+      <div class="close" (click)="dismissInstallPrompt()">
+        <i class="material-symbols-outlined">close</i>
+      </div>
+      <div class="mdc-snackbar__label install-ios">
+        Installez Karibou.ch sur votre appareil<br/>
+        pour un accès rapide et hors-ligne !
+      </div>
+      <button class="install-btn" (click)="installPWA()">
+        <i class="material-symbols-outlined">download</i>
+        Installer
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+### Comportement par Plateforme
+
+| Plateforme | Événement | Action |
+|------------|-----------|--------|
+| **Android Chrome** | `beforeinstallprompt` | Afficher bouton custom → `prompt()` |
+| **iOS Safari** | ❌ Non supporté | Afficher instructions manuelles (Share → Add to Home) |
+| **Chrome Desktop** | `beforeinstallprompt` | Afficher bouton custom → `prompt()` |
+| **Firefox** | ❌ Non supporté | - |
+| **Safari macOS** | ❌ Non supporté | - |
+
+### Configuration Manifest
+
+**⚠️ CORRECTION REQUISE dans `manifest.webmanifest`** :
+
+```json
+{
+  "prefer_related_applications": false  // ← Mettre FALSE pour PWA
+}
+```
+
+La valeur `true` actuelle indique au navigateur de préférer les apps natives, ce qui peut désactiver le prompt PWA.
+
+### Critères pour `beforeinstallprompt`
+
+Le navigateur déclenche `beforeinstallprompt` seulement si :
+
+1. ✅ L'app n'est pas déjà installée
+2. ✅ L'utilisateur a interagi avec le domaine pendant au moins 30 secondes
+3. ✅ Le manifest est valide avec :
+   - `name` ou `short_name`
+   - `icons` (incluant 192x192 et 512x512)
+   - `start_url`
+   - `display` : `standalone`, `fullscreen` ou `minimal-ui`
+4. ✅ Servi en HTTPS
+5. ✅ Service Worker enregistré avec un handler `fetch`
+
+### Débogage
+
+**Chrome DevTools** :
+1. Application > Manifest : Vérifier "Installability"
+2. Console : Chercher `[PWA]` logs
+3. Application > Service Workers : Vérifier l'état
+
+**Forcer le prompt (dev)** :
+```javascript
+// Dans la console Chrome
+window.dispatchEvent(new Event('beforeinstallprompt'));
+```
 
 ---
 
@@ -439,6 +625,8 @@ find www/admin.karibou.ch/ -type f -name "*" -mtime +180 -delete
 4. **Cache nginx** : Les fichiers `ngsw*.js` et `index.html` ne doivent JAMAIS être cachés
 5. **Mises à jour** : L'utilisateur est notifié et l'app se recharge automatiquement
 6. **Déploiement rsync** : Le script de recovery gère les 404 causés par `--delete`
+7. **Prompt d'installation** : `beforeinstallprompt` n'est supporté que sur Chrome/Edge (Android + Desktop). iOS nécessite une UI manuelle avec instructions "Add to Home Screen"
+8. **Manifest `prefer_related_applications`** : Doit être `false` pour que le prompt PWA s'affiche
 
 ---
 
@@ -447,3 +635,5 @@ find www/admin.karibou.ch/ -type f -name "*" -mtime +180 -delete
 - [Angular Service Worker](https://angular.io/guide/service-worker-intro)
 - [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest)
 - [PWA Checklist](https://web.dev/pwa-checklist/)
+- [beforeinstallprompt Event](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeinstallprompt_event)
+- [How to provide your own install experience](https://web.dev/articles/customize-install)
