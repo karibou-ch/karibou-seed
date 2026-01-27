@@ -223,51 +223,100 @@ export class KngSubscriptionItemComponent implements OnInit, OnChanges, OnDestro
       return 0;
     }
 
+    //
     // Récupérer le taux de fees du hub
-    const feesRate = this.config.shared.hub.serviceFees || 0;
+    const feesRate = this.config.shared?.hub?.serviceFees || 0;
 
-    // Total items du contrat (avec modifications locales, sans deleted)
-    const contractTotal = this.contractItems
-      .filter(item => !item['deleted'])
-      .reduce((sum, item) => sum + (item.quantity* item.unit_amount), 0);
+    //
+    // ✅ Utiliser getItemsSubTotal() pour cohérence (calcul identique)
+    const total = this.getItemsSubTotal();
 
-
-    // Total items du panier (en attente d'ajout)
-    const pendingTotal = this.pendingItems
-      .reduce((sum, item) => sum + (item.finalprice || 0), 0);
-
-    // ✅ Calcul correct: (contractTotal + pendingTotal) * feesRate
-    return (contractTotal/100 + pendingTotal) * feesRate;
+    //
+    // Calcul: total * feesRate
+    return total * feesRate;
   }
 
   /**
-   * ✅ Calculer les frais de livraison (utilise CartService)
+   * ✅ Calculer les frais de livraison basés sur le total combiné (contrat + nouveaux items)
+   * Similaire à computeShippingFeesForSubscriptionUpdate dans kng-cart-invoice
    */
   getShippingFees(): number {
     if (!this.config || !this.contract || !this.contract.shipping) {
       return 0;
     }
 
-    // ✅ Utiliser la méthode CartService comme dans kng-cart-checkout
     const ctx = { ...this.createCartContext(), address: this.contract.shipping };
-    return this.$cart.computeShippingFees(ctx);
+
+    //
+    // Get base price from CartService (includes cache.currentShippingTime)
+    const { price: basePrice, status } = this.$cart.estimateShippingFeesWithoutReduction(ctx);
+
+    //
+    // For deposit or plan, return as-is (no discount logic, no time adjustment)
+    if (status === 'deposit' || status === 'plan') {
+      return basePrice;
+    }
+
+    //
+    // ✅ Access shipping config from config.shared.shipping
+    const shipping = this.config?.shared?.shipping;
+    if (!shipping) return basePrice;
+
+    //
+    // ✅ Adjust shipping price based on contract's delivery time
+    // basePrice already includes cache.currentShippingTime, replace with contract's time
+    const cacheTimePrice = this.$cart.getCurrentShippingTimePrice() || 0;
+
+    // ✅ FIX: Contract delivery time can be stored as 'hours' in shipping or at contract level
+    const contractTime = (this.contract.shipping as any)?.hours ?? (this.contract as any)?.hours;
+    const contractTimePrice = (contractTime !== undefined && shipping.pricetime)
+      ? (shipping.pricetime[contractTime] || 0)
+      : 0;
+
+    //
+    // Adjust: remove cache time price, add contract time price
+    let adjustedBasePrice = basePrice - cacheTimePrice + contractTimePrice;
+
+    //
+    // ✅ Calculate combined total: contract items + pending items
+    // Shipping discounts should be based on the TOTAL subscription amount
+    const combinedTotal = this.getItemsSubTotal();
+
+    //
+    // ✅ Apply discount tiers based on combined total
+    // Same logic as CartService.computeShippingFees and kng-cart-invoice
+    let finalPrice = adjustedBasePrice;
+    if (shipping.discountB && combinedTotal >= shipping.discountB) {
+      finalPrice = Math.max(adjustedBasePrice - (shipping.priceB || 0), 0);
+    } else if (shipping.discountA && combinedTotal >= shipping.discountA) {
+      finalPrice = Math.max(adjustedBasePrice - (shipping.priceA || 0), 0);
+    }
+
+    return finalPrice;
   }
 
 
   /**
    * ✅ Calculer le sous-total des items (sans services)
+   * Utilise item.fees (CHF) en priorité, item.unit_amount/100 en fallback
    */
   getItemsSubTotal(): number {
+    //
     // Total items contrat (avec modifications, sans les items supprimés)
+    // ✅ FIX: Use item.fees (CHF) as primary, fallback to unit_amount/100
     const contractTotal = this.contractItems
       .filter(item => !item['deleted'])
-      .reduce((sum, item) => sum + (item.quantity* item.unit_amount), 0);
+      .reduce((sum, item) => {
+        const itemPrice = item.fees ?? (item.unit_amount ? item.unit_amount / 100 : 0);
+        return sum + (item.quantity * itemPrice);
+      }, 0);
 
+    //
     // Total items panier (en attente d'ajout)
     const pendingTotal = this.pendingItems
       .reduce((sum, item) => sum + (item.finalprice || 0), 0);
 
-    return contractTotal/100 + pendingTotal;
+    return contractTotal + pendingTotal;
   }
 
   /**

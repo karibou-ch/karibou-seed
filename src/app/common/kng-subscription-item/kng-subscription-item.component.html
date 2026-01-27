@@ -7,10 +7,12 @@
     {{label.title_items}}
   </h4>
 
-  <!-- Liste des items existants du contrat -->
-  <div class="list-item auto-line"
-       [class.error-line]="item.error"
-       *ngFor="let item of contractItems; let idx = index">
+  <!-- ✅ Card wrapper pour les items -->
+  <div class="items-card" *ngIf="contractItems.length > 0">
+    <!-- Liste des items existants du contrat -->
+    <div class="list-item auto-line"
+         [class.error-line]="item.error"
+         *ngFor="let item of contractItems; let idx = index">
 
     <!-- Icon status -->
     <div class="graphic">
@@ -24,53 +26,48 @@
     <div class="item">
       <div class="title">{{item.title}}</div>
       <div class="subtitle">
+        <!-- ✅ Prix unitaire affiché -->
+        <span class="unit-price">{{item.fees | number:'1.2-2'}} fr</span>
 
         <!-- Variant -->
-        <div class="cart-variant red"
-             [hidden]="!item.variant">
-          » {{item.variant}}
-        </div>
-
-        <!-- Note indicator -->
-        <a href="javascript:;"
-           class="note"
-           [hidden]="!item.note && !item.audio"
-           [title]="label.label_note">
-          <i class="material-symbols-outlined">mail</i>&nbsp;
-          {{label.label_note}}
-        </a>
+        <span class="cart-variant red" [hidden]="!item.variant">» {{item.variant}}</span>
 
         <!-- Deleted chip -->
-        <small class="kng-chip"
-               [hidden]="!item.deleted">
-          {{label.label_deleted}}
-        </small>
+        <small class="kng-chip" [hidden]="!item.deleted">{{label.label_deleted}}</small>
+
+        <!-- Note indicator -->
+        <a href="javascript:;" class="note" [hidden]="!item.note && !item.audio" [title]="label.label_note">
+          <i class="material-symbols-outlined">mail</i>
+        </a>
       </div>
     </div>
 
     <!-- Quantity controls + Price + Delete -->
     <div class="item-actions end">
-      <!-- Decrease quantity -->
-      <div class="action">
-        <button (click)="onContractRemove(item)"
-                [disabled]="item.quantity <= 0"
-                [attr.aria-label]="'Diminuer ' + item.title">
-          <span class="material-symbols-outlined">remove</span>
-        </button>
-      </div>
+      <!-- ✅ Pill container pour les contrôles de quantité -->
+      <div class="quantity-controls">
+        <!-- Decrease quantity -->
+        <div class="action">
+          <button (click)="onContractRemove(item)"
+                  [disabled]="item.quantity <= 0"
+                  [attr.aria-label]="'Diminuer ' + item.title">
+            <span class="material-symbols-outlined">remove</span>
+          </button>
+        </div>
 
-      <!-- Current quantity -->
-      <div class="quantity"
-           [attr.aria-label]="label.label_quantity">
-        {{item.quantity}}
-      </div>
+        <!-- Current quantity -->
+        <div class="quantity"
+             [attr.aria-label]="label.label_quantity">
+          {{item.quantity}}
+        </div>
 
-      <!-- Increase quantity -->
-      <div class="action">
-        <button (click)="onContractAdd(item)"
-                [attr.aria-label]="'Augmenter ' + item.title">
-          <span class="material-symbols-outlined">add</span>
-        </button>
+        <!-- Increase quantity -->
+        <div class="action">
+          <button (click)="onContractAdd(item)"
+                  [attr.aria-label]="'Augmenter ' + item.title">
+            <span class="material-symbols-outlined">add</span>
+          </button>
+        </div>
       </div>
 
       <!-- Delete button -->
@@ -78,7 +75,7 @@
         <button class="delete-btn"
                 (click)="onContractRemoveAll(item)"
                 [attr.aria-label]="'Supprimer ' + item.title">
-          <span class="material-symbols-outlined">close</span>
+          <span class="material-symbols-outlined">cancel</span>
         </button>
       </div>
 
@@ -103,6 +100,7 @@
       </a>
     </div>
   </div>
+  </div><!-- ✅ Fermeture .items-card contract items -->
 
   <!--                                    -->
   <!-- SECTION 2 : ITEMS DU PANIER (pending) -->
@@ -111,10 +109,12 @@
     {{label.title_pending_items}}
   </h4>
 
-  <!-- Liste des items en attente d'ajout -->
-  <div class="list-item one-line"
-       [class.error-line]="item.error"
-       *ngFor="let item of pendingItems; let idx = index">
+  <!-- ✅ Card wrapper pour les pending items -->
+  <div class="items-card pending" *ngIf="pendingItems.length > 0">
+    <!-- Liste des items en attente d'ajout -->
+    <div class="list-item one-line"
+         [class.error-line]="item.error"
+         *ngFor="let item of pendingItems; let idx = index">
 
     <!-- Avatar -->
     <div class="graphic">
@@ -146,27 +146,30 @@
 
     <!-- Quantity controls + Price + Delete -->
     <div class="item-actions end">
-      <!-- Decrease quantity -->
-      <div class="action">
-        <button (click)="onPendingRemove(item, item.variant)"
-                [disabled]="item.quantity <= 0"
-                [attr.aria-label]="'Diminuer ' + item.title">
-          <span class="material-symbols-outlined">remove</span>
-        </button>
-      </div>
+      <!-- ✅ Pill container pour les contrôles de quantité -->
+      <div class="quantity-controls">
+        <!-- Decrease quantity -->
+        <div class="action">
+          <button (click)="onPendingRemove(item, item.variant)"
+                  [disabled]="item.quantity <= 0"
+                  [attr.aria-label]="'Diminuer ' + item.title">
+            <span class="material-symbols-outlined">remove</span>
+          </button>
+        </div>
 
-      <!-- Current quantity -->
-      <div class="quantity"
-           [attr.aria-label]="label.label_quantity">
-        {{item.quantity}}
-      </div>
+        <!-- Current quantity -->
+        <div class="quantity"
+             [attr.aria-label]="label.label_quantity">
+          {{item.quantity}}
+        </div>
 
-      <!-- Increase quantity -->
-      <div class="action">
-        <button (click)="onPendingAdd(item, item.variant)"
-                [attr.aria-label]="'Augmenter ' + item.title">
-          <span class="material-symbols-outlined">add</span>
-        </button>
+        <!-- Increase quantity -->
+        <div class="action">
+          <button (click)="onPendingAdd(item, item.variant)"
+                  [attr.aria-label]="'Augmenter ' + item.title">
+            <span class="material-symbols-outlined">add</span>
+          </button>
+        </div>
       </div>
 
       <!-- Delete button -->
@@ -174,7 +177,7 @@
         <button class="delete-btn"
                 (click)="onPendingRemoveAll(item, item.variant)"
                 [attr.aria-label]="'Supprimer ' + item.title">
-          <span class="material-symbols-outlined">close</span>
+          <span class="material-symbols-outlined">cancel</span>
         </button>
       </div>
 
@@ -198,6 +201,7 @@
       </a>
     </div>
   </div>
+  </div><!-- ✅ Fermeture .items-card pending items -->
 
   <!-- No items message -->
   <div class="no-items"

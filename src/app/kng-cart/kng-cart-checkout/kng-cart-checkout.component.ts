@@ -44,9 +44,17 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   cg18Accepted = false;
   shippingNote: string;
   useCartSubscriptionView: boolean;
-  subscriptionParams:CartSubscriptionParams
   subscriptionPlan:string;
   contract:CartSubscription;
+
+  //
+  // ✅ GETTER DYNAMIQUE: Lit directement depuis CartService pour réactivité
+  // Raison: kng-subscription-option met à jour subscriptionParams via $cart.subscriptionSetParams()
+  // Sans getter, le template utiliserait une copie stale qui n'est pas mise à jour
+  get subscriptionParams(): CartSubscriptionParams {
+    if (!this.useCartSubscriptionView) return null;
+    return this.$cart.subscriptionGetParams();
+  }
 
 
   selectAddressIsDone: boolean
@@ -750,7 +758,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
 
   doSubscription() {
-    this.subscriptionParams = this.$cart.subscriptionGetParams();
+    // subscriptionParams est maintenant un getter dynamique
     const shippingDay = this.subscriptionNextShippingDay;
     const specialHours = this.$cart.getCurrentShippingTime();
     const shippingHours = (this.isCartDeposit() ? '0' : specialHours);
@@ -870,14 +878,14 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._user = checkoutCtx.user;
     this.open = true;
     this.errorMessage = null;
-    this.subscriptionParams = this.contract = null;
+    this.contract = null;
     //
     // should be a boolean
+    // subscriptionParams est maintenant un getter dynamique basé sur useCartSubscriptionView
     this.useCartSubscriptionView = false;
     if (checkoutCtx.forSubscription){
       this.contract = checkoutCtx.contract;
       this.useCartSubscriptionView = true;
-      this.subscriptionParams =  this.$cart.subscriptionGetParams();
     }
 
 

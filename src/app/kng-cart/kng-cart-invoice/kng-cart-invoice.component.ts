@@ -101,9 +101,21 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     this.amountReserved = this.config?.shared?.order?.reservedAmount || 1.11;
     this.itemsAmount = this.computeItemsAmount();
     this.currentFeesAmount = this.computeServiceFees();
-    this.currentShippingFees = this.computeShippingFees();
     this.totalDiscount = this.computeTotalDiscount();
     this.contractTotal = this.computeContractTotal();
+
+    //
+    // hasUpdateContract must be computed BEFORE shipping for subscription updates
+    this.hasUpdateContract = this.computeHasUpdateContract();
+
+    //
+    // Shipping: use different calculation for subscription updates vs normal orders
+    if (this.isSubscription && this.hasUpdateContract) {
+      this.currentShippingFees = this.computeShippingFeesForSubscriptionUpdate();
+    } else {
+      this.currentShippingFees = this.computeShippingFees();
+    }
+
     this.currentTotalUserBalance = this.computeTotalUserBalance();
     this.currentTotalMinusBalance = this.computeTotalMinusBalance();
     this.currentTotalSubscription = this.computeTotalSubscription();
@@ -111,7 +123,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     this.currentShippingTime = this.computeShippingTime();
     this.isLastMinuteShipping = this.computeIsLastMinuteShipping();
     this.shippingDiscount = this.computeShippingDiscount();
-    this.hasUpdateContract = this.computeHasUpdateContract();
     this.hasShippingReductionMultipleOrder = this.computeHasShippingReduction();
     this.isCartDeposit = this.computeIsCartDeposit();
   }
@@ -131,7 +142,75 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   private computeShippingFees(): number {
     if (!this.hub || !this.data?.address) return 0;
     const ctx = { forSubscription: this.isSubscription, hub: this.hub.slug, address: this.data.address };
-    return this.$cart.computeShippingFees(ctx);
+    const baseFees = this.$cart.computeShippingFees(ctx);
+
+    //
+    // For subscriptions (not update): adjust time price from subscriptionParams.time
+    // cart.computeShippingFees uses cache.currentShippingTime, but subscriptions store time in subscriptionParams
+    if (this.isSubscription && this.data?.subscriptionParams?.time !== undefined) {
+      const shipping = this.config?.shared?.shipping;
+      if (shipping?.pricetime) {
+        const cacheTimePrice = this.$cart.getCurrentShippingTimePrice() || 0;
+        const subscriptionTimePrice = shipping.pricetime[this.data.subscriptionParams.time] || 0;
+        //
+        // Adjust: remove cache time price, add subscription time price
+        return baseFees - cacheTimePrice + subscriptionTimePrice;
+      }
+    }
+
+    return baseFees;
+  }
+
+  /**
+   * Compute shipping fees for subscription UPDATE only.
+   * Uses combined total (contract items + new items) to determine discount tier.
+   * This ensures shipping is calculated on the full subscription amount.
+   */
+  private computeShippingFeesForSubscriptionUpdate(): number {
+    if (!this.hub || !this.data?.address) return 0;
+
+    const ctx = { forSubscription: true, hub: this.hub.slug, address: this.data.address };
+
+    //
+    // Get base price from address (deposit, plan, or postal code)
+    // Note: estimateShippingFeesWithoutReduction uses cache.currentShippingTime
+    // For subscriptions, we need to use subscriptionParams.time instead
+    const { price: basePrice, status } = this.$cart.estimateShippingFeesWithoutReduction(ctx);
+
+    //
+    // For deposit or plan, return as-is (no discount logic, no time price)
+    if (status === 'deposit' || status === 'plan') {
+      return basePrice;
+    }
+
+    //
+    // Adjust price for subscription time selection
+    // basePrice already includes cache.currentShippingTime, we need to replace with subscriptionParams.time
+    const shipping = this.config?.shared?.shipping;
+    if (!shipping) return basePrice;
+
+    const cacheTimePrice = this.$cart.getCurrentShippingTimePrice() || 0;
+    const subscriptionTime = this.data?.subscriptionParams?.time;
+    const subscriptionTimePrice = subscriptionTime ? (shipping.pricetime?.[subscriptionTime] || 0) : 0;
+
+    //
+    // Adjust: remove cache time price, add subscription time price
+    let adjustedBasePrice = basePrice - cacheTimePrice + subscriptionTimePrice;
+
+    //
+    // Calculate combined total: contract items + new items
+    const combinedTotal = this.contractTotal + this.itemsAmount;
+
+    //
+    // Apply discount tiers based on combined total
+    let finalPrice = adjustedBasePrice;
+    if (shipping.discountB && combinedTotal >= shipping.discountB) {
+      finalPrice = Math.max(adjustedBasePrice - (shipping.priceB || 0), 0);
+    } else if (shipping.discountA && combinedTotal >= shipping.discountA) {
+      finalPrice = Math.max(adjustedBasePrice - (shipping.priceA || 0), 0);
+    }
+
+    return finalPrice;
   }
 
   private computeTotalDiscount(): number {
@@ -163,6 +242,11 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
 
   private computeTotalSubscription(): number {
     // Note: itemsAmount (from subTotal) already includes service fees
+    //
+    // For subscription UPDATE: total = contract items + new items + shipping - discount
+    if (this.hasUpdateContract) {
+      return this.contractTotal + this.itemsAmount + this.currentShippingFees - this.totalDiscount;
+    }
     return this.itemsAmount + this.currentShippingFees - this.totalDiscount;
   }
 
@@ -199,29 +283,47 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     }
 
     const ctx = { forSubscription: this.isSubscription, hub: this.hub.slug, address: this.data.address };
-    const { price } = this.$cart.estimateShippingFeesWithoutReduction(ctx);
-    const { multiple, discountA, discountB, deposit } = this.$cart.hasShippingReduction(ctx);
+    const { price, status } = this.$cart.estimateShippingFeesWithoutReduction(ctx);
+
+    //
+    // No discount info for deposit or plan
+    if (status === 'deposit' || status === 'plan') {
+      return '';
+    }
 
     const discountLabel = this.label.cart_info_shipping_discount || '';
     const shipping = this.config.shared.shipping;
 
-    // Grouped discount or deposit
-    if (multiple || deposit) {
-      return '';
+    //
+    // For subscription UPDATE: use combined total for discount calculation
+    const totalForDiscount = (this.isSubscription && this.hasUpdateContract)
+      ? (this.contractTotal + this.itemsAmount)
+      : this.itemsAmount;
+
+    //
+    // Check for grouped discount (normal orders only)
+    if (!this.isSubscription) {
+      const { multiple, deposit } = this.$cart.hasShippingReduction(ctx);
+      if (multiple || deposit) {
+        return '';
+      }
     }
 
-    // Maximum discount
-    if (discountB) {
+    //
+    // Maximum discount applied
+    if (shipping.discountB && totalForDiscount >= shipping.discountB) {
       return this.label.cart_info_shipping_applied || '';
     }
 
-    // Minimum discount
-    if (discountA) {
+    //
+    // Minimum discount applied - show how to get max discount
+    if (shipping.discountA && totalForDiscount >= shipping.discountA) {
       const discount = Math.max(price - (shipping.priceB || 0), 0).toFixed(2);
       return discountLabel.replace('_AMOUNT_', shipping.discountB || '').replace('_DISCOUNT_', discount);
     }
 
-    // Missing amount
+    //
+    // No discount yet - show how to get first discount
     const discount = Math.max(price - (shipping.priceA || 0), 0).toFixed(2);
     return discountLabel.replace('_AMOUNT_', shipping.discountA || '').replace('_DISCOUNT_', discount);
   }

@@ -53,8 +53,8 @@
     <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
   </div>
 
-  <!-- Frais de livraison (masqués si hasUpdateContract pour subscription) -->
-  <div class="bill" *ngIf="!hasUpdateContract || isCart">
+  <!-- Frais de livraison -->
+  <div class="bill">
     <div class="label">
       <span [innerHtml]="label.cart_info_shipping"></span>
     </div>
@@ -82,7 +82,7 @@
   <!-- Réduction sur frais de livraison -->
   <div
     class="bill shipping-discount"
-    *ngIf="!isCartDeposit && (!hasUpdateContract || isCart)"
+    *ngIf="!isCartDeposit && shippingDiscount"
   >
     <div [innerHtml]="shippingDiscount"></div>
   </div>

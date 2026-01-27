@@ -2,7 +2,6 @@
   padding: .5rem;
   width: calc(100% - 1rem);
   display: block;
-  border-bottom: 2px solid var(--mdc-theme-primary);
 }
 
 // ✅ RESET CSS - Design minimaliste et mobile-first optimisé
@@ -11,22 +10,42 @@
   // Container principal
   .title-separator {
     margin: 1.5rem 0 0.75rem 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--mdc-theme-primary);
-    font-weight: 500;
-    font-size: 1.1rem;
+    padding: 0 0.5rem 0.5rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mdc-theme-text-hint-on-background, #64748b);
+    border-bottom: none;
+  }
+
+  // ✅ Card wrapper pour les items (style moderne)
+  .items-card {
+    background-color: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+
+    &.pending {
+      margin-top: 0.5rem;
+    }
   }
 
   // ✅ Liste des items - Design optimisé mobile
   .list-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid #e0e0e0; // ✅ Border-bottom pour chaque item
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9; // ✅ Border subtile entre items
     transition: background-color 0.2s;
 
     &:last-child {
       border-bottom: none;
+    }
+
+    &:hover {
+      background-color: #fafafa;
     }
 
     &.auto-line,
@@ -54,11 +73,12 @@
       }
 
       .icon {
-        font-size: 1.5rem;
-        color: var(--mdc-theme-secondary);
+        font-size: 1.25rem;
+        color: var(--mdc-theme-primary, #8B5E3C);
 
         &.red {
           color: #f44336;
+          opacity: 0.5;
         }
       }
 
@@ -162,33 +182,43 @@
       }
     }
 
-    // ✅ OPTIMISATION MOBILE : Actions compactes
+    // ✅ OPTIMISATION MOBILE : Actions compactes avec style "pill"
     .item-actions {
       display: flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.75rem;
       flex-shrink: 0;
 
       @media (max-width: 430px) {
-        gap: 0.2rem;
+        gap: 0.5rem;
       }
 
       &.end {
         margin-left: auto;
       }
 
-      // ✅ Boutons RONDS et compacts
+      // ✅ Conteneur "pill" pour les contrôles de quantité
+      .quantity-controls {
+        display: flex;
+        align-items: center;
+        background-color: #f1f5f9;
+        border-radius: 9999px;
+        padding: 0.25rem;
+      }
+
+      // ✅ Boutons RONDS et compacts dans le pill
       .action button {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 30px;
-        height: 30px;
-        min-width: 30px;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
         padding: 0;
-        border: 1px solid #ccc;
-        border-radius: 50%; // ✅ ROND
+        border: none;
+        border-radius: 50%;
         background: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         cursor: pointer;
         transition: all 0.15s;
 
@@ -199,8 +229,8 @@
         }
 
         &:hover:not(:disabled) {
-          background-color: var(--mdc-theme-primary-light);
-          border-color: var(--mdc-theme-primary);
+          background-color: #f8fafc;
+          transform: scale(1.05);
         }
 
         &:disabled {
@@ -209,53 +239,55 @@
         }
 
         &.delete-btn {
-          border-color: #f44336;
+          background: transparent;
+          box-shadow: none;
+          margin-left: 0.25rem;
 
           &:hover:not(:disabled) {
-            background-color: #f44336;
-
-            span {
-              color: white;
-            }
+            background-color: rgba(239, 68, 68, 0.1);
+            transform: scale(1.1);
           }
 
           span {
-            color: #f44336;
+            color: #ef4444;
+            font-size: 1.25rem;
           }
         }
 
         span {
-          font-size: 1.1rem;
+          font-size: 0.95rem;
+          color: #64748b;
 
           @media (max-width: 430px) {
-            font-size: 1rem;
+            font-size: 0.875rem;
           }
         }
       }
 
       .quantity {
-        min-width: 32px;
-        padding: 0 0.25rem;
+        min-width: 36px;
+        padding: 0 0.75rem;
         text-align: center;
-        font-weight: 500;
-        font-size: 0.95rem;
+        font-weight: 600;
+        font-size: 0.9rem;
 
         @media (max-width: 430px) {
           min-width: 28px;
-          font-size: 0.875rem;
+          padding: 0 0.5rem;
+          font-size: 0.85rem;
         }
       }
 
       .price {
-        min-width: 60px;
+        min-width: 65px;
         text-align: right;
         font-weight: 500;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         white-space: nowrap;
 
         @media (max-width: 430px) {
-          min-width: 50px;
-          font-size: 0.875rem;
+          min-width: 55px;
+          font-size: 0.85rem;
         }
 
         &.hidden {
@@ -288,52 +320,61 @@
     }
   }
 
-  // ✅ Services section (fees et shipping)
+  // ✅ Services section - Style "card" moderne (inspiré de code.html)
   .services-section {
     margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 2px solid #e0e0e0;
+    padding: 1.25rem;
+    background-color: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
     .service-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.5rem;
-      background-color: #f9f9f9;
-      border-radius: 4px;
-      font-size: 0.95rem;
+      padding: 0.25rem 0;
+      font-size: 0.9rem;
+      background-color: transparent;
 
       @media (max-width: 430px) {
-        font-size: 0.875rem;
-        padding: 0.4rem;
+        font-size: 0.85rem;
       }
 
       .service-label {
         font-weight: 400;
-        color: #666;
+        color: var(--mdc-theme-text-hint-on-background, #64748b);
       }
 
       .service-amount {
-        font-weight: 500;
-        color: #333;
+        font-weight: 400;
+        color: var(--mdc-theme-text-hint-on-background, #64748b);
       }
 
       &.subtotal {
         background-color: transparent;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #e2e8f0;
         margin-bottom: 0.75rem;
         padding-bottom: 0.75rem;
-        font-size: 1rem;
+        font-size: 0.95rem;
       }
 
+      // ✅ Divider avant le total
       &.total {
-        padding: 0.75rem;
+        padding-top: 1rem;
         margin-top: 0.75rem;
+        border-top: 1px solid #e2e8f0;
         font-size: 1rem;
 
-        .service-label,
+        .service-label {
+          font-weight: 700;
+          color: var(--mdc-theme-text-primary-on-background, #1e293b);
+        }
+
         .service-amount {
-          color: #333;
+          font-weight: 700;
+          font-size: 1.15rem;
+          color: var(--mdc-theme-primary, #8B5E3C);
         }
       }
     }
@@ -354,14 +395,13 @@
 
   // Boutons d'actions
   .actions {
-    margin-top: 1.5rem;
-    padding: 1rem 0;
+    margin-top: .25rem;
+    padding: .25rem 0;
     align-items: center;
     display: flex;
     gap: 0.75rem;
     justify-content: center;
     flex-direction:column;
-    border-top: 2px solid #e0e0e0;
 
     @media (max-width: 430px) {
       flex-direction: column;
