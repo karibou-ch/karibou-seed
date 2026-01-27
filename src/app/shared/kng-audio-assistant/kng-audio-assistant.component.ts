@@ -229,7 +229,10 @@ export class KngAudioAssistantComponent implements OnInit {
 
     this.$assistant.history({agent:this.agent,trim:true,hub:this.store}).subscribe((content) => {
       const skus = /{{([\d,]*?)}}|\[([\d,]*?)\]/ig;
-      const result = content.filter(item => item['role'] == 'assistant');
+      //
+      // Handle both ClientDiscussion and Assistant[] return types
+      const messages: any[] = Array.isArray(content) ? content : (content.messages || []);
+      const result = messages.filter(item => item['role'] == 'assistant');
       if(result.length) {
         const msg = (this.withHistory)? result.reduce((note, msg) => note + msg['content']+'\n', ''):(result[result.length-1]['content']);
         this.note = msg.replace("<thinking>","<section class='thinking'>").replace("</thinking>","</section>");

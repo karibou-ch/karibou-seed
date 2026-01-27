@@ -82,23 +82,23 @@
   100% { opacity: 1; }
 }
 
-// ✅ NOUVEAU : Style pour le bouton "Ajouter un article"
+// ✅ NOUVEAU : Style pour le bouton "Ajouter un article" (style dashed moderne)
 .add-item-action {
-  margin: 1rem 0;
-  padding: 0.5rem;
-  text-align: center;
+  margin: 1.5rem 0rem;
 
   button.secondary {
-    display: inline-flex;
+    width: 100%;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: white;
-    color: var(--mdc-theme-secondary);
-    border: 2px solid var(--mdc-theme-secondary);
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 500;
+    padding: 1rem;
+    background-color: transparent;
+    color: var(--mdc-theme-primary, #8B5E3C);
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
 
@@ -107,19 +107,193 @@
     }
 
     &:hover {
-      background-color: var(--mdc-theme-secondary);
-      color: white;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      background-color: #f8fafc;
+      border-color: var(--mdc-theme-primary);
     }
 
     &:active {
-      transform: translateY(0);
+      transform: scale(0.98);
     }
   }
 }
 
-h2{
+// ✅ Header Section - Style moderne
+.subscription-header {
+  padding: 0.25rem 0.5rem;
+
+  .subscription-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.25rem 0;
+    color: var(--mdc-theme-text-primary-on-background, #1a1a1a);
+  }
+
+  .subscription-since {
+    font-size: 0.875rem;
+    color: var(--mdc-theme-text-hint-on-background, #64748b);
+    margin: 0;
+  }
+}
+
+// ✅ Options Section - Style moderne (inspiré de code.html)
+.options-section {
+  margin: 1.5rem 0.5rem;
+
+  .options-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mdc-theme-text-hint-on-background, #64748b);
+    margin-bottom: 1rem;
+    padding: 0 0.25rem;
+  }
+
+  .options-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .option-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .option-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .option-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--mdc-theme-text-hint-on-background, #94a3b8);
+      }
+
+      .option-value {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--mdc-theme-text-primary-on-background, #1e293b);
+      }
+    }
+
+    .option-badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.375rem 0.75rem;
+      border-radius: 9999px;
+      background-color: color-mix(in srgb, var(--mdc-theme-primary) 10%, transparent);
+      color: var(--mdc-theme-primary, #8B5E3C);
+    }
+
+    .option-icon {
+      color: var(--mdc-theme-text-hint-on-background, #94a3b8);
+      font-size: 1.25rem;
+    }
+
+    // Pause card avec date picker
+    &.pause-card {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+
+      .pause-picker {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        width: 100%;
+
+        input[type="date"] {
+          width: auto;
+          padding: 0.75rem 1rem;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 0.9rem;
+          background-color: #f8fafc;
+
+          &:focus {
+            outline: none;
+            border-color: var(--mdc-theme-primary);
+          }
+        }
+      }
+
+      .pause-btn {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background-color: #1e293b;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        &:hover:not(:disabled) {
+          background-color: #334155;
+          transform: translateY(-1px);
+        }
+
+        &:active:not(:disabled) {
+          transform: scale(0.98);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    // Paused status
+    &.paused-card {
+      background-color: #fef3c7;
+      border-color: #fcd34d;
+
+      .option-badge {
+        background-color: #fbbf24;
+        color: #78350f;
+      }
+    }
+  }
+}
+
+// ✅ Footer Actions - Style moderne
+.footer-actions {
+  margin: 2rem 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .cancel-btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ef4444;
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+h2 {
   font-size: 1.4675rem;
   margin-top: 20px;
   margin-left: 10px;
@@ -316,7 +490,6 @@ h3{
       border: 1px solid #aaa;
       background-color: #eee;
       padding-right: 3px;
-      margin-left: 8px;
       color: black;
     }
 
