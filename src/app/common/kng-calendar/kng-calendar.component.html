@@ -29,12 +29,9 @@
       </div>
     </div>
 
-    <div class="switch-hub kng-boxed" [hidden]="minimal">
-      <div class="label">{{label_switch_store}}
-
-      </div>
-      <button class="goto" [routerLink]="['/store',displayHubSwitch.slug,'home']">{{displayHubSwitch.name}}​</button>
-
+    <div class="switch-hub" [hidden]="minimal">
+      <div class="label">{{label_switch_store}}</div>
+      <button [routerLink]="['/store',displayHubSwitch.slug,'home']">{{displayHubSwitch.name}}</button>
     </div>
 
     <!-- PENDING ORDER -->
