@@ -48,6 +48,24 @@ $transition-speed: var(--wa-transition-medium);
     transition: box-shadow .2s linear;
   }
 
+  // ========================================================================
+  // POSITION BOTTOM - Mobile uniquement
+  // ========================================================================
+  &.kng-appbar--bottom {
+    @media (max-width: 599px) {
+      top: auto;
+      bottom: 0;
+
+      // Ombre inversée (en haut au lieu d'en bas)
+      &.kng-appbar--scrolled {
+        box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, .2), 0 -4px 5px 0 rgba(0, 0, 0, .14), 0 -1px 10px 0 rgba(0, 0, 0, .12);
+      }
+
+      // Safe area pour les iPhone avec encoche
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+  }
+
   // Dark mode support
   @media (prefers-color-scheme: dark) {
     background-color: var(--mdc-theme-primary-dark);

@@ -30,6 +30,13 @@ export class KngNavigationStateService  {
   private _logout$: Subject<void>;
   private _swipePanel$: Subject<number>;
 
+  /**
+   * Position de la navbar sur mobile ('top' | 'bottom')
+   * - 'top': Position classique en haut (défaut)
+   * - 'bottom': Position en bas de l'écran (style iOS/Android moderne)
+   */
+  private _navbarPosition: 'top' | 'bottom' = 'top';
+
   private theme:{
     slug?:string;
     name:string;
@@ -184,6 +191,25 @@ export class KngNavigationStateService  {
 
   get HUBs() {
     return this.config.shared.hubs || [];
+  }
+
+  /**
+   * Position de la navbar sur mobile
+   */
+  get navbarPosition(): 'top' | 'bottom' {
+    return this._navbarPosition;
+  }
+
+  /**
+   * Définit la position de la navbar sur mobile
+   * Applique automatiquement la classe CSS correspondante
+   */
+  set navbarPosition(position: 'top' | 'bottom') {
+    this._navbarPosition = position;
+    const container = document.querySelector('.grid-container-3');
+    if (container) {
+      container.classList.toggle('navbar-bottom', position === 'bottom');
+    }
   }
 
   set currentTheme(theme: any) {

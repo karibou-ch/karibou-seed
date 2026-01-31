@@ -3,7 +3,9 @@
 <!-- Utilise les slots standards pour la projection de contenu                   -->
 <!-- ============================================================================ -->
 
-<div class="kng-appbar" [class.kng-appbar--scrolled]="isScrolled">
+<div class="kng-appbar"
+     [class.kng-appbar--scrolled]="isScrolled"
+     [class.kng-appbar--bottom]="position === 'bottom'">
 
   <!-- ========================================================================== -->
   <!-- ROW 1 - Ligne secondaire (optionnelle)                                    -->

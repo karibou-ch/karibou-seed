@@ -5,7 +5,8 @@ import {
   ViewEncapsulation,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  HostListener
+  HostListener,
+  Input
 } from '@angular/core';
 
 /**
@@ -15,6 +16,7 @@ import {
  * - Layout 3 colonnes (start | center | end)
  * - Sticky on scroll
  * - Ombre en bas lors du défilement
+ * - Position configurable (top/bottom) pour mobile
  *
  * Utilise les slots standards pour la projection de contenu :
  * - slot="secondary" : Ligne secondaire (optionnelle)
@@ -23,7 +25,7 @@ import {
  * - slot="end"       : Colonne droite
  *
  * @example
- * <kng-top-appbar>
+ * <kng-top-appbar position="bottom">
  *   <div slot="secondary">Actions secondaires</div>
  *   <div slot="start">Logo + Navigation</div>
  *   <div slot="center">Titre</div>
@@ -38,6 +40,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KngTopAppbarComponent implements AfterViewInit, OnDestroy {
+
+  /**
+   * Position de la navbar sur mobile
+   * - 'top': Position classique en haut (défaut)
+   * - 'bottom': Position en bas de l'écran (mobile uniquement)
+   */
+  @Input() position: 'top' | 'bottom' = 'top';
 
   /** État du scroll pour l'ombre */
   isScrolled: boolean = false;

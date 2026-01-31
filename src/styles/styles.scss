@@ -264,6 +264,21 @@ input[type="submit"],
     grid-template-columns: 1fr;
     grid-template-rows: var(--mdc-theme-top-bar) 1fr 60px;
 
+    // ========================================================================
+    // NAVBAR BOTTOM MODE - Navbar en bas sur mobile
+    // ========================================================================
+    &.navbar-bottom {
+      grid-template-rows: 0 1fr var(--mdc-theme-mobile-bar);
+
+      > .grid-header {
+        grid-row: 3; // Déplace le header en dernière ligne
+      }
+
+      > .mobile-columns-wrapper {
+        grid-row: 1 / 3; // Le contenu prend les 2 premières lignes
+      }
+    }
+
     > .mobile-columns-wrapper {
       display: grid;
       grid-template-columns: repeat(3, 100vw);  // 3 colonnes: side, center, right
