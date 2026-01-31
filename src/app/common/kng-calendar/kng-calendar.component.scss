@@ -7,14 +7,10 @@
 
   // ============================================================================
   // Calendar color variables - customizable per instance
-  // Supports dark mode via Web Awesome surface/neutral tokens
+  // Container utilise kng-card--soft (appbar-light)
   // ============================================================================
 
-  // Container (calendar card)
-  --cal-bg: var(--wa-color-surface-raised);
-  --cal-border: var(--wa-color-neutral-border-quiet);
-
-  // Day cards (use surface for dark mode support)
+  // Day cards
   --cal-day-bg: var(--mdc-theme-secondary);
   --cal-day-color: var(--mdc-theme-secondary-text);
 
@@ -28,12 +24,6 @@
 
   // Day disabled
   --cal-day-disabled-color: var(--wa-color-neutral-on-quiet);
-
-  // Switch hub (use surface for dark mode support)
-  --cal-switch-bg: var(--wa-color-surface-raised);
-  --cal-switch-btn-bg: var(--wa-color-secondary-fill-quiet);
-  --cal-switch-btn-color: var(--mdc-theme-secondary);
-  --cal-switch-btn-border: var(--wa-color-secondary-border-quiet);
 }
 .calendar-container{
   width: 100%;
@@ -66,19 +56,14 @@
     width: 100%;
   }
   // ============================================================================
-  // Calendar container
+  // Calendar - utilise kng-card kng-card--soft kng-card--shadow
   // ============================================================================
   .calendar {
+    // Spécifique au calendar (le reste vient de kng-card)
     overflow: hidden;
     overflow-x: auto;
-    background: var(--cal-bg);
-    border: 1px solid var(--cal-border);
-    box-shadow: var(--wa-shadow-s);
-    border-radius: var(--wa-border-radius-l);
-    padding: var(--wa-space-xs);
     width: 100%;
     height: var(--mdc-theme-mobile-bar);
-    margin: auto;
 
     &::-webkit-scrollbar {
       display: none;
@@ -171,17 +156,13 @@
     }
   }
   // ============================================================================
-  // Switch hub
+  // Switch hub - utilise kng-card kng-card--white kng-card--shadow
   // ============================================================================
   .switch-hub {
+    // Spécifique (le reste vient de kng-card)
     width: 100%;
-    margin: auto;
-    padding: var(--wa-space-s);
     align-items: center;
     display: flex;
-    background: var(--cal-switch-bg);
-    border-radius: var(--wa-border-radius-l);
-    box-shadow: var(--wa-shadow-s);
 
     .label {
       flex: 1;
@@ -192,10 +173,10 @@
 
     button {
       cursor: pointer;
-      color: var(--cal-switch-btn-color);
-      background-color: var(--cal-switch-btn-bg);
+      color: var(--mdc-theme-secondary);
+      background-color: var(--wa-color-secondary-fill-quiet);
       min-width: 120px;
-      border: 1px solid var(--cal-switch-btn-border);
+      border: 1px solid var(--wa-color-secondary-border-quiet);
       border-radius: var(--wa-border-radius-pill);
       padding: var(--wa-space-s) var(--wa-space-m);
       font-size: var(--wa-font-size-s);
