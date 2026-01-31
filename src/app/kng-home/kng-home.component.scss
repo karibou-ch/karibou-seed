@@ -250,7 +250,7 @@ div.product-container{
     }
   }
 
-  // Cart badge
+  // Cart badge (mis à jour via DOM par kng-navbar)
   .cart-badge {
     position: absolute;
     top: 2px;
@@ -266,6 +266,11 @@ div.product-container{
     display: flex;
     align-items: center;
     justify-content: center;
+
+    // Caché si vide
+    &:empty {
+      display: none;
+    }
   }
 }
 

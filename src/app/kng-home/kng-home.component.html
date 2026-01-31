@@ -199,7 +199,7 @@
     <span>Aide</span>
   </button>
   <button class="action" [routerLink]="['/store', store, 'home', 'cart', 'default']">
-    <span class="cart-badge" *ngIf="$cart.itemsCount">{{$cart.itemsCount}}</span>
+    <span class="cart-badge cart-items-count-mobile"></span>
     <span class="material-symbols-outlined">shopping_cart</span>
     <span>Panier</span>
   </button>
