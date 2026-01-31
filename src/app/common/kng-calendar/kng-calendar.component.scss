@@ -1,10 +1,39 @@
 :host {
-
-  margin:auto;
-  width: calc(100% - 1rem);
+  // Layout
+  margin: auto;
+  width: calc(100% - 0rem);
   height: auto;
   display: block;
 
+  // ============================================================================
+  // Calendar color variables - customizable per instance
+  // Supports dark mode via Web Awesome surface/neutral tokens
+  // ============================================================================
+
+  // Container (calendar card)
+  --cal-bg: var(--wa-color-surface-raised);
+  --cal-border: var(--wa-color-neutral-border-quiet);
+
+  // Day cards (use surface for dark mode support)
+  --cal-day-bg: var(--mdc-theme-secondary);
+  --cal-day-color: var(--mdc-theme-secondary-text);
+
+  // Day selected
+  --cal-day-selected-bg: var(--wa-color-brand-fill-loud);
+  --cal-day-selected-color: var(--wa-color-brand-on-loud);
+
+  // Day hover
+  --cal-day-hover-bg: var(--wa-color-brand-fill-normal);
+  --cal-day-hover-color: var(--wa-color-brand-on-normal);
+
+  // Day disabled
+  --cal-day-disabled-color: var(--wa-color-neutral-on-quiet);
+
+  // Switch hub (use surface for dark mode support)
+  --cal-switch-bg: var(--wa-color-surface-raised);
+  --cal-switch-btn-bg: var(--wa-color-secondary-fill-quiet);
+  --cal-switch-btn-color: var(--mdc-theme-secondary);
+  --cal-switch-btn-border: var(--wa-color-secondary-border-quiet);
 }
 .calendar-container{
   width: 100%;
@@ -37,13 +66,14 @@
     width: 100%;
   }
   // ============================================================================
-  // Calendar container - utilise kng-card--soft style
+  // Calendar container
   // ============================================================================
-  .calendar{
+  .calendar {
     overflow: hidden;
     overflow-x: auto;
-    background: var(--wa-color-brand-fill-quiet);
-    border: 1px solid var(--wa-color-brand-border-quiet);
+    background: var(--cal-bg);
+    border: 1px solid var(--cal-border);
+    box-shadow: var(--wa-shadow-s);
     border-radius: var(--wa-border-radius-l);
     padding: var(--wa-space-xs);
     width: 100%;
@@ -54,23 +84,23 @@
       display: none;
     }
 
-    .list{
+    .list {
       display: flex;
       flex-wrap: nowrap;
       gap: var(--wa-space-xs);
       width: 100%;
 
       // ============================================================================
-      // Day cards - éléments individuels du calendrier
+      // Day cards
       // ============================================================================
-      .element{
+      .element {
         margin: 0;
-        background-color: white;
+        background-color: var(--cal-day-bg);
         border: none;
-        color: var(--mdc-theme-text-primary-on-background);
+        color: var(--cal-day-color);
         width: 50px;
         height: 60px;
-        border-radius: var(--wa-border-radius-m);
+        border-radius: var(--wa-border-radius-l);
         font-size: var(--wa-font-size-s);
         display: flex;
         flex-flow: column;
@@ -80,21 +110,21 @@
         transition: all var(--wa-transition-fast);
 
         // Last minute option
-        &.last-minute{
+        &.last-minute {
           width: auto;
           min-width: 4rem;
           padding: 0;
           margin-left: auto;
           margin-right: 0;
-          border-radius: var(--wa-border-radius-s);
-          .ei_Title{
+          border-radius: var(--wa-border-radius-l);
+          .ei_Title {
             padding: 0;
             margin-top: .1rem;
             margin-bottom: 0;
             line-height: 1rem;
             color: var(--mdc-theme-primary);
           }
-          .ei_Copy{
+          .ei_Copy {
             font-size: var(--wa-font-size-m);
             font-weight: 600;
           }
@@ -106,45 +136,43 @@
           border: none;
           cursor: default;
           opacity: 0.5;
-          .ei_Title{
-            color: var(--wa-color-neutral-on-quiet);
+          .ei_Title {
+            color: var(--cal-day-disabled-color);
           }
         }
 
-        // Selected state - dark brand card
-        &.selected{
-          background-color: var(--wa-color-brand-fill-loud);
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-          .ei_Title{
+        // Selected state
+        &.selected {
+          background-color: var(--cal-day-selected-bg);
+          box-shadow: var(--wa-shadow-m);
+          .ei_Title {
             font-size: var(--wa-font-size-s);
             font-weight: 600;
-            color: var(--wa-color-brand-on-loud);
+            color: var(--cal-day-selected-color);
           }
-          .ei_Copy{
-            color: var(--wa-color-brand-on-loud);
+          .ei_Copy {
+            color: var(--cal-day-selected-color);
           }
         }
 
-        .ei_Title{
+        .ei_Title {
           margin: auto;
           padding: 9px;
         }
 
         // Hover state
-        &:hover:not(.disabled):not(.selected){
-          background-color: var(--wa-color-brand-fill-normal);
+        &:hover:not(.disabled):not(.selected) {
+          background-color: var(--cal-day-hover-bg);
           transform: translateY(-1px);
-          .ei_Copy, .ei_Title{
-            color: var(--wa-color-brand-on-normal);
+          .ei_Copy, .ei_Title {
+            color: var(--cal-day-hover-color);
           }
         }
       }
-
     }
-
   }
   // ============================================================================
-  // Switch hub - utilise kng-card--white style
+  // Switch hub
   // ============================================================================
   .switch-hub {
     width: 100%;
@@ -152,9 +180,9 @@
     padding: var(--wa-space-s);
     align-items: center;
     display: flex;
-    background: white;
+    background: var(--cal-switch-bg);
     border-radius: var(--wa-border-radius-l);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--wa-shadow-s);
 
     .label {
       flex: 1;
@@ -165,14 +193,15 @@
 
     button {
       cursor: pointer;
-      color: var(--mdc-theme-secondary);
-      background-color: var(--wa-color-secondary-fill-quiet);
+      color: var(--cal-switch-btn-color);
+      background-color: var(--cal-switch-btn-bg);
       min-width: 120px;
-      border: 1px solid var(--wa-color-secondary-border-quiet);
-      border-radius: var(--wa-border-radius-m);
+      border: 1px solid var(--cal-switch-btn-border);
+      border-radius: var(--wa-border-radius-pill);
       padding: var(--wa-space-s) var(--wa-space-m);
       font-size: var(--wa-font-size-s);
       transition: all var(--wa-transition-fast);
+      font-weight: 600;
 
       &:hover {
         background-color: var(--wa-color-secondary-fill-normal);

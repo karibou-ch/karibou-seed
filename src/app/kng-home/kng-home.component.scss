@@ -17,7 +17,7 @@
 
 // KNG-BOXED aligné avec kng-calendar (même largeur)
 .swipe-panel .kng-boxed {
-  width: calc(100% - 1rem);
+  width: calc(100% - 2rem);
   margin-left: auto;
   margin-right: auto;
 }
@@ -63,8 +63,7 @@ kng-product-swipe{
 .kng-boxed.first,
 .kng-boxed.themes{
   @media (min-width: 1200px) { /* Desktop harmonisé */
-    margin: 0.5rem;
-    padding: 1.125rem;
+    padding: 1rem;
   }
 }
 .kng-boxed.themes{
