@@ -8,7 +8,7 @@ div.root{
     color: #000;    
     pre{
       color: darkgreen;
-      font-size: 12px;      
+      font-size: var(--wa-font-size-xs);      
     }
     p{
       margin: 2px;

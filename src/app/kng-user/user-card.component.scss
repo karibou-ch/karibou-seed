@@ -44,7 +44,7 @@ div{
         right: 20px;
         bottom: 9px;
         font-weight: bold;
-        font-size: 14px;
+        font-size: var(--wa-font-size-s);
         color: #aaa;        
       }
       .name::first-letter{

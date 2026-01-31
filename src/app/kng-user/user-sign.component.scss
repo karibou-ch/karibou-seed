@@ -138,7 +138,7 @@
           padding: 10px 50px;
           @media (max-width:599px) {
             padding: 10px 40px;
-            font-size: 14px;
+            font-size: var(--wa-font-size-s);
           }
 
           @media (max-height:700px) {

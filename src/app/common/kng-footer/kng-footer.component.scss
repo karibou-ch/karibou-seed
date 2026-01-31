@@ -65,7 +65,7 @@ div.footer{
           padding:5px;
         }
         &.right{
-          font-size: 12px;
+          font-size: var(--wa-font-size-xs);
           font-weight: 200;
           padding: 5px;
           img {

@@ -39,7 +39,7 @@ wa-input, wa-textarea, wa-select {
   width: 100%;
 
   .field-label {
-    font-size: 12px;
+    font-size: var(--wa-font-size-xs);
     font-weight: 500;
     color: var(--mdc-theme-text-primary-on-background);
   }
@@ -77,7 +77,7 @@ wa-input, wa-textarea, wa-select {
   margin-bottom: 16px;
 
   .lang-label {
-    font-size: 12px;
+    font-size: var(--wa-font-size-xs);
     font-weight: 600;
     color: var(--mdc-theme-text-hint-on-background);
     text-transform: uppercase;
@@ -101,11 +101,11 @@ wa-input, wa-textarea, wa-select {
 
   .field-icon {
     color: var(--mdc-theme-text-hint-on-background);
-    font-size: 18px;
+    font-size: var(--wa-font-size-l);
   }
 
   .field-label {
-    font-size: 12px;
+    font-size: var(--wa-font-size-xs);
     color: var(--mdc-theme-text-hint-on-background);
     font-weight: 500;
   }
@@ -134,6 +134,6 @@ wa-input, wa-textarea, wa-select {
   .uploadcare--widget__button {
     border-radius: var(--wa-border-radius-s);
     padding: 8px 16px;
-    font-size: 12px;
+    font-size: var(--wa-font-size-xs);
   }
 }

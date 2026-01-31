@@ -51,7 +51,7 @@
 
 .b2b-query {
   cursor: pointer;
-  font-size: 18px;
+  font-size: var(--wa-font-size-l);
   width: 100%;
   margin: 15px auto 0px;
   text-align: center;
@@ -238,7 +238,7 @@ button.CTA {
         margin-bottom: 8px;
         line-height: 18px;
         padding: 0 13px;
-        font-size: 14px;
+        font-size: var(--wa-font-size-s);
         color: #666;
         display: flex;
         flex-direction: column;
@@ -359,7 +359,7 @@ button.CTA {
     .title{
       padding: 0 13px;
       font-weight: bold;
-      font-size: 18px;
+      font-size: var(--wa-font-size-l);
     }
     .content{
       margin-top: 15px;
@@ -368,7 +368,7 @@ button.CTA {
       margin-bottom: 8px;
       line-height: 18px;
       padding: 0 13px;
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
       color: #333;
     }
   }
@@ -406,7 +406,7 @@ button.CTA {
       border-radius: 5px;
       padding: 5px 10px;
       height: 30px;
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
       color: #555;
       text-align: left;
       margin-right: 6px;

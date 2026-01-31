@@ -36,7 +36,7 @@ button.action{
   border-radius: var(--wa-border-radius-m);
   border: 1px solid #aaa;
   padding: 1px 8px;
-  font-size: 12px;
+  font-size: var(--wa-font-size-xs);
   flex: 0 auto!important;
   &.right{
     margin-left: auto!important;
@@ -130,7 +130,7 @@ p.block-info{
     .add-to-cart{
     }
     li{
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
       display: flex;
     }
   }
@@ -221,7 +221,7 @@ p.block-info{
       border-radius: var(--wa-border-radius-m);
       border: 1px solid #ddd;
       padding: 1px 8px;
-      font-size: 14px;
+      font-size: var(--wa-font-size-s);
     }
     div.label{
       flex:0 0 95%;

@@ -83,7 +83,7 @@
             border: 1px solid var(--mdc-theme-text-hint-on-background);
             background-color: white;
             padding: 2px 8px;
-            font-size: 12px;
+            font-size: var(--wa-font-size-xs);
           }
 
           .stars {
@@ -153,13 +153,13 @@
           .cart {
             background-color: var(--mdc-theme-appbar-light);
             color: var(--mdc-theme-primary);
-            font-size: 1rem;
+            font-size: var(--wa-font-size-m);
             font-weight: bold;
             width: fit-content;
 
 
             .icon {
-              font-size: 16px;
+              font-size: var(--wa-font-size-m);
               transform: translateY(3px);
               margin-left: 10px;
             }
@@ -201,7 +201,7 @@
               }
 
               span.txt {
-                font-size: 14px;
+                font-size: var(--wa-font-size-s);
                 padding: 1px 4px;
                 transform: translateY(-5px);
                 display: inline-block;
@@ -221,17 +221,17 @@
       list-style: none;
 
       li {
-        font-size: 14px;
+        font-size: var(--wa-font-size-s);
         display: inline-block;
         padding: 0 4px;
         text-align: center;
 
         .icon {
-          font-size: 1rem;
+          font-size: var(--wa-font-size-m);
           color: var(--mdc-theme-primary);
         }
         .icon.open {
-          font-size: 1rem;
+          font-size: var(--wa-font-size-m);
           color: var(--mdc-theme-karibou-pink);
         }
 

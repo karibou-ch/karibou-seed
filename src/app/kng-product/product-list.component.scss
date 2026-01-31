@@ -182,7 +182,7 @@
   margin: auto;
   padding: 12px 5px;
   flex-wrap: wrap;
-  font-size: 18px;
+  font-size: var(--wa-font-size-l);
   font-weight: 500;
   border-radius: 15px;
 
@@ -343,7 +343,7 @@
       margin-left: auto;
       text-align: left;
       padding: 10px 25px;
-      font-size: 18px;
+      font-size: var(--wa-font-size-l);
       line-height: 24px;
       font-weight: bold;
       border: 0px solid var(--mdc-theme-primary);

@@ -97,7 +97,7 @@ kng-assistant-history {
     align-items: center;
     gap: 0.5rem;
     margin: 0 0 1rem 0;
-    font-size: 1rem;
+    font-size: var(--wa-font-size-m);
     font-weight: 500;
     color: var(--mdc-theme-text-primary-on-background);
 
@@ -248,7 +248,7 @@ kng-assistant-history {
 
   h4 {
     margin: 0 0 0.75rem 0;
-    font-size: 0.875rem;
+    font-size: var(--wa-font-size-s);
     font-weight: 500;
     color: var(--mdc-theme-text-secondary-on-background);
   }
@@ -292,7 +292,7 @@ kng-assistant-history {
 
   h4 {
     margin: 0 0 0.75rem 0;
-    font-size: 0.875rem;
+    font-size: var(--wa-font-size-s);
     font-weight: 500;
     color: var(--mdc-theme-text-secondary-on-background);
 
@@ -312,7 +312,7 @@ kng-assistant-history {
 
     li {
       padding: 0.5rem 0;
-      font-size: 0.875rem;
+      font-size: var(--wa-font-size-s);
       color: var(--mdc-theme-text-primary-on-background);
       cursor: pointer;
       border-bottom: 1px solid var(--mdc-theme-divider);
@@ -346,7 +346,7 @@ kng-assistant-history {
   padding-top: 1rem;
 
   .section-title {
-    font-size: 0.75rem;
+    font-size: var(--wa-font-size-xs);
     font-weight: 600;
     text-transform: uppercase;
     color: var(--mdc-theme-text-hint-on-background);
@@ -357,7 +357,7 @@ kng-assistant-history {
   li:not(.section-title) {
     cursor: pointer;
     padding: 0.5rem;
-    font-size: 0.875rem;
+    font-size: var(--wa-font-size-s);
     color: var(--mdc-theme-text-secondary-on-background);
     border-radius: 0.25rem;
     transition: all var(--wa-transition-medium) ease;

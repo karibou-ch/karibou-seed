@@ -141,7 +141,7 @@
     span.feedback-button {
       display: none;
       align-items: center;
-      font-size: 0.75rem;
+      font-size: var(--wa-font-size-xs);
     }
 
     // ✅ Header avec steps pendant l'exécution
@@ -325,7 +325,7 @@
   }
 
   .material-symbols-outlined {
-    font-size: 18px;
+    font-size: var(--wa-font-size-l);
   }
 
   &.chat-button {

@@ -157,7 +157,7 @@
   }
 
   .status {
-    font-size: 12px;
+    font-size: var(--wa-font-size-xs);
     color: rgba(var(--mdc-theme-text-primary-on-background), 0.7);
     font-weight: 500;
     text-transform: uppercase;

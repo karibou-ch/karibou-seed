@@ -5,7 +5,7 @@
 body{
   margin-top: 0;
   background: white;
-  font-size: 1rem;
+  font-size: var(--wa-font-size-m);
   zoom: var(--mdc-theme-body-zoom);
   transform-origin: top left;
 }

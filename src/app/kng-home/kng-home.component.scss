@@ -120,7 +120,7 @@ kng-product-swipe{
     span{
       color: white;
       font-weight: 400;
-      font-size: 1rem;
+      font-size: var(--wa-font-size-m);
     // background: inherit;
     // background-clip: text;
     // color: transparent;
@@ -131,7 +131,7 @@ kng-product-swipe{
 
 .kng-boxed {
   a {
-    font-size: 1rem;
+    font-size: var(--wa-font-size-m);
   }
 
   .label{

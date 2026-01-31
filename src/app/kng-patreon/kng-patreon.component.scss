@@ -197,7 +197,7 @@
     button{
       cursor: pointer;
       border: 0;
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
       font-weight: 600;
       color: var(--mdc-theme-secondary);
       span{
@@ -298,14 +298,14 @@
         border: 0px;
         font-weight: bold;
         .sm{
-          font-size: 12px;
+          font-size: var(--wa-font-size-xs);
           margin-left: 10px;
         }
       }
 
       .info{
         font-family:  sans-serif;
-        font-size: 12px;
+        font-size: var(--wa-font-size-xs);
         width: 350px;
         margin: auto;
         color: #666;
@@ -381,7 +381,7 @@
         margin-bottom: 8px;
         line-height: 18px;
         padding: 0 13px;
-        font-size: 14px;
+        font-size: var(--wa-font-size-s);
         color: #666;
       }
       .price{

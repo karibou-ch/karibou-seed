@@ -117,12 +117,12 @@
 
     .suggestion-description {
       flex: 1;
-      font-size: 14px;
+      font-size: var(--wa-font-size-s);
     }
 
     .suggestion-link {
       flex-shrink: 0;
-      font-size: 12px;
+      font-size: var(--wa-font-size-xs);
       padding: 2px 8px;
       border-radius: 1rem;
       background: rgba(0, 0, 0, 0.08);
@@ -263,7 +263,7 @@ form {
       border-radius: var(--wa-border-radius-m);
       background: var(--mdc-theme-primary, #3f51b5);
       color: var(--mdc-theme-primary-text, #fff);
-      font-size: 14px;
+      font-size: var(--wa-font-size-s);
       margin: 10px auto;
     }
 
@@ -277,7 +277,7 @@ form {
       min-height: 45px;
       width: calc(100% - 0px);
       padding-left: 10px;
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
       line-height: 17px;
       font-family: sans-serif;
     }

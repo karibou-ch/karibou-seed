@@ -114,7 +114,7 @@ kng-search{
     width: calc(100% - 2rem);
     height: 100%;
     padding-left: 2rem;
-    font-size: 1rem;
+    font-size: var(--wa-font-size-m);
     margin: .25rem;
 	}
 
@@ -161,7 +161,7 @@ kng-search{
 			margin: var(--wa-space-xs);
 			padding: 6px 12px;
 			border-radius: var(--wa-border-radius-l);
-			font-size: 14px;
+			font-size: var(--wa-font-size-s);
 
 			&.bold {
 				font-weight: 600;

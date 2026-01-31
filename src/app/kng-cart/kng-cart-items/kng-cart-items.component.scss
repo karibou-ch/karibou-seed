@@ -37,7 +37,7 @@ kng-subscription-option{
       }
       @media (max-width: 899px) {
         max-width: 190px;
-        font-size: 14px;
+        font-size: var(--wa-font-size-s);
       }
     }
 
@@ -296,7 +296,7 @@ kng-subscription-option{
       }
       .material-symbols-outlined{
         width: 20px;
-        font-size: 18px;
+        font-size: var(--wa-font-size-l);
         transform: translateY(5px);
         margin-left: -4px;
         padding-left: 0;
@@ -330,7 +330,7 @@ kng-subscription-option{
     display: flex!important;
     justify-content: flex-start;
     color: #333!important;
-    font-size: 1rem;
+    font-size: var(--wa-font-size-m);
     flex-wrap: nowrap;
     align-items: center;
     @media (max-width: 899px) {
@@ -404,7 +404,7 @@ kng-subscription-option{
     padding: 4px 20px;
     width: fit-content;
     margin: auto;
-    font-size: 18px;
+    font-size: var(--wa-font-size-l);
     height: 50px;
     display: flex;
     align-items: center;
@@ -445,7 +445,7 @@ kng-subscription-option{
     padding: 4px 0;
     width: 48%;
     margin-right: auto;
-    font-size: 1.125rem;
+    font-size: var(--wa-font-size-l);
     height: 4rem;
     font-weight: bold;
     @media (max-width: 899px) {

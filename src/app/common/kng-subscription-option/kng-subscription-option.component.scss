@@ -85,7 +85,7 @@
     flex-basis: 50%;
     padding-bottom:5px;
     flex: auto;
-    font-size: 14px;
+    font-size: var(--wa-font-size-s);
 
     &.time{
       width: 100%;
@@ -108,7 +108,7 @@
 
 
     .label{
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
       font-weight: 700;
       line-height: 24px;
       width: 100%;
@@ -121,7 +121,7 @@
       @media (max-width:599px) {
           margin-right: 0;
           margin-left: auto;
-          font-size: 14px;
+          font-size: var(--wa-font-size-s);
         }
       }
     }
@@ -152,7 +152,7 @@
           border: 1px solid var(--mdc-theme-secondary);
         }
         &.time {
-          font-size: 14px;
+          font-size: var(--wa-font-size-s);
         }
 
         flex:1 1 auto;

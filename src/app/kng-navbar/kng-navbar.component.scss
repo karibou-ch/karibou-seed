@@ -76,7 +76,7 @@ wa-drawer#main-drawer {
         }
 
         label {
-          font-size: 0.875rem;
+          font-size: var(--wa-font-size-s);
           font-weight: 500;
           cursor: pointer;
           margin-right: 0.5rem;
@@ -86,7 +86,7 @@ wa-drawer#main-drawer {
 
     &.menu-header {
       padding: 1rem 1.25rem 0.5rem;
-      font-size: 0.75rem;
+      font-size: var(--wa-font-size-xs);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -217,11 +217,11 @@ wa-drawer#main-drawer {
   }
 
   .start {
-    font-size: 1rem;
+    font-size: var(--wa-font-size-m);
   }
 
   .end {
-    font-size: 1rem;
+    font-size: var(--wa-font-size-m);
   }
 }
 

@@ -116,7 +116,7 @@
           margin-left: auto;
           text-align: left;
           padding: 10px 25px;
-          font-size: 18px;
+          font-size: var(--wa-font-size-l);
           line-height: 24px;
           font-weight: bold;
           border: 0px solid var(--mdc-theme-primary);
@@ -332,7 +332,7 @@
       left: 10px;
       bottom: 10px;
       background: rgba(255, 255, 255, 0.48);
-      font-size: 1.125rem;
+      font-size: var(--wa-font-size-l);
       line-height: 26px;
       font-weight: 200;
       padding: 2px;
@@ -444,7 +444,7 @@
         margin-right: 5px;
         text-decoration: line-through;
         color: #999;
-        font-size: 0.875rem;
+        font-size: var(--wa-font-size-s);
       }
     }
 
@@ -550,7 +550,7 @@
       padding: 5px;
     }
     button{
-      font-size: 1.125rem;
+      font-size: var(--wa-font-size-l);
       flex: 1;
       margin: 5px;
     }
@@ -593,7 +593,7 @@
 
 
   .availability {
-    font-size: 0.875rem;
+    font-size: var(--wa-font-size-s);
     width: 100%;
     ul{
       padding-left: 0;

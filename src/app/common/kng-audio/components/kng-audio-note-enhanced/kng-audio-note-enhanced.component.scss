@@ -42,7 +42,7 @@
     align-items: center;
     gap: var(--wa-space-s);
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--wa-font-size-s);
     color: rgba(var(--mdc-theme-text-primary-on-background), 0.8);
 
     input[type="checkbox"] {
@@ -71,10 +71,10 @@
     align-items: center;
     gap: var(--wa-space-s);
     color: #d32f2f;
-    font-size: 14px;
+    font-size: var(--wa-font-size-s);
 
     .material-symbols-outlined {
-      font-size: 18px;
+      font-size: var(--wa-font-size-l);
     }
   }
   .btn{
@@ -89,7 +89,7 @@
     margin: auto;
 
     .material-symbols-outlined {
-      font-size: 16px;
+      font-size: var(--wa-font-size-m);
     }
   }
 
@@ -144,7 +144,7 @@
     width: 100%;
 
     .timer {
-      font-size: 14px;
+      font-size: var(--wa-font-size-s);
       font-weight: 600;
       color: rgb(var(--mdc-theme-primary));
       min-width: 30px;
@@ -239,7 +239,7 @@
     color: white;
     text-decoration: none;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: var(--wa-font-size-s);
     transition: all var(--wa-transition-medium) ease;
 
     &:hover {
@@ -259,7 +259,7 @@
 .audio-metadata {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: var(--wa-font-size-xs);
   color: rgba(var(--mdc-theme-text-primary-on-background), 0.6);
   margin-top: 8px;
   padding: var(--wa-space-s);
@@ -273,7 +273,7 @@
 
     &::before {
       font-family: 'Material Symbols Outlined';
-      font-size: 14px;
+      font-size: var(--wa-font-size-s);
     }
   }
 
@@ -328,7 +328,7 @@
         padding: 6px 10px;
 
         .timer {
-          font-size: 12px;
+          font-size: var(--wa-font-size-xs);
           min-width: 25px;
         }
       }
@@ -338,7 +338,7 @@
         height: 36px;
 
         .material-symbols-outlined {
-          font-size: 18px;
+          font-size: var(--wa-font-size-l);
         }
       }
 
@@ -352,13 +352,13 @@
         height: 28px;
 
         .material-symbols-outlined {
-          font-size: 14px;
+          font-size: var(--wa-font-size-s);
         }
       }
 
       .processing-indicator {
         padding: 6px 12px;
-        font-size: 12px;
+        font-size: var(--wa-font-size-xs);
       }
     }
 
@@ -374,13 +374,13 @@
   gap: var(--wa-space-s);
 
   .note-header .note-title {
-    font-size: 16px;
+    font-size: var(--wa-font-size-m);
   }
 
   .action-buttons {
     .record-btn, .clear-btn {
       padding: 8px 12px;
-      font-size: 14px;
+      font-size: var(--wa-font-size-s);
     }
   }
 }

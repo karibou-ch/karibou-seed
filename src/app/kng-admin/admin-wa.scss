@@ -166,7 +166,7 @@ wa-divider {
   padding: 0 12px;
   border-radius: var(--wa-border-radius-l);
   background-color: #e0e0e0;
-  font-size: 0.875rem;
+  font-size: var(--wa-font-size-s);
   cursor: pointer;
   user-select: none;
   margin: var(--wa-space-xs);
@@ -182,12 +182,12 @@ wa-divider {
   
   .chip-icon {
     margin-right: 8px;
-    font-size: 18px;
+    font-size: var(--wa-font-size-l);
   }
   
   .chip-remove {
     margin-left: 8px;
-    font-size: 18px;
+    font-size: var(--wa-font-size-l);
     opacity: 0.6;
     
     &:hover {
@@ -239,14 +239,14 @@ wa-divider {
     }
     
     .secondary {
-      font-size: 0.875rem;
+      font-size: var(--wa-font-size-s);
       color: var(--mdc-theme-text-hint-on-background);
     }
   }
   
   .list-item-meta {
     color: var(--mdc-theme-text-hint-on-background);
-    font-size: 0.75rem;
+    font-size: var(--wa-font-size-xs);
   }
 }
 

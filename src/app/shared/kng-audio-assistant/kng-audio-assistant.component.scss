@@ -46,7 +46,7 @@
       border: 1px solid #aaa;
       background-color: white;
       padding: 2px 8px;
-      font-size: 12px;      
+      font-size: var(--wa-font-size-xs);      
       margin-left: 5px;
       display: inline;
     }
@@ -102,7 +102,7 @@
     align-items: center;
     z-index: 1;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--wa-font-size-l);
   }
 
 
