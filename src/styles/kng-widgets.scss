@@ -40,15 +40,20 @@
 
 }
 
-/** standard box for feedback and subscription */
+// ============================================================================
+// KNG-BOXED - Box de contenu avec API modulaire (complémentaire de kng-card)
+// ============================================================================
+// Usage: <div class="kng-boxed">...</div>
+// Modifiers: --soft, --white, --shadow, --border, --full-width
+// ============================================================================
 
 .kng-boxed {
-  margin: 10px 5px;
-  padding: 20px 10px 5px;
+  // Base - fond soft par défaut (legacy compatible)
+  margin: var(--wa-space-s);
+  padding: var(--wa-space-m) var(--wa-space-s) var(--wa-space-xs);
   background: var(--mdc-theme-appbar-light);
-  color: var(--mdc-theme-appbar-text);
-  border-radius: 14px;
-  color: #333;
+  color: var(--mdc-theme-text-primary-on-background);
+  border-radius: var(--wa-border-radius-l);
   display: flex;
   flex-wrap: wrap;
   min-height: 100px;
@@ -61,58 +66,85 @@
   &::-webkit-scrollbar {
     width: 1px;
     height: 8px;
-    background-color: transparent; /* or add it to the track */
+    background-color: transparent;
   }
 
-  /* Add a thumb */
   &::-webkit-scrollbar-thumb {
-    background: #555;
+    background: var(--wa-color-neutral-border-normal);
   }
-  &.full-width{
-    width: calc(100% - 20px);
-    height: fit-content;
+
+  // ============================================================================
+  // Modifiers (API complémentaire de kng-card)
+  // ============================================================================
+
+  // --soft : fond léger appbar (défaut, explicite)
+  &--soft {
+    background: var(--mdc-theme-appbar-light);
   }
-  &.with-border{
+
+  // --white : fond surface raised (dark mode compatible)
+  &--white {
+    background: var(--wa-color-surface-raised);
+  }
+
+  // --shadow : ajoute ombre + bordure subtile
+  &--shadow {
+    box-shadow: var(--wa-shadow-s);
+    border: 1px solid var(--wa-color-neutral-border-quiet);
+  }
+
+  // --border : bordure visible (legacy: with-border)
+  &--border, &.with-border {
     border: 2px solid var(--mdc-theme-appbar);
   }
 
-  @media (max-width: 899px) {
-    width: calc(100% - 30px);
+  // --full-width : pleine largeur (legacy: full-width)
+  &--full-width, &.full-width {
+    width: calc(100% - var(--wa-space-m));
+    height: fit-content;
   }
+
+  @media (max-width: 899px) {
+    width: calc(100% - var(--wa-space-l));
+  }
+
+  // ============================================================================
+  // Éléments internes
+  // ============================================================================
 
   ul {
     padding: 0;
-    margin: 10px 0;
-    font-size: 15px;
+    margin: var(--wa-space-s) 0;
+    font-size: var(--wa-font-size-m);
     list-style: none;
   }
 
-
   .label {
     font-size: var(--wa-font-size-m);
-    margin-top: -5px;
-    margin-bottom: 10px;
+    margin-top: calc(-1 * var(--wa-space-xs));
+    margin-bottom: var(--wa-space-s);
     font-weight: 600;
     width: 100%;
     display: flex;
-    .status{
+    .status {
       margin-right: 0;
       margin-left: auto;
-      background-color: yellow;
+      background-color: var(--wa-color-warning-fill-normal);
       padding: 2px;
     }
   }
 
   .content {
     width: 100%;
-    height: calc( 100% - 20px );
+    height: calc(100% - var(--wa-space-m));
     min-height: 80px;
-    font-size: 15px;
+    font-size: var(--wa-font-size-m);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    .items{
-      padding-bottom:15px;
+    
+    .items {
+      padding-bottom: var(--wa-space-m);
     }
 
     p {
@@ -125,13 +157,13 @@
       cursor: pointer;
 
       &.print {
-        background-color: black;
+        background-color: var(--wa-color-neutral-fill-loud);
       }
     }
 
-    .bottom{
+    .bottom {
       margin-top: auto;
-      margin-bottom: 10px;
+      margin-bottom: var(--wa-space-s);
     }
   }
 
@@ -139,14 +171,14 @@
     cursor: pointer;
     margin-right: 0;
     margin-left: auto;
-
-    font-weight: bold;
+    font-weight: 600;
     border: 0;
-    padding: 1rem;
-    color: white;
-    background-color: #111;
-    border-radius: 1rem;
+    padding: var(--wa-space-m);
+    color: var(--wa-color-neutral-on-loud);
+    background-color: var(--wa-color-neutral-fill-loud);
+    border-radius: var(--wa-border-radius-l);
     font-size: inherit;
+    transition: all var(--wa-transition-fast);
 
     span {
       font-size: 40px;
@@ -154,13 +186,13 @@
   }
 
   button[disabled] {
-    opacity: .4;
-    background-color: var(--mdc-theme-primary-light)!important;
-    color: #333!important;
-    border-color: var(--wa-color-neutral-border-quiet)!important;
+    opacity: 0.4;
+    background-color: var(--mdc-theme-primary-light) !important;
+    color: var(--wa-color-text-normal) !important;
+    border-color: var(--wa-color-neutral-border-quiet) !important;
   }
 
-  .bottom{
+  .bottom {
     width: 100%;
   }
 }
