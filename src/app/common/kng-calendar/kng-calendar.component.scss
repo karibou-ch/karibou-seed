@@ -144,7 +144,6 @@
         // Selected state
         &.selected {
           background-color: var(--cal-day-selected-bg);
-          box-shadow: var(--wa-shadow-m);
           .ei_Title {
             font-size: var(--wa-font-size-s);
             font-weight: 600;

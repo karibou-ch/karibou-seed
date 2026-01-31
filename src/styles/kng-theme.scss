@@ -616,22 +616,32 @@ progress.kng-progress::-moz-progress-bar{
   border-radius: var(--wa-border-radius-l);
   padding: var(--wa-space-m);
 
-  // Variante soft - fond léger brand
+  // Variante soft - fond léger appbar
   &--soft {
-    background: var(--wa-color-brand-fill-quiet);
-    border: 1px solid var(--wa-color-brand-border-quiet);
+    background: var(--mdc-theme-appbar-light);
+    border: 1px solid var(--mdc-theme-appbar);
   }
 
-  // Variante white - fond blanc avec ombre
+  // Variante white - fond surface (dark mode compatible)
   &--white {
-    background: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    background: var(--wa-color-surface-raised);
+    box-shadow: var(--wa-shadow-s);
   }
 
   // Variante dashed - bordure pointillée
   &--dashed {
     background: var(--wa-color-brand-fill-quiet);
     border: 1px dashed var(--wa-color-brand-border-normal);
+  }
+
+  // Modificateur shadow - ajoute une ombre
+  &--shadow {
+    box-shadow: var(--wa-shadow-s);
+  }
+
+  // Modificateur shadow-m - ombre moyenne
+  &--shadow-m {
+    box-shadow: var(--wa-shadow-m);
   }
 
   // Variante secondary
