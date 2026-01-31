@@ -41,6 +41,13 @@ export class KngPromptComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() placeholder: string = '';
   @Input() disclaimer: string = '';
 
+  // ✅ Autocomplete commands configuration
+  @Input() autocomplete: Array<{
+    link: string;
+    description: string;
+    alias?: string[];
+  }> = [];
+
   // ✅ Thinking mode
   @Input() thinking: boolean = false;
 
@@ -49,6 +56,9 @@ export class KngPromptComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() chatRequest: EventEmitter<{ prompt?: string, audio?: string, thinking?: boolean }> = new EventEmitter();
   @Output() clearRequest: EventEmitter<void> = new EventEmitter();
   @Output() thinkingChange: EventEmitter<boolean> = new EventEmitter();
+
+  // ✅ Event émis quand l'utilisateur envoie un message (pour recherche produits par le parent)
+  @Output() chat: EventEmitter<string> = new EventEmitter();
 
   private destroy$ = new Subject<void>();
 
@@ -207,6 +217,9 @@ export class KngPromptComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    // ✅ Emit event pour recherche produits par le parent
+    this.chat.emit(this.prompt);
+
     // Emit event pour compatibilité avec le parent si nécessaire
     this.chatRequest.emit({ prompt: this.prompt, thinking: this.thinking });
     this.clearPrompt();
@@ -260,18 +273,23 @@ export class KngPromptComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.selectedSuggestionIndex >= 0) {
           $event.preventDefault();
           this.onSelectSuggestion(this.suggestions[this.selectedSuggestionIndex]);
+        } else if (this.suggestions.length > 0) {
+          // ✅ Suggestions affichées mais aucune sélectionnée → sélectionner la première
+          $event.preventDefault();
+          this.onSelectSuggestion(this.suggestions[0]);
         } else if (!$event.shiftKey) {
           // Enter seul : soumettre, Shift+Enter : nouvelle ligne
           $event.preventDefault();
           this.onChat();
         }
+        // Shift+Enter : laisser le comportement par défaut (nouvelle ligne)
         break;
       default:
         // Utiliser setTimeout pour éviter les appels trop fréquents
         setTimeout(() => {
           this.updatePromptFromEditor();
-          // FIXME: Trigger autocomplete search
-          // this.onAutocomplete(this.prompt);
+          // ✅ Trigger autocomplete search
+          this.onAutocomplete(this.prompt);
         }, 0);
         break;
     }
@@ -327,21 +345,22 @@ export class KngPromptComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Select a suggestion
+   * ✅ Supporte les deux formats: { query } (ancien) et { link, description } (nouveau)
    */
   onSelectSuggestion(suggestion: any) {
-    // Garder le HTML de la suggestion pour l'affichage
-    const html = suggestion.query;
-    this.promptHtml = html;
+    // ✅ Supporte les deux formats de suggestion
+    const text = suggestion.link || suggestion.query || '';
 
-    // Extraire le texte brut pour l'API
+    // Extraire le texte brut (au cas où il y aurait du HTML)
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
+    tempDiv.innerHTML = text;
     this.prompt = tempDiv.textContent?.trim() || '';
+    this.promptHtml = text;
 
     // Mettre à jour le contenteditable
     if (this.textarea?.nativeElement) {
       const element = this.textarea.nativeElement as HTMLElement;
-      element.innerHTML = html;
+      element.innerHTML = text;
       element.setAttribute('data-empty', (!this.prompt).toString());
     }
 
@@ -356,6 +375,36 @@ export class KngPromptComponent implements OnInit, AfterViewInit, OnDestroy {
   onThinkingChange($event: Event) {
     this.thinking = !this.thinking;
     this.thinkingChange.emit(this.thinking);
+  }
+
+  /**
+   * ✅ Autocomplete - filtre local par link ou alias
+   * Filtrage basé sur la configuration @Input autocomplete
+   */
+  onAutocomplete(query: string) {
+    if (!query?.length || !this.autocomplete?.length) {
+      this.suggestions = [];
+      return;
+    }
+
+    const lowerQuery = query.toLowerCase();
+
+    // Filtre par link ou alias (startsWith pour queries courtes)
+    const matchItem = (item: any) =>
+      item.link.toLowerCase().startsWith(lowerQuery) ||
+      item.alias?.some((a: string) => a.toLowerCase().startsWith(lowerQuery));
+
+    if (query.length < 2) {
+      this.suggestions = this.autocomplete.filter(matchItem);
+      return;
+    }
+
+    // Pour queries plus longues, utiliser includes
+    const matchItemIncludes = (item: any) =>
+      item.link.toLowerCase().includes(lowerQuery) ||
+      item.alias?.some((a: string) => a.toLowerCase().includes(lowerQuery));
+
+    this.suggestions = this.autocomplete.filter(matchItemIncludes);
   }
 
   /**

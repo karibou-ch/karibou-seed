@@ -1,0 +1,390 @@
+// ✅ Variables de couleur Shoelace
+:host {
+  /* Colors */
+  --neutral-color-light: var(--sl-color-neutral-100);
+  --neutral-color-quiet: var(--sl-color-neutral-200);
+  --neutral-color-loud: var(--sl-color-neutral-600);
+  --neutral-color: var(--sl-color-neutral-500);
+
+  --primary-color: var(--sl-color-primary-500);
+  --primary-color-text: var(--sl-color-primary-950);
+
+  --secondary-color: var(--sl-color-primary-400);
+  --secondary-color-text: var(--sl-color-primary-950);
+}
+
+// ✅ Styles pour kng-audio-note-enhanced
+.audio-note-enhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &.recording {
+    background: var(--sl-color-primary-50);
+    border: 1px solid var(--sl-color-primary-200);
+    box-shadow: 0 4px 20px var(--sl-color-primary-100);
+  }
+
+  &.processing {
+    background: var(--sl-color-primary-50);
+    border-color: var(--secondary-color);
+  }
+
+  &.error {
+    background: var(--sl-color-danger-50);
+    border-color: var(--sl-color-danger-300);
+  }
+
+  .note-header,
+  .header,
+  div[slot="header"] {
+    padding: 0.5rem;
+  }
+}
+
+
+// ✅ Section d'erreurs
+.error-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d32f2f;
+    font-size: 14px;
+
+    .material-symbols-outlined {
+      font-size: 18px;
+    }
+  }
+  .btn{
+    width: fit-content;
+  }
+
+  .retry-btn, .dismiss-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+    margin: auto;
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+  }
+
+  .retry-btn {
+    background: var(--primary-color);
+    color: white;
+
+    &:hover {
+      background: var(--sl-color-primary-600);
+      transform: translateY(-1px);
+    }
+  }
+
+  .dismiss-btn {
+    background: transparent;
+    color: var(--neutral-color-loud);
+    border: 1px solid var(--neutral-color-quiet);
+
+    &:hover {
+      background: var(--neutral-color-light);
+    }
+  }
+}
+
+// ✅ Contrôles audio compacts avec positioning par margins
+.audio-controls {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  width: 100%;
+  position: relative;
+  gap: .25rem;
+  // ✅ État 1: Bouton micro initial - centré
+  .btn{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+
+  // ✅ État 2: Visualiseur - à gauche
+  .visual-audio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-right: auto;
+    margin-left: 0;
+    width: 100%;
+    min-width: 120px;
+
+    .timer {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-color);
+      min-width: 30px;
+      text-align: center;
+    }
+  }
+
+  // ✅ État 3: Lecteur audio - à gauche
+  .audio-player {
+    height: 40px;
+    border-radius: 20px;
+    background: var(--neutral-color-light);
+    border: 1px solid var(--sl-color-primary-100);
+    margin-right: auto;
+    margin-left: 0;
+    min-width: 200px;
+  }
+
+
+  // ✅ État Processing - centré
+  .processing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--sl-color-primary-100);
+    border-radius: 20px;
+    border: 1px solid var(--sl-color-primary-200);
+    color: var(--secondary-color);
+    margin-left: auto;
+    margin-right: auto;
+
+    .spinning {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// ✅ Anciens styles supprimés - remplacés par control-row
+
+// ✅ Section transcription
+.transcription-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+
+  background: var(--neutral-color-light);
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-color-primary-100);
+  padding: 0.5rem;
+
+  .transcription-header, .cart-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+    }
+  }
+
+  .transcription-content {
+    line-height: 1.5;
+    color: var(--sl-color-neutral-900);
+    padding: 0;
+    background: var(--neutral-color-light);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary-color);
+  }
+
+  .default-response {
+    margin-top: 0.5rem;
+  }
+}
+
+// ✅ Lien panier
+.cart-link {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--sl-color-primary-100);
+
+  .cart-url-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--sl-color-primary-600);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px var(--sl-color-primary-300);
+    }
+
+    &::before {
+      content: "🔗";
+      margin-right: 4px;
+    }
+  }
+}
+
+// ✅ Métadonnées audio
+.audio-metadata {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--neutral-color-loud);
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--neutral-color-light);
+  border-radius: 4px;
+
+  .duration, .type {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+      font-family: 'Material Symbols Outlined';
+      font-size: 14px;
+    }
+  }
+
+  .duration::before {
+    content: "schedule";
+  }
+
+  .type::before {
+    content: "label";
+  }
+}
+
+// ✅ Animations
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes pulse-recording {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+}
+
+// ✅ Responsive design
+@media (max-width: 768px) {
+  .audio-note-enhanced {
+    -padding: 12px;
+    gap: 12px;
+
+    .audio-controls {
+      min-height: 40px;
+
+      .btn-mic {
+        width: 40px;
+        height: 40px;
+
+        .material-symbols-outlined {
+          font-size: 20px;
+        }
+      }
+
+      .visual-audio {
+        padding: 6px 10px;
+
+        .timer {
+          font-size: 12px;
+          min-width: 25px;
+        }
+      }
+
+      .btn-stop {
+        width: 36px;
+        height: 36px;
+
+        .material-symbols-outlined {
+          font-size: 18px;
+        }
+      }
+
+      .audio-player {
+        height: 36px;
+        min-width: 150px;
+      }
+
+      .btn-clear {
+        width: 28px;
+        height: 28px;
+
+        .material-symbols-outlined {
+          font-size: 14px;
+        }
+      }
+
+      .processing-indicator {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    .transcription-section {
+      padding: 12px;
+    }
+  }
+}
+
+// ✅ Mode compact pour intégration produit
+.audio-note-enhanced.compact {
+  padding: 8px;
+  gap: 8px;
+
+  .note-header .note-title {
+    font-size: 16px;
+  }
+
+  .action-buttons {
+    .record-btn, .clear-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  }
+}
+
+// ✅ Thème sombre (si supporté)
+@media (prefers-color-scheme: dark) {
+  .audio-note-enhanced {
+    background: var(--neutral-color-light);
+    border-color: var(--sl-color-primary-200);
+
+    &.recording {
+      background: var(--sl-color-primary-100);
+    }
+
+    .transcription-content {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+}

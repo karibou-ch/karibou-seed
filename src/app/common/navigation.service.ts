@@ -375,7 +375,6 @@ export class KngNavigationStateService  {
    */
   emitSwipePanel(panelIndex: number) {
     this._currentPanel = panelIndex;
-    console.log('----swipePanel$',panelIndex);
     this._swipePanel$.next(panelIndex);
   }
 
@@ -398,6 +397,29 @@ export class KngNavigationStateService  {
     }catch(err) {
 
     }
+  }
+
+  /**
+   * Récupère la valeur d'une variable CSS
+   * @param variableName - Nom de la variable CSS (ex: '--mdc-theme-top-bar')
+   * @param element - Élément HTML optionnel (défaut: document.documentElement)
+   * @returns Valeur de la variable CSS ou chaîne vide si non trouvée
+   */
+  getCssVariable(variableName: string, element?: HTMLElement): string {
+    const target = element || document.documentElement;
+    return getComputedStyle(target).getPropertyValue(variableName).trim();
+  }
+
+  /**
+   * Récupère la valeur numérique d'une variable CSS (en pixels)
+   * @param variableName - Nom de la variable CSS (ex: '--mdc-theme-top-bar')
+   * @param element - Élément HTML optionnel
+   * @returns Valeur numérique en pixels ou 0 si non trouvée/invalide
+   */
+  getCssVariableAsNumber(variableName: string, element?: HTMLElement): number {
+    const value = this.getCssVariable(variableName, element);
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
   }
 
   // ============================================================================

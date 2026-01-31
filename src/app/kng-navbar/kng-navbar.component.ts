@@ -15,6 +15,7 @@ import {
 } from 'kng2-core';
 
 import { KngNavigationStateService, i18n, NotifyService } from '../common';
+import '../common/common-wa';
 
 import { Subscription, timer } from 'rxjs';
 import { formatDate } from '@angular/common';
@@ -460,7 +461,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * ✅ PHASE 2: Détecte le panel actif après un swipe avec tolérance et correction automatique
    * Panel index: 0=side, 1=center, 2=right
-   * 
+   *
    * Améliorations :
    * - Tolérance large pour le panel center (0.3-1.3) pour éviter les sauts involontaires
    * - Correction automatique si le snap CSS est imprécis (>50px d'écart)
@@ -470,14 +471,14 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   onScrollToSnap($event: Event) {
     // ✅ PHASE 2: Utiliser scrollend si disponible, sinon debounce classique
     const isScrollEndEvent = $event.type === 'scrollend';
-    
+
     if (!isScrollEndEvent) {
       // Fallback : debounce pour navigateurs sans scrollend
       clearTimeout(this.swipeTimeout);
       this.swipeTimeout = setTimeout(() => this.processSnapPosition($event), 100);
       return;
     }
-    
+
     // scrollend supporté : traitement immédiat
     this.processSnapPosition($event);
   }
@@ -489,10 +490,10 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     const wrapper = $event.target as HTMLElement;
     const panelWidth = window.innerWidth;
     const scrollLeft = wrapper.scrollLeft;
-    
+
     // Calculer position relative (0.0 = side, 1.0 = center, 2.0 = right)
     const position = scrollLeft / panelWidth;
-    
+
     // ✅ PHASE 2: Déterminer le panel cible avec TOLÉRANCE
     // Plage large pour center (0.3-1.3) pour éviter les sauts involontaires
     let targetPanel: number;
@@ -503,19 +504,19 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       targetPanel = 2; // right
     }
-    
+
     // ✅ PHASE 2: Correction automatique si le snap CSS est imprécis
     const targetScrollLeft = targetPanel * panelWidth;
     const snapTolerance = 50; // pixels de tolérance
-    
+
     if (Math.abs(scrollLeft - targetScrollLeft) > snapTolerance) {
       // Snap imprécis détecté, correction automatique
-      wrapper.scrollTo({ 
-        left: targetScrollLeft, 
-        behavior: 'smooth' 
+      wrapper.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
       });
     }
-    
+
     // Émettre le panel actif via le service
     this.$navigation.emitSwipePanel(targetPanel);
   }

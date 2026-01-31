@@ -1,0 +1,237 @@
+:host {
+  margin: .5rem;
+  overflow-y: auto;
+  width: calc(100% - 1rem);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: .5rem;
+  margin-bottom: auto;
+
+  // ✅ Smooth scroll behavior
+  scroll-behavior: smooth;
+
+}
+
+.history-header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0.25rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.5rem 0;
+
+  .start {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .end {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+}
+
+
+.assistant-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  width: 100%;
+  .assistant-header{
+    margin: auto;
+    gap: 0.5rem;
+    ul{
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: .5rem;
+      li{
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background: var(--sl-color-brand-50);
+        cursor: pointer;
+      }
+    }
+    kng-audio-note{
+      margin: auto;
+      width: fit-content;
+      display: block;
+    }
+  }
+
+  .assistant {
+    border-radius: 0.5rem;
+    padding: 0 .5rem 2rem;
+
+    .last-running{
+      position: relative;
+      overflow: hidden;
+
+      // Assurer que le contenu reste au-dessus
+      > * {
+        position: relative;
+        z-index: 2;
+      }
+    }
+    &.last-message{
+      span.feedback-button{
+        display: flex;
+      }
+    }
+    .copy-button{
+      display: block;
+    }
+    .chat-button {
+      display: none;
+    }
+    .feedback-button{
+      display: block;
+    }
+    span.feedback-button{
+      display: none;
+      align-items: center;
+      font-size:var(--sl-font-size-x-small);
+    }
+    .chat-header {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      align-items: center;
+
+      margin: 0.25rem 0;
+
+      .title{
+        display: flex;
+        width: 100%;
+        font-weight: var(--sl-font-weight-semibold);
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--sl-color-neutral-200);
+      }
+      ul,ol{
+        padding: 0.1rem 0rem;
+        list-style: none;
+        border-bottom: 2px solid var(--sl-color-neutral-200);
+        font-size: var(--sl-font-size-small);
+        li{
+          padding: var(--sl-spacing-2x-medium) 0;
+        }
+
+        opacity: 0.5;
+        animation: pulseThinking 1s infinite;
+      }
+
+    }
+
+
+
+    // content of the chat stream
+    ::ng-deep {
+      ul{
+        padding: 0.1rem 1rem;
+        li>a {
+          padding: .2rem 0;
+        }
+      }
+    }
+
+    &.assistant-user {
+      background: var(--sl-color-brand-50);
+      padding-bottom: 0;
+      max-width: 60%;
+      min-width: 150px;
+      margin-right: 0;
+      margin-left: auto;
+      .chat-actions,
+      .chat-button{
+        display: flex;
+      }
+      .copy-button{
+        margin-left: auto;
+        margin-right: 0;
+      }
+      .feedback-button{
+        display: none;
+      }
+    }
+  }
+}
+
+.last-message {
+  .chat-actions {
+    sl-spinner{
+      display: block;
+    }
+    background: var(--neutral-color-light);
+    border-radius: var(--sl-border-radius-medium);
+    @media (max-width: 599px) {
+      gap: 0.5rem;
+      sl-icon-button, sl-copy-button{
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+
+.chat-actions {
+  display: flex;
+  margin: 0.25rem 0;
+  align-items: center;
+  sl-spinner{
+    display: none;
+  }
+  sl-button:last-child {
+    margin-left: auto;
+    margin-right: 0;
+  }
+}
+
+
+
+@keyframes pulseThinking {
+  0% {
+    opacity: .8;
+  }
+  50% {
+    opacity: .95;
+  }
+  100% {
+    opacity: .8;
+  }
+}
+
+// Animation pour le gradient qui se déplace de gauche à droite
+@keyframes gradientSweep {
+  0% {
+    background: linear-gradient(
+      90deg,
+      rgba(196, 196, 196, 0.1) 100%,
+      rgba(142, 142, 142, 0.1) 100%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      90deg,
+      rgba(142, 142, 142, 0.1) 50%,
+      rgba(196, 196, 196, 0.1) 10%
+    );
+  }
+  100% {
+    background: linear-gradient(
+      90deg,
+      rgba(196, 196, 196, 0.1) 100%,
+      rgba(142, 142, 142, 0.1) 100%
+    );
+  }
+}

@@ -2,7 +2,8 @@ import { NgModule, ModuleWithProviders, CUSTOM_ELEMENTS_SCHEMA } from '@angular/
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { KngSharedModule } from '../shared/shared.module';
+// ✅ Utilise KngSharedComponentsModule (composants SANS routes)
+import { KngSharedComponentsModule } from '../shared/shared-components.module';
 
 // Layout
 import { AdminLayoutComponent } from './admin-layout.component';
@@ -54,7 +55,7 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    KngSharedModule,
+    KngSharedComponentsModule, // ✅ Composants sans routes
     routing
   ],
   declarations: [

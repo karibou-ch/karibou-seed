@@ -1,10 +1,10 @@
   <!-- MARKETPLACE -->
   <h2>{{i18n.label().nav_store}}</h2>
-  <h3 class="hide">{{i18n.label().nav_store_sub}}</h3>
+  <p>{{i18n.label().nav_store_description}}</p>
   <div class="marketplace">
     <div class="container">
-      <div class="hub"  
-        *ngFor="let hub of hubs;let idx=index" 
+      <div class="hub"
+        *ngFor="let hub of hubs;let idx=index"
         (click)="toggleStore(hub)"
         [class.selected]="hub.slug === currentHub.slug">
 
@@ -13,38 +13,38 @@
             <button class="goto" [routerLink]="['/store',hub.slug,'home']">{{label.nav_store_change}}</button>
           </div>
 
-  
+
           <div class="market">{{hub.siteName[locale]}}</div>
           <div class="title hide"></div>
           <div class="description">{{hub.description[locale]}}</div>
-          <div class="cart">
+          <div class="cart" [hidden]="currentCart[hub.slug].count==0">
              {{currentCart[hub.slug].count}} articles, {{currentCart[hub.slug].amount}} fr <span class="material-symbols-outlined icon">shopping_cart</span>
           </div>
-          <div class="options">
-            <span class="shops">{{hub.vendors}} Vendeurs </span>          
-            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;besoin d'aide?</a>  
-        
+          <div class="options" hidden>
+            <span class="shops">{{hub.vendors}} Vendeurs </span>
+            <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;besoin d'aide?</a>
+
           </div>
           <div class="calendar hide-">
             <div class="schedule">
-              <span class="material-symbols-outlined icon" >schedule</span>
-              <span class="txt">ouvert  </span>
-            </div>              
+              <span class="material-symbols-outlined icon pink  " >schedule</span>
+              <span class="txt ">ouvert  </span>
+            </div>
 
             <ul class="availability">
-              <li *ngFor="let day of [1,2,3,4,5]" >
+              <li *ngFor="let day of [1,2,3,4,5,6]" >
                 <div>{{getWeekDay(day)}}</div>
                 <div class="indicator">
-                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)==-1">radio_button_unchecked</span>
-                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)>-1">radio_button_checked</span>
+                  <span class="material-symbols-outlined icon open" [hidden]="hub.weekdays.indexOf(day)==-1">radio_button_checked</span>
+                  <span class="material-symbols-outlined icon" [hidden]="hub.weekdays.indexOf(day)>-1">radio_button_unchecked</span>
                 </div>
               </li>
             </ul>
 
           </div>
-    
+
         </div>
-        
+
         <!-- <div class="ei_Link" [hidden]="hub.slug === currentHub.slug">
           <div class="action"><a class="pink" (click)="toggleStore(hub)">{{i18n.label().nav_store_change}}</a></div>
         </div> -->

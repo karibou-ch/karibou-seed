@@ -1,69 +1,191 @@
-<div class="assistant-dialog " #dialog >
-  <div class="assistant-backdrop"></div>
-  <div class="assistant-dialog__surface" *ngIf="isReady">
+<!-- ============================================================================ -->
+<!-- PANEL SIDE - Menu de navigation (format standard)                          -->
+<!-- ============================================================================ -->
+<div class="swipe-panel side">
 
-    <div class="container" [class.running]="isAssistantRuning">
+  <div class="assistant menu-panel"
+       [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
-      <!-- CLOSE -->
-      <!-- CLOSE OR SUBS CART -->
-      <div class="topbar" [style.width.px]="clientWidth" [class.sticked]="scrollStickedToolbar">
-        <button (click)="onClose(true)" class="close" >
-          <span class="material-symbols-outlined size-large">arrow_back</span>
-        </button>
+    <!-- MOBILE links -->
+    <ul class="subs">
+      <!-- FAVORITE -->
+      <li class="subs-item inverted" [routerLink]="['/store', store, 'home']">
+        <i class="material-symbols-outlined">home</i>
+        <span>{{label.nav_home}}</span>
+      </li>
 
-        <div class="cart visible"  >
-          <div class="subscription-cart"  href="javascript:;" [routerLink]="['/store',store,'home','cart','default']" >
-            <button>
-              <span>
-                {{cartAmount}}&nbsp;fr&nbsp;
-                <span class="end material-symbols-outlined">shopping_cart</span>
-              </span>
-            </button>
-          </div>
+      <!-- CUSTOM LINK -->
+      <li *ngIf="hub?.home?.customLink?.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url">
+        <i class="material-symbols-outlined icon">person_celebrate</i>
+        <span>{{hub.home.customLink.label[locale]}}</span>
+      </li>
 
-        </div>
+      <li *ngIf="!hub?.home?.customLink?.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">person_celebrate</i>
+        <span>{{label.nav_subscription_b2b}}</span>
+      </li>
 
-      </div>
+      <!-- SUBSCRIPTION b2c/b2b -->
+      <li class="subs-item inverted" [routerLink]="['/store',store,'subscriptions']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">update</i>
+        <span>{{label.nav_subscription}}</span>
+      </li>
 
-      <!-- TITLE -->
-      <div class="banner" >
-        <h1 hidden> <img src="/assets/img/food.jpg"/> </h1>
-      </div>
+      <!-- JAMES (current page - active) -->
+      <li *ngIf="!isB2BSchool" class="subs-item inverted active" [routerLink]="['/store',store,'assistant']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_title_cta}}</span>
+      </li>
+      <li *ngIf="isB2BSchool" class="subs-item inverted active" [routerLink]="['/store',store,'assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_school}}</span>
+      </li>
+    </ul>
 
-      <!-- ✅ Pattern kng-sgc: composants séparés history + prompt -->
-      <div class="center grid-item">
-        <!-- Welcome screen si non connecté -->
-        <div class="welcome" *ngIf="!user?.id && !messagesCount">
-          <h2>{{label.james_welcome}}</h2>
-          <p>{{label.james_welcome_desc}}</p>
-        </div>
+    <!-- DESKTOP LINKS -->
+    <ul class="hide-sm">
+      <li [routerLink]="userRouterLink">
+        <span class="fa icon hide">👦</span>
+        <b>{{isAuthenticated?label.nav_account:label.nav_login}}</b>
+      </li>
+      <li [routerLink]="hub?.home?.customLink?.url" [hidden]="!hub?.home?.customLink?.url">
+        <b>{{hub?.home?.customLink?.label[locale]}}</b>
+      </li>
+      <li [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub?.home?.customLink?.url">
+        <b>{{label.nav_subscription_b2b}}</b>
+      </li>
+      <li [routerLink]="'/store/'+store+'/subscriptions'">
+        <b>{{label.nav_subscription}}</b>
+      </li>
+      <li [hidden]="!isAuthenticated || !isB2BSchool" [routerLink]="['/store',store,'assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <b>{{label.james_school}}</b>
+      </li>
+      <li class="selected separator" [routerLink]="['/store',store,'assistant']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <b>{{label.james_title_cta}}</b>
+      </li>
+    </ul>
 
-        <!-- History component -->
-        <kng-assistant-history
-          #history
-          [agent]="agent"
-          [user]="user"
-          [config]="config"
-          [withHeader]="false"
-          (chat)="onHistoryChat($event)">
-        </kng-assistant-history>
+    <!-- TIPS RAPIDES -->
+    <ul class="tips-list" *ngIf="tips.length" hidden>
+      <li class="section-title">Suggestions</li>
+      <li *ngFor="let tip of visibleTips"
+          (click)="onTipClick(tip.action)">
+        <span>{{tip.label}}</span>
+      </li>
+    </ul>
+    <!-- CATEGORY on mobile+desktop (structure identique à kng-home) -->
+    <ul *ngIf="productCategories.length > 1">
+      <li (click)="scrollToSlug(category.slug)" class="subs-item"
+          [id]="'category-'+j"
+          [class.selected]="category.slug == displaySlug"
+          *ngFor="let category of productCategories; let j=index">
+        <i [class]="category.image" class="icon hide-md hide-lg"></i>
+        <span class="category-label">{{category.name}}</span>
+      </li>
+    </ul>
 
-        <!-- Prompt component -->
-        <kng-prompt
-          #promptComponent
-          [agent]="agent"
-          [user]="user"
-          [config]="config"
-          [autoRecord]="autoRecord"
-          [messagesLimit]="messagesLimit"
-          [tips]="tips"
-          [prompts]="prompts"
-          [placeholder]="label.james_placeholder || 'Message James…'"
-          [disclaimer]="label.james_disclaimer || 'James peut se tromper. Pensez à vérifier les informations.'"
-          (chatRequest)="onChatRequest($event)"
-          (clearRequest)="onClearRequest()">
-        </kng-prompt>
+
+  </div>
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL CENTER - Conversation + Produits suggérés                            -->
+<!-- ============================================================================ -->
+<div class="swipe-panel center" *ngIf="isReady">
+
+  <!-- HEADER -->
+  <div class="assistant-header">
+    <h1>{{label.james_title || 'James'}}</h1>
+    <p>{{label.james_subtitle || 'Votre assistant personnel'}}</p>
+  </div>
+
+  <!-- Welcome screen si non connecté et pas de messages -->
+  <div class="welcome" *ngIf="!user?.id && !messagesCount">
+    <h2>{{label.james_welcome}}</h2>
+    <p>{{label.james_welcome_desc}}</p>
+  </div>
+
+
+  <!-- ============================================== -->
+  <!-- PRODUITS SUGGÉRÉS (kng-product-grouped-list)  -->
+  <!-- ============================================== -->
+  <div class="product-container" *ngIf="assistantProducts.length">
+    <h1 class="section-title" [hidden]="!productsTitle" [innerHTML]="productsTitle"></h1>
+
+    <!-- LOADING -->
+    <div class="loading-state" *ngIf="isAssistantRuning">
+      <div class="typing-indicator">
+        <span></span><span></span><span></span>
       </div>
     </div>
+
+    <kng-product-grouped-list
+      [useMaxCat]="false"
+      [alphasort]="false"
+      [displayVendor]="true"
+      [showMore]="false"
+      [config]="config"
+      [user]="user"
+      [contentCategories]="productCategories"
+      [contentProducts]="assistantProducts"
+      [scrollToSlug]="categorySlug"
+      (currentCategory)="displaySlug=($event || displaySlug)">
+    </kng-product-grouped-list>
   </div>
+
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL RIGHT - Prompt et actions                                            -->
+<!-- ============================================================================ -->
+<div class="swipe-panel right">
+
+  <div class="sidebar-panel assistant"
+       [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
+
+    <!-- History component -->
+    <kng-assistant-history
+      #history
+      [agent]="agent"
+      [user]="user"
+      [config]="config"
+      [withHeader]="false"
+      [lastOnly]="true"
+      (chat)="onHistoryChat($event)"
+      (onProducts)="onHistoryProducts($event)">
+    </kng-assistant-history>
+
+    <!-- PROMPTS EXEMPLES -->
+    <div class="prompts-section" *ngIf="!messagesCount">
+      <h4>Exemples de questions</h4>
+      <ul class="prompts-list">
+        <li *ngFor="let prompt of displayedPrompts"
+            (click)="onTipClick(prompt)">
+          {{prompt}}
+        </li>
+      </ul>
+    </div>
+
+    <!-- PROMPT COMPONENT -->
+    <div class="prompt-container">
+      <kng-prompt
+        #promptComponent
+        [agent]="agent"
+        [user]="user"
+        [config]="config"
+        [autoRecord]="autoRecord"
+        [messagesLimit]="messagesLimit"
+        [prompts]="prompts"
+        [placeholder]="label.james_placeholder || 'Message James…'"
+        [disclaimer]="label.james_disclaimer || 'James peut se tromper. Pensez à vérifier les informations.'"
+        (chat)="onPromptChat($event)"
+        (clearRequest)="onClearRequest()">
+      </kng-prompt>
+    </div>
+
+
+  </div>
+
 </div>

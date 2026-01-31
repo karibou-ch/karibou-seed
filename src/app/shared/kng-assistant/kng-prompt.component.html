@@ -1,13 +1,28 @@
 <div class="prompt">
-  <!-- ✅ Autocomplete suggestions -->
-  <div *ngIf="suggestions.length" class="suggestions">
-    <div class="suggestion-item"
-         *ngFor="let suggestion of suggestions; let i = index"
-         [class.selected]="i === selectedSuggestionIndex"
-         (click)="onSelectSuggestion(suggestion)">
-      <span [innerHTML]="suggestion.query"></span>
+  <!-- ✅ wa-popup for autocomplete suggestions - liste native sans overlay -->
+  <wa-popup
+    #suggestionsPopup
+    placement="top-start"
+    distance="8"
+    shift
+    flip
+    [active]="suggestions.length > 0"
+    class="suggestions-popup">
+    <!-- ✅ Anchor slot - invisible, positionné par le form -->
+    <span slot="anchor" class="suggestions-anchor"></span>
+
+    <!-- ✅ Liste native de suggestions -->
+    <div class="suggestions-list" *ngIf="suggestions.length">
+      <div class="suggestion-item"
+           *ngFor="let suggestion of suggestions; let i = index"
+           [class.selected]="i === selectedSuggestionIndex"
+           (click)="onSelectSuggestion(suggestion)"
+           (mouseenter)="selectedSuggestionIndex = i">
+        <span class="suggestion-description" [innerHTML]="suggestion.description"></span>
+        <span class="suggestion-link">{{suggestion.link}}</span>
+      </div>
     </div>
-  </div>
+  </wa-popup>
 
   <!-- ✅ Quick helps display -->
   <div *ngIf="helps.show" class="suggestions">

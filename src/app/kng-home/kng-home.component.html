@@ -30,17 +30,17 @@
       </li>
 
       <!-- SUBSCRIPTION b2c/b2b-->
-      <li class="subs-item inverted" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <li class="subs-item inverted" [routerLink]="['/store',store,'subscriptions']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <i class="material-symbols-outlined icon">update</i>
         <span>{{label.nav_subscription}}</span>
       </li>
 
       <!-- JAMES b2c/school -->
-      <li *ngIf="!isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <li *ngIf="!isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <i class="material-symbols-outlined icon">smart_toy</i>
         <span>{{label.james_title_cta}}</span>
       </li>
-      <li *ngIf="isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <li *ngIf="isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <i class="material-symbols-outlined icon">smart_toy</i>
         <span>{{label.james_school}}</span>
       </li>
@@ -58,7 +58,7 @@
       <li [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
         <b>{{label.nav_subscription_b2b}}</b>
       </li>
-      <li [routerLink]="'/store/'+store+'/home/subscription'">
+      <li [routerLink]="'/store/'+store+'/subscriptions'">
         <b>{{label.nav_subscription}}</b>
       </li>
       <li [hidden]="!isAuthencated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
@@ -74,9 +74,11 @@
       <li (click)="scrollToSlug(category.slug)" class="subs-item"
           [id]="'category-'+j"
           [class.selected]="category.slug == displaySlug"
+          [class.has-image]="hasCategoryImage(category)"
+          [style.--cat-image]="hasCategoryImage(category) ? 'url(' + category.cover + ')' : null"
           *ngFor="let category of sortedCategories;let j=index">
         <i [class]="category.image" class="icon hide-md hide-lg"></i>
-        <span>{{getCategoryI18n(category)}}</span>
+        <span class="category-label">{{getCategoryI18n(category)}}</span>
       </li>
     </ul>
   </div>
@@ -93,9 +95,6 @@
     <img [src]="tagline.image" [hidden]="!tagline.image"/>
     <figure [innerHtml]="hub.header.message[locale]"></figure>
   </div>
-
-  <!-- CALENDAR -->
-  <kng-calendar [user]="user" [title]="theme.name" [hidden]="availableSearch" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
   <!-- PINNED PRODUCTS (isMinimal for b2b-school) -->
   <kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user" [boost]="true" [hub]="store"></kng-product-swipe>
@@ -131,17 +130,21 @@
 <div class="swipe-panel right">
 
   <div class="home sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
-    <!-- NEED HELP? -->
-    <div class="kng-boxed first">
-      <div class="content">
-        <div class="items" [innerHtml]="hub.description[locale]"></div>
-        <div class="bottom">
-          <a class="phone" href="tel:{{hub.address.phone}}">
-            <i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}
-          </a>
-        </div>
+  <!-- CALENDAR -->
+  <kng-calendar [user]="user" [title]="theme.name" [hidden]="availableSearch" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
+
+  <!-- NEED HELP? -->
+  <div class="kng-boxed first">
+    <div class="content">
+      <div class="items" [innerHtml]="hub.description[locale]"></div>
+      <div class="bottom">
+        <a class="phone" href="tel:{{hub.address.phone}}">
+          <i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}
+        </a>
       </div>
     </div>
+  </div>
+
 
     <!-- AUDIO SUPPORT -->
     <div class="kng-boxed first">

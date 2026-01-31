@@ -1,0 +1,222 @@
+<div class="prompt">
+  <div *ngIf="suggestions.length" class="suggestions">
+    <div class="suggestions-overlay"
+         (mousemove)="onSuggestionsMouseMove($event)"
+         (click)="onSuggestionsClick($event)">
+    </div>
+    <sl-menu>
+      <sl-menu-item *ngFor="let suggestion of suggestions; let i = index"
+                   [class.selected]="i === selectedSuggestionIndex">
+
+        <span [innerHTML]="suggestion.description"></span>
+        &nbsp;<sl-tag size="small" pill>{{suggestion.link}}</sl-tag>
+      </sl-menu-item>
+    </sl-menu>
+  </div>
+  <div *ngIf="helps.show" class="suggestions">
+    <div class="block" *ngFor="let help of helps.elems; let i = index">
+      <sl-button pill variant="neutral" (click)="onSelectSuggestion(help)">
+        <span [innerHTML]="help.label"></span>
+      </sl-button>
+    </div>
+  </div>
+
+  <form (submit)="onChat()" [class.streaming]="isAssistantRuning">
+    <!-- RESET -->
+    <div class="input " [hidden]="!messagesLimit">
+      <button  (click)="onClear($event)" type="button" class="record reset">
+        {{label.james_reset_action}}
+      </button>
+    </div>
+    <div class="input " [hidden]="messagesLimit">
+      <div #textarea
+           kng-autosize
+           contenteditable="true"
+           [attr.contenteditable]="!isAssistantRuning"
+           [class.disabled]="isAssistantRuning"
+           (keydown)="onKeyDown($event)"
+           (input)="onInput($event)"
+           (paste)="onPaste($event)"
+           tabindex="0"
+           class="prompt-editor"
+           data-placeholder="Votre question?">
+      </div>
+
+      <!-- ✅ NOUVEAU COMPOSANT AUDIO -->
+      <!-- <sl-button size="small"
+                 variant="default"
+                 circle
+                 [disabled]="isAssistantRuning"
+                 (click)="toggleAudioRecorder()"
+                 class="audio-toggle">
+        <sl-icon name="mic"></sl-icon>
+      </sl-button> -->
+
+
+    </div>
+    <div class="help">
+      <sl-icon-button [class.action-thinking]="thinking" name="cpu" label="Neurones" (click)="onThinkingChange($event)" ></sl-icon-button>
+
+
+
+      <sl-dropdown class="hide-xs" [hidden]="!isAdmin" placement="top-start" distance="18" skidding="0">
+        <sl-button slot="trigger" size="small" rounded caret>
+          {{ ragName }}
+        </sl-button>
+        <sl-menu class="scope-menu" id="ragMenu" (sl-select)="onRagChange($event)">
+          <!-- Dynamic RAG list from server -->
+          <sl-menu-item *ngFor="let rag of availableRags"
+                        class="scope-item"
+                        [value]="rag.value"
+                        type="checkbox"
+                        [attr.checked]="defaultRag === rag.value ? '' : null">
+            <span>
+              <span class="hint">{{ rag.label }}</span>
+            </span>
+          </sl-menu-item>
+
+          <!-- Fallback if no RAGs available -->
+          <sl-menu-item *ngIf="availableRags.length === 0" disabled>
+            <span>
+              <span class="label">Chargement...</span>
+              <span class="hint">Chargement des bases de connaissances</span>
+            </span>
+          </sl-menu-item>
+        </sl-menu>
+      </sl-dropdown>
+
+      <sl-dropdown class="start " id="scopeDropdown" stay-open-on-select placement="top-start" distance="18" skidding="0">
+        <sl-button slot="trigger" size="small" rounded >
+          <sl-icon name="search" ></sl-icon>
+        </sl-button>
+
+        <sl-menu class="scope-menu" id="scopeMenu">
+          <!-- Web -->
+          <sl-menu-item class="scope-item" value="web" disabled>
+            <sl-icon slot="prefix" name="globe"></sl-icon>
+            <span>
+              <span class="hint">Rechercher sur l'ensemble d'Internet</span>
+            </span>
+            <sl-switch slot="suffix" size="small" checked></sl-switch>
+          </sl-menu-item>
+
+          <!-- BDC - Bon de Commande (✅ NOUVEAU - Activé par défaut) -->
+          <sl-menu-item class="scope-item" value="bdc" hidden>
+            <sl-icon slot="prefix" name="file-earmark-text"></sl-icon>
+            <span>
+              <span class="hint">Recherche dans les Bons de Commande</span>
+            </span>
+            <sl-switch slot="suffix" size="small" checked></sl-switch>
+          </sl-menu-item>
+
+          <!-- Locataire (✅ NOUVEAU - Activé par défaut) -->
+          <sl-menu-item class="scope-item" value="locataire" disabled>
+            <sl-icon slot="prefix" name="person-badge"></sl-icon>
+            <span>
+              <span class="hint">Recherche dans les dossiers Locataires</span>
+            </span>
+            <sl-switch slot="suffix" size="small" checked></sl-switch>
+          </sl-menu-item>
+
+          <!-- Statistique des loyers à Genève -->
+          <sl-menu-item class="scope-item" value="rent-statistics-geneva" hidden>
+            <sl-icon slot="prefix" name="bar-chart"></sl-icon>
+            <span>
+              <span class="hint">PV séance</span>
+            </span>
+            <sl-switch slot="suffix" size="small"></sl-switch>
+          </sl-menu-item>
+
+          <!-- Droit des obligations -->
+          <sl-menu-item class="scope-item" value="swiss-law" hidden>
+            <sl-icon slot="prefix" name="journal-text"></sl-icon>
+            <span>
+              <span class="hint">Quorum Locataire</span>
+            </span>
+            <sl-switch slot="suffix" size="small"></sl-switch>
+          </sl-menu-item>
+
+          <!-- Biens à louer chez Pilet Renaud -->
+          <sl-menu-item class="scope-item" value="pilet-renaud" hidden>
+            <sl-icon slot="prefix" name="house"></sl-icon>
+            <span>
+              <span class="hint">Jurisprudence Suisse</span>
+            </span>
+            <sl-switch slot="suffix" size="small"></sl-switch>
+          </sl-menu-item>
+
+          <!-- Recherche par mots-clés dans la FAO -->
+          <sl-menu-item class="scope-item" value="fao-search" disabled>
+            <sl-icon slot="prefix" name="search"></sl-icon>
+            <span>
+              <span class="hint">Recherche dans la FAO</span>
+            </span>
+            <sl-switch slot="suffix" size="small" checked></sl-switch>
+          </sl-menu-item>
+
+          <!-- Recherche discussion mémorisées -->
+          <sl-menu-item class="scope-item" value="memory-search" disabled>
+            <sl-icon slot="prefix" name="stars"></sl-icon>
+            <span>
+              <span class="hint">Recherche dans les discussions mémorisées</span>
+            </span>
+            <sl-switch slot="suffix" size="small" checked></sl-switch>
+          </sl-menu-item>
+
+          <!-- Envoyer une discussion par email -->
+          <sl-menu-item class="scope-item" value="memory-search" disabled>
+            <sl-icon slot="prefix" name="envelope-at"></sl-icon>
+            <span>
+              <span class="hint">Envoyer une discussion par email</span>
+            </span>
+            <sl-switch slot="suffix" size="small" checked></sl-switch>
+          </sl-menu-item>
+
+
+
+        </sl-menu>
+      </sl-dropdown>
+
+      <!-- ✅ Selected memory tag (MEM_MANUAL) -->
+      <sl-tag *ngIf="selectedMemory"
+              class="selected-memory-tag"
+              variant="primary"
+              removable
+              (sl-remove)="clearSelectedMemory()">
+        <span class="memory-title">{{ selectedMemory.title }}</span>
+      </sl-tag>
+
+
+      <!-- <kng-switch
+        icon="cpu"
+        label="Réfléchir"
+        [disabled]="isAssistantRuning"
+        [checked]="thinking"
+        (change)="onThinkingChange($event)">
+      </kng-switch> -->
+
+      <!-- CAPTURE AUDIO -->
+      <kng-audio-note-enhanced #audioRecorder class="" [disabled]="isAssistantRuning"
+        type="prompt"
+        [compact]="true"
+        [filename]="'prompt-audio'"
+        [displayTranscription]="false"
+        (onAudioReady)="onAudioReady($event)"
+        (onAudioError)="onAudioError($event)">
+      </kng-audio-note-enhanced>
+
+      <!-- RUN QUERY -->
+      <sl-button hidden [disabled]="isAssistantRuning" [loading]="isAssistantRuning" class="" variant="default"  (click)="onChat()" pill>
+        <sl-icon slot="prefix" name="chat-quote"></sl-icon>
+      </sl-button>
+      <sl-button [disabled]="isAssistantRuning" class="end" variant="neutral"  (click)="onClear($event)" pill>
+        <sl-icon slot="prefix" name="x-lg"></sl-icon>
+      </sl-button>
+
+    </div>
+  </form>
+
+  <div class="disclaimer" >
+    <span>Edgar peut se tromper. Pensez à vérifier les sources.</span>
+  </div>
+</div>

@@ -23,7 +23,7 @@ import {
   AssistantService
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
-import { AudioNoteType, i18n, KngNavigationStateService } from '../common';
+import { AudioNoteType, i18n, KngNavigationStateService, ScrollStateService } from '../common';
 
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 
@@ -125,7 +125,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     private $product: ProductService,
     private $router: Router,
     private $calendar: CalendarService,
-    private $assistant: AssistantService
+    private $assistant: AssistantService,
+    private $scrollState: ScrollStateService
   ) {
     // bind infinite scroll callback function
     // ✅ SYNCHRONE: Récupération immédiate des données cached
@@ -152,10 +153,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
     // S'assurer de déverrouiller le scroll du body
     document.body.classList.remove('mdc-dialog-scroll-lock');
+    // Sauvegarder la position de scroll pour restauration au retour
+    this.$scrollState.save('home');
   }
 
   ngOnInit() {
-    window.scroll(0, 0);
+    // Restaurer le scroll si on revient d'une page produit, sinon scroll en haut
+    if (!this.$scrollState.restore('home', 100)) {
+      window.scroll(0, 0);
+    }
 
     // S'abonner aux changements de panel après swipe
     this.subscription.add(
@@ -472,6 +478,23 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.label[key] || cat.name;
   }
 
+  //
+  // Catégories avec image de fond (hardcodé pour test)
+  // FIXME: Remplacer par logique basée sur préférences client
+  hasCategoryImage(category: Category): boolean {
+    const categoriesWithImage = [
+      'fruits',
+      'poissonnerie',
+      'boulangerie-artisanale',
+      'douceurs-chocolats',
+      'charcuterie-pates',
+      'vins-rouges',
+      'huiles-vinaigre-condiments',
+      'fleurs'
+    ];
+    return categoriesWithImage.includes(category.slug) && !!category.cover;
+  }
+
   mountOverlay(overlay) {
     if (overlay) {
       document.body.classList.add('mdc-dialog-scroll-lock');
@@ -674,7 +697,7 @@ ${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
     // Calcul du translateY pour simuler le sticky
     // Le menu suit le scroll pour rester visible en haut
     const scrollY = window.scrollY || window.pageYOffset;
-    const navbarHeight = 0*70; // --mdc-theme-top-bar
+    const navbarHeight = this.$navigation.getCssVariableAsNumber('--mdc-theme-top-bar')||0;
 
     // Commence à transformer après avoir passé la navbar
     if (scrollY > navbarHeight) {

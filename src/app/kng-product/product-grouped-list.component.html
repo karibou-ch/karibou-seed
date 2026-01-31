@@ -22,7 +22,9 @@
       <h2>{{getCategoryI18n(category)}}</h2>
       <!-- <h3 class="hide" [innerHtml]="category.description"></h3> -->
       <wa-button size="small" class="align-right" appearance="filled-outlined" pill [routerLink]="['category',category.slug]" [hidden]="!showMore">
-        <span class="inlink">Voir tout</span>
+        <span class="inlink">Voir tout
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </span>
       </wa-button>
 
 
@@ -35,7 +37,7 @@
         *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index"
         [displayVendor]="displayVendor"
         [displaySubscription]="displaySubscription"
-        [visibility]="visibility[category.slug]"
+        [visibility]="isVisible(category.slug)"
         [sku]="product.sku"
         [class]="clazz">
       </kng-product-thumbnail>

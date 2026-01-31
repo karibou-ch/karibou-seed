@@ -35,6 +35,8 @@ import { KngRootComponent } from './kng-root/kng-root.component';
 import { CacheRouteReuseStrategy } from './app.cache.route';
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
 import { KngEmptyRootComponent } from './common/kng-empty-root/kng-empty-root.component';
+// ✅ Import direct (non lazy-loaded) pour permettre le cache RouteReuseStrategy
+import { KngSubscriptionModule } from './kng-subscription/kng-subscription.module';
 
 
 @Injectable({
@@ -171,7 +173,9 @@ export class GlobalErrorHandler implements ErrorHandler {
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
-    })
+    }),
+    // ✅ Chargé eager (non lazy) pour permettre le cache RouteReuseStrategy
+    KngSubscriptionModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },

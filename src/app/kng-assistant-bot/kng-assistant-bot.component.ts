@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CartService, CartItemsContext, Config, User, LoaderService, AssistantService, AssistantState, Product, Category, ProductService } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
@@ -277,9 +277,18 @@ export class KngAssistantBotComponent implements OnInit, OnDestroy {
     if (this.chatSubscription) {
       this.chatSubscription.unsubscribe();
     }
+    // S'assurer de déverrouiller le scroll du body
+    document.body.classList.remove('mdc-dialog-scroll-lock');
   }
 
   async ngOnInit() {
+    // S'abonner aux changements de panel après swipe
+    this.$navigation.swipePanel$().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(panelIndex => {
+      this.onSwipePanelChanged(panelIndex);
+    });
+
     // Subscribe to assistant state
     this.$assistant.state$.pipe(
       takeUntil(this.destroy$)
@@ -389,6 +398,41 @@ export class KngAssistantBotComponent implements OnInit, OnDestroy {
   // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
+  /**
+   * Sticky menu simulé via translateY pour contourner le problème CSS :
+   * position: sticky ne fonctionne pas quand un ancêtre a overflow-x: auto (swipe)
+   */
+  @HostListener('window:scroll', ['$event'])
+  onScrollToStick($event) {
+    // Active seulement en mode swipe (mobile/tablet ≤1199px)
+    if (window.innerWidth >= 1200) {
+      this.menuStickyTransform = 0;
+      return;
+    }
+
+    const scrollY = window.scrollY || window.pageYOffset;
+    const navbarHeight = 0; // --mdc-theme-top-bar
+
+    if (scrollY > navbarHeight) {
+      this.menuStickyTransform = scrollY - navbarHeight;
+    } else {
+      this.menuStickyTransform = 0;
+    }
+  }
+
+  /**
+   * Réagit aux changements de panel après un swipe.
+   * Verrouille le scroll body si on n'est pas sur center pour permettre le sticky.
+   * Panel index: 0=side, 1=center, 2=custom, 3=right
+   */
+  private onSwipePanelChanged(panelIndex: number) {
+    // Verrouille le scroll si on n'est PAS sur le panel center (index 1)
+    if (panelIndex !== 1) {
+      document.body.classList.add('mdc-dialog-scroll-lock');
+    } else {
+      document.body.classList.remove('mdc-dialog-scroll-lock');
+    }
+  }
 
   /**
    * Handle tip/prompt click - envoie le message à l'assistant ET recherche les produits

@@ -1,0 +1,220 @@
+<div class="desktop grid-container-3">
+  <div class="header ">
+    <div class="info">
+
+    </div>
+    <div class="title">
+      <b>{{currentDescription}}</b>
+    </div>
+    <div class="usage">
+
+      <kng-theme></kng-theme>
+    </div>
+
+  </div>
+
+  <div class="mobile-columns-wrapper" #mobileWrapper>
+    <div class="side grid-item">
+      <!-- <kng-emails></kng-emails> -->
+      <sl-menu class="menu" [hidden]="!isLoggedIn">
+        <sl-menu-item [routerLink]="['/agent/edgar']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <sl-icon slot="prefix" name="house"></sl-icon>
+          Edgar
+        </sl-menu-item>
+
+        <sl-menu-item hidden [routerLink]="['/agent/sgc']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <sl-icon slot="prefix" name="building-gear"></sl-icon>
+          SGC
+        </sl-menu-item>
+
+        <sl-menu-item [routerLink]="['/rules']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <sl-icon slot="prefix" name="file-text"></sl-icon>
+          Procédures
+        </sl-menu-item>
+      </sl-menu>
+
+      <sl-menu class="menu last msal-menu">
+        <sl-menu-item *ngIf="isLoggedIn" (click)="logout()">
+          <sl-icon slot="prefix" name="box-arrow-right"></sl-icon>
+          Logout
+        </sl-menu-item>
+
+        <sl-menu-item *ngIf="!isLoggedIn" (click)="login()">
+          <sl-icon slot="prefix" name="box-arrow-in-right"></sl-icon>
+          Login
+        </sl-menu-item>
+
+        <sl-menu-item *ngIf="isLoggedIn">
+          <sl-icon slot="prefix" name="person-circle"></sl-icon>
+          {{ user.name }}
+        </sl-menu-item>
+        <sl-menu-item *ngIf="isLoggedIn">
+          <sl-icon slot="prefix" name="envelope-at"></sl-icon>
+          {{ user.username }}
+        </sl-menu-item>
+        <sl-menu-item *ngIf="isLoggedIn">
+          <sl-icon slot="prefix" name="person-check"></sl-icon>
+          {{ me.userType }}
+        </sl-menu-item>
+
+
+        <sl-divider *ngIf="isLoggedIn"></sl-divider>
+
+        <sl-menu-item *ngIf="isLoggedIn">
+          <sl-icon slot="prefix" name="gear"></sl-icon>
+          <b>v{{state.version }}</b>
+        </sl-menu-item>
+      </sl-menu>
+
+    </div>
+    <div class="center grid-item" #centerView [class.running]="isAssistantRuning">
+      <div class="welcome"  *ngIf="!isLoggedIn">
+        <img src="https://www.pilet-renaud.ch/images/front/logo-pilet-renaud.svg" alt="" class="logo">
+        <h1>{{welcome}}</h1>
+        <p>{{welcomeDescription}}</p>
+        <div class="action" (click)="login()">
+          <sl-icon slot="prefix" name="box-arrow-in-right"></sl-icon>
+          Veuillez vous identifier
+        </div>
+
+
+      </div>
+      <kng-assistant-history [agent]="agent"  [withHeader]="false" [links]="[]" *ngIf="isLoggedIn"></kng-assistant-history>
+      <kng-prompt [agent]="agent" [me]="me" [autoRecord]="autoRecord" *ngIf="isLoggedIn"></kng-prompt>
+
+    </div>
+
+    <div class="right grid-item">
+    <sl-tab-group class="menu" *ngIf="isLoggedIn">
+      <sl-tab slot="nav" panel="memory" >
+        <sl-icon name="stars"></sl-icon>&nbsp;
+        Mémoire</sl-tab>
+      <sl-tab slot="nav" panel="epingles"  [hidden]="isGuest">
+        <sl-icon name="pin-fill"></sl-icon>&nbsp;
+        Discussions</sl-tab>
+      <sl-tab slot="nav" panel="sgc">
+        <sl-icon name="chat-dots"></sl-icon>&nbsp;
+        Exemples</sl-tab>
+      <sl-tab slot="nav" panel="queries" [hidden]="!isAdmin">Collaborateurs</sl-tab>
+
+      <sl-tab-panel  name="epingles" class="queries" [hidden]="isGuest">
+        <div class="questions" *ngFor="let pin of pinnedDiscussions; let i = index">
+          <div>
+            <div class="clamp">{{pin.messages[0].content || 'Discussion'}}</div>
+            <!-- <sl-tag size="small" variant="neutral" pill>{{pin.messages.length}} msgs</sl-tag>
+            <sl-tag size="small" variant="primary" pill>{{pin.service}}</sl-tag> -->
+          </div>
+          <div style="display: flex; gap: 0.5rem;margin-left:auto">
+            <sl-copy-button  [value]="pin.messages[0].content">
+            </sl-copy-button>
+
+            <sl-icon-button name="box-arrow-in-down" variant="primary" (click)="loadPinned(pin)" title="Charger cette discussion">
+            </sl-icon-button>
+            <sl-icon-button name="bezier2" variant="default" (click)="forkPinned(pin)" title="Dupliquer (fork)">
+            </sl-icon-button>
+            <sl-icon-button (click)="deletePinned(pin)" name="trash3" variant="danger" title="Supprimer"></sl-icon-button>
+            <sl-button size="small" class="action" pill (click)="ask(pin.messages[0])">Chat</sl-button>
+
+          </div>
+        </div>
+        <div *ngIf="pinnedDiscussions.length === 0" class="questions">
+          <div class="note">Aucune discussion épinglée</div>
+        </div>
+      </sl-tab-panel>
+
+      <sl-tab-panel name="sgc" class="queries">
+        <div class="questions" *ngFor="let query of getSGC(); let i = index">
+          <div>{{query.question}}  </div>
+          <sl-button size="small" class="action" pill (click)="ask(query)">Chat</sl-button>
+          <div class="note" [hidden]="!query.note">{{query.note}}</div>
+        </div>
+      </sl-tab-panel>
+
+      <sl-tab-panel name="memory" class="queries">
+        <div class="questions" *ngFor="let memory of memories; let i = index">
+          <div>
+            <div>
+              <span [title]="applyModeLabels[memory.applyMode || 'MEM_SMART']">{{ getMemoryApplyModeIcon(memory) }}</span> {{memory.title}}
+            </div>
+            <div hidden>
+              <div class="memory-summary" [innerHTML]="memory.summary"></div>
+            </div>
+          </div>
+          <div class="memory-actions">
+            <div class="memory-date">
+              {{memory.createdAt | date:'short'}}
+            </div>
+            <sl-icon-button
+              (click)="openEditMemoryDialog(memory)"
+              name="pencil"
+              variant="default"
+              title="Modifier">
+            </sl-icon-button>
+            <sl-icon-button (click)="deleteMemory(memory.id)" name="trash3" variant="danger" title="Supprimer"></sl-icon-button>
+          </div>
+        </div>
+
+        <div *ngIf="memories.length === 0" class="questions">
+          <div class="note">Aucune mémoire de discussion</div>
+        </div>
+      </sl-tab-panel>
+
+      <sl-tab-panel name="queries" class="queries">
+        <div class="categories" *ngFor="let category of categories">
+          <div class="questions" *ngFor="let query of getQuestions(category); let i = index">
+            <div>{{query.question}}  </div>
+            <sl-button size="small" class="action" pill (click)="ask(query)">Chat</sl-button>
+            <div class="note" [hidden]="!query.note">{{query.note}}</div>
+          </div>
+        </div>
+      </sl-tab-panel>
+
+    </sl-tab-group>
+
+    </div>
+  </div>
+
+  <sl-dialog
+    style="width: 40rem;"
+    [label]="'Modifier la mémoire'"
+    [open]="isEditMemoryDialogOpen"
+    (sl-request-close)="closeEditMemoryDialog()">
+    <div class="dialog-content">
+      <div style="font-size: 0.9em; color: var(--sl-color-neutral-600); margin-bottom: 0.5rem;" *ngIf="editingMemory?.title">
+        {{ editingMemory?.title }}
+      </div>
+
+      <sl-select
+        [value]="editMemoryApplyMode" size="small"
+        (sl-change)="onEditMemoryApplyModeChange($event)"
+        style="margin-bottom: 1rem;">
+        <sl-option *ngFor="let mode of applyModeOptions" [value]="mode">
+          {{ applyModeLabels[mode] }}
+        </sl-option>
+      </sl-select>
+
+      <sl-textarea
+        [value]="editMemoryBody"
+        resize="auto"
+        (sl-input)="onEditMemoryBodyInput($event)"
+        rows="10">
+      </sl-textarea>
+    </div>
+
+    <div slot="footer" class="dialog-actions">
+      <sl-button variant="default" (click)="closeEditMemoryDialog()">Annuler</sl-button>
+      <sl-button
+        variant="primary"
+        [disabled]="isEditMemorySaving || !editMemoryBody?.trim()"
+        [loading]="isEditMemorySaving"
+        (click)="saveEditedMemory()">
+        <sl-icon slot="prefix" name="check2"></sl-icon>
+        Enregistrer
+      </sl-button>
+    </div>
+  </sl-dialog>
+
+  <div class="footer ">
+  </div>
+
+</div>

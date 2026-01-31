@@ -1,0 +1,301 @@
+<!-- ============================================================================ -->
+<!-- PANEL SIDE - Menu de navigation (catégories, mes paniers)                  -->
+<!-- ============================================================================ -->
+<div class="swipe-panel side">
+
+  <div class="subscription menu-panel"
+       [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
+
+    <!-- MOBILE links -->
+    <ul class="subs">
+      <!-- FAVORITE -->
+      <li class="subs-item inverted" (click)="onFavorites()">
+        <i class="material-symbols-outlined">favorite</i>
+        <span>{{label.search_bookmark}}</span>
+      </li>
+
+      <!-- CUSTOM LINK -->
+      <li *ngIf="hub.home?.customLink?.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url">
+        <i class="material-symbols-outlined icon">person_celebrate</i>
+        <span>{{hub.home.customLink.label[locale]}}</span>
+      </li>
+
+      <li *ngIf="!hub.home?.customLink?.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">person_celebrate</i>
+        <span>{{label.nav_subscription_b2b}}</span>
+      </li>
+
+      <!-- SUBSCRIPTION b2c/b2b (current page - active) -->
+      <li class="subs-item inverted active" [routerLink]="['/store',store,'subscriptions']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">update</i>
+        <span>{{label.nav_subscription}}</span>
+      </li>
+
+      <!-- JAMES b2c/school -->
+      <li *ngIf="!isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_title_cta}}</span>
+      </li>
+      <li *ngIf="isB2BSchool" class="subs-item inverted" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_school}}</span>
+      </li>
+    </ul>
+
+    <!-- DESKTOP LINKS -->
+    <ul class="hide-sm">
+      <li [routerLink]="userRouterLink">
+        <span class="fa icon hide">👦</span>
+        <b>{{isAuthenticated?label.nav_account:label.nav_login}}</b>
+      </li>
+      <li [routerLink]="hub.home?.customLink?.url" [hidden]="!hub.home?.customLink?.url">
+        <b>{{hub.home?.customLink?.label[locale]}}</b>
+      </li>
+      <li [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home?.customLink?.url">
+        <b>{{label.nav_subscription_b2b}}</b>
+      </li>
+      <li class="selected" [routerLink]="'/store/'+store+'/subscriptions'">
+        <b>{{label.nav_subscription}}</b>
+      </li>
+      <li [hidden]="!isAuthenticated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <b>{{label.james_school}}</b>
+      </li>
+      <li class="separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <b>{{label.james_title_cta}}</b>
+      </li>
+    </ul>
+
+    <!-- LISTE DES ABONNEMENTS ACTIFS (navigation rapide) -->
+    <ul class="" *ngIf="hasContracts">
+      <li *ngFor="let contract of openContracts"
+          class="subs-item"
+          [class.selected]="currentContract?.id === contract.id"
+          (click)="openContractDetail(contract)">
+        <i class="material-symbols-outlined icon hide-md hide-lg">shopping_basket</i>
+        <span>{{getContractDescription(contract)}}</span>
+      </li>
+    </ul>
+
+    <!-- AUCUN ABONNEMENT -->
+    <div class="empty-state" *ngIf="!hasContracts && isReady">
+      <p class="hide-sm">{{slabel.list_empty}}</p>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL CENTER - Contenu principal (produits pour abonnements)               -->
+<!-- ============================================================================ -->
+<div class="swipe-panel center">
+
+  <!-- HEADER -->
+  <div class="subscription-header">
+    <h1>{{slabel.page_title}}</h1>
+    <p>{{slabel.page_subtitle}}</p>
+  </div>
+
+  <!-- CALENDAR pour sélection jour de livraison -->
+  <kng-calendar
+    [user]="user"
+    [config]="config"
+    (updated)="$event">
+  </kng-calendar>
+
+  <!-- OPTIONS ABONNEMENT (visible en mode création) -->
+  <div class="subscription-options" *ngIf="isCreateState">
+    <kng-subscription-option
+      [hub]="hub"
+      [user]="user"
+      [shippingDay]="currentShippingDay">
+    </kng-subscription-option>
+  </div>
+
+  <!-- PRODUITS DISPONIBLES EN ABONNEMENT -->
+  <div class="product-container" *ngIf="products.length">
+    <kng-product-grouped-list
+         clazz="subscription"
+         [useMaxCat]="products.length > 40"
+         [alphasort]="false"
+         [displayVendor]="true"
+         [showMore]="products.length > 10"
+         [config]="config"
+         [user]="user"
+         [contentCategories]="categories"
+         [contentProducts]="products">
+    </kng-product-grouped-list>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" *ngIf="isLoading">
+    <p>Chargement...</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-products" *ngIf="!isLoading && !products.length && isReady">
+    <p>Aucun produit disponible pour le moment.</p>
+  </div>
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL RIGHT - Sidebar (liste abos, détail abo, création)                   -->
+<!-- ============================================================================ -->
+<div class="swipe-panel right">
+
+  <div class="subscription sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
+
+    <!-- ======================================== -->
+    <!-- STATE: LIST - Liste des abonnements     -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isListState">
+
+      <!-- TITRE -->
+      <div class="kng-boxed first">
+        <div class="content">
+          <h3>{{slabel.list_title}}</h3>
+        </div>
+      </div>
+
+      <!-- LISTE DES CONTRATS -->
+      <div class="contracts-list" *ngIf="hasContracts">
+        <div class="contract-card"
+             *ngFor="let contract of openContracts"
+             (click)="openContractDetail(contract)">
+
+          <div class="contract-header">
+            <span class="status" [class.active]="contract.status === 'active'"
+                                 [class.paused]="contract.status !== 'active'">
+              {{contract.status === 'active' ? slabel.list_active : slabel.list_paused}}
+            </span>
+            <span class="frequency">{{getContractDescription(contract)}}</span>
+          </div>
+
+          <div class="contract-info">
+            <span class="items-count">{{contract.items?.length || 0}} articles</span>
+            <span class="next-delivery" *ngIf="contract.nextInvoice">
+              {{slabel.list_next_delivery}}: {{contract.nextInvoice | date:'d MMM'}}
+            </span>
+          </div>
+
+          <!-- Indicateur d'erreur paiement -->
+          <div class="payment-warning"
+               *ngIf="contract.latestPaymentIntent?.status === 'requires_action' ||
+                      contract.latestPaymentIntent?.status === 'requires_payment_method'">
+            <i class="material-symbols-outlined">warning</i>
+            <span>Action requise</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state" *ngIf="!hasContracts && isReady">
+        <div class="kng-boxed">
+          <div class="content centered">
+            <i class="material-symbols-outlined large">update</i>
+            <h4>{{slabel.page_empty_title}}</h4>
+            <p>{{slabel.page_empty_subtitle}}</p>
+            <button class="default primary" (click)="openCreatePanel()">
+              {{slabel.page_cta_create}}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA CRÉER -->
+      <div class="kng-boxed" *ngIf="hasContracts">
+        <div class="content">
+          <button class="default secondary width-100" (click)="openCreatePanel()">
+            <i class="material-symbols-outlined">add</i>
+            {{slabel.page_cta_create}}
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- ======================================== -->
+    <!-- STATE: DETAIL - Détail d'un abonnement  -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isDetailState && currentContract">
+
+      <!-- HEADER avec bouton retour -->
+      <div class="panel-header">
+        <button class="back-button" (click)="closePanel()">
+          <i class="material-symbols-outlined">arrow_back</i>
+        </button>
+        <h3>{{slabel.subtitle_subscription}}</h3>
+      </div>
+
+      <!-- COMPOSANT CONTROL (logique existante) -->
+      <kng-subscription-control
+        [config]="config"
+        [user]="user">
+      </kng-subscription-control>
+
+    </ng-container>
+
+    <!-- ======================================== -->
+    <!-- STATE: CREATE - Création nouvel abo     -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isCreateState">
+
+      <!-- HEADER avec bouton retour -->
+      <div class="panel-header">
+        <button class="back-button" (click)="closePanel()">
+          <i class="material-symbols-outlined">arrow_back</i>
+        </button>
+        <h3>{{slabel.create_title}}</h3>
+      </div>
+
+      <!-- INSTRUCTIONS -->
+      <div class="kng-boxed">
+        <div class="content">
+          <p>{{slabel.create_subtitle}}</p>
+
+          <div class="steps">
+            <div class="step">
+              <span class="step-number">1</span>
+              <span>{{slabel.create_step_products}}</span>
+            </div>
+            <div class="step">
+              <span class="step-number">2</span>
+              <span>{{slabel.create_step_frequency}}</span>
+            </div>
+            <div class="step">
+              <span class="step-number">3</span>
+              <span>{{slabel.create_step_confirm}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTIONS DE FRÉQUENCE -->
+      <div class="kng-boxed">
+        <div class="content">
+          <kng-subscription-option
+            [hub]="hub"
+            [user]="user"
+            [shippingDay]="currentShippingDay">
+          </kng-subscription-option>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="kng-boxed">
+        <div class="content">
+          <button class="default primary width-100" (click)="navigateToProducts()">
+            {{slabel.create_cta_add_products}}
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </div>
+
+</div>
+
+<!-- ROUTER OUTLET pour sous-routes -->
+<router-outlet></router-outlet>

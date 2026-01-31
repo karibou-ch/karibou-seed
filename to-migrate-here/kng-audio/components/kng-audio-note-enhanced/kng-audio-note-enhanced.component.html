@@ -1,0 +1,97 @@
+<div class="audio-note-enhanced"
+     [class.recording]="audioState.isRecording"
+     [class.processing]="audioState.isProcessing"
+     [class.error]="audioState.hasError">
+
+  <!-- ✅ Titre et contexte selon type -->
+
+  <!-- ✅ Contenu personnalisé via ng-content -->
+  <ng-content select="[slot=header-full]" *ngIf="!compact"></ng-content>
+
+  <!-- ✅ Option panier supprimée - pas nécessaire pour transcription -->
+
+  <!-- ✅ Gestion erreurs améliorée -->
+  <div class="error-section" *ngIf="audioState.hasError">
+    <div class="error-message">
+      <span class="material-symbols-outlined">error</span>
+      <span>{{ audioState.errorMessage }}</span>
+    </div>
+    <button *ngIf="audioState.canRetry" [disabled]="disabled" hidden
+            class="retry-btn btn default"
+            (click)="onRetry()">
+      <span class="material-symbols-outlined">refresh</span>
+      {{ $i18n.action_retry }}
+    </button>
+    <sl-button class="dismiss-btn" size="small" (click)="dismissError()" [disabled]="disabled">
+      {{ $i18n.action_dismiss }}
+    </sl-button>
+  </div>
+
+  <!-- ✅ Contrôles audio compacts en ligne avec margin positioning -->
+  <div class="audio-controls">
+    <!-- ✅ Contenu personnalisé via ng-content en mode compact -->
+    <ng-content select="[slot=header-compact]" *ngIf="compact && !audioState.started"></ng-content>
+
+    <!-- Visualiseur audio - à gauche  -->
+    <div class="visual-audio"
+         [hidden]="!audioState.isRecording">
+      <kng-audio-visualizer
+        [showRealtime]="false"
+        [showWaveform]="false"
+        [showVolumeMeter]="true"
+        [showActivity]="false"
+        [showLabel]="false">
+      </kng-audio-visualizer>
+      <span class="timer">{{ recordingTime }}s</span>
+    </div>
+
+    <!-- Indicateur processing - centré -->
+    <div class="processing-indicator"
+         [hidden]="!isProcessingOrTranscribing">
+         <sl-spinner></sl-spinner>
+         <span hidden>{{ getLoadingMessage() }}</span>
+    </div>
+
+    <!-- Bouton micro initial - à droite -->
+    <sl-button size="medium"
+               variant="primary"
+               circle
+               [hidden]="audioState.isRecording || isProcessingOrTranscribing"
+               (click)="toggleRecording()">
+      <sl-icon name="mic"></sl-icon>
+    </sl-button>
+
+    <!-- Bouton stop - à droite pendant recording -->
+    <sl-button size="medium"
+               variant="danger"
+               circle
+               [hidden]="!audioState.isRecording"
+               (click)="toggleRecording()">
+      <sl-icon name="stop"></sl-icon>
+    </sl-button>
+
+  </div>
+
+  <!-- ✅ Section transcription/réponse -->
+  <div class="transcription-section" *ngIf="audioState.transcription && displayTranscription">
+
+    <!-- Contenu personnalisé -->
+    <ng-content select="[slot=response]"></ng-content>
+
+    <!-- Fallback par défaut -->
+    <div class="default-response" *ngIf="!hasCustomResponse">
+      <div class="transcription-content" [innerHTML]="audioState.transcription"></div>
+    </div>
+
+    <!-- ✅ Lien panier supprimé - pas nécessaire pour transcription -->
+
+    <!-- Métadonnées -->
+    <!-- <div class="audio-metadata" *ngIf="audioState.duration">
+      <span class="duration">{{ $i18n.message_duration }}: {{ formatDuration(audioState.duration) }}</span>
+    </div> -->
+  </div>
+
+  <!-- ✅ Contenu personnalisé final -->
+  <ng-content select="[slot=footer]"></ng-content>
+
+</div>

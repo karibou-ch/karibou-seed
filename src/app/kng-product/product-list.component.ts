@@ -20,7 +20,8 @@ import {
   ShopService,
   Order,
   CartSubscription,
-  CalendarService
+  CalendarService,
+  LoaderService
 } from 'kng2-core';
 
 import { combineLatest, timer } from 'rxjs';
@@ -104,7 +105,8 @@ export class ProductListComponent implements OnInit {
     public $router: Router,
     public $route: ActivatedRoute,
     public cdr: ChangeDetectorRef,
-    private $calendar: CalendarService
+    private $calendar: CalendarService,
+    private $loader: LoaderService
   ) {
     this.cache = {
       products: []
@@ -124,10 +126,12 @@ export class ProductListComponent implements OnInit {
       when: true
     };
 
-    const loader = this.$route.snapshot.parent.data.loader;
-    this.config = loader[0];
-    this.user = loader[1];
-    this.category.categories = loader[2];
+    // ✅ Utiliser LoaderService.getLatestCoreData() (synchrone, toujours disponible)
+    const { config, user, categories } = this.$loader.getLatestCoreData();
+    this.config = config;
+    this.user = user;
+    this.category.categories = categories || [];
+    
     this.activeMenu = true;
     this.getNextPage.bind(this);
     this.scrollDirection = 0;

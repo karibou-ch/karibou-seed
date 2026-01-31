@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  AfterViewInit,
   ElementRef,
   ViewEncapsulation,
   ChangeDetectionStrategy,
@@ -40,7 +41,7 @@ export interface CategoryView {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductGroupedListComponent implements OnInit {
+export class ProductGroupedListComponent implements OnInit, AfterViewInit {
   private _scrollEvent$;
 
   @ViewChildren('section') sections: QueryList<ElementRef>;
@@ -225,6 +226,23 @@ export class ProductGroupedListComponent implements OnInit {
     this.registerScrollEvent();
   }
 
+  ngAfterViewInit() {
+    // Détecter la visibilité initiale des sections après le rendu
+    // Utiliser un petit délai pour laisser le DOM se stabiliser
+    setTimeout(() => {
+      this.detectVisibility(window.scrollY || 0);
+      this.$cdr.markForCheck();
+    }, 100);
+
+    // Observer les changements de sections (quand les produits arrivent)
+    this.sections.changes.subscribe(() => {
+      setTimeout(() => {
+        this.detectVisibility(window.scrollY || 0);
+        this.$cdr.markForCheck();
+      }, 100);
+    });
+  }
+
   isInContainer(element, name) {
     const container = this.scrollContainer ? this.scrollContainer.nativeElement : document.documentElement;
 
@@ -278,14 +296,26 @@ export class ProductGroupedListComponent implements OnInit {
       return;
     }
 
+    let changed = false;
     this.sections.forEach(container => {
       const className = container.nativeElement.getAttribute('name');
       this.current[className] = this.isInContainer(container.nativeElement, className);
       if (!this.visibility[className] && this.current[className]) {
         this.visibility[className] = true;
-        this.$cdr.markForCheck();
+        changed = true;
       }
     });
+
+    // Force Angular à réévaluer les bindings en recréant l'objet
+    if (changed) {
+      this.visibility = { ...this.visibility };
+      this.$cdr.detectChanges();
+    }
+  }
+
+  // Méthode pour le template (plus fiable que l'accès direct à l'objet)
+  isVisible(slug: string): boolean {
+    return !!this.visibility[slug];
   }
 
   doDirectionUp() {
@@ -398,7 +428,8 @@ export class ProductGroupedListComponent implements OnInit {
     //
     // read documentation about renderer
     // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
-    const elem = this.scrollContainer ? this.scrollContainer.nativeElement : document;
+    // NOTE: Utiliser window au lieu de document pour capturer le scroll global
+    const elem = this.scrollContainer ? this.scrollContainer.nativeElement : window;
     this._scrollEvent$ = fromEvent(elem, 'scroll').subscribe(this.windowScroll.bind(this));
   }
 
@@ -436,7 +467,7 @@ export class ProductGroupedListComponent implements OnInit {
     const offset = el.offsetTop;
     //
     // type ScrollLogicalPosition = "start" | "center" | "end" | "nearest"
-    el.scrollIntoView(<any>{ behavior: 'smooth', block: 'start' });
+    el.scrollIntoView(<any>{ behavior: 'instant', block: 'start' });
 
     // const scrollEl = this.scrollContainer ? this.scrollContainer.nativeElement : document;
     // const $thisRect = this.$el.nativeElement.getBoundingClientRect();
@@ -498,7 +529,11 @@ export class ProductGroupedListComponent implements OnInit {
   // detect scrall motion and hide component
   // @HostListener('window:scroll', ['$event'])
   windowScroll($event?) {
-    const scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
+    // NOTE: Pour window scroll, utiliser window.scrollY ou pageYOffset
+    // $event.target.scrollTop ne fonctionne pas avec window
+    const scrollPosition = this.scrollContainer
+      ? ($event?.target?.scrollTop || 0)
+      : (window.scrollY || window.pageYOffset || 0);
     //
     // initial position, event reset value
     if (scrollPosition == 0) {
@@ -547,12 +582,9 @@ export class ProductGroupedListComponent implements OnInit {
     //this.direction$.next(5*(Math.round( this.scrollDirection / 5)));
     this.direction$.next(this.scrollDirection);
     this.updateCurrentCategory();
-    //
-    // force repaint when parent changeDetection is onPush
-    if (!this.scrollContainer) {
-      this.$cdr.markForCheck();
-    }
 
+    // Force repaint (ChangeDetection OnPush)
+    this.$cdr.markForCheck();
   }
 
 }

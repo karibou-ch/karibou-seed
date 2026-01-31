@@ -17,11 +17,11 @@
     </ul>
   </div>
 
-  <!-- Messages -->
+  <!-- Messages (utilise displayMessages pour supporter lastOnly) -->
   <div class="assistant"
        [class.assistant-user]="msg.role === 'user'"
        [class.last-message]="last"
-       *ngFor="let msg of messages; let idx = index; let last = last">
+       *ngFor="let msg of displayMessages; let idx = index; let last = last">
     <div [ngClass]="msg.role === 'assistant' ? 'assistant' : 'user'">
 
       <!-- Steps pendant l'exécution -->

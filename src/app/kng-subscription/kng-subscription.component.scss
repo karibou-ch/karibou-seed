@@ -1,0 +1,365 @@
+// ============================================================================
+// Styles partagés pour le menu latéral swipeable
+// ============================================================================
+@import '../../styles/kng-side-menu';
+
+// ============================================================================
+// HOST - Le composant devient transparent pour que les swipe-panel
+// participent directement au layout parent (grid ou flex)
+// ============================================================================
+:host {
+  display: contents;
+}
+
+// ============================================================================
+// STYLES SPÉCIFIQUES SUBSCRIPTION
+// ============================================================================
+
+// HEADER
+.subscription-header {
+  padding: 1rem;
+  text-align: center;
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--mdc-theme-text-primary-on-background);
+  }
+
+  p {
+    margin: 0;
+    color: var(--mdc-theme-text-secondary-on-background);
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 900px) {
+    text-align: left;
+    padding: 1rem 0;
+  }
+}
+
+// OPTIONS SUBSCRIPTION (en mode création)
+.subscription-options {
+  padding: 1rem;
+  background-color: var(--mdc-theme-appbar-light);
+  border-radius: 1rem;
+  margin: 1rem;
+
+  @media (min-width: 900px) {
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+// KNG-BOXED adaptations
+.swipe-panel.right .kng-boxed {
+  width: calc(100% - 2rem);
+}
+
+.swipe-panel.side .kng-boxed {
+  @media (min-width: 600px) {
+    width: calc(100% - 2rem);
+  }
+}
+
+@media (max-width: 599px) {
+  .swipe-panel .kng-boxed {
+    width: calc(100% - 2rem);
+  }
+}
+
+// ============================================================================
+// PANEL RIGHT - Sidebar subscriptions
+// ============================================================================
+// .swipe-panel.right .sidebar-panel.subscription {
+.sidebar-panel.subscription {
+  padding: 0.5rem;
+  width: 100%;
+}
+
+// PANEL HEADER (avec bouton retour)
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid var(--mdc-theme-divider);
+  margin-bottom: 1rem;
+
+  h3 {
+    margin: 0;
+    font-size: var(--wa-font-size-l);
+    font-weight: 500;
+  }
+
+  .back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--mdc-theme-text-primary-on-background);
+    transition: background-color var(--wa-transition-medium);
+
+    &:hover {
+      background-color: var(--mdc-theme-hover);
+    }
+  }
+}
+
+// CONTRACTS LIST
+.contracts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.contract-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--mdc-theme-appbar-light);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all var(--wa-transition-medium) ease;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(--mdc-theme-hover);
+    border-color: var(--mdc-theme-primary-light);
+  }
+
+  .contract-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .status {
+      font-size: var(--wa-font-size-xs);
+      font-weight: 500;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      text-transform: uppercase;
+
+      &.active {
+        background-color: var(--mdc-theme-success-light, #e8f5e9);
+        color: var(--mdc-theme-success, #2e7d32);
+      }
+
+      &.paused {
+        background-color: var(--mdc-theme-warning-light, #fff3e0);
+        color: var(--mdc-theme-warning, #f57c00);
+      }
+    }
+
+    .frequency {
+      font-size: var(--wa-font-size-s);
+      color: var(--mdc-theme-text-secondary-on-background);
+    }
+  }
+
+  .contract-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--mdc-theme-text-hint-on-background);
+
+    .items-count {
+      font-weight: 500;
+    }
+  }
+
+  .payment-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--mdc-theme-error-light, #ffebee);
+    color: var(--mdc-theme-error, #c62828);
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    i {
+      font-size: var(--wa-font-size-m);
+    }
+  }
+}
+
+// EMPTY STATE
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+
+  .kng-boxed .content.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    i.large {
+      font-size: 3rem;
+      color: var(--mdc-theme-text-hint-on-background);
+    }
+
+    h4 {
+      margin: 0;
+      font-size: var(--wa-font-size-l);
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0;
+      color: var(--mdc-theme-text-secondary-on-background);
+      font-size: var(--wa-font-size-s);
+      max-width: 250px;
+    }
+  }
+}
+
+// CRÉATION - STEPS
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--mdc-theme-primary);
+      color: white;
+      border-radius: 50%;
+      font-size: var(--wa-font-size-xs);
+      font-weight: 600;
+    }
+
+    span {
+      font-size: var(--wa-font-size-s);
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+  }
+}
+
+// ============================================================================
+// PANEL CENTER - Produits
+// ============================================================================
+
+.product-container {
+  margin-top: 0;
+  margin-bottom: 100px;
+  padding: 0;
+  width: 100%;
+  min-height: 30vh;
+
+  @media (max-width: 899px) {
+    padding: 0;
+    width: calc(100% - 2rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  > div {
+    padding-bottom: 10px;
+    background: var(--mdc-theme-background-container);
+  }
+}
+
+// LOADING / EMPTY
+.loading-state,
+.empty-products {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--mdc-theme-text-secondary-on-background);
+}
+
+// ============================================================================
+// CALENDAR
+// ============================================================================
+
+kng-calendar {
+  @media (max-width: 899px) {
+    padding: 1rem;
+    width: calc(100% - 2rem) !important;
+  }
+
+  .calendar-container {
+    .calendar {
+      background-color: var(--mdc-theme-appbar-light) !important;
+      padding: 10px;
+      flex: 1;
+    }
+
+    .calendar .list .element {
+      width: 45px;
+      height: 55px;
+    }
+  }
+}
+
+// ============================================================================
+// BUTTONS
+// ============================================================================
+
+button.default {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: var(--wa-font-size-s);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--wa-transition-medium) ease;
+
+  &.primary {
+    background: var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary-text);
+
+    &:hover {
+      background: var(--mdc-theme-primary-dark);
+    }
+  }
+
+  &.secondary {
+    background: var(--mdc-theme-secondary-light);
+    color: var(--mdc-theme-secondary);
+
+    &:hover {
+      background: var(--mdc-theme-secondary);
+      color: white;
+    }
+  }
+
+  &.width-100 {
+    width: 100%;
+  }
+
+  i {
+    font-size: var(--wa-font-size-l);
+  }
+}

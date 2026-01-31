@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subscription Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#8B5E3C",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1F2937",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "12px",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="max-w-md mx-auto min-h-screen flex flex-col pb-10">
+<header class="p-6 pt-10">
+<h1 class="text-2xl font-bold tracking-tight">mardi chaque mois</h1>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Actif depuis mardi 23 déc. 2025</p>
+</header>
+<main class="px-4 flex-grow">
+<section class="mb-8">
+<div class="flex justify-between items-center mb-4 px-2">
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Les articles de votre abonnement</h2>
+</div>
+<div class="bg-card-light dark:bg-card-dark rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<span class="material-icons-outlined text-primary text-xl">history</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium">Panier Fruits BIO</span>
+<span class="text-xs text-slate-500">50,00 fr</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-full p-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 shadow-sm">
+<span class="material-icons-outlined text-sm">remove</span>
+</button>
+<span class="px-3 text-sm font-semibold">1</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 shadow-sm">
+<span class="material-icons-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-red-500 p-1">
+<span class="material-icons-outlined text-lg">cancel</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<span class="material-icons-outlined text-primary text-xl">history</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium">Carton de poires BIO - 5kg</span>
+<span class="text-xs text-slate-500">33,75 fr</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-full p-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 shadow-sm">
+<span class="material-icons-outlined text-sm">remove</span>
+</button>
+<span class="px-3 text-sm font-semibold">1</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 shadow-sm">
+<span class="material-icons-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-red-500 p-1">
+<span class="material-icons-outlined text-lg">cancel</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-icons-outlined text-primary text-xl">history</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium">Panier Fruits FRAIS</span>
+<span class="text-xs text-slate-500">130,00 fr</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-full p-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 shadow-sm">
+<span class="material-icons-outlined text-sm">remove</span>
+</button>
+<span class="px-3 text-sm font-semibold">2</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 shadow-sm">
+<span class="material-icons-outlined text-sm">add</span>
+</button>
+</div>
+<button class="text-red-500 p-1">
+<span class="material-icons-outlined text-lg">cancel</span>
+</button>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 flex items-center justify-center gap-2 py-3 px-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-primary font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<span class="material-icons-outlined">shopping_cart</span>
+                    Ajouter un article
+                </button>
+</section>
+<section class="mb-8">
+<div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800">
+<div class="flex justify-between mb-2 text-sm text-slate-500 dark:text-slate-400">
+<span>Frais de service</span>
+<span>12,83 fr</span>
+</div>
+<div class="flex justify-between mb-4 text-sm text-slate-500 dark:text-slate-400">
+<span>Frais de livraison</span>
+<span>8,00 fr</span>
+</div>
+<div class="h-px bg-slate-100 dark:bg-slate-800 mb-4"></div>
+<div class="flex justify-between items-center">
+<span class="text-lg font-bold">Total</span>
+<span class="text-xl font-bold text-primary">234,58 fr</span>
+</div>
+</div>
+</section>
+<section class="mb-8">
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4 px-2">Vos options</h2>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 uppercase">Fréquence</span>
+<span class="text-sm font-medium">chaque mois / mardi</span>
+</div>
+<span class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">16:00 - 19:30</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 uppercase">Pause jusqu'au</span>
+<span class="text-sm font-medium">dim. 1 févr.</span>
+</div>
+<span class="material-icons-outlined text-slate-400">calendar_today</span>
+</div>
+</div>
+</section>
+</main>
+<footer class="p-4 space-y-4">
+<button class="w-full bg-slate-800 dark:bg-slate-700 text-white py-4 rounded-2xl font-semibold shadow-lg active:scale-[0.98] transition-all">
+                Mettre en pause jusqu'au dim. 1 févr.
+            </button>
+<div class="flex flex-col items-center">
+<button class="text-sm text-red-500 font-medium py-2 px-4 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-full transition-colors">
+                    Annuler votre abonnement
+                </button>
+</div>
+<button class="w-full bg-red-600 text-white py-3 rounded-2xl font-semibold active:bg-red-700 transition-colors">
+                Supprimer
+            </button>
+</footer>
+</div>
+
+</body></html>

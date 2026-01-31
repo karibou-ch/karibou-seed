@@ -21,6 +21,7 @@ import { NgxStripeModule } from 'ngx-stripe';
 
 import { IsAuthenticatedGard } from '../common';
 import { KngCommonModule } from '../common/common.module';
+import { KngSubscriptionModule } from '../kng-subscription/kng-subscription.module';
 import { KngUserReminderComponent } from '../shared/kng-user-reminder/kng-user-reminder.component';
 import { UserInvoicesComponent } from './user-invoices.component';
 import { KngInvoiceComponent } from '../kng-invoice/kng-invoice.component';
@@ -77,6 +78,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     KngSharedModule,
     KngCommonModule,
+    KngSubscriptionModule, // ✅ Import pour kng-subscription-control
     RouterModule.forChild(routes)
   ],
   exports: [

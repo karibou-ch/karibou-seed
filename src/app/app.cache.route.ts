@@ -2,36 +2,69 @@ import { RouteReuseStrategy } from '@angular/router/';
 import { ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
 import { Injectable } from "@angular/core";
 
-//
-// FIXME RouteReuseStrategy
-// https://itnext.io/cache-components-with-angular-routereusestrategy-3e4c8b174d5f
-// https://stackoverflow.com/a/41515648
+/**
+ * CacheRouteReuseStrategy - Stratégie de cache pour Angular Router
+ * 
+ * ## Objectif
+ * Préserver l'état des composants (DOM + scroll) lors de la navigation,
+ * notamment pour le pattern "liste → détail → retour liste".
+ * 
+ * ## Flux de fonctionnement
+ * 
+ * ```
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │                         NAVIGATION                              │
+ * │                                                                 │
+ * │  1. QUITTER une route (ex: home → product)                      │
+ * │     └─ shouldDetach() → true = stocker la vue                   │
+ * │        └─ Capture scrollY                                       │
+ * │        └─ store() → storedRouteHandles.set(path, vue)           │
+ * │                                                                 │
+ * │  2. PENDANT la navigation                                       │
+ * │     └─ shouldReuseRoute() → met à jour allowRetriveCache        │
+ * │        Si on va de products → home: allowRetriveCache['home']=true│
+ * │                                                                 │
+ * │  3. ARRIVER sur une route (ex: products → home)                 │
+ * │     └─ shouldAttach() → true si (allowRetriveCache && hasHandle)│
+ * │        └─ retrieve() → retourne la vue cachée + restaure scroll │
+ * │                                                                 │
+ * └─────────────────────────────────────────────────────────────────┘
+ * ```
+ * 
+ * ## Routes cachées
+ * - `home` : Page d'accueil avec liste de produits
+ * - `subscriptions` : Page des abonnements
+ * - `category/:category` : Listes de catégories (enfants de home)
+ * 
+ * ## Condition de restauration
+ * Le cache est restauré UNIQUEMENT quand on revient depuis une route produit
+ * (`products/:sku` ou `products/:sku/:title`) vers une route cacheable.
+ * 
+ * @see https://itnext.io/cache-components-with-angular-routereusestrategy-3e4c8b174d5f
+ * @see https://stackoverflow.com/a/41515648
+ */
 @Injectable()
 export class CacheRouteReuseStrategy implements RouteReuseStrategy {
+  // Cache des composants détachés (vue complète)
   storedRouteHandles = new Map<string, DetachedRouteHandle>();
+  
+  // Cache des positions de scroll associées aux routes
+  private scrollPositions = new Map<string, number>();
+  
+  // Routes qui peuvent être restaurées depuis le cache
+  // La valeur passe à `true` quand on navigue FROM products VERS cette route
   allowRetriveCache = {
     'category/:category': false,
-    'category/:category/:child': false
-  };
-
-  allowCache = {
+    'category/:category/:child': false,
     'home': false,
-    'grocery': false,
-    'cellar': false,
-    'subscription': true,
-    'selection': false
+    'subscriptions': false
   };
 
-  clearCache(){
+  clearCache() {
     this.storedRouteHandles.clear();
-    this.allowCache = {
-      'home': false,
-      'grocery': false,
-      'cellar': false,
-      'subscription': true,
-      'selection': false
-    };
-  
+    this.scrollPositions.clear();
+    // Reset tous les flags de restauration
+    Object.keys(this.allowRetriveCache).forEach(key => this.allowRetriveCache[key] = false);
   }
 
 
@@ -48,36 +81,43 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    * @issue https://github.com/angular/angular/issues/41012
    */
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    //
-    // ONLY AVAILABLE FOR /HOME/
     const result = (future.routeConfig === curr.routeConfig);
-    const path = this.getPath(future);
+    const futurePath = this.getPath(future);
+    const currPath = this.getPath(curr);
 
+    // ============================================================================
+    // CACHE POUR NAVIGATION: home/subscriptions <-> products
+    // ============================================================================
+    
+    // Quand on revient de products vers home
+    this.allowRetriveCache['home'] = (
+      this.isProductRoute(currPath) && futurePath === 'home'
+    );
 
+    // Quand on revient de products vers subscriptions
+    this.allowRetriveCache['subscriptions'] = (
+      this.isProductRoute(currPath) && futurePath === 'subscriptions'
+    );
 
-    this.allowRetriveCache['category/:category'] = (this.getPath(curr) === 'products/:sku/:title' &&
-                                                    path === 'category/:category');
+    // ============================================================================
+    // CACHE: category <-> products (navigation dans les listes de produits)
+    // ============================================================================
+    this.allowRetriveCache['category/:category'] = (
+      this.isProductRoute(currPath) && futurePath === 'category/:category'
+    );
 
-    this.allowRetriveCache['category/:category/:child'] = (this.getPath(curr) === 'products/:sku/:title' &&
-                                                           path === 'category/:category/:child');
-
-    // if(this.allowRetriveCache['category/:category/:child'] || this.allowRetriveCache['category/:category']) {
-    //   console.log('--DEBUG shouldReuseRoute', this.getPath(curr), ' current', path);
-    // }
-
-    //
-    // when changing departement
-    // clear Caches
-    if (['home', 'cellar', 'grocery', 'selection', 'wellness'].indexOf(path) > -1) {
-      const allowCacheValues = Object.keys(this.allowCache).map(key => this.allowCache[key]);
-      if (allowCacheValues.some(value => value) && !this.allowCache[path]) {
-        Object.keys(this.allowCache).forEach(key => this.allowCache[key] = false);
-        this.storedRouteHandles.clear();
-      }
-      this.allowCache[path] = true;
-    }
+    this.allowRetriveCache['category/:category/:child'] = (
+      this.isProductRoute(currPath) && futurePath === 'category/:category/:child'
+    );
 
     return result;
+  }
+
+  /**
+   * Vérifie si le path est une route produit
+   */
+  private isProductRoute(path: string): boolean {
+    return path === 'products/:sku/:title' || path === 'products/:sku';
   }
 
   /**
@@ -92,9 +132,8 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
     const path = this.getPath(route);
-    const retrieve = !!(this.allowRetriveCache[path] && this.storedRouteHandles.has(path));
-    //console.log('--DEBUG shouldAttach ', path, ': fire retrieve', retrieve);
-    return retrieve;
+    const hasHandle = this.storedRouteHandles.has(path);
+    return !!(this.allowRetriveCache[path] && hasHandle);
   }
 
   /**
@@ -104,8 +143,17 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    * @returns DetachedRouteHandle object which can be used to render the component
    */
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
-    //console.log('--DEBUG retrieve', this.getPath(route));
-    return this.storedRouteHandles.get(this.getPath(route)) as DetachedRouteHandle;
+    const path = this.getPath(route);
+    const handle = this.storedRouteHandles.get(path) as DetachedRouteHandle;
+    
+    // Restaurer la position de scroll après réattachement du DOM
+    const scrollY = this.scrollPositions.get(path);
+    console.log('--DEBUG retrieve', path, 'scrollY=', scrollY);
+    if (scrollY !== undefined && scrollY > 0) {
+      setTimeout(() => window.scrollTo(0, scrollY), 50);
+    }
+    
+    return handle;
   }
 
   /**
@@ -121,9 +169,18 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    */
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
     const path = this.getPath(route);
-    const store = !!(this.allowRetriveCache.hasOwnProperty(path));
-    //console.log('--DEBUG shouldDettach ', path, ': fire STORE', store);
-    return store;
+    
+    // Stocker home/subscriptions quand on les quitte (pour restauration via retrieve)
+    if (path === 'home' || path === 'subscriptions') {
+      // Capturer le scroll AVANT la navigation (sinon Angular le réinitialise)
+      const scrollY = window.scrollY || window.pageYOffset || document.documentElement?.scrollTop || 0;
+      console.log('--DEBUG shouldDetach', path, 'scrollY=', scrollY);
+      this.scrollPositions.set(path, scrollY);
+      return true;
+    }
+    
+    // Stocker aussi les routes category (navigation dans les listes)
+    return !!(this.allowRetriveCache.hasOwnProperty(path));
   }
   /**
    * This method is invoked only if the shouldDetach returns true. 
@@ -133,15 +190,22 @@ export class CacheRouteReuseStrategy implements RouteReuseStrategy {
    */
   store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void {
     const path = this.getPath(route);
-    //console.log('--DEBUG store', path);
     this.storedRouteHandles.set(path, detachedTree);
   }
 
-  //
-  // FORCED in home,cellar,selection,wellness
+  /**
+   * Extrait le path de la route pour l'utiliser comme clé de cache
+   */
   private getPath(route: ActivatedRouteSnapshot): string {
     if (route.routeConfig !== null && route.routeConfig.path !== null) {
-      return route.routeConfig.path;
+      const path = route.routeConfig.path;
+      
+      // Pour les modules lazy-loaded avec path: '', on cherche dans le path du parent
+      if (path === '' && route.parent?.routeConfig?.path) {
+        return route.parent.routeConfig.path;
+      }
+      
+      return path;
     }
     return '';
   }

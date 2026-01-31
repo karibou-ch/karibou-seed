@@ -32,8 +32,10 @@ import { KngRippleDirective } from './kng-ripple.directive';
 import { NgxStripeModule } from 'ngx-stripe';
 import { KngAddressComponent } from './kng-address/kng-address.component';
 import { KngPaymentComponent } from './kng-payment/kng-user-payment.component';
-import { KngSubscriptionControlComponent } from './kng-subscription-control/kng-subscription-control.component';
-import { KngSubscriptionItemComponent } from './kng-subscription-item/kng-subscription-item.component';
+// ✅ MIGRATION: KngSubscriptionControlComponent et KngSubscriptionItemComponent
+// déplacés vers kng-subscription module
+// import { KngSubscriptionControlComponent } from './kng-subscription-control/kng-subscription-control.component';
+// import { KngSubscriptionItemComponent } from './kng-subscription-item/kng-subscription-item.component';
 import { KngSignupComponent } from './kng-signup/kng-signup.component';
 import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
 import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
@@ -55,8 +57,7 @@ import { KngTopAppbarComponent } from './kng-top-appbar/kng-top-appbar.component
     ReactiveFormsModule,
     RouterModule,
     KngAudioModule,
-    KngSubscriptionControlComponent,
-    KngSubscriptionItemComponent,
+    // ✅ MIGRATION: KngSubscriptionControlComponent, KngSubscriptionItemComponent -> kng-subscription module
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,
@@ -79,8 +80,7 @@ import { KngTopAppbarComponent } from './kng-top-appbar/kng-top-appbar.component
     KngTopAppbarComponent
   ],
   declarations: [
-    KngSubscriptionControlComponent,
-    KngSubscriptionItemComponent,
+    // ✅ MIGRATION: KngSubscriptionControlComponent, KngSubscriptionItemComponent -> kng-subscription module
     KngPaymentComponent,
     KngAddressComponent,
     KngUiBottomActionsComponent,

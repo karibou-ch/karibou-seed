@@ -1,0 +1,252 @@
+// ✅ Styles compacts pour version une ligne
+.audio-note-compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border-radius: 20px;
+  background: rgba(var(--mdc-theme-surface), 0.05);
+  border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
+  transition: all 0.2s ease;
+  max-height: 40px;
+
+  &:hover {
+    background: rgba(var(--mdc-theme-primary), 0.05);
+    border-color: rgba(var(--mdc-theme-primary), 0.2);
+  }
+
+  &.recording {
+    background: rgba(var(--mdc-theme-primary), 0.1);
+    border-color: rgba(var(--mdc-theme-primary), 0.4);
+    box-shadow: 0 0 10px rgba(var(--mdc-theme-primary), 0.2);
+  }
+
+  &.processing {
+    background: rgba(var(--mdc-theme-secondary), 0.1);
+    border-color: rgba(var(--mdc-theme-secondary), 0.3);
+  }
+
+  &.error {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.3);
+  }
+
+  &.success {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
+  }
+}
+
+// ✅ Bouton principal compact
+.compact-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 16px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--mdc-theme-primary), 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .icon {
+    font-size: 18px;
+    color: rgb(var(--mdc-theme-primary));
+    transition: all 0.2s ease;
+  }
+
+  .status {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(var(--mdc-theme-text-primary-on-background), 0.8);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  // ✅ Indicateur volume temps réel
+  .volume-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      #4CAF50 0%,
+      #FFC107 60%,
+      #F44336 100%);
+    border-radius: 0 0 16px 16px;
+    transition: width 0.1s ease;
+  }
+}
+
+// ✅ États visuels du bouton
+.audio-note-compact {
+  &.recording .compact-btn {
+    .icon {
+      color: #f44336;
+      animation: pulse-icon 1s infinite;
+    }
+  }
+
+  &.processing .compact-btn {
+    .icon {
+      color: rgb(var(--mdc-theme-secondary));
+      animation: spin-icon 1s linear infinite;
+    }
+  }
+
+  &.error .compact-btn {
+    .icon {
+      color: #f44336;
+    }
+  }
+
+  &.success .compact-btn {
+    .icon {
+      color: #4CAF50;
+    }
+  }
+}
+
+// ✅ Lecteur audio minimal
+audio {
+  height: 32px;
+  border-radius: 16px;
+  background: rgba(var(--mdc-theme-surface), 0.1);
+
+  &::-webkit-media-controls-panel {
+    background: rgba(var(--mdc-theme-surface), 0.1);
+    border-radius: 16px;
+  }
+}
+
+// ✅ Bouton clear minimal
+.clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(244, 67, 54, 0.2);
+    transform: scale(1.1);
+  }
+
+  .material-symbols-outlined {
+    font-size: 14px;
+  }
+}
+
+// ✅ Animations
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes spin-icon {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// ✅ Responsive
+@media (max-width: 768px) {
+  .audio-note-compact {
+    .compact-btn {
+      padding: 6px 8px;
+      gap: 4px;
+
+      .icon {
+        font-size: 16px;
+      }
+
+      .status {
+        font-size: 11px;
+        min-width: 20px;
+      }
+    }
+
+    audio {
+      height: 28px;
+    }
+
+    .clear-btn {
+      width: 20px;
+      height: 20px;
+
+      .material-symbols-outlined {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+// ✅ Mode inline pour intégration dans du texte
+.audio-note-compact.inline {
+  display: inline-flex;
+  vertical-align: middle;
+  margin: 0 4px;
+  max-height: 28px;
+
+  .compact-btn {
+    padding: 4px 8px;
+    border-radius: 14px;
+
+    .icon {
+      font-size: 16px;
+    }
+
+    .status {
+      font-size: 10px;
+    }
+  }
+
+  audio {
+    height: 24px;
+    max-width: 120px;
+  }
+}
+
+// ✅ Mode toolbar pour barres d'outils
+.audio-note-compact.toolbar {
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  .compact-btn {
+    padding: 6px;
+    border-radius: 50%;
+    background: rgba(var(--mdc-theme-primary), 0.1);
+
+    .status {
+      display: none;
+    }
+  }
+
+  audio {
+    display: none; // Caché en mode toolbar
+  }
+}

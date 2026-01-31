@@ -98,11 +98,11 @@
       <!-- SLOT: end (droite) - Paniers                                    -->
       <!-- ================================================================ -->
       <div slot="end" class="appbar-end">
-        <wa-button size="small" appearance="filled-outlined" class="first" pill [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active">
+        <wa-button size="small" appearance="filled-outlined" class="first" pill [routerLink]="['/store',store,'cart','default']" routerLinkActive="active">
           <span slot="start" class="material-symbols-outlined secondary-text">shopping_cart</span>
           <span class="cart-items-count"></span>
         </wa-button>
-        <wa-button size="small" appearance="filled-outlined" class="shopping-cart" pill [routerLink]="['/store',store,'home','cart','default']" routerLinkActive="active" [queryParams]="subscriptionQueryParams" [hidden]="!subsItemsSz">
+        <wa-button size="small" appearance="filled-outlined" class="shopping-cart" pill [routerLink]="['/store',store,'cart','default']" routerLinkActive="active" [queryParams]="subscriptionQueryParams" [hidden]="!subsItemsSz">
           <span slot="start" class="material-symbols-outlined secondary-text">more_time</span>
           <span class="subs-items-count"></span>
         </wa-button>
@@ -124,7 +124,7 @@
   <!-- ========================================================================== -->
   <!-- FOOTER (span 3 colonnes)                                                   -->
   <!-- ========================================================================== -->
-  <footer class="grid-footer">
+  <footer class="grid-footer" hidden>
     <!-- Bottom Actions Mobile -->
     <kng-ui-bottom-actions [config]="config" [categories]="categories" [user]="user"></kng-ui-bottom-actions>
     <!-- Footer Desktop -->
@@ -138,31 +138,26 @@
 <!-- ============================================================================ -->
 
 <!-- ASK LOGIN -->
-<div class="overlay-pane" [class.overlay-open]="displayLogin">
-  <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
-    <div class="mdc-snackbar__surface">
-      <div class="close" (click)="displayLogin=false"><i class="material-symbols-outlined">close</i></div>
-      <div class="mdc-snackbar__label install-ios">
-        Pour effectuer une commande nous avons <br/>
-        besoin de vérifier votre identité.<br/>
-        <b><span class="link" (click)="displayLogin=false" [routerLink]="['/store',store,'home','me','login']">Merci de suivre ce lien</span></b>
-      </div>
-      <div class="install-ios material-symbols-outlined">sentiment_very_satisfied</div>
-    </div>
+<div class="overlay-popup" [class.open]="displayLogin">
+  <div class="popup-box">
+    <button class="popup-close" (click)="displayLogin=false">
+      <i class="material-symbols-outlined">close</i>
+    </button>
+    <i class="material-symbols-outlined popup-icon">sentiment_very_satisfied</i>
+    <p>{{label.user_ask_login}}</p>
+    <wa-button variant="primary" size="small" (click)="displayLogin=false" [routerLink]="['/store',store,'home','me','login']">
+      {{label.nav_login}}
+    </wa-button>
   </div>
 </div>
 
 <!-- IOS INSTALL -->
-<div class="overlay-pane" [class.overlay-open]="displayIosInstall">
-  <div class="mdc-snackbar install-ios mdc-snackbar--stacked mdc-snackbar--open">
-    <div class="mdc-snackbar__surface">
-      <div class="close" (click)="displayIosInstall=false"><i class="material-symbols-outlined">close</i></div>
-      <div class="mdc-snackbar__label install-ios" [innerHtml]="label.action_install_ios">
-        Install this app on your device.<br/>
-        Tap the share icon and then<br/>
-        <b>Add to homescreen.</b>
-      </div>
-      <div class="install-ios material-symbols-outlined">arrow_downward</div>
-    </div>
+<div class="overlay-popup ios" [class.open]="displayIosInstall">
+  <div class="popup-box">
+    <button class="popup-close" (click)="displayIosInstall=false">
+      <i class="material-symbols-outlined">close</i>
+    </button>
+    <i class="material-symbols-outlined popup-icon">arrow_downward</i>
+    <div [innerHtml]="label.action_install_ios"></div>
   </div>
 </div>

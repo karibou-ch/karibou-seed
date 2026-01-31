@@ -34,3 +34,6 @@ import '@awesome.me/webawesome/dist/components/copy-button/copy-button.js';
 
 // Tooltip
 import '@awesome.me/webawesome/dist/components/tooltip/tooltip.js';
+
+// Popup - pour autocomplete suggestions
+import '@awesome.me/webawesome/dist/components/popup/popup.js';

@@ -22,7 +22,7 @@
 
 
 
-		<section [routerLink]="['/store',store, departement,'products',product.sku,urlTitle]" [queryParams]="queryParamsSKU">
+		<section [routerLink]="['/store',store,'products',product.sku,urlTitle]" [queryParams]="queryParamsSKU">
 			<!-- MEDIA -->
 			<div  class="media " [ngStyle]="bgStyle" [class.selected]="pinned">
 				<img [src]="bgImage" class="thumbnail" />

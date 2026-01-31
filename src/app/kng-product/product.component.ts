@@ -293,7 +293,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   get urlTitle(){
-    return this.product.title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
+    return (this.product?.title || '').toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
   }
 
   /**

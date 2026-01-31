@@ -1,0 +1,371 @@
+// ============================================================================
+// KNG-SIDE-MENU-MOBILE - Grille de catégories style cards pour mobile
+// Design: Grille 3 colonnes avec cartes icône/image
+// Cycle automatique des couleurs via nth-child
+// S'applique automatiquement aux classes existantes sous breakpoint mobile
+// ============================================================================
+
+// ============================================================================
+// MOBILE ONLY (≤599px) - Transformation automatique des menus
+// Cible: .menu-panel ul.subs et ul avec .subs-item
+// ============================================================================
+@media (max-width: 599px) {
+
+  .menu-panel {
+
+    //
+    // GRILLE MOBILE - S'applique aux ul contenant des .subs-item
+    ul.subs,
+    ul:has(.subs-item) {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 0.75rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    //
+    // CARTE CATÉGORIE - Style cards pour mobile
+    li.subs-item {
+      //
+      // Variables locales (surchargeables par nth-child)
+      --cat-bg: var(--cat-color-1);
+      --cat-text: var(--cat-text-1);
+      --cat-icon: var(--cat-icon-1);
+
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      border-radius: 0.75rem;
+      background-color: var(--cat-bg);
+      color: var(--cat-text);
+      cursor: pointer;
+      overflow: hidden;
+      text-decoration: none;
+      transition: transform var(--wa-transition-fast) ease, box-shadow var(--wa-transition-fast) ease;
+
+      //
+      // Reset des styles existants
+      width: calc(100% - 1rem)!important;
+      height: auto !important;
+      padding: 0.5rem !important;
+      margin: 0 !important;
+      border: none !important;
+
+      //
+      // Hover/Active states
+      &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      //
+      // Icône (material-symbols-outlined, icon, fa)
+      i, .icon {
+        font-size: 1.5rem;
+        color: var(--cat-icon);
+        margin-bottom: 0.25rem;
+        margin-right: 0 !important;
+        margin-top: 0 !important;
+        display: block !important;
+      }
+
+      //
+      // Label principal
+      span {
+        font-size: 0.625rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        text-align: center;
+        line-height: 1.2;
+        padding: 0 0.125rem;
+        color: var(--cat-text);
+      }
+
+      //
+      // Carte inversée (fond foncé, texte clair)
+      &.inverted {
+        --cat-bg: var(--mdc-theme-appbar-text);
+        --cat-text: white;
+        --cat-icon: white;
+      }
+
+      //
+      // Carte sélectionnée
+      &.selected {
+        box-shadow: 0 0 0 3px var(--mdc-theme-primary);
+        transform: scale(1.02);
+      }
+    }
+
+    //
+    // ============================================================================
+    // CYCLE AUTOMATIQUE DES COULEURS - 8 couleurs en rotation
+    // S'applique aux catégories (pas aux liens .inverted)
+    // ============================================================================
+    ul:has(.subs-item):not(.subs) {
+
+      li.subs-item:nth-child(8n+1) {
+        --cat-bg: var(--cat-color-1);
+        --cat-text: var(--cat-text-1);
+        --cat-icon: var(--cat-icon-1);
+      }
+
+      li.subs-item:nth-child(8n+2) {
+        --cat-bg: var(--cat-color-2);
+        --cat-text: var(--cat-text-2);
+        --cat-icon: var(--cat-icon-2);
+      }
+
+      li.subs-item:nth-child(8n+3) {
+        --cat-bg: var(--cat-color-3);
+        --cat-text: var(--cat-text-3);
+        --cat-icon: var(--cat-icon-3);
+      }
+
+      li.subs-item:nth-child(8n+4) {
+        --cat-bg: var(--cat-color-4);
+        --cat-text: var(--cat-text-4);
+        --cat-icon: var(--cat-icon-4);
+      }
+
+      li.subs-item:nth-child(8n+5) {
+        --cat-bg: var(--cat-color-5);
+        --cat-text: var(--cat-text-5);
+        --cat-icon: var(--cat-icon-5);
+      }
+
+      li.subs-item:nth-child(8n+6) {
+        --cat-bg: var(--cat-color-6);
+        --cat-text: var(--cat-text-6);
+        --cat-icon: var(--cat-icon-6);
+      }
+
+      li.subs-item:nth-child(8n+7) {
+        --cat-bg: var(--cat-color-7);
+        --cat-text: var(--cat-text-7);
+        --cat-icon: var(--cat-icon-7);
+      }
+
+      li.subs-item:nth-child(8n+8) {
+        --cat-bg: var(--cat-color-8);
+        --cat-text: var(--cat-text-8);
+        --cat-icon: var(--cat-icon-8);
+      }
+    }
+
+    //
+    // ============================================================================
+    // CARTE AVEC IMAGE - Catégories favorites du client
+    // Activée via classe .has-image + variable CSS --cat-image
+    // Usage: [class.has-image]="category.hasImage" [style.--cat-image]="'url('+category.imageUrl+')'"
+    // ============================================================================
+    li.subs-item.has-image {
+      //
+      // Image de fond
+      background-image: var(--cat-image);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+
+      //
+      // Overlay gradient pour lisibilité du texte
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.05) 0%,
+          rgba(0, 0, 0, 0.15) 50%,
+          rgba(0, 0, 0, 0.5) 100%
+        );
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      //
+      // Texte en blanc sur image
+      --cat-text: white;
+      --cat-icon: white;
+
+      //
+      // Label positionné en bas
+      span {
+        position: absolute;
+        bottom: 0.375rem;
+        left: 0;
+        right: 0;
+        color: white;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        z-index: 1;
+      }
+
+      //
+      // Masquer l'icône sur les cartes avec image
+      i, .icon {
+        display: none !important;
+      }
+    }
+
+    //
+    // Badge catégorie (optionnel)
+    .category-badge {
+      position: absolute;
+      top: 0.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+      z-index: 2;
+    }
+  }
+}
+
+// ============================================================================
+// TABLET (600px - 1199px) - Grille 4 colonnes
+// ============================================================================
+@media (min-width: 600px) and (max-width: 1199px) {
+
+  .menu-panel {
+
+    ul.subs,
+    ul:has(.subs-item) {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 1rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    li.subs-item {
+      --cat-bg: var(--cat-color-1);
+      --cat-text: var(--cat-text-1);
+      --cat-icon: var(--cat-icon-1);
+
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      border-radius: 0.75rem;
+      background-color: var(--cat-bg);
+      color: var(--cat-text);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform var(--wa-transition-fast) ease, box-shadow var(--wa-transition-fast) ease;
+
+      width: 100% !important;
+      height: auto !important;
+      margin: 0 !important;
+      border: none !important;
+
+      &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      i, .icon {
+        font-size: 1.75rem;
+        color: var(--cat-icon);
+        margin-bottom: 0.375rem;
+        margin-right: 0 !important;
+        display: block !important;
+      }
+
+      span {
+        font-size: var(--wa-font-size-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+        text-align: center;
+        color: var(--cat-text);
+      }
+
+      &.inverted {
+        --cat-bg: var(--mdc-theme-appbar-text);
+        --cat-text: white;
+        --cat-icon: white;
+      }
+
+      &.selected {
+        box-shadow: 0 0 0 3px var(--mdc-theme-primary);
+      }
+    }
+
+    //
+    // Cycle couleurs tablet (même logique)
+    ul:has(.subs-item):not(.subs) {
+      li.subs-item:nth-child(8n+1) { --cat-bg: var(--cat-color-1); --cat-text: var(--cat-text-1); --cat-icon: var(--cat-icon-1); }
+      li.subs-item:nth-child(8n+2) { --cat-bg: var(--cat-color-2); --cat-text: var(--cat-text-2); --cat-icon: var(--cat-icon-2); }
+      li.subs-item:nth-child(8n+3) { --cat-bg: var(--cat-color-3); --cat-text: var(--cat-text-3); --cat-icon: var(--cat-icon-3); }
+      li.subs-item:nth-child(8n+4) { --cat-bg: var(--cat-color-4); --cat-text: var(--cat-text-4); --cat-icon: var(--cat-icon-4); }
+      li.subs-item:nth-child(8n+5) { --cat-bg: var(--cat-color-5); --cat-text: var(--cat-text-5); --cat-icon: var(--cat-icon-5); }
+      li.subs-item:nth-child(8n+6) { --cat-bg: var(--cat-color-6); --cat-text: var(--cat-text-6); --cat-icon: var(--cat-icon-6); }
+      li.subs-item:nth-child(8n+7) { --cat-bg: var(--cat-color-7); --cat-text: var(--cat-text-7); --cat-icon: var(--cat-icon-7); }
+      li.subs-item:nth-child(8n+8) { --cat-bg: var(--cat-color-8); --cat-text: var(--cat-text-8); --cat-icon: var(--cat-icon-8); }
+    }
+
+    //
+    // Carte avec image tablet
+    li.subs-item.has-image {
+      background-image: var(--cat-image);
+      background-size: cover;
+      background-position: center;
+      background-color: transparent;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 100%);
+        border-radius: inherit;
+      }
+
+      --cat-text: white;
+      --cat-icon: white;
+
+      span {
+        position: absolute;
+        bottom: 0.5rem;
+        left: 0;
+        right: 0;
+        color: white;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        z-index: 1;
+      }
+
+      i, .icon { display: none !important; }
+    }
+  }
+}
+
+// ============================================================================
+// DESKTOP (≥1200px) - Styles désactivés, kng-side-menu.scss prend le relais
+// ============================================================================
+@media (min-width: 1200px) {
+  //
+  // Aucun style mobile/card sur desktop
+  // Les styles de kng-side-menu.scss s'appliquent automatiquement
+}

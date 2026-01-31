@@ -39,6 +39,9 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
   @Input() welcome: string = 'Bienvenue';
   @Input() welcomeDescription: string = 'Posez votre question à l\'assistant';
 
+  // ✅ Option pour n'afficher que la dernière réponse
+  @Input() lastOnly: boolean = false;
+
   // ✅ Links pour le welcome screen (comme l'original)
   linksByAgent = {
     'james': [
@@ -51,6 +54,9 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
   // FIXME: renommé de chatEvt à chat pour compatibilité avec le template
   @Output() chat: EventEmitter<{ message: AssistantDisplayMessage, index: number }> = new EventEmitter();
 
+  // ✅ Event pour émettre les produits extraits des réponses
+  @Output() onProducts: EventEmitter<Product[]> = new EventEmitter();
+
   private destroy$ = new Subject<void>();
   private debounceScroll: any = null;
 
@@ -59,6 +65,25 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
 
   // ✅ Alias pour compatibilité avec le template existant
   get messages() { return this.discussionMessages; }
+
+  // ✅ Messages à afficher (tous ou seulement la dernière réponse)
+  get displayMessages(): AssistantDisplayMessage[] {
+    if (!this.lastOnly || this.discussionMessages.length === 0) {
+      return this.discussionMessages;
+    }
+    // Retourne uniquement la dernière paire user + assistant (ou juste le dernier message)
+    const lastIndex = this.discussionMessages.length - 1;
+    const lastMsg = this.discussionMessages[lastIndex];
+
+    // Si le dernier est assistant, inclure aussi la question user précédente
+    if (lastMsg.role === 'assistant' && lastIndex > 0) {
+      const prevMsg = this.discussionMessages[lastIndex - 1];
+      if (prevMsg.role === 'user') {
+        return [prevMsg, lastMsg];
+      }
+    }
+    return [lastMsg];
+  }
 
   // FIXME: ajouter pour la migration complète
   showPinnedProducts: boolean = false;
@@ -144,8 +169,8 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
     // ✅ COPIE EXACTE: Subscribe to state$ ONLY for assistant running status + steps
     this.$assistant.state$.pipe(
       takeUntil(this.destroy$),
-      filter(state => !this.agent || state.agent === this.agent)
-    ).subscribe(state => {
+      filter((state:any) => !this.agent || state.agent === this.agent)
+    ).subscribe((state:any) => {
       this.isAssistantRuning = (state?.status === 'running');
 
       // ✅ COPIE EXACTE: Update ONLY steps on last message (pas content!)
@@ -170,8 +195,8 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
     // ✅ COPIE EXACTE: Subscribe to discussion$ for all message management
     this.$assistant.discussion$.pipe(
       takeUntil(this.destroy$),
-      filter(discussion => !this.agent || discussion.agent === this.agent)
-    ).subscribe(discussion => {
+      filter((discussion:any) => !this.agent || discussion.agent === this.agent)
+    ).subscribe((discussion:any) => {
       if (!discussion.id) {
         this.currentDiscussionId = null;
         this.isDiscussionMemorized = false;
@@ -189,13 +214,17 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
 
       this.currentDiscussionId = discussion.id;
 
-      // Load products for last assistant message (karibou-specific)
-      if (this.discussionMessages.length) {
-        const lastAssistant = [...this.discussionMessages].reverse().find(m => m.assistant);
-        if (lastAssistant) {
-          this.loadProducts(lastAssistant);
-        }
-      }
+      //
+      // FIXME: loadProducts désactivé - voir state$ 'end' pour le chargement correct
+      // Le problème: discussion$ émet à chaque update de streaming, causant N appels API
+      // avec une liste de SKUs qui grandit (1 SKU, puis 2, puis 3, etc.)
+      //
+      // if (this.discussionMessages.length) {
+      //   const lastAssistant = [...this.discussionMessages].reverse().find(m => m.assistant);
+      //   if (lastAssistant) {
+      //     this.loadProducts(lastAssistant);
+      //   }
+      // }
 
       this.scrollToBottom();
       this.$cdr.markForCheck();
@@ -310,7 +339,18 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Handle karibou-specific links
+    //
+    // Format unifié: [action](/james) - le texte du lien est la question
+    if (href === '/james') {
+      const prompt = text.trim();
+      if (prompt) {
+        await this.$assistant.chat({ q: prompt, agent: this.agent, hub: this.store }).toPromise();
+      }
+      return;
+    }
+
+    //
+    // Handle karibou-specific links (legacy + navigation)
     const rules = [
       { regexp: /^\/store\/.*$/, prompt: '-', param: false },
       { regexp: /quote\/orders/, prompt: '5 exemples de produits pour ma demande de devis ', param: false },
@@ -367,20 +407,4 @@ export class KngAssistantHistoryComponent implements OnInit, OnDestroy {
     console.warn('Memorize feature requires KngMemoriesService');
   }
 
-  // ✅ Charger les produits depuis les SKUs
-  private async loadProducts(message: AssistantDisplayMessage) {
-    const skus = this.parseSKU(message.content);
-    if (!skus.length) return;
-
-    try {
-      message.products = await this.$products.select({ skus }).toPromise();
-    } catch (err) {
-      console.error('Error loading products:', err);
-    }
-  }
-
-  private parseSKU(text: string): number[] {
-    text = text || '';
-    return (text.match(/10[0-9]{5}/gm) || []).filter(sku => +sku).map(s => +s);
-  }
 }

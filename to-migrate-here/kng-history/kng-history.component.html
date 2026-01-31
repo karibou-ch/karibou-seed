@@ -1,0 +1,128 @@
+<div class="assistant-container">
+  <div class="history-header" [hidden]="!withHeader">
+    <sl-button-group class="start">
+      <sl-button toggle pill>PPE</sl-button>
+      <sl-button toggle pill>Gérance</sl-button>
+      <sl-button toggle pill>SGC</sl-button>
+      <sl-button toggle pill>Comptabilité</sl-button>
+      <sl-button toggle pill>Contentieux</sl-button>
+      <sl-button toggle pill>RH</sl-button>
+    </sl-button-group>
+
+
+
+  </div>
+  <div class="assistant-header" *ngIf="!discussionMessages.length">
+    <div class="welcome">
+
+      <img src="https://www.pilet-renaud.ch/images/front/logo-pilet-renaud.svg" alt="" class="logo">
+      <h1>{{welcome}}</h1>
+      <p>{{welcomeDescription}}</p>
+    </div>
+    <ul>
+      <li *ngFor="let link of links" (click)="onAsk(link.action)">
+        {{link.name}}
+      </li>
+    </ul>
+
+
+  </div>
+  <div class="assistant" [class.assistant-user]="msg.role=='user'" [class.last-message]="last"
+       [hidden]="msg.name||msg.role=='system'"
+       *ngFor="let msg of discussionMessages; let idx=index; let last=last">
+    <div [ngClass]="msg.role">
+      <div class="chat-header" *ngIf="msg.steps?.length" [class.last-running]="last && isAssistantRuning">
+        <div class="title" hidden>
+          <sl-icon-button name="{{showSteps ? 'chevron-down' : 'chevron-up'}}" (click)="showSteps = !showSteps"></sl-icon-button>
+        </div>
+        <ol>
+          <li *ngFor="let step of msg.steps; let idx=index; let last=last">
+            <div [hidden]="!step.description" [class.loading-shimmer]="last">{{step.description}}</div>
+          </li>
+        </ol>
+      </div>
+      <!-- <strong>{{ msg.role }}</strong>: -->
+      <div id="msg-{{msg.id}}" class="markdown-body" [innerHTML]="renderMarkdown(msg.content)"></div>
+      <!-- optional buttons for feedback/mail -->
+      <div class="feedback-controls" hidden *ngIf="msg.role=='assistant'">
+      </div>
+
+      <div class="chat-actions" [class.actions-running]="isActionRunning()">
+        <sl-copy-button
+          class="copy-button"
+          value="test"
+          (sl-copy)="onCopyWithHtml(msg.id, $event)"
+          [disabled]="isActionRunning()">
+        </sl-copy-button>
+
+        <sl-icon-button
+          [hidden]="isGuest"
+          class="feedback-button"
+          name="hand-thumbs-up"
+          title="Évaluer la qualité de la réponse"
+          (click)="onFeedback(msg.id, 'bien')"
+          [disabled]="isActionRunning()">
+        </sl-icon-button>
+        <sl-icon-button
+          [hidden]="isGuest"
+          class="feedback-button"
+          name="hand-thumbs-down"
+          (click)="onFeedback(msg.id, 'moyen')"
+          title="Évaluer la qualité de la réponse"
+          [disabled]="isActionRunning()">
+        </sl-icon-button>
+        <span hidden class="feedback-button">Merci de nous aider à améliorer l'assistant.</span>
+
+        <sl-icon-button
+          [hidden]="isGuest"
+          class="feedback-button"
+          name="pin-fill"
+          variant="default"
+          pill
+          (click)="onPin()"
+          title="Épingler cette discussion"
+          [disabled]="isActionRunning()">
+        </sl-icon-button>
+
+        <sl-icon-button
+          *ngIf="last"
+          class="feedback-button"
+          name="stars"
+          variant="default"
+          pill
+          (click)="onMemorize()"
+          [disabled]="isDiscussionMemorized || !currentDiscussionId || isActionRunning()"
+          [title]="isDiscussionMemorized ? 'Discussion déjà mémorisée' : 'Mémoriser la synthèse de cette discussion'"
+          [style.opacity]="isDiscussionMemorized ? '0.5' : '1'">
+        </sl-icon-button>
+
+        <sl-button
+          size="medium"
+          class="chat-button"
+          [loading]="isAssistantRuning"
+          variant="default"
+          pill
+          (click)="onChat(msg,idx)"
+          [hidden]="!displayChatActions"
+          [disabled]="isActionRunning()">
+          <sl-icon slot="prefix" name="chat-quote"></sl-icon>
+        </sl-button>
+        <sl-spinner [hidden]="!isActionRunning()" size="medium"></sl-spinner>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- open asset in a dialog -->
+  <sl-dialog
+    *ngIf="openAsset"
+    [open]="!!openAsset"
+    style="--width: 500px; --body-spacing: 0"
+    (sl-after-hide)="openAsset = null"
+    (sl-request-close)="openAsset = null"
+  >
+    <kng-asset-viewer [assetUrl]="openAsset.url" [assetTitle]="openAsset.text"></kng-asset-viewer>
+  </sl-dialog>
+
+</div>
+

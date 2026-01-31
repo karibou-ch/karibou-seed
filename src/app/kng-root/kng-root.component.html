@@ -1,4 +1,7 @@
-<kng-navbar style="height:100%">
+<!-- ============================================================================ -->
+<!-- KngRootComponent - Page d'accueil/paramètres utilisateur                   -->
+<!-- Ce composant est maintenant un enfant de KngNavbarWrapperComponent         -->
+<!-- ============================================================================ -->
 
 <!-- ============================================================================ -->
 <!-- PANEL SIDE - Vide                                                           -->
@@ -97,28 +100,6 @@
     </kng-feedback>
 
 
-
-
-
-    <!-- MARKETPLACE -->
-    <kng-nav-marketplace (updated)="doOpenMarket($event)" [hidden]="lockedHUB" [config]="config"
-      [orders]="orders"></kng-nav-marketplace>
-
-    <!-- DATE -->
-    <!-- <kng-calendar [config]="config"  (updated)="currentShippingDay=$event"></kng-calendar> -->
-
-
-    <!-- <h2 class="">Les coups coeur du marché</h2>
-    <section class="products ">
-        <div class="product" *ngFor="let product of selected;let j=index">
-          <div  class="media ">
-            <img [src]="getImage(product)" />
-            <div class="title">{{product.title}}</div>
-          </div>
-
-        </div>
-    </section> -->
-
   </div>
 
 </div>
@@ -128,8 +109,10 @@
 <!-- ============================================================================ -->
 <div class="swipe-panel right">
   <div class="root-sidebar-panel">
+    <!-- MARKETPLACE -->
+    <kng-nav-marketplace (updated)="doOpenMarket($event)" [hidden]="lockedHUB" [config]="config"
+      [orders]="orders"></kng-nav-marketplace>
+
     <!-- Espace disponible pour sidebar -->
   </div>
 </div>
-
-</kng-navbar>
