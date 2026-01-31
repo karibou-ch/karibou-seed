@@ -197,3 +197,75 @@ div.product-container{
 
 }
 
+// ============================================================================
+// MOBILE BOTTOM APPBAR - Navigation rapide entre les panels
+// ============================================================================
+.mobile-appbar {
+  display: none; // Hidden by default (desktop)
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--mdc-theme-mobile-bar);
+  background: var(--wa-color-surface-raised);
+  border-top: 1px solid var(--wa-color-neutral-border-quiet);
+  box-shadow: var(--wa-shadow-m);
+  z-index: 100;
+
+  // Glassmorphism effect
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  @media (max-width: 599px) {
+    display: flex; // Visible on mobile only
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: var(--wa-space-xs);
+    background: transparent;
+    border: none;
+    color: var(--mdc-theme-text-secondary-on-background);
+    cursor: pointer;
+    position: relative;
+    transition: color var(--wa-transition-fast);
+
+    &:active {
+      color: var(--mdc-theme-primary);
+    }
+
+    .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    span:last-child {
+      font-size: var(--wa-font-size-xs);
+      font-weight: 500;
+    }
+  }
+
+  // Cart badge
+  .cart-badge {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary-text);
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+

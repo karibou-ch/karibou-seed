@@ -182,5 +182,28 @@
 </div>
 
 
+<!-- ============================================================================ -->
+<!-- MOBILE BOTTOM APPBAR - Navigation rapide entre les panels                  -->
+<!-- ============================================================================ -->
+<nav class="mobile-appbar">
+  <button class="action" (click)="$navigation.scrollToPanel(0)">
+    <span class="material-symbols-outlined">menu</span>
+    <span>Menu</span>
+  </button>
+  <button class="action" (click)="$navigation.scrollToPanel(1)">
+    <span class="material-symbols-outlined">grid_view</span>
+    <span>Produits</span>
+  </button>
+  <button class="action" (click)="$navigation.scrollToPanel(2)">
+    <span class="material-symbols-outlined">help</span>
+    <span>Aide</span>
+  </button>
+  <button class="action" [routerLink]="['/store', store, 'home', 'cart', 'default']">
+    <span class="cart-badge" *ngIf="$cart.itemsCount">{{$cart.itemsCount}}</span>
+    <span class="material-symbols-outlined">shopping_cart</span>
+    <span>Panier</span>
+  </button>
+</nav>
+
   <!-- ROUTER OUTLET -->
   <router-outlet></router-outlet>
