@@ -634,14 +634,16 @@ progress.kng-progress::-moz-progress-bar{
     border: 1px dashed var(--wa-color-brand-border-normal);
   }
 
-  // Modificateur shadow - ajoute une ombre
+  // Modificateur shadow - ajoute une ombre + bordure subtile
   &--shadow {
     box-shadow: var(--wa-shadow-s);
+    border: 1px solid var(--wa-color-neutral-border-quiet);
   }
 
-  // Modificateur shadow-m - ombre moyenne
+  // Modificateur shadow-m - ombre moyenne + bordure subtile
   &--shadow-m {
     box-shadow: var(--wa-shadow-m);
+    border: 1px solid var(--wa-color-neutral-border-quiet);
   }
 
   // Variante secondary
