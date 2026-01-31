@@ -219,12 +219,12 @@
   width: 100%;
   margin-left: 0;
 
-  /* ✅ Mobile ≤599px (aligné sur kng-responsive.scss) */
+  /* ✅ Mobile ≤599px - 3 colonnes par défaut (aligné sur .home) */
   @media (max-width: 599px) {
-    grid-template-columns: repeat(2, 1fr); /* ✅ CORRECTION : 2 colonnes égales */
-    gap: 12px;
-    &.large{
-      grid-template-columns: repeat(2, 1fr); /* ✅ CORRECTION : 2 colonnes égales */
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--wa-space-s);
+    &.large {
+      grid-template-columns: repeat(2, 1fr); /* .large garde 2 colonnes */
       gap: var(--wa-space-m);
     }
   }
