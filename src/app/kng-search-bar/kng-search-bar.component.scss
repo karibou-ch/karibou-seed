@@ -158,7 +158,7 @@ kng-search{
 		// Styles for mobile version with kng-chip class
 		.kng-chip {
 			display: inline-block;
-			margin: 4px;
+			margin: var(--wa-space-xs);
 			padding: 6px 12px;
 			border-radius: var(--wa-border-radius-l);
 			font-size: 14px;

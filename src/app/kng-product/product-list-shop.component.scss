@@ -251,7 +251,7 @@
     margin-top: 50px;
     ul{
       list-style: none;
-      padding: 4px;
+      padding: var(--wa-space-xs);
       li{
         h4{
           font-weight: 600;

@@ -16,7 +16,7 @@ form{
     flex-flow: row wrap;
     justify-content:space-between;
     width: calc(100% - 16px);
-    padding: 8px;
+    padding: var(--wa-space-s);
     position: relative;
 
     h3,h4{

@@ -35,7 +35,7 @@ wa-input, wa-textarea, wa-select {
 .image-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--wa-space-s);
   width: 100%;
 
   .field-label {
@@ -47,14 +47,14 @@ wa-input, wa-textarea, wa-select {
   .image-container {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--wa-space-m);
   }
 
   .image-preview {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--wa-space-s);
 
     img {
       height: 64px;
@@ -86,7 +86,7 @@ wa-input, wa-textarea, wa-select {
 
   .lang-buttons {
     display: flex;
-    gap: 4px;
+    gap: var(--wa-space-xs);
   }
 }
 
@@ -97,7 +97,7 @@ wa-input, wa-textarea, wa-select {
 .geo-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--wa-space-s);
 
   .field-icon {
     color: var(--mdc-theme-text-hint-on-background);

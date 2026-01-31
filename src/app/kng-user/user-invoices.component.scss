@@ -75,7 +75,7 @@
             font-weight: 500;
             letter-spacing: .00714286em;
             height: calc(48px - 2 * 4px);
-            margin: 8px;
+            margin: var(--wa-space-s);
             margin-left: 0;
             padding: 0 8px;
             border-radius: var(--wa-border-radius-s);

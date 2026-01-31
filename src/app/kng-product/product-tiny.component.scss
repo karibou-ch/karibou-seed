@@ -1,7 +1,7 @@
 div.thumbnails{
   box-sizing: border-box;
   height: 200px;
-  padding: 8px;
+  padding: var(--wa-space-s);
   img{
     width: 58px;
     height: 58px;

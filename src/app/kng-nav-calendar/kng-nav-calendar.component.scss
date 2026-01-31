@@ -44,7 +44,7 @@
   }
   
   .noshipping {
-    padding: 8px;
+    padding: var(--wa-space-s);
     color: var(--mdc-theme-primary);
     border-radius: var(--wa-border-radius-s);
     border: 1px solid var(--mdc-theme-secondary);

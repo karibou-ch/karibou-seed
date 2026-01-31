@@ -59,7 +59,7 @@
       
       section.thinking{
         background-color: yellow;
-        padding: 4px;
+        padding: var(--wa-space-xs);
         border-radius: var(--wa-border-radius-m);
         display: none;
         font-family: monospace;

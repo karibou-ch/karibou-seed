@@ -10,7 +10,7 @@ form{
   }
 
   width: calc(100% - 20px);
-  padding: 8px;
+  padding: var(--wa-space-s);
   border: 2px solid #aaa;
   border-radius: 14px;
   transition: border-color var(--wa-transition-slow) ease, box-shadow var(--wa-transition-slow) ease;

@@ -129,7 +129,7 @@ wa-divider {
   
   @media (max-width: 599px) {
     max-width: calc(100vw - 32px);
-    margin: 16px;
+    margin: var(--wa-space-m);
   }
 }
 
@@ -150,7 +150,7 @@ wa-divider {
 .admin-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--wa-space-s);
   padding: 8px 16px;
   border-top: 1px solid var(--mdc-theme-text-hint-on-background);
 }
@@ -169,7 +169,7 @@ wa-divider {
   font-size: 0.875rem;
   cursor: pointer;
   user-select: none;
-  margin: 4px;
+  margin: var(--wa-space-xs);
   
   &:hover {
     background-color: #d0d0d0;

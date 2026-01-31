@@ -5,7 +5,7 @@ EDIT ON
  */
 
 :root {  
-  --card-padding: 24px;
+  --card-padding: var(--wa-space-l);
   --card-height: 340px;
   --card-skeleton: linear-gradient(lightgrey var(--card-height), transparent 0);
   

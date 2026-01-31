@@ -2,7 +2,7 @@
 .audio-note-enhanced {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--wa-space-m);
   padding: 0;
   border-radius: 12px;
   background: rgba(var(--mdc-theme-surface), 0.02);
@@ -40,7 +40,7 @@
   .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--wa-space-s);
     cursor: pointer;
     font-size: 14px;
     color: rgba(var(--mdc-theme-text-primary-on-background), 0.8);
@@ -69,7 +69,7 @@
   .error-message {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--wa-space-s);
     color: #d32f2f;
     font-size: 14px;
 
@@ -84,7 +84,7 @@
   .retry-btn, .dismiss-btn {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--wa-space-xs);
     transition: all var(--wa-transition-medium) ease;
     margin: auto;
 
@@ -134,7 +134,7 @@
   .visual-audio {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--wa-space-s);
     padding: 8px 12px;
     background: rgba(var(--mdc-theme-primary), 0.05);
     border-radius: 20px;
@@ -168,7 +168,7 @@
   .processing-indicator {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--wa-space-s);
     padding: 8px 16px;
     background: rgba(var(--mdc-theme-secondary), 0.1);
     border-radius: 20px;
@@ -200,7 +200,7 @@
   .transcription-header, .cart-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--wa-space-s);
     font-weight: 600;
     color: rgb(var(--mdc-theme-primary));
     margin-bottom: 0.5rem;
@@ -233,7 +233,7 @@
   .cart-url-link {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--wa-space-xs);
     padding: 8px 12px;
     background: rgb(var(--mdc-theme-primary));
     color: white;
@@ -262,14 +262,14 @@
   font-size: 12px;
   color: rgba(var(--mdc-theme-text-primary-on-background), 0.6);
   margin-top: 8px;
-  padding: 8px;
+  padding: var(--wa-space-s);
   background: rgba(var(--mdc-theme-surface), 0.02);
   border-radius: var(--wa-border-radius-s);
 
   .duration, .type {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--wa-space-xs);
 
     &::before {
       font-family: 'Material Symbols Outlined';
@@ -370,8 +370,8 @@
 
 // ✅ Mode compact pour intégration produit
 .audio-note-enhanced.compact {
-  padding: 8px;
-  gap: 8px;
+  padding: var(--wa-space-s);
+  gap: var(--wa-space-s);
 
   .note-header .note-title {
     font-size: 16px;

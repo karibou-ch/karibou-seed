@@ -2,8 +2,8 @@
 .audio-note-compact {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px;
+  gap: var(--wa-space-s);
+  padding: var(--wa-space-xs);
   border-radius: 20px;
   background: rgba(var(--mdc-theme-surface), 0.05);
   border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
@@ -177,7 +177,7 @@ audio {
   .audio-note-compact {
     .compact-btn {
       padding: 6px 8px;
-      gap: 4px;
+      gap: var(--wa-space-xs);
 
       .icon {
         font-size: 16px;

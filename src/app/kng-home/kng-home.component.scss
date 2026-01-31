@@ -102,7 +102,7 @@ kng-product-swipe{
 }
 .kng-boxed.themes{
   display: flex;
-  gap: 8px;
+  gap: var(--wa-space-s);
   background: #fff;
   padding: 0;
   align-content: stretch;
