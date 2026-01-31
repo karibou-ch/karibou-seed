@@ -276,7 +276,7 @@
 
 
 .kng-chip {
-  border-radius: 16px;
+  border-radius: var(--wa-border-radius-l);
   border:1px solid var(--wa-color-neutral-border-quiet);
   background-color: #f5f5f5;
   color: rgba(0, 0, 0, 0.87);

@@ -96,7 +96,7 @@ body{
     margin: 17px 0;
     padding: 10px;
     color: #333;
-    border-radius: 8px;
+    border-radius: var(--wa-border-radius-m);
   }
   ol,ul{
     padding:15px;

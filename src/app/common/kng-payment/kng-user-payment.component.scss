@@ -167,7 +167,7 @@ form{
     height: 40px;
     margin: 40px 15px 0;
     background-color: #24b47e;
-    border-radius: 4px;
+    border-radius: var(--wa-border-radius-s);
     color: #fff;
     text-transform: uppercase;
     font-weight: 600;
@@ -270,7 +270,7 @@ ul.payment{
       right: 15px;
       top: 10px;
       padding: 5px 15px;
-      border-radius: 8px;
+      border-radius: var(--wa-border-radius-m);
       font-weight: bold;
       color: red;
       background-color: white;

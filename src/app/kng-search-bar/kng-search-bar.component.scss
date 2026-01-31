@@ -160,7 +160,7 @@ kng-search{
 			display: inline-block;
 			margin: 4px;
 			padding: 6px 12px;
-			border-radius: 16px;
+			border-radius: var(--wa-border-radius-l);
 			font-size: 14px;
 
 			&.bold {

@@ -18,7 +18,7 @@ div.container{
   }
   fieldset{
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: var(--wa-border-radius-s);
     ul.elem{
       list-style: none;
       padding: 0;
@@ -59,7 +59,7 @@ div.container{
 
   button{
     border: 1px solid #eee;
-    border-radius: 8px;
+    border-radius: var(--wa-border-radius-m);
     display: flex;
     align-items: center;
     justify-content: center;

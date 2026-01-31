@@ -91,12 +91,12 @@
       ul.items {
         &.invoices {
           border: 1px dotted red;
-          border-radius: 8px;
+          border-radius: var(--wa-border-radius-m);
         }
 
         &.transfers {
           border: 1px dotted green;
-          border-radius: 8px;
+          border-radius: var(--wa-border-radius-m);
         }
 
         list-style: none;
@@ -169,7 +169,7 @@
         background-color: var(--mdc-theme-primary);
         color: var(--mdc-theme-primary-text);
         border: 1px solid var(--mdc-theme-secondary);
-        border-radius: 8px;
+        border-radius: var(--wa-border-radius-m);
         padding: 5px 20px;
 
       }

@@ -58,8 +58,8 @@ wa-input, wa-textarea, wa-select {
 
     img {
       height: 64px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
+      border-radius: var(--wa-border-radius-s);
+      border: 1px solid var(--wa-color-neutral-border-quiet);
     }
   }
 }
@@ -73,7 +73,7 @@ wa-input, wa-textarea, wa-select {
   align-items: center;
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
   margin-bottom: 16px;
 
   .lang-label {
@@ -113,8 +113,8 @@ wa-input, wa-textarea, wa-select {
   .geo-preview img {
     max-width: 100%;
     height: 150px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    border-radius: var(--wa-border-radius-s);
+    border: 1px solid var(--wa-color-neutral-border-quiet);
   }
 }
 
@@ -132,7 +132,7 @@ wa-input, wa-textarea, wa-select {
   }
 
   .uploadcare--widget__button {
-    border-radius: 4px;
+    border-radius: var(--wa-border-radius-s);
     padding: 8px 16px;
     font-size: 12px;
   }

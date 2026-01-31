@@ -117,7 +117,7 @@ wa-divider {
 
 .admin-dialog {
   background: var(--mdc-theme-background-container, white);
-  border-radius: 8px;
+  border-radius: var(--wa-border-radius-m);
   box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 
               0 24px 38px 3px rgba(0,0,0,.14), 
               0 9px 46px 8px rgba(0,0,0,.12);
@@ -164,7 +164,7 @@ wa-divider {
   align-items: center;
   height: 32px;
   padding: 0 12px;
-  border-radius: 16px;
+  border-radius: var(--wa-border-radius-l);
   background-color: #e0e0e0;
   font-size: 0.875rem;
   cursor: pointer;

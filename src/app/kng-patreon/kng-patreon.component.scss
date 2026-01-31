@@ -32,7 +32,7 @@
       width: 100%;
       max-width: 1024px;
       min-height: 70vh;
-      border-radius: 4px;
+      border-radius: var(--wa-border-radius-s);
       opacity: 1;
       position: relative;
       margin-top: 20px;

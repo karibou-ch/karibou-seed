@@ -1,77 +1,74 @@
-//
-// MARKETPLACE selection
+// ============================================================================
+// KNG-NAV-MARKETPLACE - Sélection des marchés/hubs
+// Breakpoints harmonisés : Mobile ≤599px | Tablet 600-1199px | Desktop ≥1200px
+// ============================================================================
+
 :host {
-  h2,h3{
+  h2, h3 {
     font-size: 1.4675rem;
-    margin-top: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 1rem 1.5rem 0;
   }
-  h3{
-    font-weight: 200;
-    font-size: 1.275rem;
-    color: #aaa;
-    text-shadow: 1px 1px 0 white;
-    margin-top: -10px;
-    margin-left: 10px;
-    margin-right: 10px;
+  p{
+    margin: .5rem 1.5rem;
   }
 
+
+  // ==========================================================================
+  // MARKETPLACE CONTAINER - Scroll horizontal des hubs
+  // ==========================================================================
   .marketplace {
     overflow-x: auto;
-    -webkit-overflow-scrolling:touch;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    margin-left: 0rem;
+
     &::-webkit-scrollbar {
       display: none;
     }
 
-    width: 100%;
-    margin-left: 0px;
-    @media (max-width:599px) {
-      margin-left: 0px;
-    }
-
+    // ========================================================================
+    // CONTAINER FLEX - Grille des cartes hub
+    // ========================================================================
     .container {
       display: flex;
-      flex-flow: row nowrap;
-      width: 100%;
-      @media (max-width:599px) {
-        padding: 10px 0;
-        flex-flow: row wrap;
-      }
+      flex-flow: row wrap;
+      width: calc(100% - 1rem);
+      gap: .75rem;
+      padding: .5rem;
 
 
-      .hub{
+      // ======================================================================
+      // HUB CARD - Carte individuelle de marché
+      // ======================================================================
+      .hub {
         position: relative;
-        padding: 0px;
+        padding: 0;
         max-height: 430px;
         overflow: hidden;
-        width: 320px;
-        min-width: 260px;
-        border: 1px solid #eee;
-        background-color: #eee;
-        border-radius: 15px;
-        margin-right: 10px;
+        border: 1px solid var(--mdc-theme-appbar);
+        background-color: var(--mdc-theme-appbar-light);
+        border-radius: 1rem;
         cursor: pointer;
         display: flex;
         flex-flow: column nowrap;
-        @media (prefers-color-scheme: dark) {
-          -color: var(--mdc-theme-secondary-dark-text);
-          -background-color: var(--mdc-theme-secondary-dark);
-        }
+        width: calc(100% - 4rem);
 
-
-        @media (max-width:3429px) {
+        // TABLET + MOBILE (≤1199px)
+        @media (max-width: 1199px) {
           max-height: 320px;
-          margin: 10px 5px;
           border: none;
-          width: calc(100% );
+          width: 100%;
         }
 
-        &.selected{
-          .change {
-            display: none;
-          }
+        // État sélectionné
+        &.selected .change {
+          display: none;
         }
+
+        // --------------------------------------------------------------------
+        // SELECTED BADGE - Indicateur de sélection
+        // --------------------------------------------------------------------
         .selected {
           position: absolute;
           right: 14px;
@@ -79,114 +76,131 @@
           color: var(--mdc-theme-primary);
           height: 36px;
           text-align: center;
-          button{
+
+          button {
             border-radius: 10px;
             cursor: pointer;
-            border: 1px solid #aaa;
+            border: 1px solid var(--mdc-theme-text-hint-on-background);
             background-color: white;
             padding: 2px 8px;
             font-size: 12px;
           }
-          .stars{
+
+          .stars {
             font-size: 38px;
           }
         }
-        .logo{
-          @media (max-width:599px) {
-            -width: 65px;
-            height:210px;
-            margin: 0px auto 0;
-            border-radius: 0px;
-          }
 
+        // --------------------------------------------------------------------
+        // LOGO - Image du hub
+        // --------------------------------------------------------------------
+        .logo {
           width: 100%;
           height: 43%;
           min-height: 42%;
           overflow: hidden;
           text-align: center;
-          border-bottom: 1px solid #eee;
-          padding: 0px;
-          img{
+          border-bottom: 1px solid var(--mdc-theme-appbar);
+          padding: 0;
+
+          // MOBILE (≤599px)
+          @media (max-width: 599px) {
+            height: 210px;
+            margin: 0 auto;
+            border-radius: 0;
+          }
+
+          img {
             height: 100%;
+            width: 100%;
             margin: 0;
             object-position: center center;
             object-fit: cover;
-            width: 100%;
           }
         }
-        .content{
+
+        // --------------------------------------------------------------------
+        // CONTENT - Informations du hub
+        // --------------------------------------------------------------------
+        .content {
           position: relative;
           margin: 0;
-          width: calc(100% - 24px);
-          padding: 12px;
+          width: calc(100% - 2rem);
+          padding: 1rem;
           display: flex;
           flex-flow: column;
           height: 100%;
           font-size: 15px;
-          .market{
+
+          .market {
             text-transform: uppercase;
             font-weight: 600;
           }
-          .title{
-            font-size: 19px;
+
+          .title {
+            font-size: 1.25rem;
             font-weight: bold;
             margin: 6px 0;
           }
-          .description{
+
+          .description {
             overflow: hidden;
             margin: 18px 0;
-            color: #444;
+            color: var(--mdc-theme-text-secondary-on-background);
           }
-          .cart{
-            @media (max-width:599px) {
-              display: none;
-            }
-            margin-bottom: 0;
-            margin-top: auto;
-            margin-left: -10px;
-            margin-right: -10px;
-            text-align: center;
-            background-color: #efefef;
-            padding: 5px 0;
-            color:var(--mdc-theme-primary);
-            font-size: 16px;
+
+          // CART - Lien vers le panier (masqué sur mobile)
+          .cart {
+            background-color: var(--mdc-theme-appbar-light);
+            color: var(--mdc-theme-primary);
+            font-size: 1rem;
             font-weight: bold;
-            .icon{
+            width: fit-content;
+
+
+            .icon {
               font-size: 16px;
               transform: translateY(3px);
               margin-left: 10px;
             }
           }
-          .options{
+
+          // OPTIONS - Liens secondaires
+          .options {
             font-size: 13px;
             margin-top: 10px;
-            margin-bottom: 0px;
+            margin-bottom: 0;
             padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--mdc-theme-appbar);
             display: flex;
-            a{
+
+            a {
               margin-left: auto;
               margin-right: 10px;
-              color:#aaa;
-              .icon{
+              color: var(--mdc-theme-text-hint-on-background);
+
+              .icon {
                 font-size: 15px;
               }
             }
           }
-          .calendar{
+
+          // CALENDAR - Planning de livraison
+          .calendar {
             margin-top: 5px;
-            margin-bottom: 0px;
+            margin-bottom: 0;
             display: flex;
-            .schedule{
-              color: black;
-              margin: auto;
-              margin-left: 0px;
-              span{
+
+            .schedule {
+              color: var(--mdc-theme-text-primary-on-background);
+              margin: auto 0 auto 0;
+
+              span {
                 font-size: 20px;
-                color: #000;
+                color: var(--mdc-theme-text-primary-on-background);
               }
 
-              span.txt{
+              span.txt {
                 font-size: 14px;
                 padding: 1px 4px;
                 transform: translateY(-5px);
@@ -198,25 +212,30 @@
       }
     }
 
-    ul.availability{
+    // ========================================================================
+    // AVAILABILITY - Liste des jours disponibles
+    // ========================================================================
+    ul.availability {
       padding-left: 0;
-      margin: 0;
+      margin: 0 5px 0 auto;
       list-style: none;
-      margin-left: auto;
-      margin-right: 5px;
 
-      li{
+      li {
         font-size: 14px;
         display: inline-block;
-        padding-right: 4px;
-        padding-left: 4px;
+        padding: 0 4px;
         text-align: center;
-        .icon{
-          font-size: 10px;
+
+        .icon {
+          font-size: 1rem;
           color: var(--mdc-theme-primary);
         }
+        .icon.open {
+          font-size: 1rem;
+          color: var(--mdc-theme-karibou-pink);
+        }
+
       }
     }
   }
-
 }

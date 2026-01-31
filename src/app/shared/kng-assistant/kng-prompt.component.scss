@@ -2,7 +2,8 @@
 // Structure UX: Form avec [input] + [help bar: options | audio | buttons]
 
 :host {
-  padding: 5px;
+  display: block;
+  padding: .5rem;
   padding-bottom: 0;
   width: calc(100% - 1rem);
   max-width: 600px;
@@ -11,14 +12,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  margin: 0 auto 0.5rem auto; // Centre horizontalement avec margin auto
-  background: var(--mdc-theme-background, #fff); // Fond pour ne pas voir le contenu derrière
+  margin: 0 auto 0 auto; // Centre horizontalement avec margin auto
 }
 
 @media (max-width: 599px) {
   :host {
     padding: 0px;
-    width: calc(100% - 0.5rem);
+    width: calc(100% - 1rem);
     max-width: calc(100vw - 0.5rem);
     left: 0;
     right: 0;
@@ -48,7 +48,7 @@
     margin-right: 7px;
     margin-left: auto;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--wa-border-radius-s);
   }
 }
 
@@ -56,7 +56,82 @@
   justify-content: center;
 }
 
-// ✅ Suggestions autocomplete
+// ✅ wa-popup for autocomplete suggestions
+.suggestions-popup {
+  // Anchor invisible positionné par le form
+  .suggestions-anchor {
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    pointer-events: none;
+  }
+}
+
+// ✅ Suggestions list - liste native dans wa-popup
+.suggestions-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: var(--mdc-theme-background-container, #fff);
+  min-width: 280px;
+  max-width: 500px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--wa-border-radius-s);
+    background: var(--mdc-theme-primary, #3f51b5);
+  }
+
+  .suggestion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background-color 0.15s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover,
+    &.selected {
+      background-color: var(--mdc-theme-primary, #3f51b5);
+      color: var(--mdc-theme-primary-text, #fff);
+
+      .suggestion-link {
+        background: rgba(255, 255, 255, 0.2);
+        color: inherit;
+      }
+    }
+
+    .suggestion-description {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .suggestion-link {
+      flex-shrink: 0;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 1rem;
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--mdc-theme-text-secondary-on-background, #666);
+    }
+  }
+}
+
+// ✅ Suggestions autocomplete (legacy/helps)
 .suggestions {
   max-height: 300px;
   overflow: hidden;
@@ -64,9 +139,9 @@
   border-radius: 1rem;
   overflow-y: auto;
   margin: auto;
-  bottom: 7rem;
   box-shadow: 0 0px 30px rgba(0, 0, 0, 0.15);
-  width: 600px;
+  width: 100%;
+  max-width: 500px;
   z-index: 3;
   background: var(--mdc-theme-background-container, #fff);
 
@@ -96,21 +171,6 @@
       &:hover {
         background: rgba(0, 0, 0, 0.05);
       }
-    }
-  }
-
-  .suggestion-item {
-    padding: 12px 16px;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    &.selected {
-      background-color: var(--mdc-theme-primary, #3f51b5);
-      color: var(--mdc-theme-primary-text, #fff);
     }
   }
 }
@@ -161,7 +221,7 @@ form {
     .action-thinking {
       color: var(--mdc-theme-primary, #3f51b5);
       background: rgba(63, 81, 181, 0.1);
-      border-radius: 8px;
+      border-radius: var(--wa-border-radius-m);
     }
   }
 
@@ -182,7 +242,7 @@ form {
     }
 
     &::-webkit-scrollbar-thumb {
-      border-radius: 4px;
+      border-radius: var(--wa-border-radius-s);
       background: var(--mdc-theme-primary, #3f51b5);
     }
 
@@ -200,7 +260,7 @@ form {
       cursor: pointer;
       padding: 12px 24px;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--wa-border-radius-m);
       background: var(--mdc-theme-primary, #3f51b5);
       color: var(--mdc-theme-primary-text, #fff);
       font-size: 14px;

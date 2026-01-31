@@ -60,7 +60,7 @@
       section.thinking{
         background-color: yellow;
         padding: 4px;
-        border-radius: 8px;
+        border-radius: var(--wa-border-radius-m);
         display: none;
         font-family: monospace;
         font-size: 10px;

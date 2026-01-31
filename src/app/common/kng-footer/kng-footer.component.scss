@@ -54,7 +54,7 @@ div.footer{
       justify-content:flex-start; /*halign*/
       align-items:flex-start; /*valign*/
       &.marked{
-        border-bottom:2px dotted #eee;
+        border-bottom:2px dotted var(--wa-color-neutral-border-quiet);
       }
       .elem{
         flex:1 0 calc(33% - 40px);

@@ -11,7 +11,7 @@
     padding-bottom: 10vh!important;
     min-height: 80%;
     box-sizing: border-box;
-    position: fixed;top: 0;z-index: 4;margin: auto;left: 0;right: 0;bottom:0;
+    position: fixed;top: 0;z-index: var(--kng-z-modal);margin: auto;left: 0;right: 0;bottom:0;
     overflow: hidden;
     border-radius: 15px;
 

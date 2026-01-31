@@ -18,14 +18,17 @@
     // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
     // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
     will-change: transform; // Optimisation GPU pour translateY
+    transition: transform 0.5s ease-out; // Smooth scroll sticky simulé
     padding-top: 1rem;
 
     // DESKTOP: style menu-on-left original
     @media (min-width: 1200px) {
       // Sticky + Largeur maximale
       position: sticky;
-      top: -3rem; // Espace sous la navbar
-      max-height: calc(100vh - var(--mdc-theme-top-bar, 70px) - 2rem);
+      // Espace sous la navbar
+      top: -4rem;
+      // max height = viewport - top bar / compensated by the body zoom factor
+      max-height: calc((100vh - var(--mdc-theme-top-bar, 70px)) / var(--mdc-theme-body-zoom));
       overflow-y: auto;
       width: 100%;
       max-width: var(--mdc-theme-toolbox-width);
@@ -34,7 +37,7 @@
         list-style: none;
         padding: 0;
         margin: 0;
-        border-right: 1px solid #ddd;
+        border-right: 1px solid var(--wa-color-neutral-border-quiet);
         padding-right: 10px;
 
         // Masquer les chips sur desktop
@@ -51,7 +54,7 @@
           text-overflow: ellipsis;
           margin-left: 5px;
 
-          &:hover { background-color: #eee; }
+          &:hover { background-color: var(--wa-color-neutral-fill-quiet); }
 
           &.selected {
             color: #333;
@@ -87,54 +90,16 @@
       }
     }
 
-    // MOBILE: style mobile-categories original
-    @media (max-width: 599px) {
-
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 0.25rem;
-        justify-items: center;
-        margin-bottom: .25rem;
-
-        // Masquer les liens texte sur mobile
-        &.hide-sm { display: none !important; }
-
-        li.subs-item {
-          width: calc(100% - 1rem);
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          border-radius: 0.5rem;
-          background-color: var(--mdc-theme-appbar-light);
-          border: 1px solid var(--mdc-theme-appbar);
-          color: var(--mdc-theme-appbar-text);
-          font-weight: 500;
-          font-size: var(--wa-font-size-xs);
-          padding: 0.25rem;
-          margin: auto;
-          height: 2.125rem;
-
-          &.inverted {
-            color: var(--mdc-theme-appbar-light);
-            background-color: var(--mdc-theme-appbar-text);
-            i { color: var(--mdc-theme-appbar-light); }
-          }
-
-          i {
-            margin-right: 5px;
-            color: var(--mdc-theme-secondary);
-            &.icon { margin-top: -8px; }
-          }
-        }
-
-        li.subs-item:last-child:nth-child(odd) {
-          grid-column: span 2;
-        }
-      }
+    // MOBILE/TABLET: Styles cartes catégories
+    // → Voir kng-side-menu-mobile.scss (grille 3 colonnes, couleurs cycliques)
+    // Les styles mobile/tablet sont définis dans kng-side-menu-mobile.scss
+    // qui s'applique automatiquement via media queries
+    @media (max-width: 1199px) {
+      //
+      // Masquer les liens texte desktop sur mobile/tablet
+      ul.hide-sm { display: none !important; }
+      max-height: calc((100vh - 2*var(--mdc-theme-top-bar)) / var(--mdc-theme-body-zoom));
+      overflow-y: auto;
     }
   }
 }
@@ -156,6 +121,7 @@
     // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
     // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
     will-change: transform; // Optimisation GPU pour translateY
+    transition: transform 0.5s ease-out; // Smooth scroll sticky simulé
 
     // Desktop: Largeur maximale
     @media (min-width: 1200px) {

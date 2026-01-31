@@ -54,7 +54,7 @@ div{
         right: 15px;
         top: 15px;
         padding: 5px 15px;
-        border-radius: 8px;
+        border-radius: var(--wa-border-radius-m);
         font-weight: bold;
         color: red;
         background-color: white;

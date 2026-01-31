@@ -15,8 +15,8 @@
 
 // Variables locales
 $appbar-height: var(--mdc-theme-top-bar, 70px);
-$appbar-bg: var(--mdc-theme-appbar, rgba(227, 236, 235, 0.97));
-$appbar-text: var(--mdc-theme-appbar-text, rgba(19, 83, 20, 0.97));
+$appbar-bg: var(--mdc-theme-appbar, rgba(227, 236, 235, 0.9));
+$appbar-text: var(--mdc-theme-appbar-text, rgba(19, 83, 20, 0.8));
 $transition-speed: 0.2s;
 
 // ============================================================================
@@ -31,6 +31,16 @@ $transition-speed: 0.2s;
   background-color: $appbar-bg;
   color: $appbar-text;
   transition: box-shadow $transition-speed ease;
+
+  // Effet de flou glassmorphism
+  // Note: opacity sur l'élément interfère avec backdrop-filter
+  // On applique l'alpha via color-mix sur le background
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+
+  @supports (color: color-mix(in srgb, red 50%, blue)) {
+    background-color: color-mix(in srgb, var(--mdc-theme-appbar) 80%, transparent);
+  }
 
   // État scrollé : ombre en bas
   &.kng-appbar--scrolled {
@@ -58,9 +68,8 @@ $transition-speed: 0.2s;
   // DESKTOP (≥1200px) - MÊME GRID QUE grid-container-3
   // ========================================================================
   grid-template-columns:
-    1fr
-    var(--mdc-theme-container-width)
-    1fr;
+  .6fr var(--mdc-theme-container-width) 1fr;
+
 
   // Row secondaire (cachée si vide)
   &.kng-appbar__row--secondary {

@@ -119,7 +119,7 @@ button.CTA {
     width: 100%;
     position: relative;
     img{
-      border-radius: 16px;
+      border-radius: var(--wa-border-radius-l);
       width: 400px;
       max-width: calc(100% - 30px);
     }

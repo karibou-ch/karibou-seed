@@ -141,7 +141,7 @@ section.cart{
     }
     p.block-info{
       color: #333;
-      border-radius: 8px;
+      border-radius: var(--wa-border-radius-m);
       background-color: #fafafa;
     }
   }

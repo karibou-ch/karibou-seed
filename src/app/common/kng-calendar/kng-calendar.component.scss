@@ -25,10 +25,10 @@
     width: 100%;
     font-family: var(--mdc-theme-font);
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.87);
+    color: var(--mdc-theme-secondary);
     font-size: 1.75rem;
-    margin-bottom: 15px;
-    margin-top: 25px;
+    margin-bottom: .125rem;
+    margin-top: .25rem;
     margin-left: 0;
   }
 
@@ -41,8 +41,9 @@
     border:1px solid var(--mdc-theme-appbar);
     border-radius: 1rem;
     background-color: var(--mdc-theme-appbar-light) !important;
-    padding: 0.5rem;
-    flex: 1 1 calc(50% - 1rem);
+    padding: 0.25rem;
+    flex: 1 1 calc(50% - .5rem);
+    height: var(--mdc-theme-mobile-bar);
     margin: auto;
     @media (max-width: 899px) {
       flex: 1 1 100%;
@@ -152,12 +153,13 @@
   }
   .switch-hub {
     margin: auto;
-    padding: .41rem;
+    padding: .25rem;
     align-items: center;
     display: flex;
     border: 1px solid var(--mdc-theme-appbar);
     @media (min-width: 768px) {
-      flex: 1 1 calc(50% - 2rem);
+      flex: 1 1 calc(50% - .5rem);
+      max-height: var(--mdc-theme-mobile-bar);
     }
 
     .label {

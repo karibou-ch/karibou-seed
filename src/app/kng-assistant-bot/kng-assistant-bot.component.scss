@@ -1,313 +1,425 @@
-:host{
-  display: flex;
-  position: relative;
-  height: 100%;
-  flex-direction: column;
-  max-height: 100%;
-  overflow: hidden;
+// ============================================================================
+// Styles partagés pour le menu latéral swipeable
+// ============================================================================
+@import '../../styles/kng-side-menu';
+
+// ============================================================================
+// HOST - Le composant devient transparent pour que les swipe-panel
+// participent directement au layout parent (grid ou flex)
+// ============================================================================
+:host {
+  display: contents;
 }
 
-.assistant-dialog {
-  overflow: hidden; // ✅ Changé: le scroll sera dans .center.grid-item
-  bottom: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  visibility: visible;
-  z-index: var(--kng-z-modal);
-  background: white;
+// ============================================================================
+// STYLES SPÉCIFIQUES ASSISTANT
+// ============================================================================
 
-  .assistant-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+// HEADER
+.assistant-header {
+  padding: 1rem;
+  text-align: center;
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--mdc-theme-text-primary-on-background);
   }
 
-  &:hover .assistant-backdrop {
-    opacity: 1;
+  p {
+    margin: 0;
+    color: var(--mdc-theme-text-secondary-on-background);
+    font-size: 0.9rem;
   }
 
-  @media (min-width: 1025px) {
-    padding: 5px;
-    background-color: rgba(255, 255, 255, 0.5);
+  @media (min-width: 900px) {
+    text-align: left;
+    padding: 1rem 0;
+  }
+}
+
+// WELCOME SCREEN
+.welcome {
+  text-align: center;
+  padding: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
   }
 
-  @media (max-width: 1025px) {
-    background: white;
+  p {
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+}
+
+// ============================================================================
+// PANEL CENTER - Conversation + Produits
+// ============================================================================
+
+// History component
+kng-assistant-history {
+  display: block;
+
+
+  &::-webkit-scrollbar {
+    width: 1px;
+    height: 8px;
+    background-color: transparent; /* or add it to the track */
   }
 
+  /* Add a thumb */
+  &::-webkit-scrollbar-thumb {
+    background: #555;
+  }
 
+  @media (max-width: 599px) {
+    padding: 0 0.5rem;
+  }
+}
 
-  .assistant-dialog__surface{
-    /* see overflow in mdc-style.scss */
-    background-image: linear-gradient(45deg, #fff 90%, #fff, #fff, var(--mdc-theme-appbar-light));
-    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
-    background-color: var(--mdc-theme-background, #fff);
-    background-color: #fff;
+// PRODUITS SUGGÉRÉS (section séparée)
+.products-suggestions {
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: var(--mdc-theme-appbar-light);
+  border-radius: 1rem;
+
+  @media (max-width: 899px) {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+
+  .section-title {
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 865px;
-    height: calc(100vh - 60px); // ✅ Changé: hauteur fixe pour que flex fonctionne
-    max-height: calc(100vh - 60px); // ✅ AJOUTÉ: limite la hauteur max
-    border-radius: 4px;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--mdc-theme-text-primary-on-background);
+
+    i {
+      font-size: 1.25rem;
+      color: var(--mdc-theme-secondary);
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+
+    @media (min-width: 600px) {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+  }
+}
+
+// LOADING
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--mdc-theme-text-secondary-on-background);
+
+  .typing-indicator {
+    display: flex;
+    gap: 0.25rem;
+
+    span {
+      width: 8px;
+      height: 8px;
+      background-color: var(--mdc-theme-primary);
+      border-radius: 50%;
+      animation: typing 1s infinite ease-in-out;
+
+      &:nth-child(1) { animation-delay: 0s; }
+      &:nth-child(2) { animation-delay: 0.2s; }
+      &:nth-child(3) { animation-delay: 0.4s; }
+    }
+  }
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-8px);
     opacity: 1;
+  }
+}
+
+// ============================================================================
+// PANEL RIGHT - Sidebar prompt
+// ============================================================================
+
+.sidebar-panel.assistant {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+
+  // ✅ DESKTOP: Sticky avec hauteur max = fenêtre - top bar
+  position: sticky;
+  top: var(--mdc-theme-top-bar, 70px);
+  height: calc((100dvh - var(--mdc-theme-top-bar, 70px)) / var(--mdc-theme-body-zoom));
+  overflow-y: auto;
+  border-left: 1px solid var(--wa-color-neutral-border-quiet);
+
+  // ============================================================================
+  // MOBILE/TABLET: Layout fixe avec contrainte de hauteur
+  // Formule harmonisée avec kng-side-menu.scss (.menu-panel)
+  // - 2 * top-bar : navbar haut + bottom bar mobile
+  // - / body-zoom : compensation du zoom sur différents écrans
+  // ============================================================================
+  @media (max-width: 1199px) {
     position: relative;
-    margin-top: 20px;
-    margin-bottom: 40px;
+    top: 0;
+    padding: 0.5rem;
+
+    // ✅ Hauteur harmonisée avec .menu-panel (kng-side-menu.scss)
+    height: calc((100vh - 2 * var(--mdc-theme-top-bar)) / var(--mdc-theme-body-zoom));
+    max-height: calc((100vh - 2 * var(--mdc-theme-top-bar)) / var(--mdc-theme-body-zoom));
+    min-height: 0; // Permettre shrink si nécessaire
+    overflow: hidden; // Le conteneur ne scroll pas, c'est history qui scroll
+
+    // ✅ Flex layout: history prend l'espace, prompt reste en bas
+    justify-content: flex-start;
+  }
+
+  // ✅ Mobile XXS: top-bar = 0, donc formule simplifiée
+  @media (max-width: 400px) {
+    padding: 0.25rem;
+    // --mdc-theme-top-bar = 0px sur mobile XXS (kng-responsive.scss)
+    // Donc: calc((100vh - 0) / 1) = 100vh
+    height: calc(100vh / var(--mdc-theme-body-zoom));
+    max-height: calc(100vh / var(--mdc-theme-body-zoom));
+  }
+}
+
+// ============================================================================
+// KNG-ASSISTANT-HISTORY - Layout mobile avec scroll
+// ============================================================================
+.sidebar-panel.assistant kng-assistant-history {
+  // ✅ MOBILE: Prend tout l'espace disponible et scroll si nécessaire
+  @media (max-width: 1199px) {
+    flex: 1;
+    min-height: 0; // Critical: permet au flex-item de shrink
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    // ✅ Smooth scrolling natif
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+// ============================================================================
+// PROMPT CONTAINER - Toujours en bas sur mobile
+// ============================================================================
+.prompt-container {
+  width: 100%;
+  position: relative;
+  min-height: 10rem;
+
+  // ✅ Override le position: absolute du kng-prompt pour ce contexte
+  kng-prompt {
+    position: relative !important;
+    bottom: auto !important;
+  }
+
+  // ✅ MOBILE: Ne pas réduire, rester en bas
+  @media (max-width: 1199px) {
+    flex-shrink: 0;
+    min-height: auto;
+    padding-bottom: env(safe-area-inset-bottom, 0); // Safe area iOS
+  }
+}
+
+
+// TIPS SECTION (mobile)
+.tips-section {
+  padding: 1rem;
+
+  h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+
+  .tips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tip-button {
+    padding: 0.5rem 0.75rem;
+    background: var(--mdc-theme-appbar-light);
+    border: 1px solid var(--mdc-theme-divider);
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--mdc-theme-primary-light);
+      border-color: var(--mdc-theme-primary);
+    }
+  }
+}
+
+// ============================================================================
+// PROMPTS EXEMPLES - Affiché uniquement quand pas de messages (via *ngIf)
+// Sur mobile: prend l'espace flexible, scroll si nécessaire
+// ============================================================================
+.prompts-section {
+  padding: 1rem;
+
+  // ✅ MOBILE: Flex layout et scroll
+  @media (max-width: 1199px) {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--mdc-theme-text-secondary-on-background);
+
+    @media (max-width: 1199px) {
+      position: sticky;
+      top: 0;
+      background: var(--mdc-theme-appbar-light);
+      padding: 0.5rem 0;
+      z-index: 1;
+    }
+  }
+
+  .prompts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding: 0.5rem 0;
+      font-size: 0.875rem;
+      color: var(--mdc-theme-text-primary-on-background);
+      cursor: pointer;
+      border-bottom: 1px solid var(--mdc-theme-divider);
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--mdc-theme-primary);
+      }
+
+      // ✅ Touch feedback pour mobile
+      &:active {
+        background: var(--mdc-theme-primary-light, rgba(0, 0, 0, 0.05));
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// ============================================================================
+// PANEL SIDE - Tips list (desktop)
+// ============================================================================
+
+.menu-panel .tips-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  border-top: 1px solid var(--mdc-theme-divider);
+  padding-top: 1rem;
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--mdc-theme-text-hint-on-background);
+    margin-bottom: 0.5rem;
+    padding: 0 5px;
+  }
+
+  li:not(.section-title) {
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--mdc-theme-text-secondary-on-background);
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--mdc-theme-hover);
+      color: var(--mdc-theme-primary);
+    }
+  }
+}
+
+// ============================================================================
+// KNG-BOXED adaptations
+// ============================================================================
+
+.swipe-panel.right .kng-boxed {
+  width: calc(100% - 2rem);
+}
+
+.swipe-panel.side .kng-boxed {
+  @media (min-width: 600px) {
+    width: calc(100% - 2rem);
+  }
+}
+
+@media (max-width: 599px) {
+  .swipe-panel .kng-boxed {
+    width: calc(100% - 2rem);
+  }
+}
+
+// ============================================================================
+// PRODUCT CONTAINER - Layout produits suggérés (similaire kng-home)
+// ============================================================================
+
+
+.swipe-panel.right .product-container {
+  margin-top: 1.5rem;
+  margin-bottom: 100px;
+  padding: 0;
+  width: 100%;
+  min-height: 20vh;
+
+  @media (max-width: 899px) {
+    padding: 0 1rem;
+    width: calc(100% - 2rem);
     margin-left: auto;
     margin-right: auto;
-    overflow: hidden; // ✅ AJOUTÉ: empêche le débordement, le scroll sera dans .center.grid-item
+  }
+}
 
-
-    @media (prefers-color-scheme: dark) {
-      background-color: var(--mdc-theme-primary-dark)!important;
-      color: var(--mdc-theme-primary-dark-text)!important;
-    }
-
-    @media (max-width: 769px) {
-      margin-top: 0px;
-    }
-
-    @media (min-width: 1640px) {
-      max-width: 1024px;
-    }
-
-    .material-symbols-outlined.size-large {
-      font-size: 25px!important;
-      font-weight: 700;
-    }
-
-
-    .banner {
-      position: relative;
-      font-family: var(--mdc-theme-font);
-
-      min-height: 120px;
-      border-radius: 15px;
-      color: #333;
-      font-weight: normal;
-      padding: 12px 16px 0;
-      max-width: calc(740px);
-      width: calc(95%);
-      margin: auto;
-      margin-top: 10px;
-      margin-bottom: 20px;
-
-      @media (prefers-color-scheme: dark) {
-        background-color: var(--mdc-theme-secondary-dark);
-        color: var(--mdc-theme-secondary-dark-text);
-      }
-
-      @media (max-width:427px) {
-        max-width: calc(100% - 32px);
-      }
-
-      h1 {
-        font-size: 45px;
-        line-height: 52px;
-        font-weight: 600;
-        padding-left: 0;
-        margin-bottom: 5px;
-        text-align: center !important;
-        width: 100%;
-
-      }
-
-      p {
-        font-weight: 400;
-        font-size: 20px;
-        padding-top: 8px;
-        line-height: 28px;
-        margin: auto;
-        margin-top: 0px;
-        text-align: center !important;
-      }
-
-      img{
-        width: 40%;
-        max-width: 200px;
-      }
-
-      h1,
-      h2,
-      h3,
-      h4,
-      p {
-        text-align: left;
-        text-transform: none;
-      }
-    }
-
-
-    .topbar {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      align-items:center;
-      width: 865px;
-      padding: 15px 0;
-      position: fixed;
-      top: 30px;
-      background-color: rgba(255, 255, 255, 0.1);
-      transition: all .5s;
-      z-index: var(--kng-z-content);
-
-      @media (max-width:599px) {
-        top:0px
-      }
-
-      &.sticked {
-        background-color: rgba(255, 255, 255, .9);
-        top: 0px;
-        .title { opacity: 1;}
-      }
-
-      .title{
-        opacity: 0;
-        font-size: 20px;
-        line-height: 28px;
-        text-align: left;
-        width: fit-content;
-        margin-left: 3%;
-      }
-
-
-      button.close{
-        cursor: pointer;
-        background: transparent;
-        border: 0;
-        color: #111;
-        left: calc((100vw - 860px) / 2);
-        z-index: calc(var(--kng-z-content) + 1);
-        margin-left: 10px;
-
-        @media (prefers-color-scheme: dark) {
-          color: var(--mdc-theme-secondary-dark-text);
-        }
-
-      }
-
-      .cart {
-        margin-right: 15px;
-        margin-left: auto;
-        min-width: 158px;
-        opacity: 0;
-      }
-
-      .cart.visible {
-        opacity: 1;
-      }
-
-      .subscription-cart {
-        display: flex;
-        button {
-          margin-right: 0;
-          margin-left: auto;
-          text-align: left;
-          padding: 10px 25px;
-          font-size: 18px;
-          line-height: 24px;
-          font-weight: bold;
-          border: 0px solid var(--mdc-theme-primary);
-          border-radius: 28px;
-          color: var(--mdc-theme-appbar-text);
-          background-color: var(--mdc-theme-appbar);
-          cursor: pointer;
-
-          span {
-            float: right;
-            font-weight: 400;
-          }
-        }
-      }
-
-    }
-
-
-    .container{
-      position: relative;
-      display: flex;
-      flex-flow: column;
-      justify-content: flex-start; // ✅ Changé: flex-start au lieu de flex-end
-      align-items: stretch; // ✅ Changé: stretch pour que les enfants prennent toute la largeur
-      overflow: hidden;
-      letter-spacing: .04em;
-      text-decoration: inherit;
-      text-transform: inherit;
-      line-height: 1.3rem;
-      flex: 1; // ✅ AJOUTÉ: remplit l'espace disponible dans assistant-dialog__surface
-      min-height: 0; // ✅ AJOUTÉ: permet au flex de fonctionner avec overflow
-
-      .title {
-        margin: auto;
-        text-align: left;
-        margin-top: 10px;
-        margin-bottom: 15px;
-        font-size: 24px;
-        margin-left: 3%;
-      }
-
-      // ✅ Pattern kng-sgc: layout pour history + prompt
-      .center.grid-item {
-        width: 100%;
-        flex: 1; // ✅ Changé: flex: 1 au lieu de height: 100%
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-        overflow-x: hidden;
-        position: relative; // Nécessaire pour le positionnement absolu de kng-prompt
-        min-height: 0; // ✅ AJOUTÉ: permet au flex de fonctionner avec overflow
-
-        // Welcome screen
-        .welcome {
-          text-align: center;
-          padding: 2rem;
-          h2 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-          }
-          p {
-            color: var(--mdc-theme-text-secondary-on-background);
-          }
-        }
-
-        // ✅ History prend tout l'espace avec padding-bottom pour le prompt
-        kng-assistant-history {
-          flex: 1;
-          padding-bottom: 12rem; // Espace pour le prompt fixe en bas
-          min-height: 0;
-        }
-
-        // ✅ Prompt est positionné en absolu en bas du .center.grid-item
-        kng-prompt {
-          // Les styles sont dans kng-prompt.component.scss
-          // position: absolute; bottom: 0;
-        }
-      }
-
-      kng-assistant {
-        width: 100%;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        padding: 0 1rem;
-
-        @media (max-width: 599px) {
-          padding: 0 0.5rem;
-        }
-      }
-    }
+.section-title {
+  margin: 0 0 1rem 0;
+  padding: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: var(--mdc-theme-font);
+  color: var(--wa-color-neutral-20);
+  border-bottom: 2px solid var(--wa-color-neutral-border-quiet);
+  width: fit-content;
+  span{
+    color: var(--wa-color-neutral-40);
   }
 }
 

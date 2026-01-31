@@ -1,4 +1,5 @@
 @import "colors.scss";
+@import "kng-side-menu-mobile.scss";
 
 
 body{
@@ -24,7 +25,6 @@ body{
 :root {
 
   // 🧭 NAVIGATION - Hauteur navbar fixe
-  --mdc-theme-top-bar: 70px;
   --mdc-theme-wrapper-zoom: .33;
 
   // 📚 Z-INDEX - Gestion des couches
@@ -45,12 +45,10 @@ body{
   --mdc-theme-primary-light: rgba(227,236, 235, 0.3);
 
   --mdc-theme-primary-text: white;
-  --mdc-theme-text-primary-on-background:#333;
   --mdc-theme-secondary: #028b7a;
   --mdc-theme-secondary-light: rgba(227,236, 235, 0.3);
 
   --mdc-theme-secondary-text: white;
-  --mdc-theme-text-secondary-on-background:#333;
 
   --mdc-theme-appbar: rgba(227,236, 235, 0.97);
   --mdc-theme-appbar-light: rgba(227,236, 235, 0.3);
@@ -63,13 +61,6 @@ body{
   --mdc-theme-secondary-dark: initial;
   --mdc-theme-secondary-dark-text: initial;
 
-  // FIXME remove this hardcoding
-  --mdc-theme-text-hint-on-background:#333;
-  --mdc-theme-text-icon-on-background:#333;
-
-  //
-  // BODY
-  --mdc-theme-background-container: white;
 
   @supports (color: color-mix(in srgb, red 50%, blue)) {
     --mdc-theme-primary-light:color-mix(in srgb, var(--mdc-theme-primary) 30%, var(--mdc-theme-colormix));
@@ -81,14 +72,18 @@ body{
     background:
       radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
       radial-gradient(circle at top right, var(--mdc-theme-secondary-light) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom, var(--mdc-theme-secondary-light) 0%, transparent 60%);
-    background:
-      radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
-      radial-gradient(circle at top right, var(--mdc-theme-primary) 0%, transparent 30%),
-      radial-gradient(ellipse at bottom, var(--mdc-theme-primary-light) 10%, transparent 60%);
-    background-color: var(--mdc-theme-appbar-light);
+      radial-gradient(ellipse at bottom right, var(--mdc-theme-secondary-light) 0%, transparent 0%);
   }
 
+  // FIXME remove this hardcoding
+  --mdc-theme-text-hint-on-background:#333;
+  --mdc-theme-text-icon-on-background:#333;
+  --mdc-theme-text-primary-on-background:#333;
+  --mdc-theme-text-secondary-on-background:#333;
+
+  //
+  // BODY
+  --mdc-theme-background-container: white;
 
   /** theme colors
   //
@@ -178,19 +173,19 @@ input[type="submit"],
 
 .grid-container-3 {
   display: grid;
-  width: 100%;
-  min-height: 100dvh;
+  // FIXME: .swipe-panel.right overflow
+  width: 99%;
+  min-height: calc(100dvh / var(--mdc-theme-body-zoom));
   gap: 0;
 
-  // DESKTOP (≥1200px) - 4 colonnes (side, center, custom, right)
-  // Side et Right prennent le reste de l'espace (1fr)
-  // Center a une taille fixe, Custom facultatif (0 ou auto)
-  grid-template-columns:1fr var(--mdc-theme-container-width) 1fr;
+  //
+  // IMPORTANT: kng-navbar-top doit répliquer le même grid-template-columns
+  grid-template-columns:.6fr var(--mdc-theme-container-width) 1fr;
   grid-template-rows: var(--mdc-theme-top-bar) 1fr auto;
   grid-template-areas:
-    "header header header header"
-    "side   center custom right"
-    "footer footer footer footer";
+    "header header header"
+    "side   center right"
+    "footer footer footer";
 
   // Header
   > .grid-header {
@@ -237,6 +232,8 @@ input[type="submit"],
 
     &.center {
       grid-column: 2;
+      padding: .75rem;
+      width: calc(100% - 1.5rem);
     }
 
     &.custom {
@@ -263,7 +260,7 @@ input[type="submit"],
   // Actuel: overflow-x: auto crée un contexte de scroll qui casse le sticky natif.
   // Contournement: Sticky simulé via translateY() dans kng-home.component.ts
   @media (max-width: 599px) {
-    width: 100vw;
+    width: calc(100vw / var(--mdc-theme-body-zoom));
     grid-template-columns: 1fr;
     grid-template-rows: var(--mdc-theme-top-bar) 1fr 60px;
 
@@ -324,7 +321,7 @@ input[type="submit"],
 
   // TABLET (600px - 1199px) - Swipe horizontal comme mobile
   @media (min-width: 600px) and (max-width: 1199px) {
-    width: 100vw;
+    width: calc(100vw / var(--mdc-theme-body-zoom));
     grid-template-columns: 1fr;
     grid-template-rows: var(--mdc-theme-top-bar) 1fr 60px;
 

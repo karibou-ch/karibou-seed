@@ -25,7 +25,7 @@
   .redeem {
     display: flex;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: var(--wa-border-radius-m);
     width: 180px;
     margin-left: auto;
 
