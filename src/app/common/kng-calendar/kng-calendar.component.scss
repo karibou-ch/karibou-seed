@@ -1,7 +1,7 @@
 :host {
 
   margin:auto;
-  width: 100%;
+  width: calc(100% - 1rem);
   height: auto;
   display: block;
 
@@ -21,7 +21,7 @@
     font-size: var(--wa-font-size-l);
     margin-bottom: var(--wa-space-m);
   }
-  
+
   h3{
     width: 100%;
     font-family: var(--mdc-theme-font);
@@ -46,13 +46,9 @@
     border: 1px solid var(--wa-color-brand-border-quiet);
     border-radius: var(--wa-border-radius-l);
     padding: var(--wa-space-xs);
-    flex: 1 1 calc(50% - .5rem);
+    width: 100%;
     height: var(--mdc-theme-mobile-bar);
     margin: auto;
-    
-    @media (max-width: 899px) {
-      flex: 1 1 100%;
-    }
 
     &::-webkit-scrollbar {
       display: none;
@@ -82,7 +78,7 @@
         justify-content: center;
         cursor: pointer;
         transition: all var(--wa-transition-fast);
-        
+
         // Last minute option
         &.last-minute{
           width: auto;
@@ -128,7 +124,7 @@
             color: var(--wa-color-brand-on-loud);
           }
         }
-        
+
         .ei_Title{
           margin: auto;
           padding: 9px;
@@ -151,6 +147,7 @@
   // Switch hub - utilise kng-card--white style
   // ============================================================================
   .switch-hub {
+    width: 100%;
     margin: auto;
     padding: var(--wa-space-s);
     align-items: center;
@@ -158,30 +155,19 @@
     background: white;
     border-radius: var(--wa-border-radius-l);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    
-    @media (min-width: 768px) {
-      flex: 1 1 calc(50% - .5rem);
-      max-height: var(--mdc-theme-mobile-bar);
-    }
 
     .label {
-      flex: 1 1 50%;
+      flex: 1;
       min-width: 0;
       font-size: var(--wa-font-size-s);
       color: var(--mdc-theme-text-secondary-on-background);
-      @media (max-width: 599px) {
-        flex: 1 1 auto;
-      }
     }
 
     button {
       cursor: pointer;
       color: var(--mdc-theme-secondary);
       background-color: var(--wa-color-secondary-fill-quiet);
-      flex: 0 0 40%;
       min-width: 120px;
-      margin-left: auto;
-      margin-right: auto;
       border: 1px solid var(--wa-color-secondary-border-quiet);
       border-radius: var(--wa-border-radius-m);
       padding: var(--wa-space-s) var(--wa-space-m);
@@ -191,10 +177,6 @@
       &:hover {
         background-color: var(--wa-color-secondary-fill-normal);
         color: var(--wa-color-secondary-on-normal);
-      }
-
-      @media (max-width: 899px) {
-        flex: 0 0 auto;
       }
     }
   }
