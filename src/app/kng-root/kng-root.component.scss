@@ -165,7 +165,7 @@ button.goto{
   margin-left:10px;
   margin-bottom: 40px;
   color: var(--mdc-theme-primary);
-  background-color: #eee;
+  background-color: var(--wa-color-neutral-fill-quiet);
   text-transform: uppercase;
   border: 1px solid var(--mdc-theme-primary)!important;
   -box-shadow: 0px 2px 8px rgba(0, 0, 0,  0.16);
@@ -180,8 +180,10 @@ button.goto{
 // ============================================================================
 .swipe-panel.right {
   .root-sidebar-panel {
+    border-left: 1px solid var(--mdc-theme-appbar);
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    width: 100%;
   }
 }

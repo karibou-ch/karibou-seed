@@ -17,13 +17,13 @@
 
 // KNG-BOXED dans le sidebar right
 .swipe-panel.right .kng-boxed {
-  width: calc(100% - 2rem); // Compte les marges internes
+  width: calc(100% - 3rem); // Compte les marges internes
 }
 
 // KNG-BOXED dans le menu side (desktop)
 .swipe-panel.side .kng-boxed {
   @media (min-width: 600px) {
-    width: calc(100% - 2rem);
+    width: calc(100% - 3rem);
   }
 }
 
@@ -34,87 +34,6 @@
   }
 }
 
-//
-// BOX INFO
-div.home-header{
-  display: flex;
-  flex-flow: row;
-  flex-wrap: wrap;
-  background-size: cover;
-  background-color: transparent!important;
-  @media (max-width: 899px){
-    padding: 1rem;
-    width: calc( 100% - 2rem );
-  }
-
-  img{
-    width: 100%;
-    border-radius: 1rem;
-    margin: auto;
-    margin-top: 1rem;
-    max-width: calc(100% - 1.25rem);
-    max-height: 300px;
-    object-fit: cover;
-    // iOS 14.1 fix
-    @supports not (aspect-ratio: 1 / 1) {
-      max-height: 170px;
-    }
-
-    @media (min-width: 900px) {
-      margin: .5rem;
-      margin-left: 0;
-        width: (49%);
-    }
-  }
-  &:has(figure:empty) img {
-    margin: auto;
-    margin-top: 1rem;
-  }
-  figure:empty {
-    display: none;
-  }
-  figure {
-    display: flex;
-    align-items: center;
-    margin: .5rem;
-    padding: 0.5rem;
-    border-radius: 1rem;
-    width: calc(100% - 2rem);
-    background-color: var(--mdc-theme-appbar-light);
-    border: 1px solid var(--mdc-theme-appbar);
-    flex: 1;
-    @media (min-width: 768px) {
-      margin-left: .25rem;
-    }
-
-    ul{
-      list-style: none;
-      padding: 1rem 0;
-    }
-    >a{
-      text-decoration: none;
-      color: inherit;
-    }
-  }
-  figure blockquote {
-    quotes: "“" "”" "‘" "’";
-
-    &::before{
-      content: open-quote;
-    }
-    &::after{
-      content: close-quote;
-    }
-  }
-  figure figcaption,
-  figure blockquote {
-    margin: 1em;
-  }
-
-
-
-  // NOTE: .welcome et &.cover supprimés - non utilisés dans kng-home
-}
 
 kng-calendar  {
   @media (max-width: 899px) {
@@ -151,10 +70,8 @@ kng-product-swipe {
 }
 
 kng-product-swipe.boost{
-  background-color: var(--mdc-theme-secondary-light);
   padding: 1rem!important;
   width: calc(100% - 2rem)!important;
-  -margin-left: -1rem!important;
   @media (min-width: 899px) {
     border-radius: 1rem;
   }
@@ -167,8 +84,8 @@ kng-search.home{
 
 kng-search-bar{
   margin:1rem;
-  margin-left: 0.5rem;
-  width: calc(100% - 1rem);
+  margin-left: auto;
+  width: calc(100% - 3rem);
 }
 //
 // HOME SELECTION
@@ -223,7 +140,7 @@ kng-product-swipe{
     }
   }
   &.theme {
-    width: calc( 100% - 0px );
+    width: auto;
     min-height: auto;
   }
   .items{
@@ -236,9 +153,93 @@ kng-product-swipe{
       cursor: pointer;
       margin-bottom: 15px;
       padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
     }
   }
+}
+
+
+//
+// BOX INFO
+div.home-header{
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  background-size: cover;
+  background-color: transparent!important;
+  @media (max-width: 899px){
+    padding: 1rem;
+    width: calc( 100% - 2rem );
+  }
+
+  img{
+    width: 100%;
+    border-radius: 1rem;
+    margin: auto;
+    margin-top: 1rem;
+    max-width: calc(100% - 1.25rem);
+    max-height: 250px;
+    object-fit: cover;
+    border: .25rem solid var(--mdc-theme-secondary-light);
+    // iOS 14.1 fix
+    @supports not (aspect-ratio: 1 / 1) {
+      max-height: 170px;
+    }
+
+    @media (min-width: 900px) {
+      margin: .5rem;
+      margin-left: 0;
+        width: (45%);
+    }
+  }
+  &:has(figure:empty) img {
+    margin: auto;
+    margin-top: 1rem;
+  }
+  figure:empty {
+    display: none;
+  }
+  figure {
+    display: flex;
+    align-items: center;
+    margin: .5rem;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    width: calc(100% - 2rem);
+    background-color: var(--mdc-theme-appbar-light);
+    border: 1px solid var(--mdc-theme-appbar);
+    flex: 1;
+    @media (min-width: 768px) {
+      margin-left: .25rem;
+    }
+
+    ul{
+      list-style: none;
+      padding: 1rem 0;
+    }
+    >a{
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+  figure blockquote {
+    quotes: "“" "”" "‘" "’";
+
+    &::before{
+      content: open-quote;
+    }
+    &::after{
+      content: close-quote;
+    }
+  }
+  figure figcaption,
+  figure blockquote {
+    margin: 1em;
+  }
+
+
+
+  // NOTE: .welcome et &.cover supprimés - non utilisés dans kng-home
 }
 
 

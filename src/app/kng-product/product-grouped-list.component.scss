@@ -42,13 +42,16 @@
       padding-top:0.5rem;
       margin-bottom: 1rem;
       margin-left: 0px;
-      background-color: var(--mdc-theme-appbar-light);
+      span{
+        display: flex;
+        align-items: center;
+      }
     }
 
 
     &.child{
       margin: 50px 4px 25px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
     }
 
     &.child:first-child {

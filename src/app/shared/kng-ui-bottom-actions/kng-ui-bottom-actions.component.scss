@@ -6,7 +6,12 @@ kng-ui-bottom-actions{
   left: 0;
   right: 0;
   bottom: 0;
-  height: 70px;
+  height: var(--mdc-theme-mobile-bar);
+
+  // Glassmorphism effect
+  background-color: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 
   // hide on desktop
   @media (min-width:1024px) {
@@ -97,7 +102,7 @@ kng-ui-bottom-actions{
         margin-left: auto;
         margin-right: auto;
         height: 84px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
         padding-bottom: 5px;
 
         background-color: #fff;
@@ -131,7 +136,7 @@ kng-ui-bottom-actions{
       height: calc(100% - 76px );
       li{
         &.selected{
-          background-color: #eee;
+          background-color: var(--wa-color-neutral-fill-quiet);
         }
         .fa{
           scale: .9;
@@ -174,7 +179,6 @@ kng-ui-bottom-actions{
 
   .bottom-actions{
     display:flex;
-    background:rgba(255,255,255,0.98);
     position: fixed;
     bottom:0;
     width: 100%;

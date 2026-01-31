@@ -74,7 +74,7 @@ kng-search{
 		align-items: center;
 		border-radius: 20px;
 		justify-content: center;
-		background-color: #eee;
+		background-color: var(--wa-color-neutral-fill-quiet);
 
 
 		@media (max-width: 541px) {
@@ -150,7 +150,7 @@ kng-search{
 
       @media (max-width: 541px) {
         padding: .3rem 1rem;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
       }
 
 		}

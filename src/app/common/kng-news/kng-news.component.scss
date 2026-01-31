@@ -92,7 +92,7 @@
     align-items: center;
     justify-content: center;
     padding-top: 15px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--wa-color-neutral-border-quiet);
     padding-bottom: 20px;
 
     button{
@@ -103,7 +103,7 @@
       margin: auto;
       margin-bottom: 10px;
       color: var(--mdc-theme-primary);
-      background-color: #eee;
+      background-color: var(--wa-color-neutral-fill-quiet);
       text-transform: uppercase;
       border: 1px solid var(--mdc-theme-appbar)!important;
       line-height: 16px;

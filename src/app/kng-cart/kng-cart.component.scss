@@ -46,7 +46,7 @@ section.block-sharedcart{
   margin: auto;
   margin-bottom: 50px;
   padding: 0 10px;
-  border-bottom: 1px dotted #ddd;
+  border-bottom: 1px dotted var(--wa-color-neutral-border-quiet);
   h2{
     font-size: 35px;
     line-height: 42px;

@@ -1,58 +1,168 @@
-
-/**
-A secondary color is used to accent select parts of your UI. 
-It can be complementary or analogous to your primary color */
-
+// ============================================================================
+// COLORS.SCSS - Palette de couleurs Karibou
+// ============================================================================
 //
-// example of palette (p,s,a) ; comment
-// #b00020, #4d0010, #da1c5c  ; pink
-
-
+// Ce fichier centralise toutes les définitions de couleurs :
+// 1. Génération dynamique brand (algorithme oklab)
+// 2. Support dark mode (.wa-dark)
+// 3. Palette de catégories cyclique
 //
-// colors palette examples,
-// https://material.io/design/color/applying-color-to-ui.html
+// Documentation : docs/2.STYLES.md
+// ============================================================================
 
-
+// ============================================================================
+// GÉNÉRATION DYNAMIQUE BRAND - Algorithme oklab
+// ============================================================================
 //
-// colors palette generator
-// https://material.io/color/#!/?view.left=0&view.right=1&primary.color=ffffff&secondary.color=43b02a&primary.text.color=43b02a&secondary.text.color=ffffff
+// L'espace colorimétrique oklab garantit une perception uniforme du contraste :
+// - Différence 40 → ratio 3:1 (éléments UI larges)
+// - Différence 50 → ratio 4.5:1 (texte normal WCAG AA)
+// - Différence 60 → ratio 7:1 (texte petit WCAG AAA)
+// ============================================================================
 
+:root {
+  // ========================================
+  // BRAND SCALE - Générée depuis primary
+  // ========================================
 
-// BROWN
-// $mdc-theme-secondary:#8d6e63;
-// $mdc-theme-secondary-light: #be9c91;
-// $mdc-theme-secondary-dark: #5f4339;
-// $mdc-theme-secondary-text: #d7ccc8;
+  // Tints (vers le blanc) - oklab pour perception uniforme
+  --wa-color-brand-95: color-mix(in oklab, white 95%, var(--mdc-theme-primary) 5%);
+  --wa-color-brand-90: color-mix(in oklab, white 88%, var(--mdc-theme-primary) 12%);
+  --wa-color-brand-80: color-mix(in oklab, white 70%, var(--mdc-theme-primary) 30%);
+  --wa-color-brand-70: color-mix(in oklab, white 55%, var(--mdc-theme-primary) 45%);
+  --wa-color-brand-60: color-mix(in oklab, white 40%, var(--mdc-theme-primary) 60%);
+  --wa-color-brand-50: var(--mdc-theme-primary);  // Base
 
-// ORANGE
-// $mdc-theme-secondary: #f7941e;
-// $mdc-theme-secondary-light: #FFDBA4;
-// $mdc-theme-secondary-dark: #C26900;
-// $mdc-theme-secondary-text: #FFC780;
+  // Shades (vers le noir) - contraste texte garanti
+  --wa-color-brand-40: color-mix(in oklab, var(--mdc-theme-primary) 90%, black 10%);
+  --wa-color-brand-30: color-mix(in oklab, var(--mdc-theme-primary) 80%, black 20%);
+  --wa-color-brand-20: color-mix(in oklab, var(--mdc-theme-primary) 65%, black 35%);
+  --wa-color-brand-10: color-mix(in oklab, var(--mdc-theme-primary) 50%, black 50%);
+  --wa-color-brand-05: color-mix(in oklab, var(--mdc-theme-primary) 30%, black 70%);
 
+  // ========================================
+  // TOKENS SÉMANTIQUES BRAND (Light mode)
+  // ========================================
+  --wa-color-brand-fill-quiet: var(--wa-color-brand-90);
+  --wa-color-brand-fill-normal: var(--wa-color-brand-80);
+  --wa-color-brand-fill-loud: var(--wa-color-brand-50);
+  --wa-color-brand-border-quiet: var(--wa-color-brand-80);
+  --wa-color-brand-border-normal: var(--wa-color-brand-60);
+  --wa-color-brand-border-loud: var(--wa-color-brand-50);
+  --wa-color-brand-on-quiet: var(--wa-color-brand-30);
+  --wa-color-brand-on-normal: var(--wa-color-brand-20);
+  --wa-color-brand-on-loud: var(--mdc-theme-primary-text);
 
-// YELLOW
-// https://medium.com/jexia
-// $mdc-theme-primary: #fab700;
-// $mdc-theme-primary-light: #fdd923;
-// $mdc-theme-primary-dark: #623500;
-// $mdc-theme-primary-text: #966000;
+  // ========================================
+  // SECONDARY SCALE - Générée depuis secondary
+  // ========================================
+  --wa-color-secondary-95: color-mix(in oklab, white 95%, var(--mdc-theme-secondary) 5%);
+  --wa-color-secondary-90: color-mix(in oklab, white 88%, var(--mdc-theme-secondary) 12%);
+  --wa-color-secondary-80: color-mix(in oklab, white 70%, var(--mdc-theme-secondary) 30%);
+  --wa-color-secondary-70: color-mix(in oklab, white 55%, var(--mdc-theme-secondary) 45%);
+  --wa-color-secondary-60: color-mix(in oklab, white 40%, var(--mdc-theme-secondary) 60%);
+  --wa-color-secondary-50: var(--mdc-theme-secondary);  // Base
+  --wa-color-secondary-40: color-mix(in oklab, var(--mdc-theme-secondary) 90%, black 10%);
+  --wa-color-secondary-30: color-mix(in oklab, var(--mdc-theme-secondary) 80%, black 20%);
+  --wa-color-secondary-20: color-mix(in oklab, var(--mdc-theme-secondary) 65%, black 35%);
+  --wa-color-secondary-10: color-mix(in oklab, var(--mdc-theme-secondary) 50%, black 50%);
+  --wa-color-secondary-05: color-mix(in oklab, var(--mdc-theme-secondary) 30%, black 70%);
 
-// GREEN
-// $mdc-theme-primary:#43b02a;
-// $mdc-theme-primary-light: #67e1a5;
-// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-// $mdc-theme-primary-text: #fff;
+  // ========================================
+  // TOKENS SÉMANTIQUES SECONDARY (Light mode)
+  // ========================================
+  --wa-color-secondary-fill-quiet: var(--wa-color-secondary-90);
+  --wa-color-secondary-fill-normal: var(--wa-color-secondary-80);
+  --wa-color-secondary-fill-loud: var(--wa-color-secondary-50);
+  --wa-color-secondary-border-quiet: var(--wa-color-secondary-80);
+  --wa-color-secondary-border-normal: var(--wa-color-secondary-60);
+  --wa-color-secondary-border-loud: var(--wa-color-secondary-50);
+  --wa-color-secondary-on-quiet: var(--wa-color-secondary-30);
+  --wa-color-secondary-on-normal: var(--wa-color-secondary-20);
+  --wa-color-secondary-on-loud: var(--mdc-theme-secondary-text);
+}
 
-// // GREEN
-// $mdc-theme-primary:#fff;
-// $mdc-theme-primary-light: #43b02a;
-// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-// $mdc-theme-primary-text: rgba(67, 176, 42, 0.87);
+// ============================================================================
+// DARK MODE - Inverse l'échelle pour fond sombre
+// ============================================================================
+// Combine avec le thème Hub : <html class="wa-dark">
+// Le thème dynamique reste actif, seuls les tokens sémantiques changent
+// ============================================================================
 
-// BLUE
-// $mdc-theme-primary:rgba(0, 0, 50, 0.9);
-// $mdc-theme-primary-light: #43b02a;
-// $mdc-theme-primary-dark: rgba(67, 176, 42, 0.87);
-// $mdc-theme-primary-text: #eee;
+.wa-dark {
+  // Brand - Fond sombre → utiliser les shades pour fill, tints pour on
+  --wa-color-brand-fill-quiet: var(--wa-color-brand-20);
+  --wa-color-brand-fill-normal: var(--wa-color-brand-30);
+  --wa-color-brand-fill-loud: var(--wa-color-brand-50);
+  --wa-color-brand-border-quiet: var(--wa-color-brand-30);
+  --wa-color-brand-border-normal: var(--wa-color-brand-40);
+  --wa-color-brand-border-loud: var(--wa-color-brand-50);
+  --wa-color-brand-on-quiet: var(--wa-color-brand-70);
+  --wa-color-brand-on-normal: var(--wa-color-brand-80);
+  --wa-color-brand-on-loud: var(--mdc-theme-primary-text);
 
+  // Secondary - Même logique pour la couleur d'accent
+  --wa-color-secondary-fill-quiet: var(--wa-color-secondary-20);
+  --wa-color-secondary-fill-normal: var(--wa-color-secondary-30);
+  --wa-color-secondary-fill-loud: var(--wa-color-secondary-50);
+  --wa-color-secondary-border-quiet: var(--wa-color-secondary-30);
+  --wa-color-secondary-border-normal: var(--wa-color-secondary-40);
+  --wa-color-secondary-border-loud: var(--wa-color-secondary-50);
+  --wa-color-secondary-on-quiet: var(--wa-color-secondary-70);
+  --wa-color-secondary-on-normal: var(--wa-color-secondary-80);
+  --wa-color-secondary-on-loud: var(--mdc-theme-secondary-text);
+}
+
+// ============================================================================
+// PALETTE PASTEL CATÉGORIES - Cycle automatique via nth-child
+// Couleurs dérivées du thème Karibou via color-mix()
+// Usage: .category-card utilise --cat-bg automatiquement
+// ============================================================================
+:root {
+  //
+  // Couleurs de base pour le cycle (8 couleurs)
+  // Fallback pour navigateurs sans color-mix()
+  --cat-color-1: #d4f5d0; // Vert pastel (karibou-green)
+  --cat-color-2: #d0f0ed; // Turquoise pastel (primary)
+  --cat-color-3: #fce4ec; // Rose pastel (karibou-pink)
+  --cat-color-4: #fff9e6; // Jaune pastel (karibou-yellow)
+  --cat-color-5: #e8eaf6; // Indigo pastel
+  --cat-color-6: #fff3e0; // Orange pastel
+  --cat-color-7: #e0f2f1; // Teal pastel (secondary)
+  --cat-color-8: #f3e5f5; // Violet pastel
+
+  //
+  // Textes correspondants (contraste optimal)
+  --cat-text-1: #2e7d32; // Vert foncé
+  --cat-text-2: #00695c; // Turquoise foncé
+  --cat-text-3: #c2185b; // Rose foncé
+  --cat-text-4: #f57f17; // Jaune foncé
+  --cat-text-5: #3949ab; // Indigo foncé
+  --cat-text-6: #e65100; // Orange foncé
+  --cat-text-7: #00796b; // Teal foncé
+  --cat-text-8: #7b1fa2; // Violet foncé
+
+  //
+  // Couleurs d'icônes correspondantes
+  --cat-icon-1: #4caf50; // Vert
+  --cat-icon-2: #26a69a; // Turquoise
+  --cat-icon-3: #e91e63; // Rose
+  --cat-icon-4: #ffc107; // Jaune
+  --cat-icon-5: #5c6bc0; // Indigo
+  --cat-icon-6: #ff9800; // Orange
+  --cat-icon-7: #009688; // Teal
+  --cat-icon-8: #9c27b0; // Violet
+
+  //
+  // Couleurs dynamiques via color-mix (navigateurs modernes)
+  @supports (color: color-mix(in srgb, red 50%, blue)) {
+    --cat-color-1: color-mix(in srgb, var(--mdc-theme-karibou-green) 18%, white);
+    --cat-color-2: color-mix(in srgb, var(--mdc-theme-primary) 18%, white);
+    --cat-color-3: color-mix(in srgb, var(--mdc-theme-karibou-pink) 12%, white);
+    --cat-color-4: color-mix(in srgb, var(--mdc-theme-karibou-yellow) 22%, white);
+    --cat-color-5: color-mix(in srgb, #6366f1 12%, white);
+    --cat-color-6: color-mix(in srgb, #f97316 12%, white);
+    --cat-color-7: color-mix(in srgb, var(--mdc-theme-secondary) 12%, white);
+    --cat-color-8: color-mix(in srgb, #a855f7 12%, white);
+  }
+}

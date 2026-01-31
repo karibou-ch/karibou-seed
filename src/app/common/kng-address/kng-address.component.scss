@@ -36,10 +36,10 @@ form{
 
       option{
         padding: 9px 0;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
         cursor: pointer;
         &:hover{
-          background: #ddd;
+          background: var(--wa-color-neutral-fill-quiet);
         }
       }
 

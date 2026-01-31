@@ -114,8 +114,8 @@
     background: linear-gradient(43deg,var(--mdc-theme-primary) 0%, var(--mdc-theme-appbar) 100%);
 
     &.selected{
-      box-shadow: 10px -10px 0px 0px deeppink;
       box-shadow: 0px -5px 10px 0px var(--mdc-theme-secondary-light);
+      box-shadow: 0px -6px 0px 1px var(--mdc-theme-secondary-light);
     }
 
     .product-in-subscription,
@@ -206,7 +206,7 @@
     width: 58px;
     height: 58px;
     padding: 2px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--wa-color-neutral-border-quiet);
     border-radius: 50%;
 
     &.thumbnail{
@@ -400,7 +400,7 @@
       overflow: hidden;
       width: 100%;
       margin-top: 8px;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--wa-color-neutral-border-quiet);
       padding-top: 4px;
       min-height: 25px;
       @media (prefers-color-scheme: dark) {

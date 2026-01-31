@@ -101,13 +101,13 @@
     }
 
     &.help {
-      border-top: 0.25rem solid #ddd;
+      border-top: 0.25rem solid var(--wa-color-neutral-border-quiet);
       margin: 0.5rem 0;
       padding: 0.5rem 0;
 
       a {
         color: #333;
-        background: #eee;
+        background: var(--wa-color-neutral-fill-quiet);
         padding: 0.25rem 1.25rem;
         width: 100%;
         border-radius: 0.5rem;
@@ -180,7 +180,7 @@
     }
 
     input[type='text'] {
-      border: 0.0625rem solid #eee;
+      border: 0.0625rem solid var(--wa-color-neutral-border-quiet);
       padding: 0.5rem 0.25rem;
       font-size: 1em;
       width: calc(100% - 0.5rem);

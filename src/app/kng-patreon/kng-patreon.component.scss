@@ -180,7 +180,7 @@
     width: calc( 100% - 30px);
     cursor: pointer;
 
-    border: 2px solid #eee;
+    border: 2px solid var(--wa-color-neutral-border-quiet);
     border-radius: 14px;
     padding: 15px;
     background-color: #efefef;
@@ -316,7 +316,7 @@
     .ready {
       width: 100%;
       text-align: center;
-      background: #eee;
+      background: var(--wa-color-neutral-fill-quiet);
       margin: 20px 0;
       font-family: sans-serif;
     }

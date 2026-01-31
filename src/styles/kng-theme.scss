@@ -108,7 +108,7 @@ body{
 
 
 .dashed{
-  border-color: #dddddd;
+  border-color: var(--wa-color-neutral-border-quiet);
   border-style: dashed;
   margin: 10px 0;
 }
@@ -276,7 +276,7 @@ body{
   border-bottom: 1px dotted #007aff;
   text-decoration:none;
   &.gray{
-    border-color:#ddd !important;
+    border-color: var(--wa-color-neutral-border-quiet) !important;
   }
 }
 
@@ -478,7 +478,7 @@ body{
 .block-info{
   width: calc(100% - 20px);
   font-size: 14px;
-  border: 1px solid #eee;
+  border: 1px solid var(--wa-color-neutral-border-quiet);
   padding: 10px;
   border-radius: 10px;
   background: #fbfbfb;

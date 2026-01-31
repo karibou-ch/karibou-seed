@@ -48,7 +48,7 @@ kng-subscription-option{
       border-radius: 8px;
       padding: 0 10px;
       margin-left: 0px;
-      border:1px solid #eee;
+      border:1px solid var(--wa-color-neutral-border-quiet);
 
     }
   }
@@ -65,11 +65,11 @@ kng-subscription-option{
   overflow: hidden;
 
   &.border-top{
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--wa-color-neutral-border-quiet);
   }
 
   &.border-bottom{
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
   }
 
   &.one-line{
@@ -107,7 +107,7 @@ kng-subscription-option{
   &.shared {
     height: 80px;
     background: var(--mdc-theme-appbar-light);
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
   }
 
   color: #333;
@@ -135,7 +135,7 @@ kng-subscription-option{
 
   .block-info{
     border: 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
     padding: 10px;
     border-radius: 0px;
     background: transparent;
@@ -166,7 +166,7 @@ kng-subscription-option{
   padding: 0 1.5rem;
   overflow: hidden;
   &.subscription-item{
-    background: #eee;
+    background: var(--wa-color-neutral-fill-quiet);
   }
 
   &.subscription{
@@ -177,7 +177,7 @@ kng-subscription-option{
   }
   &.separator {
     background: #f9f9f9;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
     margin: 0px 0 30px;
     color: #888;
     opacity: .5;
@@ -248,11 +248,11 @@ kng-subscription-option{
       background-repeat: no-repeat;
       background-size: cover;
       background-position-y: 50%;
-      background-color: #ddd;
+      background-color: var(--wa-color-neutral-fill-quiet);
     }
     >div.round{
       border-radius: 50%;
-      border: 3px solid #eee;
+      border: 3px solid var(--wa-color-neutral-border-quiet);
     }
   }
 
@@ -367,7 +367,7 @@ kng-subscription-option{
     }
     div.quantity{
       flex:1;
-      border:1px solid #ddd;
+      border:1px solid var(--wa-color-neutral-border-quiet);
       border-radius: 4px;
       padding: 4px 10px;
       height: 24px;
@@ -412,7 +412,7 @@ kng-subscription-option{
 
   button.continue{
     cursor: pointer;
-    border: 1px solid #eee;
+    border: 1px solid var(--wa-color-neutral-border-quiet);
     background-color: #fbfbfb;
     border-radius: 8px;
     padding: 4px 10px;
@@ -455,7 +455,7 @@ kng-subscription-option{
   }
   button[disabled]{
     cursor: pointer;
-    background: #eee!important;
+    background: var(--wa-color-neutral-fill-quiet)!important;
     color: #aaa!important;
   }
 

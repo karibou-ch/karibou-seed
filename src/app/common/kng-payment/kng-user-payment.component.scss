@@ -22,7 +22,7 @@ form{
   &.working{
     pointer-events: none;
     opacity: .3;
-    background: #ddd;
+    background: var(--wa-color-neutral-fill-quiet);
     color: #aaa;
   }
 
