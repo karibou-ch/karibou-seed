@@ -604,3 +604,138 @@ progress.kng-progress::-moz-progress-bar{
   animation: roll 3s infinite;
   transform: rotate(30deg);
 }
+
+// ============================================================================
+// KNG-CARD - Système de cards unifié
+// ============================================================================
+// Utilise les tokens Web Awesome (brand, secondary, neutral)
+// Variantes : --soft, --white, --dashed
+// ============================================================================
+
+.kng-card {
+  border-radius: var(--wa-border-radius-l);
+  padding: var(--wa-space-m);
+
+  // Variante soft - fond léger brand
+  &--soft {
+    background: var(--wa-color-brand-fill-quiet);
+    border: 1px solid var(--wa-color-brand-border-quiet);
+  }
+
+  // Variante white - fond blanc avec ombre
+  &--white {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  // Variante dashed - bordure pointillée
+  &--dashed {
+    background: var(--wa-color-brand-fill-quiet);
+    border: 1px dashed var(--wa-color-brand-border-normal);
+  }
+
+  // Variante secondary
+  &--secondary {
+    background: var(--wa-color-secondary-fill-quiet);
+    border: 1px solid var(--wa-color-secondary-border-quiet);
+  }
+}
+
+// ============================================================================
+// KNG-ACTION-LINK - Liens d'action avec chevron (FAQ, menus, settings)
+// ============================================================================
+// Remplace l'usage complexe de .kng-boxed pour les simples liens navigables
+// Usage: <a class="kng-action-link" routerLink="...">Label <span class="chevron">›</span></a>
+// ============================================================================
+
+.kng-action-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wa-space-s);
+  padding: var(--wa-space-m) var(--wa-space-s);
+  background: white;
+  border: none;
+  border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--mdc-theme-text-primary-on-background);
+  font-size: var(--wa-font-size-m);
+  transition: background var(--wa-transition-fast);
+  width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    background: var(--wa-color-brand-fill-quiet);
+  }
+
+  &:active {
+    background: var(--wa-color-brand-fill-normal);
+  }
+
+  // Icône de début (optionnelle)
+  .icon-start {
+    color: var(--mdc-theme-secondary);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  // Label principal
+  .label {
+    flex: 1;
+    text-align: left;
+  }
+
+  // Chevron de fin
+  .chevron {
+    color: var(--wa-color-neutral-on-quiet);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  // État désactivé
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  // Premier élément (coins arrondis en haut)
+  &:first-child {
+    border-top-left-radius: var(--wa-border-radius-m);
+    border-top-right-radius: var(--wa-border-radius-m);
+  }
+
+  // Dernier élément (coins arrondis en bas, pas de bordure)
+  &:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: var(--wa-border-radius-m);
+    border-bottom-right-radius: var(--wa-border-radius-m);
+  }
+
+  // Élément unique (tous les coins arrondis)
+  &:only-child {
+    border-radius: var(--wa-border-radius-m);
+  }
+}
+
+// Container pour grouper les action-links
+.kng-action-group {
+  background: white;
+  border-radius: var(--wa-border-radius-m);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin: var(--wa-space-s) 0;
+
+  .kng-action-link {
+    border-radius: 0;
+
+    &:first-child {
+      border-radius: 0;
+    }
+
+    &:last-child {
+      border-radius: 0;
+    }
+  }
+}

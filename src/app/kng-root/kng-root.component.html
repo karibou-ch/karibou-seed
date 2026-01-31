@@ -18,89 +18,62 @@
 <div class="swipe-panel center">
 
     <div class="root-container">
-      <div class="basic-setting">
-      <!-- USER i18n -->
-      <div class="kng-boxed theme with-border i18n">
-        <kng-slider class="label" [small]="true" (change)="doLocaleSwitch()">
+
+      <!-- I18N Toggle -->
+      <div class="kng-card kng-card--soft i18n-toggle">
+        <kng-slider [small]="true" (change)="doLocaleSwitch()">
           {{label.nav_i18n}}&nbsp;({{locale}})
         </kng-slider>
       </div>
 
-      <!-- USER login -->
-      <div class="kng-boxed theme with-border" [hidden]="user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/login'">
-        <div class="label" [innerHtml]="llabel.title_account_sign"></div>
-        <button class="end">
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
-        </button>
-
-      </div>
+      <!-- LOGIN (non authentifié) -->
+      <a class="kng-action-link" [hidden]="user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/login'">
+        <span class="label" [innerHtml]="llabel.title_account_sign"></span>
+        <span class="material-symbols-outlined chevron">chevron_right</span>
+      </a>
 
       <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
       <kng-wallet [user]="user" *ngIf="user.isAuthenticated()"></kng-wallet>
 
-      <!-- USER cmd -->
-      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/orders'">
-        <div class="label" [innerHtml]="llabel.title_orders"></div>
-        <button class="end" >
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
-        </button>
-      </div>
+      <!-- ACTIONS GROUPE - Utilisateur authentifié -->
+      <div class="kng-action-group">
+        <!-- Commandes -->
+        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/orders'">
+          <span class="label" [innerHtml]="llabel.title_orders"></span>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </a>
 
-      <!-- USER invoice -->
-      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/invoices'">
-        <div class="label" [innerHtml]="llabel.title_invoices_open"></div>
-        <button class="end" >
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
-        </button>
-      </div>
+        <!-- Factures -->
+        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/invoices'">
+          <span class="label" [innerHtml]="llabel.title_invoices_open"></span>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </a>
 
-      <!-- USER account email -->
-      <div class="kng-boxed bill with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
-        <div class="label" [innerHtml]="llabel.title_account_mail"></div>
-        <button class="end" >
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
-        </button>
-      </div>
+        <!-- Email -->
+        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
+          <span class="label" [innerHtml]="llabel.title_account_mail"></span>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </a>
 
-        <!-- USER account shipping -->
-        <div class="kng-boxed bill with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
-          <div class="label" [innerHtml]="llabel.title_account_shipping"></div>
-          <button class="end" >
-            <span class="material-symbols-outlined">arrow_forward_ios</span>
-          </button>
-        </div>
+        <!-- Adresse de livraison -->
+        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
+          <span class="label" [innerHtml]="llabel.title_account_shipping"></span>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </a>
 
-
-      <!-- USER theme -->
-      <div class="kng-boxed theme with-border" hidden>
-        <div class="label"> Changer de couleur</div>
-        <div class="content">
-          <div class="color">&nbsp;</div>
-          <div class="color">&nbsp;</div>
-          <div class="color">&nbsp;</div>
-          <div class="color">&nbsp;</div>
-        </div>
-      </div>
-
-
-      <!-- SUBSCRITION OPTIONS -->
-      <div class="kng-boxed theme with-border" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/subscriptions'">
-        <div class="label" [innerHtml]="llabel.title_account_subscriptions"></div>
-        <button class="end" >
-          <span class="material-symbols-outlined">arrow_forward_ios</span>
-        </button>
+        <!-- Abonnements -->
+        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/subscriptions'">
+          <span class="label" [innerHtml]="llabel.title_account_subscriptions"></span>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </a>
       </div>
 
     </div>
 
-
     <!-- FEEDBACK -->
     <kng-feedback [config]="config" [user]="user" [hidden]="!user.isAuthenticated()">
     </kng-feedback>
-
-
-  </div>
 
 </div>
 

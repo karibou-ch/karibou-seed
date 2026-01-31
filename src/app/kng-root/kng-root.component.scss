@@ -65,73 +65,18 @@ kng-calendar{
   width: 100%;
 }
 
-.basic-setting {
-  display: flex;
-  flex-flow: column;
-  flex-wrap: wrap;
-  width: calc(100% - 30px);
-  margin-top: 10px;
-  .kng-boxed{
-    padding: 10px 10px;
+// I18N Toggle card
+.i18n-toggle {
+  margin: var(--wa-space-m) 0;
+
+  kng-slider {
     width: 100%;
-    min-height: fit-content;
-    .end {
-      width: 60px;
-      height: 35px;
-      padding: 0px;
-      margin-right: 10px;
-      span {
-        font-size: 20px;
-      }
-    }
-  }
-  .kng-boxed.disabled{
-    opacity: .3;
-    pointer-events: none;
-  }
-
-  .kng-boxed .label{
-    margin: auto!important;
-    margin-left: 5px!important;
-    justify-content: space-between;
-    width: auto;
-  }
-  .kng-boxed kng-slider{
-    width: 100%!important;
-  }
-
-
-}
-
-.i18n{
-  .content{
-    flex-direction: row;
-    font-size: 17px;
-    line-height: 28px;
-    font-weight: bold;
-    padding: 10px;
-    height: fit-content;
-    min-height: 70px;
-    align-items: center
   }
 }
-.theme{
-  .content{
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    min-height: 50px;
-    .color{
-      height: 2rem;
-      width: 2rem;
-      border-radius: 50%;
-      outline:0;
-      background-color: #fff;
-    }
-  }
+
+// Action groups dans root
+.kng-action-group {
+  margin: var(--wa-space-m) 0;
 }
 
 button{
