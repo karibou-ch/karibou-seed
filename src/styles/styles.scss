@@ -232,8 +232,11 @@ input[type="submit"],
 
     &.center {
       grid-column: 2;
-      padding: .75rem;
-      width: calc(100% - 1.5rem);
+      // Padding et width desktop only
+      @media (min-width: 600px) {
+        padding: .75rem;
+        width: calc(100% - 1.5rem);
+      }
     }
 
     &.custom {
