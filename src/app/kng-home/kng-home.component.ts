@@ -399,6 +399,10 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.$navigation.searchAction(link);
   }
 
+  scrollToPanel(panelIndex: number) {
+    this.$navigation.scrollToPanel(panelIndex);
+  }
+
   doSearch_NEW(value: string) {
     const tokens = value.split(' ').map(val => (val || '').length);
 
