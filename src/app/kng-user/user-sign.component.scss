@@ -76,7 +76,7 @@
       position: relative;
       z-index: 2;
       text-align:center;
-      transition:max-height 0.3s ease-out; // note that we're transitioning max-height, not height!
+      transition:max-height var(--wa-transition-slow) ease-out; // note that we're transitioning max-height, not height!
       max-height:700px; // still have to hard-code a value!
       top:0;
       padding-top: 60px;

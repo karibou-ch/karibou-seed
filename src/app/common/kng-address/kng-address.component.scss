@@ -2,7 +2,7 @@
   border: 2px solid #aaa;
   border-radius: 14px;
   display: block;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--wa-transition-slow) ease, box-shadow var(--wa-transition-slow) ease;
 }
 
 // ✅ Style pour indiquer qu'il faut sauvegarder
@@ -79,7 +79,7 @@ form{
       right: 5px;
       display: flex;
       align-items: center;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: border-color var(--wa-transition-slow) ease, box-shadow var(--wa-transition-slow) ease;
 
       &.align-right{
         right: 70px;

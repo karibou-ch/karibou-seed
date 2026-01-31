@@ -13,7 +13,7 @@
   padding: 4px;
   border-radius: var(--wa-border-radius-m);
   background: rgba(var(--mdc-theme-surface), 0.05);
-  transition: all 0.3s ease;
+  transition: all var(--wa-transition-slow) ease;
   width: 100%;  // ✅ Prend tout l'espace disponible
   height: 100%; // ✅ Prend tout l'espace disponible
   min-height: 32px;
@@ -75,7 +75,7 @@
       background: rgba(var(--mdc-theme-primary), 0.3);
       min-height: 2px;
       border-radius: 1px;
-      transition: all 0.2s ease;
+      transition: all var(--wa-transition-medium) ease;
 
       &.active {
         background: rgb(var(--mdc-theme-primary));
@@ -145,7 +145,7 @@
     height: 12px;
     border-radius: 50%;
     background: rgba(var(--mdc-theme-primary), 0.3);
-    transition: all 0.3s ease;
+    transition: all var(--wa-transition-slow) ease;
     border: 2px solid rgba(var(--mdc-theme-primary), 0.1);
 
     &.active {

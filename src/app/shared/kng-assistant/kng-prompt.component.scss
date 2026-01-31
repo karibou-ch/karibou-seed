@@ -98,7 +98,7 @@
     padding: 10px 14px;
     cursor: pointer;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    transition: background-color 0.15s ease;
+    transition: background-color var(--wa-transition-fast) ease;
 
     &:last-child {
       border-bottom: none;
@@ -376,7 +376,7 @@ form {
   background: transparent;
   color: var(--mdc-theme-text-secondary-on-background, #666);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color var(--wa-transition-medium), color var(--wa-transition-medium);
 
   .material-symbols-outlined {
     font-size: 20px;
@@ -419,7 +419,7 @@ form {
     color: var(--mdc-theme-primary, #3f51b5);
     font-size: 13px;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color var(--wa-transition-medium), color var(--wa-transition-medium);
 
     &:hover:not(:disabled) {
       background: var(--mdc-theme-primary, #3f51b5);

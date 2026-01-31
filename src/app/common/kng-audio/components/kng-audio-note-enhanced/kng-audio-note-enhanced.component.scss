@@ -7,7 +7,7 @@
   border-radius: 12px;
   background: rgba(var(--mdc-theme-surface), 0.02);
   border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
-  transition: all 0.3s ease;
+  transition: all var(--wa-transition-slow) ease;
 
   &.recording {
     background: rgba(var(--mdc-theme-primary), 0.05);
@@ -85,7 +85,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    transition: all 0.2s ease;
+    transition: all var(--wa-transition-medium) ease;
     margin: auto;
 
     .material-symbols-outlined {
@@ -240,7 +240,7 @@
     text-decoration: none;
     border-radius: 6px;
     font-size: 14px;
-    transition: all 0.2s ease;
+    transition: all var(--wa-transition-medium) ease;
 
     &:hover {
       background: rgba(var(--mdc-theme-primary), 0.8);

@@ -1,6 +1,6 @@
 kng-ui-bottom-actions{
   transform: translateY(0);
-  transition: all 200ms;
+  transition: all var(--wa-transition-medium);
 
   position: fixed;
   left: 0;

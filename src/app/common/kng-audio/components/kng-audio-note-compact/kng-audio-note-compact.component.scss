@@ -7,7 +7,7 @@
   border-radius: 20px;
   background: rgba(var(--mdc-theme-surface), 0.05);
   border: 1px solid rgba(var(--mdc-theme-primary), 0.1);
-  transition: all 0.2s ease;
+  transition: all var(--wa-transition-medium) ease;
   max-height: 40px;
 
   &:hover {
@@ -49,7 +49,7 @@
   background: transparent;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all var(--wa-transition-medium) ease;
   overflow: hidden;
 
   &:hover:not(:disabled) {
@@ -64,7 +64,7 @@
   .icon {
     font-size: 18px;
     color: rgb(var(--mdc-theme-primary));
-    transition: all 0.2s ease;
+    transition: all var(--wa-transition-medium) ease;
   }
 
   .status {
@@ -143,7 +143,7 @@ audio {
   background: rgba(244, 67, 54, 0.1);
   color: #f44336;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--wa-transition-medium) ease;
 
   &:hover {
     background: rgba(244, 67, 54, 0.2);

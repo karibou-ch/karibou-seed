@@ -13,7 +13,7 @@ form{
   padding: 8px;
   border: 2px solid #aaa;
   border-radius: 14px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--wa-transition-slow) ease, box-shadow var(--wa-transition-slow) ease;
 
   input{
     font-size: 18px;
@@ -42,7 +42,7 @@ form{
     position: absolute;
     top: 5px;
     right: 5px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color var(--wa-transition-slow) ease, box-shadow var(--wa-transition-slow) ease;
 
     // ✅ Style bouton pour indiquer qu'il faut sauvegarder
     &.needs-save {
@@ -90,7 +90,7 @@ form{
 
   .stripe-component .input.StripeElement {
     opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: opacity var(--wa-transition-slow) cubic-bezier(0.165, 0.84, 0.44, 1);
     will-change: opacity;
   }
 

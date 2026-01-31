@@ -127,7 +127,7 @@
     color: var(--mdc-theme-text-primary-on-background);
     text-decoration: none;
     border-radius: var(--wa-border-radius-s);
-    transition: background 0.15s ease;
+    transition: background var(--wa-transition-fast) ease;
     font-size: 0.9rem;
 
     &:hover {

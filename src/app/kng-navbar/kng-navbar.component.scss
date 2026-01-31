@@ -37,7 +37,7 @@ wa-drawer#main-drawer {
       color: var(--mdc-theme-text-primary-on-background);
       text-decoration: none;
       font-size: 0.9375rem;
-      transition: background 0.2s;
+      transition: background var(--wa-transition-medium);
 
       &:hover {
         background: rgba(0, 0, 0, 0.05);
@@ -204,7 +204,7 @@ wa-drawer#main-drawer {
   color: var(--mdc-theme-appbar-text);
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--wa-transition-medium) ease;
   background: transparent;
 
   &:hover {
@@ -291,7 +291,7 @@ wa-drawer#main-drawer {
   .popup-box {
     transform: scale(0);
     opacity: 0;
-    transition: transform 0.25s ease, opacity 0.25s ease;
+    transition: transform var(--wa-transition-medium) ease, opacity var(--wa-transition-medium) ease;
   }
 
   // Visible state
@@ -354,7 +354,7 @@ wa-drawer#main-drawer {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  transition: background var(--wa-transition-medium);
 
   &:hover {
     background: rgba(0, 0, 0, 0.1);

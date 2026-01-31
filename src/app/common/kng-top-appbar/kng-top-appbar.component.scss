@@ -17,7 +17,7 @@
 $appbar-height: var(--mdc-theme-top-bar, 70px);
 $appbar-bg: var(--mdc-theme-appbar, rgba(227, 236, 235, 0.9));
 $appbar-text: var(--mdc-theme-appbar-text, rgba(19, 83, 20, 0.8));
-$transition-speed: 0.2s;
+$transition-speed: var(--wa-transition-medium);
 
 // ============================================================================
 // MAIN CONTAINER
