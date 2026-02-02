@@ -80,15 +80,9 @@
       <!-- Desktop: chips navigation | Mobile: titre hub                   -->
       <!-- ================================================================ -->
       <div slot="center" class="appbar-center">
-        <!-- Desktop navigation -->
+        <!-- Desktop navigation - Services (Niveau 1) -->
         <nav class="appbar-nav hide-sm">
-          <wa-button size="small" appearance="filled-outlined" pill [routerLink]="['/store',store]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [hidden]="isLockedHUB()">
-            <span slot="start" class="material-symbols-outlined secondary-text">home</span>
-
-            {{label.nav_bottom_home}}
-          </wa-button>
-          <wa-button size="small" appearance="filled-outlined" pill [routerLink]="['/store',store,'home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{hubTitle}}</wa-button>
-          <wa-button size="small" appearance="filled-outlined" pill [routerLink]="['/store',store,'home','shops']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{label.nav_shops}}</wa-button>
+          <kng-service-nav [store]="store" [showHub]="!isLockedHUB()"></kng-service-nav>
         </nav>
         <!-- Mobile title -->
         <span class="mobile-title hide-md hide-lg">{{hubTitle}}</span>

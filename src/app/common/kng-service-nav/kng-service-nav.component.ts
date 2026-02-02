@@ -14,7 +14,7 @@ import { i18n, KngNavigationStateService } from '../';
   selector: 'kng-service-nav',
   template: `
     <nav class="service-nav" [class.vertical]="vertical">
-      <a *ngFor="let item of services"
+      <a *ngFor="let item of filteredServices"
          class="service-link"
          [class.active]="isActive(item)"
          [routerLink]="getRoute(item)">
@@ -28,13 +28,13 @@ import { i18n, KngNavigationStateService } from '../';
       display: flex;
       gap: 4px;
       padding: 4px 0;
-      
+
       &.vertical {
         flex-direction: column;
         gap: 2px;
       }
     }
-    
+
     .service-link {
       display: flex;
       align-items: center;
@@ -48,48 +48,48 @@ import { i18n, KngNavigationStateService } from '../';
       font-weight: 400;
       transition: all 0.15s ease;
       white-space: nowrap;
-      
+
       &:hover {
         background: var(--wa-color-brand-95, #f0faf0);
         color: var(--mdc-theme-primary, #4caf50);
-        
+
         .material-symbols-outlined {
           color: var(--mdc-theme-primary, #4caf50);
         }
       }
-      
+
       &.active {
         background: var(--wa-color-brand-fill-quiet, #d4f5d0);
         color: var(--wa-color-brand-on-quiet, #2e7d32);
         font-weight: 500;
-        
+
         .material-symbols-outlined {
           color: var(--wa-color-brand-on-quiet, #2e7d32);
         }
       }
-      
+
       .material-symbols-outlined {
         font-size: 18px;
         color: var(--mdc-theme-text-hint-on-background, #999);
       }
-      
+
       .label {
         display: inline;
       }
     }
-    
+
     // Vertical mode (sidebar) - style fin comme catégories
     .service-nav.vertical .service-link {
       border-radius: 16px;
       padding: 8px 14px;
     }
-    
+
     // Mobile: hide labels in horizontal mode
     @media (max-width: 768px) {
       .service-nav:not(.vertical) {
         .service-link {
           padding: 6px 10px;
-          
+
           .label {
             display: none;
           }
@@ -134,7 +134,7 @@ export class KngServiceNavComponent {
     return ['/store', store, ...item.route.split('/')];
   }
 
-  getFilteredServices(): NavServiceItem[] {
+  get filteredServices(): NavServiceItem[] {
     if (this.showHub) {
       return this.services;
     }
