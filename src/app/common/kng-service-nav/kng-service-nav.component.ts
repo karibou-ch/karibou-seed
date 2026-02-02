@@ -6,7 +6,7 @@ import { i18n, KngNavigationStateService } from '../';
 /**
  * Composant de navigation inter-services (Niveau 1)
  * Affiche les liens vers Hub, Courses, Buffet, Abos, James
- * 
+ *
  * Usage:
  *   <kng-service-nav [store]="store" [currentRoute]="'/home'"></kng-service-nav>
  */
@@ -26,46 +26,51 @@ import { i18n, KngNavigationStateService } from '../';
   styles: [`
     .service-nav {
       display: flex;
-      gap: 8px;
-      padding: 8px 0;
+      gap: 4px;
+      padding: 4px 0;
       
       &.vertical {
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
       }
     }
     
     .service-link {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
+      gap: 10px;
+      padding: 8px 14px;
       border-radius: 20px;
-      background: var(--mdc-theme-background-container, #f5f5f5);
-      color: var(--mdc-theme-text-primary-on-background, #333);
+      background: transparent;
+      color: var(--mdc-theme-text-secondary-on-background, #666);
       text-decoration: none;
       font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
+      font-weight: 400;
+      transition: all 0.15s ease;
       white-space: nowrap;
       
       &:hover {
-        background: var(--mdc-theme-primary-light, #e8f5e9);
+        background: var(--wa-color-brand-95, #f0faf0);
         color: var(--mdc-theme-primary, #4caf50);
+        
+        .material-symbols-outlined {
+          color: var(--mdc-theme-primary, #4caf50);
+        }
       }
       
       &.active {
-        background: var(--mdc-theme-primary, #4caf50);
-        color: white;
+        background: var(--wa-color-brand-fill-quiet, #d4f5d0);
+        color: var(--wa-color-brand-on-quiet, #2e7d32);
+        font-weight: 500;
         
         .material-symbols-outlined {
-          color: white;
+          color: var(--wa-color-brand-on-quiet, #2e7d32);
         }
       }
       
       .material-symbols-outlined {
-        font-size: 20px;
-        color: var(--mdc-theme-text-icon-on-background, #666);
+        font-size: 18px;
+        color: var(--mdc-theme-text-hint-on-background, #999);
       }
       
       .label {
@@ -73,21 +78,17 @@ import { i18n, KngNavigationStateService } from '../';
       }
     }
     
-    // Vertical mode (sidebar)
+    // Vertical mode (sidebar) - style fin comme catégories
     .service-nav.vertical .service-link {
-      border-radius: 8px;
-      padding: 12px 16px;
-      
-      .label {
-        display: inline;
-      }
+      border-radius: 16px;
+      padding: 8px 14px;
     }
     
-    // Mobile: hide labels, show only icons
+    // Mobile: hide labels in horizontal mode
     @media (max-width: 768px) {
       .service-nav:not(.vertical) {
         .service-link {
-          padding: 8px 12px;
+          padding: 6px 10px;
           
           .label {
             display: none;
