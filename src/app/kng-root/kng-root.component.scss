@@ -1,134 +1,403 @@
 // ============================================================================
-// HOST - Le composant devient transparent pour participer au layout parent
+// KngRootComponent - Hub d'aiguillage par intentions
 // ============================================================================
+
+// HOST - Le composant devient transparent pour participer au layout parent
 :host {
-  display: contents; // Transparent sur tous les devices
+  display: contents;
 }
 
 // ============================================================================
-// PANEL SIDE - Vide pour l'instant
+// PANEL SIDE - Navigation rapide et paramètres
 // ============================================================================
 .swipe-panel.side {
-  .root-menu-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-}
-
-// ============================================================================
-// PANEL CENTER - Contenu principal
-// ============================================================================
-.swipe-panel.center {
-  .root-container {
-
-//
-// BOX INFO
-div.hub-header{
-  display: flex;
-  flex-flow: column;
-  flex-wrap: wrap;
-  font-size: 1.2em;
-  font-weight: 200;
-  background-size: cover;
-  background-color: transparent!important;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  @media (max-width:1024px){
-    padding: 10px 10px;
-    width: calc( 100% - 20px );
-  }
-
-  @media (max-width:599px){
-    padding: 10px 0px;
-  }
-}
-
-kng-wallet{
-  padding: 10px 10px;
-}
-
-h2{
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.87);
-  color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
-  font-size: 1.4675rem;
-  margin: 0 10px 30px;
-}
-
-kng-subscription-option,
-kng-nav-marketplace,
-kng-feedback,
-kng-calendar{
-  display: block;
-  margin: 0;
-  width: 100%;
-}
-
-// I18N Toggle card
-.i18n-toggle {
-  margin: var(--wa-space-m) 0;
-
-  kng-slider {
-    width: 100%;
-  }
-}
-
-// Action groups dans root
-.kng-action-group {
-  margin: var(--wa-space-m) 0;
-}
-
-button{
-  text-decoration: none;
-  font-size: initial;
-  background-color: var(--mdc-theme-primary-text);
-  color: var(--mdc-theme-primary);
-  background-color: white;
-  color: black;
-  display: inline;
-  .material-symbols-outlined{
-    transform: translateY(3px);
-  }
-  cursor: pointer;
-}
-
-button.action{
-  margin: 20px 0 15px;
-  padding: 12px 26px;
-  border-radius: 50px;
-  border-width: 0px;
-  width: auto;
-}
-
-button.goto{
-  width: 100%;
-  max-width: 400px;
-  padding: 18px 10px;
-  border-radius: 10px;
-  margin: auto;
-  margin-left:10px;
-  margin-bottom: 40px;
-  color: var(--mdc-theme-primary);
-  background-color: var(--wa-color-neutral-fill-quiet);
-  text-transform: uppercase;
-  border: 1px solid var(--mdc-theme-primary)!important;
-  -box-shadow: 0px 2px 8px rgba(0, 0, 0,  0.16);
-  line-height: 33px;
-}
-
-  } // Fermeture .root-container
-} // Fermeture .swipe-panel.center
-
-// ============================================================================
-// PANEL RIGHT - Vide pour l'instant
-// ============================================================================
-.swipe-panel.right {
-  .root-sidebar-panel {
-    border-left: 1px solid var(--mdc-theme-appbar);
+  .hub-side-panel {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 1rem;
+
+    @media (min-width: 900px) {
+      padding: 1rem 0.5rem;
+    }
+  }
+
+  // I18N Toggle
+  .i18n-toggle {
+    kng-slider {
+      width: 100%;
+    }
+  }
+
+  // Quick actions (utilisateur connecté)
+  .quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: var(--wa-font-size-s);
+      font-weight: 500;
+      color: var(--mdc-theme-text-secondary-on-background);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--mdc-theme-appbar-light);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--mdc-theme-text-primary-on-background);
+    transition: all var(--wa-transition-medium);
+
+    &:hover {
+      background: var(--mdc-theme-hover);
+    }
+
+    i {
+      font-size: 1.25rem;
+      color: var(--mdc-theme-primary);
+    }
+
+    span {
+      flex: 1;
+      font-size: var(--wa-font-size-s);
+    }
+
+    .badge {
+      background: var(--mdc-theme-primary);
+      color: white;
+      font-size: var(--wa-font-size-xs);
+      font-weight: 600;
+      padding: 0.125rem 0.5rem;
+      border-radius: 1rem;
+    }
+  }
+
+  .login-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--mdc-theme-primary-light);
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: var(--mdc-theme-primary);
+    font-weight: 500;
+    transition: all var(--wa-transition-medium);
+
+    &:hover {
+      background: var(--mdc-theme-primary);
+      color: white;
+    }
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// ============================================================================
+// PANEL CENTER - Hub d'intentions (contenu principal)
+// ============================================================================
+.swipe-panel.center {
+  .hub-container {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+
+    @media (min-width: 900px) {
+      padding: 2rem 1rem;
+    }
+  }
+}
+
+// HEADER
+.hub-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--mdc-theme-text-primary-on-background);
+
+    @media (min-width: 600px) {
+      font-size: 2rem;
+    }
+  }
+
+  .hub-subtitle {
+    margin: 0 0 1rem 0;
+    font-size: var(--wa-font-size-m);
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+
+  .hub-shipping {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: var(--mdc-theme-success-light, #e8f5e9);
+    color: var(--mdc-theme-success, #2e7d32);
+    border-radius: 2rem;
+    font-size: var(--wa-font-size-s);
+
+    i {
+      font-size: 1.25rem;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+// ============================================================================
+// INTENTIONS GRID - 4 cartes principales
+// ============================================================================
+.intentions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media (min-width: 500px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.intention-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  background: var(--mdc-theme-appbar-light);
+  border-radius: 1rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--wa-transition-medium) ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  // Couleurs par intention
+  &.courses {
+    &:hover {
+      border-color: var(--mdc-theme-primary);
+      background: var(--mdc-theme-primary-light);
+    }
+
+    .intention-icon {
+      background: var(--mdc-theme-primary-light);
+    }
+  }
+
+  &.buffet {
+    &:hover {
+      border-color: #ff7043;
+      background: #fff3e0;
+    }
+
+    .intention-icon {
+      background: #fff3e0;
+    }
+  }
+
+  &.subscription {
+    &:hover {
+      border-color: #66bb6a;
+      background: #e8f5e9;
+    }
+
+    .intention-icon {
+      background: #e8f5e9;
+    }
+  }
+
+  &.assistant {
+    &:hover {
+      border-color: #7e57c2;
+      background: #ede7f6;
+    }
+
+    .intention-icon {
+      background: #ede7f6;
+    }
+  }
+}
+
+.intention-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 1rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  transition: transform var(--wa-transition-medium);
+
+  .intention-card:hover & {
+    transform: scale(1.1);
+  }
+}
+
+.intention-content {
+  flex: 1;
+
+  h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: var(--wa-font-size-l);
+    font-weight: 600;
+    color: var(--mdc-theme-text-primary-on-background);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--wa-font-size-s);
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+}
+
+.intention-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mdc-theme-divider);
+  color: var(--mdc-theme-primary);
+  font-size: var(--wa-font-size-s);
+  font-weight: 500;
+
+  i {
+    font-size: 1.25rem;
+    transition: transform var(--wa-transition-medium);
+  }
+
+  .intention-card:hover & i {
+    transform: translateX(4px);
+  }
+}
+
+// ============================================================================
+// QUESTIONS RAPIDES JAMES
+// ============================================================================
+.assistant-quick-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--mdc-theme-divider);
+
+  h4 {
+    margin: 0 0 1rem 0;
+    font-size: var(--wa-font-size-m);
+    font-weight: 500;
+    color: var(--mdc-theme-text-secondary-on-background);
+    text-align: center;
+  }
+}
+
+.assistant-questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.question-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--mdc-theme-appbar-light);
+  border: 1px solid var(--mdc-theme-divider);
+  border-radius: 2rem;
+  font-size: var(--wa-font-size-s);
+  color: var(--mdc-theme-text-primary-on-background);
+  cursor: pointer;
+  transition: all var(--wa-transition-medium);
+
+  &:hover {
+    background: var(--mdc-theme-primary-light);
+    border-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary);
+  }
+
+  .q-icon {
+    font-size: 1.125rem;
+  }
+
+  .q-label {
+    font-weight: 500;
+  }
+}
+
+// ============================================================================
+// PANEL RIGHT - Wallet et feedback
+// ============================================================================
+.swipe-panel.right {
+  .hub-sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
     width: 100%;
+
+    @media (min-width: 900px) {
+      padding: 1rem 0.5rem;
+    }
+  }
+
+  kng-wallet,
+  kng-mail-confirmation,
+  kng-feedback {
+    display: block;
+    width: 100%;
+  }
+
+  .settings-section {
+    h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: var(--wa-font-size-s);
+      font-weight: 500;
+      color: var(--mdc-theme-text-secondary-on-background);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .i18n-toggle {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+// ============================================================================
+// RESPONSIVE - Classes utilitaires
+// ============================================================================
+.hide-sm {
+  @media (max-width: 599px) {
+    display: none !important;
+  }
+}
+
+.hide-md {
+  @media (min-width: 600px) and (max-width: 899px) {
+    display: none !important;
+  }
+}
+
+.hide-lg {
+  @media (min-width: 900px) {
+    display: none !important;
   }
 }

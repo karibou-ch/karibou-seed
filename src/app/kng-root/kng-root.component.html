@@ -1,91 +1,189 @@
 <!-- ============================================================================ -->
-<!-- KngRootComponent - Page d'accueil/paramètres utilisateur                   -->
-<!-- Ce composant est maintenant un enfant de KngNavbarWrapperComponent         -->
+<!-- KngRootComponent - Hub d'aiguillage par intentions                         -->
+<!-- Ce composant est la page d'entrée après sélection du marché                -->
 <!-- ============================================================================ -->
 
 <!-- ============================================================================ -->
-<!-- PANEL SIDE - Vide                                                           -->
+<!-- PANEL SIDE - Navigation rapide et paramètres                               -->
 <!-- ============================================================================ -->
 <div class="swipe-panel side">
-  <div class="root-menu-panel">
-    <!-- Espace disponible pour menu latéral -->
-  </div>
-</div>
+  <div class="hub-side-panel">
 
-<!-- ============================================================================ -->
-<!-- PANEL CENTER - Contenu principal (paramètres utilisateur)                   -->
-<!-- ============================================================================ -->
-<div class="swipe-panel center">
+    <!-- WALLET (utilisateur authentifié) -->
+    <kng-wallet [user]="user" *ngIf="isAuthenticated"></kng-wallet>
 
-    <div class="root-container">
+    <!-- MAIL CONFIRMATION -->
+    <kng-mail-confirmation [user]="user" *ngIf="isAuthenticated && !user.isReady()">
+    </kng-mail-confirmation>
 
-      <!-- I18N Toggle -->
-      <div class="kng-card kng-card--soft i18n-toggle">
+    <!-- FEEDBACK -->
+    <kng-feedback [config]="config" [user]="user" *ngIf="isAuthenticated">
+    </kng-feedback>
+
+    <!-- PARAMÈTRES (non authentifié) -->
+    <div class="settings-section" *ngIf="!isAuthenticated">
+      <h4>{{llabel.title_settings}}</h4>
+
+      <!-- I18N Toggle (duplicate pour mobile) -->
+      <div class="kng-card kng-card--soft i18n-toggle hide-md hide-lg">
         <kng-slider [small]="true" (change)="doLocaleSwitch()">
           {{label.nav_i18n}}&nbsp;({{locale}})
         </kng-slider>
       </div>
 
-      <!-- LOGIN (non authentifié) -->
-      <a class="kng-action-link" [hidden]="user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/login'">
-        <span class="label" [innerHtml]="llabel.title_account_sign"></span>
+      <a class="kng-action-link" [routerLink]="'/store/'+store+'/me/login'">
+        <span class="label">{{llabel.title_account_sign}}</span>
         <span class="material-symbols-outlined chevron">chevron_right</span>
       </a>
+    </div>
 
-      <kng-mail-confirmation [user]="user" *ngIf="user.isAuthenticated()&&!user.isReady()"></kng-mail-confirmation>
 
-      <kng-wallet [user]="user" *ngIf="user.isAuthenticated()"></kng-wallet>
+    <!-- I18N Toggle -->
+    <div class="kng-card kng-card--soft i18n-toggle">
+      <kng-slider [small]="true" (change)="doLocaleSwitch()">
+        {{label.nav_i18n}}&nbsp;({{locale}})
+      </kng-slider>
+    </div>
 
-      <!-- ACTIONS GROUPE - Utilisateur authentifié -->
-      <div class="kng-action-group">
-        <!-- Commandes -->
-        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/orders'">
-          <span class="label" [innerHtml]="llabel.title_orders"></span>
-          <span class="material-symbols-outlined chevron">chevron_right</span>
-        </a>
+    <!-- QUICK ACTIONS (utilisateur authentifié) -->
+    <div class="quick-actions" *ngIf="isAuthenticated">
+      <h4>{{llabel.quick_actions_title}}</h4>
 
-        <!-- Factures -->
-        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/invoices'">
-          <span class="label" [innerHtml]="llabel.title_invoices_open"></span>
-          <span class="material-symbols-outlined chevron">chevron_right</span>
-        </a>
+      <a class="quick-link" [routerLink]="'/store/'+store+'/me/orders'">
+        <i class="material-symbols-outlined">receipt_long</i>
+        <span>{{llabel.title_orders}}</span>
+        <span class="badge" *ngIf="pendingOrdersCount">{{pendingOrdersCount}}</span>
+      </a>
 
-        <!-- Email -->
-        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
-          <span class="label" [innerHtml]="llabel.title_account_mail"></span>
-          <span class="material-symbols-outlined chevron">chevron_right</span>
-        </a>
+      <a class="quick-link" [routerLink]="'/store/'+store+'/me/subscriptions'">
+        <i class="material-symbols-outlined">update</i>
+        <span>{{llabel.title_account_subscriptions}}</span>
+      </a>
 
-        <!-- Adresse de livraison -->
-        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/email'">
-          <span class="label" [innerHtml]="llabel.title_account_shipping"></span>
-          <span class="material-symbols-outlined chevron">chevron_right</span>
-        </a>
+      <a class="quick-link" [routerLink]="'/store/'+store+'/me/invoices'">
+        <i class="material-symbols-outlined">description</i>
+        <span>{{llabel.title_invoices_open}}</span>
+      </a>
+    </div>
 
-        <!-- Abonnements -->
-        <a class="kng-action-link" [class.disabled]="!user.isAuthenticated()" [routerLink]="'/store/'+store+'/home/me/subscriptions'">
-          <span class="label" [innerHtml]="llabel.title_account_subscriptions"></span>
-          <span class="material-symbols-outlined chevron">chevron_right</span>
-        </a>
-      </div>
+    <!-- LOGIN (non authentifié) -->
+    <a class="login-cta" *ngIf="!isAuthenticated" [routerLink]="'/store/'+store+'/me/login'">
+      <i class="material-symbols-outlined">login</i>
+      <span>{{llabel.title_account_sign}}</span>
+    </a>
+
+  </div>
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL CENTER - Hub d'intentions (contenu principal)                        -->
+<!-- ============================================================================ -->
+<div class="swipe-panel center">
+
+  <div class="hub-container">
+
+    <!-- HEADER -->
+    <div class="hub-header">
+      <h1>{{llabel.hub_title}}</h1>
+      <p class="hub-subtitle">{{llabel.hub_subtitle}}</p>
+      <p class="hub-shipping" *ngIf="nextShippingDayFormatted">
+        <i class="material-symbols-outlined">local_shipping</i>
+        Prochaine livraison : <strong>{{nextShippingDayFormatted}}</strong>
+      </p>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- INTENTIONS GRID - 4 cartes principales                            -->
+    <!-- ================================================================== -->
+    <div class="intentions-grid">
+
+      <!-- 🛒 FAIRE MES COURSES -->
+      <a class="intention-card courses" [routerLink]="['/store', store, 'home']">
+        <div class="intention-icon">{{intentionCourses.icon}}</div>
+        <div class="intention-content">
+          <h3>{{intentionCourses.title}}</h3>
+          <p>{{intentionCourses.subtitle}}</p>
+        </div>
+        <div class="intention-cta">
+          <span>{{intentionCourses.cta}}</span>
+          <i class="material-symbols-outlined">arrow_forward</i>
+        </div>
+      </a>
+
+      <!-- 🎉 RECEVOIR UN BUFFET -->
+      <a class="intention-card buffet" [routerLink]="['/store', store, 'buffet']">
+        <div class="intention-icon">{{intentionBuffet.icon}}</div>
+        <div class="intention-content">
+          <h3>{{intentionBuffet.title}}</h3>
+          <p>{{intentionBuffet.subtitle}}</p>
+        </div>
+        <div class="intention-cta">
+          <span>{{intentionBuffet.cta}}</span>
+          <i class="material-symbols-outlined">arrow_forward</i>
+        </div>
+      </a>
+
+      <!-- 🔄 NE PLUS OUBLIER -->
+      <a class="intention-card subscription" [routerLink]="['/store', store, 'subscriptions']">
+        <div class="intention-icon">{{intentionSubscription.icon}}</div>
+        <div class="intention-content">
+          <h3>{{intentionSubscription.title}}</h3>
+          <p>{{intentionSubscription.subtitle}}</p>
+        </div>
+        <div class="intention-cta">
+          <span>{{intentionSubscription.cta}}</span>
+          <i class="material-symbols-outlined">arrow_forward</i>
+        </div>
+      </a>
+
+      <!-- 💬 BESOIN D'AIDE -->
+      <a class="intention-card assistant" [routerLink]="['/store', store, 'home', 'assistant', 'james']">
+        <div class="intention-icon">{{intentionAssistant.icon}}</div>
+        <div class="intention-content">
+          <h3>{{intentionAssistant.title}}</h3>
+          <p>{{intentionAssistant.subtitle}}</p>
+        </div>
+        <div class="intention-cta">
+          <span>{{intentionAssistant.cta}}</span>
+          <i class="material-symbols-outlined">arrow_forward</i>
+        </div>
+      </a>
 
     </div>
 
-    <!-- FEEDBACK -->
-    <kng-feedback [config]="config" [user]="user" [hidden]="!user.isAuthenticated()">
-    </kng-feedback>
+    <!-- ================================================================== -->
+    <!-- QUESTIONS RAPIDES JAMES                                            -->
+    <!-- ================================================================== -->
+    <div class="assistant-quick-section">
+      <h4>Questions fréquentes</h4>
+      <div class="assistant-questions">
+        <button *ngFor="let q of assistantQuestions"
+                class="question-chip"
+                (click)="navigateToAssistantWithQuestion(q)">
+          <span class="q-icon">{{q.icon}}</span>
+          <span class="q-label">{{q.label}}</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
 
 </div>
 
 <!-- ============================================================================ -->
-<!-- PANEL RIGHT - Vide                                                          -->
+<!-- PANEL RIGHT - Wallet et feedback                                           -->
 <!-- ============================================================================ -->
 <div class="swipe-panel right">
-  <div class="root-sidebar-panel">
-    <!-- MARKETPLACE -->
-    <kng-nav-marketplace (updated)="doOpenMarket($event)" [hidden]="lockedHUB" [config]="config"
-      [orders]="orders"></kng-nav-marketplace>
+  <div class="hub-sidebar-panel">
 
-    <!-- Espace disponible pour sidebar -->
+
+    <!-- MARKETPLACE SWITCHER (si plusieurs marchés) -->
+    <kng-nav-marketplace
+      (updated)="doOpenMarket($event)"
+      [hidden]="lockedHUB"
+      [config]="config"
+      [orders]="orders">
+    </kng-nav-marketplace>
+
   </div>
 </div>
