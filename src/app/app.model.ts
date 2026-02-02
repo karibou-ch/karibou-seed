@@ -370,8 +370,8 @@ export const NAV_SERVICE_ITEMS: NavServiceItem[] = [
   },
   {
     id: 'subscription',
-    label: { fr: 'Abos', en: 'Subs' },
-    icon: 'update',
+    label: { fr: 'Auto', en: 'Auto' },
+    icon: 'event_repeat',
     emoji: '🔄',
     route: 'subscriptions'
   },
@@ -519,7 +519,10 @@ export function getIntentionContent(
 /**
  * Détermine si la date choisie nécessite un mode devis (> J+6)
  */
-export function isDevisRequired(eventDate: Date, maxDays: number = 6): boolean {
+export function isDevisRequired(eventDate: Date | null | undefined, maxDays: number = 6): boolean {
+  if (!eventDate || !(eventDate instanceof Date) || isNaN(eventDate.getTime())) {
+    return false;
+  }
   const now = new Date();
   const diffTime = eventDate.getTime() - now.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
