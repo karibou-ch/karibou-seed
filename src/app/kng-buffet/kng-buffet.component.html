@@ -6,6 +6,9 @@
   <div class="buffet menu-panel"
        [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
+    <!-- NAVIGATION SERVICES (Niveau 1) -->
+    <kng-service-nav [store]="store" [currentRoute]="'/buffet'" [vertical]="true" [showHub]="false"></kng-service-nav>
+
     <!-- MOBILE links -->
     <ul class="subs">
       <!-- FAVORITE -->
@@ -13,48 +16,12 @@
         <i class="material-symbols-outlined">favorite</i>
         <span>{{label.search_bookmark}}</span>
       </li>
-
-      <!-- COURSES -->
-      <li class="subs-item inverted" [routerLink]="['/store', store, 'home']">
-        <i class="material-symbols-outlined icon">shopping_cart</i>
-        <span>{{label.nav_category}}</span>
-      </li>
-
-      <!-- BUFFET (current page - active) -->
-      <li class="subs-item inverted active">
-        <i class="material-symbols-outlined icon">celebration</i>
-        <span>{{blabel.page_title}}</span>
-      </li>
-
-      <!-- SUBSCRIPTIONS -->
-      <li class="subs-item inverted" [routerLink]="['/store', store, 'subscriptions']">
-        <i class="material-symbols-outlined icon">update</i>
-        <span>{{label.nav_subscription}}</span>
-      </li>
-
-      <!-- JAMES -->
-      <li class="subs-item inverted" [routerLink]="['/store', store, 'home', 'assistant', 'james']">
-        <i class="material-symbols-outlined icon">smart_toy</i>
-        <span>{{label.james_title_cta}}</span>
-      </li>
     </ul>
 
     <!-- DESKTOP LINKS -->
     <ul class="hide-sm">
       <li [routerLink]="userRouterLink">
         <b>{{isAuthenticated ? label.nav_account : label.nav_login}}</b>
-      </li>
-      <li [routerLink]="'/store/' + store + '/home'">
-        <b>{{label.nav_category}}</b>
-      </li>
-      <li class="selected">
-        <b>{{blabel.page_title}}</b>
-      </li>
-      <li [routerLink]="'/store/' + store + '/subscriptions'">
-        <b>{{label.nav_subscription}}</b>
-      </li>
-      <li class="separator" [routerLink]="['/store', store, 'home', 'assistant', 'james']">
-        <b>{{label.james_title_cta}}</b>
       </li>
     </ul>
 

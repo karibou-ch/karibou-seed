@@ -41,6 +41,7 @@ import { KngSliderComponent } from './kng-widget-slider/kng-slider.component';
 import { KngWalletComponent } from './kng-wallet/kng-wallet.component';
 import { KngAudioModule } from './kng-audio/kng-audio.module';
 import { KngTopAppbarComponent } from './kng-top-appbar/kng-top-appbar.component';
+import { KngServiceNavComponent } from './kng-service-nav/kng-service-nav.component';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { KngTopAppbarComponent } from './kng-top-appbar/kng-top-appbar.component
     KngRippleDirective,
     KngSliderComponent,
     KngWalletComponent,
-    KngTopAppbarComponent
+    KngTopAppbarComponent,
+    KngServiceNavComponent
   ],
   declarations: [
     // ✅ MIGRATION: KngSubscriptionControlComponent, KngSubscriptionItemComponent -> kng-subscription module
@@ -100,7 +102,8 @@ import { KngTopAppbarComponent } from './kng-top-appbar/kng-top-appbar.component
     KngRippleDirective,
     KngSliderComponent,
     KngWalletComponent,
-    KngTopAppbarComponent
+    KngTopAppbarComponent,
+    KngServiceNavComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
