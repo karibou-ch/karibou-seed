@@ -1,0 +1,82 @@
+---
+description: demande UX et expérience utilisateur
+alwaysApply: false
+---
+# Architecture UX Karibou 2026
+
+## Navigation 3 Niveaux
+
+| Niveau | Description | Implémentation |
+|--------|-------------|----------------|
+| **N1 - Services** | Navigation inter-services (intentions) | `NAV_SERVICE_ITEMS` |
+| **N2 - Contexte** | Navigation intra-service | Panel Side par composant |
+| **N3 - Opérationnel** | Compte, commandes, factures | Drawer/Modal dédié |
+
+## 5 Écrans Principaux
+
+| Service | Route | Panier | Panel Side | Panel Right |
+|---------|-------|--------|------------|-------------|
+| 🏠 **Acceuil** | `/` | ❌ | Marchés, Quick Actions | Portefeuille, Paramètres |
+| 🛒 **Courses** | `/home` | ✅ | Catégories, Boutiques, Thèmes, Favoris | Calendrier, Aide |
+| 🎉 **Buffet** | `/buffet` | ✅ | Formulaire, Kits | Récapitulatif, Assistant |
+| 🔄 **Abos** | `/subscriptions` | ❌ **Contrats!** | Contrats, Créer, Historique | Calendrier, Assistant |
+| 💬 **James** | `/assistant` | ✅ | Questions rapides, Historique | Produits suggérés |
+
+## Règles Critiques
+
+### ⚠️ Navigation Inter-Service Persistante
+Chaque page de service DOIT afficher la navigation N1 avec le service actuel marqué `selected` :
+```html
+<!-- ✅ OBLIGATOIRE sur chaque page service -->
+<nav class="nav-services">
+  <a routerLink="/" [class.selected]="currentService === 'hub'">🏠 Acceuil</a>
+  <a routerLink="/home" [class.selected]="currentService === 'courses'">🛒 Courses</a>
+  <a routerLink="/buffet" [class.selected]="currentService === 'buffet'">🎉 Buffet</a>
+  <a routerLink="/subscriptions" [class.selected]="currentService === 'subscriptions'">🔄 Abos</a>
+  <a routerLink="/assistant" [class.selected]="currentService === 'assistant'">💬 James</a>
+</nav>
+```
+
+### ⚠️ Subscriptions = Contrats (PAS un panier)
+```typescript
+// ❌ INTERDIT : Pas de bouton panier sur /subscriptions
+// ✅ CORRECT : Actions contrat uniquement
+[⏸️ Pause] [✏️ Modifier] [🗑️ Supprimer]
+```
+
+### Assistant : 2 Modes
+| Mode | Localisation | Questions |
+|------|--------------|-----------|
+| **NEUTRE** | `/assistant` | Tous domaines possibles |
+| **ENCADRÉ** | Widget dans pages | Filtrées par domaine automatiquement |
+
+### Bottom Bar Mobile (contextuel)
+```
+/hub           [≡ Menu]  [🏠 Accueil] [❓ Aide]    [—]
+/home          [≡ Menu]  [🛍️ Produits] [❓ Aide]  [🛒 Panier]
+/buffet        [≡ Menu]  [🎁 Kits]    [❓ Aide]   [🛒 Panier]
+/subscriptions [≡ Menu]  [📋 Contrats] [❓ Aide]  [—]  ← PAS de panier!
+/assistant     [❓ Quest] [💬 Chat]   [📂 Prod.]  [🛒 Panier]
+```
+
+## Structure Layout Standard
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         HEADER (N1)                         │
+│  [Logo] [🏠 Hub] [🛒 Courses] [🎉 Buffet] [🔄 Abos] [💬]   │
+├─────────────┬───────────────────────────┬───────────────────┤
+│ PANEL SIDE  │      PANEL CENTER         │   PANEL RIGHT     │
+│   (N2)      │     (Contenu principal)   │    (Aide/Info)    │
+├─────────────┴───────────────────────────┴───────────────────┤
+│                    MOBILE BOTTOM BAR                        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Fichiers Clés
+
+- `app.model.ts` : Modèle intentions + navigation
+- `kng-root/` : Hub intentions (page d'accueil)
+- `kng-buffet/` : Module buffet complet
+- `kng-subscription/` : Contrats (pas panier!)
+- `kng-assistant-bot/` : Assistant NEUTRE/ENCADRÉ
