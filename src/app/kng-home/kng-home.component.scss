@@ -99,7 +99,8 @@ div.home-header{
     max-width: calc(100% - 1.25rem);
     max-height: 250px;
     object-fit: cover;
-    border: .25rem solid var(--mdc-theme-secondary-light);
+    -border: .25rem solid var(--mdc-theme-secondary-light);
+    box-shadow: var(--wa-shadow-m);
     // iOS 14.1 fix
     @supports not (aspect-ratio: 1 / 1) {
       max-height: 170px;
@@ -128,8 +129,18 @@ div.home-header{
     background-color: var(--mdc-theme-appbar-light);
     border: 1px solid var(--mdc-theme-appbar);
     flex: 1;
-    @media (min-width: 768px) {
-      margin-left: .25rem;
+
+    z-index: -1;
+    margin-left: -2rem;
+    padding-left: 2rem;
+
+
+
+    @media (max-width: 1199px) {
+      margin-top: -2rem;
+      padding-top: 2rem;
+      margin-left: .5rem;
+      padding-left: .5rem;
     }
 
     ul{
@@ -277,4 +288,3 @@ div.product-container{
     }
   }
 }
-

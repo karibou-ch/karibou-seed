@@ -26,29 +26,31 @@ import { i18n, KngNavigationStateService } from '../';
   styles: [`
     .service-nav {
       display: flex;
-      gap: 4px;
+      gap: .5rem;
       padding: 4px 0;
 
       &.vertical {
         flex-direction: column;
-        gap: 2px;
+        gap: 0.25rem;
+        display: none;
       }
     }
 
     .service-link {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 20px;
-      background: transparent;
+      gap: .5rem;
+      padding: .5rem var(--wa-form-control-padding-inline);
+      border-radius: var(--wa-border-radius-pill);
+      background: var(--mdc-theme-appbar-light);
       color: var(--mdc-theme-text-secondary-on-background, #666);
       text-decoration: none;
-      font-size: 14px;
-      font-weight: 400;
+      font-weight: var(--wa-font-weight-action);
       transition: all 0.15s ease;
       white-space: nowrap;
-
+      border-color: var(--wa-color-neutral-border-normal);
+      border-width: var(--wa-border-width-s);
+      -border-style: solid;
       &:hover {
         background: var(--wa-color-brand-95, #f0faf0);
         color: var(--mdc-theme-primary, #4caf50);
@@ -61,7 +63,7 @@ import { i18n, KngNavigationStateService } from '../';
       &.active {
         background: var(--wa-color-brand-fill-quiet, #d4f5d0);
         color: var(--wa-color-brand-on-quiet, #2e7d32);
-        font-weight: 500;
+        font-weight: 600;
 
         .material-symbols-outlined {
           color: var(--wa-color-brand-on-quiet, #2e7d32);
@@ -69,8 +71,8 @@ import { i18n, KngNavigationStateService } from '../';
       }
 
       .material-symbols-outlined {
-        font-size: 18px;
-        color: var(--mdc-theme-text-hint-on-background, #999);
+        font-size: 24px;
+        color: var(--mdc-theme-secondary) !important;
       }
 
       .label {
@@ -80,7 +82,6 @@ import { i18n, KngNavigationStateService } from '../';
 
     // Vertical mode (sidebar) - style fin comme catégories
     .service-nav.vertical .service-link {
-      border-radius: 16px;
       padding: 8px 14px;
     }
 

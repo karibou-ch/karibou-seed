@@ -9,7 +9,7 @@
     </div>
 
     <!-- CALENDAR -->
-    <div class="calendar kng-card -kng-card--soft kng-card--shadow">
+    <div class="calendar kng-card kng-card--soft ">
       <div class="list">
           <div class="element"
           [class.selected]="day.equalsDate(currentShippingDay)"
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="switch-hub kng-card kng-card--white kng-card--shadow" [hidden]="minimal">
+    <div class="switch-hub kng-card kng-card--white " [hidden]="minimal">
       <div class="label">{{label_switch_store}}</div>
       <button [routerLink]="['/store',displayHubSwitch.slug,'home']">{{displayHubSwitch.name}}</button>
     </div>
