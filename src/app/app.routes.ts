@@ -15,6 +15,7 @@ import { KngHomeComponent } from './kng-home/kng-home.component';
 import { ProductListComponent, ProductComponent, KngProductListByShopComponent } from './kng-product';
 import { KngShopsComponent } from './kng-shops/kng-shops.component';
 import { KngSubscriptionComponent } from './kng-subscription/kng-subscription.component';
+import { KngBuffetComponent } from './kng-buffet/kng-buffet.component';
 
 /**
  * Routes enfants de /home (marché) - Catégories et listes de produits
@@ -25,6 +26,7 @@ import { KngSubscriptionComponent } from './kng-subscription/kng-subscription.co
  */
 const homeChildrenRoutes: Routes = [
   // NOTE: /assistant est maintenant au niveau /store/:store/assistant (vue à part entière)
+  // ⚠️ DEPRECATED: /home/business → use /buffet instead (redirect configured)
   { path: 'business', data: { business: true }, component: ProductListComponent },
   { path: 'subscription', data: { subscription: true }, component: ProductListComponent },
   { path: 'category/:category/:child', component: ProductListComponent },
@@ -98,6 +100,15 @@ const storeChildrenRoutes: Routes = [
   },
 
   // ============================================================================
+  // BUFFET - Événements et buffets artisanaux (ex /home/business)
+  // ============================================================================
+  {
+    path: 'buffet',
+    component: KngBuffetComponent,
+    data: { departement: 'buffet' }
+  },
+
+  // ============================================================================
   // ASSISTANT - Vue à part entière (layout 3 colonnes)
   // ============================================================================
   {
@@ -151,6 +162,12 @@ export const appRoutes: Routes = [
   { path: 'store/:store/home/landing', redirectTo: '/store/:store/landing' },
   { path: 'store/:store/home/assistant/:name', redirectTo: '/store/:store/assistant/:name' },
   { path: 'store/:store/home/assistant', redirectTo: '/store/:store/assistant' },
+
+  // ============================================================================
+  // REDIRECTIONS BUFFET - home/business → buffet (deprecated)
+  // ============================================================================
+  { path: 'store/:store/home/business', redirectTo: '/store/:store/buffet' },
+  { path: 'store/:store/business', redirectTo: '/store/:store/buffet' },
 
   { path: 'products/:sku/:title', pathMatch: 'full', redirectTo: '/store/artamis/products/:sku/:title' },
   { path: 'products/:sku', pathMatch: 'full', redirectTo: '/store/artamis/products/:sku' },
