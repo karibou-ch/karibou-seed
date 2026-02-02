@@ -1,0 +1,364 @@
+<!-- ============================================================================ -->
+<!-- PANEL SIDE - Menu de navigation + Assistant James encadré                  -->
+<!-- ============================================================================ -->
+<div class="swipe-panel side">
+
+  <div class="buffet menu-panel"
+       [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
+
+    <!-- MOBILE links -->
+    <ul class="subs">
+      <!-- FAVORITE -->
+      <li class="subs-item inverted" (click)="onFavorites()">
+        <i class="material-symbols-outlined">favorite</i>
+        <span>{{label.search_bookmark}}</span>
+      </li>
+
+      <!-- COURSES -->
+      <li class="subs-item inverted" [routerLink]="['/store', store, 'home']">
+        <i class="material-symbols-outlined icon">shopping_cart</i>
+        <span>{{label.nav_category}}</span>
+      </li>
+
+      <!-- BUFFET (current page - active) -->
+      <li class="subs-item inverted active">
+        <i class="material-symbols-outlined icon">celebration</i>
+        <span>{{blabel.page_title}}</span>
+      </li>
+
+      <!-- SUBSCRIPTIONS -->
+      <li class="subs-item inverted" [routerLink]="['/store', store, 'subscriptions']">
+        <i class="material-symbols-outlined icon">update</i>
+        <span>{{label.nav_subscription}}</span>
+      </li>
+
+      <!-- JAMES -->
+      <li class="subs-item inverted" [routerLink]="['/store', store, 'home', 'assistant', 'james']">
+        <i class="material-symbols-outlined icon">smart_toy</i>
+        <span>{{label.james_title_cta}}</span>
+      </li>
+    </ul>
+
+    <!-- DESKTOP LINKS -->
+    <ul class="hide-sm">
+      <li [routerLink]="userRouterLink">
+        <b>{{isAuthenticated ? label.nav_account : label.nav_login}}</b>
+      </li>
+      <li [routerLink]="'/store/' + store + '/home'">
+        <b>{{label.nav_category}}</b>
+      </li>
+      <li class="selected">
+        <b>{{blabel.page_title}}</b>
+      </li>
+      <li [routerLink]="'/store/' + store + '/subscriptions'">
+        <b>{{label.nav_subscription}}</b>
+      </li>
+      <li class="separator" [routerLink]="['/store', store, 'home', 'assistant', 'james']">
+        <b>{{label.james_title_cta}}</b>
+      </li>
+    </ul>
+
+    <!-- ASSISTANT JAMES ENCADRÉ (questions buffet) -->
+    <div class="assistant-widget hide-sm" *ngIf="isReady">
+      <h4>{{blabel.assistant_title}}</h4>
+      <p class="subtitle">{{blabel.assistant_subtitle}}</p>
+
+      <div class="assistant-tips">
+        <button *ngFor="let q of assistantQuestions"
+                class="tip-button"
+                [routerLink]="['/store', store, 'home', 'assistant', 'james']"
+                [queryParams]="{prompt: q.action}">
+          <span class="tip-icon">{{q.icon}}</span>
+          <span class="tip-label">{{q.label}}</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL CENTER - Contenu principal                                           -->
+<!-- ============================================================================ -->
+<div class="swipe-panel center">
+
+  <!-- HEADER -->
+  <div class="buffet-header">
+    <h1>{{blabel.page_title}}</h1>
+    <p>{{blabel.page_subtitle}}</p>
+  </div>
+
+  <!-- MODE INDICATOR (commande vs devis) -->
+  <div class="mode-indicator" *ngIf="formState.numberOfPeople && formState.eventDate">
+    <div class="mode-card" [class.active]="!isDevisMode">
+      <i class="material-symbols-outlined">shopping_cart</i>
+      <div class="mode-text">
+        <h4>{{blabel.mode_order}}</h4>
+        <p>{{blabel.mode_order_subtitle}}</p>
+      </div>
+    </div>
+    <div class="mode-card" [class.active]="isDevisMode">
+      <i class="material-symbols-outlined">request_quote</i>
+      <div class="mode-text">
+        <h4>{{blabel.mode_devis}}</h4>
+        <p>{{blabel.mode_devis_subtitle}}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO DEVIS MODE -->
+  <div class="devis-info" *ngIf="isDevisMode">
+    <i class="material-symbols-outlined">info</i>
+    <p>{{blabel.mode_devis_info}}</p>
+  </div>
+
+  <!-- PRODUCTS CONTAINER (visible en mode configure) -->
+  <div class="product-container" *ngIf="isConfigureState && products.length">
+    <kng-product-grouped-list
+         clazz="buffet"
+         [useMaxCat]="products.length > 40"
+         [alphasort]="false"
+         [displayVendor]="true"
+         [showMore]="products.length > 10"
+         [config]="config"
+         [user]="user"
+         [contentCategories]="categories"
+         [contentProducts]="products">
+    </kng-product-grouped-list>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" *ngIf="isLoading">
+    <p>Chargement...</p>
+  </div>
+
+  <!-- EMPTY STATE (formulaire non rempli) -->
+  <div class="empty-state" *ngIf="isFormState && !formState.numberOfPeople">
+    <div class="empty-card">
+      <i class="material-symbols-outlined large">celebration</i>
+      <h3>{{blabel.page_empty_title}}</h3>
+      <p>{{blabel.page_empty_subtitle}}</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================================ -->
+<!-- PANEL RIGHT - Formulaire et actions                                        -->
+<!-- ============================================================================ -->
+<div class="swipe-panel right">
+
+  <div class="buffet sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
+
+    <!-- ======================================== -->
+    <!-- STATE: FORM - Discriminants              -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isFormState">
+
+      <!-- TITRE -->
+      <div class="kng-boxed first">
+        <div class="content">
+          <h3>{{blabel.page_cta_configure}}</h3>
+        </div>
+      </div>
+
+      <!-- NOMBRE DE PERSONNES -->
+      <div class="kng-boxed">
+        <div class="content">
+          <label class="form-label">{{blabel.question_people}}</label>
+          <div class="input-wrapper">
+            <i class="material-symbols-outlined">group</i>
+            <input type="number"
+                   min="10"
+                   step="5"
+                   [placeholder]="blabel.question_people_placeholder"
+                   [value]="formState.numberOfPeople"
+                   (input)="onPeopleChange($event)">
+          </div>
+          <p class="hint" *ngIf="formState.numberOfPeople && formState.numberOfPeople < 10">
+            {{blabel.error_minimum_people}}
+          </p>
+        </div>
+      </div>
+
+      <!-- DATE DE L'ÉVÉNEMENT -->
+      <div class="kng-boxed">
+        <div class="content">
+          <label class="form-label">{{blabel.question_date}}</label>
+          <kng-calendar
+            [user]="user"
+            [config]="config"
+            (updated)="onDateChange($event)">
+          </kng-calendar>
+        </div>
+      </div>
+
+      <!-- CTA CONTINUER -->
+      <div class="kng-boxed">
+        <div class="content">
+          <button class="default primary width-100"
+                  [disabled]="!isFormValid"
+                  (click)="onFormSubmit()">
+            <i class="material-symbols-outlined">{{isDevisMode ? 'request_quote' : 'arrow_forward'}}</i>
+            {{isDevisMode ? blabel.action_request_devis : blabel.action_continue}}
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- ======================================== -->
+    <!-- STATE: KITS - Liste des kits             -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isKitsState">
+
+      <!-- HEADER avec bouton retour -->
+      <div class="panel-header">
+        <button class="back-button" (click)="goBack()">
+          <i class="material-symbols-outlined">arrow_back</i>
+        </button>
+        <h3>{{blabel.kits_title}}</h3>
+      </div>
+
+      <!-- RÉSUMÉ CONFIG -->
+      <div class="kng-boxed">
+        <div class="content config-summary">
+          <div class="summary-item">
+            <i class="material-symbols-outlined">group</i>
+            <span>{{formState.numberOfPeople}} personnes</span>
+          </div>
+          <div class="summary-item">
+            <i class="material-symbols-outlined">event</i>
+            <span>{{formState.eventDate | date:'d MMM yyyy'}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEHOLDER KITS (TODO: implémenter les vrais kits) -->
+      <div class="kng-boxed">
+        <div class="content centered">
+          <i class="material-symbols-outlined large">inventory_2</i>
+          <h4>{{blabel.kits_subtitle}}</h4>
+          <p>{{blabel.kits_empty}}</p>
+          <button class="default secondary" (click)="navigateToHome()">
+            {{blabel.page_cta_explore}}
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- ======================================== -->
+    <!-- STATE: CONFIGURE - Configuration kit     -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isConfigureState">
+
+      <!-- HEADER avec bouton retour -->
+      <div class="panel-header">
+        <button class="back-button" (click)="goBack()">
+          <i class="material-symbols-outlined">arrow_back</i>
+        </button>
+        <h3>{{blabel.config_title}}</h3>
+      </div>
+
+      <!-- PLACEHOLDER CONFIG (TODO: implémenter le configurateur) -->
+      <div class="kng-boxed">
+        <div class="content centered">
+          <i class="material-symbols-outlined large">tune</i>
+          <h4>{{blabel.config_subtitle}}</h4>
+          <p>{{blabel.config_note}}</p>
+        </div>
+      </div>
+
+      <!-- CTA AJOUTER AU PANIER -->
+      <div class="kng-boxed">
+        <div class="content">
+          <button class="default primary width-100">
+            <i class="material-symbols-outlined">shopping_cart</i>
+            {{blabel.action_add_to_cart}}
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- ======================================== -->
+    <!-- STATE: DEVIS - Formulaire de devis       -->
+    <!-- ======================================== -->
+    <ng-container *ngIf="isDevisState">
+
+      <!-- HEADER avec bouton retour -->
+      <div class="panel-header">
+        <button class="back-button" (click)="goBack()">
+          <i class="material-symbols-outlined">arrow_back</i>
+        </button>
+        <h3>{{blabel.devis_title}}</h3>
+      </div>
+
+      <!-- RÉSUMÉ CONFIG -->
+      <div class="kng-boxed">
+        <div class="content config-summary">
+          <div class="summary-item">
+            <i class="material-symbols-outlined">group</i>
+            <span>{{formState.numberOfPeople}} personnes</span>
+          </div>
+          <div class="summary-item">
+            <i class="material-symbols-outlined">event</i>
+            <span>{{formState.eventDate | date:'d MMM yyyy'}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORMULAIRE DEVIS -->
+      <div class="kng-boxed">
+        <div class="content">
+          <p class="subtitle">{{blabel.devis_subtitle}}</p>
+
+          <div class="form-group">
+            <label>{{blabel.devis_name}}</label>
+            <input type="text" #devisName>
+          </div>
+
+          <div class="form-group">
+            <label>{{blabel.devis_email}}</label>
+            <input type="email" #devisEmail>
+          </div>
+
+          <div class="form-group">
+            <label>{{blabel.devis_phone}}</label>
+            <input type="tel" #devisPhone>
+          </div>
+
+          <div class="form-group">
+            <label>{{blabel.devis_company}}</label>
+            <input type="text" #devisCompany>
+          </div>
+
+          <div class="form-group">
+            <label>{{blabel.devis_message}}</label>
+            <textarea #devisMessage rows="4"></textarea>
+          </div>
+
+          <button class="default primary width-100"
+                  (click)="onDevisSubmit({
+                    name: devisName.value,
+                    email: devisEmail.value,
+                    phone: devisPhone.value,
+                    company: devisCompany.value,
+                    message: devisMessage.value
+                  })">
+            <i class="material-symbols-outlined">send</i>
+            {{blabel.devis_send}}
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </div>
+
+</div>
+
+<!-- ROUTER OUTLET pour sous-routes -->
+<router-outlet></router-outlet>
