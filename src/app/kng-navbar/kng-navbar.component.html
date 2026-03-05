@@ -63,7 +63,7 @@
   <!-- HEADER - Navigation (span 3 colonnes)                                      -->
   <!-- ========================================================================== -->
   <header class="grid-header">
-    <kng-top-appbar [position]="$navigation.navbarPosition">
+    <kng-appbar [position]="'top'">
 
       <!-- ================================================================ -->
       <!-- SLOT: start (gauche) - Logo/Icon aligné à droite de la colonne  -->
@@ -81,11 +81,9 @@
       <!-- ================================================================ -->
       <div slot="center" class="appbar-center">
         <!-- Desktop navigation - Services (Niveau 1) -->
-        <nav class="appbar-nav hide-sm">
-          <kng-service-nav [store]="store" [showHub]="!isLockedHUB()"></kng-service-nav>
+        <nav class="appbar-nav">
+          <kng-ui-navigation [store]="store" [showHub]="!isLockedHUB()"></kng-ui-navigation>
         </nav>
-        <!-- Mobile title -->
-        <span class="mobile-title hide-md hide-lg">{{hubTitle}}</span>
       </div>
 
       <!-- ================================================================ -->
@@ -102,7 +100,7 @@
         </wa-button>
       </div>
 
-    </kng-top-appbar>
+    </kng-appbar>
   </header>
 
   <!-- ========================================================================== -->

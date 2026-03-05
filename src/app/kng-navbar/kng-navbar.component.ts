@@ -186,7 +186,7 @@ export class KngNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.subscription.add(
-      this.$navigation.registerScrollEvent().subscribe(scroll => {
+      this.$navigation.registerScrollEvent$().subscribe(scroll => {
         this.scrollDirection = scroll.direction;
         this.$cdr.markForCheck();
         // FIXME use appropriate place to update currentThemeName;

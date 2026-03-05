@@ -153,6 +153,7 @@ wa-drawer#main-drawer {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+  @media (max-width: 599px) { justify-content: center;}
 
   .appbar-nav {
     display: flex;
