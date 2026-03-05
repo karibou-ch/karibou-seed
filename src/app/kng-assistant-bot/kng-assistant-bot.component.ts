@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CartService, CartItemsContext, Config, User, LoaderService, AssistantService, AssistantState, Product, Category, ProductService } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../common';
@@ -289,6 +289,19 @@ export class KngAssistantBotComponent implements OnInit, OnDestroy {
       this.onSwipePanelChanged(panelIndex);
     });
 
+    // ✅ Sticky scroll simulé (mobile/tablet uniquement)
+    const navbarHeight = this.$navigation.getCssVariableAsNumber('--mdc-theme-top-bar') || 0;
+    this.$navigation.registerStickyScroll$(100).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(scrollY => {
+      if (window.innerWidth >= 1200) {
+        this.menuStickyTransform = 0;
+        return;
+      }
+      this.menuStickyTransform = Math.max(0, scrollY - navbarHeight);
+      this.$cdr.detectChanges();
+    });
+
     // Subscribe to assistant state
     this.$assistant.state$.pipe(
       takeUntil(this.destroy$)
@@ -398,27 +411,6 @@ export class KngAssistantBotComponent implements OnInit, OnDestroy {
   // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
-  /**
-   * Sticky menu simulé via translateY pour contourner le problème CSS :
-   * position: sticky ne fonctionne pas quand un ancêtre a overflow-x: auto (swipe)
-   */
-  @HostListener('window:scroll', ['$event'])
-  onScrollToStick($event) {
-    // Active seulement en mode swipe (mobile/tablet ≤1199px)
-    if (window.innerWidth >= 1200) {
-      this.menuStickyTransform = 0;
-      return;
-    }
-
-    const scrollY = window.scrollY || window.pageYOffset;
-    const navbarHeight = 0; // --mdc-theme-top-bar
-
-    if (scrollY > navbarHeight) {
-      this.menuStickyTransform = scrollY - navbarHeight;
-    } else {
-      this.menuStickyTransform = 0;
-    }
-  }
 
   /**
    * Réagit aux changements de panel après un swipe.
@@ -433,6 +425,13 @@ export class KngAssistantBotComponent implements OnInit, OnDestroy {
       document.body.classList.remove('mdc-dialog-scroll-lock');
     }
   }
+
+
+
+  onScrollToPanel(panelIndex: number) {
+    this.$navigation.scrollToPanel(panelIndex);
+  }
+
 
   /**
    * Handle tip/prompt click - envoie le message à l'assistant ET recherche les produits

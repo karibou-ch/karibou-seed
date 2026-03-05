@@ -6,41 +6,7 @@
   <div class="assistant menu-panel"
        [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
-    <!-- MOBILE links -->
-    <ul class="subs">
-      <!-- FAVORITE -->
-      <li class="subs-item inverted" [routerLink]="['/store', store, 'home']">
-        <i class="material-symbols-outlined">home</i>
-        <span>{{label.nav_home}}</span>
-      </li>
-
-      <!-- CUSTOM LINK -->
-      <li *ngIf="hub?.home?.customLink?.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url">
-        <i class="material-symbols-outlined icon">person_celebrate</i>
-        <span>{{hub.home.customLink.label[locale]}}</span>
-      </li>
-
-      <li *ngIf="!hub?.home?.customLink?.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i class="material-symbols-outlined icon">person_celebrate</i>
-        <span>{{label.nav_subscription_b2b}}</span>
-      </li>
-
-      <!-- SUBSCRIPTION b2c/b2b -->
-      <li class="subs-item inverted" [routerLink]="['/store',store,'subscriptions']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i class="material-symbols-outlined icon">update</i>
-        <span>{{label.nav_subscription}}</span>
-      </li>
-
-      <!-- JAMES (current page - active) -->
-      <li *ngIf="!isB2BSchool" class="subs-item inverted active" [routerLink]="['/store',store,'assistant']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i class="material-symbols-outlined icon">smart_toy</i>
-        <span>{{label.james_title_cta}}</span>
-      </li>
-      <li *ngIf="isB2BSchool" class="subs-item inverted active" [routerLink]="['/store',store,'assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <i class="material-symbols-outlined icon">smart_toy</i>
-        <span>{{label.james_school}}</span>
-      </li>
-    </ul>
+       <kng-ui-navigation [store]="store" [currentRoute]="'/assistant'" [vertical]="true" [showHub]="false"></kng-ui-navigation>
 
     <!-- DESKTOP LINKS -->
     <ul class="hide-sm">
@@ -189,3 +155,29 @@
   </div>
 
 </div>
+
+
+<!-- ============================================================================ -->
+<!-- MOBILE BOTTOM APPBAR - Navigation rapide entre les panels                  -->
+<!-- ============================================================================ -->
+<kng-appbar position="bottom"  class="mobile-only mobile-actions">
+  <div slot="mobile">
+    <button class="action" (click)="onScrollToPanel(0)">
+      <span class="material-symbols-outlined">menu</span>
+      <span>Menu</span>
+    </button>
+    <button class="action" (click)="onScrollToPanel(1)">
+      <span class="material-symbols-outlined">grid_view</span>
+      <span>Produits</span>
+    </button>
+    <button class="action" (click)="onScrollToPanel(2)">
+      <span class="material-symbols-outlined">help</span>
+      <span>Aide</span>
+    </button>
+    <button class="action" [routerLink]="['/store', store, 'home', 'cart', 'default']">
+      <span class="cart-badge cart-items-count-mobile"></span>
+      <span class="material-symbols-outlined">shopping_cart</span>
+      <span>Panier</span>
+    </button>
+  </div>
+</kng-appbar>
