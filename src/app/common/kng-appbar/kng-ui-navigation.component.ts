@@ -1,17 +1,17 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NAV_SERVICE_ITEMS, NavServiceItem, getCurrentService } from '../../app.model';
 import { Router } from '@angular/router';
-import { i18n, KngNavigationStateService } from '../';
+import { i18n, KngNavigationStateService } from '..';
 
 /**
  * Composant de navigation inter-services (Niveau 1)
  * Affiche les liens vers Hub, Courses, Buffet, Abos, James
  *
  * Usage:
- *   <kng-service-nav [store]="store" [currentRoute]="'/home'"></kng-service-nav>
+ *   <kng-ui-navigation [store]="store" [currentRoute]="'/home'"></kng-ui-navigation>
  */
 @Component({
-  selector: 'kng-service-nav',
+  selector: 'kng-ui-navigation',
   template: `
     <nav class="service-nav" [class.vertical]="vertical">
       <a *ngFor="let item of filteredServices"
@@ -32,7 +32,9 @@ import { i18n, KngNavigationStateService } from '../';
       &.vertical {
         flex-direction: column;
         gap: 0.25rem;
-        display: none;
+        @media (min-width: 1200px) {
+          display: none;
+        }
       }
     }
 
@@ -82,7 +84,7 @@ import { i18n, KngNavigationStateService } from '../';
 
     // Vertical mode (sidebar) - style fin comme catégories
     .service-nav.vertical .service-link {
-      padding: 8px 14px;
+      padding: .5rem 1rem;
     }
 
     // Mobile: hide labels in horizontal mode
@@ -100,7 +102,7 @@ import { i18n, KngNavigationStateService } from '../';
   `],
   encapsulation: ViewEncapsulation.None
 })
-export class KngServiceNavComponent {
+export class KngUiNavigationComponent {
   @Input() store: string = '';
   @Input() currentRoute: string = '';
   @Input() vertical: boolean = false;
@@ -139,6 +141,6 @@ export class KngServiceNavComponent {
     if (this.showHub) {
       return this.services;
     }
-    return this.services.filter(s => s.id !== 'hub');
+    return this.services;//.filter(s => s.id !== 'hub');
   }
 }

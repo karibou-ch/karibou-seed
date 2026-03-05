@@ -1,10 +1,11 @@
 <!-- ============================================================================ -->
-<!-- KNG TOP APPBAR - Container layout avec sticky et ombre on scroll           -->
+<!-- KNG APPBAR - Container layout avec sticky et ombre on scroll               -->
 <!-- Utilise les slots standards pour la projection de contenu                   -->
 <!-- ============================================================================ -->
 
 <div class="kng-appbar"
      [class.kng-appbar--scrolled]="isScrolled"
+     [class.kng-appbar--top]="position === 'top'"
      [class.kng-appbar--bottom]="position === 'bottom'">
 
   <!-- ========================================================================== -->
@@ -19,7 +20,7 @@
   <!-- ROW 2 - Ligne principale (sticky on scroll)                               -->
   <!-- Structure: 3 colonnes (start | center | end)                              -->
   <!-- ========================================================================== -->
-  <div class="kng-appbar__row kng-appbar__row--primary hide-sm">
+  <div class="kng-appbar__row kng-appbar__row--primary">
 
     <!-- Colonne START (gauche) -->
     <div class="kng-appbar__section kng-appbar__section--start">
@@ -36,6 +37,14 @@
       <slot name="end"></slot>
     </div>
 
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- ROW 3 - Mobile (position=bottom uniquement, visible sur mobile)           -->
+  <!-- Usage: <div slot="mobile">...</div>                                       -->
+  <!-- ========================================================================== -->
+  <div class="kng-appbar__row kng-appbar__row--mobile">
+    <slot name="mobile"></slot>
   </div>
 
 </div>

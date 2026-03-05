@@ -1,5 +1,5 @@
 // ============================================================================
-// KNG TOP APPBAR - Layout container avec sticky et ombre on scroll
+// KNG APPBAR - Layout container avec sticky et ombre on scroll
 // ============================================================================
 // DOIT correspondre EXACTEMENT au grid-container-3 de styles.scss :
 // grid-template-columns: 1fr var(--mdc-theme-container-width) 1fr;
@@ -19,13 +19,14 @@ $appbar-bg: var(--mdc-theme-appbar, rgba(227, 236, 235, 0.9));
 $appbar-text: var(--mdc-theme-appbar-text, rgba(19, 83, 20, 0.8));
 $transition-speed: var(--wa-transition-medium);
 
+
+
 // ============================================================================
 // MAIN CONTAINER
 // ============================================================================
 
 .kng-appbar {
   position: fixed;
-  top: 0;
   z-index: 10;
   width: 100%;
   background-color: $appbar-bg;
@@ -33,8 +34,6 @@ $transition-speed: var(--wa-transition-medium);
   transition: box-shadow $transition-speed ease;
 
   // Effet de flou glassmorphism
-  // Note: opacity sur l'élément interfère avec backdrop-filter
-  // On applique l'alpha via color-mix sur le background
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 
@@ -42,28 +41,38 @@ $transition-speed: var(--wa-transition-medium);
     background-color: color-mix(in srgb, var(--mdc-theme-appbar) 80%, transparent);
   }
 
-  // État scrollé : ombre en bas
-  &.kng-appbar--scrolled {
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
-    transition: box-shadow .2s linear;
+
+  wa-button::part(base) {
+    background-color: white;
   }
 
   // ========================================================================
-  // POSITION BOTTOM - Mobile uniquement
+  // POSITION TOP (défaut)
+  // ========================================================================
+  &.kng-appbar--top {
+    top: 0;
+    bottom: auto;
+
+    // État scrollé : ombre en bas
+    &.kng-appbar--scrolled {
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+    }
+  }
+
+  // ========================================================================
+  // POSITION BOTTOM
   // ========================================================================
   &.kng-appbar--bottom {
-    @media (max-width: 599px) {
-      top: auto;
-      bottom: 0;
+    top: auto;
+    bottom: 0;
 
-      // Ombre inversée (en haut au lieu d'en bas)
-      &.kng-appbar--scrolled {
-        box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, .2), 0 -4px 5px 0 rgba(0, 0, 0, .14), 0 -1px 10px 0 rgba(0, 0, 0, .12);
-      }
-
-      // Safe area pour les iPhone avec encoche
-      padding-bottom: env(safe-area-inset-bottom, 0);
+    // Ombre inversée (en haut au lieu d'en bas)
+    &.kng-appbar--scrolled {
+      box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, .2), 0 -4px 5px 0 rgba(0, 0, 0, .14), 0 -1px 10px 0 rgba(0, 0, 0, .12);
     }
+
+    // Safe area pour les iPhone avec encoche
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   // Dark mode support
@@ -85,9 +94,7 @@ $transition-speed: var(--wa-transition-medium);
   // ========================================================================
   // DESKTOP (≥1200px) - MÊME GRID QUE grid-container-3
   // ========================================================================
-  grid-template-columns:
-  .6fr var(--mdc-theme-container-width) 1fr;
-
+  grid-template-columns: var(--mdc-theme-grid-cols);
 
   // Row secondaire (cachée si vide)
   &.kng-appbar__row--secondary {
@@ -139,11 +146,10 @@ $transition-speed: var(--wa-transition-medium);
 
   // ------------------------------------------------------------------
   // Colonne START (gauche) - Comme .swipe-panel.side
-  // Contenu aligné à DROITE, max-width: toolbox-width
   // ------------------------------------------------------------------
   &.kng-appbar__section--start {
     grid-column: 1;
-    justify-content: flex-end; // Aligné à droite comme .swipe-panel.side
+    justify-content: flex-end;
     padding: 0 1rem;
 
     > ::slotted(*) {
@@ -162,7 +168,6 @@ $transition-speed: var(--wa-transition-medium);
 
   // ------------------------------------------------------------------
   // Colonne CENTER (milieu) - Comme .swipe-panel.center
-  // Prend toute la largeur de la colonne
   // ------------------------------------------------------------------
   &.kng-appbar__section--center {
     grid-column: 2;
@@ -189,11 +194,10 @@ $transition-speed: var(--wa-transition-medium);
 
   // ------------------------------------------------------------------
   // Colonne END (droite) - Comme .swipe-panel.right
-  // Contenu aligné à GAUCHE, max-width: right-width
   // ------------------------------------------------------------------
   &.kng-appbar__section--end {
     grid-column: 3;
-    justify-content: flex-start; // Aligné à gauche comme .swipe-panel.right
+    justify-content: flex-start;
     padding: 0 1rem;
 
     > ::slotted(*) {
@@ -209,3 +213,62 @@ $transition-speed: var(--wa-transition-medium);
     }
   }
 }
+
+// ============================================================================
+// ROW MOBILE - Navigation rapide entre panels (position=bottom uniquement)
+// ============================================================================
+
+.kng-appbar__row--mobile {
+  display: none;
+
+}
+
+.kng-appbar--bottom {
+  // Cacher la row primary sur mobile
+  .kng-appbar__row--primary {
+    @media (max-width: 599px) {
+      display: none;
+    }
+  }
+
+  // Afficher la row mobile sur mobile
+  .kng-appbar__row--mobile {
+    display: none;
+
+    @media (max-width: 599px) {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: var(--mdc-theme-mobile-bar, 60px);
+      width: 100%;
+    }
+
+    // Styles pour les boutons d'action
+    > ::slotted(*) {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+// ============================================================================
+// MOBILE ONLY - Cache l'appbar sur desktop, visible uniquement sur mobile
+// ============================================================================
+
+:host(.mobile-only) {
+  display: none;
+
+  @media (max-width: 599px) {
+    display: block;
+  }
+}
+
+// ============================================================================
+// MOBILE ACTION BUTTONS - Styles pour les boutons dans le slot mobile
+// ============================================================================
+// Note: Ces styles doivent être appliqués dans le composant parent car
+// ::slotted() ne peut pas traverser les enfants imbriqués.
+// Le composant parent doit utiliser la classe .appbar-action pour les boutons.

@@ -13,7 +13,7 @@ export * from './scroll-state.service';
 //
 // components
 // ✅ MIGRATION: kng-subscription-item déplacé vers kng-subscription module
-export * from './kng-top-appbar/kng-top-appbar.component';
+export * from './kng-appbar/kng-appbar.component';
 
 //
 // modules
