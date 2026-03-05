@@ -131,7 +131,7 @@ export class ProductListComponent implements OnInit {
     this.config = config;
     this.user = user;
     this.category.categories = categories || [];
-    
+
     this.activeMenu = true;
     this.getNextPage.bind(this);
     this.scrollDirection = 0;
@@ -516,6 +516,7 @@ export class ProductListComponent implements OnInit {
     this.$cart.subscriptionsGet().subscribe(contracts => this.contracts=contracts);
     this.subcriptionParams = this.$cart.subscriptionGetParams();
 
+    console.log('options',attribute, this.options);
     this.$product.findByAttribute(attribute, this.options).subscribe((products: Product[]) => {
       this.cache.products = this.products = products.sort(this.sortProducts);
       if (!products.length) {

@@ -13,12 +13,6 @@ kng-product-swipe {
     padding: 0;
   }
 
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--mdc-theme-secondary-dark);
-    color: var(--mdc-theme-secondary-dark-text);
-    border-radius: 0.875rem;
-    border: 0;
-  }
 
 
   .selected {
@@ -47,13 +41,10 @@ kng-product-swipe {
       h2 {
         font-family: var(--mdc-theme-font);
         font-weight: 600;
-        color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));
+        color: var(--mdc-theme-secondary);
         font-size: 1.75rem;
         margin: 1rem 0 0.3125rem;
 
-        @media (prefers-color-scheme: dark) {
-          color: var(--mdc-theme-primary-dark-text);
-        }
       }
     }
 

@@ -162,7 +162,7 @@ export class ProductSwipeComponent implements OnInit {
       return this.i18n[this.$i18n.locale].title_pinned;
     }
     if (this.boost) {
-      return this.i18n[this.$i18n.locale].title_boost;
+      return this.config.shared.hub.name;
     }
     return this.i18n[this.$i18n.locale].title_select;
   }
