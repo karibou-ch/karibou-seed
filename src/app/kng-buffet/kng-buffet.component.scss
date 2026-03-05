@@ -4,474 +4,367 @@
 @import '../../styles/kng-side-menu';
 
 // ============================================================================
-// HOST - Le composant devient transparent pour que les swipe-panel
-// participent directement au layout parent (grid ou flex)
+// HOST
 // ============================================================================
 :host {
   display: contents;
+
+}
+.swipe-panel.side  {
+}
+
+
+.swipe-panel.center {
+}
+
+.swipe-panel.right  {
 }
 
 // ============================================================================
-// STYLES SPÉCIFIQUES BUFFET
+// ASSISTANT TIPS (Panel Left)
 // ============================================================================
+.assistant-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--wa-color-neutral-border-quiet);
 
-// HEADER
-.buffet-header {
-  padding: 1rem;
+  .tip-button {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    background: var(--mdc-theme-surface);
+    border: 1px solid var(--wa-color-neutral-border-quiet);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+
+    &:hover {
+      background: var(--mdc-theme-primary-light);
+      border-color: var(--mdc-theme-primary);
+    }
+
+    .tip-icon {
+      font-size: 1.125rem;
+      flex-shrink: 0;
+    }
+
+    .tip-label {
+      font-size: 0.8125rem;
+      color: var(--mdc-theme-text-primary-on-background);
+      font-weight: 500;
+    }
+  }
+}
+
+// ============================================================================
+// BUFFET HERO
+// ============================================================================
+.buffet-hero {
+  padding: 2rem 1rem;
   text-align: center;
 
-  h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.5rem;
-    font-weight: 500;
+  @media (min-width: 900px) {
+    padding: 3rem 0;
+    text-align: left;
+  }
+
+  .hero-title {
+    margin: 0 0 0.5rem;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--mdc-theme-text-primary-on-background);
+
+    @media (min-width: 900px) {
+      font-size: 2.25rem;
+    }
+  }
+
+  .hero-subtitle {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+}
+
+// ============================================================================
+// BUFFET KITS
+// ============================================================================
+.buffet-kits {
+  display: grid;
+  gap: 1.5rem;
+  padding: 0 1rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
+}
+
+.kit-card {
+  background: var(--mdc-theme-surface);
+  background-color: #F2EDE4;
+
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.12);
+  }
+
+  .kit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
+  }
+
+  .kit-info {
+    .kit-name {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+
+    .kit-subtitle {
+      font-size: 0.875rem;
+      color: var(--mdc-theme-text-secondary-on-background);
+    }
+  }
+
+  .kit-price {
+    background: var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary-text);
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 70px;
+
+    .price-value {
+      display: block;
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .price-unit {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+  }
+
+  .kit-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .kit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    .item-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--wa-color-brand-95);
+      border-radius: 8px;
+      color: var(--mdc-theme-secondary);
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .item-text {
+      display: flex;
+      flex-direction: column;
+
+      .item-title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--mdc-theme-text-primary-on-background);
+      }
+
+      .item-subtitle {
+        font-size: 0.75rem;
+        color: var(--mdc-theme-text-hint-on-background);
+      }
+    }
+  }
+
+  .kit-footer {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--wa-color-neutral-border-quiet);
+
+    .kit-min {
+      font-size: 0.75rem;
+      color: var(--mdc-theme-text-hint-on-background);
+    }
+  }
+}
+
+// ============================================================================
+// BUFFET PROCESS
+// ============================================================================
+.buffet-process {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--mdc-theme-appbar-light);
+  border-radius: 16px;
+
+  @media (min-width: 900px) {
+    margin: 3rem 0;
+  }
+
+  .process-title {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--mdc-theme-text-primary-on-background);
   }
 
-  p {
-    margin: 0;
-    color: var(--mdc-theme-text-secondary-on-background);
-    font-size: 0.9rem;
+  .process-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
-  @media (min-width: 900px) {
-    text-align: left;
-    padding: 1rem 0;
-  }
-}
-
-// MODE INDICATOR (commande vs devis)
-.mode-indicator {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  justify-content: center;
-
-  @media (min-width: 600px) {
-    justify-content: flex-start;
-    padding: 1rem 0;
-  }
-
-  .mode-card {
+  .process-step {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: var(--mdc-theme-appbar-light);
-    border: 2px solid transparent;
-    border-radius: 0.75rem;
-    opacity: 0.5;
-    transition: all var(--wa-transition-medium) ease;
 
-    &.active {
-      opacity: 1;
-      border-color: var(--mdc-theme-primary);
-      background: var(--mdc-theme-primary-light);
-    }
-
-    i {
-      font-size: 1.5rem;
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--mdc-theme-surface);
+      border-radius: 10px;
       color: var(--mdc-theme-primary);
+      font-size: 1.25rem;
     }
 
-    .mode-text {
-      h4 {
-        margin: 0;
-        font-size: var(--wa-font-size-s);
-        font-weight: 500;
+    .step-text {
+      display: flex;
+      flex-direction: column;
+
+      .step-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--mdc-theme-text-primary-on-background);
       }
 
-      p {
-        margin: 0;
-        font-size: var(--wa-font-size-xs);
+      .step-subtitle {
+        font-size: 0.75rem;
         color: var(--mdc-theme-text-secondary-on-background);
       }
     }
   }
 }
 
-// DEVIS INFO
-.devis-info {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 1rem;
-  margin: 0 1rem 1rem;
-  background: var(--mdc-theme-warning-light, #fff3e0);
-  border-radius: 0.75rem;
-
-  @media (min-width: 600px) {
-    margin: 0 0 1rem;
-  }
-
-  i {
-    color: var(--mdc-theme-warning, #f57c00);
-    font-size: 1.25rem;
-  }
-
-  p {
-    margin: 0;
-    font-size: var(--wa-font-size-s);
-    color: var(--mdc-theme-text-primary-on-background);
-    line-height: 1.4;
-  }
-}
-
-// KNG-BOXED adaptations
-.swipe-panel.right .kng-boxed {
-  width: calc(100% - 2rem);
-}
-
-.swipe-panel.side .kng-boxed {
-  @media (min-width: 600px) {
-    width: calc(100% - 2rem);
-  }
-}
-
-@media (max-width: 599px) {
-  .swipe-panel .kng-boxed {
-    width: calc(100% - 2rem);
-  }
-}
-
 // ============================================================================
-// PANEL RIGHT - Sidebar buffet
+// PANEL RIGHT - ASSISTANT BUFFET
 // ============================================================================
-
 .sidebar-panel.buffet {
   padding: 0.5rem;
-  width: 100%;
-}
-
-// PANEL HEADER (avec bouton retour)
-.panel-header {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 0.5rem;
-  border-bottom: 1px solid var(--mdc-theme-divider);
-  margin-bottom: 1rem;
-
-  h3 {
-    margin: 0;
-    font-size: var(--wa-font-size-l);
-    font-weight: 500;
-  }
-
-  .back-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-    color: var(--mdc-theme-text-primary-on-background);
-    transition: background-color var(--wa-transition-medium);
-
-    &:hover {
-      background-color: var(--mdc-theme-hover);
-    }
-  }
+  flex-direction: column;
+  height: 100%;
 }
 
-// CONFIG SUMMARY
-.config-summary {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-
-  .summary-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: var(--wa-font-size-s);
-    color: var(--mdc-theme-text-primary-on-background);
-
-    i {
-      color: var(--mdc-theme-primary);
-      font-size: 1.25rem;
-    }
-  }
+// History component styling
+kng-assistant-history {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 100px;
 }
 
-// FORM
-.form-label {
-  display: block;
-  font-size: var(--wa-font-size-s);
-  font-weight: 500;
-  color: var(--mdc-theme-text-primary-on-background);
-  margin-bottom: 0.5rem;
-}
-
-.input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: var(--mdc-theme-appbar-light);
-  border-radius: 0.5rem;
-  border: 1px solid var(--mdc-theme-divider);
-  transition: border-color var(--wa-transition-medium);
-
-  &:focus-within {
-    border-color: var(--mdc-theme-primary);
-  }
-
-  i {
-    color: var(--mdc-theme-text-hint-on-background);
-  }
-
-  input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    font-size: var(--wa-font-size-m);
-    color: var(--mdc-theme-text-primary-on-background);
-    outline: none;
-
-    &::placeholder {
-      color: var(--mdc-theme-text-hint-on-background);
-    }
-  }
-}
-
-.hint {
-  margin: 0.5rem 0 0;
-  font-size: var(--wa-font-size-xs);
-  color: var(--mdc-theme-error);
-}
-
-// FORM GROUPS (devis)
-.form-group {
-  margin-bottom: 1rem;
-
-  label {
-    display: block;
-    font-size: var(--wa-font-size-xs);
-    font-weight: 500;
-    color: var(--mdc-theme-text-secondary-on-background);
-    margin-bottom: 0.25rem;
-  }
-
-  input,
-  textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--mdc-theme-divider);
-    border-radius: 0.5rem;
-    font-size: var(--wa-font-size-s);
-    color: var(--mdc-theme-text-primary-on-background);
-    background: var(--mdc-theme-appbar-light);
-    transition: border-color var(--wa-transition-medium);
-
-    &:focus {
-      outline: none;
-      border-color: var(--mdc-theme-primary);
-    }
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-}
-
-.subtitle {
-  font-size: var(--wa-font-size-s);
-  color: var(--mdc-theme-text-secondary-on-background);
-  margin-bottom: 1rem;
-}
-
-// ============================================================================
-// PANEL SIDE - Assistant Widget
-// ============================================================================
-
-.assistant-widget {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: var(--mdc-theme-appbar-light);
-  border-radius: 0.75rem;
+// Prompts section
+.prompts-section {
+  padding: 0.5rem 0;
 
   h4 {
-    margin: 0 0 0.25rem 0;
-    font-size: var(--wa-font-size-m);
-    font-weight: 500;
-    color: var(--mdc-theme-text-primary-on-background);
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--mdc-theme-text-secondary-on-background);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
-  .subtitle {
-    margin: 0 0 1rem 0;
-    font-size: var(--wa-font-size-xs);
-  }
-
-  .assistant-tips {
+  .prompts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-  }
+    gap: 0.375rem;
 
-  .tip-button {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: var(--mdc-theme-background-container);
-    border: 1px solid transparent;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    text-align: left;
-    transition: all var(--wa-transition-medium);
-
-    &:hover {
-      background: var(--mdc-theme-hover);
-      border-color: var(--mdc-theme-primary-light);
-    }
-
-    .tip-icon {
-      font-size: 1.25rem;
-    }
-
-    .tip-label {
-      font-size: var(--wa-font-size-s);
+    li {
+      padding: 0.5rem 0.75rem;
+      background: var(--mdc-theme-appbar-light);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8125rem;
       color: var(--mdc-theme-text-primary-on-background);
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: var(--mdc-theme-primary-light);
+      }
     }
   }
 }
 
-// ============================================================================
-// EMPTY STATE
-// ============================================================================
+// Prompt container
+.prompt-container {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--wa-color-neutral-border-quiet);
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 1rem;
-  text-align: center;
+  kng-prompt {
+    display: block;
+  }
 }
 
-.empty-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  background: var(--mdc-theme-appbar-light);
-  border-radius: 1rem;
-  max-width: 300px;
+// Contact section
+.contact-section {
+  text-align: center;
+  padding: 0.5rem 0;
+  font-size: 0.75rem;
+  color: var(--mdc-theme-text-hint-on-background);
 
-  i.large {
-    font-size: 4rem;
+  a {
     color: var(--mdc-theme-primary);
-    opacity: 0.7;
-  }
-
-  h3 {
-    margin: 0;
-    font-size: var(--wa-font-size-l);
+    text-decoration: none;
     font-weight: 500;
-    color: var(--mdc-theme-text-primary-on-background);
-  }
+    margin-left: 0.25rem;
 
-  p {
-    margin: 0;
-    font-size: var(--wa-font-size-s);
-    color: var(--mdc-theme-text-secondary-on-background);
-    line-height: 1.4;
-  }
-}
-
-// KNG-BOXED centered content
-.kng-boxed .content.centered {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  text-align: center;
-
-  i.large {
-    font-size: 3rem;
-    color: var(--mdc-theme-text-hint-on-background);
-  }
-
-  h4 {
-    margin: 0;
-    font-size: var(--wa-font-size-l);
-    font-weight: 500;
-  }
-
-  p {
-    margin: 0;
-    color: var(--mdc-theme-text-secondary-on-background);
-    font-size: var(--wa-font-size-s);
-    max-width: 250px;
-  }
-}
-
-// ============================================================================
-// PANEL CENTER - Produits
-// ============================================================================
-
-.product-container {
-  margin-top: 0;
-  margin-bottom: 100px;
-  padding: 0;
-  width: 100%;
-  min-height: 30vh;
-
-  @media (max-width: 899px) {
-    padding: 0;
-    width: calc(100% - 2rem);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  > div {
-    padding-bottom: 10px;
-    background: var(--mdc-theme-background-container);
-  }
-}
-
-// LOADING
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  color: var(--mdc-theme-text-secondary-on-background);
-}
-
-// ============================================================================
-// CALENDAR
-// ============================================================================
-
-kng-calendar {
-  @media (max-width: 899px) {
-    padding: 1rem;
-    width: calc(100% - 2rem) !important;
-  }
-
-  .calendar-container {
-    .calendar {
-      background-color: var(--mdc-theme-appbar-light) !important;
-      padding: 10px;
-      flex: 1;
-    }
-
-    .calendar .list .element {
-      width: 45px;
-      height: 55px;
-    }
+    &:hover { text-decoration: underline; }
   }
 }
 
 // ============================================================================
 // BUTTONS
 // ============================================================================
-
 button.default {
   display: inline-flex;
   align-items: center;
@@ -489,31 +382,10 @@ button.default {
     background: var(--mdc-theme-primary);
     color: var(--mdc-theme-primary-text);
 
-    &:hover:not(:disabled) {
-      background: var(--mdc-theme-primary-dark);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    &:hover:not(:disabled) { background: var(--mdc-theme-primary-dark); }
   }
 
-  &.secondary {
-    background: var(--mdc-theme-secondary-light);
-    color: var(--mdc-theme-secondary);
+  &.width-100 { width: 100%; }
 
-    &:hover {
-      background: var(--mdc-theme-secondary);
-      color: white;
-    }
-  }
-
-  &.width-100 {
-    width: 100%;
-  }
-
-  i {
-    font-size: var(--wa-font-size-l);
-  }
+  i { font-size: var(--wa-font-size-l); }
 }

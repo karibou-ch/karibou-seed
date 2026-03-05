@@ -13,11 +13,10 @@
     <!-- MOBILE: Titre du marché -->
     <h3 class="mobile-title">{{hub.name}}</h3>
 
-    <!-- NAVIGATION SERVICES (Niveau 1) -->
-    <kng-service-nav [store]="store" [currentRoute]="'/home'" [vertical]="true" [showHub]="false"></kng-service-nav>
+
 
     <!-- MOBILE links -->
-    <ul class="subs">
+    <ul class="subs" hidden>
       <!-- FAVORITE -->
       <li class="subs-item inverted" (click)="onFavorites()">
         <i class="material-symbols-outlined">favorite</i>
@@ -31,30 +30,33 @@
       </li>
     </ul>
 
-    <!-- DESKTOP LINKS -->
-    <ul class="hide-sm">
-      <li [routerLink]="userRouterLink">
-        <span class="fa icon hide">👦</span>
-        <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
-      </li>
-      <li [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
-        <b>{{hub.home.customLink.label[locale]}}</b>
-      </li>
-    </ul>
 
     <!-- CATEGORY on mobile+desktop -->
     <ul class="">
       <li (click)="scrollToSlug(category.slug)" class="subs-item"
           [id]="'category-'+j"
           [class.selected]="category.slug == displaySlug"
-          [class.has-image]="hasCategoryImage(category)"
+          [class.has-zimage]="hasCategoryImage(category)"
           [style.--cat-image]="hasCategoryImage(category) ? 'url(' + category.cover + ')' : null"
           *ngFor="let category of sortedCategories;let j=index">
         <i [class]="category.image" class="icon hide-md hide-lg"></i>
         <span class="category-label">{{getCategoryI18n(category)}}</span>
       </li>
     </ul>
+
+    <!-- USER ACCOUNT - Desktop bottom -->
+    <div class="user-account hide-sm"
+        [routerLink]="['/store', store, 'me']">
+      <span class="material-symbols-outlined">account_circle</span>
+      <div class="user-info">
+        <span class="user-name">{{user.displayName}}</span>
+        <span class="user-email">{{user.email?.address}}</span>
+      </div>
+    </div>
+
   </div>
+
+
 
 </div>
 
@@ -68,6 +70,9 @@
     <img [src]="tagline.image" [hidden]="!tagline.image"/>
     <figure [innerHtml]="hub.header.message[locale]"></figure>
   </div>
+
+  <!-- CALENDAR -->
+  <kng-calendar [user]="user" [title]="theme.name" [hidden]="availableSearch" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
   <!-- PINNED PRODUCTS (isMinimal for b2b-school) -->
   <kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user" [boost]="true" [hub]="store"></kng-product-swipe>
@@ -100,27 +105,25 @@
 <!-- ============================================================================ -->
 <!-- PANEL RIGHT - Sidebar (aide, recherche, infos)                              -->
 <!-- ============================================================================ -->
+
 <div class="swipe-panel right">
-
   <div class="home sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
-  <!-- CALENDAR -->
-  <kng-calendar [user]="user" [title]="theme.name" [hidden]="availableSearch" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
 
-  <!-- NEED HELP? -->
-  <div class="kng-boxed first">
-    <div class="content">
-      <div class="items" [innerHtml]="hub.description[locale]"></div>
-      <div class="bottom">
-        <a class="phone" href="tel:{{hub.address.phone}}">
-          <i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}
-        </a>
+    <!-- NEED HELP? -->
+    <div class="kng-card kng-card--soft">
+      <div class="content">
+        <div class="items" [innerHtml]="hub.description[locale]"></div>
+        <div class="bottom">
+          <a class="phone" href="tel:{{hub.address.phone}}">
+            <i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}
+          </a>
+        </div>
       </div>
     </div>
-  </div>
 
 
     <!-- AUDIO SUPPORT -->
-    <div class="kng-boxed first">
+    <div class="kng-card kng-card--soft">
       <div class="content">
         <kng-audio-note-enhanced
           type="support"
@@ -146,34 +149,44 @@
     </div>
 
     <!-- SEARCH BAR [hidden]="isMinimal" use right panel for search -->
-    <kng-search-bar  [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
-  </div>
+    <kng-search-bar hidden  [themes]="themes" [class.active]="availableSearch"></kng-search-bar>
 
+    <!-- FEEDBACK -->
+    <kng-feedback [config]="config" [user]="user" *ngIf="user.id > 0">
+    </kng-feedback>
+  </div>
 </div>
 
 
 <!-- ============================================================================ -->
+<!-- MOBILE BOTTOM APPBAR - Navigation rapide entre les panels                    -->
+<!-- ============================================================================ -->
+<kng-appbar position="bottom"  class="mobile-only mobile-actions">
+  <div slot="mobile">
+    <button class="action" (click)="onScrollToPanel(0)">
+      <span class="material-symbols-outlined green">menu</span>
+      <span>Parcourir</span>
+    </button>
+    <button class="action" (click)="onScrollToPanel(1)">
+      <span class="material-symbols-outlined green">grid_view</span>
+      <span>Explorer</span>
+    </button>
+    <button class="action " (click)="onScrollToPanel(2)">
+      <span class="material-symbols-outlined green">help</span>
+      <span>James</span>
+    </button>
+    <button class="action" [routerLink]="['/store', store, 'home', 'cart', 'default']">
+      <span class="cart-badge cart-items-count-mobile green"></span>
+      <span class="material-symbols-outlined green">shopping_cart</span>
+      <span>Panier</span>
+    </button>
+  </div>
+</kng-appbar>
+
+<!-- ============================================================================ -->
 <!-- MOBILE BOTTOM APPBAR - Navigation rapide entre les panels                  -->
 <!-- ============================================================================ -->
-<nav class="mobile-appbar">
-  <button class="action" (click)="scrollToPanel(0)">
-    <span class="material-symbols-outlined green">menu</span>
-    <span>Menu</span>
-  </button>
-  <button class="action" (click)="scrollToPanel(1)">
-    <span class="material-symbols-outlined green">grid_view</span>
-    <span>Produits</span>
-  </button>
-  <button class="action" (click)="scrollToPanel(2)">
-    <span class="material-symbols-outlined green">help</span>
-    <span>Aide</span>
-  </button>
-  <button class="action" [routerLink]="['/store', store, 'home', 'cart', 'default']">
-    <span class="cart-badge cart-items-count-mobile"></span>
-    <span class="material-symbols-outlined green">shopping_cart</span>
-    <span>Panier</span>
-  </button>
-</nav>
 
-  <!-- ROUTER OUTLET -->
-  <router-outlet></router-outlet>
+
+<!-- ROUTER OUTLET -->
+<router-outlet></router-outlet>

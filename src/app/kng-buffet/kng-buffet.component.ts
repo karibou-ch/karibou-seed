@@ -4,7 +4,8 @@ import {
   OnDestroy,
   ViewEncapsulation,
   ChangeDetectorRef,
-  HostListener
+  HostListener,
+  ViewChild
 } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -17,47 +18,70 @@ import {
   CalendarService,
   ProductService,
   Product,
-  Category
+  Category,
+  AssistantService
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { i18n, KngNavigationStateService, ScrollStateService } from '../common';
+import { KngAssistantHistoryComponent, AssistantDisplayMessage } from '../shared/kng-assistant/kng-assistant-history.component';
 import { BUFFET_I18N, BuffetLabels } from './kng-buffet-i18n';
 import {
   BuffetFormState,
+  BuffetKit,
+  BuffetTheme,
+  BuffetBudget,
+  BuffetDevisExample,
+  BuffetProcessStep,
   BUFFET_ASSISTANT_QUESTIONS,
+  BUFFET_KITS,
+  BUFFET_THEMES,
+  BUFFET_BUDGETS,
+  BUFFET_PROCESS,
+  BUFFET_DEVIS_EXAMPLES,
   AssistantQuestion,
-  isDevisRequired,
-  getPeopleRange
+  isDevisRequired
 } from '../app.model';
 
 /**
  * États du panel RIGHT
  */
 export enum BuffetPanelState {
-  FORM = 'form',           // Formulaire discriminants (nombre de personnes, date)
-  KITS = 'kits',           // Liste des kits disponibles
-  CONFIGURE = 'configure', // Configuration du kit sélectionné
-  DEVIS = 'devis'          // Formulaire de demande de devis
+  FORM = 'form',
+  KITS = 'kits',
+  CONFIGURE = 'configure',
+  DEVIS = 'devis'
 }
 
 /**
  * KngBuffetComponent
  *
  * Page principale pour les buffets événementiels.
- * Remplace l'ancienne page /home/business (deprecated).
- *
- * Structure 3 colonnes (comme kng-subscription):
- * - LEFT: Navigation et aide James encadré
- * - CENTER: Produits et configurateur
- * - RIGHT: Formulaire et actions
+ * Structure 3 colonnes:
+ * - LEFT: Exemples de devis
+ * - CENTER: Hero + Kits + Process
+ * - RIGHT: Configurateur avec James
  */
 @Component({
   selector: 'kng-buffet',
   templateUrl: './kng-buffet.component.html',
-  styleUrls: ['./kng-buffet.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./kng-buffet.component.scss']
 })
 export class KngBuffetComponent implements OnInit, OnDestroy {
+
+  // === VIEW CHILDREN ===
+  @ViewChild('history') history: KngAssistantHistoryComponent;
+
+  // === ASSISTANT CONFIG ===
+  agent: 'productsagent' | 'quote' | 'checkout' | 'feedback' | 'recipefull' | 'james' = 'quote';
+
+  // === BUFFET PROMPTS ===
+  buffetPrompts: string[] = [
+    'Un buffet pour 20 personnes',
+    'Un plateau de fromages pour 15 personnes',
+    'Un buffet végétarien pour 30 personnes',
+    'Quelles quantités pour un apéro de 50 personnes ?',
+    'Un petit-déjeuner d\'équipe pour 10 personnes'
+  ];
 
   // === STATE ===
   isReady: boolean = false;
@@ -72,10 +96,12 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
 
   // === FORM STATE ===
   formState: BuffetFormState = {
-    numberOfPeople: null,
+    numberOfPeople: 10,
     eventDate: null,
     isDevisMode: false,
-    selectedKitId: null
+    selectedKitId: null,
+    selectedThemes: [],
+    selectedBudget: 2
   };
 
   // === PANEL STATE ===
@@ -84,12 +110,20 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
   // === SCROLL STICKY ===
   menuStickyTransform: number = 0;
 
-  // === ASSISTANT QUESTIONS (encadré buffet) ===
+  // === DATA ===
+  kits: BuffetKit[] = BUFFET_KITS;
+  themes = BUFFET_THEMES;
+  budgets = BUFFET_BUDGETS;
+  processSteps: BuffetProcessStep[] = BUFFET_PROCESS;
+  devisExamples: BuffetDevisExample[] = BUFFET_DEVIS_EXAMPLES;
+
+  // === ASSISTANT QUESTIONS ===
   assistantQuestions: AssistantQuestion[] = BUFFET_ASSISTANT_QUESTIONS;
 
   private subscription: Subscription;
 
   constructor(
+    private $assistant: AssistantService,
     private $cart: CartService,
     private $i18n: i18n,
     private $cdr: ChangeDetectorRef,
@@ -102,9 +136,6 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
     private $scrollState: ScrollStateService
   ) {
     this.subscription = new Subscription();
-
-    //
-    // SYNCHRONE: Récupération immédiate des données cached
     const { config, user, categories } = this.$loader.getLatestCoreData();
     this.config = config;
     this.user = user;
@@ -121,9 +152,6 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
     return this.$i18n.label();
   }
 
-  /**
-   * Labels i18n centralisés pour buffet
-   */
   get blabel(): BuffetLabels {
     return BUFFET_I18N[this.locale] || BUFFET_I18N.fr;
   }
@@ -149,31 +177,36 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
     return this.$cart.getCurrentShippingDay() || this.$calendar.nextShippingDay(this.hub, this.user);
   }
 
-  /**
-   * Vérifie si le formulaire est valide
-   */
   get isFormValid(): boolean {
     return (
       this.formState.numberOfPeople !== null &&
-      this.formState.numberOfPeople >= 10 &&
+      this.formState.numberOfPeople >= 5 &&
       this.formState.eventDate !== null
     );
   }
 
-  /**
-   * Mode devis requis (date > J+6)
-   */
   get isDevisMode(): boolean {
     if (!this.formState.eventDate) return false;
     return isDevisRequired(this.formState.eventDate, 6);
   }
 
-  /**
-   * Gamme de personnes formatée
-   */
-  get peopleRange(): string {
-    if (!this.formState.numberOfPeople) return '';
-    return getPeopleRange(this.formState.numberOfPeople);
+  get filteredKits(): BuffetKit[] {
+    if (this.formState.selectedThemes.length === 0) {
+      return this.kits;
+    }
+    return this.kits.filter(kit =>
+      kit.themes.some(t => this.formState.selectedThemes.includes(t))
+    );
+  }
+
+  // === ASSISTANT GETTERS ===
+
+  get messagesCount(): number {
+    return this.history?.discussionMessages?.length || 0;
+  }
+
+  get messagesLimit(): boolean {
+    return this.messagesCount > 10;
   }
 
   // === PANEL STATE GETTERS ===
@@ -197,34 +230,21 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
   // === LIFECYCLE ===
 
   ngOnInit(): void {
-    //
-    // Restaurer le scroll si on revient d'une page produit
     if (!this.$scrollState.restore('buffet', 100)) {
       window.scroll(0, 0);
     }
 
-    //
-    // S'abonner aux changements de panel après swipe
     this.subscription.add(
       this.$navigation.swipePanel$().subscribe(panelIndex => {
         this.onSwipePanelChanged(panelIndex);
       })
     );
 
-    //
-    // Loader updates
     this.subscription.add(
       this.$loader.update().subscribe(emit => {
         this.isMobile = this.$navigation.isMobileOrTablet();
-
-        if (emit.config) {
-          this.config = emit.config;
-        }
-
-        if (emit.user) {
-          this.user = emit.user;
-        }
-
+        if (emit.config) this.config = emit.config;
+        if (emit.user) this.user = emit.user;
         if (emit.state) {
           this.loadProducts();
           this.$cdr.detectChanges();
@@ -232,16 +252,12 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
       })
     );
 
-    //
-    // Query params (pour pré-remplir le formulaire)
     this.subscription.add(
       this.$route.queryParams.subscribe(params => {
         this.handleQueryParams(params);
       })
     );
 
-    //
-    // Sauvegarder le scroll AVANT la navigation
     this.subscription.add(
       this.$router.events.pipe(
         filter(event => event instanceof NavigationStart)
@@ -250,8 +266,6 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
       })
     );
 
-    //
-    // Mark as ready
     this.isReady = true;
   }
 
@@ -263,42 +277,30 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
   // === PRIVATE METHODS ===
 
   private handleQueryParams(params: any): void {
-    //
-    // Pré-remplir le nombre de personnes
     if (params['people']) {
       const people = parseInt(params['people'], 10);
-      if (!isNaN(people) && people >= 10) {
+      if (!isNaN(people) && people >= 5) {
         this.formState.numberOfPeople = people;
       }
     }
-
-    //
-    // Pré-remplir la date
     if (params['date']) {
       const date = new Date(params['date']);
       if (!isNaN(date.getTime()) && date > new Date()) {
         this.formState.eventDate = date;
       }
     }
-
-    //
-    // Vérifier le mode
     this.formState.isDevisMode = this.isDevisMode;
   }
 
   private loadProducts(): void {
     if (this.isLoading || this.products.length > 0) return;
-
     this.isLoading = true;
 
     const options: any = {
       available: true,
       status: true,
       when: this.currentShippingDay.toISOString(),
-      hub: this.store,
-      //
-      // Filtre produits buffet (TODO: ajouter attribut buffet aux produits)
-      // Pour l'instant, on charge tous les produits
+      hub: this.store
     };
 
     this.$product.select(options).subscribe(
@@ -315,53 +317,53 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
 
   // === PUBLIC METHODS - FORM ===
 
-  /**
-   * Mise à jour du nombre de personnes
-   */
   onPeopleChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = parseInt(input.value, 10);
+    this.formState.numberOfPeople = !isNaN(value) && value >= 0 ? value : null;
+  }
 
-    if (!isNaN(value) && value >= 0) {
-      this.formState.numberOfPeople = value;
+  adjustPeople(delta: number): void {
+    const current = this.formState.numberOfPeople || 10;
+    this.formState.numberOfPeople = Math.max(5, current + delta);
+  }
+
+  toggleTheme(themeId: BuffetTheme): void {
+    const idx = this.formState.selectedThemes.indexOf(themeId);
+    if (idx >= 0) {
+      this.formState.selectedThemes.splice(idx, 1);
     } else {
-      this.formState.numberOfPeople = null;
+      this.formState.selectedThemes.push(themeId);
     }
   }
 
-  /**
-   * Mise à jour de la date
-   */
+  isThemeSelected(themeId: BuffetTheme): boolean {
+    return this.formState.selectedThemes.includes(themeId);
+  }
+
+  setBudget(budget: BuffetBudget): void {
+    this.formState.selectedBudget = budget;
+  }
+
   onDateChange(date: Date): void {
     this.formState.eventDate = date;
     this.formState.isDevisMode = this.isDevisMode;
   }
 
-  /**
-   * Validation du formulaire et passage à l'étape suivante
-   */
   onFormSubmit(): void {
     if (!this.isFormValid) return;
 
     if (this.isDevisMode) {
-      //
-      // Mode devis : passer directement au formulaire de devis
       this.panelState = BuffetPanelState.DEVIS;
     } else {
-      //
-      // Mode commande : afficher les kits
       this.panelState = BuffetPanelState.KITS;
       this.loadProducts();
     }
-
     document.body.classList.add('mdc-dialog-scroll-lock');
   }
 
   // === PUBLIC METHODS - NAVIGATION ===
 
-  /**
-   * Retour à l'étape précédente
-   */
   goBack(): void {
     switch (this.panelState) {
       case BuffetPanelState.KITS:
@@ -375,39 +377,64 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Navigation vers les favoris
-   */
   onFavorites(): void {
     this.$navigation.searchAction('favoris');
   }
 
-  /**
-   * Navigation vers la page d'exploration (home)
-   */
   navigateToHome(): void {
     this.$router.navigate(['/store', this.store, 'home']);
   }
 
-  /**
-   * Navigation vers les subscriptions
-   */
   navigateToSubscriptions(): void {
     this.$router.navigate(['/store', this.store, 'subscriptions']);
   }
 
-  /**
-   * Navigation vers l'assistant James
-   */
   navigateToAssistant(): void {
     this.$router.navigate(['/store', this.store, 'home', 'assistant', 'james']);
   }
 
+  navigateToAssistantWithPrompt(prompt: string): void {
+    if (!prompt?.trim()) return;
+    this.$router.navigate(['/store', this.store, 'home', 'assistant', 'james'], {
+      queryParams: { prompt: prompt.trim() }
+    });
+  }
+
+  // === PUBLIC METHODS - ASSISTANT ===
+
+  onTipClick(prompt: string): void {
+    if (!prompt?.trim()) return;
+    const params = {
+      q: prompt.trim(),
+      agent: this.agent,
+      hub: this.store
+    };
+    this.$assistant.chat(params).subscribe();
+  }
+
+  onPromptChat(query: string): void {
+    if (!query?.trim()) return;
+    // Le kng-prompt gère déjà l'envoi au service assistant
+  }
+
+  onHistoryChat($event: { message: AssistantDisplayMessage; index: number }): void {
+    console.log('Continue conversation from:', $event);
+  }
+
+  onHistoryProducts($event: Product[]): void {
+    if ($event?.length) {
+      this.products = $event;
+      this.$cdr.markForCheck();
+    }
+  }
+
+  onClearRequest(): void {
+    this.products = [];
+    this.$cdr.markForCheck();
+  }
+
   // === PUBLIC METHODS - KITS ===
 
-  /**
-   * Sélection d'un kit
-   */
   selectKit(kitId: string): void {
     this.formState.selectedKitId = kitId;
     this.panelState = BuffetPanelState.CONFIGURE;
@@ -415,12 +442,7 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
 
   // === PUBLIC METHODS - DEVIS ===
 
-  /**
-   * Envoi du formulaire de devis
-   */
   onDevisSubmit(formData: any): void {
-    //
-    // TODO: Implémenter l'envoi du devis
     console.log('Devis submitted:', formData, this.formState);
   }
 
@@ -432,15 +454,8 @@ export class KngBuffetComponent implements OnInit, OnDestroy {
       this.menuStickyTransform = 0;
       return;
     }
-
     const scrollY = window.scrollY || window.pageYOffset;
-    const navbarHeight = 0;
-
-    if (scrollY > navbarHeight) {
-      this.menuStickyTransform = scrollY - navbarHeight;
-    } else {
-      this.menuStickyTransform = 0;
-    }
+    this.menuStickyTransform = scrollY > 0 ? scrollY : 0;
   }
 
   private onSwipePanelChanged(panelIndex: number): void {

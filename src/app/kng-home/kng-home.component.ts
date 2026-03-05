@@ -3,8 +3,8 @@ import {
   OnInit,
   OnDestroy,
   ViewEncapsulation,
-  HostListener,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  HostListener
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -167,6 +167,19 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.$navigation.swipePanel$().subscribe(panelIndex => {
         this.onSwipePanelChanged(panelIndex);
+      })
+    );
+
+    // ✅ Sticky scroll simulé (mobile/tablet uniquement)
+    const navbarHeight = this.$navigation.getCssVariableAsNumber('--mdc-theme-top-bar') || 0;
+    this.subscription.add(
+      this.$navigation.registerStickyScroll$(100).subscribe(scrollY => {
+        if (window.innerWidth >= 1200) {
+          this.menuStickyTransform = 0;
+          return;
+        }
+        this.menuStickyTransform = Math.max(0, scrollY - navbarHeight);
+        this.$cdr.detectChanges();
       })
     );
     // this.subscription.add(
@@ -399,84 +412,6 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     this.$navigation.searchAction(link);
   }
 
-  scrollToPanel(panelIndex: number) {
-    this.$navigation.scrollToPanel(panelIndex);
-  }
-
-  doSearch_NEW(value: string) {
-    const tokens = value.split(' ').map(val => (val || '').length);
-
-    if (tokens.some(len => len <= 3)) {
-      return;
-    }
-
-    //
-    // on search open window
-    const options = {
-      when: this.currentShippingDay.toISOString(),
-      hub: this.config.shared.hub && this.config.shared.hub.slug
-    };
-    this.availableSearch = true;
-    this.isLoading = true;
-    this.products = [];
-    this.$product.search(value, options).subscribe(products => {
-      if(products['autocompletes']) {
-        this.autocompletes = products['autocompletes'];
-        return;
-      }
-      if(products['error']) {
-        return;
-      }
-
-
-      this.clearCategory();
-      this.$navigation.searchAction('stats:'+products.length);
-      this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
-      products.forEach((product: Product) => {
-        this.availableCategories[product.categories.name] = true;
-      });
-      this.isReady = true;
-      this.isLoading = false;
-
-      this.$cdr.markForCheck();
-    });
-  }
-
-  doPreferred(discountOnly?:boolean) {
-    const options: any = {
-      discount: true,
-      status: true,
-      available: true,
-      when : this.$cart.getCurrentShippingDay().toISOString()
-    };
-
-    if(!discountOnly) {
-      options.popular=true;
-    }
-    //
-    // case of multihub
-    if (this.config && this.config.shared.hub) {
-      options.hub = this.config.shared.hub.slug;
-    }
-    this.isLoading = true;
-    //
-    // filter by group of categories
-    this.$product.select(options).subscribe((products: Product[]) => {
-      this.clearCategory();
-
-      this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
-      products.forEach((product: Product) => {
-        this.availableCategories[product.categories.name] = true;
-      });
-      this.isReady = true;
-      this.isLoading = false;
-
-      this.$cdr.markForCheck();
-
-    });
-
-  }
-
   getCategoryI18n(cat){
     const key = 'category_name_'+cat.slug.replace(/-/g,'_');
     return this.label[key] || cat.name;
@@ -645,6 +580,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  onScrollToPanel(panelIndex: number) {
+    this.$navigation.scrollToPanel(panelIndex);
+  }
+
+
   onSendAudioNote() {
     if (!this.audioContext) return;
 
@@ -679,36 +620,6 @@ ${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
       const overlay = document.querySelector('.product-dialog');
       this.mountOverlay(!!overlay);
     }, 400);
-  }
-
-  /**
-   * Sticky menu simulé via translateY pour contourner le problème CSS :
-   * position: sticky ne fonctionne pas quand un ancêtre a overflow-x: auto (swipe)
-   *
-   * FIXME: Option 2 - Remplacer scroll-snap par des transitions CSS avec transform,
-   * contrôlées par JavaScript pour le geste de swipe. Cela permettrait au body
-   * de redevenir le "scrolling ancestor" et le sticky fonctionnerait naturellement.
-   * Voir: styles.scss section MOBILE/TABLET .mobile-columns-wrapper
-   */
-  @HostListener('window:scroll', ['$event'])
-  onScrollToStick($event) {
-    // Active seulement en mode swipe (mobile/tablet ≤1199px)
-    if (window.innerWidth >= 1200) {
-      this.menuStickyTransform = 0;
-      return;
-    }
-
-    // Calcul du translateY pour simuler le sticky
-    // Le menu suit le scroll pour rester visible en haut
-    const scrollY = window.scrollY || window.pageYOffset;
-    const navbarHeight = this.$navigation.getCssVariableAsNumber('--mdc-theme-top-bar')||0;
-
-    // Commence à transformer après avoir passé la navbar
-    if (scrollY > navbarHeight) {
-      this.menuStickyTransform = scrollY - navbarHeight;
-    } else {
-      this.menuStickyTransform = 0;
-    }
   }
 
   /**

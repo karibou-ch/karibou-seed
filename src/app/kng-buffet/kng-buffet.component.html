@@ -1,331 +1,143 @@
 <!-- ============================================================================ -->
-<!-- PANEL SIDE - Menu de navigation + Assistant James encadré                  -->
+<!-- PANEL LEFT - Tips et navigation                                           -->
 <!-- ============================================================================ -->
 <div class="swipe-panel side">
-
   <div class="buffet menu-panel"
        [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
-    <!-- NAVIGATION SERVICES (Niveau 1) -->
-    <kng-service-nav [store]="store" [currentRoute]="'/buffet'" [vertical]="true" [showHub]="false"></kng-service-nav>
+    <!-- Navigation services -->
+    <kng-ui-navigation
+      [store]="store"
+      [currentRoute]="'/buffet'"
+      [vertical]="true"
+      [showHub]="false">
+    </kng-ui-navigation>
 
-    <!-- MOBILE links -->
-    <ul class="subs">
-      <!-- FAVORITE -->
-      <li class="subs-item inverted" (click)="onFavorites()">
-        <i class="material-symbols-outlined">favorite</i>
-        <span>{{label.search_bookmark}}</span>
-      </li>
-    </ul>
-
-    <!-- DESKTOP LINKS -->
-    <ul class="hide-sm">
-      <li [routerLink]="userRouterLink">
-        <b>{{isAuthenticated ? label.nav_account : label.nav_login}}</b>
-      </li>
-    </ul>
-
-    <!-- ASSISTANT JAMES ENCADRÉ (questions buffet) -->
-    <div class="assistant-widget hide-sm" *ngIf="isReady">
-      <h4>{{blabel.assistant_title}}</h4>
-      <p class="subtitle">{{blabel.assistant_subtitle}}</p>
-
-      <div class="assistant-tips">
-        <button *ngFor="let q of assistantQuestions"
-                class="tip-button"
-                [routerLink]="['/store', store, 'home', 'assistant', 'james']"
-                [queryParams]="{prompt: q.action}">
-          <span class="tip-icon">{{q.icon}}</span>
-          <span class="tip-label">{{q.label}}</span>
-        </button>
-      </div>
+    <!-- Tips buffet -->
+    <div class="assistant-tips">
+      <button class="tip-button"
+              *ngFor="let q of assistantQuestions"
+              (click)="onTipClick(q.action)">
+        <span class="tip-icon">{{q.icon}}</span>
+        <span class="tip-label">{{q.label}}</span>
+      </button>
     </div>
 
+  <!-- PROCESS -->
+  <div class="buffet-process">
+    <h3 class="process-title">Comment ça marche ?</h3>
+    <div class="process-steps">
+      <div class="process-step" *ngFor="let step of processSteps">
+        <i class="material-symbols-outlined step-icon">{{step.icon}}</i>
+        <div class="step-text">
+          <span class="step-title">{{step.title}}</span>
+          <span class="step-subtitle">{{step.subtitle}}</span>
+        </div>
+      </div>
+    </div>
   </div>
-
+  </div>
 </div>
 
 <!-- ============================================================================ -->
-<!-- PANEL CENTER - Contenu principal                                           -->
+<!-- PANEL CENTER - Kits buffet                                                -->
 <!-- ============================================================================ -->
 <div class="swipe-panel center">
 
-  <!-- HEADER -->
-  <div class="buffet-header">
-    <h1>{{blabel.page_title}}</h1>
-    <p>{{blabel.page_subtitle}}</p>
+  <!-- HERO -->
+  <div class="buffet-hero">
+    <h1 class="hero-title">Petits-déjeuners pour entreprises, version Marché</h1>
+    <p class="hero-subtitle">Idéal pour réunions d'équipe, séminaires et événements</p>
   </div>
 
-  <!-- MODE INDICATOR (commande vs devis) -->
-  <div class="mode-indicator" *ngIf="formState.numberOfPeople && formState.eventDate">
-    <div class="mode-card" [class.active]="!isDevisMode">
-      <i class="material-symbols-outlined">shopping_cart</i>
-      <div class="mode-text">
-        <h4>{{blabel.mode_order}}</h4>
-        <p>{{blabel.mode_order_subtitle}}</p>
+  <!-- KITS -->
+  <div class="buffet-kits">
+    <div class="kit-card" *ngFor="let kit of kits" (click)="selectKit(kit.id)">
+      <div class="kit-header">
+        <div class="kit-info">
+          <h3 class="kit-name">{{kit.name}}</h3>
+          <span class="kit-subtitle">{{kit.subtitle}}</span>
+        </div>
+        <div class="kit-price">
+          <span class="price-value">{{kit.price}}</span>
+          <span class="price-unit">CHF/pers.</span>
+        </div>
+      </div>
+
+      <div class="kit-items">
+        <div class="kit-item" *ngFor="let item of kit.items">
+          <i class="material-symbols-outlined item-icon">{{item.icon}}</i>
+          <div class="item-text">
+            <span class="item-title">{{item.title}}</span>
+            <span class="item-subtitle" *ngIf="item.subtitle">{{item.subtitle}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kit-footer">
+        <span class="kit-min">Min. {{kit.minPeople}} personnes</span>
       </div>
     </div>
-    <div class="mode-card" [class.active]="isDevisMode">
-      <i class="material-symbols-outlined">request_quote</i>
-      <div class="mode-text">
-        <h4>{{blabel.mode_devis}}</h4>
-        <p>{{blabel.mode_devis_subtitle}}</p>
+  </div>
+      <!-- CONTACT -->
+      <div class="contact-section">
+        <span>ou appelez</span>
+        <a href="tel:+41225520202">022 552 02 02</a>
       </div>
-    </div>
-  </div>
 
-  <!-- INFO DEVIS MODE -->
-  <div class="devis-info" *ngIf="isDevisMode">
-    <i class="material-symbols-outlined">info</i>
-    <p>{{blabel.mode_devis_info}}</p>
-  </div>
 
-  <!-- PRODUCTS CONTAINER (visible en mode configure) -->
-  <div class="product-container" *ngIf="isConfigureState && products.length">
-    <kng-product-grouped-list
-         clazz="buffet"
-         [useMaxCat]="products.length > 40"
-         [alphasort]="false"
-         [displayVendor]="true"
-         [showMore]="products.length > 10"
-         [config]="config"
-         [user]="user"
-         [contentCategories]="categories"
-         [contentProducts]="products">
-    </kng-product-grouped-list>
-  </div>
 
-  <!-- LOADING -->
-  <div class="loading-state" *ngIf="isLoading">
-    <p>Chargement...</p>
-  </div>
-
-  <!-- EMPTY STATE (formulaire non rempli) -->
-  <div class="empty-state" *ngIf="isFormState && !formState.numberOfPeople">
-    <div class="empty-card">
-      <i class="material-symbols-outlined large">celebration</i>
-      <h3>{{blabel.page_empty_title}}</h3>
-      <p>{{blabel.page_empty_subtitle}}</p>
-    </div>
-  </div>
 
 </div>
 
 <!-- ============================================================================ -->
-<!-- PANEL RIGHT - Formulaire et actions                                        -->
+<!-- PANEL RIGHT - Assistant buffet                                            -->
 <!-- ============================================================================ -->
 <div class="swipe-panel right">
-
   <div class="buffet sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
-    <!-- ======================================== -->
-    <!-- STATE: FORM - Discriminants              -->
-    <!-- ======================================== -->
-    <ng-container *ngIf="isFormState">
+    <!-- History component -->
+    <kng-assistant-history
+      #history
+      [agent]="agent"
+      [user]="user"
+      [config]="config"
+      [withHeader]="false"
+      [lastOnly]="true"
+      (chat)="onHistoryChat($event)"
+      (onProducts)="onHistoryProducts($event)">
+    </kng-assistant-history>
 
-      <!-- TITRE -->
-      <div class="kng-boxed first">
-        <div class="content">
-          <h3>{{blabel.page_cta_configure}}</h3>
-        </div>
-      </div>
+    <!-- PROMPTS EXEMPLES (si pas de messages) -->
+    <div class="prompts-section" *ngIf="!messagesCount" hidden>
+      <h4>Configurez votre buffet</h4>
+      <ul class="prompts-list">
+        <li *ngFor="let prompt of buffetPrompts" (click)="onTipClick(prompt)">
+          {{prompt}}
+        </li>
+      </ul>
+    </div>
 
-      <!-- NOMBRE DE PERSONNES -->
-      <div class="kng-boxed">
-        <div class="content">
-          <label class="form-label">{{blabel.question_people}}</label>
-          <div class="input-wrapper">
-            <i class="material-symbols-outlined">group</i>
-            <input type="number"
-                   min="10"
-                   step="5"
-                   [placeholder]="blabel.question_people_placeholder"
-                   [value]="formState.numberOfPeople"
-                   (input)="onPeopleChange($event)">
-          </div>
-          <p class="hint" *ngIf="formState.numberOfPeople && formState.numberOfPeople < 10">
-            {{blabel.error_minimum_people}}
-          </p>
-        </div>
-      </div>
+    <!-- PROMPT COMPONENT -->
+    <div class="prompt-container">
+      <kng-prompt
+        #promptComponent
+        [agent]="agent"
+        [user]="user"
+        [config]="config"
+        [autoRecord]="false"
+        [messagesLimit]="messagesLimit"
+        [prompts]="buffetPrompts"
+        [placeholder]="'Combien de personnes, thème, budget...'"
+        [disclaimer]="'James compose votre buffet idéal.'"
+        (chat)="onPromptChat($event)"
+        (clearRequest)="onClearRequest()">
+      </kng-prompt>
+    </div>
 
-      <!-- DATE DE L'ÉVÉNEMENT -->
-      <div class="kng-boxed">
-        <div class="content">
-          <label class="form-label">{{blabel.question_date}}</label>
-          <kng-calendar
-            [user]="user"
-            [config]="config"
-            (updated)="onDateChange($event)">
-          </kng-calendar>
-        </div>
-      </div>
-
-      <!-- CTA CONTINUER -->
-      <div class="kng-boxed">
-        <div class="content">
-          <button class="default primary width-100"
-                  [disabled]="!isFormValid"
-                  (click)="onFormSubmit()">
-            <i class="material-symbols-outlined">{{isDevisMode ? 'request_quote' : 'arrow_forward'}}</i>
-            {{isDevisMode ? blabel.action_request_devis : blabel.action_continue}}
-          </button>
-        </div>
-      </div>
-
-    </ng-container>
-
-    <!-- ======================================== -->
-    <!-- STATE: KITS - Liste des kits             -->
-    <!-- ======================================== -->
-    <ng-container *ngIf="isKitsState">
-
-      <!-- HEADER avec bouton retour -->
-      <div class="panel-header">
-        <button class="back-button" (click)="goBack()">
-          <i class="material-symbols-outlined">arrow_back</i>
-        </button>
-        <h3>{{blabel.kits_title}}</h3>
-      </div>
-
-      <!-- RÉSUMÉ CONFIG -->
-      <div class="kng-boxed">
-        <div class="content config-summary">
-          <div class="summary-item">
-            <i class="material-symbols-outlined">group</i>
-            <span>{{formState.numberOfPeople}} personnes</span>
-          </div>
-          <div class="summary-item">
-            <i class="material-symbols-outlined">event</i>
-            <span>{{formState.eventDate | date:'d MMM yyyy'}}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- PLACEHOLDER KITS (TODO: implémenter les vrais kits) -->
-      <div class="kng-boxed">
-        <div class="content centered">
-          <i class="material-symbols-outlined large">inventory_2</i>
-          <h4>{{blabel.kits_subtitle}}</h4>
-          <p>{{blabel.kits_empty}}</p>
-          <button class="default secondary" (click)="navigateToHome()">
-            {{blabel.page_cta_explore}}
-          </button>
-        </div>
-      </div>
-
-    </ng-container>
-
-    <!-- ======================================== -->
-    <!-- STATE: CONFIGURE - Configuration kit     -->
-    <!-- ======================================== -->
-    <ng-container *ngIf="isConfigureState">
-
-      <!-- HEADER avec bouton retour -->
-      <div class="panel-header">
-        <button class="back-button" (click)="goBack()">
-          <i class="material-symbols-outlined">arrow_back</i>
-        </button>
-        <h3>{{blabel.config_title}}</h3>
-      </div>
-
-      <!-- PLACEHOLDER CONFIG (TODO: implémenter le configurateur) -->
-      <div class="kng-boxed">
-        <div class="content centered">
-          <i class="material-symbols-outlined large">tune</i>
-          <h4>{{blabel.config_subtitle}}</h4>
-          <p>{{blabel.config_note}}</p>
-        </div>
-      </div>
-
-      <!-- CTA AJOUTER AU PANIER -->
-      <div class="kng-boxed">
-        <div class="content">
-          <button class="default primary width-100">
-            <i class="material-symbols-outlined">shopping_cart</i>
-            {{blabel.action_add_to_cart}}
-          </button>
-        </div>
-      </div>
-
-    </ng-container>
-
-    <!-- ======================================== -->
-    <!-- STATE: DEVIS - Formulaire de devis       -->
-    <!-- ======================================== -->
-    <ng-container *ngIf="isDevisState">
-
-      <!-- HEADER avec bouton retour -->
-      <div class="panel-header">
-        <button class="back-button" (click)="goBack()">
-          <i class="material-symbols-outlined">arrow_back</i>
-        </button>
-        <h3>{{blabel.devis_title}}</h3>
-      </div>
-
-      <!-- RÉSUMÉ CONFIG -->
-      <div class="kng-boxed">
-        <div class="content config-summary">
-          <div class="summary-item">
-            <i class="material-symbols-outlined">group</i>
-            <span>{{formState.numberOfPeople}} personnes</span>
-          </div>
-          <div class="summary-item">
-            <i class="material-symbols-outlined">event</i>
-            <span>{{formState.eventDate | date:'d MMM yyyy'}}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- FORMULAIRE DEVIS -->
-      <div class="kng-boxed">
-        <div class="content">
-          <p class="subtitle">{{blabel.devis_subtitle}}</p>
-
-          <div class="form-group">
-            <label>{{blabel.devis_name}}</label>
-            <input type="text" #devisName>
-          </div>
-
-          <div class="form-group">
-            <label>{{blabel.devis_email}}</label>
-            <input type="email" #devisEmail>
-          </div>
-
-          <div class="form-group">
-            <label>{{blabel.devis_phone}}</label>
-            <input type="tel" #devisPhone>
-          </div>
-
-          <div class="form-group">
-            <label>{{blabel.devis_company}}</label>
-            <input type="text" #devisCompany>
-          </div>
-
-          <div class="form-group">
-            <label>{{blabel.devis_message}}</label>
-            <textarea #devisMessage rows="4"></textarea>
-          </div>
-
-          <button class="default primary width-100"
-                  (click)="onDevisSubmit({
-                    name: devisName.value,
-                    email: devisEmail.value,
-                    phone: devisPhone.value,
-                    company: devisCompany.value,
-                    message: devisMessage.value
-                  })">
-            <i class="material-symbols-outlined">send</i>
-            {{blabel.devis_send}}
-          </button>
-        </div>
-      </div>
-
-    </ng-container>
 
   </div>
-
 </div>
 
-<!-- ROUTER OUTLET pour sous-routes -->
+<!-- ROUTER OUTLET -->
 <router-outlet></router-outlet>
