@@ -22,7 +22,7 @@
       margin: 0 auto 0.75rem;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
+      gap: 0.75rem;
       width: 100%;
       max-width: 100%;
     }
@@ -42,7 +42,7 @@
       align-items: center;
       justify-content: center;
       aspect-ratio: 1 / 1;
-      border-radius: 0.75rem;
+      border-radius: 1.75rem;
       background-color: var(--cat-bg);
       color: var(--cat-text);
       cursor: pointer;
@@ -52,7 +52,7 @@
 
       //
       // Reset des styles existants
-      width: calc(100% - 1rem)!important;
+      width: calc(100% - 2rem)!important;
       height: auto !important;
       padding: 0.5rem !important;
       margin: 0 !important;
@@ -83,7 +83,7 @@
       //
       // Label principal
       span {
-        font-size: 0.625rem;
+        font-size: 0.725rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.02em;
@@ -368,4 +368,58 @@
   //
   // Aucun style mobile/card sur desktop
   // Les styles de kng-side-menu.scss s'appliquent automatiquement
+}
+
+
+.mobile-actions {
+
+  .action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: var(--wa-space-xs);
+    background: transparent;
+    border: none;
+    color: var(--mdc-theme-text-secondary-on-background);
+    cursor: pointer;
+    position: relative;
+    transition: color var(--wa-transition-fast);
+
+    &:active {
+      color: var(--mdc-theme-primary);
+    }
+
+    .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    span:last-child {
+      font-size: var(--wa-font-size-xs);
+      font-weight: 500;
+    }
+  }
+
+  // Cart badge
+  .cart-badge {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: var(--mdc-theme-primary);
+    color: var(--mdc-theme-karibou-green);
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:empty {
+      display: none;
+    }
+  }
 }

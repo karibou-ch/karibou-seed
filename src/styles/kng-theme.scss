@@ -618,7 +618,8 @@ progress.kng-progress::-moz-progress-bar{
 
   // Variante soft - fond léger appbar
   &--soft {
-    background: var(--mdc-theme-appbar-light);
+    -background: var(--mdc-theme-appbar-light);
+    border: 1px solid var(--mdc-theme-appbar);;
   }
 
   // Variante white - fond surface (dark mode compatible)

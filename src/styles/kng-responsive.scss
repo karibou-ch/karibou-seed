@@ -28,12 +28,13 @@
   --mdc-theme-dlg-container-width: 100%;      /* Dialogues container */
 
   /* 🎯 SYSTÈME GLOBAL (conservée) */
-  --mdc-theme-top-bar: 70px;                  /* Hauteur navbar */
-  --mdc-theme-mobile-bar: 70px;                  /* Hauteur navbar mobile */
+  --mdc-theme-top-bar: 60px;                  /* Hauteur navbar */
+  --mdc-theme-mobile-bar: 60px;                  /* Hauteur navbar mobile */
   --mdc-theme-toolbox-width: 250px;           /* Dialog menu width */
   --mdc-theme-right-width: minmax(100%, 300px);           /* Sidebar width */
   --mdc-theme-body-zoom: 1;                 /* adaptative body zoom */
   --mdc-theme-height: calc((100dvh - var(--mdc-theme-top-bar, 0) - var(--mdc-theme-mobile-bar, 0)) / var(--mdc-theme-body-zoom));
+  --mdc-theme-grid-cols: .7fr var(--mdc-theme-container-width) 1fr;                  /* Hauteur navbar */
 }
 
 /* ATTENTION : var() ne fonctionne PAS dans @media queries !
@@ -49,7 +50,7 @@
     --mdc-theme-container-width: 100%;         /* Containers: plein écran */
     --mdc-theme-dlg-width: 100%;             /* Dialogues: plein écran */
     --mdc-theme-dlg-container-width: 98%;    /* Dialogues: sans marge */
-    --mdc-theme-top-bar: 0px;
+    --mdc-theme-top-bar: 60px;
   }
 }
 
@@ -59,7 +60,7 @@
     --mdc-theme-container-width: 100%;         /* Containers: plein écran */
     --mdc-theme-dlg-width: 100%;             /* Dialogues: plein écran */
     --mdc-theme-dlg-container-width: 95%;    /* Dialogues: marge 5% */
-    --mdc-theme-top-bar: 0px;
+    --mdc-theme-top-bar: 60px;
   }
 }
 
@@ -69,7 +70,7 @@
     --mdc-theme-dlg-width: 100%;
     --mdc-theme-container-width: 100%;        /* ✅ CONSERVER pour vraies tablettes */
     --mdc-theme-dlg-container-width: 95%;    /* ✅ CONSERVER pour vraies tablettes */
-    --mdc-theme-top-bar: 0px;
+    --mdc-theme-top-bar: 60px;
   }
 }
 
@@ -89,6 +90,7 @@
     --mdc-theme-container-width: 930px;        /* Containers: standard 930px */
     --mdc-theme-dlg-container-width: 850px;    /* ✅ UTILISE MIEUX L'ESPACE */
     --mdc-theme-body-zoom: .80;
+    --mdc-theme-right-width: 450px
   }
 }
 
@@ -99,6 +101,7 @@
     --mdc-theme-dlg-width: 1170px;            /* Dialogues: backdrop étendu */
     --mdc-theme-dlg-container-width: 930px;   /* Dialogues: container standard */
     --mdc-theme-body-zoom: 0.85;
+    --mdc-theme-right-width: 450px
   }
 }
 
@@ -109,6 +112,7 @@
     --mdc-theme-dlg-width: 1170px;            /* Dialogues: backdrop large */
     --mdc-theme-dlg-container-width: 970px;  /* Dialogues: container étendu */
     --mdc-theme-body-zoom: .85;
+    --mdc-theme-right-width: 450px
   }
 }
 
@@ -119,6 +123,7 @@
     --mdc-theme-dlg-width: 1170px;            /* Dialogues: backdrop large */
     --mdc-theme-dlg-container-width: 970px;  /* Dialogues: container étendu */
     --mdc-theme-body-zoom: 1;
+    --mdc-theme-right-width: 450px
   }
 }
 

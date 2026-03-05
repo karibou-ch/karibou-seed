@@ -10,8 +10,3 @@ span[slot='start'] {
   margin-inline-end: 0.25em;
 }
 
-//
-// kng-top-appbar - Boutons dans la navbar uniquement
-kng-navbar wa-button::part(base) {
-  background-color: white;
-}

@@ -73,6 +73,8 @@ body{
       radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
       radial-gradient(circle at top right, var(--mdc-theme-secondary-light) 0%, transparent 50%),
       radial-gradient(ellipse at bottom right, var(--mdc-theme-secondary-light) 0%, transparent 0%);
+
+    background: radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%);
   }
 
   // FIXME remove this hardcoding
@@ -180,7 +182,7 @@ input[type="submit"],
 
   //
   // IMPORTANT: kng-navbar-top doit répliquer le même grid-template-columns
-  grid-template-columns:.6fr var(--mdc-theme-container-width) 1fr;
+  grid-template-columns:var(--mdc-theme-grid-cols);
   grid-template-rows: var(--mdc-theme-top-bar) 1fr auto;
   grid-template-areas:
     "header header header"

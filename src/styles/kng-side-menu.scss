@@ -18,7 +18,7 @@
     // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
     // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
     will-change: transform; // Optimisation GPU pour translateY
-    transition: transform 0.5s ease-out; // Smooth scroll sticky simulé
+    transition: transform 0.1s ease-out; // Smooth scroll sticky simulé (réduit pour réactivité)
     padding-top: 1rem;
 
     // DESKTOP: style menu-on-left original
@@ -26,12 +26,15 @@
       // Sticky + Largeur maximale
       position: sticky;
       // Espace sous la navbar
-      top: -4rem;
+      top: var(--mdc-theme-top-bar);
       // max height = viewport - top bar / compensated by the body zoom factor
       max-height: calc((100vh - var(--mdc-theme-top-bar, 70px)) / var(--mdc-theme-body-zoom));
       overflow-y: auto;
       width: 100%;
       max-width: var(--mdc-theme-toolbox-width);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
 
       ul {
         list-style: none;
@@ -110,7 +113,7 @@
   @media (max-width: 1199px) {
     overflow-y: hidden;
   }
-  padding-top: 0;
+  padding-top: 1rem; // Espace identique menu-panel
 
 
   .sidebar-panel {
@@ -121,15 +124,18 @@
     // Desktop: sticky natif fonctionne car pas d'overflow-x sur le wrapper
     // Mobile/Tablet: sticky simulé via translateY dans le composant TypeScript
     will-change: transform; // Optimisation GPU pour translateY
-    transition: transform 0.5s ease-out; // Smooth scroll sticky simulé
+    transition: transform 0.1s ease-out; // Smooth scroll sticky simulé (réduit pour réactivité)
 
     // Desktop: Largeur maximale
     @media (min-width: 1200px) {
-      width: 100%;
+      width: calc(100% - 4rem);
       max-width: var(--mdc-theme-right-width);
       // Sticky + Largeur maximale
       position: sticky;
-      top: 5rem; // Espace sous la navbar
+      top: var(--mdc-theme-top-bar); // Espace sous la navbar
+      margin-left: 0rem;
+      padding-left: 2rem;
+      border-left: 1px solid var(--wa-color-neutral-border-quiet);
 
     }
   }
