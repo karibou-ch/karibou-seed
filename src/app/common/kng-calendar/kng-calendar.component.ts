@@ -89,7 +89,8 @@ export class KngCalendarComponent implements OnInit {
   }
 
   get mainTitle() {
-    return this.title || this.currentHub?.siteName[this.locale];
+    return this.$i18n.label().nav_shipping;
+    //return this.title || this.currentHub?.siteName[this.locale];
   }
 
   get minimal() {

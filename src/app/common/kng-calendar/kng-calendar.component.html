@@ -19,16 +19,23 @@
             <!-- FIXME: day can be undefined -->
             <div class="ei_Title">{{day|date:'EEE d':'':locale}}</div>
         </div>
-        <div class="element last-minute"
-             *ngIf="lastMinuteOption"
-             [class.selected]="isLastMinuteSelected"
-             (click)="selectLastMinute()">
-          <div class="ei_Title" [innerHtml]="i18n.lastMinuteLabel"></div>
-          <div class="ei_Copy">🗲{{ lastMinuteTime }}h</div>
-        </div>
       </div>
     </div>
 
+    <!-- LAST MINUTE -->
+    <div class="last-minute kng-card kng-card--soft"
+         *ngIf="lastMinuteOption"
+         [hidden]="minimal">
+      <kng-slider [small]="true" [checked]="isLastMinuteSelected" (change)="selectLastMinute()">
+        <span class="icon">🗲</span>
+        <span [innerHtml]="i18n.lastMinuteLabel"></span>
+        <span class="time">{{ lastMinuteTime }}h</span>
+      </kng-slider>
+    </div>
+
+
+
+    <!-- SWITCH HUB -->
     <div class="switch-hub kng-card kng-card--white " [hidden]="minimal">
       <div class="label">{{label_switch_store}}</div>
       <button [routerLink]="['/store',displayHubSwitch.slug,'home']">{{displayHubSwitch.name}}</button>
