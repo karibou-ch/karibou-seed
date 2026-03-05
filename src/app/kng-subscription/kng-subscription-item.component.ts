@@ -17,6 +17,7 @@ export class KngSubscriptionItemComponent implements OnInit, OnChanges, OnDestro
   // ===== INPUTS =====
   @Input() contract: CartSubscription;
   @Input() config: Config;
+  @Input() hub: string; // Optionnel : permet d'utiliser le composant sans contract (mode création)
   @Input() locale: string = 'fr';
   @Input() showTitle: boolean = true;
   @Input() allowSave: boolean = true;
@@ -96,12 +97,12 @@ export class KngSubscriptionItemComponent implements OnInit, OnChanges, OnDestro
   }
 
   private loadPendingItems() {
-    if (!this.config || !this.contract) {
+    if (!this.config) {
       this.pendingItems = [];
       return;
     }
 
-    const hub = this.contract.items?.[0]?.hub || this.config.shared.hub.slug;
+    const hub = this.hub || this.contract?.items?.[0]?.hub || this.config.shared.hub.slug;
 
     const ctx = {
       forSubscription: true,

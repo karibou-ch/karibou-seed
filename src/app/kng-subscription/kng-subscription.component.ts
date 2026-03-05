@@ -3,11 +3,10 @@ import {
   OnInit,
   OnDestroy,
   ViewEncapsulation,
-  ChangeDetectorRef,
-  HostListener
+  ChangeDetectorRef
 } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import {
   CartService,
   CartSubscription,
@@ -221,6 +220,21 @@ export class KngSubscriptionComponent implements OnInit, OnDestroy {
         this.$scrollState.save('subscriptions');
       })
     );
+
+    // ✅ Sticky scroll simulé (mobile/tablet uniquement)
+    const navbarHeight = this.$navigation.getCssVariableAsNumber('--mdc-theme-top-bar');
+    this.subscription.add(
+      this.$navigation.registerStickyScroll$(100).subscribe(scrollY => {
+        //
+        // Skip sur desktop (sticky CSS fonctionne normalement)
+        if (window.innerWidth >= 1200) {
+          this.menuStickyTransform = 0;
+          return;
+        }
+        this.menuStickyTransform = Math.max(0, scrollY - navbarHeight);
+        this.$cdr.detectChanges();
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -250,25 +264,30 @@ export class KngSubscriptionComponent implements OnInit, OnDestroy {
     const options: any = {
       available: true,
       status: true,
-      when: this.currentShippingDay.toISOString(),
-      hub: this.store,
-      subscription: true // Filtre produits disponibles en subscription
+      hub: this.store
     };
 
-    this.$product.select(options).subscribe(
-      (products: Product[]) => {
-        this.products = products.filter(p => p.categories?.name);
-        this.isReady = true;
-        this.isLoading = false;
-        this.$cdr.markForCheck();
-      },
-      () => {
-        this.isLoading = false;
-      }
-    );
+
+    this.$product.findByAttribute('subscription', options).subscribe((products: Product[]) => {
+      this.products = products.filter(p => p.categories?.name);
+      this.isReady = true;
+      this.isLoading = false;
+      this.$cdr.markForCheck();
+    });
   }
 
+
+
+
   // === PUBLIC METHODS ===
+
+
+  /**
+   * Description courte du contrat
+   */
+  getContractDescription(contract: CartSubscription): string {
+    return `${this.getDayOfWeek(contract.dayOfWeek)} ${this.getFrequency(contract)}`;
+  }
 
   /**
    * Ouvre le détail d'un contrat existant
@@ -276,7 +295,7 @@ export class KngSubscriptionComponent implements OnInit, OnDestroy {
   openContractDetail(contract: CartSubscription): void {
     this.currentContract = contract;
     this.panelState = SubscriptionPanelState.DETAIL;
-    document.body.classList.add('mdc-dialog-scroll-lock');
+
 
     // Update URL
     this.$router.navigate([], {
@@ -292,7 +311,7 @@ export class KngSubscriptionComponent implements OnInit, OnDestroy {
   openCreatePanel(): void {
     this.currentContract = null;
     this.panelState = SubscriptionPanelState.CREATE;
-    document.body.classList.add('mdc-dialog-scroll-lock');
+
   }
 
   /**
@@ -343,6 +362,11 @@ export class KngSubscriptionComponent implements OnInit, OnDestroy {
     });
   }
 
+  onScrollToPanel(panelIndex: number) {
+    this.$navigation.scrollToPanel(panelIndex);
+  }
+
+
   /**
    * Navigation vers les favoris
    */
@@ -364,32 +388,13 @@ export class KngSubscriptionComponent implements OnInit, OnDestroy {
     return this.label[contract.frequency] || contract.frequency;
   }
 
+  // === SWIPE PANEL HANDLING ===
+
   /**
-   * Description courte du contrat
+   * Réagit aux changements de panel après un swipe.
+   * Verrouille le scroll body si on n'est pas sur center pour permettre le sticky.
+   * Panel index: 0=side, 1=center, 2=custom, 3=right
    */
-  getContractDescription(contract: CartSubscription): string {
-    return `${this.getDayOfWeek(contract.dayOfWeek)} ${this.getFrequency(contract)}`;
-  }
-
-  // === SCROLL HANDLING ===
-
-  @HostListener('window:scroll', ['$event'])
-  onScrollToStick(): void {
-    if (window.innerWidth >= 1200) {
-      this.menuStickyTransform = 0;
-      return;
-    }
-
-    const scrollY = window.scrollY || window.pageYOffset;
-    const navbarHeight = 0;
-
-    if (scrollY > navbarHeight) {
-      this.menuStickyTransform = scrollY - navbarHeight;
-    } else {
-      this.menuStickyTransform = 0;
-    }
-  }
-
   private onSwipePanelChanged(panelIndex: number): void {
     if (panelIndex !== 1) {
       document.body.classList.add('mdc-dialog-scroll-lock');

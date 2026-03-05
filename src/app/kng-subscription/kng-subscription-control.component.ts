@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CartItem, CartService, CartSubscription, Config, Order, ProductService, User, UserCard, UserService } from 'kng2-core';
+import { CalendarService, CartService, CartSubscription, Config, Hub, ProductService, User, UserCard, UserService } from 'kng2-core';
 import { StripeService } from 'ngx-stripe';
 import { i18n } from '../common';
 import { PaymentEvent } from '../common/kng-payment/kng-user-payment.component';
@@ -13,26 +13,30 @@ import { SUBSCRIPTION_I18N } from './kng-subscription-i18n';
 })
 export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
 
-  // ✅ MIGRATION: Utiliser le fichier i18n centralisé
+  // ============================================================================
+  // CONFIGURATION & I18N
+  // ============================================================================
   i18n = SUBSCRIPTION_I18N;
-
-  private _user: User;
-  private _orders: Order[];
 
   @Input() config: Config;
   @Input() user: User;
 
+  // ============================================================================
+  // STATE - Liste des contrats
+  // ============================================================================
   contracts: CartSubscription[];
-  currentContract: CartSubscription;
   payments = [];
+
+  // ============================================================================
+  // STATE - Édition/Update d'un contrat existant
+  // ============================================================================
+  currentContract: CartSubscription;
   until: Date;
   pauseUntil: Date;
   error: string;
   isRunning: boolean;
   selPaymentAlias: string;
   paymentErrorFromUrl: { action?: string; reason?: string; message?: string };
-
-  // ✅ Gestion moderne des erreurs de paiement
   paymentError: {
     action: string;
     reason: string;
@@ -44,6 +48,11 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     teamMessage?: string;
   } | null = null;
 
+  // ============================================================================
+  // STATE - Création d'un nouveau contrat
+  // ============================================================================
+  createIsActive: boolean = false;
+
   constructor(
     public $products: ProductService,
     public $cart: CartService,
@@ -51,13 +60,17 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     public $router: Router,
     public $user: UserService,
     public $stripe: StripeService,
+    public $calendar: CalendarService,
     private route: ActivatedRoute
   ) {
-    this._orders = [];
     this.contracts = [];
     this.pauseUntil = this.until = new Date(Date.now() + 3600000 * 24 * 6);
     this.user = $user.currentUser;
   }
+
+  // ============================================================================
+  // GETTERS - Généraux
+  // ============================================================================
 
   get locale() {
     return this.$i18n.locale;
@@ -71,6 +84,33 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     return this.i18n[this.locale];
   }
 
+  get store() {
+    return this.config.shared.hub.slug;
+  }
+
+  get hub(): Hub {
+    return this.config?.shared?.hub || {} as Hub;
+  }
+
+  get openContracts() {
+    return this.contracts.filter(contract => {
+      if (contract.status === 'active') {
+        return true;
+      }
+      if (contract.status === 'incomplete' && contract.latestPaymentIntent) {
+        const needsAction = ['requires_action', 'requires_payment_method'].includes(
+          contract.latestPaymentIntent.status
+        );
+        return needsAction;
+      }
+      return false;
+    });
+  }
+
+  // ============================================================================
+  // GETTERS - Update/Edit contrat existant
+  // ============================================================================
+
   get checkResumeDate() {
     const now = new Date();
     return now.daysDiff(this.pauseUntil) > 6;
@@ -79,15 +119,6 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
   get pauseInDays() {
     const now = new Date();
     return now.daysDiff(this.pauseUntil);
-  }
-
-  get store() {
-    return this.config.shared.hub.slug;
-  }
-
-  get currentContract_frequency() {
-    if (!this.currentContract) return '';
-    return '';
   }
 
   get contract_requires_action() {
@@ -109,21 +140,6 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     return new UserCard(this.user.payments.find(payment => payment.alias == alias) || {});
   }
 
-  get openContracts() {
-    return this.contracts.filter(contract => {
-      if (contract.status === 'active') {
-        return true;
-      }
-      if (contract.status === 'incomplete' && contract.latestPaymentIntent) {
-        const needsAction = ['requires_action', 'requires_payment_method'].includes(
-          contract.latestPaymentIntent.status
-        );
-        return needsAction;
-      }
-      return false;
-    });
-  }
-
   get hasModernPaymentError(): boolean {
     return !!this.paymentError;
   }
@@ -142,6 +158,18 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ============================================================================
+  // GETTERS - Création nouveau contrat
+  // ============================================================================
+
+  get createShippingDay(): Date {
+    return this.$cart.getCurrentShippingDay() || this.$calendar.nextShippingDay(this.hub, this.user);
+  }
+
+  // ============================================================================
+  // LIFECYCLE
+  // ============================================================================
+
   ngOnDestroy() {
     document.body.classList.remove('mdc-dialog-scroll-lock');
   }
@@ -149,16 +177,16 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.$cart.subscription$.subscribe(contracts => {
       this.contracts = contracts;
-      this.onOpen(this.route.snapshot.queryParams);
+      this.onUpdateOpen(this.route.snapshot.queryParams);
     });
 
     this.route.queryParams.subscribe(params => {
-      this.onOpen(params);
+      this.onUpdateOpen(params);
     });
 
     this.$cart.subscriptionsGet().subscribe(contracts => {
       this.contracts = contracts;
-      this.onOpen(this.route.snapshot.queryParams);
+      this.onUpdateOpen(this.route.snapshot.queryParams);
     });
 
     if (this.config.shared && this.config.shared.keys) {
@@ -174,12 +202,9 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     });
   }
 
-  getContractAction(contract) {
-    if (!contract.latestPaymentIntent) {
-      return this.llabel.subtitle_subscription_action;
-    }
-    return this.llabel.subtitle_subscription_action;
-  }
+  // ============================================================================
+  // MÉTHODES - Helpers généraux
+  // ============================================================================
 
   getContractDescription(contract) {
     return this.getDayOfWeek(contract.dayOfWeek) + ' ' + this.getFrequency(contract);
@@ -205,6 +230,10 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
       intent: null
     };
   }
+
+  // ============================================================================
+  // MÉTHODES - Update/Edit contrat existant (Erreurs paiement)
+  // ============================================================================
 
   getErrorUrgency(action: string, reason: string): 'high' | 'medium' | 'low' {
     if (action === 'authenticate' || action === 'replace' || action === 'setup') {
@@ -261,7 +290,11 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     return llabel.payment_error_generic;
   }
 
-  async onConfirmPaymentIntent() {
+  // ============================================================================
+  // EVENTS - Update/Edit contrat existant
+  // ============================================================================
+
+  async onUpdateConfirmPaymentIntent() {
     try {
       const intent = this.currentContract.latestPaymentIntent;
       const intentOpt: any = {
@@ -286,11 +319,11 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onUpdatePaymenMethod(payment: PaymentEvent) {
+  async onUpdatePaymentMethod(payment: PaymentEvent) {
     // Contract use customer default payment method
   }
 
-  onOpen(params) {
+  onUpdateOpen(params) {
     const contractId = params['contract'];
     if (!contractId || this.currentContract?.id === contractId) {
       return;
@@ -350,28 +383,13 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
       }
     }
 
-    document.body.classList.add('mdc-dialog-scroll-lock');
     this.currentContract = contract;
     if (this.currentContract) {
       this.selPaymentAlias = this.currentContract.paymentAlias;
     }
   }
 
-  onSubRemove(item: CartItem, variant?: string) {
-    if (item.quantity == 0) {
-      return;
-    }
-    item.quantity--;
-    item['updated'] = true;
-  }
-
-  onSubRemoveAll(item: CartItem, variant?: string) {
-    item.quantity = 0;
-    item['updated'] = true;
-    item.deleted = true;
-  }
-
-  onAddItemToCart() {
+  onUpdateAddItem() {
     if (!this.currentContract) {
       return;
     }
@@ -382,7 +400,7 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     this.$router.navigateByUrl(url);
   }
 
-  onPause(to: Date) {
+  onUpdatePause(to: Date) {
     this.error = null;
     this.$cart.subscriptionPause(this.currentContract, to).subscribe(done => {
       this.currentContract = done;
@@ -391,16 +409,16 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDelete() {
+  onUpdateDelete() {
     this.error = null;
     this.$cart.subscriptionCancel(this.currentContract).subscribe(done => {
-      this.onClose();
+      this.onUpdateClose();
     }, status => {
       this.error = status.error;
     });
   }
 
-  onClose(res?) {
+  onUpdateClose(res?) {
     document.body.classList.remove('mdc-dialog-scroll-lock');
     this.currentContract = res || null;
     this.paymentErrorFromUrl = null;
@@ -412,15 +430,41 @@ export class KngSubscriptionControlComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubscriptionItemUpdated(updatedContract: CartSubscription) {
+  onUpdateItemUpdated(updatedContract: CartSubscription) {
     this.$cart.subscriptionsGet().subscribe(contracts => {
       this.contracts = contracts;
       this.currentContract = contracts.find(c => c.id === updatedContract.id) || updatedContract;
     });
   }
 
-  onSubscriptionItemError(error: any) {
+  onUpdateItemError(error: any) {
     this.error = error.error || error.message || 'Erreur lors de la mise à jour des articles';
     console.error('Subscription item update error:', error);
+  }
+
+  // ============================================================================
+  // EVENTS - Création nouveau contrat
+  // ============================================================================
+
+  /**
+   * Ouvre le formulaire de création d'abonnement
+   */
+  onCreateOpen() {
+    this.createIsActive = true;
+    this.currentContract = null;
+  }
+
+  /**
+   * Ferme le formulaire de création
+   */
+  onCreateClose() {
+    this.createIsActive = false;
+  }
+
+  /**
+   * Navigation vers la page des produits pour ajouter au panier
+   */
+  onCreateNavigateToProducts() {
+    this.$router.navigate(['/store', this.store, 'home', 'subscription']);
   }
 }

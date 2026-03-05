@@ -97,6 +97,11 @@ export interface SubscriptionLabels {
   create_step_confirm: string;
   create_cta_start: string;
   create_cta_add_products: string;
+
+  // === ANONYMOUS USER ===
+  anonymous_title: string;
+  anonymous_subtitle: string;
+  anonymous_cta: string;
 }
 
 export const SUBSCRIPTION_I18N: { fr: SubscriptionLabels; en: SubscriptionLabels } = {
@@ -186,6 +191,11 @@ export const SUBSCRIPTION_I18N: { fr: SubscriptionLabels; en: SubscriptionLabels
     create_step_confirm: 'Confirmer',
     create_cta_start: 'Commencer',
     create_cta_add_products: 'Ajouter des produits',
+
+    // === ANONYMOUS USER ===
+    anonymous_title: 'Connectez-vous pour accéder à ce service',
+    anonymous_subtitle: 'Les commandes automatiques sont réservées aux membres connectés',
+    anonymous_cta: 'Se connecter',
   },
   en: {
     // === PAGE PRINCIPALE ===
@@ -273,5 +283,10 @@ export const SUBSCRIPTION_I18N: { fr: SubscriptionLabels; en: SubscriptionLabels
     create_step_confirm: 'Confirm',
     create_cta_start: 'Start',
     create_cta_add_products: 'Add products',
+
+    // === ANONYMOUS USER ===
+    anonymous_title: 'Sign in to access this service',
+    anonymous_subtitle: 'Automatic orders are available to signed-in members only',
+    anonymous_cta: 'Sign in',
   }
 };

@@ -2,57 +2,60 @@
 <!-- PANEL SIDE - Menu de navigation (catégories, mes paniers)                  -->
 <!-- ============================================================================ -->
 <div class="swipe-panel side">
-
   <div class="subscription menu-panel"
        [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
     <!-- NAVIGATION SERVICES (Niveau 1) -->
-    <kng-service-nav [store]="store" [currentRoute]="'/subscriptions'" [vertical]="true" [showHub]="false"></kng-service-nav>
+    <kng-ui-navigation [store]="store" [currentRoute]="'/subscriptions'" [vertical]="true" [showHub]="false"></kng-ui-navigation>
 
-    <!-- MOBILE links -->
-    <ul class="subs">
-      <!-- FAVORITE -->
-      <li class="subs-item inverted" (click)="onFavorites()">
-        <i class="material-symbols-outlined">favorite</i>
-        <span>{{label.search_bookmark}}</span>
-      </li>
 
-      <!-- CUSTOM LINK -->
-      <li *ngIf="hub.home?.customLink?.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url">
-        <i class="material-symbols-outlined icon">person_celebrate</i>
-        <span>{{hub.home.customLink.label[locale]}}</span>
-      </li>
-    </ul>
-
-    <!-- DESKTOP LINKS -->
-    <ul class="hide-sm">
-      <li [routerLink]="userRouterLink">
-        <span class="fa icon hide">👦</span>
-        <b>{{isAuthenticated?label.nav_account:label.nav_login}}</b>
-      </li>
-      <li [routerLink]="hub.home?.customLink?.url" [hidden]="!hub.home?.customLink?.url">
-        <b>{{hub.home?.customLink?.label[locale]}}</b>
-      </li>
-    </ul>
 
     <!-- LISTE DES ABONNEMENTS ACTIFS (navigation rapide) -->
-    <ul class="" *ngIf="hasContracts">
-      <li *ngFor="let contract of openContracts"
-          class="subs-item"
-          [class.selected]="currentContract?.id === contract.id"
-          (click)="openContractDetail(contract)">
-        <i class="material-symbols-outlined icon hide-md hide-lg">shopping_basket</i>
-        <span>{{getContractDescription(contract)}}</span>
-      </li>
-    </ul>
+    <!-- TITRE -->
+
+    <!-- LISTE DES CONTRATS -->
+    <div class="contracts-list" *ngIf="isAuthenticated && hasContracts" hidden>
+      <div class="kng-card kng-card--soft kng-card--shadow">
+        <h3>{{slabel.list_title}}</h3>
+      </div>
+
+      <div class="kng-card kng-card--soft kng-card--shadow"
+            *ngFor="let contract of openContracts"
+            (click)="openContractDetail(contract)">
+
+        <div class="contract-header">
+          <span class="status" [class.active]="contract.status === 'active'"
+                                [class.paused]="contract.status !== 'active'">
+            {{contract.status === 'active' ? slabel.list_active : slabel.list_paused}}
+          </span>
+          <span class="frequency">{{getContractDescription(contract)}}</span>
+        </div>
+
+        <div class="contract-info">
+          <span class="items-count">{{contract.items?.length || 0}} articles</span>
+          <span class="next-delivery" *ngIf="contract.nextInvoice">
+            {{slabel.list_next_delivery}}: {{contract.nextInvoice | date:'d MMM'}}
+          </span>
+        </div>
+
+        <!-- Indicateur d'erreur paiement -->
+        <div class="payment-warning"
+              *ngIf="contract.latestPaymentIntent?.status === 'requires_action' ||
+                    contract.latestPaymentIntent?.status === 'requires_payment_method'">
+          <i class="material-symbols-outlined">warning</i>
+          <span>Action requise</span>
+        </div>
+      </div>
+    </div>
+
+
 
     <!-- AUCUN ABONNEMENT -->
-    <div class="empty-state" *ngIf="!hasContracts && isReady">
+    <div class="empty-state" *ngIf="isAuthenticated && !hasContracts && isReady">
       <p class="hide-sm">{{slabel.list_empty}}</p>
     </div>
 
   </div>
-
 </div>
 
 <!-- ============================================================================ -->
@@ -66,12 +69,6 @@
     <p>{{slabel.page_subtitle}}</p>
   </div>
 
-  <!-- CALENDAR pour sélection jour de livraison -->
-  <kng-calendar
-    [user]="user"
-    [config]="config"
-    (updated)="$event">
-  </kng-calendar>
 
   <!-- OPTIONS ABONNEMENT (visible en mode création) -->
   <div class="subscription-options" *ngIf="isCreateState">
@@ -89,7 +86,8 @@
          [useMaxCat]="products.length > 40"
          [alphasort]="false"
          [displayVendor]="true"
-         [showMore]="products.length > 10"
+         [displaySubscription]="true"
+         [showMore]="false"
          [config]="config"
          [user]="user"
          [contentCategories]="categories"
@@ -117,155 +115,70 @@
   <div class="subscription sidebar-panel" [style.transform]="'translateY(' + menuStickyTransform + 'px)'">
 
     <!-- ======================================== -->
+    <!-- ANONYMOUS USER - Invitation à se connecter -->
+    <!-- ======================================== -->
+    <div class="anonymous-state" *ngIf="!isAuthenticated">
+      <div class="kng-boxed">
+        <div class="content centered">
+          <i class="material-symbols-outlined large">lock</i>
+          <h4>{{slabel.anonymous_title}}</h4>
+          <p>{{slabel.anonymous_subtitle}}</p>
+          <wa-button variant="brand" [routerLink]="userRouterLink">
+            {{slabel.anonymous_cta}}
+          </wa-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
     <!-- STATE: LIST - Liste des abonnements     -->
     <!-- ======================================== -->
-    <ng-container *ngIf="isListState">
-
-      <!-- TITRE -->
-      <div class="kng-boxed first">
-        <div class="content">
-          <h3>{{slabel.list_title}}</h3>
-        </div>
-      </div>
-
-      <!-- LISTE DES CONTRATS -->
-      <div class="contracts-list" *ngIf="hasContracts">
-        <div class="contract-card"
-             *ngFor="let contract of openContracts"
-             (click)="openContractDetail(contract)">
-
-          <div class="contract-header">
-            <span class="status" [class.active]="contract.status === 'active'"
-                                 [class.paused]="contract.status !== 'active'">
-              {{contract.status === 'active' ? slabel.list_active : slabel.list_paused}}
-            </span>
-            <span class="frequency">{{getContractDescription(contract)}}</span>
-          </div>
-
-          <div class="contract-info">
-            <span class="items-count">{{contract.items?.length || 0}} articles</span>
-            <span class="next-delivery" *ngIf="contract.nextInvoice">
-              {{slabel.list_next_delivery}}: {{contract.nextInvoice | date:'d MMM'}}
-            </span>
-          </div>
-
-          <!-- Indicateur d'erreur paiement -->
-          <div class="payment-warning"
-               *ngIf="contract.latestPaymentIntent?.status === 'requires_action' ||
-                      contract.latestPaymentIntent?.status === 'requires_payment_method'">
-            <i class="material-symbols-outlined">warning</i>
-            <span>Action requise</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- EMPTY STATE -->
-      <div class="empty-state" *ngIf="!hasContracts && isReady">
-        <div class="kng-boxed">
-          <div class="content centered">
+    <!-- EMPTY STATE -->
+    <div class="empty-state" *ngIf="isAuthenticated && !hasContracts && isReady">
+      <div class="kng-boxed">
+        <div class="content centered">
             <i class="material-symbols-outlined large">update</i>
-            <h4>{{slabel.page_empty_title}}</h4>
-            <p>{{slabel.page_empty_subtitle}}</p>
-            <button class="default primary" (click)="openCreatePanel()">
-              {{slabel.page_cta_create}}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CTA CRÉER -->
-      <div class="kng-boxed" *ngIf="hasContracts">
-        <div class="content">
-          <button class="default secondary width-100" (click)="openCreatePanel()">
-            <i class="material-symbols-outlined">add</i>
+          <h4>{{slabel.page_empty_title}}</h4>
+          <p>{{slabel.page_empty_subtitle}}</p>
+          <wa-button variant="brand" (click)="openCreatePanel()">
             {{slabel.page_cta_create}}
-          </button>
+          </wa-button>
         </div>
       </div>
-
-    </ng-container>
-
-    <!-- ======================================== -->
-    <!-- STATE: DETAIL - Détail d'un abonnement  -->
-    <!-- ======================================== -->
-    <ng-container *ngIf="isDetailState && currentContract">
-
-      <!-- HEADER avec bouton retour -->
-      <div class="panel-header">
-        <button class="back-button" (click)="closePanel()">
-          <i class="material-symbols-outlined">arrow_back</i>
-        </button>
-        <h3>{{slabel.subtitle_subscription}}</h3>
-      </div>
-
-      <!-- COMPOSANT CONTROL (logique existante) -->
-      <kng-subscription-control
-        [config]="config"
-        [user]="user">
-      </kng-subscription-control>
-
-    </ng-container>
+    </div>
 
     <!-- ======================================== -->
-    <!-- STATE: CREATE - Création nouvel abo     -->
+    <!-- COMPOSANT CONTROL (liste, détail, création) -->
     <!-- ======================================== -->
-    <ng-container *ngIf="isCreateState">
-
-      <!-- HEADER avec bouton retour -->
-      <div class="panel-header">
-        <button class="back-button" (click)="closePanel()">
-          <i class="material-symbols-outlined">arrow_back</i>
-        </button>
-        <h3>{{slabel.create_title}}</h3>
-      </div>
-
-      <!-- INSTRUCTIONS -->
-      <div class="kng-boxed">
-        <div class="content">
-          <p>{{slabel.create_subtitle}}</p>
-
-          <div class="steps">
-            <div class="step">
-              <span class="step-number">1</span>
-              <span>{{slabel.create_step_products}}</span>
-            </div>
-            <div class="step">
-              <span class="step-number">2</span>
-              <span>{{slabel.create_step_frequency}}</span>
-            </div>
-            <div class="step">
-              <span class="step-number">3</span>
-              <span>{{slabel.create_step_confirm}}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- OPTIONS DE FRÉQUENCE -->
-      <div class="kng-boxed">
-        <div class="content">
-          <kng-subscription-option
-            [hub]="hub"
-            [user]="user"
-            [shippingDay]="currentShippingDay">
-          </kng-subscription-option>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <div class="kng-boxed">
-        <div class="content">
-          <button class="default primary width-100" (click)="navigateToProducts()">
-            {{slabel.create_cta_add_products}}
-          </button>
-        </div>
-      </div>
-
-    </ng-container>
+    <kng-subscription-control *ngIf="isAuthenticated"
+      [config]="config"
+      [user]="user">
+    </kng-subscription-control>
 
   </div>
 
 </div>
+
+<!-- ============================================================================ -->
+<!-- MOBILE BOTTOM APPBAR - Navigation rapide entre les panels                  -->
+<!-- ============================================================================ -->
+
+<kng-appbar position="bottom" class="mobile-only mobile-actions">
+  <div slot="mobile" class="mobile-actions">
+    <button class="action" (click)="onScrollToPanel(0)">
+      <span class="material-symbols-outlined">menu</span>
+      <span>Menu</span>
+    </button>
+    <button class="action" (click)="onScrollToPanel(1)">
+      <span class="material-symbols-outlined">grid_view</span>
+      <span>Produits</span>
+    </button>
+    <button class="action" (click)="onScrollToPanel(2)">
+      <span class="material-symbols-outlined">tune</span>
+      <span>Options</span>
+    </button>
+  </div>
+</kng-appbar>
 
 <!-- ROUTER OUTLET pour sous-routes -->
 <router-outlet></router-outlet>
