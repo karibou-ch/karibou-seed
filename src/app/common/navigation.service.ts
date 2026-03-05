@@ -325,64 +325,6 @@ export class KngNavigationStateService  {
     return false;
   }
 
-  registerScrollEvent(container?,debounceT?) {
-    let scrollPosition = 0;
-    let scrollDirection = 0;
-
-    //
-    // detect scrall motion and hide component
-    // @HostListener('window:scroll', ['$event'])
-    const windowScroll:any = ($event?) => {
-      const _scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
-
-      //
-      // initial position, event reset value
-      if(_scrollPosition == 0) {
-        return {direction:0,position:_scrollPosition};
-      }
-      //
-      // avoid CPU usage
-      if (Math.abs(scrollPosition - _scrollPosition) < 20) {
-        return {direction:0,position:_scrollPosition};
-      }
-
-      // console.log(window.pageYOffset,_scrollPosition,'-- > sH, sT, cH: ', $event.target.scrollHeight,$event.target.scrollTop, $event.target.clientHeight);
-
-      if (_scrollPosition > scrollPosition) {
-        if (scrollDirection < 0) {
-          scrollDirection--;
-        } else {
-          scrollDirection = -6;
-        }
-      } else {
-        if (scrollDirection > 0) {
-          scrollDirection++;
-        } else {
-          scrollDirection = 1;
-        }
-      }
-      scrollPosition = _scrollPosition;
-
-
-      // FIXME make it better (<-5 && !exited) = event.exit
-      //this._direction$.next(5*(Math.round( scrollDirection / 5)));
-      return {direction:scrollDirection,position:scrollPosition};
-    }
-
-
-    //
-    // read documentation about renderer
-    // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
-    let elem = document;
-    if (container) {
-      elem = (container instanceof ElementRef)? container.nativeElement:document.querySelector(container);
-    }
-    return fromEvent(elem, 'scroll').pipe(
-      debounceTime(debounceT||50),
-      map(event => windowScroll(event)),
-      distinctUntilChanged()
-    );
-  }
 
   searchAction(keyword: string) {
     this._search$.next(keyword);
@@ -570,6 +512,94 @@ export class KngNavigationStateService  {
     // Calculer l'index basé sur le scroll
     this._currentPanel = Math.round(scrollLeft / panelWidth);
     return this._currentPanel;
+  }
+
+  // ============================================================================
+  // STICKY SCROLL - Scroll event avec debounce pour sticky simulé
+  // ============================================================================
+
+  registerScrollEvent$({container, debounceT=25}: {container?: ElementRef | string, debounceT?: number} = {}) {
+    let scrollPosition = 0;
+    let scrollDirection = 0;
+
+    //
+    // detect scrall motion and hide component
+    // @HostListener('window:scroll', ['$event'])
+    const windowScroll:any = ($event?) => {
+      const _scrollPosition = $event && $event.target.scrollTop || window.pageYOffset;
+
+      //
+      // initial position, event reset value
+      if(_scrollPosition == 0) {
+        return {direction:0,position:_scrollPosition};
+      }
+      //
+      // avoid CPU usage
+      if (Math.abs(scrollPosition - _scrollPosition) < 5) {
+        return {direction:0,position:_scrollPosition};
+      }
+
+      // console.log(window.pageYOffset,_scrollPosition,'-- > sH, sT, cH: ', $event.target.scrollHeight,$event.target.scrollTop, $event.target.clientHeight);
+
+      if (_scrollPosition > scrollPosition) {
+        if (scrollDirection < 0) {
+          scrollDirection--;
+        } else {
+          scrollDirection = -6;
+        }
+      } else {
+        if (scrollDirection > 0) {
+          scrollDirection++;
+        } else {
+          scrollDirection = 1;
+        }
+      }
+      scrollPosition = _scrollPosition;
+
+
+      // FIXME make it better (<-5 && !exited) = event.exit
+      //this._direction$.next(5*(Math.round( scrollDirection / 5)));
+      return {direction:scrollDirection,position:scrollPosition};
+    }
+
+
+    //
+    // read documentation about renderer
+    // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
+    let elem = document;
+    if (container) {
+      elem = (container instanceof ElementRef)? container.nativeElement:document.querySelector(container);
+    }
+    return fromEvent(elem, 'scroll').pipe(
+      debounceTime(debounceT),
+      map(event => windowScroll(event)),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Crée un Observable pour le scroll window avec debounce.
+   * Utilisé pour le sticky simulé via translateY sur mobile/tablet.
+   *
+   * @param debounceMs - Délai de debounce en ms (défaut: 100)
+   * @returns Observable<number> émettant le scrollY après debounce
+   *
+   * Usage dans composant:
+   * ```typescript
+   * this.$navigation.stickyScroll$(100).pipe(
+   *   takeUntil(this.destroy$)
+   * ).subscribe(scrollY => {
+   *   this.menuStickyTransform = Math.max(0, scrollY - navbarHeight);
+   *   this.$cdr.detectChanges();
+   * });
+   * ```
+   */
+  registerStickyScroll$(debounceMs: number = 100) {
+    return fromEvent(window, 'scroll').pipe(
+      debounceTime(debounceMs),
+      distinctUntilChanged(),
+      map(() => window.scrollY || window.pageYOffset)
+    );
   }
 
 }

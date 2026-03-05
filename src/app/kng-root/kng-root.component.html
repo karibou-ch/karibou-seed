@@ -9,16 +9,6 @@
 <div class="swipe-panel side">
   <div class="hub-side-panel">
 
-    <!-- WALLET (utilisateur authentifié) -->
-    <kng-wallet [user]="user" *ngIf="isAuthenticated"></kng-wallet>
-
-    <!-- MAIL CONFIRMATION -->
-    <kng-mail-confirmation [user]="user" *ngIf="isAuthenticated && !user.isReady()">
-    </kng-mail-confirmation>
-
-    <!-- FEEDBACK -->
-    <kng-feedback [config]="config" [user]="user" *ngIf="isAuthenticated">
-    </kng-feedback>
 
     <!-- PARAMÈTRES (non authentifié) -->
     <div class="settings-section" *ngIf="!isAuthenticated">
@@ -45,24 +35,38 @@
       </kng-slider>
     </div>
 
-    <!-- QUICK ACTIONS (utilisateur authentifié) -->
-    <div class="quick-actions" *ngIf="isAuthenticated">
-      <h4>{{llabel.quick_actions_title}}</h4>
+    <!-- ACCOUNT MENU (utilisateur authentifié) -->
+    <div class="account-menu" *ngIf="isAuthenticated">
+      <h4>Mon compte</h4>
 
-      <a class="quick-link" [routerLink]="'/store/'+store+'/me/orders'">
-        <i class="material-symbols-outlined">receipt_long</i>
-        <span>{{llabel.title_orders}}</span>
-        <span class="badge" *ngIf="pendingOrdersCount">{{pendingOrdersCount}}</span>
+      <a class="menu-item" [routerLink]="'/store/'+store+'/me/orders'">
+        <span class="menu-label">Vos commandes</span>
+        <i class="material-symbols-outlined">arrow_forward_ios</i>
       </a>
 
-      <a class="quick-link" [routerLink]="'/store/'+store+'/me/subscriptions'">
-        <i class="material-symbols-outlined">update</i>
-        <span>{{llabel.title_account_subscriptions}}</span>
+      <a class="menu-item" [routerLink]="'/store/'+store+'/me/invoices'">
+        <span class="menu-label">Vos factures</span>
+        <i class="material-symbols-outlined">arrow_forward_ios</i>
       </a>
 
-      <a class="quick-link" [routerLink]="'/store/'+store+'/me/invoices'">
-        <i class="material-symbols-outlined">description</i>
-        <span>{{llabel.title_invoices_open}}</span>
+      <a class="menu-item" [routerLink]="'/store/'+store+'/me/email'">
+        <span class="menu-label">Votre adresse mail</span>
+        <i class="material-symbols-outlined">arrow_forward_ios</i>
+      </a>
+
+      <a class="menu-item" [routerLink]="'/store/'+store+'/me/addresses'">
+        <span class="menu-label">Vos adresses de livraison</span>
+        <i class="material-symbols-outlined">arrow_forward_ios</i>
+      </a>
+
+      <a class="menu-item" [routerLink]="'/store/'+store+'/me/payments'">
+        <span class="menu-label">Vos méthodes de paiement</span>
+        <i class="material-symbols-outlined">arrow_forward_ios</i>
+      </a>
+
+      <a class="menu-item" [routerLink]="'/store/'+store+'/me/subscriptions'">
+        <span class="menu-label">Vos abonnements</span>
+        <i class="material-symbols-outlined">arrow_forward_ios</i>
       </a>
     </div>
 
@@ -71,6 +75,9 @@
       <i class="material-symbols-outlined">login</i>
       <span>{{llabel.title_account_sign}}</span>
     </a>
+
+    <!-- WALLET (utilisateur authentifié) -->
+    <kng-wallet [user]="user" *ngIf="isAuthenticated"></kng-wallet>
 
   </div>
 </div>
@@ -177,8 +184,13 @@
   <div class="hub-sidebar-panel">
 
 
+    <!-- MAIL CONFIRMATION -->
+    <kng-mail-confirmation [user]="user" *ngIf="isAuthenticated && !user.isReady()">
+    </kng-mail-confirmation>
+
+
     <!-- MARKETPLACE SWITCHER (si plusieurs marchés) -->
-    <kng-nav-marketplace
+    <kng-nav-marketplace hidden
       (updated)="doOpenMarket($event)"
       [hidden]="lockedHUB"
       [config]="config"
