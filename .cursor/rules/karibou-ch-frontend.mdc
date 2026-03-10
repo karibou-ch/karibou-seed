@@ -42,6 +42,66 @@ src/
 
 ## 3. Conventions de Nommage et de Codage
 
+### 3.0 🗓️ Règle Absolue — CalendarService comme Proxy Unique pour les Dates
+
+**⚠️ INTERDIT** : Toute manipulation directe de `Date` dans les composants ou pages Angular.
+
+Les calculs de dates, offsets, comparaisons de jours, conversions timezone **doivent toujours passer par `CalendarService`** (`$calendar`). Cette règle s'applique à tous les projets frontend (`karibou-seed`, `kio2-admin`).
+
+#### ❌ Patterns interdits dans les composants
+
+```typescript
+// ❌ Arithmétique directe sur Date
+const d = new Date();
+d.setDate(d.getDate() + 1);
+while (d.getDay() !== target) { d.setDate(d.getDate() + 1); }
+
+// ❌ new Date() sans normalisation hub timezone
+const tomorrow = new Date();
+tomorrow.setHours(0, 0, 0, 0);
+
+// ❌ Comparaisons weekday sans hub context
+if (date.getDay() === 1) { ... }
+```
+
+#### ✅ Patterns obligatoires — déléguer à `$calendar`
+
+```typescript
+// ✅ Prochain jour correspondant à un dayOfWeek (avec startDate optionnel)
+const date = this.$calendar.firstDeliveryDate(dayOfWeek, startDate, hub);
+
+// ✅ Prochaine date de livraison valide (hub weekdays + noshipping)
+const next = this.$calendar.nextShippingDay(hub);
+
+// ✅ Liste des dates disponibles (avec contraintes capacité, noshipping)
+const dates = this.$calendar.getValidShippingDatesForHub(hub, { days: 7 });
+
+// ✅ Conversion UTC → timezone Hub (pour comparaisons business)
+const hubDate = this.$calendar.toHubTime(utcDate, hub);
+
+// ✅ Formatage pour affichage (timezone Swiss automatique)
+const display = this.$calendar.formatForClient(utcDate, hub);
+```
+
+#### Méthodes CalendarService disponibles (kng2-core)
+
+| Méthode | Usage |
+|---|---|
+| `firstDeliveryDate(dayOfWeek, startDate?, hub?)` | Première occurrence d'un jour de semaine |
+| `nextShippingDay(hub?)` | Prochain jour de livraison valide du hub |
+| `getValidShippingDatesForHub(hub?, options?)` | Dates disponibles sur N jours |
+| `timeleftBeforeCollect(hub?, timelimit?, when?)` | Temps restant avant limite de commande |
+| `toHubTime(date, hub?)` | Conversion UTC → timezone hub |
+| `formatForClient(date, hub?)` | Affichage localisé (fr-CH, Europe/Zurich) |
+| `getDefaultTimeByDay(day, hub?)` | Slot horaire par défaut selon le jour |
+| `isDayAvailable(day, availableDays)` | Validation disponibilité d'un jour |
+
+#### Pourquoi cette règle
+
+- **Timezone Swiss** : `new Date()` retourne la timezone du navigateur client (Tokyo, NYC…). `toHubTime()` normalise vers Europe/Zurich pour des calculs cohérents.
+- **Hub weekdays** : un jour "valide" dépend de la config du hub (weekdays, noshipping, currentRanks). Seul `CalendarService` connaît ces contraintes.
+- **Cohérence backend** : `calendar.js` backend et `CalendarService` frontend partagent la même logique. Pas de divergence possible si on passe par le proxy.
+
 ### TypeScript / Angular
 
 -   **Modules / Composants / Services :** Les noms de classes utilisent `PascalCase`. Les noms de fichiers utilisent `kebab-case` et sont suffixés par leur type (`.component.ts`, `.service.ts`, `.module.ts`).
