@@ -1,0 +1,38 @@
+<div class="order-items" *ngIf="order">
+  <ng-container *ngFor="let group of orderGroups">
+    <h4 class="title-separator" *ngIf="group.title">{{group.title}}</h4>
+    <div class="items-card">
+      <div class="list-item auto-line" *ngFor="let item of group.order.items" [class.selected-row]="selected[item.sku]">
+        <div class="graphic">
+          <input
+            *ngIf="editable"
+            type="checkbox"
+            [checked]="selected[item.sku]"
+            [(ngModel)]="selected[item.sku]">
+          <i *ngIf="!editable" class="material-symbols-outlined icon" [class.red]="showRefundState && item.fulfillment?.refunded">{{icon}}</i>
+        </div>
+
+        <div class="item">
+          <div class="header title" (click)="toggleSelected(item.sku)">
+            {{item.quantity}}x {{item.title}}
+          </div>
+          <div class="subtitle">
+            <span *ngIf="item.part">{{item.part}}</span>
+            <small class="refund-chip" *ngIf="showRefundState && item.fulfillment?.refunded">rembourse</small>
+          </div>
+
+          <div class="content" *ngIf="editable && selected[item.sku]">
+            <label>{{texts?.title_issue_item}}</label>
+            <textarea rows="2" [(ngModel)]="item.note" kng-autosize></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="actions" *ngIf="showBasketAction">
+    <wa-button appearance="filled-outlined" variant="brand" size="small" pill (click)="onAddAllToCart($event)">
+      <i slot="start" class="material-symbols-outlined">add_shopping_cart</i>{{texts?.title_add_all_to_cart}}
+    </wa-button>
+  </div>
+</div>

@@ -1,9 +1,7 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
-import { Config, User, Order, OrderService, EnumFinancialStatus, CartService, Utils, ProductService, CartItem, UserService, OrderItem, OrderCustomerInvoices, CartSubscription } from 'kng2-core';
-import { KngNavigationStateService, i18n, NotifyService } from '../../common';
-
-import { combineLatest, forkJoin } from 'rxjs';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, Input, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { AssistantService, Config, User, Order, OrderService, OrderCustomerInvoices } from 'kng2-core';
+import { i18n, NotifyService } from '../../common';
+import { combineLatest, Subscription } from 'rxjs';
 
 
 @Component({
@@ -31,6 +29,11 @@ export class KngFeedbackComponent implements OnInit {
       title_evaluation: 'Votre note',
       title_evaluation_quick: 'Votre <b>évaluation</b> en étoiles ?',
       title_evaluation_save: 'Votre note',
+      title_quick_send: 'Envoyer',
+      title_quick_problem: 'Signaler un probleme',
+      title_quick_options: 'Options',
+      title_view_items: 'Voir les articles',
+      title_refund: 'Remboursement',
       title_issue_question: 'Avez-vous rencontré un problème?',
       title_issue_hub: 'Vous pouvez aussi laisser un commentaire à notre équipe',
       title_issue_title: 'N\hésitez pas d\'informer le commerçant si nécessaire',
@@ -38,6 +41,10 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_item:'Message à transmettre au commerçant:',
       title_issue_header: 'Sélectionnez le(s) article(s) ci-dessous pour informer le commerçant.',
       title_issue_send: 'Envoyez la note',
+      title_issue_analyze: 'Analyser votre feedback',
+      title_issue_analyzing: 'Analyse en cours...',
+      title_issue_analysis: 'Analyse de l agent',
+      title_close_screen: 'Fermer la fenetre',
       title_invoice:'Vos factures',
       title_invoice_open:'Ouvrir l\'espace facture',
       title_invoice_paid:'Facture payée, en attente du virement bancaire',
@@ -57,6 +64,11 @@ export class KngFeedbackComponent implements OnInit {
       title_evaluation: 'Your feeling in stars ?',
       title_evaluation_quick: '<b>Rate</b> your Satisfaction for this order',
       title_evaluation_save: 'Your rating',
+      title_quick_send: 'Send',
+      title_quick_problem: 'Report a problem',
+      title_quick_options: 'Options',
+      title_view_items: 'View items',
+      title_refund: 'Refund',
       title_issue_question: 'An issue with your order ?',
       title_issue_title: 'You have an issue with a product',
       title_issue_item:'Message to send to the merchant:',
@@ -64,6 +76,10 @@ export class KngFeedbackComponent implements OnInit {
       title_issue_header: 'Select the product(s) below to inform the vendor.',
       title_issue_hub: 'If you have a more general comment please write here',
       title_issue_send: 'Send your feedback',
+      title_issue_analyze: 'Analyze your feedback',
+      title_issue_analyzing: 'Analyzing...',
+      title_issue_analysis: 'Agent analysis',
+      title_close_screen: 'Close the window',
       title_invoice:'Your invoices',
       title_invoice_open:'View all invoices',
       title_invoice_paid:'Invoice paid, waiting for Bank transfer',
@@ -72,20 +88,25 @@ export class KngFeedbackComponent implements OnInit {
     }
   };
 
-  private _user:User;
-  private _orders:Order[];
+  private _user: User;
+  private _orders: Order[];
+  private _ordersSub: Subscription;
+  private _hasExplicitOrders = false;
 
-  askFeedback = false;
-  isReady = false;
-  order: Order;
-  isExpandedOrder = false;
-  selectedOrder: Order;
-  selectedOrderPopup:Order;
-  childOrder: { [key: number]: Order[]};
-  selected: any = {};
+  currentOrder: Order;
+  feedbackOrder: Order;
+  issueOrder: Order;
+  selectedOrderPopup: Order;
+  expandedFeedbackOrderOid: number;
+  childOrder: { [key: number]: Order[] };
+  selected: { [key: string]: boolean } = {};
   score: number;
   feedbackText: string;
-  HUBS:any = {};
+  analysisText: string;
+  isAnalyzing = false;
+  isAnalysisReady = false;
+  isSubmittingQuick = false;
+  HUBS: any = {};
 
   currentLimit: number;
   premiumLimit: number;
@@ -96,13 +117,12 @@ export class KngFeedbackComponent implements OnInit {
   @Input() config: Config;
   @Input() boxed: boolean;
   @Input() forceload: boolean;
-  @Input() set user(u:User){
+  @Input() set user(u: User) {
     this._user = u;
-    setTimeout(()=>{
-      this.prepareOrders();
-    },1)
+    this.prepareOrders();
   }
-  @Input() set orders(orders: Order[]){
+  @Input() set orders(orders: Order[]) {
+    this._hasExplicitOrders = orders !== undefined;
     this._orders = (orders||[]);
     this.prepareOrders();
   }
@@ -123,21 +143,8 @@ export class KngFeedbackComponent implements OnInit {
     return this.$i18n.locale;
   }
 
-  get childOrderLength() {
-    return this.childOrder[this.order.oid].length;
-  }
-
-
-  get user():User {
+  get user(): User {
     return this._user;
-  }
-  //
-  //
-  get time(){
-    if(!this.order) {
-      return '';
-    }
-    return ((this.order.shipping.when.getTime()-Date.now())/3600000).toFixed(0);
   }
 
   get label(){
@@ -152,12 +159,8 @@ export class KngFeedbackComponent implements OnInit {
     return this._orders;
   }
 
-  get hasInvoiceMethod() {
-    return this.user.payments.some(payment => payment.issuer == 'invoice');
-  }
-
   get hasInvoiceTransfer() {
-    return this.invoices.some(invoice => invoice.transfers.length)
+    return this.invoices.some(invoice => invoice.transfers.length);
   }
 
   get qrbillTransfer(){
@@ -169,7 +172,7 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   get hasInvoice() {
-    return this.invoices.some(invoice => invoice.invoices.length)
+    return this.invoices.some(invoice => invoice.invoices.length);
   }
 
   get qrbillInvoice() {
@@ -181,88 +184,27 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   constructor(
-    public $products: ProductService,
-    public $cart: CartService,
     public  $i18n: i18n,
-    private $navigation: KngNavigationStateService,
     private $snack: NotifyService,
-    private $user: UserService,
     private $order: OrderService,
+    private $assistant: AssistantService,
     private $cdr: ChangeDetectorRef,
-    private router: Router,
   ) {
     this._orders = [];
     this.invoices = [];
-  }
-
-
-    //
-  // order state
-  // - undefined
-  // - voided(cancel)
-  // - authorized
-  // - paid
-  // - evaluated
-  get orderState() {
-    if (!this.order) {
-      return;
-    }
-    //
-    // evaluated
-    if (this.order.score) {
-      return 'evaluated';
-    }
-
-    //
-    // pedning
-    if (this.order.payment.status === 'pending') {
-      return 'pending';
-    }
-
-
-    //
-    // cancel
-    if (this.order.payment.status === 'voided') {
-      return 'voided';
-    }
-
-    //
-    // auth
-    if (['authorized','prepaid'].indexOf(this.order.payment.status)>-1) {
-      return 'authorized';
-    }
-
-    //
-    // auth
-    if (['partially_refunded','invoice','invoice_paid','paid'].indexOf(this.order.payment.status)>-1) {
-      return 'paid';
-    }
+    this.childOrder = {};
+    this.feedbackText = '';
+    this.analysisText = '';
   }
 
   ngOnDestroy() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
-  }
-  ngOnChanges() {
+    this._ordersSub?.unsubscribe();
   }
 
   ngOnInit() {
     this.currentLimit = this.config.shared.hub.currentLimit || 1000;
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-
     this.config.shared.hubs.forEach(hub => this.HUBS[hub.id]=hub.name);
-
-  }
-
-  displayEvaluate() {
-    if (!this.order || this.order.score !== undefined) {
-      return false;
-    }
-
-    return this.score >= 0 && this.score < 5;
-  }
-
-  evaluate(score) {
-    this.score = score;
   }
 
   getOrderHUB(order) {
@@ -274,74 +216,102 @@ export class KngFeedbackComponent implements OnInit {
     return this.label.weekdays.split('_')[idx];
   }
 
-  isOpen(order: Order) {
+  getOrderState(order: Order) {
     if (!order) {
-      return false;
-    }
-    return !!(order.oid && !order.closed);
-  }
-
-
-  isEvaluable(order: Order) {
-    if (!order) {
-      return false;
-    }
-    if (order.score) {
-      return false;
-    }
-    return !this.isOpen(order);
-  }
-
-  // FIXME, scheduler should be in API
-  hasPotentialShippingReductionMultipleOrder() {
-    return this.$cart.hasPotentialShippingReductionMultipleOrder();
-  }
-
-
-  prepareOrders() {
-    const localInit = async () => {
-
-      this.prepareChildOrder();
-      // FIXME order.shipping should not be Null
-      const mains = this.orders.filter(order => order.shipping).filter(order => !order.shipping.parent);
-      if (mains && mains.length) {
-        this.order = mains[0];
-        this.order.items.filter(item => item.fulfillment.request).forEach(item => this.selected[item.sku] = true);
-        this.score = this.order.score;
-      }
-
-    };
-
-    if (!this.user.id) {
-      this.order = null;
       return;
     }
 
-    this._orders = this.orders.sort((a,b)=> b.oid-a.oid);
+    if (order.score !== undefined && order.score !== null) {
+      return 'evaluated';
+    }
 
+    if (order.payment?.status === 'pending') {
+      return 'pending';
+    }
 
-    //
-    // only needed to display latest order in boxed way
-    if(this.orders.length){
-      localInit();
+    if (order.payment?.status === 'voided') {
+      return 'voided';
+    }
+
+    if (['authorized', 'prepaid'].indexOf(order.payment?.status) > -1) {
+      return 'authorized';
+    }
+
+    if (['partially_refunded', 'invoice', 'invoice_paid', 'paid'].indexOf(order.payment?.status) > -1) {
+      return 'paid';
+    }
+  }
+
+  getChildOrders(order: Order): Order[] {
+    if (!order) {
+      return [];
+    }
+    return this.childOrder[order.oid] || [];
+  }
+
+  prepareOrders() {
+    if (!this.user?.id) {
+      this.currentOrder = null;
+      this.feedbackOrder = null;
+      this.issueOrder = null;
+      return;
+    }
+
+    this._orders = [...this.orders].sort((a, b) => b.oid - a.oid);
+
+    if (this._hasExplicitOrders && this.orders.length) {
+      this.initializeOrders();
       this.boxed = true;
       return;
     }
 
-    combineLatest([
+    this._ordersSub?.unsubscribe();
+    this._ordersSub = combineLatest([
       this.$order.customerInvoices(),
-      this.$order.findOrdersByUser(this.user, {limit: 2})
+      // Fetch a wider window so the home widget can show both
+      // the active order and the latest delivered order.
+      this.$order.findOrdersByUser(this.user, {limit: 10})
     ]).subscribe(([invoices,orders]) => {
       this.invoices = invoices;
       this._orders = orders || [];
-
-      localInit();
+      this.initializeOrders();
       this.$cdr.markForCheck();
     });
+  }
 
+  initializeOrders() {
+    this.prepareChildOrder();
+    const mains = this.getMainOrders();
+    this.currentOrder = this.pickCurrentOrder(mains);
+    this.feedbackOrder = this.pickFeedbackOrder(mains, this.currentOrder);
+  }
 
-    // this.$order.findOrdersByUser(this.user, {limit: 5}).subscribe(orders => {
-    // });
+  getMainOrders(): Order[] {
+    return this.orders
+      .filter(order => order?.shipping)
+      .filter(order => !order.shipping.parent)
+      .sort((a, b) => b.oid - a.oid);
+  }
+
+  pickCurrentOrder(orders: Order[]): Order {
+    return orders.find(order => {
+      const state = this.getOrderState(order);
+      return state === 'pending' || state === 'authorized';
+    });
+  }
+
+  pickFeedbackOrder(orders: Order[], currentOrder?: Order): Order {
+    const candidates = orders.filter(order => !currentOrder || order.oid !== currentOrder.oid);
+    const actionable = candidates.find(order => this.getOrderState(order) === 'paid');
+    if (actionable) {
+      return actionable;
+    }
+
+    if (this._hasExplicitOrders) {
+      return candidates.find(order => this.getOrderState(order) === 'evaluated');
+    }
+
+    return null;
   }
 
   prepareChildOrder() {
@@ -357,25 +327,98 @@ export class KngFeedbackComponent implements OnInit {
   }
 
 
-  openIssue(score?) {
-    //
-    // DIALOG INIT HACK
-    document.body.classList.add('mdc-dialog-scroll-lock');
-    this.askFeedback = true;
-    if(score>=0) {
-      this.score=score;
+  openIssue(order: Order, score?) {
+    this.issueOrder = order;
+    this.feedbackText = '';
+    this.analysisText = '';
+    this.isAnalyzing = false;
+    this.isAnalysisReady = false;
+    this.score = order.score;
+    if (score >= 0) {
+      this.score = score;
     }
   }
 
-  openOrder(order){
-    document.body.classList.add('mdc-dialog-scroll-lock');
+  openOrder(order: Order) {
     this.selectedOrderPopup = order;
   }
 
+  setScore(score: number) {
+    this.score = score;
+  }
+
+  setFeedbackText(text: string) {
+    this.feedbackText = text;
+    this.analysisText = '';
+    this.isAnalysisReady = false;
+  }
+
+  analyzeIssue() {
+    if (!this.issueOrder || !this.feedbackText?.trim() || this.isAnalyzing) {
+      return;
+    }
+
+    const prompt = this.buildIssueAnalysisPrompt(this.issueOrder, this.feedbackText.trim());
+
+    this.isAnalyzing = true;
+    this.isAnalysisReady = false;
+    this.analysisText = '';
+
+    this.$assistant.chat({
+      q: prompt,
+      agent: 'feedback',
+      hub: this.store
+    }).subscribe({
+      next: (chunk: string) => {
+        this.analysisText = `${this.analysisText}${chunk || ''}`.replace('**traitement...**', '').trim();
+        this.$cdr.markForCheck();
+      },
+      error: (err) => {
+        this.isAnalyzing = false;
+        this.analysisText = '';
+        this.isAnalysisReady = false;
+        this.$snack.open(err?.error || err?.message || 'Erreur pendant l analyse');
+        this.$cdr.markForCheck();
+      },
+      complete: () => {
+        this.isAnalyzing = false;
+        this.analysisText = this.analysisText.trim();
+        this.isAnalysisReady = !!this.analysisText;
+        this.$cdr.markForCheck();
+      }
+    });
+  }
+
+  buildIssueAnalysisPrompt(order: Order, feedback: string): string {
+    const items = this.getOrdersForIssue(order)
+      .flatMap(issueOrder => issueOrder.items.map(item => [
+        `- ${item.quantity}x ${item.title}`,
+        item.sku ? `[SKU:${item.sku}]` : '',
+        item.part ? `(${item.part})` : ''
+      ].filter(Boolean).join(' ')))
+      .join('\n');
+
+    return [
+      'Analyse un feedback client de commande.',
+      'Determine si le probleme concerne un produit, plusieurs produits, la livraison, le service, ou un vendeur specifique.',
+      'Retourne une synthese courte et operationnelle en francais.',
+      '',
+      `Commande: ${order.oid}`,
+      `Produits:\n${items}`,
+      '',
+      `Feedback client:\n${feedback}`,
+      '',
+      'Format attendu:',
+      '- Type: produit | produits | livraison | service | vendeur',
+      '- Cible: SKU(s) ou vendeur si identifiable',
+      '- Resume: 1 a 3 phrases',
+      '- Action recommandee: phrase courte'
+    ].join('\n');
+  }
 
   onAddAllToCart(order: Order) {
-    this.addAllToCart.emit(this.order);
-    const complements = this.childOrder[this.order.oid];
+    this.addAllToCart.emit(order);
+    const complements = this.getChildOrders(order);
     if (complements) {
       for (const complement of complements) {
         this.addAllToCart.emit(complement);
@@ -386,44 +429,41 @@ export class KngFeedbackComponent implements OnInit {
   }
 
   onBack() {
-    document.body.classList.remove('mdc-dialog-scroll-lock');
     this.selectedOrderPopup = null;
-    this.askFeedback = false;
+    this.issueOrder = null;
+    this.analysisText = '';
+    this.isAnalyzing = false;
+    this.isAnalysisReady = false;
   }
 
   onEvaluate() {
-    //
-    // available issues:
-    //  - issue_no_issue,
-    //  - issue_logistic,
-    //  - issue_missing_client_id,
-    //  - issue_missing_product,
-    //  - issue_wrong_product_quality,
-    //  - issue_wrong_packing
-    // all selected sku => issue_wrong_product_quality
-    // all items.fulfillment.request NOT IN (selected sku) => issue_no_issue
-    const skus = Object.keys(this.selected);
+    if (!this.issueOrder || !this.feedbackText?.trim() || !this.isAnalysisReady) {
+      return;
+    }
+
+    const effectiveScore = Number.isInteger(this.score) ? this.score : 0;
     const items = [];
-    const orders:Order[] = this.childOrder[this.order.oid].concat([this.order])
+    const orders = this.getOrdersForIssue(this.issueOrder);
 
-    //
-    // clean items first
-    this.order.items.filter(item => item.fulfillment.request && skus.indexOf(item.sku + '') === -1).forEach(item => {
-      item.fulfillment.request = 'issue_no_issue';
-      items.push(item);
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        item.fulfillment.request = 'issue_wrong_product_quality';
+        items.push(item);
+      });
     });
 
-    //
-    // add issue
-    this.order.items.filter(item => skus.indexOf(item.sku + '') > -1).forEach(item => {
-      item.fulfillment.request = 'issue_wrong_product_quality';
-      items.push(item);
-    });
-    this.$order.requestIssue(this.order, items, this.score, this.feedbackText).subscribe(
+    const message = this.isAnalysisReady && this.analysisText
+      ? [
+          `Feedback client:\n${this.feedbackText?.trim() || ''}`,
+          `Analyse agent:\n${this.analysisText.trim()}`
+        ].join('\n\n')
+      : this.feedbackText?.trim();
+
+    this.$order.requestIssue(this.issueOrder, items, effectiveScore, message).subscribe(
       (info) => {
-        // console.log('----',info)
         this.$snack.open('Message envoyé merci!');
-        this.order.score = this.score;
+        this.issueOrder.score = effectiveScore;
+        this.initializeOrders();
         this.onBack();
         this.$cdr.markForCheck();
       }, http => {
@@ -432,8 +472,51 @@ export class KngFeedbackComponent implements OnInit {
     );
   }
 
-  toggleDetails() {
-    this.isExpandedOrder = !this.isExpandedOrder;
+  onQuickEvaluate(order: Order, score: number) {
+    if (!order || !Number.isInteger(score) || this.isSubmittingQuick) {
+      return;
+    }
+
+    const items = this.buildRequestItems(order, 'issue_no_issue');
+    this.isSubmittingQuick = true;
+
+    this.$order.requestIssue(order, items, score).subscribe(
+      () => {
+        order.score = score;
+        this.initializeOrders();
+        this.$snack.open('Feedback envoye merci!');
+        this.isSubmittingQuick = false;
+        this.$cdr.markForCheck();
+      },
+      http => {
+        this.isSubmittingQuick = false;
+        this.$snack.open(http.error);
+        this.$cdr.markForCheck();
+      }
+    );
+  }
+
+  buildRequestItems(order: Order, request: string) {
+    const items = [];
+    this.getOrdersForIssue(order).forEach(groupedOrder => {
+      groupedOrder.items.forEach(item => {
+        const nextItem: any = Object.assign({}, item);
+        nextItem.fulfillment = Object.assign({}, item.fulfillment || {}, { request });
+        items.push(nextItem);
+      });
+    });
+    return items;
+  }
+
+  getOrdersForIssue(order: Order): Order[] {
+    return [order].concat(this.getChildOrders(order));
+  }
+
+  toggleDetails(order: Order) {
+    if (!order) {
+      return;
+    }
+    this.expandedFeedbackOrderOid = this.expandedFeedbackOrderOid === order.oid ? null : order.oid;
   }
 
   isPending(order: Order) {

@@ -1,0 +1,17 @@
+.stars {
+  width: 2rem;
+  color: #aaa;
+  display: inline-flex;
+  justify-content: center;
+  font-size: 1.75rem;
+  line-height: 1;
+
+  &.interactive {
+    cursor: pointer;
+  }
+
+  &.scored,
+  &.interactive:hover {
+    color: gold;
+  }
+}

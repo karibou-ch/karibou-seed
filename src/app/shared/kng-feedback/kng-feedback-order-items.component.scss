@@ -1,0 +1,136 @@
+@use './kng-feedback-common' as common;
+
+.order-items {
+  @include common.full-width-stack(0.5rem);
+
+  .title-separator {
+    margin: 0.125rem 0 0;
+    font-size: var(--wa-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+
+  .items-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    border: 1px solid var(--mdc-theme-appbar);
+    border-radius: var(--wa-border-radius-l);
+    background: var(--wa-color-surface-raised);
+    overflow: hidden;
+  }
+
+  .list-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
+    align-items: start;
+    padding: 0.5rem;
+    min-width: 0;
+    max-width: 100%;
+    border-top: 1px solid var(--mdc-theme-appbar);
+
+    &:first-child {
+      border-top: 0;
+    }
+  }
+
+  .list-item.selected-row {
+    background-color: var(--mdc-theme-appbar-light);
+  }
+
+  .graphic {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+
+    input {
+      width: 1rem;
+      height: 1rem;
+      margin: 0;
+    }
+
+    .icon {
+      font-size: 1rem;
+      color: var(--mdc-theme-text-secondary-on-background);
+    }
+  }
+
+  .item {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .header {
+    cursor: pointer;
+  }
+
+  .title {
+    font-size: var(--wa-font-size-s);
+    font-weight: 600;
+    color: var(--mdc-theme-text-primary-on-background);
+    overflow-wrap: anywhere;
+  }
+
+  .subtitle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.125rem;
+    font-size: var(--wa-font-size-xs);
+    color: var(--mdc-theme-text-secondary-on-background);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .refund-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999rem;
+    padding: 0.125rem 0.375rem;
+    background: color-mix(in srgb, var(--mdc-theme-karibou-pink) 12%, white);
+    color: var(--mdc-theme-karibou-pink);
+    font-size: var(--wa-font-size-2xs);
+    font-weight: 600;
+  }
+
+  .content {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: var(--wa-font-size-xs);
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid var(--mdc-theme-appbar);
+    border-radius: var(--wa-border-radius-s);
+    padding: 0.375rem 0.5rem;
+    min-height: 4.5rem;
+    background: var(--wa-color-surface-default);
+    resize: vertical;
+  }
+
+  .actions {
+    margin-top: 0.125rem;
+  }
+
+  i.material-symbols-outlined {
+    @include common.inline-material-icon();
+  }
+
+  .icon.red {
+    color: var(--mdc-theme-karibou-pink);
+  }
+}

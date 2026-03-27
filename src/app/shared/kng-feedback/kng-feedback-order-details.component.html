@@ -1,0 +1,22 @@
+<div class="kng-order-details" *ngIf="order">
+  <kng-feedback-order-items
+    [order]="order"
+    [childOrders]="childOrders"
+    [texts]="texts"
+    [showBasketAction]="false"
+    [showRefundState]="true"
+    icon="inventory_2">
+  </kng-feedback-order-items>
+
+  <div class="actions">
+    <wa-button appearance="filled-outlined" variant="neutral" size="small" pill *ngIf="!isPending(order)" (click)="onAddAllToCart(order, $event)">
+      <i slot="start" class="material-symbols-outlined">add_shopping_cart</i>{{texts?.title_add_all_to_cart}}
+    </wa-button>
+    <wa-button appearance="filled-outlined" variant="neutral" size="small" pill *ngIf="isPending(order)" (click)="onCancel(order, $event)">
+      <i slot="start" class="material-symbols-outlined">cancel</i>{{texts?.title_cancel_order}}
+    </wa-button>
+    <wa-button appearance="filled-outlined" variant="brand" size="small" pill *ngFor="let complement of childOrders" [hidden]="!isPending(complement)" (click)="onCancel(complement, $event)">
+      <i slot="start" class="material-symbols-outlined">cancel</i>Annuler le complément
+    </wa-button>
+  </div>
+</div>

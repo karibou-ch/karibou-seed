@@ -1,0 +1,26 @@
+<div class="kng-feedback-card" [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState == 'pending'">
+  <div class="order-label">
+    {{texts?.title_order_pending}} {{order.oid}}
+  </div>
+  <div class="content">
+    <div class="progress-label">{{progressLabel}}</div>
+    <progress max="100" [value]="progressValue" class="kng-progress"></progress>
+  </div>
+</div>
+
+<div class="kng-feedback-card processing kng-card kng-card--soft"  *ngIf="orderState == 'authorized'">
+  <div class="order-label">
+    Vous avez une commande en preparation pour
+    <b>{{order.shipping.when | date:'EEEE d':'':locale}}</b>
+    (réf: {{order.rank || order.oid}})
+  </div>
+
+  <div class="content">
+    <div class="progress-label">{{progressLabel}}</div>
+    <progress max="100" [value]="progressValue" class="kng-progress"></progress>
+    <div class="bottom">
+      <wa-button appearance="filled-outlined" variant="neutral" size="small" pill (click)="onOpenOrder($event)">{{texts?.title_order_open}}</wa-button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<ng-container *ngFor="let star of stars">
+  <span
+    class="stars material-symbols-outlined"
+    [class.scored]="score >= star"
+    [class.interactive]="interactive"
+    (click)="onSelect(star)">
+    {{icon}}
+  </span>
+</ng-container>

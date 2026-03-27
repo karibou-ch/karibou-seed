@@ -1,239 +1,68 @@
-<!-- ACCEUIL -->
 <div class="customer" *ngIf="!boxed">
-
-  <div class="kng-boxed  bill with-border" [hidden]="!hasInvoiceTransfer || hasInvoice" [class.boxed]="boxed">
-    <div class="label">{{i18n[locale].title_invoice_paid}}</div>
+  <div class="kng-boxed bill with-border" [hidden]="!hasInvoiceTransfer || hasInvoice" [class.boxed]="boxed">
+    <div class="label">{{llabel.title_invoice_paid}}</div>
     <div class="content">
-      <p>{{qrbillTransfer|| 'Aucune facture en attente'}}</p>
-      <div class="bottom"><button class="" [routerLink]="'/store/'+store+'/home/me/invoices'">{{i18n[locale].title_invoice_open}}</button> </div>
-    </div>
-  </div>
-
-
-</div>
-<!-- ORDER PENDING -->
-<div class="" [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState=='pending'" >
-  <div class="label">
-    {{i18n[locale].title_order_pending}} {{order.oid}}
-  </div>
-  <div class="content">
-    <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>
-  </div>
-</div>
-
-<!-- ORDER OPEN -->
-<div class="processing " [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState=='authorized'" >
-  <div class="label">{{i18n[locale].title_order_placed}} {{order.oid}}</div>
-
-  <div class="content">
-      {{i18n[locale].title_order_prepare}}&nbsp; <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b>
-      {{i18n[locale].title_order_shipping}} <b class="-text-capitalize">{{order.shipping.name}}</b>
-      &nbsp;
+      <p>{{qrbillTransfer || 'Aucune facture en attente'}}</p>
       <div class="bottom">
-        <button (click)="openOrder(order)" class="issue" >{{i18n[locale].title_order_open}}</button>
+        <wa-button appearance="filled-outlined" variant="neutral" size="small" pill [routerLink]="'/store/' + store + '/home/me/invoices'">{{llabel.title_invoice_open}}</wa-button>
       </div>
-      <progress max="100" [value]="order.getProgress()/100+10" class="kng-progress"></progress>
-
-  </div>
-
-</div>
-
-<!--- ORDER IS CANCEL -->
-<div class="feedback  " [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState=='voided'">
-  <h3>
-    <span class="bold">{{hubName}} </span>
-    <span class="text-capitalize">{{order.shipping.when|date:'EEE d MMM y'}}</span>,
-      {{i18n[locale].title_order_cancel}}
-      <span class="text-strike">{{order.getTotalPrice()|currency:'CHF'}}</span>
-  </h3>
-</div>
-
-<!--- ORDER IS EVALUATED -->
-<div class="feedback  " [class.kng-boxed]="!boxed" [hidden]="!boxed" *ngIf="orderState=='evaluated'">
-  <div class="details" >
-    <span class="text-capitalize">
-      {{order.shipping.when|date:'EEE d MMM y':'':locale}}
-    </span>
-    <span>
-      &nbsp;{{order.items.length}} articles
-    </span>
-    <span>
-      &nbsp;{{order.getTotalPrice()|currency:'CHF'}}
-    </span>
-  </div>
-  <div class="form">
-    <span>{{i18n[locale].title_evaluation}}</span>&nbsp;
-    <span class="stars material-symbols-outlined" [class.scored]="score>=0">star</span>
-    <span class="stars material-symbols-outlined" [class.scored]="score>=1">star</span>
-    <span class="stars material-symbols-outlined" [class.scored]="score>=2">star</span>
-    <span class="stars material-symbols-outlined" [class.scored]="score>=3">star</span>
+    </div>
   </div>
 </div>
 
-<!--- ORDER IS PAID -->
-<div class="kng-feedback-bar with-border" *ngIf="orderState=='paid'" (click)="toggleDetails()">
-    <div class="info">
-        {{label.home_feedback_title}} <br> <b>{{order.shipping.when|date:'EEE d MMM y':'':locale}}</b>
-    </div>
-    <div class="details">
-        {{order.items.length}} articles<br>
-        {{order.getTotalPrice()|currency:'CHF'}}
-    </div>
-    <div class="action hide-sm">
-        <button (click)="openIssue()" class="issue" >{{i18n[locale].title_issue_question}}</button>
-    </div>
-</div>
+<kng-feedback-last-delivered-card
+  *ngIf="feedbackOrder"
+  [order]="feedbackOrder"
+  [orderState]="getOrderState(feedbackOrder)"
+  [boxed]="boxed"
+  [locale]="locale"
+  [texts]="llabel"
+  [isSubmittingQuick]="isSubmittingQuick"
+  [expanded]="expandedFeedbackOrderOid === feedbackOrder.oid"
+  [childOrders]="getChildOrders(feedbackOrder)"
+  (openIssue)="openIssue($event)"
+  (quickSubmit)="onQuickEvaluate(feedbackOrder, $event)"
+  (reportIssue)="openIssue(feedbackOrder, $event)"
+  (openOrder)="openOrder($event)"
+  (toggleDetails)="toggleDetails($event)"
+  (addAllToCart)="onAddAllToCart($event)"
+  (cancelOrder)="onCancelOrder($event)">
+</kng-feedback-last-delivered-card>
 
-<div class="kng-order-details" *ngIf="isExpandedOrder">
-  <ul>
-    <li *ngFor="let item of order.items" [class.strike]="item.fulfillment?.status=='failure'">
-      {{item.quantity}}x {{item.title}} ({{item.part}})
-      <span class="issue red" [hidden]="!item.fulfillment?.refunded">remboursé</span>
-    </li>
-  </ul>
-  <!--- ORDER COMPLEMENT -->
-  <ul *ngFor="let complement of childOrder[order.oid]">
-    <li class="bold">En complément</li>
-    <li *ngFor="let item of complement.items" [class.strike]="item.fulfillment?.status=='failure'">
-      {{item.quantity}}x {{item.title}} ({{item.part}})
-      <span class="issue red" [hidden]="!item.fulfillment?.refunded">remboursé</span>
-    </li>
-  </ul>
-  <ul class="actions">
-    <li [hidden]="!isPending(order)">
-      <a href="javascript:;" class="black smaller " (click)="onCancelOrder(order)">
-        <i class="material-symbols-outlined">cancel</i>{{i18n[locale].title_cancel_order}}
-      </a>
-    </li>
-    <li *ngFor="let complement of childOrder[order.oid]" [hidden]="!isPending(complement)">
-      <a href="javascript:;" class="black smaller " (click)="onCancelOrder(complement)">
-        <i class="material-symbols-outlined">cancel</i>Annuler le complément
-      </a>
-    </li>
-    <li [hidden]="isPending(order)">
-      <a href="javascript:;" class="black smaller " (click)="onAddAllToCart(order)">
-        <i class="material-symbols-outlined">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}
-      </a>
-    </li>
-  </ul>
-</div>
+<kng-feedback-current-order-card
+  *ngIf="currentOrder"
+  [order]="currentOrder"
+  [orderState]="getOrderState(currentOrder)"
+  [boxed]="boxed"
+  [locale]="locale"
+  [texts]="llabel"
+  (openOrder)="openOrder($event)"
+  (cancelOrder)="onCancelOrder($event)">
+</kng-feedback-current-order-card>
 
-<!-- FEEDBACK POPUP -->
-<ng-container *ngIf="askFeedback">
-  <div class="blured" ></div>
-  <div class="kng-modal-overlay">
-    <button (click)="onBack()" class="kng-modal-close">
-        <span class="size-xlarge  material-symbols-outlined">close</span>
-    </button>
-    <div class="kng-modal-content feedback-container" >
+<kng-feedback-issue-modal
+  *ngIf="issueOrder"
+  [order]="issueOrder"
+  [childOrders]="getChildOrders(issueOrder)"
+  [feedbackText]="feedbackText"
+  [analysisText]="analysisText"
+  [isAnalyzing]="isAnalyzing"
+  [isAnalysisReady]="isAnalysisReady"
+  [texts]="llabel"
+  [locale]="locale"
+  [audioKey]="config?.shared?.keys?.pubUpcare"
+  (close)="onBack()"
+  (feedbackTextChange)="setFeedbackText($event)"
+  (analyzeIssue)="analyzeIssue()"
+  (submitIssue)="onEvaluate()">
+</kng-feedback-issue-modal>
 
-
-      <h3>{{i18n[locale].title_issue_title}}</h3>
-
-      <div class="stars">
-
-      </div>
-
-      <p [innerHtml]="i18n[locale].title_issue_header"></p>
-
-      <!-- ORDER ITEMS -->
-      <ng-container
-        [ngTemplateOutlet]="orderItems"
-        [ngTemplateOutletContext]="{ $implicit: order }">
-      </ng-container>
-
-
-      <p>
-
-        <label for="feedback">{{i18n[locale].title_issue_hub}}</label>
-        <textarea kng-autosize rows="2" [(ngModel)]="feedbackText"> </textarea>
-
-      </p>
-      <!-- ORDER FEEDBACK -->
-      <div class="form">
-        <!-- Annulation {{order.getFulfilledFailure()}} -
-        Problème {{order.getFulfilledIssue().length}} -->
-        <span class="" [innerHtml]="i18n[locale].title_evaluation_quick"></span>&nbsp;
-        <span class="stars material-symbols-outlined" (click)="evaluate(0)" [class.scored]="score>=0">star_rate</span>
-        <span class="stars material-symbols-outlined" (click)="evaluate(1)" [class.scored]="score>=1">star_rate</span>
-        <span class="stars material-symbols-outlined" (click)="evaluate(2)" [class.scored]="score>=2">star_rate</span>
-        <span class="stars material-symbols-outlined" (click)="evaluate(3)" [class.scored]="score>=3">star_rate</span>
-      </div>
-
-      <!-- FEEDBACK ACTIONS -->
-      <button  (click)="onEvaluate()" [disabled]="">{{i18n[locale].title_issue_send}}</button>
-
-    </div>
-  </div>
-</ng-container>
-
-<!-- ITEMS POPUP -->
-<ng-container *ngIf="selectedOrderPopup">
-
-  <div class="blured" ></div>
-  <div class="kng-modal-overlay">
-    <button (click)="onBack()" class="kng-modal-close">
-        <span class="size-xlarge  material-symbols-outlined">close</span>
-    </button>
-    <div class="kng-modal-content feedback-container" >
-      <h2>{{order.shipping.when|date:'EEEE d MMM y':'':locale}}</h2>
-
-      <!-- ORDER ITEMS -->
-      <ng-container
-        [ngTemplateOutlet]="orderItems"
-        [ngTemplateOutletContext]="{ $implicit: selectedOrderPopup }">
-      </ng-container>
-
-
-      <div class="breaker small"></div>
-
-      <!-- ORDER FEEDBACK -->
-
-      <!-- FEEDBACK ACTIONS -->
-
-    </div>
-  </div>
-
-</ng-container>
-
-<ng-template #orderItems let-order>
-  <ul>
-    <li *ngFor="let item of order.items"
-        [class.selected]="selected[item.sku]" >
-        <div class="header"(click)="selected[item.sku]=!selected[item.sku]">
-          <input type="checkbox" [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]" [hidden]="!order.closed">
-          {{item.quantity}}x {{item.title}} ({{item.part}})
-        </div>
-        <div class="content" [hidden]="!selected[item.sku]">
-          <label for="story">{{i18n[locale].title_issue_item}}</label>
-          <textarea id="story" class=""  rows="2" [(ngModel)]="item.note" kng-autosize>
-          </textarea>
-        </div>
-    </li>
-  </ul>
-  <ul *ngFor="let complement of childOrder[order.oid]">
-    <li class="bold">En complément</li>
-    <li *ngFor="let item of complement.items"
-        [class.selected]="selected[item.sku]">
-
-        <div class="header"(click)="selected[item.sku]=!selected[item.sku]">
-          <input type="checkbox" [checked]="selected[item.sku]" [(ngModel)]="selected[item.sku]">
-          {{item.quantity}}x {{item.title}} ({{item.part}})
-        </div>
-        <div class="content" [hidden]="!selected[item.sku]">
-          <label for="story">{{i18n[locale].title_issue_item}}</label>
-          <textarea id="story" class=""  rows="2" [(ngModel)]="item.note" kng-autosize>
-          </textarea>
-        </div>
-    </li>
-  </ul>
-  <ul >
-    <li class="add-to-cart">
-      <a href="javascript:;" class="black smaller "
-      (click)="onAddAllToCart(order)" i18n>
-      <i class="material-symbols-outlined " style="transform: translateY(5px);font-size:16px;">add_shopping_cart</i>{{i18n[locale].title_add_all_to_cart}}</a>
-    </li>
-
-  </ul>
-
-</ng-template>
+<kng-feedback-order-modal
+  *ngIf="selectedOrderPopup"
+  [order]="selectedOrderPopup"
+  [childOrders]="getChildOrders(selectedOrderPopup)"
+  [texts]="llabel"
+  [locale]="locale"
+  (close)="onBack()"
+  (addAllToCart)="onAddAllToCart($event)">
+</kng-feedback-order-modal>

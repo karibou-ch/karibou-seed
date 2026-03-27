@@ -1,0 +1,70 @@
+<div class="feedback-card" [class.kng-boxed]="!boxed" [class.boxed]="boxed" *ngIf="orderState == 'evaluated' || orderState == 'paid'">
+  <div class="card-header">
+    <div class="eyebrow">Derniere commande</div>
+    <wa-dropdown placement="bottom-end" distance="1" close-on-select (wa-select)="onDropdownSelect($any($event))">
+      <wa-button slot="trigger" appearance="plain"variant="neutral" size="small">
+        <span class="material-symbols-outlined">more_horiz</span>
+      </wa-button>
+      <wa-dropdown-item value="details">
+        {{expanded ? 'Masquer les articles' : texts?.title_view_items}}
+      </wa-dropdown-item>
+      <wa-dropdown-item value="issue">
+        {{texts?.title_quick_problem}}
+      </wa-dropdown-item>
+    </wa-dropdown>
+  </div>
+
+  <div class="summary">
+    <div class="summary-main">
+      <div class="summary-date">{{order.shipping.when | date:'EEE d MMM y':'':locale}}</div>
+      <div class="summary-meta">
+        <span>{{order.items.length}} articles</span>
+        <span>{{order.getTotalPrice() | currency:'CHF'}}</span>
+        <span class="refund-tag" *ngIf="hasRefund">{{texts?.title_refund}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section quick-feedback" *ngIf="orderState == 'paid'">
+    <div class="section-copy">
+      <div class="section-title">Donner un feedback rapide</div>
+      <div class="section-subtitle">Choisissez une note, puis envoyez-la directement ou signalez un probleme.</div>
+    </div>
+    <div class="quick-feedback-actions">
+      <div class="quick-feedback-line">
+        <kng-feedback-stars
+          [score]="selectedScore"
+          [interactive]="true"
+          (scoreChange)="onQuickRate($event)">
+        </kng-feedback-stars>
+
+        <div class="quick-feedback-buttons" *ngIf="selectedScore >= 0">
+          <wa-button variant="brand" size="small" pill (click)="onQuickSubmit($event)" [disabled]="isSubmittingQuick">
+            {{texts?.title_quick_send}}
+          </wa-button>
+          <wa-button variant="neutral" size="small" pill (click)="onReportIssue($event)">
+            {{texts?.title_quick_problem}}
+          </wa-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section rated" *ngIf="orderState == 'evaluated'">
+    <div class="section-copy">
+      <div class="section-title">{{texts?.title_evaluation}}</div>
+      <div class="section-subtitle">Votre retour a deja ete enregistre.</div>
+    </div>
+    <kng-feedback-stars [score]="order.score" icon="star"></kng-feedback-stars>
+  </div>
+
+</div>
+
+<kng-feedback-order-details
+  *ngIf="orderState == 'paid' && expanded"
+  [order]="order"
+  [childOrders]="childOrders"
+  [texts]="texts"
+  (addAllToCart)="addAllToCart.emit($event)"
+  (cancelOrder)="cancelOrder.emit($event)">
+</kng-feedback-order-details>

@@ -1,0 +1,15 @@
+@use './kng-feedback-common' as common;
+
+@include common.host-box-sizing();
+
+.kng-order-details {
+  @include common.full-width-stack(0.5rem);
+
+  .actions {
+    @include common.full-width-stack(0.375rem);
+  }
+
+  i.material-symbols-outlined {
+    @include common.inline-material-icon();
+  }
+}

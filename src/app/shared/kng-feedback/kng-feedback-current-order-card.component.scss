@@ -1,0 +1,51 @@
+@use './kng-feedback-common' as common;
+
+@include common.host-frame();
+
+.kng-feedback-card {
+  @include common.surface-shell();
+}
+
+.kng-feedback-card.kng-card {
+  @include common.boxed-card-container();
+}
+
+.order-label {
+  margin: 0;
+  margin-bottom: 0.75rem;
+  font-size: var(--wa-font-size-s);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--mdc-theme-text-primary-on-background);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.order-label b {
+  font-weight: 600;
+}
+
+.content {
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-label {
+  font-size: var(--wa-font-size-xs);
+  font-weight: 600;
+  color: var(--mdc-theme-text-secondary-on-background);
+}
+
+.bottom {
+  margin-top: 0.75rem;
+}
+
+progress {
+  display: block;
+  width: 100%;
+}
