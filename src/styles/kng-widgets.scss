@@ -258,6 +258,16 @@
       gap: var(--wa-space-l);
     }
   }
+
+  &.kng-layout-card--card {
+    justify-items: stretch;
+    align-items: stretch;
+    grid-template-columns: repeat(2, minmax(auto, 50%));
+  }
+
+  &.kng-layout-card--tiny {
+    justify-items: stretch;
+  }
 }
 
 /**The category button with same aspect of product-thumbnail   */
@@ -608,62 +618,6 @@ button.default.secondary,
     background-color: var(--mdc-theme-primary-light)!important;
     color: #333!important;
     border-color: var(--wa-color-neutral-border-quiet)!important;
-  }
-}
-
-.kng-order-details {
-  background-color: #fafafa;
-  padding: 16px 24px;
-  margin: 0 8px;
-  border-radius: 0 0 16px 16px;
-  box-shadow: inset 0 4px 8px -4px rgba(0,0,0,0.1);
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 0.95rem;
-
-    li {
-      padding: 6px 0;
-      display: flex;
-      align-items: center;
-
-      &.strike {
-        text-decoration: line-through;
-        color: #888;
-      }
-      .issue {
-        color: var(--mdc-theme-karibou-pink, #da1c5c);
-        font-weight: 500;
-        margin-left: auto;
-      }
-    }
-  }
-
-  ul.actions {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--wa-color-neutral-border-quiet);
-    display: flex;
-    gap: var(--wa-space-m);
-
-    a {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      gap: var(--wa-space-s);
-
-      &:hover {
-        color: var(--mdc-theme-primary);
-      }
-
-      i {
-        font-size: 20px;
-      }
-    }
   }
 }
 

@@ -74,7 +74,9 @@ body{
       radial-gradient(circle at top right, var(--mdc-theme-secondary-light) 0%, transparent 50%),
       radial-gradient(ellipse at bottom right, var(--mdc-theme-secondary-light) 0%, transparent 0%);
 
-    background: radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%);
+   background:
+     radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
+     radial-gradient(circle at bottom right, var(--mdc-theme-appbar) 0%, transparent 60%);
   }
 
   // FIXME remove this hardcoding
