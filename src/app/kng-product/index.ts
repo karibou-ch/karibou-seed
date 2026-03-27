@@ -4,3 +4,8 @@ export * from './product-list.component';
 export * from './product.component';
 export * from './product-swipe.component';
 export * from './product-grouped-list.component';
+export * from './product-template';
+export * from './product-view-detailled.component';
+export * from './product-view-thumbnail.component';
+export * from './product-view-card.component';
+export * from './product-view-tiny.component';

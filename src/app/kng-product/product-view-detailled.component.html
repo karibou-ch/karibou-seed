@@ -1,0 +1,245 @@
+<div class="product-dialog fadeout" [class.is-searching]="productCtrl.isSearching" #dialog>
+  <div class="product-backdrop"></div>
+  <div class="product-dialog__surface">
+    <div class="topbar" [class.sticked]="productCtrl.scrollStickedToolbar" [style.width.px]="productCtrl.clientWidth">
+      <button (click)="productCtrl.onClose(true)" class="close">
+        <span class="material-symbols-outlined size-large">arrow_back</span>
+      </button>
+      <div class="title text-overflow">{{productCtrl.product.title}}</div>
+    </div>
+
+    <div class="product-wide" [class.incart]="productCtrl.currentDisplayQuantity">
+      <article class="product-card card-skeleton"
+        [class.incart]="productCtrl.currentDisplayQuantity"
+        [class.noavailable]="!productCtrl.isAvailableForOrder"
+        [class.timelimited]="productCtrl.getTimelimitForOrder"
+        [class.timelimit]="productCtrl.isOutOfTimelimitForOrder"
+        [class.insubs]="productCtrl.cartSubsQuantity"
+        [class.noinstock]="!productCtrl.isInStockForOrder">
+
+        <section>
+          <div class="media" [ngStyle]="productCtrl.bgStyle">
+            <img src="/assets/img/k-highlight.png" class="highlight-new" hidden />
+            <img [hidden]="!productCtrl.product.vendor.photo?.owner"
+              [src]="productCtrl.product.vendor.photo?.owner" alt="160x160"
+              class="photo-owner">
+
+            <div class="product-available">
+              non disponible
+            </div>
+
+            <div class="product-timelimit">
+              <span>{{productCtrl.label.after_order}} {{productCtrl.hoursAndMinutesAfterOrder}}</span>
+            </div>
+
+            <div class="product-in-subscription">
+              <div class="material-symbols-outlined size-medium green">schedule</div>
+              <div>&nbsp;abo en cours</div>
+            </div>
+
+            <div class="product-timelimited">
+              <span>{{productCtrl.label.before_order}} {{productCtrl.hoursAndMinutesLeftBeforeOrder}}</span>&nbsp;
+              <div class="label">{{productCtrl.glabel.action_day_limit}}</div>
+            </div>
+
+            <button class="action-add right" (click)="productCtrl.addToCart($event, productCtrl.product)">
+              <span class="material-symbols-outlined size-medium">add</span>
+            </button>
+            <button class="action-remove" (click)="productCtrl.removeToCart($event, productCtrl.product)">
+              <span class="material-symbols-outlined size-medium">remove</span>
+            </button>
+            <div class="info-quantity">{{productCtrl.currentDisplayQuantity}}</div>
+
+            <div class="info-portion" [hidden]="!productCtrl.hasVariation(productCtrl.product)">
+              <div class="">
+                Fr {{productCtrl.product.pricing.part|basepriceex:productCtrl.product.pricing.price}}
+              </div>
+            </div>
+
+            <div *ngIf="productCtrl.openVariant" class="product-variants">
+              <ul>
+                <li (click)="productCtrl.addToCart($event, productCtrl.product, variant.short)"
+                  *ngFor="let variant of productCtrl.product.variants">{{variant.short}}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="header">
+            <div class="title">{{productCtrl.product.title}}</div>
+            <div class="part">
+              {{productCtrl.product.pricing.part}}
+            </div>
+            <div class="price">
+              <span [class.discount]="productCtrl.product.attributes.discount">
+                Fr {{productCtrl.product.pricing.price| number:'1.2-2'}}
+              </span>
+              <span [hidden]="!productCtrl.product.attributes.discount">
+                <span class="red">Fr {{productCtrl.product.pricing.discount| number:'1.2-2'}}</span>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <div class="description">
+          <div [kng-markdown]="productCtrl.product.details.description" [removeRoot]="true"></div>
+          <div [hidden]="!productCtrl.product.details?.origin" class="light" [innerHtml]="productCtrl.product.details.origin"></div>
+        </div>
+
+        <div class="certified">
+          <ul class="info" [hidden]="!productCtrl.product.quantity.display && !productCtrl.product.shelflife.display">
+            <li>{{productCtrl.product.quantity.comment}}</li>
+            <li>{{productCtrl.product.shelflife.comment}}</li>
+          </ul>
+
+          <div class="kng-chip-content">
+            <div class="kng-chip secondary-on-text" [hidden]="!productCtrl.product.attributes.subscription">
+              <span class="material-symbols-outlined size-medium">more_time</span>
+              <span>Abonnement</span>
+            </div>
+            <div class="kng-chip secondary-on-text" [hidden]="!productCtrl.product.attributes.business">
+              <span class="material-symbols-outlined size-medium">more_time</span>
+              <span>Entreprise</span>
+            </div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.nitrite"><span>Sans-nitrite</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.handmade"><span>Fait main</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.homemade"><span>Artisanal</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.local"><span>Local</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.lactose"><span>Sans lactose</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.gluten"><span>Sans gluten</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.grta"><span>GRTA</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.bio&&!productCtrl.product.details.biodynamics"><span>BIO</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.biodynamics"><span>Biodynamie</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.bioconvertion"><span>Bioconversion</span></div>
+            <div class="kng-chip" [hidden]="!productCtrl.product.details.natural"><span>Sans chimie de synthèse</span></div>
+          </div>
+        </div>
+
+        <kng-audio-note-enhanced
+          type="item"
+          class="product-note"
+          [hidden]="!productCtrl.cartItemQuantity"
+          [filename]="productCtrl.audioFileName"
+          [locale]="productCtrl.locale"
+          [key]="productCtrl.config.shared.keys.pubUpcare"
+          [amount]="productCtrl.product.pricing.price * productCtrl.cartItemQuantity"
+          (onAudioReady)="productCtrl.onAudioStopAndSave($event)"
+          (onAudioError)="productCtrl.onAudioError($event)">
+          <div slot="header-full" class="note-header">
+            <div>
+              {{productCtrl.glabel.cart_audio}}
+            </div>
+            <div>
+              <b>📌 Note:</b>
+              {{productCtrl.glabel.cart_audio_note}}
+            </div>
+          </div>
+
+          <div slot="response">
+            <em>{{productCtrl.glabel.cart_audio_vendor}}</em>
+          </div>
+        </kng-audio-note-enhanced>
+
+        <div class="recipe">
+          <div class="content bold">
+            {{productCtrl.glabel.james_product_title}}
+          </div>
+          <button class="default secondary" [routerLink]="['/store',productCtrl.store,'home','assistant','james']" [queryParams]="productCtrl.queryParamsRecipe">
+            {{productCtrl.label.james_product_recipe}}
+          </button>
+          <button class="default secondary" [routerLink]="['/store',productCtrl.store,'home','assistant','james']" [queryParams]="productCtrl.queryParamsVariant">
+            {{productCtrl.label.james_product_variant}}
+          </button>
+        </div>
+
+        <div class="breaker small"></div>
+
+        <div [hidden]="!productCtrl.user.isOwnerOrAdmin(productCtrl.product.vendor.name)" class="quick-stock">
+          <div>
+            Éditer &nbsp;
+            <a href="https://admin.karibou.ch/product/{{productCtrl.product.sku}}">le produit</a>&nbsp;--&nbsp;
+            <a href="https://admin.karibou.ch/vendor/{{productCtrl.product.vendor.urlpath}}">la boutique</a>
+          </div>
+          <hr/>
+          <div>Photos formats</div>
+          <div>
+            <a target="_blank" href="https:{{productCtrl.product.photo.url}}">fullwidth</a>&nbsp;
+            <a target="_blank" href="https:{{productCtrl.product.photo.url}}-/resize/300x/">300x(resize)</a>&nbsp;
+            <a target="_blank" href="https:{{productCtrl.product.photo.url}}-/scale_crop/400x300/center/">400x300(center)</a>
+          </div>
+          <hr/>
+        </div>
+
+        <div class="vendor" *ngIf="productCtrl.product.vendor.photo">
+          <a class="link" [routerLink]="['/store',productCtrl.store,'home','shops',productCtrl.product.vendor.urlpath]">
+            <img [hidden]="!productCtrl.product.vendor.photo?.owner" [src]="productCtrl.product.vendor.photo?.owner" align="left" alt="160x160"
+              class="thumbnail-owner photo-owner">
+          </a>
+          <img [hidden]="!productCtrl.product.vendor.photo?.fg||productCtrl.product.vendor.photo?.owner" align="left" [src]="productCtrl.product.vendor.photo?.fg"
+            alt="160x160" class="thumbnail-owner photo-owner">
+
+          <strong>{{productCtrl.product.vendor.name}}</strong>&nbsp;|&nbsp;
+          <span [removeRoot]="true" [kng-markdown]="productCtrl.product.vendor.description"></span>
+        </div>
+
+        <div class="availability">
+          <ul class="list-inline">
+            <li class="hide-sm">
+              <div class="bold">Livraisons:</div>
+              <div class="indicator">&nbsp;</div>
+            </li>
+            <li>
+              <div>Lun.</div>
+              <div class="indicator">
+                <span class="material-symbols-outlined size-small">{{productCtrl.getAvailability(productCtrl.product,1)}}</span>
+              </div>
+            </li>
+            <li>
+              <div>Mar.</div>
+              <div class="indicator">
+                <span class="material-symbols-outlined size-small">{{productCtrl.getAvailability(productCtrl.product,2)}}</span>
+              </div>
+            </li>
+            <li>
+              <div>Mer.</div>
+              <div class="indicator">
+                <span class="material-symbols-outlined size-small">{{productCtrl.getAvailability(productCtrl.product,3)}}</span>
+              </div>
+            </li>
+            <li>
+              <div>Jeu.</div>
+              <div class="indicator">
+                <span class="material-symbols-outlined size-small">{{productCtrl.getAvailability(productCtrl.product,4)}}</span>
+              </div>
+            </li>
+            <li>
+              <div>Ven.</div>
+              <div class="indicator">
+                <span class="material-symbols-outlined size-small">{{productCtrl.getAvailability(productCtrl.product,5)}}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <div class="further-product-container mdc-layout-grid">
+      <section [hidden]="!productCtrl.product.belong.name">
+        <h3>{{productCtrl.product.belong.name}}</h3>
+      </section>
+      <div infiniteScroller
+        [scrollPercent]="0"
+        immediateCallback="false"
+        [infiniteScrollContainer]="dialog"
+        [scrollCallback]="productCtrl.scrollCallback"
+        class="kng-layout-card">
+        <kng-product
+          *ngFor="let product of productCtrl.getProducts(); let j=index"
+          [product]="product"
+          [visibility]="productCtrl.visibleProductsCount > j"
+          template="thumbnail"
+          class="">
+        </kng-product>
+      </div>
+    </div>
+  </div>
+</div>

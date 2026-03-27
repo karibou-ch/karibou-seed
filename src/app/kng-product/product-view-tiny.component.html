@@ -1,0 +1,16 @@
+<img [hidden]="!productCtrl.product.vendor.photo?.fg" align="left"
+  [src]="productCtrl.product.photo?.url+'/-/resize/100x/'"
+  alt="160x160" class="thumbnail-owner photo-owner">
+<a [routerLink]="['/store',productCtrl.store,'products',productCtrl.product.sku,productCtrl.urlTitle]"><strong>{{productCtrl.product.title}}</strong></a>
+<div class="vendor">
+  <span markdown-render="">{{productCtrl.product?.vendor?.name}}</span>
+</div>
+<div class="price">
+  <span [hidden]="productCtrl.product.attributes.discount" class="small green bold">
+    Fr {{productCtrl.product.pricing.price| number:'1.2-2'}}
+  </span>
+  <span [hidden]="!productCtrl.product.attributes.discount">
+    <span class="red bold strike">{{productCtrl.product.pricing.price| number:'1.2-2'}}</span>
+    <span class="green bold small">Fr {{productCtrl.product.pricing.discount| number:'1.2-2'}}</span>
+  </span>
+</div>

@@ -16,7 +16,7 @@
 
 .loader{
   width: 100%;
-  height: 262px;
+  height: 225px;
   margin: 0px;
   img{
     width: 100%;
@@ -25,39 +25,39 @@
 }
 
 
-.product-card.insubs .action-remove,
-.product-card.insubs .action-add
+.product-card-view-thumbnail.insubs .action-remove,
+.product-card-view-thumbnail.insubs .action-add
 {
   visibility: hidden;
 }
 
 
-.product-card.incart .action-remove,
-.product-card.incart .action-add
+.product-card-view-thumbnail.incart .action-remove,
+.product-card-view-thumbnail.incart .action-add
 {
   visibility: visible;
   opacity: 0.8;
 }
 
-.product-card.incart .info-quantity{
+.product-card-view-thumbnail.incart .info-quantity{
   visibility: visible!important;
 }
 
-.product-card.popular .info-score{
+.product-card-view-thumbnail.popular .info-score{
   display: inline-block!important;
 }
-.product-card.noinstock .product-available{
+.product-card-view-thumbnail.noinstock .product-available{
   display: flex!important;
 }
-.product-card.noavailable .product-available{
+.product-card-view-thumbnail.noavailable .product-available{
   display: flex!important;
 }
 
-.product-card.timelimit .vendor-name{
+.product-card-view-thumbnail.timelimit .vendor-name{
   display: none!important;
 }
-.product-card.timelimit .product-timelimit,
-.product-card.timelimited .product-timelimited{
+.product-card-view-thumbnail.timelimit .product-timelimit,
+.product-card-view-thumbnail.timelimited .product-timelimited{
   display: flex!important;
   align-content: center;
   flex-wrap: wrap;
@@ -68,14 +68,12 @@
   }
 }
 
-.product-card.insubs .product-in-subscription{
+.product-card-view-thumbnail.insubs .product-in-subscription{
   display: flex!important;
 }
 
 
-.product-card{
-  &.selected{
-  }
+.product-card-view-thumbnail{
   height: auto;
   position: relative;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.04),
@@ -342,7 +340,7 @@
       font-weight: 500;
       color: rgb(52, 53, 56);
       padding: 0px 0 4px;
-      -min-height: 36px;
+      min-height: 36px;
       @media (prefers-color-scheme: dark) {
         color: var(--mdc-theme-primary-dark-text);
     }

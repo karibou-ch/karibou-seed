@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
@@ -28,18 +29,24 @@ import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 import { Meta } from '@angular/platform-browser';
+import { ProductTemplate, normalizeProductTemplate, isHydratedProduct } from './product-template';
+import { ProductViewDetailledComponent } from './product-view-detailled.component';
 
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
 @Component({
   selector: 'kng-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    'style': 'display:block;width:100%;min-width:0;'
+  }
 })
 export class ProductComponent implements OnInit, OnDestroy {
   static WEEK_1: number = 86400 * 7;
 
+  @Input() template: ProductTemplate | string = ProductTemplate.Detailled;
+  @Input('product') productInput: Product;
   @Input() sku: number;
   @Input() config: any;
   @Input() categories: Category[];
@@ -47,8 +54,12 @@ export class ProductComponent implements OnInit, OnDestroy {
   @Input() user: User = new User();
   @Input() displayVendor: boolean|string;
   @Input() displaySubscription: boolean|string;
+  @Input() large: boolean;
+  @Input('visibility') set visibility(value: boolean) {
+    this.hidden = (value === false);
+  }
 
-  @ViewChild('dialog', { static: true }) dialog: ElementRef;
+  @ViewChild(ProductViewDetailledComponent) detailledView: ProductViewDetailledComponent;
 
   public i18n = {
     fr: {
@@ -71,6 +82,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   isSearching: boolean;
   isRedirect: boolean;
   isReady: boolean;
+  hidden = false;
   isDialog = false;
   product: Product = new Product();
   products: Product[];
@@ -94,7 +106,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   //
   // scroll
-  currentPage = 1;
+  currentPage = 0;
   scrollCallback;
   scrollStickedToolbar: boolean;
   timestamp:number;
@@ -122,6 +134,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private readonly UPDATE_INTERVAL = 30000; // Update every 30s
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private zone: NgZone,
     private $meta: Meta,
     private $metric: MetricsService,
@@ -176,45 +189,38 @@ export class ProductComponent implements OnInit, OnDestroy {
    * @returns {number} Largeur en pixels du conteneur moins 2rem, 0 si non disponible
    */
   // ✅ CORRECTION : Cache la largeur pour éviter ExpressionChangedAfterItHasBeenCheckedError
-  private _cachedClientWidth: number = 0;
-  private _lastWidthUpdate: number = 0;
+  clientWidth = 0;
   private _resizeObserver?: ResizeObserver;
-
-  get clientWidth() {
-    // ✅ CORRECTION : Cache pendant 100ms pour éviter les recalculs constants
-    const now = Date.now();
-    if (now - this._lastWidthUpdate < 100 && this._cachedClientWidth > 0) {
-      return this._cachedClientWidth;
-    }
-
-    if(!this.dialog || !this.dialog.nativeElement){
-      return this._cachedClientWidth;
-    }
-
-    //
-    // container.className == "product-dialog__surface"
-    const container = this.dialog.nativeElement.children[1];
-    if (!container) {
-      return this._cachedClientWidth;
-    }
-
-    // FIXME rem should be on utility class
-    // Calcul de la largeur réelle
-    const width = container.clientWidth;
-
-    // Soustrait 2rem (conversion dynamique des rem vers pixels)
-    const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const widthMinus2rem = width - (2 * remValue);
-
-    // ✅ CORRECTION : Cache le résultat
-    this._cachedClientWidth = Math.max(0, widthMinus2rem);
-    this._lastWidthUpdate = now;
-
-    return this._cachedClientWidth;
-  }
 
   get store() {
     return this.$navigation.store;
+  }
+
+  get normalizedTemplate() {
+    return normalizeProductTemplate(this.template);
+  }
+
+  get productCtrl() {
+    return this;
+  }
+
+  get productTemplates() {
+    return ProductTemplate;
+  }
+
+  get useDialogShell() {
+    return this.normalizedTemplate === ProductTemplate.Detailled;
+  }
+
+  get visibleProductsCount() {
+    const batchSize = this.getRelatedProductsBatchSize();
+    const total = this.getProducts()?.length || 0;
+    const visible = Math.max(this.currentPage, batchSize);
+    const remaining = total - visible;
+    if (remaining > 0 && remaining <= batchSize) {
+      return total;
+    }
+    return visible;
   }
 
   get audioFileName() {
@@ -253,6 +259,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   get cartSubsQuantity() {
     const qty = this.$cart.getSubsQtyMap(this.product.sku);
     return qty;
+  }
+
+  get currentDisplayQuantity() {
+    if (this.displaySubscription && this.productActiveSubscription) {
+      return this.cartSubsQuantity;
+    }
+    return this.cartItemQuantity;
   }
 
   get isAvailableForOrder(){
@@ -296,13 +309,24 @@ export class ProductComponent implements OnInit, OnDestroy {
     return (this.product?.title || '').toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
   }
 
+  get cardSummary() {
+    const summary = this.product?.details?.description
+      || this.product?.quantity?.comment
+      || this.product?.pricing?.part
+      || '';
+    return summary
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 120);
+  }
+
   /**
    * ✅ CORRECTION : Invalide le cache de largeur
    * Utile lors de changements de layout ou redimensionnement
    */
   private invalidateWidthCache(): void {
-    this._cachedClientWidth = 0;
-    this._lastWidthUpdate = 0;
+    this.clientWidth = 0;
   }
 
   //
@@ -315,6 +339,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
 
     this.isSearching = this.isReady = false;
+    this.currentPage = this.getRelatedProductsBatchSize();
 
     //
     // use URL state to force subscription action
@@ -327,34 +352,47 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     //
     // dialog display
-    if (!this.sku) {
-
-      this.isDialog = true;
+    if (isHydratedProduct(this.productInput)) {
+      this.photosz = this.getPhotoSize();
+      this.loadProduct(this.productInput);
+    } else if (!this.sku) {
+      this.isDialog = this.useDialogShell;
       this.photosz = '/-/resize/600x/';
-      // this.sku = this.$route.snapshot.params['sku'];
-      this.$route.params.subscribe(params => {
-        if(!params.sku){
-          return;
-        }
-        this.sku = params.sku;
-        this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
-      });
+      if (this.useDialogShell) {
+        this.$route.params.subscribe(params => {
+          if(!params.sku){
+            return;
+          }
+          this.sku = params.sku;
+          this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
+        });
+      }
     } else {
+      this.photosz = this.getPhotoSize();
       this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
     }
 
     //
     // simple animation
     // capture escape only for dialog instance
-    if (this.dialog) {
+    if (this.useDialogShell) {
       //
       // Expression has changed after it was checked
       // https://angular.io/errors/NG0100
-      setTimeout(()=> this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40,0,1000);
+      setTimeout(() => {
+        const dialog = this.getDialog();
+        if (dialog?.nativeElement) {
+          this.scrollStickedToolbar = dialog.nativeElement.scrollTop > 40;
+        }
+      }, 0, 1000);
 
     }
 
     // Start timer to update productTiming
+    if (!this.useDialogShell) {
+      return;
+    }
+
     const updateTime = () => {
       const now = Date.now();
       if (now - this.lastUpdate >= this.UPDATE_INTERVAL) {
@@ -383,17 +421,29 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (this.isDialog) {
+    if (this.isDialog && this.getDialog()) {
       console.log('DEBUG dialog display', this.sku);
       document.body.classList.add('mdc-dialog-scroll-lock');
 
-      this.dialog.nativeElement.classList.remove('fadeout');
+      const dialog = this.getDialog();
+      dialog.nativeElement.classList.remove('fadeout');
+
+      this.zone.runOutsideAngular(() => {
+        setTimeout(() => {
+          this.updateClientWidth();
+          const container = dialog.nativeElement.children[1];
+          if (typeof ResizeObserver !== 'undefined' && container) {
+            this._resizeObserver = new ResizeObserver(() => this.updateClientWidth());
+            this._resizeObserver.observe(container);
+          }
+        }, 0);
+      });
 
       //
       // capture event escape
       const escape = (e) => {
         if (e.key === 'Escape') {
-          this.onClose(this.dialog);
+          this.onClose(this.getDialog());
           document.removeEventListener('keyup', escape);
         }
       };
@@ -564,11 +614,11 @@ export class ProductComponent implements OnInit, OnDestroy {
 
 
   getNextPage() {
-    return timer(10).pipe(map(ctx => this.currentPage += 4));
+    return timer(10).pipe(map(ctx => this.currentPage += this.getRelatedProductsBatchSize()));
   }
 
   getDialog() {
-    return this.dialog;
+    return this.detailledView?.dialog;
   }
 
   getProducts() {
@@ -582,6 +632,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   loadProduct(product) {
     this.product = product;
+    this.photosz = this.getPhotoSize();
     const shippingDay = this.$cart.getCurrentShippingDay();
 
     // ✅ MIGRATION CRITIQUE: Utiliser CalendarService avec interface ProductOrderTiming complète
@@ -736,91 +787,94 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   updateBackground() {
-    // const gradient = `radial-gradient(circle at 50% 0,rgba(255,0,0,.5),rgba(255,0,0,0) 70.71%),
-    //                   radial-gradient(circle at 6.7% 75%,rgba(0,0,255,.5),rgba(0,0,255,0) 70.71%),
-    //                   radial-gradient(circle at 93.3% 75%,rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%)`;
+    if (!this.product?.photo?.url) {
+      return;
+    }
+
+    const isCompactView = [ProductTemplate.Thumbnail, ProductTemplate.Card].includes(this.normalizedTemplate);
     this.bgStyle = {
       'background-image' : 'url(' + this.product.photo.url + this.photosz + ')',
     };
-
     this.bgImage = this.product.photo.url + this.photosz;
+    this.bgGradient = '';
 
-    //
-    // if colors detected
-    this.bgGradient = "";
     const colors = this.product.photo.colors;
-    if (colors && colors.length) {
-      const conicGradient = `conic-gradient(
-        from -90deg,
-        rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5),        /* Top */
-        rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 0deg,  /* Right */
-        rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 90deg, /* Bottom */
-        rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 270deg  /* Left */
-      )`
-
-      const shadow = `-20px 0 32px -18px rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}),
-                    -3px -13px 35px -18px rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b})`;
-
-      this.bgStyle['box-shadow'] = shadow;
-      this.bgStyle['background-image'] = `url(${this.product.photo.url + this.photosz}),${conicGradient}`;
+    if (!colors || !colors.length) {
+      return;
     }
-  }
-}
 
-@Component({
-  selector: 'kng-product-thumbnail',
-  templateUrl: './product-thumbnail.component.html',
-  styleUrls: ['./product-thumbnail.component.scss']
-})
-export class ProductThumbnailComponent extends ProductComponent {
-
-  hidden = true;
-  @Input() large: boolean;
-  @Input('visibility') set visibility(value: boolean) {
-    this.hidden = (!value);
-  }
-
-  bgGradient = `linear-gradient(
-        rgba(50, 50, 50, 0.7),
-        rgba(50, 50, 50, 0.3)
-      )`;
-
-
-
-  updateBackground() {
-    this.bgImage = this.product.photo.url + '/-/resize/300x/-/enhance/50';
-    // this.bgStyle = {
-    //   'background-image' : 'url(' + this.product.photo.url + '/-/resize/250x/)'
-    // };
-
-    const colors = this.product.photo.colors;
-    if (colors && colors.length) {
+    if (isCompactView) {
       this.bgGradient = `linear-gradient(to bottom right,
       rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5),
       rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 25%,
       rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 50%,
       rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 75%)`;
-      this.bgStyle = {
-        'background' : this.bgGradient
-      };
-
+      this.bgStyle = { 'background' : this.bgGradient };
+      if (this.cartItemQuantity) {
+        this.bgStyle = { 'background-color' : this.bgGradient };
+      }
+      return;
     }
 
+    const conicGradient = `conic-gradient(
+      from -90deg,
+      rgba(${colors[0].r}, ${colors[0].g}, ${colors[0].b},0.5),
+      rgba(${colors[1].r}, ${colors[1].g}, ${colors[1].b},0.25) 0deg,
+      rgba(${colors[2].r}, ${colors[2].g}, ${colors[2].b},0.5) 90deg,
+      rgba(${colors[3].r}, ${colors[3].g}, ${colors[3].b},0.5) 270deg
+    )`;
 
-    if (this.cartItemQuantity) {
-      this.bgStyle = {
-        'background-color' : this.bgGradient
-      };
+    const shadow = `-20px 0 32px -18px rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}),
+                  -3px -13px 35px -18px rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b})`;
+
+    this.bgStyle['box-shadow'] = shadow;
+    this.bgStyle['background-image'] = `url(${this.product.photo.url + this.photosz}),${conicGradient}`;
+  }
+  private getPhotoSize() {
+    switch (this.normalizedTemplate) {
+      case ProductTemplate.Thumbnail:
+      case ProductTemplate.Card:
+        return '/-/resize/300x/-/enhance/50';
+      case ProductTemplate.Tiny:
+        return '/-/resize/100x/';
+      case ProductTemplate.Detailled:
+      default:
+        return '/-/resize/600x/';
     }
   }
 
-}
+  private getRelatedProductsBatchSize() {
+    if (window.innerWidth < 600) {
+      return 4;
+    }
+    if (window.innerWidth < 1200) {
+      return 6;
+    }
+    return 14;
+  }
 
-@Component({
-  selector: 'kng-product-tiny',
-  templateUrl: './product-tiny.component.html',
-  styleUrls: ['./product-tiny.component.scss']
-})
-export class ProductTinyComponent extends ProductComponent {
+  private updateClientWidth() {
+    const dialog = this.getDialog();
+    if (!dialog?.nativeElement) {
+      return;
+    }
+
+    const container = dialog.nativeElement.children[1];
+    if (!container) {
+      return;
+    }
+
+    const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const widthMinus2rem = container.clientWidth - (2 * remValue);
+    const nextWidth = Math.max(0, widthMinus2rem);
+    if (nextWidth === this.clientWidth) {
+      return;
+    }
+
+    this.zone.run(() => {
+      this.clientWidth = nextWidth;
+      this.cdr.markForCheck();
+    });
+  }
 }
 

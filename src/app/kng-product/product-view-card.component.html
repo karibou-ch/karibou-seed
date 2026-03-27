@@ -1,0 +1,64 @@
+<div class="product-card-view-card__header">
+  <div class="product-card-view-card__content">
+    <div class="product-card-view-card__vendor" *ngIf="productCtrl.displayVendor">
+      {{productCtrl.product.vendor?.name}}
+    </div>
+
+    <a class="product-card-view-card__title"
+      [routerLink]="['/store',productCtrl.store,'products',productCtrl.product.sku,productCtrl.urlTitle]"
+      [queryParams]="productCtrl.queryParamsSKU">
+      {{productCtrl.product.title}}
+    </a>
+
+    <div class="product-card-view-card__summary" [hidden]="!productCtrl.cardSummary">
+      {{productCtrl.cardSummary}}
+      <span [hidden]="productCtrl.cardSummary.length < 120">...</span>
+    </div>
+  </div>
+
+  <div class="product-card-view-card__aside">
+    <a class="product-card-view-card__media"
+      [routerLink]="['/store',productCtrl.store,'products',productCtrl.product.sku,productCtrl.urlTitle]"
+      [queryParams]="productCtrl.queryParamsSKU">
+      <div class="media" [ngStyle]="productCtrl.bgStyle">
+        <img [src]="productCtrl.bgImage" class="thumbnail" />
+        <div class="product-available">non disponible</div>
+        <div class="product-in-subscription">
+          <div class="material-symbols-outlined size-medium">schedule</div>
+          <div>abo en cours</div>
+        </div>
+        <div class="product-timelimited">
+          <span>{{productCtrl.label.before_order}} {{productCtrl.hoursAndMinutesLeftBeforeOrder}}</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="product-card-view-card__actions">
+      <button class="product-card-view-card__action-remove" (click)="productCtrl.removeToCart($event,productCtrl.product)">
+        <span class="material-symbols-outlined size-medium">remove</span>
+      </button>
+      <div class="product-card-view-card__quantity">{{productCtrl.currentDisplayQuantity}}</div>
+      <button class="product-card-view-card__action-add" (click)="productCtrl.addToCart($event,productCtrl.product)">
+        <span [hidden]="!productCtrl.displaySubscription" class="material-symbols-outlined size-medium">more_time</span>
+        <span [hidden]="productCtrl.displaySubscription" class="material-symbols-outlined size-medium">add</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="product-card-view-card__footer">
+  <div class="product-card-view-card__meta">
+    <div class="product-card-view-card__part">{{productCtrl.product.pricing.part}}</div>
+    <div class="product-card-view-card__subscription" [hidden]="!productCtrl.displaySubscription || !productCtrl.productActiveSubscription">
+      {{productCtrl.product.quantity.comment}}
+    </div>
+    <div class="product-card-view-card__price">
+      <span [class.discount]="productCtrl.product.attributes.discount">
+        CHF {{productCtrl.product.pricing.price| number:'1.2-2'}}
+      </span>
+      <span [hidden]="!productCtrl.product.attributes.discount" class="red">
+        CHF {{productCtrl.product.pricing.discount| number:'1.2-2'}}
+      </span>
+    </div>
+  </div>
+</div>

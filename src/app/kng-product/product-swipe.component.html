@@ -11,13 +11,14 @@
   </section>
   <div class="content" #scrollEl >
       <div class="kng-layout-card">
-        <kng-product-thumbnail
+        <kng-product
+          [product]="section"
+          template="thumbnail"
           [visibility]="true"
           [displayVendor]="false"
-          [sku]="section.sku"
           *ngFor="let section of products;let j=index"
           class="">
-        </kng-product-thumbnail>
+        </kng-product>
 
       </div>
   </div>

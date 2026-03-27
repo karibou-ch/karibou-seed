@@ -5,13 +5,14 @@
   </section>
 
   <!-- <div class="kng-layout-card" [class]="clazz">
-    <kng-product-thumbnail
+    <kng-product
       *ngFor="let product of selections;let j=index"
+      [product]="product"
+      [template]="itemTemplate"
       [displayVendor]="displayVendor"
       [visibility]="true"
-      [sku]="product.sku"
       [class]="clazz">
-    </kng-product-thumbnail>
+    </kng-product>
   </div> -->
 </div>
 
@@ -31,16 +32,17 @@
     </section>
 
 
-    <div class="kng-layout-card" [class]="clazz">
+    <div class="kng-layout-card" [ngClass]="[itemTemplateClass, clazz]">
         <!-- [hidden]="filterByVendor && product.vendor.urlpath !== filterByVendor" -->
-        <kng-product-thumbnail
+        <kng-product
         *ngFor="let product of group[category.name];trackBy:trackerProducts ;let j=index"
+        [product]="product"
+        [template]="itemTemplate"
         [displayVendor]="displayVendor"
         [displaySubscription]="displaySubscription"
         [visibility]="isVisible(category.slug)"
-        [sku]="product.sku"
         [class]="clazz">
-      </kng-product-thumbnail>
+      </kng-product>
     </div>
     <section class="category-title">
 

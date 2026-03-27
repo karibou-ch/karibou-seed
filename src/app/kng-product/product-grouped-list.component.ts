@@ -23,6 +23,7 @@ import {
 import { fromEvent, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { i18n } from '../common';
+import { ProductTemplate, normalizeProductTemplate } from './product-template';
 
 export interface CategoryView {
   name: string;
@@ -70,7 +71,8 @@ export class ProductGroupedListComponent implements OnInit, AfterViewInit {
   @Input() showMore: boolean;
   @Input() showSection: boolean;
   @Input() contentIf: boolean;
-  @Input() clazz: string;
+  @Input() clazz = '';
+  @Input() itemTemplate: ProductTemplate | string = ProductTemplate.Thumbnail;
   @Input() filterByVendor: string;
   @Input() defaultFrequency: string | CartItemFrequency;
   @Input() scrollContainer: ElementRef;
@@ -215,6 +217,11 @@ export class ProductGroupedListComponent implements OnInit, AfterViewInit {
   get sortedCategories() {
     const customSort = this.useGroupedCategory? this.sortByGroup: this.sortByWeight;
     return this.categories.sort(customSort.bind(this));
+  }
+
+  get itemTemplateClass() {
+    const template = normalizeProductTemplate(this.itemTemplate);
+    return `kng-layout-card--${template}`;
   }
 
 

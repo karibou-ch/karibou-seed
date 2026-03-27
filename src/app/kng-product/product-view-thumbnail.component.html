@@ -1,0 +1,82 @@
+<ng-container *ngIf="productCtrl.hidden; else thumbnailTpl">
+  <div class="loader">
+    <img src="/assets/img/k-product-placeholder.png" />
+  </div>
+</ng-container>
+
+<ng-template #thumbnailTpl>
+  <section [routerLink]="['/store',productCtrl.store,'products',productCtrl.product.sku,productCtrl.urlTitle]" [queryParams]="productCtrl.queryParamsSKU">
+    <div class="media" [ngStyle]="productCtrl.bgStyle" [class.selected]="productCtrl.pinned">
+      <img [src]="productCtrl.bgImage" class="thumbnail" />
+
+      <div class="product-available">
+        non disponible
+      </div>
+
+      <div class="product-in-subscription">
+        <div class="material-symbols-outlined size-medium">schedule</div>
+        <div>abo en cours</div>
+      </div>
+
+      <div *ngIf="productCtrl.openVariant" class="product-variants">
+        <ul>
+          <li (click)="productCtrl.addToCart($event,productCtrl.product,variant.short)"
+            *ngFor="let variant of productCtrl.product.variants">{{variant.short}}</li>
+        </ul>
+      </div>
+
+      <div class="bio">
+        <span [hidden]="!productCtrl.hasLabel(productCtrl.product,'bio')"><i class="material-symbols-outlined green">eco</i> bio</span>
+        <span [hidden]="!productCtrl.hasLabel(productCtrl.product,'bioconvertion')"><i class="material-symbols-outlined green">eco</i> bioconversion</span>
+        <span [hidden]="!productCtrl.hasLabel(productCtrl.product,'biodynamics')"><i class="material-symbols-outlined green">eco</i> biodynamie</span>
+        <span [hidden]="!productCtrl.hasLabel(productCtrl.product,'natural')"><i class="material-symbols-outlined green">eco</i> 100% naturel</span>
+        <span [hidden]="!productCtrl.hasLabel(productCtrl.product,'grta')" class="text-right"> GRTA</span>
+      </div>
+
+      <div class="product-timelimited">
+        <span>{{productCtrl.label.before_order}} {{productCtrl.hoursAndMinutesLeftBeforeOrder}}</span>
+        <div class="label">{{productCtrl.glabel.action_day_limit}}</div>
+      </div>
+
+      <div class="info-quantity">{{productCtrl.currentDisplayQuantity}}</div>
+    </div>
+
+    <button class="action-add right" (click)="productCtrl.addToCart($event,productCtrl.product)">
+      <span [hidden]="!productCtrl.displaySubscription" class="material-symbols-outlined size-medium">more_time</span>
+      <span [hidden]="productCtrl.displaySubscription" class="material-symbols-outlined size-medium">add</span>
+    </button>
+    <button class="action-remove" (click)="productCtrl.removeToCart($event,productCtrl.product)">
+      <span class="material-symbols-outlined size-medium">remove</span>
+    </button>
+    <div class="info-score"><i class="material-symbols-outlined">favorite</i></div>
+
+    <div class="product-header">
+      <div class="product-card__vendor" *ngIf="productCtrl.displayVendor && productCtrl.product.vendor.photo">
+        <div class="vendor-name">{{productCtrl.product.vendor.name}}</div>
+        <div class="product-timelimit">
+          <span>⏰ {{productCtrl.label.after_order_short}} {{productCtrl.hoursAndMinutesAfterOrder}}</span>
+        </div>
+      </div>
+
+      <div class="product-title">{{productCtrl.product.title}}</div>
+      <div class="product-part">
+        {{productCtrl.product.pricing.part}}
+      </div>
+      <div class="product-price">
+        <span [class.discount]="productCtrl.product.attributes.discount">
+          Fr {{productCtrl.product.pricing.price| number:'1.2-2'}}
+        </span>
+
+        <span [hidden]="!productCtrl.product.attributes.discount">
+          <span class="red">{{productCtrl.product.pricing.discount| number:'1.2-2'}}</span>
+        </span>
+      </div>
+
+      <div class="product-subscription" [hidden]="!productCtrl.displaySubscription || !productCtrl.productActiveSubscription">
+        <div>{{productCtrl.product.quantity.comment}}</div>
+      </div>
+    </div>
+
+    <div class="product-card__secondary"></div>
+  </section>
+</ng-template>
