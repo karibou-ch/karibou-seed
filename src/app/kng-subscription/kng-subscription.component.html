@@ -83,6 +83,7 @@
   <div class="product-container" *ngIf="products.length">
     <kng-product-grouped-list
          clazz="subscription"
+         [itemTemplate]="'card'"
          [useMaxCat]="products.length > 40"
          [alphasort]="false"
          [displayVendor]="true"

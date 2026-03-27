@@ -18,7 +18,7 @@
   // .menu-panel hérite de kng-side-menu.scss
   .menu-panel {
     @media (min-width: 1200px) {
-      height: fit-content;
+      height: 100%;
       max-width: 90%;
     }
 
