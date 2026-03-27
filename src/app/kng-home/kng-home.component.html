@@ -77,6 +77,9 @@
   <!-- PINNED PRODUCTS (isMinimal for b2b-school) -->
   <kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user" [boost]="true" [hub]="store"></kng-product-swipe>
 
+  <!-- FAVORITES PRODUCTS (isMinimal for b2b-school) -->
+  <kng-product-swipe class="boost theme-gradient" *ngIf="!isMinimal" [user]="user" [favorite]="true" [hub]="store"></kng-product-swipe>
+
   <!-- MOBILE SEARCH  [hidden]="isMinimal"  use right panel for search -->
   <kng-search class="home" hidden [themes]="themes" [class.active]="availableSearch"></kng-search>
 
