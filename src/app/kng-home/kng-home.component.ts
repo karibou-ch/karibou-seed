@@ -516,6 +516,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     if(this.isMinimal||options.lastMinute){
       delete options.pinned;
       delete options.popular;
+      if(!options.lastMinute) {
+        options.home = true;
+      }
     }
 
 
