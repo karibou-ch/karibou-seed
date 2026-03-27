@@ -23,9 +23,11 @@ import {
   ProductListComponent,
   KngProductListByShopComponent,
   ProductGroupedListComponent,
-  ProductThumbnailComponent,
   ProductComponent,
-  ProductTinyComponent
+  ProductViewCardComponent,
+  ProductViewDetailledComponent,
+  ProductViewThumbnailComponent,
+  ProductViewTinyComponent
 } from '../kng-product';
 
 /**
@@ -74,11 +76,13 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
     KngBusinessOptionComponent,
     // Composants Product
     ProductComponent,
-    ProductTinyComponent,
+    ProductViewDetailledComponent,
+    ProductViewThumbnailComponent,
+    ProductViewCardComponent,
+    ProductViewTinyComponent,
     ProductListComponent,
     KngProductListByShopComponent,
     ProductGroupedListComponent,
-    ProductThumbnailComponent,
     ProductSwipeComponent,
     // Composants Page
     KngHomeComponent,
@@ -104,11 +108,9 @@ import { KngShopComponent, KngShopsComponent } from '../kng-shops/kng-shops.comp
     KngBusinessOptionComponent,
     // Composants Product
     ProductComponent,
-    ProductTinyComponent,
     ProductListComponent,
     KngProductListByShopComponent,
     ProductGroupedListComponent,
-    ProductThumbnailComponent,
     ProductSwipeComponent,
     // Composants Page
     KngHomeComponent,

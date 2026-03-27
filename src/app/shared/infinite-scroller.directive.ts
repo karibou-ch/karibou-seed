@@ -1,6 +1,6 @@
-import { Directive, AfterViewInit, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core';
+import { Directive, AfterViewInit, ElementRef, Input, OnDestroy } from '@angular/core';
 
-import { Observable, Subscription, fromEvent } from 'rxjs';
+import { Subscription, fromEvent } from 'rxjs';
 import { exhaustMap, filter, map, pairwise, startWith } from 'rxjs/operators';
 
 interface ScrollPosition {
@@ -51,9 +51,9 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
   scrollPercent = 70;
 
   @Input()
-  infiniteScrollContainer;
+  infiniteScrollContainer?: ElementRef | HTMLElement | string;
 
-  constructor(private renderer: Renderer2, private elm: ElementRef) {
+  constructor(private elm: ElementRef) {
 
   }
 
@@ -71,23 +71,29 @@ export class InfiniteScrollerDirective implements AfterViewInit, OnDestroy {
   }
 
   private registerScrollEvent() {
-    //
-    // read documentation about renderer
-    // https://netbasal.com/angular-2-explore-the-renderer-service-e43ef673b26c
-    let elem = this.elm.nativeElement;
-    if (this.infiniteScrollContainer) {
-      //TODO get ElementRef from HTMLDivElement ??;
-      //TODO get scroll from ElementRef
-      //TODO scroll with rxjs6 https://www.bennadel.com/blog/3446-monitoring-document-and-element-scroll-percentages-using-rxjs-in-angular-6-0-2.htm
-      // console.log('---container',this.infiniteScrollContainer,fromEvent(this.infiniteScrollContainer, 'scroll'));
-      if (this.infiniteScrollContainer instanceof ElementRef) {
-        elem = this.infiniteScrollContainer.nativeElement;
-      } else {
-        elem = document.querySelector(this.infiniteScrollContainer);
-      }
-      elem = elem || window;
-    }
+    const elem = this.resolveScrollContainer();
     this.scrollEvent$ = fromEvent(elem, 'scroll');
+  }
+
+  private resolveScrollContainer(): HTMLElement | Window {
+    const target = this.infiniteScrollContainer;
+    if (!target) {
+      return this.elm.nativeElement;
+    }
+
+    if (target instanceof ElementRef) {
+      return target.nativeElement;
+    }
+
+    if (typeof HTMLElement !== 'undefined' && target instanceof HTMLElement) {
+      return target;
+    }
+
+    if (typeof target === 'string') {
+      return document.querySelector(target) as HTMLElement || window;
+    }
+
+    return window;
   }
 
   private streamScrollEvents() {

@@ -25,6 +25,13 @@ import { KngUiBottomActionsComponent } from '../shared/kng-ui-bottom-actions/kng
 import { KngSearchBarComponent, KngSearchComponent } from '../shared';
 import { KngNewsComponent } from './kng-news/kng-news.component';
 import { KngFeedbackComponent } from '../shared/kng-feedback/kng-feedback.component';
+import { KngFeedbackCurrentOrderCardComponent } from '../shared/kng-feedback/kng-feedback-current-order-card.component';
+import { KngFeedbackIssueModalComponent } from '../shared/kng-feedback/kng-feedback-issue-modal.component';
+import { KngFeedbackLastDeliveredCardComponent } from '../shared/kng-feedback/kng-feedback-last-delivered-card.component';
+import { KngFeedbackOrderDetailsComponent } from '../shared/kng-feedback/kng-feedback-order-details.component';
+import { KngFeedbackOrderItemsComponent } from '../shared/kng-feedback/kng-feedback-order-items.component';
+import { KngFeedbackOrderModalComponent } from '../shared/kng-feedback/kng-feedback-order-modal.component';
+import { KngFeedbackStarsComponent } from '../shared/kng-feedback/kng-feedback-stars.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KngMailConfirmationComponent } from './kng-mail-confirmation/kng-mail-confirmation.component';
 import { KngSubscriptionOptionComponent } from './kng-subscription-option/kng-subscription-option.component';
@@ -98,6 +105,13 @@ import { KngUiNavigationComponent } from './kng-appbar/kng-ui-navigation.compone
     KngNewsComponent,
     KngSafeHtmlPipe,
     KngFeedbackComponent,
+    KngFeedbackCurrentOrderCardComponent,
+    KngFeedbackIssueModalComponent,
+    KngFeedbackLastDeliveredCardComponent,
+    KngFeedbackOrderDetailsComponent,
+    KngFeedbackOrderItemsComponent,
+    KngFeedbackOrderModalComponent,
+    KngFeedbackStarsComponent,
     KngSubscriptionOptionComponent,
     KngRippleDirective,
     KngSliderComponent,

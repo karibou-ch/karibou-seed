@@ -44,12 +44,13 @@
           {{label.james_selection_pinned}} ({{msg.products.length}})
         </button>
         <div class="kng-layout-card" [hidden]="!showPinnedProducts">
-          <kng-product-thumbnail
+          <kng-product
             *ngFor="let product of msg.products"
+            [product]="product"
+            template="thumbnail"
             [displayVendor]="true"
-            [visibility]="true"
-            [sku]="product.sku">
-          </kng-product-thumbnail>
+            [visibility]="true">
+          </kng-product>
         </div>
       </div>
 
