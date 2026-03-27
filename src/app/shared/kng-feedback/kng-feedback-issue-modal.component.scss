@@ -1,0 +1,59 @@
+@use './kng-feedback-common' as common;
+
+@include common.host-box-sizing();
+
+.kng-feedback-modal {
+  @include common.modal-overlay();
+}
+
+.kng-modal-content.feedback-container {
+  @include common.modal-container();
+}
+
+.feedback-container h3,
+.feedback-container p {
+  margin: 0;
+}
+
+.feedback-field {
+  margin-top: 0.125rem;
+  position: relative;
+}
+
+.feedback-field textarea.form__field {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.audio-field {
+  padding-top: 0;
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+}
+
+.analysis-box {
+  padding: 0.5rem;
+  border: 1px solid var(--mdc-theme-appbar);
+  border-radius: var(--wa-border-radius-m);
+  background: var(--wa-color-surface-lowered);
+}
+
+.analysis-label {
+  margin-bottom: 0.375rem;
+  font-size: var(--wa-font-size-s);
+  font-weight: 600;
+}
+
+.analysis-box pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  font-size: var(--wa-font-size-s);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  @include common.modal-actions-stack();
+}

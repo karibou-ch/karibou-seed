@@ -1,0 +1,19 @@
+@use './kng-feedback-common' as common;
+
+@include common.host-box-sizing();
+
+.kng-feedback-modal {
+  @include common.modal-overlay();
+}
+
+.kng-modal-content.feedback-container {
+  @include common.modal-container();
+}
+
+.feedback-container h2 {
+  margin: 0;
+}
+
+.modal-actions {
+  @include common.modal-actions-stack();
+}

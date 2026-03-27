@@ -1,0 +1,21 @@
+<div class="blured"></div>
+<div class="kng-feedback-modal">
+  <div class="kng-modal-content feedback-container">
+    <h2>{{order.shipping.when | date:'EEEE d MMM y':'':locale}}</h2>
+
+    <kng-feedback-order-items
+      [order]="order"
+      [childOrders]="childOrders"
+      [editable]="false"
+      [texts]="texts"
+      [showBasketAction]="false"
+      (addAllToCart)="addAllToCart.emit($event)">
+    </kng-feedback-order-items>
+
+    <div class="modal-actions">
+      <wa-button appearance="filled-outlined" variant="brand" size="small" pill (click)="onClose()">
+        {{texts?.title_close_screen}}
+      </wa-button>
+    </div>
+  </div>
+</div>

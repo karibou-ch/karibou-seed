@@ -1,0 +1,60 @@
+<div class="blured"></div>
+<div class="kng-feedback-modal">
+  <div class="kng-modal-content feedback-container">
+    <h3>{{texts?.title_issue_title}}</h3>
+
+    <p>Produits de la commande</p>
+
+    <kng-feedback-order-items
+      [order]="order"
+      [childOrders]="childOrders"
+      [editable]="false"
+      [texts]="texts"
+      [showBasketAction]="false">
+    </kng-feedback-order-items>
+
+    <div class="groupfield feedback-field">
+      <div class="audio-field" *ngIf="audioKey">
+        <kng-audio-note-enhanced
+          type="support"
+          [locale]="locale"
+          [compact]="true"
+          [key]="audioKey"
+          [filename]="'feedback-order-' + order?.oid"
+          (onAudioReady)="onAudioReady($event)">
+          <!-- <div slot="header-compact">
+            <p>Decrire le probleme avec votre voix</p>
+          </div> -->
+        </kng-audio-note-enhanced>
+      </div>
+
+      <textarea
+        id="feedback"
+        class="form__field"
+        kng-autosize
+        rows="2"
+        placeholder=" "
+        [ngModel]="feedbackText"
+        (ngModelChange)="onTextChange($event)">
+      </textarea>
+      <label class="form__label" for="feedback">{{texts?.title_issue_hub}}</label>
+    </div>
+
+    <div class="analysis-box" *ngIf="analysisText || isAnalyzing">
+      <div class="analysis-label">{{texts?.title_issue_analysis}}</div>
+      <pre>{{isAnalyzing && !analysisText ? texts?.title_issue_analyzing : analysisText}}</pre>
+    </div>
+
+    <div class="modal-actions">
+      <wa-button appearance="filled" variant="neutral" size="small" pill (click)="onAnalyze()" [disabled]="!feedbackText?.trim() || isAnalyzing">
+        {{isAnalyzing ? texts?.title_issue_analyzing : texts?.title_issue_analyze}}
+      </wa-button>
+      <wa-button appearance="filled" variant="brand" size="small" pill (click)="onSubmit()" [disabled]="!feedbackText?.trim() || !isAnalysisReady">
+        {{texts?.title_issue_send}}
+      </wa-button>
+      <wa-button appearance="filled" variant="neutral" size="small" pill (click)="onClose()">
+        {{texts?.title_close_screen}}
+      </wa-button>
+    </div>
+  </div>
+</div>
