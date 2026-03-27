@@ -127,6 +127,53 @@ Les composants UX utilisent la base webawesome tu DOIS utiliser les variables cs
 - https://webawesome.com/docs/utilities/
 - https://webawesome.com/docs/patterns/
 
+#### **Règles Obligatoires UI / Layout**
+
+- **Web Awesome uniquement :** Utiliser `wa-*` comme composants de base (`wa-button`, `wa-input`, etc.). **Ne pas utiliser `sl-*`** dans ce projet. Si un style interne doit être ajusté, cibler `wa-button::part(base)` et non un wrapper custom fragile.
+- **Espacements en `rem` uniquement :** Pour `margin`, `padding`, `gap`, `inset`, `border-radius`, préférer une échelle en `rem` (`0.125rem`, `0.25rem`, `0.5rem`, `0.75rem`, `1rem`, `1.25rem`, etc.). **Éviter `px`** sauf cas exceptionnel justifié techniquement (hairline, media query legacy, compatibilité navigateur).
+- **Sizing robuste par défaut :** Tous les composants UI doivent être pensés avec `box-sizing: border-box`. Dans les layouts flex/grid, ajouter au besoin `min-width: 0`, `max-width: 100%`, `overflow-wrap: anywhere` pour éviter les débordements.
+- **Largeurs et padding :** Éviter les `calc(100% - 2rem)` ou calculs similaires pour compenser le padding. La règle par défaut est `width: 100%` + `padding` avec `border-box`, afin que le composant tienne naturellement dans son conteneur sans bricolage.
+- **Full width controls :** Quand un bouton ou champ doit prendre toute la largeur, utiliser une classe explicite comme `width-100` ou cibler `wa-button::part(base) { width: 100%; }`. Ne pas compter sur des styles implicites du host.
+
+#### **Patterns recommandés**
+
+```scss
+// ✅ Base defensive pour composants avec layout
+:host,
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: border-box;
+}
+
+.panel {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+wa-button.width-100,
+.actions wa-button::part(base) {
+  width: 100%;
+}
+```
+
+```scss
+// ❌ À éviter
+.panel {
+  width: calc(100% - 2rem);
+  padding: 16px;
+}
+```
+
 
 
 #### **Méthodologie Générale**
