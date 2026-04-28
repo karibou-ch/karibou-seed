@@ -388,7 +388,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   // FIXME: remove this and use hub.pageOptions.themas
 
 
-  get tagline() {
+  get tagLine() {
     if (!this.config || !this.config.shared.tagLine) {
       return {};
     }

@@ -38,14 +38,14 @@ export class KngConfigBase implements OnInit, OnDestroy {
     const { config } = this.$loader.getLatestCoreData();
     this.config = config;
     this.currenHub = this.config?.shared?.hub || {} as Hub;
-    
+
     // Initialize optional fields
     if (this.config?.shared) {
       this.config.shared.welcome = this.config.shared.welcome || { message: {} };
       this.config.shared.welcome.message = this.config.shared.welcome.message || {};
       this.config.shared.faq_title = this.config.shared.faq_title || { fr: '', en: '' };
     }
-    
+
     this.isReady = true;
     this.ngConstruct();
   }
@@ -94,7 +94,7 @@ export class KngConfigBase implements OnInit, OnDestroy {
       const day = ('0' + date.getDate()).slice(-2);
       return date.getFullYear() + '-' + month + '-' + day;
     };
-    
+
     (this.config?.shared?.noshipping || []).forEach(noshipping => {
       noshipping.from = format(noshipping.from as Date);
       noshipping.to = format(noshipping.to as Date);
@@ -120,7 +120,7 @@ export class KngConfigBase implements OnInit, OnDestroy {
     this.isLoading = true;
     this.saveMessage = '';
     this.saveError = '';
-    
+
     this.$config.save(this.config).subscribe({
       next: () => {
         this.formatDates();
@@ -295,14 +295,14 @@ export class KngNavigationComponent extends KngConfigBase {
 
   onSaveMenu(): void {
     if (!this.dlgItem) return;
-    
+
     const idx = this.findMenuItem(this.dlgItem);
     if (idx >= 0) {
       this.config.shared.menu[idx] = this.dlgItem;
     } else {
       this.config.shared.menu.push(this.dlgItem);
     }
-    
+
     this.buildMenu();
     this.showDlg = false;
     this.dlgItem = null;

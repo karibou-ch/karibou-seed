@@ -48,7 +48,7 @@ export class KngHUBBase implements OnInit, OnDestroy {
     this.isReady = true;
     this.config = config;
     this.categories = categories;
-    
+
     const hubSlug = this.config?.shared?.hub?.slug || 'artamis';
     this.sixMOnth = new Date(Date.now() - 86400000 * 30 * 6);
     this.hubs = this.config?.shared?.hubs || [];
@@ -101,7 +101,7 @@ export class KngHUBBase implements OnInit, OnDestroy {
       const day = ('0' + date.getDate()).slice(-2);
       return date.getFullYear() + '-' + month + '-' + day;
     };
-    
+
     ((hub.noshipping || []) as any[]).forEach(noshipping => {
       noshipping.from = format(noshipping.from as Date);
       noshipping.to = format(noshipping.to as Date);
