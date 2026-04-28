@@ -28,102 +28,6 @@ import { ActivatedRoute } from '@angular/router';
   name: string;
   //
   // instance of HUB based on a list of slug alias
-  slug: string[];
-  updated: Date;
-  logo: string;
-
-  address.streetAdress: string;
-  address.postalCode: string;
-  address.region: string;
-  address.phone: string;
-  address.geo.lat: number;
-  address.geo.lng: number;
-
-  // FIXME use i18n for mail content
-  mail.address: string;
-  mail.signature: string;
-  mail.subject: string;
-
-  //
-  // HUB dedicated settings
-
-  // HUB can be inactive, under construction
-  status.reason.en|fr|de
-  status.reason.active: boolean;
-
-  // display message web maintenance (that mean that all shipping are off)
-  maintenance.reason.en|fr|de
-  maintenance.reason.active: boolean;
-
-  header.message.en|fr|de
-  header.reason.active: boolean;
-
-  //
-  // display checkout message
-  checkout.title.en|fr|de
-  checkout.address.en|fr|de
-  checkout.payment.en|fr|de
-  checkout.resume.en|fr|de
-  checkout.message.en|fr|de
-  checkout.active: boolean;
-
-  //
-  // list of deposit address
-  deposits: DepositAddress[];
-
-  //
-  // list of closed dates
-  noshipping: [{
-    reason.en|fr|de
-    from: Date;
-    to: Date;
-  }];
-
-  siteName.en|fr|de
-  siteName.image: string
-
-
-  about.h.en|fr|de
-  about.t.en|fr|de
-  about.p.en|fr|de
-  about.image: string;
-
-  tagLine.t.en|fr|de
-  tagLine.h.en|fr|de
-  tagLine.p.en|fr|de
-  tagLine.image: string;
-
-  footer.t.en|fr|de
-  footer.h.en|fr|de
-  footer.p.en|fr|de
-  footer.image: string;
-
-  //
-  // DEPRECATED remove home field
-  home.shop.t.en|fr|de
-  home.shop.h.en|fr|de
-  home.shop.p.en|fr|de
-  home.shop.image: string;
-
-  home.selection.h.en|fr|de
-  home.selection.t.en|fr|de
-  home.selection.p.en|fr|de
-  home.selection.image: string;
-
-  home.howto.h.en|fr|de
-  home.howto.t.en|fr|de
-  home.howto.p.en|fr|de
-  home.howto.image: string;
-
-  //
-  // Owner of the HUB
-  manager?: string[];
-  logistic?: string[];
-
-  //
-  // HUB dedicated configuration
-  // limit HUB orders
-  currentLimit: number;
 
   // additional limit for premium users. max orders = (currentLimit + premiumLimit)
   premiumLimit: number;
@@ -155,12 +59,6 @@ import { ActivatedRoute } from '@angular/router';
     type: any;
     default: any;
   };
-
-
-  //
-  // constraint HuB to a list of categories and vendors
-  categories: string[];
-  vendors: string[];
  */
 
 @Component({

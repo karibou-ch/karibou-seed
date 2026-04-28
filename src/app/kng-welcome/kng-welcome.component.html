@@ -15,11 +15,9 @@
   </div>
   <div class="welcome" [class.exited]="exited">
     <img [src]="tagline.image" [hidden]="!tagline.image"/>
-    <canvas  #background ></canvas>
     <h1 [innerHtml]="tagline.h[locale]"></h1>
     <div class="content" [innerHtml]="tagline.p[locale]">
     </div>
-    <div class="b2b-query" hidden><span class="new">NEW!</span> <a class="link" (click)="doB2B()"> {{_('title_b2b')}}</a> </div>
     <div class="actions">
       <button class="CTA"  (click)="waiting=true" [routerLink]="homeDestination">
         <span class="material-symbols-outlined icon" [class.waiting]="waiting"> clock_loader_10</span>
@@ -89,12 +87,12 @@
 </div>
 
 <kng-footer [config]="config" ></kng-footer>
-<!-- 
+<!--
 <div class="background-grid" [class.large]="photos.length < 20">
   <div class="items-list-wrap">
     <ul class="items-list" >
-      <li class="has-details item" *ngFor="let photo of photos"  
+      <li class="has-details item" *ngFor="let photo of photos"
         [ngStyle]="{'background-image': 'url(' + photo + '-/preview/350x350/)'}"></li>
-    </ul>        
+    </ul>
   </div>
 -->

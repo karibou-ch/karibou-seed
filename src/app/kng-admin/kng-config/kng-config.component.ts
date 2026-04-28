@@ -23,62 +23,6 @@ import { ReplaySubject } from 'rxjs';
 
 
 /**
- *  //
-    // display karibou.ch welcome message
-    welcome.message.en|fr
-    welcome.message.active
-
-
-    //
-    // display karibou.ch tagLine
-    tagLine.h.en|fr
-    tagLine.t.en|fr
-    tagLine.p.en|fr
-    tagLine.image
-
-    //
-    // display karibou.ch About
-    about.h.en|fr
-    about.t.en|fr
-    about.o.en|fr
-    about.image
-
-    //
-    // display karibou.ch Footer
-    footer.h.en|fr
-    footer.t.en|fr
-    footer.p.en|fr
-    footer.image
-
-    //
-    // menu
-    menu:[{
-      name.en|fr
-      url
-      weight
-      group
-      active
-    }],
-
-    //
-    // defines keys
-    keys.pubConnect
-    keys.pubStripe
-    keys.pubGithub
-    keys.pubUpcare
-    keys.pubChat
-    keys.pubMap
-    keys.pubDisqus
-    keys.pubGoogle
-    keys.pubFacebook
-
-    mail.signature
-    mail.phone
-    mail.subject
-
-    //
-    // hub specific content
-    hubs:[{name,slug,description,image}],
  */
 
 @Component({

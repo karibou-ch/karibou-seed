@@ -59,7 +59,6 @@ export class KngWelcomeComponent implements OnInit {
   postalCode: string;
   image = new Image();
   pi = 50;
-  b2b: boolean;
   waiting:boolean;
 
 
@@ -75,7 +74,6 @@ export class KngWelcomeComponent implements OnInit {
     const { config } = this.$loader.getLatestCoreData();
     this.config = config;
     this.exited = false;
-    this.b2b = false;
     this.waiting = false;
     // Object.assign(this.config, loader[0]);
 
@@ -95,8 +93,9 @@ export class KngWelcomeComponent implements OnInit {
   }
 
 
+  //DEAD CODE
   get c2a() {
-    return this.b2b ? this._('nav_store_b2b'):this._('nav_store_change')
+    return this._('nav_store_change')
   }
 
   get faqs() {
@@ -183,41 +182,14 @@ export class KngWelcomeComponent implements OnInit {
   }
 
 
-  get width(){
-    return "100%";
-  }
-
-  get height(){
-    return "100%";
-  }
-
-  get canvas() {
-    return this.background.nativeElement;
-  }
-
-
-  get ctx() {
-    if(!this.canvas) {
-      return new CanvasRenderingContext2D();
-    }
-    return this.canvas.getContext('2d') as CanvasRenderingContext2D;
-  }
-
-
+  //DEAD CODE
   get homeDestination() {
-    const market = this.store || 'artamis';
-    const route = ['/store',market,'home'];
-    if(!this.b2b) {
-      return route
-    }
-
-    route.push('business');
-    return route;
+    return ['/store',this.store,'home'];
   }
 
 
   get store() {
-    return this.$navigation.store;
+    return this.$navigation.store||'artamis';
   }
 
   ngOnInit() {
@@ -237,36 +209,7 @@ export class KngWelcomeComponent implements OnInit {
       hub,
     };
     this.$metric.event(EnumMetrics.metric_view_page,metric);
-    // const url = this.tagline.image;
-    // this.image.src = url;
-    // this.image.onload = () => {
-    //   this.drawBackground();
-    // }
-
   }
-
-  drawBackground () {
-    const lum = Math.min(this.pi*0.3,70)|0;
-    const light = (Math.cos(this.pi * 0.1)+1)*10+50|0;
-    const angle = this.pi%360;
-    const saturation = `hsl(${angle},100%,${lum}%)`;
-    this.pi+=2;
-
-
-    //
-    // cover image instead of stretch
-    // https://stackoverflow.com/a/66560970
-
-    this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.globalCompositeOperation = "multiply";
-    this.ctx.fillStyle = saturation;  // saturation at 100%
-    this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);  // apply the comp filter
-    this.ctx.globalCompositeOperation = "source-over";  // restore default comp
-    setTimeout(()=>{
-      requestAnimationFrame(this.drawBackground.bind(this))
-    },80)
-  }
-
 
   getShippingDiscount(key:"A"|"B") {
     const code = this.shippingkeyCode;
@@ -347,26 +290,6 @@ export class KngWelcomeComponent implements OnInit {
     //setTimeout(() => this.$cdr.markForCheck(),100);
   }
 
-  doB2B() {
-    this.b2b = !this.b2b;
-    if(!this.boxes||!this.boxes.nativeElement) {
-      return;
-    }
-
-    let elems = this.boxes.nativeElement.querySelectorAll('.b2b');
-    if(!elems.length){
-      elems = this.boxes.nativeElement.querySelectorAll('.business');
-    }
-
-    elems.forEach(elem => {
-      if(this.b2b){
-        elem.classList.add('view-b2b');
-      }else{
-        elem.classList.remove('view-b2b');
-      }
-    })
-
-  }
 
   doLangSwitch() {
     this.$i18n.localeSwitch();
