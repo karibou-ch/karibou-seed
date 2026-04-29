@@ -495,6 +495,11 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       return this.selectAddressIsDone = false;
     }
 
+    const phone = address.phone || this.userPhone;
+    if(phone) {
+      address.phone = UserAddress.normalizePhone(phone);
+    }
+
     this.selectAddressIsDone = this.$cart.setShippingAddress(address);
 
 

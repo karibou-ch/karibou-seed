@@ -69,6 +69,7 @@
 
               <div class="name" [class.deposit]="currentAddressIsDeposit">{{currentAddress.name}}</div>
               <div class="street text-overflow">{{currentAddress.streetAdress}} / {{currentAddress.postalCode}}</div>
+              <div class="street text-overflow" [hidden]="!currentAddress.phone">{{currentAddress.phone}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{currentAddress.note}}</div>
               <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
           </div>
@@ -83,6 +84,7 @@
               <label><input type="checkbox" [checked]="isSelectedAddress(address)"></label>
               <div class="name">{{address.name}}</div>
               <div class="street text-overflow">{{address.streetAdress}} / {{address.postalCode}}</div>
+              <div class="street text-overflow" [hidden]="!address.phone">{{address.phone}}</div>
               <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>
               <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
           </div>

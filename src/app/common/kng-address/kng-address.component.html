@@ -28,10 +28,11 @@
         </div>
 
         <div class="groupfield fullwidth">
-            <input  id="f004" class="form__field" type="text" formControlName="phone" [placeholder]="glabel.user_phone" >
+            <!-- TODO: replace the Swiss default with an explicit country selector. -->
+            <input  id="f004" class="form__field" type="text" formControlName="phone" placeholder="🇨🇭 +41 ..." (blur)="onPhoneBlur()" >
             <label for="f004" class="form__label" [class.error]="isInvalid('phone')">
                 <span hidden class="material-symbols-outlined">phone</span>
-                {{glabel.user_phone}}
+                🇨🇭 {{glabel.user_phone}}
             </label>
         </div>
 
