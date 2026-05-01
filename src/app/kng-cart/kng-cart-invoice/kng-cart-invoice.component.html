@@ -22,7 +22,7 @@
     <div class="label">
       <span [innerHtml]="label_cart_info_subtotal"></span>
       &nbsp;<i
-        class="material-symbols-outlined gray"
+        class="material-symbols-outlined link"
         (click)="doToggleFees = !doToggleFees"
         >info</i
       >
@@ -44,7 +44,7 @@
 
   <!-- Objectif : expliquer le détail des frais lorsque l'utilisateur demande plus d'information -->
   <div class="bill" *ngIf="doToggleFees">
-    <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
+    <p class="" [innerHtml]="label.cart_info_service_k_plus"></p>
   </div>
 
   <!-- Objectif : afficher les frais de livraison calculés pour l'adresse sélectionnée -->

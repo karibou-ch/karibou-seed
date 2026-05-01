@@ -41,7 +41,7 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
       cart_info_total_subscription: 'Total de votre abonnement',
       cart_info_total_subscription_update: 'Total ajouté à votre abo',
       cart_info_reserved: 'Montant réservé',
-      cart_info_service_k_plus: `Nos prix restent inchangés grâce à notre vente directe ; les frais de service transparents assurent une qualité 5🌟.`
+      cart_info_service_k_plus: `Vous profitez des prix directs des artisans ; les frais de service sont affichés en toute transparence.`
     },
     en: {
       cart_info_contract_total: 'Amount of your running subscription',
@@ -57,7 +57,7 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
       cart_info_total_subscription: 'Total for your subscription',
       cart_info_total_subscription_update: 'Total add to your subscription',
       cart_info_reserved: 'Amount reserved',
-      cart_info_service_k_plus: `Our prices remain unchanged thanks to our direct sales; transparent service fees ensure 5🌟 quality.`
+      cart_info_service_k_plus: `You benefit from direct producer prices; service fees are displayed with full transparency.`
     }
   };
 

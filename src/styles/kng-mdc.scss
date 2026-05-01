@@ -3,6 +3,19 @@ mdc-snackbar{
   z-index: 5;
 }
 
+
+.cdk-visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 mdc-list{
   mdc-text-field{
     margin-top: -24px;
@@ -137,10 +150,6 @@ mdc-list{
 .mdc-fab{
   color: var(--mdc-theme-secondary-text)!important;
   background: var(--mdc-theme-secondary)!important;
-  &.text-primary {
-//    @include mdc-fab-accessible($material-color-green-800);
-//    color: var(--mdc-theme-primary-text);
-  }
 
   &.bottom-right{
     position: fixed;

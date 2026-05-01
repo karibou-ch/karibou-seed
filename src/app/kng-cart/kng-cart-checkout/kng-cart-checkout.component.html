@@ -12,11 +12,14 @@
   <div class="checkout" *ngIf="isReady">
     <div class="cart-container checkout-details">
       <kng-checkout-review
+        [config]="config"
+        [user]="user"
         [address]="currentAddress"
         [addresses]="userAddresses"
         [depositAddresses]="useCartSubscriptionView ? [] : getDepositAddress()"
         [payment]="currentPayment"
         [payments]="userPayments"
+        [phone]="userPhone"
         [shippingDay]="reviewShippingDay"
         [shippingTime]="reviewShippingTime"
         [(shippingNote)]="shippingNote"
@@ -27,9 +30,11 @@
         [computeShippingAmount]="shippingFeeForAddress"
         (editAddress)="editAddressFromReview()"
         (addressSelected)="setShippingAddress($event)"
+        (addressSaved)="onAddressSave($event)"
         (addAddressRequested)="addAddressFromReview()"
         (editPayment)="editPaymentFromReview()"
         (paymentSelected)="setPaymentMethod($event)"
+        (paymentSaved)="onPaymentSave($event)"
         (addPaymentRequested)="addPaymentFromReview()">
       </kng-checkout-review>
 

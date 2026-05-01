@@ -63,7 +63,7 @@ export class KngAddressComponent implements OnInit {
       street: address.streetAdress,
       region: address.region,
       postalCode: address.postalCode,
-      phone: address.phone || this.phone || ''
+      phone: address.phone || ''
     });
   }
 
@@ -158,9 +158,9 @@ export class KngAddressComponent implements OnInit {
     this.isReady = true;
     // this.loadAutocomplete().then(() => {
     // });
-    if(this.phone){
-      this.$address.get('phone').setValue(this.phone);
-    }
+    // if(this.phone){
+    //   this.$address.get('phone').setValue(this.phone);
+    // }
 
     // ✅ Track changes sur tous les champs du formulaire
     this.$address.valueChanges.subscribe(() => {

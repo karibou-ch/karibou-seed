@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { UserAddress, UserCard } from 'kng2-core';
+import { Config, User, UserAddress, UserCard } from 'kng2-core';
 import { i18n } from 'src/app/common';
 import { KngPaymentComponent } from 'src/app/common/kng-payment/kng-user-payment.component';
 
@@ -9,11 +9,14 @@ import { KngPaymentComponent } from 'src/app/common/kng-payment/kng-user-payment
   styleUrls: ['./kng-checkout-review.component.scss']
 })
 export class KngCheckoutReviewComponent {
+  @Input() config: Config;
+  @Input() user: User;
   @Input() address: UserAddress;
   @Input() addresses: UserAddress[] = [];
   @Input() depositAddresses: UserAddress[] = [];
   @Input() payment: UserCard;
   @Input() payments: UserCard[] = [];
+  @Input() phone: string;
   @Input() shippingDay: Date;
   @Input() shippingTime: string;
   @Input() shippingNote: string;
@@ -25,10 +28,12 @@ export class KngCheckoutReviewComponent {
 
   @Output() editAddress = new EventEmitter<void>();
   @Output() addressSelected = new EventEmitter<UserAddress>();
+  @Output() addressSaved = new EventEmitter<UserAddress|undefined>();
   @Output() addAddressRequested = new EventEmitter<void>();
   @Output() shippingNoteChange = new EventEmitter<string>();
   @Output() editPayment = new EventEmitter<void>();
   @Output() paymentSelected = new EventEmitter<UserCard>();
+  @Output() paymentSaved = new EventEmitter<any>();
   @Output() addPaymentRequested = new EventEmitter<void>();
 
   readonly i18n: any = {
@@ -74,6 +79,15 @@ export class KngCheckoutReviewComponent {
 
   get paymentName() {
     return this.paymentDisplayName(this.payment);
+  }
+
+  get hasUserAddresses() {
+    return !!this.addresses?.length;
+  }
+
+  get hasOnlyTwintPayment() {
+    const payments = this.payments || [];
+    return payments.length === 1 && payments[0]?.issuer === 'twint';
   }
 
   isSelectedAddress(address: UserAddress) {

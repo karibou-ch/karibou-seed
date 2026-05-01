@@ -11,14 +11,15 @@ import { CartService,
          Shop,
          Order,
          ConfigService,
-         CalendarService } from 'kng2-core';
+         CalendarService,
+         CartSubscription } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
 import { Subscription } from 'rxjs';
-import { PaymentIntent, StripeCardElement, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
+import { StripeCardElement, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
 
 
 
@@ -57,6 +58,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   checkoutMessage: string;
   checkoutMessageError: string;
+  private asyncPaymentIntentId: string;
 
   i18n: any = {
     fr: {
@@ -286,106 +288,49 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   }
 
-  async confirmAsyncPayment() {
-    // payment_intent=pi_3PYUfWBTMLb4og7P1An0LY7h
-    // payment_intent_client_secret=pi_3PYUfWBTMLb4og7P1An0LY7h_secret_mCEud6EZW9oFjI8BUWWeKlkSM
-    // redirect_status=succeeded
-    const { payment_intent, payment_intent_client_secret, redirect_status, oid} = this.$route.snapshot.queryParams;
-    if(!payment_intent) {
+  private cleanAsyncPaymentQueryParams() {
+    this.$router.navigate([], {
+      queryParams: {
+        oid: null,
+        redirect_status: null,
+        payment_intent: null,
+        payment_intent_client_secret: null,
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
+  confirmAsyncPayment() {
+    const { payment_intent, oid} = this.$route.snapshot.queryParams;
+    if(!payment_intent || !oid || this.asyncPaymentIntentId === payment_intent) {
       return;
     }
 
-    try{
-      const result = await this.$stripe.stripe.retrievePaymentIntent(payment_intent_client_secret).toPromise();
-      const paymentIntent:PaymentIntent = result.paymentIntent;
+    this.asyncPaymentIntentId = payment_intent;
+    this.checkoutMessageError = this.label.cart_order_pending_twint;
 
-      //
-      // pending, wait for payment
-      // | 'canceled'
-      // | 'processing'
-      // | 'requires_action'
-      // | 'requires_capture'
-      // | 'requires_confirmation'
-      // | 'requires_payment_method'
-      // | 'succeeded';
-      if(paymentIntent.status=='succeeded') {
-        const order = await this.$order.get(oid).toPromise();
-        // order.payment.status == 'authorized'
-        this.onCheckout({order});
-        return;
-      }
-
-      //
-      // pending, wait for payment (requires_confirmation or requires_action)
-      if(redirect_status=='pending') {
-        const order = await this.$order.get(oid).toPromise();
-        if(order.payment.status=='prepaid') {
+    this.subscription$.add(
+      this.$order.waitForPaymentOrder(oid, payment_intent).subscribe(order => {
+        if(order.payment.status == 'prepaid') {
+          this.cleanAsyncPaymentQueryParams();
+          this.checkoutMessageError = '';
           this.onCheckout({order});
           return;
         }
-        if(order.payment.status=='voided') {
+        if(order.payment.status == 'voided') {
+          this.cleanAsyncPaymentQueryParams();
           this.checkoutMessageError = this.label.cart_order_canceled_twint;
           return;
         }
 
         this.checkoutMessageError = this.label.cart_order_pending_twint;
-        setTimeout(()=> window.location.reload(),1000);
-        return;
-      }
-
-      //
-      // list all kind of errors
-      if(paymentIntent.status=='canceled') {
-        this.checkoutMessageError = this.label.cart_order_canceled_twint;
-        return;
-      }
-
-
-
-
-      if(paymentIntent.status=='processing') {
-        this.checkoutMessageError = this.label.cart_order_pending_twint;
-        setTimeout(()=> window.location.reload(),1000);
-        return;
-      }
-
-
-      setTimeout(()=>{
-        // clean url
-        this.$router.navigate([], {
-          queryParams: {
-            'oid':null,
-            'redirect_status':null,
-            'payment_intent': null,
-            'payment_intent_client_secret': null,
-          },
-          queryParamsHandling: 'merge'
-        })
-        throw new Error('ERROR:confirmAsyncPayment:'+this.checkoutMessageError);
+        this.asyncPaymentIntentId = null;
+      }, e => {
+        this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
+        console.log('async error',e)
       })
-
-
-      if(result.error){
-        this.checkoutMessageError = result.error.message;
-        return;
-      }
-
-
-      if(paymentIntent.status=='requires_payment_method') {
-        this.checkoutMessageError = this.label.cart_order_error_twint;
-        return;
-      }
-
-      this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
-
-    }catch(e){
-      this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
-      console.log('async error',e)
-    }finally{
-
-    }
-
-
+    );
   }
 
 
@@ -487,9 +432,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   // ✅ OPTIMIZATION 2.3: Factoriser code setTimeout clearAfterOrder
-  private clearAfterOrderWithDelay(order: Order) {
+  private clearAfterOrderWithDelay(order?: Order, contract?: CartSubscription) {
     setTimeout(() => {
-      this.$cart.clearAfterOrder(this.store, order);
+      this.$cart.clearAfterOrder(this.store, order, contract);
     }, 100);
   }
 
@@ -505,7 +450,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // case of final contract
     if($event.contract) {
       this.checkoutMessage = this.label.cart_contract_placed;
-      this.clearAfterOrderWithDelay($event.order);
+      this.clearAfterOrderWithDelay(undefined, $event.contract);
       return;
     }
 
