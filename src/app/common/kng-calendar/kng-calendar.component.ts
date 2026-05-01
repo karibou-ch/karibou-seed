@@ -64,28 +64,12 @@ export class KngCalendarComponent implements OnInit {
 
   // user can also have a prefered HUB @ reminder.defaultHub
   get prefferedHub() {
-    const mapper = {
-      'b2b-school': 'superlocal',
-      'marche-bio-local-lft':'marche-bio-local-lft'
-    }
-    if(!this.user || !this.user.plan){
-      return this.config.shared.hubs.find(hub => hub.slug != this.currentHub.slug);
-    }
+    const currentSlug = this.currentHub?.slug;
+    const preferredSlug = this.user?.reminder?.defaultHub || 'halle-de-rive';
+    const defaultSwapSlug = currentSlug === 'artamis' ? preferredSlug : 'artamis';
+    const swapHub = this.config.shared.hubs.find(hub => hub.slug === defaultSwapSlug && hub.slug !== currentSlug);
 
-    const plan = this.user.plan.name;
-    //
-    // for school
-    if(mapper[plan]){
-      return mapper[plan];
-    }
-
-    //
-    // for special customer
-    if(mapper[this.user.email['source']]){
-      return mapper[this.user.email['source']]
-    }
-    const hubs = this.config.shared.hubs.filter(hub => hub.slug != 'superlocal');
-    return hubs.find(hub => hub.slug != this.currentHub.slug);
+    return swapHub || this.config.shared.hubs.find(hub => hub.slug !== currentSlug);
   }
 
   get mainTitle() {
