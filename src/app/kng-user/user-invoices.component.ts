@@ -30,7 +30,7 @@ export class UserInvoicesComponent implements OnInit {
       title_paid: 'payée',
       title_transfer: 'facture validée, en attente du virement bancaire',
       title_invoice: 'facture ouverte',
-      title_invoive_month: 'Facture du mois',
+      title_invoive_month: 'Factures du',
       title_open_invoive: 'Imprimer la facture'
     },
     en: {

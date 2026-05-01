@@ -13,10 +13,10 @@
         </div>
         <ul>
           <li *ngFor="let order of invoice.invoices" class="invoice">
-            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class="red tag">{{i18n[locale].title_invoice}}</span>              
+            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class="red tag">{{i18n[locale].title_invoice}}</span>
           </li>
           <li *ngFor="let order of invoice.transfers" class="transfer">
-            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class="green tag">{{i18n[locale].title_transfer}}</span>              
+            1x {{order.oid}} - {{order.items.length}} {{i18n[locale].title_item}} - &nbsp;<span class="green tag">{{i18n[locale].title_transfer}}</span>
           </li>
 
           <li *ngFor="let order of invoice.paids">
