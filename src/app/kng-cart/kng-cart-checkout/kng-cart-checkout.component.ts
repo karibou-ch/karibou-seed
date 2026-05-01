@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, OnDestroy, Output } from '@angular/core';
-import { i18n, KngNavigationStateService, KngUtils } from '../../common';
+import { i18n, KngNavigationStateService, KngUtils, NotifyService } from '../../common';
 import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService, UserCouponCredit } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
