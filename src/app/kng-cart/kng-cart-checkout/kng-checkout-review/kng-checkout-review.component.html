@@ -1,0 +1,104 @@
+<section class="checkout-review">
+  <h3>{{label.review_title}}</h3>
+
+  <!-- Objectif : résumer la livraison choisie et permettre son édition inline -->
+  <div class="review-card">
+    <div class="review-card-header">
+      <div class="review-label">{{label.review_delivery}}</div>
+      <button type="button" (click)="editAddress.emit()">{{label.review_change}}</button>
+    </div>
+
+    <div class="review-primary">
+      <span [hidden]="isLastMinuteShipping">
+        {{ shippingDay | date: 'EEEE dd/M':'':locale }}
+      </span>
+      <span [hidden]="!isLastMinuteShipping">{{label.review_last_minute}}</span>
+      <span [hidden]="!shippingTime">, {{shippingTime}}</span>
+    </div>
+
+    <div class="review-line -bold">{{address?.name}}</div>
+    <div class="review-line">{{address?.streetAdress}} / {{address?.postalCode}}</div>
+    <div class="review-line" [hidden]="!address?.phone">{{address?.phone}}</div>
+
+    <div class="review-delivery-note" [hidden]="isAddressEditing">
+      <label for="checkout-review-shipping-note">{{glabel.user_address_note}}</label>
+      <input
+        id="checkout-review-shipping-note"
+        type="text"
+        [placeholder]="label.review_delivery_note_placeholder"
+        [ngModel]="shippingNote"
+        (ngModelChange)="shippingNoteChange.emit($event)" />
+    </div>
+
+
+    <!-- Objectif : afficher les adresses disponibles lorsque l'utilisateur veut changer de livraison -->
+    <div class="review-address-editor" [hidden]="!isAddressEditing">
+      <button
+        type="button"
+        class="review-option"
+        *ngFor="let option of addresses"
+        [class.selected]="isSelectedAddress(option)"
+        (click)="addressSelected.emit(option)">
+        <span class="review-option-main">
+          <span class="review-option-name">{{option.name}}</span>
+          <span class="review-option-detail">{{option.streetAdress}} / {{option.postalCode}}</span>
+          <span class="review-option-detail" [hidden]="!option.phone">{{option.phone}}</span>
+        </span>
+        <span class="review-option-amount">Fr {{shippingAmount(option)|number:'1.2-2'}}</span>
+      </button>
+
+      <button
+        type="button"
+        class="review-option"
+        *ngFor="let option of depositAddresses"
+        [class.selected]="isSelectedAddress(option)"
+        (click)="addressSelected.emit(option)">
+        <span class="review-option-main inlined">
+          <span class="review-option-name">{{option.name}}</span>
+          <span class="review-option-detail">{{option.streetAdress}}</span>
+        </span>
+        <span class="review-option-amount">Fr {{shippingAmount(option)|number:'1.2-2'}}</span>
+      </button>
+
+      <button type="button" class="review-add-action" (click)="addAddressRequested.emit()">
+        + {{glabel.user_address_add}}
+      </button>
+    </div>
+
+    <div class="review-delivery-policy">
+      {{label.review_delivery_policy}}
+    </div>
+  </div>
+
+  <!-- Objectif : résumer le paiement choisi et permettre son édition inline -->
+  <div class="review-card">
+    <div class="review-card-header">
+      <div class="review-label">{{label.review_payment}}</div>
+      <button type="button" (click)="editPayment.emit()">{{label.review_change}}</button>
+    </div>
+
+    <div class="review-primary">{{paymentName}}</div>
+
+    <div class="review-line" [hidden]="isPaymentEditing">{{label.review_payment_note}}</div>
+
+    <!-- Objectif : afficher les moyens de paiement disponibles lorsque l'utilisateur veut changer -->
+    <div class="review-payment-editor" [hidden]="!isPaymentEditing">
+      <button
+        type="button"
+        class="review-option"
+        *ngFor="let option of payments"
+        [class.selected]="isSelectedPayment(option)"
+        [class.error]="isPaymentInvalid(option)"
+        (click)="paymentSelected.emit(option)">
+        <span class="review-option-main">
+          <span class="review-option-name">{{paymentDisplayName(option)}}</span>
+          <span class="review-option-detail" [hidden]="!paymentExpiry(option)">{{paymentExpiry(option)|date:'MM/y'}}</span>
+        </span>
+      </button>
+
+      <button type="button" class="review-add-action" (click)="addPaymentRequested.emit()">
+        + {{glabel.user_payment_add}}
+      </button>
+    </div>
+  </div>
+</section>

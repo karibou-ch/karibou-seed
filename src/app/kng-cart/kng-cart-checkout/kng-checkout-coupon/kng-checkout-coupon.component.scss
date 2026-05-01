@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.order-address {
+  margin: 0 auto;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  position: relative;
+  padding: 0.125rem 0;
+
+  &.coupon {
+    justify-content: flex-start;
+
+    section.coupon {
+      width: 100%;
+      margin: 0.25rem auto 0.75rem;
+    }
+
+    .bill {
+      width: calc(100% - 2rem);
+      border: 0.125rem solid #eee;
+      border-radius: 1rem;
+      padding: 1rem;
+      background: white;
+
+      &.error {
+        width: auto;
+        margin-top: 0.5rem;
+        font-weight: 400;
+        background-color: #ffb1b1;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+      }
+    }
+
+    .small {
+      font-size: 1rem !important;
+      font-weight: bold;
+    }
+
+    .coupon-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+      margin-top: 0.5rem;
+    }
+
+    .input-text {
+      flex: 1;
+
+      input[type='text'] {
+        border: 0.0625rem solid #eee;
+        padding: 0.5rem 0.25rem;
+        font-size: 1em;
+        width: calc(100% - 0.5rem);
+        height: calc(100% - 1rem);
+        font-weight: bold;
+      }
+    }
+
+    button.coupon-apply {
+      cursor: pointer;
+      border: 0;
+      border-radius: 0.25rem;
+      background-color: black;
+      color: white;
+      padding: 0 1rem;
+      text-transform: uppercase;
+
+      &:disabled {
+        opacity: 0.3;
+      }
+    }
+
+    .info {
+      color: #888;
+      font-size: 1rem;
+      margin-top: 0.75rem;
+    }
+  }
+}

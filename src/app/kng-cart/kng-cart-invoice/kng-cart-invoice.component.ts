@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CartItem, CartService, Config, Hub, User, UserAddress, UserCard, CalendarService } from 'kng2-core';
+import { CartItem, CartService, Config, Hub, User, UserAddress, UserCard } from 'kng2-core';
 import { i18n } from '../../common';
 import { KngPaymentComponent } from '../../common/kng-payment/kng-user-payment.component';
 
@@ -26,7 +26,40 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   @Input() data: InvoiceData;
   @Input() config: Config;
   @Input() hub: Hub;
-  @Input() i18n: any;
+  readonly i18n: any = {
+    fr: {
+      cart_info_contract_total: 'Montant de votre abo en cours',
+      cart_info_subtotal: 'Sous total (__FEES__ service inclus)',
+      cart_info_subtotal_fees: '__FEES__ de Service',
+      cart_info_shipping: 'Livraison 100% cycliste',
+      cart_info_shipping_group: 'Vous complétez une commande en cours',
+      cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
+      cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
+      cart_info_discount: 'Rabais',
+      cart_info_wallet:'Votre crédit appliqué',
+      cart_info_total: 'Estimation total à facturer',
+      cart_info_total_subscription: 'Total de votre abonnement',
+      cart_info_total_subscription_update: 'Total ajouté à votre abo',
+      cart_info_reserved: 'Montant réservé',
+      cart_info_service_k_plus: `Nos prix restent inchangés grâce à notre vente directe ; les frais de service transparents assurent une qualité 5🌟.`
+    },
+    en: {
+      cart_info_contract_total: 'Amount of your running subscription',
+      cart_info_subtotal: 'Subtotal (__FEES__ service fee included)',
+      cart_info_subtotal_fees:'Service fee  __FEES__ ',
+      cart_info_shipping: 'Delivery 100% ecological ',
+      cart_info_shipping_group: 'You are close to complete an order in progress',
+      cart_info_shipping_discount: 'From <b>_AMOUNT_</b> chf of purchase, you get delivery to your door for <b>_DISCOUNT_</b> !',
+      cart_info_shipping_applied: 'You get a delivery discount!',
+      cart_info_discount: 'Discount',
+      cart_info_wallet:'Your credit applied',
+      cart_info_total: 'Total estimate to be billed',
+      cart_info_total_subscription: 'Total for your subscription',
+      cart_info_total_subscription_update: 'Total add to your subscription',
+      cart_info_reserved: 'Amount reserved',
+      cart_info_service_k_plus: `Our prices remain unchanged thanks to our direct sales; transparent service fees ensure 5🌟 quality.`
+    }
+  };
 
   // Computed values (calculated in ngOnChanges)
   locale: string = 'fr';
@@ -39,9 +72,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   amountReserved: number = 1.11;
   contractTotal: number = 0;
   currentTotalSubscription: number = 0;
-  displayShippingDay: Date;
-  currentShippingTime: string;
-  isLastMinuteShipping: boolean = false;
   shippingDiscount: string = '';
   hasUpdateContract: any = null;
   hasShippingReductionMultipleOrder: boolean = false;
@@ -51,7 +81,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
 
   constructor(
     private $cart: CartService,
-    private $calendar: CalendarService,
     private $i18n: i18n
   ) {}
 
@@ -60,7 +89,7 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   }
 
   get label() {
-    return this.i18n?.[this.locale] || {};
+    return this.i18n[this.locale] || this.i18n.fr;
   }
 
   get glabel() {
@@ -77,17 +106,13 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     return (this.label.cart_info_subtotal_fees || '').replace('__FEES__', feesName);
   }
 
-  get last_minute_label(): string {
-    return this.locale === 'fr' ? 'Aujourd\'hui' : 'Today';
-  }
-
   ngOnInit(): void {
     this.locale = this.$i18n.locale || 'fr';
     this.computeAll();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['config'] || changes['data'] || changes['user'] || changes['type'] || changes['i18n']) {
+    if (changes['config'] || changes['data'] || changes['user'] || changes['type']) {
       this.locale = this.$i18n.locale || 'fr';
       this.computeAll();
     }
@@ -119,9 +144,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     this.currentTotalUserBalance = this.computeTotalUserBalance();
     this.currentTotalMinusBalance = this.computeTotalMinusBalance();
     this.currentTotalSubscription = this.computeTotalSubscription();
-    this.displayShippingDay = this.computeDisplayShippingDay();
-    this.currentShippingTime = this.computeShippingTime();
-    this.isLastMinuteShipping = this.computeIsLastMinuteShipping();
     this.shippingDiscount = this.computeShippingDiscount();
     this.hasShippingReductionMultipleOrder = this.computeHasShippingReduction();
     this.isCartDeposit = this.computeIsCartDeposit();
@@ -250,33 +272,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     return this.itemsAmount + this.currentShippingFees - this.totalDiscount;
   }
 
-  private computeDisplayShippingDay(): Date {
-    if (this.isSubscription && this.data?.subscriptionParams) {
-      const oneWeek = this.$calendar.getValidShippingDatesForHub(this.hub, { days: 7 });
-
-      // ✅ CORRECTION BUG TIMEZONE: Utiliser toHubTime pour comparer dans timezone Hub
-      // au lieu de date.getDay() qui utilise la timezone locale du navigateur
-      const foundDate = oneWeek.find(date => {
-        const dateHub = this.$calendar.toHubTime(date, this.hub);
-        return dateHub.getDay() === this.data.subscriptionParams.dayOfWeek;
-      });
-      return foundDate || oneWeek[0] || this.$calendar.nextShippingDay(this.hub, this.user);
-    }
-    return this.$cart.getCurrentShippingDay();
-  }
-
-  private computeShippingTime(): string {
-    const shippingDay = this.displayShippingDay;
-    const fallbackHours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || 16;
-    const selectedHours = this.isSubscription ? fallbackHours : (this.$cart.getCurrentShippingTime() || fallbackHours);
-    const shippingHours = (this.isCartDeposit ? '0' : selectedHours.toString());
-    return this.config.shared.hub.shippingtimes?.[shippingHours] || `${selectedHours}h`;
-  }
-
-  private computeIsLastMinuteShipping(): boolean {
-    return !this.isSubscription && this.$cart.isCurrentShippingLastMinute();
-  }
-
   private computeShippingDiscount(): string {
     if (!this.hub || !this.data?.address || !this.config?.shared?.shipping) {
       return '';
@@ -368,6 +363,10 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
 
   get isCart(): boolean {
     return this.type === 'cart';
+  }
+
+  get shouldShowReservedAmount(): boolean {
+    return this.isCart && this.data?.payment?.issuer !== 'invoice';
   }
 }
 

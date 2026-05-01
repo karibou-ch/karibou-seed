@@ -7,10 +7,12 @@
 .order-resume-block {
   position: relative;
   width: 100%;
-  padding: 0.5rem 0 0;
-  margin: 0;
-  border-bottom: 4px solid #444;
-  margin-bottom: 1rem;
+  padding: 1rem;
+  margin: 0 0 0.75rem;
+  border: 0.125rem solid #eee;
+  border-radius: 1rem;
+  background: #fff;
+  box-sizing: border-box;
 
   @media (max-width: 599px) {
     width: 100%;
@@ -21,15 +23,6 @@
     transform: translateY(0);
   }
 
-  section {
-    width: 100%;
-    font-family: var(--mdc-theme-font);
-    border-bottom: 4px solid #444;
-    margin-bottom: .5rem;
-    h2{
-      margin-bottom: .25rem;
-    }
-  }
   .slot {
     display: flex;
     align-items: center;
@@ -38,8 +31,13 @@
   .bill {
     display: flex;
     flex-wrap: wrap;
-    padding-left: 0.25rem;
-    line-height: 1.5rem;
+    padding: 0.25rem 0;
+    line-height: 1.45rem;
+    border-top: 0.0625rem solid #f1f1f1;
+
+    &:first-of-type {
+      border-top: 0;
+    }
 
     input {
       margin-right: 1rem;
@@ -48,13 +46,14 @@
     }
 
     &.border {
-      border-bottom: 0.0625rem solid #aaa;
+      border-bottom: 0;
     }
 
     &.contract {
-      border-bottom: 0.25rem double #aaa;
-      padding-bottom: 0.25rem;
-      margin-bottom: 1rem;
+      border: 0.0625rem solid #eee;
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     &.wallet {
@@ -68,22 +67,23 @@
     }
 
     &.total {
-      border-top: 0.25rem solid black;
-      padding-top: 0;
-      margin-top: 0;
+      border-top: 0.125rem solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.25rem;
       font-weight: bold;
     }
 
     &.grouped {
       background-color: #f6f6f6;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0;
-      margin-top: -0.25rem;
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      margin-top: 0;
       margin-bottom: 0.5rem;
       color: #333;
-      width: calc(100% - 0.5rem);
+      width: 100%;
       margin-left: 0;
       font-size: 90%;
+      border-top: 0;
     }
 
     &.error {
@@ -97,7 +97,7 @@
       color: var(--mdc-theme-karibou-pink);
       width: 100%;
       font-size: 0.875rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     &.help {
@@ -121,7 +121,6 @@
     }
 
     .block-info {
-      margin-left: -0.25rem;
       margin-top: 0.25rem;
     }
 
@@ -145,6 +144,7 @@
 
     .label {
       width: 70%;
+      color: #666;
     }
 
     .amount-light {

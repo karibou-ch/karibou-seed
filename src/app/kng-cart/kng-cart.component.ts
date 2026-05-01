@@ -34,6 +34,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   _sharedCartName: string;
 
 
+  // FIXME checkout refactor: this parent still drives the checkout drawer imperatively.
   @ViewChild('checkout') checkout: KngCartCheckoutComponent;
 
   store: string;
@@ -59,131 +60,29 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   i18n: any = {
     fr: {
-      cart_deposit: 'Commande à collecter',
       cart_info_title:'Votre liste d\'achat',
-      cart_info_note:'Note:',
-      cart_info_help:'besoin d\'aide?',
-      cart_info_wallet:'Votre crédit appliqué',
-      cart_info_total: 'Estimation total à facturer',
-      cart_info_total_subscription: 'Total de votre abonnement',
-      cart_info_total_subscription_update: 'Total ajouté à votre abo',
-      cart_info_reserved: 'Montant réservé',
-      cart_info_contract_total: 'Montant de votre abo en cours',
-      cart_info_subtotal: 'Sous total (__FEES__ service inclus)',
-      cart_info_subtotal_fees: '__FEES__ de Service',
-      cart_info_shipping_when: 'Date de livraison',
-      cart_info_shipping: 'Livraison 100% cycliste',
-      cart_info_shipping_lastminute: '⚡ Livraison aujourd\'hui',
-      cart_info_shipping_group: 'Vous complétez une commande en cours',
-      cart_info_shipping_discount: 'dès <b>_AMOUNT_</b> fr la livraison passe à <b>_DISCOUNT_</b> fr',
-      cart_info_shipping_applied: 'Vous bénéficiez d\'un rabais livraison !',
-      cart_info_payment: 'Méthode de paiement',
-      cart_info_discount: 'Rabais',
-      cart_info_hub_not_active:'<b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
-      cart_info_one_date: 'Pas de livraison le __DAY__ pour ce marché.',
-      cart_info_one_date_more: 'Changer de date pour tout recevoir en une livraison.',
-      cart_info_limit: `Nos créneaux de livraison sont tous occupés. Toutefois, vous pouvez préparer votre panier et valider votre commande
-      lorsque de nouvelles fenêtres de livraison seront disponibles.
-       Merci beaucoup pour votre compréhension.`,
-      cart_info_service_k: `Service <span> __FEES__%</span> inclus`,
-      cart_info_service_k_plus: `Nos prix restent inchangés grâce à notre vente directe ; les frais de service transparents assurent une qualité 5🌟.`,
-      cart_remove: 'enlever',
-      cart_modify_add: 'Choisir une autre adresse de livraison',
-      cart_payment_title:'Informations de la carte',
-      cart_modify_payment: 'Choisir un autre mode de paiement',
-      cart_discount_info: 'Rabais commerçant',
-      cart_discount: 'rabais quantité',
-      cart_discount_title: 'rabais de ',
-      cart_checkout: 'Finaliser pour',
-      cart_subscription: 'Confirmer l\'abonnement',
       cart_subscription_title: 'Vérifier votre abonnement',
-      cart_create_subscription: 'Créer votre abonnement',
-      cart_update_subscription: 'Modifier votre abonnement',
-      cart_update_subscription_payment: 'Valider votre méthode de paiement',
-      cart_update_subscription_payment_error:"Votre carte est ne fonctionne pas, utilisez une autre méthode de paiement",
-      cart_login: 'Pour finaliser votre commande, vous devez vous connecter',
-      cart_empty: 'Vos paniers sont vides',
-      cart_error: 'Vous devez corriger votre panier!',
-      cart_error_timelimit: 'Commandez avant ',
-      cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
-      cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
-      cart_nextshipping: 'Livraison',
       cart_shared_name:'Nommez votre panier',
       cart_shared_copy: 'Vous voulez partager ce panier ? Envoyez-le à un proche pour qu’il le modifie ou le valide.',
       cart_shared_title1: 'Une liste d\'achats à été créée à votre attention',
       cart_shared_title2: 'Finalisez votre commande en un clin d\'œil : confirmez la date de livraison, identifiez-vous, sélectionnez votre adresse et le mode de paiement. Merci et savourez votre achat !',
-      cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
-      cart_cg: 'J\'accepte les conditions générales de vente',
-      cart_cg_middle:' et je confirme que ',
-      cart_cg_18: 'j\'ai l\'âge légal pour l\'achat d\'alcool',
-      cart_order: 'Enregistrer la commande',
       cart_order_pending_twint: 'Le paiement TWINT est en cours de traitement',
+      cart_order_canceled_twint: 'Votre paiement TWINT a été annulé',
       cart_order_unknownerror_twint: 'Erreur inconnue lors du paiement TWINT',
       cart_order_error_twint: 'Votre paiement TWINT est refusé',
       cart_order_placed: 'Votre commande est enregistrée et sera livrée le ',
-      cart_contract_placed: 'Votre abonnement est enregistré',
-
+      cart_contract_placed: 'Votre abonnement est enregistré'
     },
     en: {
-      cart_deposit: 'Order to collect',
       cart_info_title:'Your shopping cart',
-      cart_info_help:'Need help?',
-      cart_info_note:'Note:',
-      cart_info_total: 'Total estimate to be billed',
-      cart_info_total_subscription: 'Total for your subscription',
-      cart_info_total_subscription_update: 'Total add to your subscription',
-      cart_info_reserved: 'Amount reserved',
-      cart_info_wallet:'Your credit applied',
-      cart_info_contract_total: 'Amount of your running subscription',
-      cart_info_subtotal: 'Subtotal (__FEES__ service fee included)',
-      cart_info_subtotal_fees:'Service fee  __FEES__ ',
-      cart_info_shipping_when: 'Shipping date',
-      cart_info_shipping: 'Delivery 100% ecological ',
-      cart_info_shipping_lastminute: '⚡ Delivery today',
-      cart_info_shipping_group: 'You are close to complete an order in progress',
-      cart_info_shipping_discount: 'From <b>_AMOUNT_</b> chf of purchase, you get delivery to your door for <b>_DISCOUNT_</b> !',
-      cart_info_shipping_applied: 'You get a delivery discount!',
-      cart_info_payment: 'Payment method',
-      cart_info_discount: 'Discount',
-      cart_info_hub_not_active:'The <b>__HUB__</b> market is in maintenance and he is not available for checkout',
-      cart_info_one_date: 'Shipping is not available on __DAY__ for this marker.',
-      cart_info_one_date_more: 'Change the date to receive everything in one delivery',
-      cart_info_limit: `Our delivery slots are all full. However, you can prepare your basket and confirm your order when
-       new delivery windows become available. Thank you very much for your understanding.`,
-      cart_info_service_k: 'Service fee <span class="">__FEES__</span> included',
-      cart_info_service_k_plus: `Our prices remain unchanged thanks to our direct sales; transparent service fees ensure 5🌟 quality.`,
-      cart_remove: 'remove',
-      cart_modify: 'Modify',
-      cart_payment_title:'Card information',
-      cart_modify_add: 'Select another shipping address',
-      cart_modify_payment: 'Select another payment method',
-      cart_discount: 'discount',
-      cart_discount_info: 'Vendor delivery discount ',
-      cart_discount_title: 'delivery discount ',
-      cart_checkout: 'Checkout for',
-      cart_subscription: 'Confirm Subscription',
       cart_subscription_title: 'Check your subscription',
-      cart_create_subscription: 'Create your subscription',
-      cart_update_subscription: 'Modify your subscription',
-      cart_update_subscription_payment: 'Validate your payment method',
-      cart_update_subscription_payment_error:"Your card is not working, use another payment method",
-      cart_login: 'Please sign in before the checkout',
-      cart_empty: 'Your carts are empty',
-      cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
-      cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
-      cart_nextshipping: 'Next delivery',
       cart_shared_name:'Name your shopping cart',
       cart_shared_copy: 'Do you want to share this cart? Send it to someone close so they can modify or validate it.',
       cart_shared_title1: 'A shopping cart has been created for you',
       cart_shared_title2: 'Quickly finalize your order: confirm the delivery date, log in, select your address and payment method. Thank you and enjoy your purchase!',
-      cart_error: 'Your cart has to be modified!',
-      cart_error_timelimit: 'Order before ',
-      cart_cg: 'I agree to the general selling conditions',
-      cart_cg_middle:' and I confirm that ',
-      cart_cg_18: 'I am of legal age to purchase alcohol',
-      cart_order: 'Order now ',
       cart_order_placed: 'Your order is placed and will be delivered on',
       cart_order_pending_twint: 'TWINT payment is being processed',
+      cart_order_canceled_twint: 'Your TWINT payment was canceled',
       cart_order_unknownerror_twint: 'Unknown error during TWINT payment',
       cart_order_error_twint: 'Your TWINT payment is declined',
       cart_contract_placed: 'Your subscription is registered'
@@ -240,12 +139,12 @@ export class KngCartComponent implements OnInit, OnDestroy {
   get locale() {
     return this.$i18n.locale;
   }
-  get llabel() {
-    return this.i18n[this.$i18n.locale];
+  get label() {
+    return this.i18n[this.$i18n.locale] || this.i18n.fr;
   }
 
 
-  get label() {
+  get glabel() {
     return this.$i18n.label();
   }
 
@@ -425,11 +324,11 @@ export class KngCartComponent implements OnInit, OnDestroy {
           return;
         }
         if(order.payment.status=='voided') {
-          this.checkoutMessageError = this.llabel.cart_order_canceled_twint;
+          this.checkoutMessageError = this.label.cart_order_canceled_twint;
           return;
         }
 
-        this.checkoutMessageError = this.llabel.cart_order_pending_twint;
+        this.checkoutMessageError = this.label.cart_order_pending_twint;
         setTimeout(()=> window.location.reload(),1000);
         return;
       }
@@ -437,7 +336,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       //
       // list all kind of errors
       if(paymentIntent.status=='canceled') {
-        this.checkoutMessageError = this.llabel.cart_order_canceled_twint;
+        this.checkoutMessageError = this.label.cart_order_canceled_twint;
         return;
       }
 
@@ -445,7 +344,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
       if(paymentIntent.status=='processing') {
-        this.checkoutMessageError = this.llabel.cart_order_pending_twint;
+        this.checkoutMessageError = this.label.cart_order_pending_twint;
         setTimeout(()=> window.location.reload(),1000);
         return;
       }
@@ -473,14 +372,14 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
 
       if(paymentIntent.status=='requires_payment_method') {
-        this.checkoutMessageError = this.llabel.cart_order_error_twint;
+        this.checkoutMessageError = this.label.cart_order_error_twint;
         return;
       }
 
-      this.checkoutMessageError = this.llabel.cart_order_unknownerror_twint;
+      this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
 
     }catch(e){
-      this.checkoutMessageError = this.llabel.cart_order_unknownerror_twint;
+      this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
       console.log('async error',e)
     }finally{
 
@@ -605,7 +504,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     //
     // case of final contract
     if($event.contract) {
-      this.checkoutMessage = this.llabel.cart_contract_placed;
+      this.checkoutMessage = this.label.cart_contract_placed;
       this.clearAfterOrderWithDelay($event.order);
       return;
     }
@@ -615,7 +514,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     if($event.order) {
       const day = $event.order.shipping.when.getDate();
       const month = $event.order.shipping.when.getMonth() + 1;
-      this.checkoutMessage = this.llabel.cart_order_placed + `(${day}/${month})`;
+      this.checkoutMessage = this.label.cart_order_placed + `(${day}/${month})`;
       this.clearAfterOrderWithDelay($event.order);
     }
 

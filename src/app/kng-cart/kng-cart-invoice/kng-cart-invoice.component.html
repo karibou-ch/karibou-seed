@@ -1,19 +1,13 @@
 <div class="order-resume-block">
 
-  <!-- Section haut de page / résumé -->
-  <section
-    [class.deposit]="isCartDeposit"
-    [innerHtml]="config?.shared?.hub?.checkout?.resume?.[locale]">
-  </section>
-
-  <!-- Info frais de livraison groupée -->
+  <!-- Objectif : informer l'utilisateur qu'une commande groupée réduit les frais de livraison -->
   <div class="bill grouped" *ngIf="hasShippingReductionMultipleOrder">
     <div>
       <i class="material-symbols-outlined black">info</i>&nbsp;{{ label.cart_info_shipping_group }}
     </div>
   </div>
 
-  <!-- Infos contrat (subscription uniquement) -->
+  <!-- Objectif : rappeler le total du contrat existant lors d'une mise à jour d'abonnement -->
   <div class="bill border contract" *ngIf="isSubscription && hasUpdateContract">
     <div class="label">
       <span [innerHtml]="label.cart_info_contract_total"></span>
@@ -23,7 +17,7 @@
     </div>
   </div>
 
-  <!-- Sous-total -->
+  <!-- Objectif : afficher le sous-total des produits avant frais, réductions et balance -->
   <div class="bill">
     <div class="label">
       <span [innerHtml]="label_cart_info_subtotal"></span>
@@ -38,7 +32,7 @@
     </div>
   </div>
 
-  <!-- Ligne subtotal fees (masquée par défaut) -->
+  <!-- Objectif : conserver la ligne technique du sous-total de frais, masquée par défaut -->
   <div class="bill border" hidden>
     <div class="label">
       <span [innerHtml]="label_cart_info_subtotal_fees"></span>
@@ -48,12 +42,12 @@
     </div>
   </div>
 
-  <!-- Info complémentaire sur les frais -->
+  <!-- Objectif : expliquer le détail des frais lorsque l'utilisateur demande plus d'information -->
   <div class="bill" *ngIf="doToggleFees">
     <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
   </div>
 
-  <!-- Frais de livraison -->
+  <!-- Objectif : afficher les frais de livraison calculés pour l'adresse sélectionnée -->
   <div class="bill">
     <div class="label">
       <span [innerHtml]="label.cart_info_shipping"></span>
@@ -63,23 +57,7 @@
     </div>
   </div>
 
-  <!-- Date de livraison -->
-  <div class="bill">
-    <span>
-      <b class="text-capitalize highlight">
-        <span [hidden]="isLastMinuteShipping">
-          {{ displayShippingDay | date: 'EEEE dd/M':'':locale }}
-        </span>
-        <span [hidden]="!isLastMinuteShipping" class="last-minute">{{ last_minute_label }}</span>
-      </b>
-      &nbsp;
-    </span>
-    <span class="highlight align-right">
-      <span class="bold">{{ currentShippingTime }}</span>
-    </span>
-  </div>
-
-  <!-- Réduction sur frais de livraison -->
+  <!-- Objectif : signaler la réduction appliquée aux frais de livraison -->
   <div
     class="bill shipping-discount"
     *ngIf="!isCartDeposit && shippingDiscount"
@@ -87,7 +65,7 @@
     <div [innerHtml]="shippingDiscount"></div>
   </div>
 
-  <!-- Total discount -->
+  <!-- Objectif : afficher la réduction totale appliquée au panier -->
   <div class="bill" *ngIf="totalDiscount != 0">
     <div class="label">
       {{ label.cart_info_discount }}
@@ -98,7 +76,7 @@
   </div>
 
 
-  <!-- Montant wallet / balance utilisateur (cart uniquement) -->
+  <!-- Objectif : déduire la balance utilisateur du montant à payer pour un panier simple -->
   <div class="bill wallet" *ngIf="isCart">
     <div class="label">
       {{ label.cart_info_wallet }}
@@ -108,7 +86,7 @@
     </div>
   </div>
 
-  <!-- Total général (PANIER ou SUBSCRIPTION) -->
+  <!-- Objectif : afficher le total final selon le contexte panier ou abonnement -->
   <div class="bill total">
     <div class="label">
       {{ isCart ? label.cart_info_total :
@@ -119,8 +97,8 @@
     </div>
   </div>
 
-  <!-- Montant réservé (cart uniquement) -->
-  <div class="bill reserved" *ngIf="isCart">
+  <!-- Objectif : afficher le montant réservé si le moyen de paiement le supporte avant facturation finale -->
+  <div class="bill reserved" *ngIf="shouldShowReservedAmount">
     <div class="label">
       {{ label.cart_info_reserved }}
       <span class="highlight">{{ data?.payment?.issuer }}</span>

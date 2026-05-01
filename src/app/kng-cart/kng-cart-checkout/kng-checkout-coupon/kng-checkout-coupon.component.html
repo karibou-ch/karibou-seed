@@ -1,0 +1,29 @@
+<div class="order-address coupon">
+  <section class="coupon">
+    <div class="bill">
+      <div class="small">{{label.cart_coupon_title}}</div>
+      <div class="coupon-row">
+        <div class="input-text">
+          <input
+            type="text"
+            [placeholder]="label.cart_coupon_placeholder"
+            [ngModel]="couponCode"
+            (ngModelChange)="onCouponCodeChange($event)" />
+        </div>
+        <button
+          class="button coupon-apply"
+          type="button"
+          [disabled]="isRunning || !couponCode"
+          (click)="applyCoupon.emit()">
+          {{label.cart_coupon_apply}}
+        </button>
+      </div>
+      <div class="info" [hidden]="!couponCredit">
+        {{label.cart_coupon_applied}} Fr {{couponCredit?.amount|number:'1.2-2'}}
+      </div>
+      <div class="bill error" [hidden]="!couponError">
+        {{couponError}}
+      </div>
+    </div>
+  </section>
+</div>

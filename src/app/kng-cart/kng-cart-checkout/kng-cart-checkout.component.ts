@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { i18n, KngNavigationStateService, KngUtils } from '../../common';
-import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService } from 'kng2-core';
+import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService, UserCouponCredit } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { MdcSnackbar } from '@angular-mdc/web';
@@ -32,7 +32,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._config = cfg;
   }
 
-  @Input() i18n: any;
   @Input() orders: Order[];
   @Input() shippingTime: string;
 
@@ -41,9 +40,48 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
   VERSION = pkgInfo.version;
+  readonly i18n: any = {
+    fr: {
+      cart_deposit: 'Commande à collecter',
+      cart_info_note:'Note:',
+      cart_coupon_invalid:'Le bon de réduction n\'est pas valide',
+      cart_coupon_too_high:'Le bon de réduction est plus grand que le montant de la facture',
+      cart_info_help:'besoin d\'aide?',
+      cart_payment_title:'Informations de la carte',
+      cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
+      cart_update_subscription_payment: 'Valider votre méthode de paiement',
+      cart_update_subscription_payment_error:"Votre carte est ne fonctionne pas, utilisez une autre méthode de paiement",
+      cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
+      cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
+      checkout_back: 'Retour',
+      checkout_summary_title: 'Résumé de votre commande',
+      checkout_reserved_title: 'Pourquoi un montant réservé ?'
+    },
+    en: {
+      cart_deposit: 'Order to collect',
+      cart_info_note:'Note:',
+      cart_coupon_invalid:'The discount code is not valid',
+      cart_coupon_too_high:'The discount code is greater than the invoice amount',
+      cart_info_help:'Need help?',
+      cart_payment_title:'Card information',
+      cart_payment_not_available: 'This payment method is no longer available',
+      cart_update_subscription_payment: 'Validate your payment method',
+      cart_update_subscription_payment_error:"Your card is not working, use another payment method",
+      cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
+      cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
+      checkout_back: 'Back',
+      checkout_summary_title: 'Order summary',
+      checkout_reserved_title: 'Why is an amount reserved?'
+    }
+  };
   cgAccepted = false;
   cg18Accepted = false;
   shippingNote: string;
+  billNote: string;
+  couponCode: string;
+  couponCredit: UserCouponCredit|null = null;
+  couponError: string|null = null;
+  isCouponRunning = false;
   useCartSubscriptionView: boolean;
   subscriptionPlan:string;
   contract:CartSubscription;
@@ -70,9 +108,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   // order stuffs
   errorMessage: string|null = null;
   isRunning = false;
+  showReservationInfo = false;
 
   // ✅ FIXED: Bug #10 - Memory leak management
   private _subscriptions: any[] = [];
+  private _checkoutHistoryState = false;
+  private _ignoreHistorySync = false;
 
   constructor(
     private $i18n: i18n,
@@ -88,7 +129,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     private $calendar: CalendarService
   ) {
     this._open = false;
-    this.i18n = {};
     this.orders = [];
     this._updateItems = [];
     this.paymentTWINT = new UserCard({
@@ -104,12 +144,25 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   // ✅ FIXED: Bug #10 - Proper cleanup to prevent memory leaks
   ngOnDestroy() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
     this._subscriptions.forEach(sub => {
       if (sub && typeof sub.unsubscribe === 'function') {
         sub.unsubscribe();
       }
     });
     this._subscriptions = [];
+  }
+
+  @HostListener('window:popstate')
+  onBrowserBack() {
+    if (!this._open) {
+      return;
+    }
+
+    this._checkoutHistoryState = false;
+    this._ignoreHistorySync = true;
+    this.open = false;
+    this._ignoreHistorySync = false;
   }
 
   // ✅ SIMPLE: Centraliser création CartItemsContext (sans cache)
@@ -129,7 +182,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   }
 
   get label() {
-    return this.i18n[this.locale];
+    return this.i18n[this.locale] || this.i18n.fr;
   }
 
   get glabel() {
@@ -223,7 +276,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   get isFinalizeDisabled() {
     // cg18Accepted
-    return !this.selectPaymentIsDone||!this.cgAccepted||!this.selectAddressIsDone ||this.isRunning;
+    return !this.selectPaymentIsDone||!this.cgAccepted||!this.selectAddressIsDone ||this.isRunning||this.isCouponRunning;
   }
 
   get isReady() :boolean {
@@ -240,11 +293,29 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     }
     if(open) {
       document.body.classList.add('mdc-dialog-scroll-lock');
+      this.pushCheckoutHistoryState();
     } else {
       document.body.classList.remove('mdc-dialog-scroll-lock');
+      if (this._checkoutHistoryState && !this._ignoreHistorySync) {
+        this._checkoutHistoryState = false;
+        window.history.back();
+      }
     }
 
     this._open = open;
+  }
+
+  closeCheckout() {
+    this.open = false;
+  }
+
+  private pushCheckoutHistoryState() {
+    if (this._checkoutHistoryState) {
+      return;
+    }
+
+    window.history.pushState({ checkoutOpen: true }, document.title, window.location.href);
+    this._checkoutHistoryState = true;
   }
 
   get currentPayment() {
@@ -306,6 +377,22 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this.issuer[method.issuer].img;
   }
 
+  get reviewShippingDay() {
+    return this.useCartSubscriptionView ? this.subscriptionNextShippingDay : this.currentShippingDay();
+  }
+
+  get reviewShippingTime() {
+    if (this.useCartSubscriptionView && this.subscriptionParams?.time !== undefined) {
+      return this.config.shared.hub.shippingtimes?.[this.subscriptionParams.time] || `${this.subscriptionParams.time}h`;
+    }
+    const selectedHours = this.$cart.getCurrentShippingTime() || this.$calendar.getDefaultTimeByDay(this.reviewShippingDay, this.hub);
+    return this.config.shared.hub.shippingtimes?.[selectedHours] || `${selectedHours}h`;
+  }
+
+  get reviewIsLastMinuteShipping() {
+    return !this.useCartSubscriptionView && this.$cart.isCurrentShippingLastMinute();
+  }
+
   ngOnInit(): void {
     // ensure state
     document.body.classList.remove('mdc-dialog-scroll-lock');
@@ -365,6 +452,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this.$cart.computeShippingFees(ctx);
   }
 
+  shippingFeeForAddress = (address: UserAddress) => this.computeShippingByAddress(address);
+
   currentShippingDay() {
     return this.$cart.getCurrentShippingDay();
   }
@@ -393,6 +482,45 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       return this.$cart.subTotal(ctx);
     }
     return this.$cart.total(ctx);
+  }
+
+  currentTotalWithFees() {
+    return Math.round((this.currentTotal() + this.currentServiceFees()) * 100) / 100;
+  }
+
+  onCouponChange() {
+    this.couponCredit = null;
+    this.couponError = null;
+  }
+
+  readCoupon() {
+    const code = (this.couponCode || '').trim();
+    this.couponCredit = null;
+    this.couponError = null;
+
+    if(!code) {
+      return;
+    }
+
+    this.isCouponRunning = true;
+    this.$user.readCoupon(code).subscribe(coupon => {
+      this.isCouponRunning = false;
+      if(coupon.amount > this.currentTotalWithFees()) {
+        this.couponError = this.label.cart_coupon_too_high || 'Le coupon est plus grand que le montant de la facture';
+        return;
+      }
+      this.couponCredit = coupon;
+      this.couponCode = coupon.code;
+    }, status => {
+      this.isCouponRunning = false;
+      this.couponError = status.error || this.label.cart_coupon_invalid || 'Le coupon n\'est pas valide';
+    });
+  }
+
+  clearCoupon() {
+    this.couponCode = '';
+    this.couponCredit = null;
+    this.couponError = null;
   }
 
   checkPaymentMethod(force?:boolean) {
@@ -472,7 +600,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     const current = this.$cart.getCurrentShippingAddress();
     // deposit address contains fees
     // TODO make a test for that
-    return current['fees'] !== undefined;
+    return !!current && current['fees'] !== undefined;
   }
 
   isSelectedAddress(add: UserAddress) {
@@ -520,12 +648,28 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
     // ✅ FIXED: Don't block checkout based on isValid() - let Stripe decide
     // if (!payment.isValid()) {
-    //   this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
+    //   this.$snack.open(payment.error || this.label.cart_payment_not_available, 'OK');
     //   return;
     // }
 
     this.$cart.setPaymentMethod(payment);
     this.selectPaymentIsDone = true;
+  }
+
+  editAddressFromReview() {
+    this.selectAddressIsDone = false;
+  }
+
+  addAddressFromReview() {
+    this.$router.navigate(['./user/login-or-address'], { relativeTo: this.$route });
+  }
+
+  editPaymentFromReview() {
+    this.selectPaymentIsDone = false;
+  }
+
+  addPaymentFromReview() {
+    this.$router.navigate(['./user/login-or-payment'], { relativeTo: this.$route });
   }
 
   //
@@ -672,7 +816,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
     //needed from backend
     //paymentData && paymentData.oid && paymentData.intent_id
-    const payment = intent||this.currentPayment;
+    const payment:any = Object.assign({}, intent||this.currentPayment);
+    if(!intent && this.couponCredit) {
+      payment.coupon = this.couponCredit.code;
+    }
     const hub = this._currentHub && this._currentHub.slug || this.$navigation.store;
     const items = this.items.map(item => item.toDEPRECATED());
 
@@ -689,7 +836,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       hub,
       shipping,
       items,
-      payment
+      payment,
+      this.billNote ? { billNote: this.billNote } : undefined
     ).subscribe((order) => {
         this.isRunning = false;
 
@@ -884,6 +1032,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._user = checkoutCtx.user;
     this.open = true;
     this.errorMessage = null;
+    this.clearCoupon();
     this.contract = null;
     //
     // should be a boolean

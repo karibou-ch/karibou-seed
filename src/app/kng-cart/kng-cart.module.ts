@@ -10,6 +10,9 @@ import { KngCommonModule } from '../common/common.module';
 import { KngCartItemsComponent } from './kng-cart-items/kng-cart-items.component';
 import { KngCartCheckoutComponent } from './kng-cart-checkout/kng-cart-checkout.component';
 import { KngCartInvoiceComponent } from './kng-cart-invoice/kng-cart-invoice.component';
+import { KngCheckoutCouponComponent } from './kng-cart-checkout/kng-checkout-coupon/kng-checkout-coupon.component';
+import { KngCheckoutConfirmationComponent } from './kng-cart-checkout/kng-checkout-confirmation/kng-checkout-confirmation.component';
+import { KngCheckoutReviewComponent } from './kng-cart-checkout/kng-checkout-review/kng-checkout-review.component';
 
 
 //
@@ -45,7 +48,10 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     KngCartComponent,
     KngCartItemsComponent,
     KngCartCheckoutComponent,
-    KngCartInvoiceComponent
+    KngCartInvoiceComponent,
+    KngCheckoutCouponComponent,
+    KngCheckoutConfirmationComponent,
+    KngCheckoutReviewComponent
   ]
 })
 export class KngCartModule { }
