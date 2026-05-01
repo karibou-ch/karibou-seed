@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
-import { i18n, KngNavigationStateService, KngUtils, NotifyService } from '../../common';
-import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService } from 'kng2-core';
+import { Component, EventEmitter, HostListener, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import { i18n, KngNavigationStateService, KngUtils } from '../../common';
+import { CartItem,CartItemsContext, CartService,CartSubscriptionParams, CartSubscriptionProductItem, Config, Hub, Order, OrderService, ShippingAddress, User, UserAddress, UserCard, UserService, CalendarService, UserCouponCredit } from 'kng2-core';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { StripeService } from 'ngx-stripe';
 import { CheckoutCtx } from '../kng-cart-items/kng-cart-items.component';
@@ -31,7 +31,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._config = cfg;
   }
 
-  @Input() i18n: any;
   @Input() orders: Order[];
   @Input() shippingTime: string | number;
 
@@ -40,9 +39,50 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   @Output() updated: EventEmitter<any> = new EventEmitter<any>();
 
   VERSION = pkgInfo.version;
+  readonly i18n: any = {
+    fr: {
+      cart_deposit: 'Commande à collecter',
+      cart_info_note:'Note:',
+      cart_coupon_invalid:'Le bon de réduction n\'est pas valide',
+      cart_coupon_too_high:'Le bon de réduction est plus grand que le montant de la facture',
+      cart_info_help:'besoin d\'aide?',
+      cart_payment_title:'Informations de la carte',
+      cart_payment_not_available: 'Cette méthode de paiement n\'est plus disponible',
+      cart_update_subscription_payment: 'Valider votre méthode de paiement',
+      cart_update_subscription_payment_error:"Votre carte est ne fonctionne pas, utilisez une autre méthode de paiement",
+      cart_address_save_error: 'Impossible de sauvegarder cette adresse',
+      cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
+      cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
+      checkout_back: 'Retour',
+      checkout_summary_title: 'Résumé de votre commande',
+      checkout_reserved_title: 'Pourquoi un montant réservé ?'
+    },
+    en: {
+      cart_deposit: 'Order to collect',
+      cart_info_note:'Note:',
+      cart_coupon_invalid:'The discount code is not valid',
+      cart_coupon_too_high:'The discount code is greater than the invoice amount',
+      cart_info_help:'Need help?',
+      cart_payment_title:'Card information',
+      cart_payment_not_available: 'This payment method is no longer available',
+      cart_update_subscription_payment: 'Validate your payment method',
+      cart_update_subscription_payment_error:"Your card is not working, use another payment method",
+      cart_address_save_error: 'Unable to save this address',
+      cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
+      cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
+      checkout_back: 'Back',
+      checkout_summary_title: 'Order summary',
+      checkout_reserved_title: 'Why is an amount reserved?'
+    }
+  };
   cgAccepted = false;
   cg18Accepted = false;
   shippingNote: string;
+  billNote: string;
+  couponCode: string;
+  couponCredit: UserCouponCredit|null = null;
+  couponError: string|null = null;
+  isCouponRunning = false;
   useCartSubscriptionView: boolean;
   subscriptionPlan:string;
   contract:CartSubscription;
@@ -69,9 +109,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   // order stuffs
   errorMessage: string|null = null;
   isRunning = false;
+  showReservationInfo = false;
 
   // ✅ FIXED: Bug #10 - Memory leak management
   private _subscriptions: any[] = [];
+  private _checkoutHistoryState = false;
+  private _ignoreHistorySync = false;
 
   constructor(
     private $i18n: i18n,
@@ -87,7 +130,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     private $calendar: CalendarService
   ) {
     this._open = false;
-    this.i18n = {};
     this.orders = [];
     this._updateItems = [];
     this.paymentTWINT = new UserCard({
@@ -103,12 +145,25 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   // ✅ FIXED: Bug #10 - Proper cleanup to prevent memory leaks
   ngOnDestroy() {
+    document.body.classList.remove('mdc-dialog-scroll-lock');
     this._subscriptions.forEach(sub => {
       if (sub && typeof sub.unsubscribe === 'function') {
         sub.unsubscribe();
       }
     });
     this._subscriptions = [];
+  }
+
+  @HostListener('window:popstate')
+  onBrowserBack() {
+    if (!this._open) {
+      return;
+    }
+
+    this._checkoutHistoryState = false;
+    this._ignoreHistorySync = true;
+    this.open = false;
+    this._ignoreHistorySync = false;
   }
 
   // ✅ SIMPLE: Centraliser création CartItemsContext (sans cache)
@@ -128,7 +183,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   }
 
   get label() {
-    return this.i18n[this.locale];
+    return this.i18n[this.locale] || this.i18n.fr;
   }
 
   get glabel() {
@@ -222,7 +277,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   get isFinalizeDisabled() {
     // cg18Accepted
-    return !this.selectPaymentIsDone||!this.cgAccepted||!this.selectAddressIsDone ||this.isRunning;
+    return !this.selectPaymentIsDone||!this.cgAccepted||!this.selectAddressIsDone ||this.isRunning||this.isCouponRunning;
   }
 
   get isReady() :boolean {
@@ -239,11 +294,29 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     }
     if(open) {
       document.body.classList.add('mdc-dialog-scroll-lock');
+      this.pushCheckoutHistoryState();
     } else {
       document.body.classList.remove('mdc-dialog-scroll-lock');
+      if (this._checkoutHistoryState && !this._ignoreHistorySync) {
+        this._checkoutHistoryState = false;
+        window.history.back();
+      }
     }
 
     this._open = open;
+  }
+
+  closeCheckout() {
+    this.open = false;
+  }
+
+  private pushCheckoutHistoryState() {
+    if (this._checkoutHistoryState) {
+      return;
+    }
+
+    window.history.pushState({ checkoutOpen: true }, document.title, window.location.href);
+    this._checkoutHistoryState = true;
   }
 
   get currentPayment() {
@@ -305,6 +378,22 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this.issuer[method.issuer].img;
   }
 
+  get reviewShippingDay() {
+    return this.useCartSubscriptionView ? this.subscriptionNextShippingDay : this.currentShippingDay();
+  }
+
+  get reviewShippingTime() {
+    if (this.useCartSubscriptionView && this.subscriptionParams?.time !== undefined) {
+      return this.config.shared.hub.shippingtimes?.[this.subscriptionParams.time] || `${this.subscriptionParams.time}h`;
+    }
+    const selectedHours = this.$cart.getCurrentShippingTime() || this.$calendar.getDefaultTimeByDay(this.reviewShippingDay, this.hub);
+    return this.config.shared.hub.shippingtimes?.[selectedHours] || `${selectedHours}h`;
+  }
+
+  get reviewIsLastMinuteShipping() {
+    return !this.useCartSubscriptionView && this.$cart.isCurrentShippingLastMinute();
+  }
+
   ngOnInit(): void {
     // ensure state
     document.body.classList.remove('mdc-dialog-scroll-lock');
@@ -313,7 +402,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     // save the plan for the subscription (business, customer)
     this.subscriptionPlan = this.$route.snapshot.queryParams.plan||'customer';
 
-    this.$user.user$.subscribe(user => {
+    this._subscriptions.push(this.$user.user$.subscribe(user => {
       this._user = user;
       //
       // after user is updated verify if payment is still valid
@@ -354,7 +443,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
 
       this.checkPaymentMethod();
-    });
+    }));
 
   }
 
@@ -363,6 +452,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     const ctx = { ...this.createCartContext(), address };
     return this.$cart.computeShippingFees(ctx);
   }
+
+  shippingFeeForAddress = (address: UserAddress) => this.computeShippingByAddress(address);
 
   currentShippingDay() {
     return this.$cart.getCurrentShippingDay();
@@ -394,13 +485,52 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this.$cart.total(ctx);
   }
 
+  currentTotalWithFees() {
+    return Math.round((this.currentTotal() + this.currentServiceFees()) * 100) / 100;
+  }
+
+  onCouponChange() {
+    this.couponCredit = null;
+    this.couponError = null;
+  }
+
+  readCoupon() {
+    const code = (this.couponCode || '').trim();
+    this.couponCredit = null;
+    this.couponError = null;
+
+    if(!code) {
+      return;
+    }
+
+    this.isCouponRunning = true;
+    this._subscriptions.push(this.$user.readCoupon(code).subscribe(coupon => {
+      this.isCouponRunning = false;
+      if(coupon.amount > this.currentTotalWithFees()) {
+        this.couponError = this.label.cart_coupon_too_high || 'Le coupon est plus grand que le montant de la facture';
+        return;
+      }
+      this.couponCredit = coupon;
+      this.couponCode = coupon.code;
+    }, status => {
+      this.isCouponRunning = false;
+      this.couponError = status.error || this.label.cart_coupon_invalid || 'Le coupon n\'est pas valide';
+    }));
+  }
+
+  clearCoupon() {
+    this.couponCode = '';
+    this.couponCredit = null;
+    this.couponError = null;
+  }
+
   checkPaymentMethod(force?:boolean) {
     if (!this._user.isAuthenticated()) {
       this.open = false;
       return;
     }
     const total = this.currentTotal() + this.currentServiceFees();
-    this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
+    this._subscriptions.push(this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
       //
       // set default payment
       // ✅ FIXED: Robust payment alias extraction with null checks
@@ -433,7 +563,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       if (error.status === 401) {
         this.open = false;
       }
-    });
+    }));
   }
 
   getStaticMap(address: UserAddress) {
@@ -471,7 +601,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     const current = this.$cart.getCurrentShippingAddress();
     // deposit address contains fees
     // TODO make a test for that
-    return current['fees'] !== undefined;
+    return !!current && current['fees'] !== undefined;
   }
 
   isSelectedAddress(add: UserAddress) {
@@ -519,12 +649,28 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
     // ✅ FIXED: Don't block checkout based on isValid() - let Stripe decide
     // if (!payment.isValid()) {
-    //   this.$snack.open(payment.error || this.i18n[this.locale].cart_payment_not_available, 'OK');
+    //   this.$snack.open(payment.error || this.label.cart_payment_not_available, 'OK');
     //   return;
     // }
 
     this.$cart.setPaymentMethod(payment);
     this.selectPaymentIsDone = true;
+  }
+
+  editAddressFromReview() {
+    this.selectAddressIsDone = false;
+  }
+
+  addAddressFromReview() {
+    this.$router.navigate(['./user/login-or-address'], { relativeTo: this.$route });
+  }
+
+  editPaymentFromReview() {
+    this.selectPaymentIsDone = false;
+  }
+
+  addPaymentFromReview() {
+    this.$router.navigate(['./user/login-or-payment'], { relativeTo: this.$route });
   }
 
   //
@@ -554,7 +700,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     // ✅ FIX: Selon Stripe moderne, quand status="requires_action",
     // le payment_method est déjà attaché au PaymentIntent.
     // On passe seulement client_secret pour déclencher la 3DS.
-    this.$stripe.confirmCardPayment(intent.client_secret).subscribe((result) => {
+    this._subscriptions.push(this.$stripe.confirmCardPayment(intent.client_secret).subscribe((result) => {
       if (result.error) {
         //
         // Show error to our customer (e.g., insufficient funds)
@@ -586,21 +732,27 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         this.doSubscriptionPaymentConfirm(target.subscription,result.paymentIntent);
       }
 
-    });
+    }));
   }
 
 
-  confirmPaymenTwintIntent(intent: any, target:any) {
-    const intentOpt: any = {
-    };
+  private buildTwintReturnUrl(oid: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('oid', oid);
+    url.searchParams.delete('payment_intent');
+    url.searchParams.delete('payment_intent_client_secret');
+    url.searchParams.delete('redirect_status');
+    return url.toString();
+  }
 
+  confirmPaymenTwintIntent(intent: any, target:any) {
     this.errorMessage = null;
 
     this.$stripe.getInstance()['confirmTwintPayment'](intent.client_secret,{
       payment_method:{
         twint:{}
       },
-      return_url: window.location.href+'?oid='+target.oid
+      return_url: this.buildTwintReturnUrl(target.oid)
     }).then((result) => {
       console.log('--- TWINT ',result);
       if (result.error) {
@@ -617,25 +769,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // ✅ FIXED: Uncomment and fix TWINT payment confirmation logic
-      // The payment must be confirmed for an order
-      if (target.oid && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
-        const payment = this.$cart.getCurrentPaymentMethod();
-        //
-        // include oid reference as payment DATA
-        const intentData = {
-          oid:target.oid,
-          intent_id:result.paymentIntent.id,
-          ...payment
-        }
-
-        this.doOrder(intentData);
-      }
-
-      // ✅ FIXED: Handle subscription TWINT payments
-      if(target.subscription && ['requires_capture', 'succeeded'].indexOf(result.paymentIntent.status) > -1) {
-        this.doSubscriptionPaymentConfirm(target.subscription, result.paymentIntent);
-      }
+      // TWINT is finalized by the Stripe webhook; the return page follows the
+      // backend payment stream instead of posting a second order confirmation.
+      this.isRunning = false;
+      this.$cart.broadcastState();
 
     }).catch((error) => {
       // ✅ ADDED: Handle TWINT promise rejection
@@ -671,7 +808,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
     //needed from backend
     //paymentData && paymentData.oid && paymentData.intent_id
-    const payment = intent||this.currentPayment;
+    const payment:any = Object.assign({}, intent||this.currentPayment);
+    if(!intent && this.couponCredit) {
+      payment.coupon = this.couponCredit.code;
+    }
     const hub = this._currentHub && this._currentHub.slug || this.$navigation.store;
     const items = this.items.map(item => item.toDEPRECATED());
 
@@ -684,11 +824,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     //
     // clear cart error
     this.$cart.clearErrors();
-    this.$order.create(
+    this._subscriptions.push(this.$order.create(
       hub,
       shipping,
       items,
-      payment
+      payment,
+      this.billNote ? { billNote: this.billNote } : undefined
     ).subscribe((order) => {
         this.isRunning = false;
 
@@ -703,7 +844,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
           );
           this.updated.emit({ errors: order.errors });
           this.$cart.broadcastState();
-          this.$user.me().subscribe();
+          this._subscriptions.push(this.$user.me().subscribe());
           this.open = false;
 
           return;
@@ -745,7 +886,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
           this.$i18n.snackOpt
       );
       }
-    );
+    ));
   }
 
   doSubscriptionPaymentUpdate(sid,intent) {
@@ -818,7 +959,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     }else{
       resultAction = this.$cart.subscriptionCreate(subParams);
     }
-    resultAction.subscribe(
+    this._subscriptions.push(resultAction.subscribe(
       subscription=> {
         this.isRunning = false;
         console.log('----- subscription running',subscription);
@@ -870,7 +1011,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       );
 
       }
-    )
+    ));
 
   }
 
@@ -883,6 +1024,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._user = checkoutCtx.user;
     this.open = true;
     this.errorMessage = null;
+    this.clearCoupon();
     this.contract = null;
     //
     // should be a boolean
@@ -931,13 +1073,14 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   //
   // payment method is valid and saved
-  onPaymentSave(payment: PaymentEvent) {
-    // set payment method is done by user.update$.subscribe()
+  onPaymentSave(payment: any) {
+    this.selectPaymentIsDone = false;
+    this.checkPaymentMethod(true);
   }
 
   //
   // address is valid and must be saved
-  onAddressSave(address: UserAddress) {
+  onAddressSave(address?: UserAddress) {
     // this.$user.addressAdd(address).subscribe(user => {
     //   this._user = user;
     //   this.selectAddressIsDone = false;
@@ -948,8 +1091,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this.isRunning = true;
 
     const tosave = new User(this.user);
+    tosave.addresses = tosave.addresses || [];
+    tosave.phoneNumbers = tosave.phoneNumbers || [];
     // save default phone
-    if (!tosave.phoneNumbers.length) {
+    if (!tosave.phoneNumbers.length && address.phone) {
       tosave.phoneNumbers.push({number: address.phone, what: 'mobile'});
     }
 
@@ -960,12 +1105,35 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     //   this.idx = (tosave.addresses.push(address)) - 1;
     // }
 
-    tosave.addresses.push(address);
-    this.$user.save(tosave).subscribe(
+    const normalize = (str: string) => (str || '').trim().toLowerCase();
+    const addressIndex = tosave.addresses.findIndex(saved => {
+      return normalize(saved.streetAdress || saved.streetAddress) === normalize(address.streetAdress || address.streetAddress) &&
+             normalize(saved.postalCode) === normalize(address.postalCode) &&
+             normalize(saved.region) === normalize(address.region);
+    });
+
+    if (addressIndex > -1) {
+      tosave.addresses[addressIndex] = address;
+    } else {
+      tosave.addresses.push(address);
+    }
+
+    this._subscriptions.push(this.$user.save(tosave).subscribe(
       user => {
+        this._user = user;
+        this.setShippingAddress(address);
         this.isRunning = false;
+      },
+      status => {
+        this.isRunning = false;
+        this.errorMessage = status.error || this.label.cart_address_save_error;
+        this.$snack.open(
+          this.errorMessage,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+        );
       }
-    );
+    ));
 
   }
 

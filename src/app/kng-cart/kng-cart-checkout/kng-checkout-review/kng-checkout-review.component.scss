@@ -1,0 +1,177 @@
+:host {
+  display: block;
+  width: 100%;
+  --checkout-card-background: var(--mdc-theme-colormix);
+  --checkout-card-border: var(--mdc-theme-appbar);
+  --checkout-error-color: var(--mdc-theme-karibou-pink);
+  --checkout-link-color: LinkText;
+  --checkout-text-primary: var(--mdc-theme-text-primary-on-background);
+  --checkout-text-secondary: var(--mdc-theme-text-secondary-on-background);
+}
+
+.checkout-review {
+  border: 0.125rem solid var(--checkout-card-border);
+  border-radius: 1rem;
+  background: var(--checkout-card-background);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+
+  h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+.review-card {
+  border-top: 0.0625rem solid var(--checkout-card-border);
+  padding: 0.75rem 0;
+
+  &:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.review-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+
+  button {
+    border: 0;
+    background: transparent;
+    color: var(--checkout-link-color);
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.25rem 0;
+  }
+}
+
+.review-label {
+  color: var(--checkout-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.review-primary {
+  font-weight: 700;
+  line-height: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.review-line,
+.review-delivery-policy {
+  color: var(--checkout-text-secondary);
+  line-height: 1.5rem;
+}
+
+.bold {
+  color: var(--checkout-text-primary);
+  font-weight: 700;
+}
+
+.review-address-editor {
+  margin-top: 0.75rem;
+}
+
+.review-payment-editor {
+  margin-top: 0.75rem;
+}
+
+.review-option {
+  align-items: flex-start;
+  background: transparent;
+  border: 0;
+  border-bottom: 0.0625rem solid var(--checkout-card-border);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  text-align: left;
+  width: 100%;
+
+  &.error {
+    .review-option-name,
+    .review-option-detail {
+      color: var(--checkout-error-color);
+    }
+  }
+}
+
+.review-option-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  &.inlined {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+}
+
+.review-option-name {
+  color: var(--checkout-link-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.35rem;
+}
+
+.review-option-detail,
+.review-option-amount {
+  color: var(--checkout-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.25rem;
+}
+
+.review-option-amount {
+  flex: 0 0 auto;
+}
+
+.review-add-action {
+  background: transparent;
+  border: 0;
+  color: var(--checkout-link-color);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.75rem 0 0.25rem;
+}
+
+.review-delivery-note {
+  border-bottom: 0.0625rem solid var(--checkout-card-border);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+
+  label {
+    color: var(--checkout-text-primary);
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+
+  input[type='text'] {
+    border: 0.0625rem solid var(--mdc-theme-appbar);
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 0.65rem 0.75rem;
+    width: 100%;
+  }
+}
+
+.review-delivery-policy {
+  color: var(--checkout-text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.2rem;
+  margin-top: 0.4rem;
+}

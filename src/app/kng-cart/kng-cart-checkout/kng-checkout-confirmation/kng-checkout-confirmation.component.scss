@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.confirmation-card {
+  background: #fff;
+  border: 0.125rem solid #eee;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  margin: 0 0 0.75rem;
+  padding: 1rem;
+  position: relative;
+  width: 100%;
+
+  @media (max-width: 599px) {
+    width: 100%;
+  }
+}
+
+.confirmation-note,
+.confirmation-terms,
+.confirmation-actions {
+  border-top: 0.0625rem solid #eee;
+  padding: 0.75rem 0 0;
+
+  &:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+.confirmation-label {
+  color: #333;
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.confirmation-input {
+  input[type='text'] {
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 0.65rem 0.75rem;
+    width: 100%;
+  }
+}
+
+.confirmation-terms {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+  line-height: 1.35rem;
+
+  input[type='checkbox'] {
+    flex: 0 0 auto;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    width: 1.1rem;
+  }
+}
+
+.confirmation-terms-copy {
+  color: #666;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.confirmation-actions {
+  margin-top: 0.75rem;
+}
+
+.confirmation-submit {
+  align-items: center;
+  background-color: #000;
+  border: 0;
+  border-radius: 0.5rem;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.05rem;
+  font-weight: 700;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+
+  &:disabled {
+    opacity: 0.3;
+  }
+}
+
+.confirmation-error {
+  background-color: #ffb1b1;
+  border-radius: 0.5rem;
+  font-weight: 400;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+}

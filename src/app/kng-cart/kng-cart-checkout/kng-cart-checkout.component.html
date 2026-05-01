@@ -1,113 +1,56 @@
 <!-- NAVIGATION  -->
 <div class="kng-checkout-drawer" [class.kng-drawer-open]="open">
 
-  <!-- brand -->
-  <div class="k-brand">
-    <b>v{{VERSION}}-{{iOS||'n'}}</b>
-  </div>
-
-  <button class="close" (click)="open = false">
-    <span class="size-large material-symbols-outlined">close</span>
-  </button>
+  <header class="checkout-header">
+    <button type="button" class="checkout-back" (click)="closeCheckout()" [attr.aria-label]="label.checkout_back">
+      <span class="material-symbols-outlined size-large">arrow_back</span>
+    </button>
+    <h2>{{label.checkout_summary_title}}</h2>
+  </header>
 
   <!-- CHECKOUT-->
   <div class="checkout" *ngIf="isReady">
-    <div class="cart-container">
-      <!-- PAYMENT-->
-      <div class="order-address" [class.is-done]="selectPaymentIsDone" *ngIf="user.isAuthenticated()&&user.isReady() && isOpen()">
-        <section hidden [innerHtml]="config?.shared.hub.checkout.payment[locale]"></section>
+    <div class="cart-container checkout-details">
+      <kng-checkout-review
+        [config]="config"
+        [user]="user"
+        [address]="currentAddress"
+        [addresses]="userAddresses"
+        [depositAddresses]="useCartSubscriptionView ? [] : getDepositAddress()"
+        [payment]="currentPayment"
+        [payments]="userPayments"
+        [phone]="userPhone"
+        [shippingDay]="reviewShippingDay"
+        [shippingTime]="reviewShippingTime"
+        [(shippingNote)]="shippingNote"
+        [isLastMinuteShipping]="reviewIsLastMinuteShipping"
+        [isAddressEditing]="!selectAddressIsDone"
+        [isAddressDeposit]="isCartDeposit()"
+        [isPaymentEditing]="!selectPaymentIsDone"
+        [computeShippingAmount]="shippingFeeForAddress"
+        (editAddress)="editAddressFromReview()"
+        (addressSelected)="setShippingAddress($event)"
+        (addressSaved)="onAddressSave($event)"
+        (addAddressRequested)="addAddressFromReview()"
+        (editPayment)="editPaymentFromReview()"
+        (paymentSelected)="setPaymentMethod($event)"
+        (paymentSaved)="onPaymentSave($event)"
+        (addPaymentRequested)="addPaymentFromReview()">
+      </kng-checkout-review>
 
-
-        <!-- FIXME hide wallet method -->
-        <!--               [hidden]="payment.issuer=='wallet'"-->
-        <section class="payments">
-          <div class="payment checked"
-            *ngIf="currentPayment?.issuer"
-            (click)="selectPaymentIsDone=!selectPaymentIsDone"
-            [class.error]="!currentPayment.isValid()"
-            [class.on-selection]="!selectPaymentIsDone">
-            <label [hidden]="!selectPaymentIsDone"> Changer </label>
-            <div class="method name"><span class="highlight">{{issuer[currentPayment.issuer].label}}</span>  **{{currentPayment.last4}}</div>
-          </div>
-
-          <!-- INLINE NEW PAYMENT IN FIRST PLACE -->
-          <div class="address-new" *ngIf="!userPaymentsCard.length && !selectPaymentIsDone">
-            <kng-user-payment [title]="label.cart_payment_title" [config]="config" [user]="user" (updated)="onPaymentSave($event)"></kng-user-payment>
-          </div>
-
-          <!-- LIST PAYMENTS -->
-          <div class="payment {{payment.issuer}}" *ngFor="let payment of userPayments"
-            [class.error]="!payment.isValid()" [hidden]="selectPaymentIsDone"
-            (click)="setPaymentMethod(payment)">
-            <label><input type="checkbox" [checked]="currentPayment && payment.alias == currentPayment.alias"></label>
-            <div class="method name">{{issuer[payment.issuer].label}}  **{{payment.last4}}</div>
-            <div class="note">{{payment.expiryToDate()|date:'MM/y'}} <span class="payment">{{label.cart_payment_not_available}}</span></div>
-          </div>
-
-          <!-- MANAGE PAYMENTS -->
-          <div class="profile-action" [hidden]="selectPaymentIsDone && currentPayment || !userPaymentsCard.length" [routerLink]="['./user/login-or-payment']">
-            <div class="button">
-              <span class="material-symbols-outlined black">add_box</span>  {{glabel.user_payment_add}}
-            </div>
-          </div>
-        </section>
-
-        <kng-wallet [user]="user" hidden></kng-wallet>
+      <div class="checkout-reservation-info">
+        <div class="reservation-title">
+          <span>{{label.checkout_reserved_title}}</span>
+          <button type="button" class="reservation-toggle" (click)="showReservationInfo = !showReservationInfo">
+            <span class="material-symbols-outlined">info</span>
+          </button>
+        </div>
+        <div class="reservation-copy" [hidden]="!showReservationInfo">
+          {{ label.cart_amount_1 }}
+          {{ label.cart_amount_2 }}
+        </div>
       </div>
 
-      <!-- ADDRESS IFF isAuth()-->
-      <div class="order-address" [class.is-done]="selectAddressIsDone" [hidden]="!user.isAuthenticated()||!user.isReady()||!isOpen()">
-        <section class="address-title" [innerHtml]="config?.shared.hub.checkout.address[locale]"></section>
-
-        <!-- USER ADDRESS -->
-        <section class="addresses">
-          <div class="address checked"
-              (click)="selectAddressIsDone=!selectAddressIsDone"
-              [class.on-selection]="!selectAddressIsDone"
-              [hidden]="!currentShipping()||!currentAddress.streetAdress">
-              <label [hidden]="!selectAddressIsDone">Changer</label>
-
-              <div class="name" [class.deposit]="currentAddressIsDeposit">{{currentAddress.name}}</div>
-              <div class="street text-overflow">{{currentAddress.streetAdress}} / {{currentAddress.postalCode}}</div>
-              <div class="street text-overflow" [hidden]="!currentAddress.phone">{{currentAddress.phone}}</div>
-              <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{currentAddress.note}}</div>
-              <div class="shipping-amount">Fr  {{computeShippingByAddress(currentAddress)|number:'1.2-2'}}</div>
-          </div>
-          <!-- INLINE NEW ADDRESS IN FIRST PLACE -->
-          <div class="address-new" *ngIf="!userAddresses.length && !selectAddressIsDone">
-            <kng-address [phone]="userPhone" [title]="glabel.user_shipping_title" [config]="config" (updated)="onAddressSave($event)"></kng-address>
-          </div>
-
-          <!-- USER ADDRESS -->
-          <div class="address" *ngFor="let address of userAddresses"
-              (click)="setShippingAddress(address)" [hidden]="selectAddressIsDone && currentAddress.streetAdress">
-              <label><input type="checkbox" [checked]="isSelectedAddress(address)"></label>
-              <div class="name">{{address.name}}</div>
-              <div class="street text-overflow">{{address.streetAdress}} / {{address.postalCode}}</div>
-              <div class="street text-overflow" [hidden]="!address.phone">{{address.phone}}</div>
-              <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{address.note}}</div>
-              <div class="shipping-amount">Fr  {{computeShippingByAddress(address)|number:'1.2-2'}}</div>
-          </div>
-          <!-- DEPOSIT ADDRESS -->
-          <div class="address deposit" *ngFor="let address of getDepositAddress()"
-              [hidden]="selectAddressIsDone && currentAddress.streetAdress || !address.active || useCartSubscriptionView"
-              (click)="setShippingAddress(address)">
-              <label><input type="checkbox" [checked]="isSelectedAddress(address)"></label>
-              <div class="name collect">{{address.name}}</div>
-              <div class="street text-overflow">{{address.streetAdress}}</div>
-              <div class="note text-overflow"><b>{{label.cart_info_note}}</b> {{label.cart_deposit}}</div>
-              <div class="shipping-amount">Fr  {{(address.fees)|number:'1.2-2'}}</div>
-          </div>
-
-          <!-- MANAGE ADDRESSES -->
-          <div class="profile-action" [hidden]="selectAddressIsDone && currentAddress.streetAdress || !userAddresses.length">
-            <button [routerLink]="['./user/login-or-address']">
-              <span class="material-symbols-outlined black">add_box</span> {{glabel.user_address_add}}
-            </button>
-          </div>
-
-        </section>
-      </div>
 
       <!-- SUBSCRIPTION OPTIONS -->
       <div class="subscription" [hidden]="!useCartSubscriptionView || hasPendingSubscription">
@@ -125,23 +68,8 @@
           </div>
       </div>
 
-      <div class="order-address">
-        <!-- Info sur le montant (exclusif panier) -->
-        <div class="block-info info-amount">
-          <div class="info">📌
-            {{ label.cart_amount_1 }}
-            {{ label.cart_amount_2 }}
-          </div>
-        </div>
-
-        <!-- INFO HELP MOBILE -->
-        <div class="bill help">
-          <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}</a>
-        </div>
-
-      </div>
     </div>
-    <div class="cart-container">
+    <div class="cart-container checkout-summary">
       <!-- RESUME -->
       <!-- RESUME subscription or simple order -->
       <div class="order-resume" *ngIf="isOpen && !hasPendingSubscription">
@@ -157,68 +85,39 @@
             subscriptionParams: subscriptionParams
           }"
           [config]="config"
-          [hub]="hub"
-          [i18n]="i18n">
+          [hub]="hub">
         </kng-cart-invoice>
 
+
+      <!-- COUPON -->
+      <kng-checkout-coupon
+        [hidden]="useCartSubscriptionView || !user.isAuthenticated()||!user.isReady()||!isOpen()"
+        [(couponCode)]="couponCode"
+        [couponCredit]="couponCredit"
+        [couponError]="couponError"
+        [isRunning]="isCouponRunning"
+        (couponChanged)="onCouponChange()"
+        (applyCoupon)="readCoupon()">
+      </kng-checkout-coupon>
+
         <!-- BLOCK DE RIGHT -->
-        <div class="order-resume-block border-left">
+        <kng-checkout-confirmation
+          [(billNote)]="billNote"
+          [(cgAccepted)]="cgAccepted"
+          [store]="store"
+          [user]="user"
+          [useCartSubscriptionView]="useCartSubscriptionView"
+          [isFinalizeDisabled]="isFinalizeDisabled"
+          [isRunning]="isRunning"
+          [errorMessage]="errorMessage"
+          (orderRequested)="doOrderRouting()"
+          (subscriptionRequested)="doSubscription()">
+        </kng-checkout-confirmation>
 
-
-          <!-- INFO SHIPPING NOTE -->
-          <div class="bill" [hidden]="isCartDeposit()">
-            <div class="small">{{glabel.user_address_note}}</div>
-            <div class="input-text">
-              <input type="text" class="highlight" placeholder="code, note, etc" [(ngModel)]="shippingNote" />
-            </div>
-          </div>
-
-
-
-          <div class="bill bill-title">
-            <!-- DO ACCEPT-CG-->
-            <div class="slot">
-              <div >
-                <input type="checkbox" [(ngModel)]="cgAccepted" >
-              </div>
-              <div class="info">
-                <a href="javascript:;" class="link"
-                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a>
-
-                <span class="dotted">{{label.cart_cg_middle}}</span>
-
-                <a href="javascript:;" class="link"
-                  [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a>
-              </div>
-
-            </div>
-            <!-- DO ORDER-->
-            <div [hidden]="useCartSubscriptionView" >
-              <button class="default" [disabled]="isFinalizeDisabled"  (click)="doOrderRouting()" >
-                <div>
-                  <b>{{label.cart_order}}</b>
-                  <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>
-
-                </div>
-
-
-              </button>
-            </div>
-            <!-- DO SUBSCRIPTION -->
-            <div [hidden]="!useCartSubscriptionView">
-              <button class="default" [disabled]="isFinalizeDisabled"  (click)="doSubscription()" >
-                <div>
-                {{label.cart_subscription}}
-                <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>
-                </div>
-              </button>
-
-            </div>
-
-            <div class="bill error" [hidden]="!errorMessage">
-              {{errorMessage}}
-            </div>
-          </div>
+        <div class="checkout-support-card">
+          <a class="phone" href="tel:{{hub.address.phone}}">
+            <i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.cart_info_help}} {{hub.address.phone}}
+          </a>
         </div>
 
         <!-- CHECKOUT  MSG -->
