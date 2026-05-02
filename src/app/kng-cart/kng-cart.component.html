@@ -1,4 +1,11 @@
-<kng-cart-checkout (updated)="onCheckout($event)" [config]="config" [shippingTime]="shippingTime" [orders]="orders" #checkout>  </kng-cart-checkout>
+<kng-cart-checkout
+  (updated)="onCheckout($event)"
+  [config]="config"
+  [shippingTime]="shippingTime"
+  [orders]="orders"
+  [processingMessage]="checkoutAsyncPaymentMessage"
+  #checkout>
+</kng-cart-checkout>
 
 <div class="cart-container" *ngIf="isValid">
 
@@ -43,7 +50,7 @@
 
 
   <!-- COMPLEMENT DE CMD -->
-  <div class="pending-order" [hidden]="!currentCartView" [class.display-message]="hasPotentialShippingReductionMultipleOrder()">
+  <div class="pending-order display-message" [hidden]="!currentCartView || !hasPotentialShippingReductionMultipleOrder()">
     <p class="shipping-grouped block-info" [innerHtml]="glabel.cart_order_grouped_info">
   </div>
   <mdc-list [twoLine]="true" avatar="true" [interactive]="false">

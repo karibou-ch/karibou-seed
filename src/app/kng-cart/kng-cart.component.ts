@@ -58,6 +58,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   checkoutMessage: string;
   checkoutMessageError: string;
+  checkoutAsyncPaymentMessage: string;
   private asyncPaymentIntentId: string;
 
   i18n: any = {
@@ -72,6 +73,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_order_canceled_twint: 'Votre paiement TWINT a été annulé',
       cart_order_unknownerror_twint: 'Erreur inconnue lors du paiement TWINT',
       cart_order_error_twint: 'Votre paiement TWINT est refusé',
+      cart_order_pending_twint_wait: 'Le paiement TWINT est en cours de traitement. Ne fermez pas cette fenêtre.',
       cart_order_placed: 'Votre commande est enregistrée et sera livrée le ',
       cart_contract_placed: 'Votre abonnement est enregistré'
     },
@@ -87,6 +89,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       cart_order_canceled_twint: 'Your TWINT payment was canceled',
       cart_order_unknownerror_twint: 'Unknown error during TWINT payment',
       cart_order_error_twint: 'Your TWINT payment is declined',
+      cart_order_pending_twint_wait: 'TWINT payment is being processed. Do not close this window.',
       cart_contract_placed: 'Your subscription is registered'
     }
   };
@@ -301,33 +304,73 @@ export class KngCartComponent implements OnInit, OnDestroy {
     });
   }
 
+  private openCheckoutForAsyncPayment() {
+    if (this.checkout) {
+      this.checkout.open = true;
+      return;
+    }
+
+    setTimeout(() => {
+      if (this.checkout) {
+        this.checkout.open = true;
+      }
+    });
+  }
+
   confirmAsyncPayment() {
-    const { payment_intent, oid} = this.$route.snapshot.queryParams;
+    const { payment_intent, oid, redirect_status } = this.$route.snapshot.queryParams;
     if(!payment_intent || !oid || this.asyncPaymentIntentId === payment_intent) {
       return;
     }
 
+    if (redirect_status && redirect_status !== 'succeeded') {
+      this.checkoutAsyncPaymentMessage = '';
+      this.checkoutMessageError = this.label.cart_order_canceled_twint;
+      this.cleanAsyncPaymentQueryParams();
+      return;
+    }
+
+    const orderId = parseInt(String(oid), 10);
+    if (!Number.isFinite(orderId)) {
+      this.checkoutAsyncPaymentMessage = '';
+      this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
+      this.cleanAsyncPaymentQueryParams();
+      return;
+    }
+
     this.asyncPaymentIntentId = payment_intent;
-    this.checkoutMessageError = this.label.cart_order_pending_twint;
+    this.checkoutMessage = '';
+    this.checkoutMessageError = '';
+    this.checkoutAsyncPaymentMessage = this.label.cart_order_pending_twint_wait;
+    this.openCheckoutForAsyncPayment();
 
     this.subscription$.add(
-      this.$order.waitForPaymentOrder(oid, payment_intent).subscribe(order => {
+      this.$order.waitForPaymentOrder(orderId, payment_intent).subscribe(order => {
         if(order.payment.status == 'prepaid') {
           this.cleanAsyncPaymentQueryParams();
+          this.checkoutAsyncPaymentMessage = '';
           this.checkoutMessageError = '';
-          this.onCheckout({order});
+          this.asyncPaymentIntentId = null;
+          if (this.checkout) {
+            this.checkout.closeAfterAsyncPayment();
+          }
+          this.onCheckout({order, store: this.currentHub || this.store});
           return;
         }
         if(order.payment.status == 'voided') {
           this.cleanAsyncPaymentQueryParams();
+          this.checkoutAsyncPaymentMessage = '';
           this.checkoutMessageError = this.label.cart_order_canceled_twint;
+          this.asyncPaymentIntentId = null;
           return;
         }
 
-        this.checkoutMessageError = this.label.cart_order_pending_twint;
+        this.checkoutAsyncPaymentMessage = this.label.cart_order_pending_twint_wait;
         this.asyncPaymentIntentId = null;
       }, e => {
+        this.checkoutAsyncPaymentMessage = '';
         this.checkoutMessageError = this.label.cart_order_unknownerror_twint;
+        this.asyncPaymentIntentId = null;
         console.log('async error',e)
       })
     );
@@ -389,6 +432,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
   doInitateCheckout(ctx){
     this.checkoutMessage = '';
     this.checkoutMessageError = '';
+    this.checkoutAsyncPaymentMessage = '';
     this.hasOrderError = false;
     this.checkout.doInitateCheckout(ctx);
   }
@@ -432,9 +476,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   // ✅ OPTIMIZATION 2.3: Factoriser code setTimeout clearAfterOrder
-  private clearAfterOrderWithDelay(order?: Order, contract?: CartSubscription) {
+  private clearAfterOrderWithDelay(order?: Order, contract?: CartSubscription, store?: string) {
     setTimeout(() => {
-      this.$cart.clearAfterOrder(this.store, order, contract);
+      this.$cart.clearAfterOrder(store || this.store, order, contract);
     }, 100);
   }
 
@@ -450,7 +494,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // case of final contract
     if($event.contract) {
       this.checkoutMessage = this.label.cart_contract_placed;
-      this.clearAfterOrderWithDelay(undefined, $event.contract);
+      this.clearAfterOrderWithDelay(undefined, $event.contract, $event.store);
       return;
     }
 
@@ -460,7 +504,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
       const day = $event.order.shipping.when.getDate();
       const month = $event.order.shipping.when.getMonth() + 1;
       this.checkoutMessage = this.label.cart_order_placed + `(${day}/${month})`;
-      this.clearAfterOrderWithDelay($event.order);
+      this.clearAfterOrderWithDelay($event.order, undefined, $event.store);
     }
 
     this.orders.unshift($event.order as Order);

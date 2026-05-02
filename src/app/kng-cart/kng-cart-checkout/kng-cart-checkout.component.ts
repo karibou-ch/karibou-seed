@@ -34,6 +34,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   @Input() orders: Order[];
   @Input() shippingTime: string;
+  @Input() processingMessage: string;
 
 
 
@@ -111,6 +112,11 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   errorMessage: string|null = null;
   isRunning = false;
   showReservationInfo = false;
+  walletReady = false;
+  private walletType: 'apple'|'google'|null = null;
+  private walletPaymentRequest: any;
+  private walletPaymentButton: any;
+  private walletPreparing = false;
 
   // ✅ FIXED: Bug #10 - Memory leak management
   private _subscriptions: any[] = [];
@@ -311,6 +317,13 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this.open = false;
   }
 
+  closeAfterAsyncPayment() {
+    this._checkoutHistoryState = false;
+    this._ignoreHistorySync = true;
+    this.open = false;
+    this._ignoreHistorySync = false;
+  }
+
   private pushCheckoutHistoryState() {
     if (this._checkoutHistoryState) {
       return;
@@ -493,6 +506,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   onCouponChange() {
     this.couponCredit = null;
     this.couponError = null;
+    this.walletReady = false;
   }
 
   readCoupon() {
@@ -513,6 +527,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       }
       this.couponCredit = coupon;
       this.couponCode = coupon.code;
+      this.prepareWalletPayment();
     }, status => {
       this.isCouponRunning = false;
       this.couponError = status.error || this.label.cart_coupon_invalid || 'Le coupon n\'est pas valide';
@@ -530,8 +545,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       this.open = false;
       return;
     }
-    const total = this.currentTotal() + this.currentServiceFees();
-    this._subscriptions.push(this.$user.checkPaymentMethod(this._user, undefined,(total)).subscribe(user => {
+    this._subscriptions.push(this.$user.checkPaymentMethod(this._user).subscribe(user => {
       //
       // set default payment
       // ✅ FIXED: Robust payment alias extraction with null checks
@@ -637,6 +651,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     // copy note
     this.shippingNote = address.note;
 
+    this.prepareWalletPayment();
 
     return this.selectAddressIsDone;
   }
@@ -692,6 +707,188 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this._items = [];
     this.open = false;
     this.updated.emit({ contract });
+  }
+
+  private buildCheckoutPayload(intent?, paymentOverride?) {
+    //
+    // prepare shipping (simplifié)
+    const shippingDay = this.currentShippingDay();
+    const hours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || 16;
+    const hoursValue = this.isCartDeposit() ? 0 : hours;
+    const address = this.currentShipping();
+    const shipping = new ShippingAddress(address, shippingDay, hoursValue);
+
+    // ✅ Flag lastMinute simple
+    shipping.lastMinute = this.$cart.isCurrentShippingLastMinute();
+
+    //needed from backend
+    //paymentData && paymentData.oid && paymentData.intent_id
+    const payment:any = Object.assign({}, paymentOverride || intent || this.currentPayment);
+    if(this.couponCredit && !payment.coupon) {
+      payment.coupon = this.couponCredit.code;
+    }
+    const hub = this._currentHub && this._currentHub.slug || this.$navigation.store;
+    const items = this.items.map(item => item.toDEPRECATED());
+
+    //
+    // update shipping note
+    shipping.note = this.shippingNote || shipping.note;
+
+    return {
+      hub,
+      shipping,
+      items,
+      payment,
+      customer: this.billNote ? { billNote: this.billNote } : undefined
+    };
+  }
+
+  private handleCheckoutErrors(errors: any[], hub: string) {
+    this.isRunning = false;
+    this.$cart.setError(errors, hub);
+    this.$snack.open(
+      this.$i18n.label().cart_corrected,
+      this.$i18n.label().thanks,
+      this.$i18n.snackOpt
+    );
+    this.updated.emit({ errors });
+    this.$cart.broadcastState();
+    this._subscriptions.push(this.$user.me().subscribe());
+    this.open = false;
+  }
+
+  private prepareWalletPayment() {
+    if (this.walletPreparing || this.useCartSubscriptionView || !this._user?.isAuthenticated() || !this.selectAddressIsDone) {
+      return;
+    }
+
+    this.walletPreparing = true;
+    this.walletReady = false;
+    const walletPayment = {
+      alias: 'apple',
+      issuer: 'apple',
+      type: 'apple'
+    };
+    // FIXME checkout quote: this should run when the cart opens and surface quote errors
+    // immediately, not only when preparing the Apple/Google wallet button.
+    const payload = this.buildCheckoutPayload(null, walletPayment);
+
+    this._subscriptions.push(this.$order.quoteCheckout(payload).subscribe(quote => {
+      if(quote.errors && quote.errors.length) {
+        this.walletPreparing = false;
+        return;
+      }
+      this._subscriptions.push(this.$user.checkPaymentMethod(this._user, undefined, undefined, quote.quoteKey).subscribe(user => {
+        this._user = user;
+        const walletIntent = this._user.context && this._user.context.walletIntent;
+        if(!walletIntent || !walletIntent.client_secret) {
+          this.walletPreparing = false;
+          return;
+        }
+
+        const stripe = this.$stripe.getInstance();
+        this.walletPaymentRequest = stripe.paymentRequest({
+          country: 'CH',
+          currency: (quote.currency || 'chf').toLowerCase(),
+          total: {
+            label: 'Karibou',
+            amount: Math.round(quote.amount * 100)
+          },
+          // TODO: later use wallet payer details for automatic account creation.
+          requestPayerName: true,
+          requestPayerEmail: true
+        });
+
+        this.walletPaymentRequest.canMakePayment().then(result => {
+          if(!result) {
+            this.walletPreparing = false;
+            return;
+          }
+          this.walletType = result.applePay ? 'apple' : 'google';
+          this.walletPaymentRequest.on('paymentmethod', event => this.confirmWalletPayment(event));
+          this._subscriptions.push(this.$stripe.elements().subscribe(elements => {
+            setTimeout(() => {
+              try {
+                if(this.walletPaymentButton) {
+                  this.walletPaymentButton.unmount();
+                }
+                this.walletPaymentButton = elements.create('paymentRequestButton', {
+                  paymentRequest: this.walletPaymentRequest
+                });
+                this.walletPaymentButton.mount('#checkout-wallet-button');
+                this.walletReady = true;
+              } catch(err) {
+                console.log('wallet button error', err);
+              }
+              this.walletPreparing = false;
+            });
+          }));
+        });
+      }, () => {
+        this.walletPreparing = false;
+      }));
+    }, () => {
+      this.walletPreparing = false;
+    }));
+  }
+
+  private confirmWalletPayment(event: any) {
+    const walletIntent = this._user.context && this._user.context.walletIntent;
+    if(!walletIntent || !walletIntent.client_secret) {
+      event.complete('fail');
+      return;
+    }
+    this.isRunning = true;
+    this._subscriptions.push(this.$stripe.confirmCardPayment(walletIntent.client_secret, {
+      payment_method: event.paymentMethod.id
+    }, {
+      handleActions: false
+    }).subscribe(result => {
+      if(result.error) {
+        event.complete('fail');
+        this.isRunning = false;
+        this.errorMessage = result.error.message;
+        this.$snack.open(result.error.message, this.$i18n.label().thanks, this.$i18n.snackOpt);
+        return;
+      }
+
+      event.complete('success');
+      const paymentIntent = result.paymentIntent;
+      const walletType = this.walletType || 'apple';
+      this.doOrder({
+        alias: walletType,
+        issuer: walletType,
+        type: walletType,
+        payment_intent: paymentIntent.id
+      });
+    }, error => {
+      event.complete('fail');
+      this.isRunning = false;
+      this.errorMessage = error.message || error;
+    }));
+  }
+
+  private confirmPaymentActionRequired(intent: any, payment: any): boolean {
+    if (!intent || !intent.client_secret) {
+      return false;
+    }
+
+    if (!intent.oid) {
+      this.isRunning = false;
+      this.errorMessage = this.label.cart_payment_not_available;
+      this.$snack.open(this.errorMessage, this.$i18n.label().thanks, this.$i18n.snackOpt);
+      return true;
+    }
+
+    const isTwint = intent.source == 'twint' ||
+                    (payment && (payment.type == 'twint' || payment.issuer == 'twint' || payment.alias == 'twint'));
+    if (isTwint) {
+      this.confirmPaymenTwintIntent(intent, { oid: intent.oid });
+      return true;
+    }
+
+    this.confirmPaymenIntent(intent, { oid: intent.oid });
+    return true;
   }
 
 
@@ -796,58 +993,53 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   }
 
   doOrder(intent?) {
-    //
-    // prepare shipping (simplifié)
-    const shippingDay = this.currentShippingDay();
-    const hours = this.$calendar.getDefaultTimeByDay(shippingDay, this.hub) || 16;
-    const hoursValue = this.isCartDeposit() ? 0 : hours;
-    const address = this.currentShipping();
-    const shipping = new ShippingAddress(address, shippingDay, hoursValue);
-
-    // ✅ Flag lastMinute simple
-    shipping.lastMinute = this.$cart.isCurrentShippingLastMinute();
-
-    //needed from backend
-    //paymentData && paymentData.oid && paymentData.intent_id
-    const payment:any = Object.assign({}, intent||this.currentPayment);
-    if(!intent && this.couponCredit) {
-      payment.coupon = this.couponCredit.code;
-    }
-    const hub = this._currentHub && this._currentHub.slug || this.$navigation.store;
-    const items = this.items.map(item => item.toDEPRECATED());
-
-    //
-    // update shipping note
-    shipping.note = this.shippingNote || shipping.note;
-
+    const payload = this.buildCheckoutPayload(intent);
     this.isRunning = true;
-
     //
     // clear cart error
     this.$cart.clearErrors();
+
+    if(!intent) {
+      this._subscriptions.push(this.$order.quoteCheckout(payload).subscribe(quote => {
+        if(quote.errors && quote.errors.length) {
+          this.handleCheckoutErrors(quote.errors, payload.hub);
+          return;
+        }
+        this.createOrderFromPayload(payload);
+      }, status => {
+        this.isRunning = false;
+        this.errorMessage = status.error;
+        this.$snack.open(
+          status.error,
+          this.$i18n.label().thanks,
+          this.$i18n.snackOpt
+        );
+      }));
+      return;
+    }
+
+    this.createOrderFromPayload(payload);
+  }
+
+  private createOrderFromPayload(payload: any) {
+    const { hub, shipping, items, payment, customer } = payload;
     this._subscriptions.push(this.$order.create(
       hub,
       shipping,
       items,
       payment,
-      this.billNote ? { billNote: this.billNote } : undefined
+      customer
     ).subscribe((order) => {
+        if (this.confirmPaymentActionRequired(order, payment)) {
+          return;
+        }
+
         this.isRunning = false;
 
         //
         // check order errors
         if (order.errors) {
-          this.$cart.setError(order.errors, hub);
-          this.$snack.open(
-            this.$i18n.label().cart_corrected,
-            this.$i18n.label().thanks,
-            this.$i18n.snackOpt
-          );
-          this.updated.emit({ errors: order.errors });
-          this.$cart.broadcastState();
-          this._subscriptions.push(this.$user.me().subscribe());
-          this.open = false;
-
+          this.handleCheckoutErrors(order.errors, hub);
           return;
         }
 
@@ -865,20 +1057,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         this.createPaymentConfirmation(order);
       },
       status => {
-
-
-        //
-        // TWINT
-        if (payment.type=='twint' && status.error.client_secret) {
-          return this.confirmPaymenTwintIntent(status.error, {oid:status.error.oid});
+        if (this.confirmPaymentActionRequired(status.error, payment)) {
+          return;
         }
 
-
-        //
-        // SCA request payment confirmation
-        if (status.error.client_secret) {
-          return this.confirmPaymenIntent(status.error, {oid:status.error.oid});
-        }
         this.isRunning = false;
         this.errorMessage = status.error;
         this.$snack.open(
@@ -1068,6 +1250,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     //
     // Metric ORDER
     this.$metric.event(EnumMetrics.metric_order_payment,{hub:this.store});
+    this.prepareWalletPayment();
 
   }
 

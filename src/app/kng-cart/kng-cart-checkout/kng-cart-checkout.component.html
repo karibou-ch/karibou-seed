@@ -8,6 +8,11 @@
     <h2>{{label.checkout_summary_title}}</h2>
   </header>
 
+  <div class="checkout-processing-message" *ngIf="processingMessage" role="status" aria-live="polite">
+    <span class="material-symbols-outlined" aria-hidden="true">hourglass_top</span>
+    <span>{{processingMessage}}</span>
+  </div>
+
   <!-- CHECKOUT-->
   <div class="checkout" *ngIf="isReady">
     <div class="cart-container checkout-details">
@@ -99,6 +104,10 @@
         (couponChanged)="onCouponChange()"
         (applyCoupon)="readCoupon()">
       </kng-checkout-coupon>
+
+        <div class="checkout-wallet-payment" [hidden]="!walletReady || useCartSubscriptionView || isRunning">
+          <div id="checkout-wallet-button"></div>
+        </div>
 
         <!-- BLOCK DE RIGHT -->
         <kng-checkout-confirmation
