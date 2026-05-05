@@ -1,4 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { KngAudioRecorderEnhancedService } from '../../services/kng-audio-recorder-enhanced.service';
@@ -15,7 +26,7 @@ import { AssistantService, CartService, LoaderService } from 'kng2-core';
   templateUrl: './kng-audio-note-enhanced.component.html',
   styleUrls: ['./kng-audio-note-enhanced.component.scss']
 })
-export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
+export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
   // ✅ Configuration
   @Input() type: AudioNoteType = 'item';
@@ -27,6 +38,8 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
   @Input() amount: number = 0;
   @Input() locale: string = 'fr';
   @Input() compact: boolean = false;
+  @Input() audioUrl: string = '';
+  @Input() transcription: string = '';
 
   // ✅ Events
   @Output() onAudioReady = new EventEmitter<{type: AudioNoteType, audioUrl: string, transcription: string, cartUrl?: string}>();
@@ -57,6 +70,7 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
   private recordingTimer: any;
+  private viewInitialized = false;
 
   // ✅ Labels i18n
   public get $i18n(): AudioLabels {
@@ -86,6 +100,17 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setupAudioServiceListeners();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.audioUrl || changes.transcription) {
+      this.applyInitialAudioState();
+    }
+  }
+
+  ngAfterViewInit() {
+    this.viewInitialized = true;
+    this.applyInitialAudioState();
   }
 
   ngOnDestroy() {
@@ -131,6 +156,34 @@ export class KngAudioNoteEnhancedComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       })
     );
+  }
+
+  private applyInitialAudioState() {
+    if (this.audioState.isRecording || this.audioState.isProcessing || this.isTranscribing) {
+      return;
+    }
+
+    const audioUrl = this.audioUrl || '';
+    const transcription = this.transcription || '';
+
+    this.audioState.hasAudio = !!audioUrl;
+    this.audioState.started = !!(audioUrl || transcription);
+    this.audioState.transcription = transcription || undefined;
+    this.setAudioElementSource(audioUrl);
+    this.emitStateChange();
+  }
+
+  private setAudioElementSource(audioUrl: string) {
+    if (!this.viewInitialized) {
+      return;
+    }
+
+    setTimeout(() => {
+      const audioElement = document.querySelector(`#audio-${this.instanceId}`) as HTMLAudioElement;
+      if (audioElement) {
+        audioElement.src = audioUrl || '';
+      }
+    }, 0);
   }
 
   private startRecordingTimer() {

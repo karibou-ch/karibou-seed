@@ -442,14 +442,32 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.cartItemNote = ctx.transcription;
     //
     // update note product, no qty, no variant and audio
-    const item = this.$cart.findBySku(this.product.sku,this.store);
-    if(!item){
+    const item = this.$cart.findBySku(this.product.sku, this.cartItemHub);
+    if(!item || !item.sku){
       this.addToCart(0,this.product, null, true);
       return;
     }
     item.audio = this.cartItemAudio;
     item.note = this.cartItemNote;
     this.$cart.addOrUpdateNote(item);
+  }
+
+  private get cartItemHub(): string {
+    return this.config?.shared?.hub?.slug || this.store;
+  }
+
+  private resolveCartItemNote() {
+    const isForSubscription = (this.displaySubscription && this.productActiveSubscription);
+    const item = this.$cart.findBySku(this.product.sku, this.cartItemHub, isForSubscription);
+
+    if (!item || !item.sku) {
+      this.cartItemAudio = '';
+      this.cartItemNote = '';
+      return;
+    }
+
+    this.cartItemAudio = item.audio || '';
+    this.cartItemNote = item.note || '';
   }
 
   addToCart($event, product: Product, variant?: string, audio?: boolean) {
@@ -596,6 +614,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     // updated product is hilighted for 2 weeks
     this.isHighlighted = (Date.now() - product.updated.getTime()) < ProductComponent.WEEK_1;
     this.updateBackground();
+    this.resolveCartItemNote();
 
     // ✅ CORRECTION : DIALOG INIT HACK - Appliqué après chargement du produit
     if (this.isDialog) {

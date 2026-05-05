@@ -138,6 +138,8 @@
           [locale]="locale"
           [key]="config.shared.keys.pubUpcare"
           [amount]="product.pricing.price * cartItemQuantity"
+          [audioUrl]="cartItemAudio"
+          [transcription]="cartItemNote"
           (onAudioReady)="onAudioStopAndSave($event)"
           (onAudioError)="onAudioError($event)">
           <div slot="header-full" class="note-header">
