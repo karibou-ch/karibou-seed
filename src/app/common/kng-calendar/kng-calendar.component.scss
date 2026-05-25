@@ -37,7 +37,7 @@
   .calendar{
     overflow: hidden;
     overflow-x: auto;
-    border:1px solid var(--mdc-theme-appbar);
+    border:1px solid var(--mdc-theme-appbar-medium);
     border-radius: 1rem;
     background-color: var(--mdc-theme-appbar-light) !important;
     padding: 0.5rem;
@@ -154,7 +154,7 @@
     padding: .41rem;
     align-items: center;
     display: flex;
-    border: 1px solid var(--mdc-theme-appbar);
+    border: 1px solid var(--mdc-theme-appbar-medium);
     @media (min-width: 768px) {
       flex: 1 1 calc(50% - 2rem);
     }
@@ -171,12 +171,13 @@
     button{
       cursor: pointer;
       color: var(--mdc-theme-secondary);
-      background-color: var(--mdc-theme-secondary-text);
+      color: var(--mdc-theme-primary);
+      background-color: var(--mdc-theme-primary-text);
+
       flex: 0 0 40%;
       min-width: 120px;
       margin-left: auto;
       margin-right: auto;
-      border: 1px solid var(--mdc-theme-appbar);
 
       @media (max-width: 899px) {
         flex: 0 0 auto;

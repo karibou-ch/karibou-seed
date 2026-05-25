@@ -133,22 +133,6 @@ export class KngRootComponent implements OnInit, OnDestroy {
     return this.$navigation.store !== undefined;
   }
 
-  //
-  // quick load of selected products
-  // DEPRECATED
-  // async loadProducts() {
-  //   if(!this.config.shared.mailchimp){
-  //     return;
-  //   }
-  //   this.selected = [];
-  //   const selected = this.config.shared.mailchimp[this.store].map(media=>media.sku);
-  //   const products = await (this.$product.select({skus:selected}).toPromise());
-  //   for(const product of products.slice(0,8)){
-  //     this.selected.push(product);
-  //   }
-  //   return this.selected;
-  // }
-
 
   getImage(product){
     return product.photo.url + '/-/resize/300x/';

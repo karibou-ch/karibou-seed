@@ -19,7 +19,7 @@
   <p class="gray" *ngIf="currentHub.alias && currentHub.alias.length">
     Alias existants: {{ currentHub.alias.join(', ') }}
   </p>
-  <p class="gray">
+  <p class="gray" >
     Hub par défaut du contexte: {{ config?.shared?.hub?.slug || 'n/a' }}
   </p>
 
@@ -87,7 +87,7 @@
   <hr class="dashed"/>
   <section class="shippingtime">
     <h3 >Shipping Time</h3>
-    <kng-config-input *ngFor="let time of [0,10,12,16,19]"
+    <kng-config-input *ngFor="let time of [0,8,10,12,14,16]"
                   clazz="config" label="Boundaries for start time: {{time}}h {{time?'':'collect'}}" name="shippingtime-{{time}}" format="text"
                   [(ngModel)]="currentHub.shippingtimes[time+'']"></kng-config-input>
   </section>
@@ -106,6 +106,13 @@
   <hr class="dashed"/>
   <kng-config-input clazz="config" label="Color Mixer" name="colors.colormix" format="text"
                     [(ngModel)]="currentHub.colors.colormix"></kng-config-input>
+  <p class="gray">
+    Le fond global est calculé depuis Color Mixer, éclairci à 50% vers blanc.
+  </p>
+
+  <kng-config-input clazz="config" label="Ink Color (text on global background from Color Mixer)" name="colors.ink" format="text"
+                    [style.background]="currentHub.colors.ink"
+                    [(ngModel)]="currentHub.colors.ink"></kng-config-input>
 
   <kng-config-input clazz="config" label="Primary Color" name="colors.primary" format="text"
                     [style.background]="currentHub.colors.primary"
@@ -141,7 +148,7 @@
                     [(ngModel)]="currentHub.pageOptions.minimal"></kng-config-input>
 
   <kng-config-input clazz="config" label="Nombre de catégories" name="pageOptions.maxcat" format="text"
-                    [(ngModel)]="currentHub.pageOptions.maxcat"></kng-config-input>
+                    [(ngModel)]="currentHub.pageOptions.maxcat" min="8"></kng-config-input>
 
   <!-- HUB Links -->
   <h3 >Links </h3>

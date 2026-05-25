@@ -628,7 +628,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     // this.category=this.categories.find(c=>this.product.categories._id==c._id);
     const params = {
       available: true,
-      when: true,
+      hub: this.config.shared.hub.slug,
       shopname: [product.vendor.urlpath]
     };
 

@@ -391,13 +391,13 @@ button.default,
 
   color: var(--mdc-theme-secondary);
   background-color: var(--mdc-theme-secondary-text);
-  border: 1px solid var(--mdc-theme-appbar);
+  border: 1px solid var(--mdc-theme-appbar-medium);
   text-decoration: none;
 
   &.inverted {
     color: var(--mdc-theme-secondary-text);
     background-color: var(--mdc-theme-secondary);
-    border: 1px solid var(--mdc-theme-appbar);
+    border: 1px solid var(--mdc-theme-appbar-medium);
   }
   &:active:not(:disabled) {
     transform: translateY(0);
@@ -427,7 +427,7 @@ button.default.primary,
   &.inverted {
     color: var(--mdc-theme-primary-text);
     background-color: var(--mdc-theme-primary);
-    border: 1px solid var(--mdc-theme-appbar);
+    border: 1px solid var(--mdc-theme-appbar-medium);
   }
 
   &:hover:not(:disabled) {
@@ -464,7 +464,7 @@ button.default.secondary,
   height: 24px;
   margin: 3px;
   position: absolute;
-  background-color:var(--mdc-theme-karibou-pink);
+  background-color:var(--mdc-theme-status-love);
   background-color:royalblue;
   animation-duration: 0.4s;
   max-width: 100vw;
@@ -582,7 +582,7 @@ button.default.secondary,
         color: #888;
       }
       .issue {
-        color: var(--mdc-theme-karibou-pink, #da1c5c);
+        color: var(--mdc-theme-status-love, #da1c5c);
         font-weight: 500;
         margin-left: auto;
       }

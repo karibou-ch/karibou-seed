@@ -6,18 +6,26 @@ div.container{
     button{
       align-self:center;
       margin: 10px 0;
-      background-color: var(--mdc-theme-primary);
-      border-color: var(--mdc-theme-primary-text,#423f3b);
-      color: var(--mdc-theme-primary-text,#423f3b);
     }
+  }
+  form button{
+    background-color: var(--mdc-theme-primary);
+    border-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary-text);
+  }
+  .form button{
+    background-color: var(--mdc-theme-secondary);
+    border-color: var(--mdc-theme-secondary);
+    color: var(--mdc-theme-secondary-text);
   }
   .block-info {
     font-size: 17px;
     line-height: 23px;
     padding: 15px 8px;
+    color: var(--mdc-theme-text-secondary-on-background);
   }
   fieldset{
-    border: 1px solid #ccc;
+    border: 1px solid var(--mdc-theme-appbar-medium);
     border-radius: 4px;
     ul.elem{
       list-style: none;
@@ -26,16 +34,18 @@ div.container{
       li{
         position: relative;
         padding: 10px 15px;
-        background: var(--mdc-theme-appbar);
+        background: var(--mdc-theme-appbar-light);
+        border: 1px solid var(--mdc-theme-appbar-medium);
         border-radius: 14px;
+        color: var(--mdc-theme-text-primary-on-background);
         margin: 10px 0;
-        label{
+        .label{
           position: absolute;
           right: 20px;
           bottom: 9px;
           font-weight: bold;
           font-size: 14px;
-          color: #aaa;
+          color: var(--mdc-theme-text-secondary-on-background);
         }
         .name::first-letter{
           text-transform: capitalize;
@@ -51,6 +61,10 @@ div.container{
         }
         .street,.postal,.note {
           font-size: 12px;
+          color: var(--mdc-theme-text-secondary-on-background);
+        }
+        .error{
+          color: var(--mdc-theme-status-love);
         }
       }
     }
@@ -58,7 +72,7 @@ div.container{
   }
 
   button{
-    border: 1px solid #eee;
+    border: 1px solid var(--mdc-theme-primary);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -69,6 +83,13 @@ div.container{
     margin-left: auto!important;
     width: 100%;
     cursor: pointer;
+
+    &:disabled{
+      background-color: var(--mdc-theme-primary-light);
+      border-color: var(--mdc-theme-primary-light);
+      color: var(--mdc-theme-text-secondary-on-background);
+      cursor: default;
+    }
 
     &.profile{
       width: 100%;

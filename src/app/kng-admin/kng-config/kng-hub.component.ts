@@ -119,7 +119,6 @@ export class KngHUBComponent implements OnInit, OnDestroy {
     }, (err) => this.$snack.open(err.error, 'OK'));
 
     this.$hub.list().subscribe(hubs => {
-      hubs.forEach(hub=> hub.slug = hub.slug[0]);
       this.hubs = hubs;
     }, (err) => this.$snack.open(err.error, 'OK'));
 

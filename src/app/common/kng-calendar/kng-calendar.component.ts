@@ -2,6 +2,9 @@ import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@an
 import { Hub, User, UserService } from 'kng2-core';
 import { CartService, Config, LoaderService, Order, CalendarService } from 'kng2-core';
 import { i18n } from '../i18n.service';
+import { KngNavigationStateService } from '../navigation.service';
+
+type HubSwitchTarget = { slug: string; name: string };
 
 @Component({
   selector: 'kng-calendar',
@@ -47,7 +50,7 @@ export class KngCalendarComponent implements OnInit {
   availableDays:Date[];
   multipleHubsDays:Date[];
   pendingOrder: Order|undefined;
-  displayHubSwitch: Hub;
+  displayHubSwitch: HubSwitchTarget;
   displayHubMoreOptions: boolean;
 
   constructor(
@@ -55,7 +58,8 @@ export class KngCalendarComponent implements OnInit {
     private $cart: CartService,
     private $user: UserService,
     private $loader: LoaderService,
-    private $calendar: CalendarService
+    private $calendar: CalendarService,
+    private $navigation: KngNavigationStateService
   ) {
     this.currentWeek = [];
     this.availableDays = [];
@@ -65,11 +69,23 @@ export class KngCalendarComponent implements OnInit {
   // user can also have a prefered HUB @ reminder.defaultHub
   get prefferedHub() {
     const currentSlug = this.currentHub?.slug;
-    const preferredSlug = this.user?.reminder?.defaultHub || 'halle-de-rive';
-    const defaultSwapSlug = currentSlug === 'artamis' ? preferredSlug : 'artamis';
-    const swapHub = this.config.shared.hubs.find(hub => hub.slug === defaultSwapSlug && hub.slug !== currentSlug);
+    const hubs = this.$navigation.HUBs;
+    const preferredSlug = this.user?.reminder?.defaultHub;
+    const defaultSwapSlug = (preferredSlug && preferredSlug !== currentSlug) ?
+      preferredSlug :
+      (currentSlug === 'artamis' ? 'halle-de-rive' : 'artamis');
+    const swapHub = hubs.find(hub => hub.slug === defaultSwapSlug && hub.slug !== currentSlug);
 
-    return swapHub || this.config.shared.hubs.find(hub => hub.slug !== currentSlug);
+    if(swapHub) {
+      return swapHub;
+    }
+    if(preferredSlug && preferredSlug !== currentSlug) {
+      return {
+        slug: preferredSlug,
+        name: preferredSlug.replace(/-/g, ' ')
+      };
+    }
+    return hubs.find(hub => hub.slug !== currentSlug);
   }
 
   get mainTitle() {
@@ -135,7 +151,7 @@ export class KngCalendarComponent implements OnInit {
       this.currentRanks = this.config.shared.currentRanks[this.currentHub.slug] || {};
       this.currentLimit = this.config.shared.hub.currentLimit || 1000;
       this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
-      const hub = this.config.shared.hubs.find(hub => hub.slug != this.currentHub.slug);
+      const hub = this.$navigation.HUBs.find(hub => hub.slug != this.currentHub.slug);
 
       // propose to switch to another hub
       // user have a prefered HUB

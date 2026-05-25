@@ -250,7 +250,7 @@ export class KngFeedbackComponent implements OnInit {
     this.currentLimit = this.config.shared.hub.currentLimit || 1000;
     this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
 
-    this.config.shared.hubs.forEach(hub => this.HUBS[hub.id]=hub.name);
+    this.$navigation.HUBs.forEach(hub => this.HUBS[hub.id]=hub.name);
 
   }
 

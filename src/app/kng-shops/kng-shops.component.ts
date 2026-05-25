@@ -95,7 +95,8 @@ export class KngShopComponent implements OnInit {
 
     const options = {
       available: true,
-      shopname: this.urlpath
+      shopname: this.urlpath,
+      hub: this.config.shared.hub.slug
     };
 
     // TOCHECK

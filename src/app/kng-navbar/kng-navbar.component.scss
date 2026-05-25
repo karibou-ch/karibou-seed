@@ -87,7 +87,7 @@ div.navbar{
     margin-right: auto;
     margin-left: auto;
     margin-top: var(--mdc-theme-top-bar);
-    background-color: white;
+    background-color: transparent;
     @media (prefers-color-scheme: dark) {
       background-color: var(--mdc-theme-primary-dark);
       color: var(--mdc-theme-primary-dark-text);

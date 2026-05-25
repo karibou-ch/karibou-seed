@@ -8,6 +8,14 @@ alwaysApply: true
 Ce document décrit les règles, conventions et bonnes pratiques à suivre pour le développement du projet frontend `karibou-seed`. L'objectif est d'assurer la cohérence, la maintenabilité et la qualité du code.
 * Vérifier la racine du projet `~/nodejs/karibou.ch/karibou-seed` avant un git ou la création de fichiers.
 
+## Références Specs Métier
+
+Avant de modifier la sélection de date, le calendrier frontend ou les écrans de souscription, relire :
+
+- Souscriptions Stripe et commandes webhook : `karibou-api.wiki/1.4-Paiement-par-souscription.md`
+- Calendrier, dates de livraison et fermetures : `karibou-api.wiki/1.6-Centralisation-du-service-de-calendrier.md`
+- Choix de date de livraison en début de commande : `karibou-api.wiki/3.0-le-choix-de-la-date-de-livraison-doit-se-faire-début-de-la-commande-[DONE].md`
+
 ## 1. Objectif du Projet
 
 `karibou-seed` est un projet "white-label" basé sur Angular, conçu pour servir de socle à des plateformes de e-commerce, principalement pour des groupements d'artisans ou des hubs alimentaires. Il est pensé pour être personnalisable via un système de theming et de configuration.
@@ -101,6 +109,15 @@ const display = this.$calendar.formatForClient(utcDate, hub);
 - **Timezone Swiss** : `new Date()` retourne la timezone du navigateur client (Tokyo, NYC…). `toHubTime()` normalise vers Europe/Zurich pour des calculs cohérents.
 - **Hub weekdays** : un jour "valide" dépend de la config du hub (weekdays, noshipping, currentRanks). Seul `CalendarService` connaît ces contraintes.
 - **Cohérence backend** : `calendar.js` backend et `CalendarService` frontend partagent la même logique. Pas de divergence possible si on passe par le proxy.
+
+### 3.1 Règle critique — `HUB.slug` et alias
+
+`HUB.slug` est un pilier du routage (`/store/:store`), du chargement `/v1/config?hub=...` et de la sélection de hub.
+
+- Le backend stocke `Hubs.slug` comme tableau pour gérer les alias, mais l'API exporte `hub.slug` comme string canonique et `hub.alias` comme liste complète.
+- Dans le frontend, considérer `hub.slug` comme une string canonique. Ne jamais écrire `hub.slug[0]` sur un objet reçu de `/v1/config` ou `/v1/hubs`.
+- `hub.slug[0]` est seulement valable pour une forme DB brute en tableau; sur une string, `artamis[0]` devient `a` et casse le chargement de config.
+- Si un composant doit rester compatible avec les deux formes, utiliser un helper explicite: `Array.isArray(hub.slug) ? hub.slug[0] : hub.slug`.
 
 ### TypeScript / Angular
 

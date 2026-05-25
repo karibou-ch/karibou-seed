@@ -178,9 +178,10 @@ export class ProductListComponent implements OnInit {
     // Calcul de la largeur réelle
     const width = container.clientWidth;
 
+    // Correction inutile
     // Soustrait 2rem (conversion dynamique des rem vers pixels)
     const remValue = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const widthMinus2rem = width - (2 * remValue);
+    const widthMinus2rem = width - (0 * remValue);
 
     // ✅ CORRECTION : Cache le résultat
     this._cachedClientWidth = Math.max(0, widthMinus2rem);
@@ -499,6 +500,7 @@ export class ProductListComponent implements OnInit {
     this.selections = [];
     this.options.hub = this.store;
     delete this.options.when;
+    delete this.options.business;
     //
     // this is only for subscription (not business)
     this.$cart.subscriptionsGet().subscribe(contracts => this.contracts=contracts);
@@ -542,6 +544,7 @@ export class ProductListComponent implements OnInit {
     this.options.hub = this.store;
     this.options.when = when.toISOString();
     this.options.bundle = false;
+    this.options.business = false;
 
     this.options.lastMinute = this.$cart.isCurrentShippingLastMinute();
 

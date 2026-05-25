@@ -239,12 +239,13 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
         //
         // update cart
         if (emit.state) {
+          const hubs = this.$navigation.HUBs;
           this.cardItemsSz = this.subsItemsSz = 0;
           this.cartItemCountElem = this.subsItemCountElem = 0;
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
           //
           // update cart for all market (hub)
-          (this.config.shared||[]).hubs.forEach(hub => {
+          hubs.forEach(hub => {
             // display cart items
             const cartCtx:CartItemsContext = { forSubscription:false,hub:hub.slug };
             const cartItems = this.$cart.getItems(cartCtx);

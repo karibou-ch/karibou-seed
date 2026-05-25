@@ -5,7 +5,7 @@ import { Order, OrderService, User, OrderItem, Category, ProductService,
 import { MdcSnackbar } from '@angular-mdc/web';
 
 import { switchMap } from 'rxjs/operators';
-import { i18n } from '../common';
+import { KngNavigationStateService, i18n } from '../common';
 import { forkJoin } from 'rxjs';
 
 interface ScoredItem {
@@ -56,7 +56,8 @@ export class UserOrdersComponent implements OnInit {
     private $products: ProductService,
     private $photos: PhotoService,
     private $snack: MdcSnackbar,
-    private $loader: LoaderService
+    private $loader: LoaderService,
+    private $navigation: KngNavigationStateService
   ) {
     // ✅ SYNCHRONE: Récupération immédiate des données cached
     const { config, user, categories, orders } = this.$loader.getLatestCoreData();
@@ -116,7 +117,7 @@ export class UserOrdersComponent implements OnInit {
   addAllToCart(order: Order) {
     //
     // FIXME, replace load N products in N calls BY N products in one call
-    const hub = this.config.shared.hubs.find( hub => hub.id == order.hub);
+    const hub = this.$navigation.HUBs.find( hub => hub.id == order.hub || hub.slug == order.hub);
     forkJoin(order.items.map(item => this.$products.get(item.sku))).subscribe((products) => {
       const items = products.map((product,i) => {
         const variant = (order.items[i].variant) ? order.items[i].variant.title : null;

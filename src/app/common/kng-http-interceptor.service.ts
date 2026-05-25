@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserService } from 'kng2-core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { i18n } from './i18n.service';
@@ -20,16 +21,19 @@ export class ErrorState {
 export class KngHttpInterceptorService {
 
   CONFIRM_RUNNING: boolean;
+  CONFIG_ERROR_REDIRECT_RUNNING: boolean;
   error$: Subject<ErrorState>;
 
   constructor(
     public $i18n: i18n,
     public $metric: MetricsService,
     public $navigation: KngNavigationStateService,
-    public $user: UserService
+    public $user: UserService,
+    private $router: Router
   ) {
     this.error$ = new Subject();
     this.CONFIRM_RUNNING = false;
+    this.CONFIG_ERROR_REDIRECT_RUNNING = false;
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -52,9 +56,25 @@ export class KngHttpInterceptorService {
         //
         // OK
       }, (err: HttpErrorResponse) => {
+        const isConfigLoadError = err.status >= 400 &&
+          err.url &&
+          err.url.indexOf('/v1/config') > -1;
+
+        // PENDING
+        // if (isConfigLoadError) {
+        //   this.error$.next({message: err.message, status: err.status, url: err.url} as ErrorState );
+        //   this.$metric.event(EnumMetrics.metric_error, {message: err.message});
+
+        //   if (!this.CONFIG_ERROR_REDIRECT_RUNNING && window.location.pathname !== '/oops') {
+        //     this.CONFIG_ERROR_REDIRECT_RUNNING = true;
+        //     this.$router.navigateByUrl('/oops', { replaceUrl: true });
+        //   }
+        //   return;
+        // }
+
         //
         // on logout error
-        if(err.status == 0 && 
+        if(err.status == 0 &&
            err.url && err.url.indexOf('logout')>-1) {
           return;
         }

@@ -67,8 +67,6 @@
       <!-- CATEGORY -->
       <!-- FIXED SIZE -->
       <div class="toolbox " [hidden]="scrollLocked" [class.extend-all]="showSubCategory"  [class.exited]="scrollDirection < -25 || scrollDirection > 25 || !scrollDirection" [hidden]="isForSubscriptionList">
-        <div class="show-more hide-lg" (click)="onMOnbileShowMore()" >
-        </div>
         <ul  #subcategory>
           <li class="kng-chip" (click)="scrollTo($event,child.name)"
                     [id]="'child'+j"

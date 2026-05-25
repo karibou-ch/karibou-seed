@@ -458,7 +458,7 @@ h3{
       }
       input:invalid + span::after {
         content: "✖";
-        color:var(--mdc-theme-karibou-pink)
+        color:var(--mdc-theme-status-love)
       }
 
       input:valid + span::after {

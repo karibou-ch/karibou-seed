@@ -275,7 +275,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   }
 
   get hub(){
-    return this._currentHub;
+    return this._currentHub || this.config?.shared?.hub;
   }
 
   get isSelectionState() {
@@ -292,7 +292,11 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   }
 
   get store() :string{
-    return (this._currentHub && this._currentHub.slug)||this.$navigation.store;
+    const hub = this._currentHub as any;
+    return (typeof hub === 'string' ? hub : hub?.slug) ||
+           this._items?.[0]?.hub ||
+           this.config?.shared?.hub?.slug ||
+           this.$navigation.store;
   }
 
   set open(open: boolean) {
@@ -727,7 +731,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     if(this.couponCredit && !payment.coupon) {
       payment.coupon = this.couponCredit.code;
     }
-    const hub = this._currentHub && this._currentHub.slug || this.$navigation.store;
+    const hub = this.store;
     const items = this.items.map(item => item.toDEPRECATED());
 
     //
@@ -769,8 +773,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       issuer: 'apple',
       type: 'apple'
     };
-    // FIXME checkout quote: this should run when the cart opens and surface quote errors
-    // immediately, not only when preparing the Apple/Google wallet button.
+    // FIXME checkout quote: this should reuse the quote produced by doInitateCheckout
+    // instead of running a second quote dedicated to the Apple/Google wallet button.
     const payload = this.buildCheckoutPayload(null, walletPayment);
 
     this._subscriptions.push(this.$order.quoteCheckout(payload).subscribe(quote => {
@@ -1097,7 +1101,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       shippingHours
     );
     const payment = this.currentPayment;
-    const hub = this._currentHub.slug;
+    const hub = this.store;
     this.isRunning = true;
 
     //
@@ -1227,6 +1231,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         this.errorMessage = this.label.cart_update_subscription_payment_error;
     }
 
+    // FIXME checkout quote: doInitateCheckout should trigger the quote once, validate the cart
+    // immediately, display quote errors here, then share that quote with wallet preparation.
+    // Longer term, run this from a single cart/checkout state event instead of scattering
+    // quote calls across init, address changes, coupons and wallet setup.
     this.checkPaymentMethod();
 
     const address = this.$cart.getCurrentShippingAddress();

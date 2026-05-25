@@ -62,7 +62,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
       }
 
       if(emit.state){
-        this.config.shared.hubs.forEach(hub => {
+        this.$navigation.HUBs.forEach(hub => {
           const ctx:CartItemsContext = {
             forSubscription:false,
             hub:hub.slug
@@ -87,7 +87,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
         this.premiumLimit =  this.config.shared.hub.premiumLimit || 0;
       }
 
-      this.config.shared.hubs.forEach(hub => {
+      this.$navigation.HUBs.forEach(hub => {
         this.currentCart[hub.slug]={
           count:0,
           amount:0
@@ -96,7 +96,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
       //
       // update scroll position
-      const index = this.config.shared.hubs.findIndex(hub => this.currentHub._id == hub.id);
+      const index = this.$navigation.HUBs.findIndex(hub => this.currentHub._id == hub.id);
         setTimeout(()=>{
           try {
             document.querySelector('kng-nav-marketplace .marketplace').scrollLeft = 274*index;
@@ -122,11 +122,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
   }
 
   get hubs() {
-    if(!this.config.shared.hubs) {
-      return [];
-    }
-
-    return this.config.shared.hubs.filter(hub => !hub.status.private);
+    return this.$navigation.HUBs;
   }
 
   get i18n() {

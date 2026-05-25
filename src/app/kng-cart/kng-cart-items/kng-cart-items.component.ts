@@ -148,11 +148,8 @@ export class KngCartItemsComponent implements OnInit {
   }
 
   get hub() {
-    // case of non active hub with currentHub == undefined
     if(!this.currentHub) {
-      const hub = (this.config.shared && this.config.shared.hub) || {shared:{},status:{}};
-      hub.status.active = false;
-      return hub;
+      return this.config?.shared?.hub;
     }
 
     return this.currentHub;

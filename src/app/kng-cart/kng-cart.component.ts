@@ -43,7 +43,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
   orders: Order[];
   user: User = new User();
   config: Config;
-  currentHub: string;
   items: CartItem[];
   isValid = false;
   hasOrderError = false;
@@ -158,16 +157,10 @@ export class KngCartComponent implements OnInit, OnDestroy {
   }
 
   get hubs() {
-    //return this.config.shared.hubs.filter(hub => hub.slug != this.currentHub);
-    const defaultHub =  this.currentHub;//this.$navigation.landingHubSlug ||
-
-    const _current = this.config.shared.hubs.find(hub => hub.slug == defaultHub);
     if(this.lockedHUB || this.isSharedCart || !this.currentCartView){
-      return [_current];
+      return this.config?.shared?.hub ? [this.config.shared.hub] : [];
     }
-    const _hubs = this.config.shared.hubs.filter(hub => hub.slug != defaultHub);
-    _hubs.unshift(_current)
-    return _hubs;
+    return this.$navigation.HUBs;
   }
 
   get isSharedCart() {
@@ -199,7 +192,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store = this.$navigation.store;
-    this.currentHub = this.config.shared.hub;
 
     this.currentShippingDay = this.$cart.getCurrentShippingDay();
     this.shippingTime = this.$cart.getCurrentShippingTime()|0;
@@ -230,10 +222,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
           if (this.config.shared && this.config.shared.keys) {
             this.$stripe.setKey(this.config.shared.keys.pubStripe);
           }
-          //
-          // update local config
-          this.currentHub = this.config.shared.hub.slug;
-
           // ✅ CORRECTION: Appeler getDefaultTimeByDay APRÈS config chargé
           if (!this.shippingTime && this.currentShippingDay) {
             this.shippingTime = this.$calendar.getDefaultTimeByDay(this.currentShippingDay, this.config.shared.hub);
@@ -354,7 +342,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
           if (this.checkout) {
             this.checkout.closeAfterAsyncPayment();
           }
-          this.onCheckout({order, store: this.currentHub || this.store});
+          this.onCheckout({order, store: this.$navigation.store || this.store});
           return;
         }
         if(order.payment.status == 'voided') {
@@ -386,7 +374,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // only items for this view!
     const ctx:CartItemsContext = {
       forSubscription:!this.currentCartView,
-      hub:this.currentHub,
+      hub:this.$navigation.store,
       lastMinute: this.$cart.isCurrentShippingLastMinute() // ✅ Filtre lastMinute
     }
     if(this.currentCartView) {
@@ -406,7 +394,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // viewcart determine items for subscription
     const ctx:CartItemsContext = {
       forSubscription:!viewcart,
-      hub:this.currentHub
+      hub:this.$navigation.store
     }
     this.items = this.$cart.getItems(ctx);
 

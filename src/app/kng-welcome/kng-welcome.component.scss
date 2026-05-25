@@ -262,7 +262,7 @@ button.CTA {
           text-decoration:none;
           border: 0;
           padding: 7px 20px;
-          background-color: var(--mdc-theme-karibou-yellow) ;
+          background-color: var(--mdc-theme-status-highlight) ;
           background-color: #dae5ff;
           font-weight: bold;
           color: #333;
@@ -395,7 +395,7 @@ button.CTA {
       transition: all 0.25s ease-out;
       margin: 4px 0px;
       &.invalid{
-        border: 1px solid var(--mdc-theme-karibou-pink);
+        border: 1px solid var(--mdc-theme-status-love);
       }
       &.stretch{
         width: 35px;

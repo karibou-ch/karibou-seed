@@ -122,8 +122,17 @@ export class KngNavigationStateService  {
         if (hub.colors.primaryText) { style.setProperty('--mdc-theme-primary-text', hub.colors.primaryText); }
         if (hub.colors.action) { style.setProperty('--mdc-theme-secondary', hub.colors.action); }
         if (hub.colors.actionText) { style.setProperty('--mdc-theme-secondary-text', hub.colors.actionText); }
+        if(hub.colors?.ink){
+          style.setProperty('--mdc-theme-ink', hub.colors.ink);
+        }else{
+          style.removeProperty('--mdc-theme-ink');
+        }
 
-        if(hub.colors.colormix) { style.setProperty('--mdc-theme-colormix', hub.colors.colormix);}
+        if(hub.colors.colormix){
+          style.setProperty('--mdc-theme-colormix', hub.colors.colormix);
+        }else{
+          style.removeProperty('--mdc-theme-colormix');
+        }
         //
         // force appBar to Null if not exists
         if(hub.colors.appbar){
@@ -181,7 +190,18 @@ export class KngNavigationStateService  {
   }
 
   get HUBs() {
-    return this.config.shared.hubs || [];
+    const current = this.config?.shared?.hub;
+    const hubs = this.config?.shared?.hubs || [];
+    const result = current ? [current] : [];
+
+    hubs.forEach(hub => {
+      if(result.some(item => item.slug == hub.slug)) {
+        return;
+      }
+      result.push(hub);
+    });
+
+    return result;
   }
 
   set currentTheme(theme: any) {
