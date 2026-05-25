@@ -3,7 +3,7 @@
 
 body{
   margin-top: 0;
-  background: white;
+  background: var(--mdc-theme-background-container);
   font-size: 1rem;
   @media (min-width: 768px) {
     zoom:0.85;
@@ -37,27 +37,40 @@ body{
   // 🧭 NAVIGATION - Hauteur navbar fixe
   --mdc-theme-top-bar: 70px;
 
+  // Police editoriale utilisee sur les titres/visuels qui appellent var(--mdc-theme-font).
   --mdc-theme-font: "Gentium Plus";
 
+  // Couleurs metier Karibou pour differencier les univers (buffet, marche, ecole).
   --mdc-theme-karibou-pink: #da1c5c;
   --mdc-theme-karibou-green: #62dd2a;
   --mdc-theme-karibou-yellow: #ffe83d;
-  --mdc-theme-colormix: white;
-  --mdc-theme-primary: #32b0a0;
-  --mdc-theme-primary-light: rgba(227,236, 235, 0.3);
 
-  --mdc-theme-primary-text: white;
-  --mdc-theme-text-primary-on-background:#333;
-  --mdc-theme-secondary: #028b7a;
-  --mdc-theme-secondary-light: rgba(227,236, 235, 0.3);
+  // Teinte de reference du theme: sert a calculer les fonds et variantes light.
+  --mdc-theme-colormix: #EAF5EF;
+  // Encre principale du theme: surchargeable par hub.colors.ink si besoin.
+  --mdc-theme-ink: #1F1A16;
+  // Palette "Marche de Geneve": bleu ardoise, brun chaud et gris clair,
+  // pour une identite sobre, locale et lisible, avec variantes light dynamiques.
+  // Couleur principale: boutons, etats actifs et surfaces fortes.
+  --mdc-theme-primary: #1f513b;
 
-  --mdc-theme-secondary-text: white;
-  --mdc-theme-text-secondary-on-background:#333;
+  // Texte pose sur une surface primary.
+  --mdc-theme-primary-text: #FFFFFF;
+  // Texte principal sur le fond global de l'application.
+  // Le fond global est --mdc-theme-background-container: fallback fixe,
+  // puis color-mix(var(--mdc-theme-colormix) 50%, white) si supporte.
+  --mdc-theme-text-primary-on-background:var(--mdc-theme-ink);
+  // Couleur d'action secondaire: CTA secondaires, FAB, accents chauds mais discrets.
+  --mdc-theme-secondary:  #51241f;
 
-  --mdc-theme-appbar: rgba(227,236, 235, 0.97);
-  --mdc-theme-appbar-light: rgba(227,236, 235, 0.3);
+  // Texte pose sur une surface secondary.
+  --mdc-theme-secondary-text: #FFFFFF;
 
-  --mdc-theme-appbar-text: rgba(19, 83, 20, 0.97);
+  // Fond des barres de navigation et zones d'en-tete.
+  --mdc-theme-appbar: #233D30;
+
+  // Texte pose sur appbar.
+  --mdc-theme-appbar-text: #FFFFFF;
 
   --mdc-theme-primary-dark:white;
   --mdc-theme-primary-dark-text:black;
@@ -65,30 +78,81 @@ body{
   --mdc-theme-secondary-dark: initial;
   --mdc-theme-secondary-dark-text: initial;
 
-  // FIXME remove this hardcoding
-  --mdc-theme-text-hint-on-background:#333;
-  --mdc-theme-text-icon-on-background:#333;
-
-  //
-  // BODY
-  --mdc-theme-background-container: white;
+  // FALLBACKS pour les variables calculees plus bas avec color-mix().
+  // color-mix(): Chrome/Edge 111+, Firefox 113+, Safari/iOS 16.2+.
+  // Baseline largement disponible depuis 2025-11-09; garder ces valeurs fixes pour les anciens navigateurs.
+  --mdc-theme-karibou-pink-light: #F4BBCE;
+  --mdc-theme-karibou-green-light: #D0F5BF;
+  --mdc-theme-karibou-yellow-light: #FFF8C5;
+  // Couleurs semantiques derivees des couleurs metier Karibou.
+  // love <- pink, success <- green, highlight <- yellow.
+  --mdc-theme-status-love: var(--mdc-theme-karibou-pink);
+  --mdc-theme-status-success: var(--mdc-theme-karibou-green);
+  --mdc-theme-status-highlight: var(--mdc-theme-karibou-yellow);
+  --mdc-theme-status-love-light: #F4BBCE;
+  --mdc-theme-status-success-light: #D0F5BF;
+  --mdc-theme-status-highlight-light: #FFF8C5;
+  --mdc-theme-primary-light: #D1DDD5;
+  --mdc-theme-primary-medium: #7C9487;
+  --mdc-theme-secondary-light: #E2D8CE;
+  --mdc-theme-secondary-medium: #B99986;
+  --mdc-theme-appbar-light: #D4E0D9;
+  --mdc-theme-appbar-medium: #81978B;
+  // Texte secondaire sur le fond global: descriptions, labels et aides.
+  // Meme fond global que ci-dessus: background-container derive de colormix a 50% vers blanc.
+  --mdc-theme-text-secondary-on-background:#625A50;
+  // Texte discret sur fond global: placeholders et hints.
+  // Meme fond global que ci-dessus: background-container derive de colormix a 50% vers blanc.
+  --mdc-theme-text-hint-on-background:#625A50;
+  // Couleur d'icones neutres sur fond global.
+  // Meme fond global que ci-dessus: background-container derive de colormix a 50% vers blanc.
+  --mdc-theme-text-icon-on-background:#625A50;
+  // Fond global, plus clair que colormix pour ne pas saturer les pages.
+  --mdc-theme-background-container: #F6FBF7;
 
   @supports (color: color-mix(in srgb, red 50%, blue)) {
-    --mdc-theme-primary-light:color-mix(in srgb, var(--mdc-theme-primary) 30%, var(--mdc-theme-colormix));
-    --mdc-theme-secondary-light:color-mix(in srgb, var(--mdc-theme-secondary) 30%, var(--mdc-theme-colormix));
-    --mdc-theme-appbar-light:color-mix(in srgb, var(--mdc-theme-appbar) 30%, var(--mdc-theme-colormix));
+    // Variantes light: 10% de couleur metier dans la teinte de reference.
+    --mdc-theme-karibou-pink-light:color-mix(in srgb, var(--mdc-theme-karibou-pink) 10%, var(--mdc-theme-colormix));
+    --mdc-theme-karibou-green-light:color-mix(in srgb, var(--mdc-theme-karibou-green) 10%, var(--mdc-theme-colormix));
+    --mdc-theme-karibou-yellow-light:color-mix(in srgb, var(--mdc-theme-karibou-yellow) 10%, var(--mdc-theme-colormix));
+
+    // Variantes medium: 30% de couleur metier pour hover/selection douce.
+    --mdc-theme-karibou-pink-medium:color-mix(in srgb, var(--mdc-theme-karibou-pink) 30%, var(--mdc-theme-colormix));
+    --mdc-theme-karibou-green-medium:color-mix(in srgb, var(--mdc-theme-karibou-green) 30%, var(--mdc-theme-colormix));
+    --mdc-theme-karibou-yellow-medium:color-mix(in srgb, var(--mdc-theme-karibou-yellow) 30%, var(--mdc-theme-colormix));
+
+    // Status harmonises avec le theme courant, sans perdre leur sens visuel.
+    // En oklch, la fusion garde mieux la perception que srgb pour des couleurs eloignees.
+    --mdc-theme-status-love:color-mix(in oklch, var(--mdc-theme-karibou-pink) 90%, var(--mdc-theme-primary));
+    --mdc-theme-status-success:color-mix(in oklch, var(--mdc-theme-karibou-green) 68%, var(--mdc-theme-ink));
+    --mdc-theme-status-highlight:color-mix(in oklch, var(--mdc-theme-karibou-yellow) 92%, var(--mdc-theme-primary));
+    --mdc-theme-status-love-light:color-mix(in oklch, var(--mdc-theme-status-love) 14%, var(--mdc-theme-colormix));
+    --mdc-theme-status-success-light:color-mix(in oklch, var(--mdc-theme-status-success) 14%, var(--mdc-theme-colormix));
+    --mdc-theme-status-highlight-light:color-mix(in oklch, var(--mdc-theme-status-highlight) 35%, var(--mdc-theme-colormix));
+
+    // Variantes light/medium des couleurs de theme, recalculees quand navigation.service change le theme.
+    // light reste reserve aux fonds doux; medium sert aux hover/selection plus visibles.
+    --mdc-theme-primary-light:color-mix(in srgb, var(--mdc-theme-primary) 16%, var(--mdc-theme-colormix));
+    --mdc-theme-primary-medium:color-mix(in srgb, var(--mdc-theme-primary) 50%, var(--mdc-theme-colormix));
+    --mdc-theme-secondary-light:color-mix(in srgb, var(--mdc-theme-secondary) 14%, var(--mdc-theme-colormix));
+    --mdc-theme-secondary-medium:color-mix(in srgb, var(--mdc-theme-secondary) 50%, var(--mdc-theme-colormix));
+    --mdc-theme-appbar-light:color-mix(in srgb, var(--mdc-theme-appbar) 14%, var(--mdc-theme-colormix));
+    --mdc-theme-appbar-medium:color-mix(in srgb, var(--mdc-theme-appbar) 50%, var(--mdc-theme-colormix));
+
+    // Fond global derive a 50% de la teinte de reference pour rester leger.
+    --mdc-theme-background-container:color-mix(in srgb, var(--mdc-theme-colormix) 10%, white);
+
+    // Textes neutres derives de l'encre et du fond pour garder une hierarchie lisible.
+    --mdc-theme-text-secondary-on-background:color-mix(in srgb, var(--mdc-theme-ink) 70%, var(--mdc-theme-background-container));
+    --mdc-theme-text-hint-on-background:color-mix(in srgb, var(--mdc-theme-ink) 58%, var(--mdc-theme-background-container));
+    --mdc-theme-text-icon-on-background:color-mix(in srgb, var(--mdc-theme-ink) 64%, var(--mdc-theme-background-container));
   }
 
   .theme-gradient {
-    background:
-      radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
-      radial-gradient(circle at top right, var(--mdc-theme-secondary-light) 0%, transparent 50%),
-      radial-gradient(ellipse at bottom, var(--mdc-theme-secondary-light) 0%, transparent 60%);
-    background:
-      radial-gradient(circle at top left, var(--mdc-theme-appbar) 0%, transparent 60%),
-      radial-gradient(circle at top right, var(--mdc-theme-primary) 0%, transparent 30%),
-      radial-gradient(ellipse at bottom, var(--mdc-theme-primary-light) 10%, transparent 60%);
-    background-color: var(--mdc-theme-appbar-light);
+    background-color: var(--mdc-theme-background-container);
+    background-image:
+      radial-gradient(circle at top left, var(--mdc-theme-appbar-light) 0%, transparent 54%),
+      radial-gradient(ellipse at bottom right, var(--mdc-theme-primary-light) 0%, transparent 58%);
   }
 
 

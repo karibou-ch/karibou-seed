@@ -69,10 +69,13 @@
 
 
   <!-- Subscription text -->
-  <h3 >Subscription Customer<span class="gray">(customers header)</span></h3>
+  <h3 >Service Commande automatique<span class="gray">(customers header)</span></h3>
   <hr class="dashed"/>
   <!-- SITE Lang -->
   <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Menu subscription" name="subscription.menu" format="text"
+                    [(ngModel)]="config?.shared.subscription.menu[$i18n.locale]"></kng-config-input>
 
   <kng-config-input clazz="config" label="Titre subscription" name="subscription.titre" format="text"
                     [(ngModel)]="config?.shared.subscription.t[$i18n.locale]"></kng-config-input>
@@ -86,15 +89,21 @@
   <kng-config-input clazz="config" label="Article subscription" name="subscription.article" format="area"
                     [(ngModel)]="config?.shared.subscription.article[$i18n.locale]"></kng-config-input>
 
+  <kng-config-input clazz="config" label="URL par défaut Commande automatique" name="subscription.defaultUrl" format="text"
+                    [(ngModel)]="config?.shared.subscription.defaultUrl"></kng-config-input>
+
   <kng-config-input clazz="config" label="Subscription Image " name="content-subs.image" format="image"
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="config?.shared.subscription.image"></kng-config-input>
 
   <!-- Subscription text -->
-  <h3 >Subscription b2b <span class="gray">(header)</span></h3>
+  <h3 >Service Buffet Événements & Entreprises <span class="gray">(header)</span></h3>
   <hr class="dashed"/>
   <!-- SITE Lang -->
   <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Menu business" name="business.menu" format="text"
+                    [(ngModel)]="config?.shared.business.menu[$i18n.locale]"></kng-config-input>
 
   <kng-config-input clazz="config" label="Titre business" name="business.titre" format="text"
                     [(ngModel)]="config?.shared.business.t[$i18n.locale]"></kng-config-input>
@@ -108,9 +117,40 @@
   <kng-config-input clazz="config" label="Article business" name="business.article" format="area"
                     [(ngModel)]="config?.shared.business.article[$i18n.locale]"></kng-config-input>
 
+  <kng-config-input clazz="config" label="URL par défaut Buffet Événements & Entreprises" name="business.defaultUrl" format="text"
+                    [(ngModel)]="config?.shared.business.defaultUrl"></kng-config-input>
+
   <kng-config-input clazz="config" label="Business Image " name="content-business.image" format="image"
                     (imageChange)="onDialogOpen($event)" [config]="config"
                     [(ngModel)]="config?.shared.business.image"></kng-config-input>
+
+  <!-- Institution text -->
+  <h3 >Service Institution <span class="gray">(écoles et autres)</span></h3>
+  <hr class="dashed"/>
+  <!-- SITE Lang -->
+  <kng-config-input clazz="config" label="Langage selection"  format="lang"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Menu institution" name="institution.menu" format="text"
+                    [(ngModel)]="config?.shared.institution.menu[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Titre institution" name="institution.titre" format="text"
+                    [(ngModel)]="config?.shared.institution.t[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Subtitle institution" name="institution.subtitre" format="text"
+                    [(ngModel)]="config?.shared.institution.h[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Paragraphe institution" name="institution.p" format="area"
+                    [(ngModel)]="config?.shared.institution.p[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Article institution" name="institution.article" format="area"
+                    [(ngModel)]="config?.shared.institution.article[$i18n.locale]"></kng-config-input>
+
+  <kng-config-input clazz="config" label="URL par défaut Institution" name="institution.defaultUrl" format="text"
+                    [(ngModel)]="config?.shared.institution.defaultUrl"></kng-config-input>
+
+  <kng-config-input clazz="config" label="Institution Image " name="content-institution.image" format="image"
+                    (imageChange)="onDialogOpen($event)" [config]="config"
+                    [(ngModel)]="config?.shared.institution.image"></kng-config-input>
 
   <!-- patreon text -->
   <h3 >Patreon <span class="gray">(patreon header)</span></h3>

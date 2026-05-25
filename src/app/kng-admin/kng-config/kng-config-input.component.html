@@ -20,7 +20,7 @@
       <mdc-chip-set choice  [value]="store">
         <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
         <mdc-chip (click)="changeHub(hub)"
-                  *ngFor="let hub of HUBs" [value]="hub.slug">
+                  *ngFor="let hub of HUBs" [value]="getHubSlug(hub)">
           <mdc-chip-text>{{hub.name}}</mdc-chip-text>
         </mdc-chip>
       </mdc-chip-set>

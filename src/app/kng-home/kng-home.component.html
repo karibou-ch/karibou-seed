@@ -27,23 +27,39 @@
 
 
 <!-- INFORMATION -->
+
 <div class="home-header" [hidden]="!hub.header.active">
   <img [src]="tagLine.image" [hidden]="!tagLine.image"/>
   <figure [innerHtml]="hub.header.message[locale]" ></figure>
 </div>
+
+<!-- HOME LINKS -->
+<div class="home-links" [hidden]="availableSearch">
+  <a class="home-link-card"
+       *ngFor="let service of services; trackBy: trackByServiceName"
+       [ngClass]="'home-link-' + service.name"
+       [class.current]="service.actived"
+       [attr.aria-current]="service.actived ? 'page' : null"
+       [routerLink]="service.defaultUrl">
+    <div class="home-link-copy">
+      <h3>{{service.menu[locale] || service.menu.fr}}</h3>
+      <div class="label">{{service.t[locale] || service.t.fr}}</div>
+    </div>
+    <div class="home-link-action">
+      <span class="btn goto">{{service.actived ? 'ici' : 'Visiter'}}</span>
+    </div>
+  </a>
+</div>
+
 <!-- CalENDAR -->
 <kng-calendar  [user]="user" [title]="theme.name" [hidden]="availableSearch"  [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
-
 
 <!-- BUSINESS
 <kng-business-option [hub]="hub" [user]="user"   (onOpen)="scrollLocked = $event"></kng-business-option>
 -->
 
-
 <!-- SELECTION -->
 <!-- <kng-product-swipe [user]="user" [hidden]="sortedCategories.length<5" mailchimp="true" [hub]="store" ></kng-product-swipe> -->
-
-
 <!-- PINNED (isMinimal for b2b-school)-->
 <kng-product-swipe class="boost theme-gradient"  [user]="user"  [boost]="true" [hub]="store" >
 </kng-product-swipe>
@@ -148,21 +164,15 @@
       <span>{{label.search_bookmark}}</span>
     </li>
 
-    <!-- CUSTOM LINK -->
-    <li *ngIf="hub.home.customLink.url" class="subs-item inverted" [routerLink]="hub.home.customLink.url" >
+    <li *ngIf="businessService as service" class="subs-item inverted" [routerLink]="service.defaultUrl" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <i class="material-symbols-outlined icon">person_celebrate</i>
-      <span>{{hub.home.customLink.label[locale]}}</span>
-    </li>
-
-    <li *ngIf="!hub.home.customLink.url" class="subs-item inverted" [routerLink]="['/store',store,'home','business']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <i class="material-symbols-outlined icon">person_celebrate</i>
-      <span>{{label.nav_subscription_b2b}}</span>
+      <span>{{service.menu[locale] || service.menu.fr}}</span>
     </li>
 
     <!-- SUBSCRIPTION b2c/b2b-->
-    <li class="subs-item inverted" [routerLink]="['/store',store,'home','subscription']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <li *ngIf="subscriptionService as service" class="subs-item inverted" [routerLink]="service.defaultUrl" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <i class="material-symbols-outlined icon">update</i>
-      <span>{{label.nav_subscription}}</span>
+      <span>{{service.menu[locale] || service.menu.fr}}</span>
     </li>
 
 
@@ -179,35 +189,33 @@
 
   <!-- DESKTOP -->
   <ul class="hide-sm">
-    <li [routerLink]="userRouterLink">
+    <li [routerLink]="userRouterLink" class="home-link-card">
       <!-- LOGIN / REGISTER -->
-      <span class="fa icon hide">👦</span>
-      <b>{{isAuthencated?label.nav_account:label.nav_login}}</b>
+      <div class="home-link-copy">
+        <h3>{{isAuthencated?label.nav_account:label.nav_login}}</h3>
+        <div class="label">Facture/Livraison/Données</div>
+      </div>
 
-    </li>
-    <!-- DISPLAYCUSTOM LINK -->
-    <li [routerLink]="hub.home.customLink.url" [hidden]="!hub.home.customLink.url">
-      <b>{{hub.home.customLink.label[locale]}}</b>
-    </li>
-
-    <li  [routerLink]="'/store/'+store+'/home/business'" [hidden]="hub.home.customLink.url">
-      <b>{{label.nav_subscription_b2b}}</b>
-    </li>
-
-    <li  [routerLink]="'/store/'+store+'/home/subscription'">
-      <b>{{label.nav_subscription}}</b>
     </li>
 
     <li [hidden]="!isAuthencated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <b>{{label.james_school}}</b>
     </li>
-    <li class="separator" [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-      <b>{{label.james_title_cta}}</b>
+    <li class="home-link-card " [routerLink]="['/store',store,'home','assistant','james']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <div class="home-link-copy">
+        <h3>{{label.james_title_cta}}</h3>
+        <div class="label">A votre service</div>
+      </div>
+
     </li>
   </ul>
 
   <!-- CATEGORY on mobile+desktop -->
   <ul class="">
+    <li class="menu-section-title hide-sm">
+      <b>Les catégories</b>
+    </li>
+
     <li (click)="scrollToSlug(category.slug)" class="subs-item"
               [id]="'category-'+j"
               [class.selected]="category.slug == displaySlug"

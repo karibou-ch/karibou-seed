@@ -46,11 +46,22 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   // }
   changeHub(hub) {
     const menus = location.pathname.split('/');
-    location.href = '/store/' + hub.slug + '/admin/' + menus[menus.length - 1];
+    const slug = this.getHubSlug(hub);
+    if (!slug) {
+      return;
+    }
+    location.href = '/store/' + slug + '/admin/' + menus[menus.length - 1];
   }
 
   isCurrentHub(slug){
     return location.pathname.indexOf('store/' + slug) > -1;
+  }
+
+  getHubSlug(hub) {
+    if (!hub || !hub.slug) {
+      return '';
+    }
+    return Array.isArray(hub.slug) ? hub.slug[0] : hub.slug;
   }
 
   get adminMenu() {

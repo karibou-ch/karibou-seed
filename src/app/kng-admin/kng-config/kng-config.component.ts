@@ -67,6 +67,15 @@ export class KngConfigComponent implements OnInit, OnDestroy {
     // this.config.shared.checkout.message = this.config.shared.checkout.message || {};
     this.config.shared.welcome.message = this.config.shared.welcome.message || {};
     this.config.shared.faq_title = this.config.shared.faq_title || {fr:'',en:''};
+    ['subscription','business','institution'].forEach(service => {
+      this.config.shared[service] = Object.assign({
+        menu: {},
+        t: {},
+        h: {},
+        p: {},
+        article: {}
+      }, this.config.shared[service] || {});
+    });
 
     //
     // used by child classes

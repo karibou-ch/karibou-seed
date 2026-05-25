@@ -20,7 +20,8 @@ import {
   Order,
   Hub,
   CalendarService,
-  AssistantService
+  AssistantService,
+  Service as ConfigServiceContent
 } from 'kng2-core';
 import { Subscription } from 'rxjs';
 import { AudioNoteType, i18n, KngNavigationStateService } from '../common';
@@ -54,6 +55,8 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   displaySlug: string;
   scrollDirection:number;
   scrollLocked:boolean;
+  private servicesCacheKey = '';
+  private servicesCache: ConfigServiceContent[] = [];
 
   //
   // search
@@ -183,6 +186,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
       // emit signal for config
       if (emit.config) {
+        this.clearCategory();
       }
 
       // emit signal for user
@@ -263,12 +267,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   get isThemas() {
-    return this.hub.pageOptions.themas;
+    return this.hubPageOptions.themas;
   }
 
   get isMinimal() {
-    return this.hub.pageOptions.minimal;
+    return this.hubPageOptions.minimal;
   }
+
 
   get isJamesAvailable() {
     if(!this.user) {
@@ -299,15 +304,64 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     return this.config.shared.hub ||{};
   }
 
+  get hubPageOptions() {
+    return Object.assign({
+      maxcat: 7,
+      themas: true,
+      minimal: false
+    }, (this.hub.pageOptions || {}) as any);
+  }
+
+  get pageOptionHome() {
+    return Object.assign({}, this.pageOptions.home, {
+      maxcat: this.hubPageOptions.maxcat
+    });
+  }
+
   get subPatreon() {
     return this.config.shared.patreon || {};
   }
-  get subB2b() {
-    return this.config.shared.business || {};
+
+  get services(): ConfigServiceContent[] {
+    const shared = this.config.shared || {};
+    const serviceNames = ['subscription', 'institution', 'business'];
+    const cacheKey = this.$router.url + JSON.stringify(serviceNames.map(name => shared[name] || {}));
+
+    if (cacheKey === this.servicesCacheKey) {
+      return this.servicesCache;
+    }
+
+    const makeService = (name:string): ConfigServiceContent => {
+      const service = shared[name] || {};
+      const defaultUrl = (service.defaultUrl || '').trim();
+      return Object.assign({}, service, {
+        name,
+        menu: service.menu || {},
+        t: service.t || {},
+        h: service.h || {},
+        p: service.p || {},
+        article: service.article || {},
+        image: service.image || '',
+        defaultUrl,
+        actived: !!defaultUrl && this.$router.isActive(defaultUrl, false)
+      });
+    };
+
+    this.servicesCacheKey = cacheKey;
+    this.servicesCache = serviceNames.map(makeService).filter(service => !!service.defaultUrl);
+    return this.servicesCache;
   }
 
-  get subCustomer() {
-    return this.config.shared.subscription || {};
+  trackByServiceName(index:number, service:ConfigServiceContent) {
+    return service.name || service.defaultUrl || index;
+  }
+
+  get subscriptionService() {
+    return this.services.find(service => service.name === 'subscription');
+  }
+
+  get businessService() {
+    return this.services.find(service => service.name === 'business');
   }
 
   get sortedGroups() {
@@ -520,8 +574,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     }
 
 
-
-    const options = Object.assign({}, this.options, this.pageOptions.home);
+    const options = Object.assign({}, this.options, this.pageOptionHome);
     options.when = this.currentShippingDay.toISOString();
     options.maxcat = this.isMobile? 5:options.maxcat;
     options.hub = this.$navigation.store;
