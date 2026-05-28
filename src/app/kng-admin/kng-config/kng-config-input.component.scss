@@ -1,139 +1,114 @@
-// ============================================================================
-// KNG CONFIG INPUT - Layout minimal, laisse Web Awesome gérer le theming
-// ============================================================================
-
 :host {
-  width: 100%;
   display: block;
-  margin-bottom: 8px;
+  width: 100%;
+  margin-bottom: var(--adm-space-3);
 }
 
-// ============================================================================
-// INPUT ROWS - Layout général
-// ============================================================================
+// ── Layout grille pour text / area / image / geo ─────────────────────────────
 
-div[class*="input-row-"] {
+div.input-row-text,
+div.input-row-area,
+div.input-row-image,
+div.input-row-geo {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: start;
+  gap: var(--adm-space-2);
+}
+
+// Label dans la colonne gauche
+.adm-field-label {
+  font-size: var(--adm-font-size-s);
+  color: var(--adm-text-secondary);
+  padding-top: 7px; // aligne visuellement avec l'input
+  line-height: var(--adm-line-height);
+}
+
+// Colonne droite : input + checkbox optionnel
+.adm-field-right {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 8px 0;
+  gap: var(--adm-space-2);
 
-  wa-input, wa-textarea, wa-select {
+  wa-input,
+  wa-textarea {
     flex: 1;
+    width: 100%;
+  }
+
+  wa-checkbox {
+    flex-shrink: 0;
+    margin-top: 6px;
   }
 }
 
-// Force full width pour les composants WA
-wa-input, wa-textarea, wa-select {
-  width: 100%;
-}
-
-// ============================================================================
-// IMAGE FIELD
-// ============================================================================
+// ── Image field ──────────────────────────────────────────────────────────────
 
 .image-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--wa-space-s);
-  width: 100%;
-
-  .field-label {
-    font-size: var(--wa-font-size-xs);
-    font-weight: 500;
-    color: var(--mdc-theme-text-primary-on-background);
-  }
-
   .image-container {
     display: flex;
     align-items: center;
-    gap: var(--wa-space-m);
+    gap: var(--adm-space-4);
   }
 
   .image-preview {
-    position: relative;
     display: flex;
     align-items: center;
-    gap: var(--wa-space-s);
+    gap: var(--adm-space-2);
 
     img {
       height: 64px;
-      border-radius: var(--wa-border-radius-s);
-      border: 1px solid var(--wa-color-neutral-border-quiet);
+      border-radius: var(--adm-radius-s);
+      border: 1px solid var(--adm-border);
     }
   }
 }
 
-// ============================================================================
-// LANG SELECTOR
-// ============================================================================
+// ── Geo field ────────────────────────────────────────────────────────────────
+
+.geo-field {
+  .geo-preview img {
+    max-width: 100%;
+    height: 150px;
+    border-radius: var(--adm-radius-s);
+    border: 1px solid var(--adm-border);
+  }
+}
+
+// ── Lang selector ────────────────────────────────────────────────────────────
 
 .lang-selector {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--wa-color-neutral-border-quiet);
-  margin-bottom: 16px;
+  gap: var(--adm-space-3);
+  padding: var(--adm-space-2) 0;
+  border-bottom: 1px solid var(--adm-border);
+  margin-bottom: var(--adm-space-3);
 
   .lang-label {
-    font-size: var(--wa-font-size-xs);
+    font-size: var(--adm-font-size-xs);
     font-weight: 600;
-    color: var(--mdc-theme-text-hint-on-background);
+    color: var(--adm-text-label);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .lang-buttons {
     display: flex;
-    gap: var(--wa-space-xs);
+    gap: var(--adm-space-1);
   }
 }
 
-// ============================================================================
-// GEO FIELD
-// ============================================================================
-
-.geo-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--wa-space-s);
-
-  .field-icon {
-    color: var(--mdc-theme-text-hint-on-background);
-    font-size: var(--wa-font-size-l);
-  }
-
-  .field-label {
-    font-size: var(--wa-font-size-xs);
-    color: var(--mdc-theme-text-hint-on-background);
-    font-weight: 500;
-  }
-
-  .geo-preview img {
-    max-width: 100%;
-    height: 150px;
-    border-radius: var(--wa-border-radius-s);
-    border: 1px solid var(--wa-color-neutral-border-quiet);
-  }
-}
-
-// ============================================================================
-// UPLOADCARE WIDGET OVERRIDES
-// ============================================================================
+// ── Uploadcare ───────────────────────────────────────────────────────────────
 
 :host ::ng-deep {
-  .uploadcare--widget {
-    margin: 0;
-  }
+  .uploadcare--widget { margin: 0; }
 
-  .uploadcare--widget__text {
-    font-size: 11px;
-  }
+  .uploadcare--widget__text { font-size: 11px; }
 
   .uploadcare--widget__button {
-    border-radius: var(--wa-border-radius-s);
+    border-radius: var(--adm-radius-s);
     padding: 8px 16px;
-    font-size: var(--wa-font-size-xs);
+    font-size: var(--adm-font-size-xs);
   }
 }

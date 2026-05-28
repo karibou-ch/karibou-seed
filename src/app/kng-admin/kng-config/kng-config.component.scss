@@ -1,113 +1,244 @@
-// Import styles Web Awesome admin (lazy-loaded avec le module)
+// ============================================================================
+// ADMIN PAGES — styles partagés par tous les composants enfants
+// Utilise les tokens --adm-* définis dans admin-light-theme.scss
+// ============================================================================
+
 @import '../admin-wa.scss';
 
-.container{
-  min-width: 600px;
-  z-index: 1;
-  @media (max-width:599px) {
-    -min-width: 300px;
-  }
-
-  h1,h2,h3{
-    padding-left: 15px;
-    margin-top: 40px;
-  }
-
-  .menu-group{
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-    border-left: 1px solid rgba(0, 0, 0, 0.12);
-    text-transform: uppercase;
-    padding-top: 5px;
-  }
-
-  button.primary{
-    width: 100%;
-  }
-
-  .config-custom{
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  div.faq-title{
-    display: flex;
-    align-items: center;
-  }
-
-  div.faq{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    .faq-separator{
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      padding: 5px;
-      background: var(--mdc-theme-appbar);
-      border-radius: 14px;
-      margin-top: 10px;
-      .faq-question{
-        width: 100%;
-      }
-      .faq-reponse{
-        width: 80%;
-        .mdc-text-field__input{
-          background: var(--mdc-theme-appbar)!important;
-        }
-      }
-      .faq-actions{
-        width: 100%;
-        margin: 5px 20px;
-        button{
-          width: 100%;
-        }
-
-      }
-    }
-  }
-
-  div.block{
-    background: var(--wa-color-neutral-fill-quiet);
-    margin: 10px 0;
-    border-radius: var(--wa-border-radius-m);
-    overflow: hidden;
-    padding: 0 8px;
-    h3 .material-symbols-outlined{
-      transform: translateY(6px);
-    }
-  }
-
-  select{
-    align-self: flex-end;
-    margin-bottom: 8px;
-    padding: 15px;
-    border: 1px solid #aaa;
-    background: #fff;
-    border-radius: 5px;
-    font-size: 1em;
-    width: 100%;
-  }
-
+// ─── Host : force block display pour tous les composants partageant ce fichier
+:host {
+  display: block;
+  width: 100%;
 }
 
-.page-saving{
+// ─── Page saving overlay ─────────────────────────────────────────────────────
+.page-saving {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(25, 25, 25, 0.78);
-  width: 100vw;
-  height: 100vh;
-  z-index: 4;
-  h1{
-    color: white;
-    text-align: center;
-    padding-top: 25%;
+  inset: 0;
+  background: rgba(250, 250, 250, 0.85);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    font-family: var(--adm-font);
+    font-size: var(--adm-font-size-m);
+    color: var(--adm-text-secondary);
+    font-weight: 400;
   }
 }
 
-/**
- CODE MIRROR */
+// ─── Page wrapper ────────────────────────────────────────────────────────────
+.container {
+  width: 100%;
+}
+
+// ─── Section blocks (hub-manager) ────────────────────────────────────────────
+div.block {
+  background: var(--adm-bg-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-m);
+  padding: var(--adm-space-6);
+  margin-bottom: var(--adm-space-6);
+  box-shadow: var(--adm-shadow-s);
+
+  h3 {
+    font-size: var(--adm-font-size-xs);
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--adm-text-label);
+    margin: 0 0 var(--adm-space-4);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--adm-space-2);
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+  }
+}
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+.faq-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--adm-space-3);
+}
+
+.faq {
+  display: flex;
+  flex-direction: column;
+  gap: var(--adm-space-3);
+}
+
+.faq-separator {
+  background: var(--adm-bg-main);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-m);
+  padding: var(--adm-space-4);
+
+  .faq-question { width: 100%; margin-bottom: var(--adm-space-2); }
+  .faq-reponse  { width: 100%; margin-bottom: var(--adm-space-2); }
+  .faq-actions  {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+// ─── Config custom row ────────────────────────────────────────────────────────
+.config-custom {
+  display: flex;
+  align-items: center;
+  gap: var(--adm-space-2);
+  margin-bottom: var(--adm-space-3);
+}
+
+// ─── Float right util ─────────────────────────────────────────────────────────
+.float-right { margin-left: auto; }
+
+// ─── Shippingtime section ─────────────────────────────────────────────────────
+.shippingtime {
+  kng-config-input {
+    margin-bottom: var(--adm-space-2);
+  }
+}
+
+// ─── Hub content ─────────────────────────────────────────────────────────────
+.hub-content {
+  background: var(--adm-bg-main);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-m);
+  padding: var(--adm-space-4);
+  margin-bottom: var(--adm-space-3);
+}
+
+// ─── Menu group (navigation) ─────────────────────────────────────────────────
+.menu-group {
+  font-size: var(--adm-font-size-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--adm-text-label);
+  padding: var(--adm-space-4) 0 var(--adm-space-2);
+  border-top: 1px solid var(--adm-border);
+  margin-top: var(--adm-space-4);
+
+  &:first-child { border-top: none; margin-top: 0; }
+}
+
+// ─── Navigation menu list ─────────────────────────────────────────────────────
+.nav-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--adm-space-4);
+}
+
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--adm-space-3);
+  padding: 10px var(--adm-space-4);
+  border-bottom: 1px solid var(--adm-border);
+  font-size: var(--adm-font-size-s);
+  color: var(--adm-text-primary);
+  cursor: pointer;
+
+  &:last-child { border-bottom: none; }
+  &:hover      { background: var(--adm-bg-elevated); }
+  &.disabled   { opacity: 0.5; }
+
+  .nav-menu-weight { color: var(--adm-text-label); font-size: var(--adm-font-size-xs); width: 32px; }
+  .nav-menu-name   { flex: 1; font-weight: 500; }
+  .nav-menu-url    { color: var(--adm-text-label); font-size: var(--adm-font-size-xs); }
+  .nav-menu-actions { display: flex; gap: var(--adm-space-1); margin-left: var(--adm-space-2); }
+}
+
+// ─── Pages list ──────────────────────────────────────────────────────────────
+.page-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-item {
+  display: flex;
+  align-items: center;
+  gap: var(--adm-space-3);
+  padding: var(--adm-space-3) var(--adm-space-4);
+  border-bottom: 1px solid var(--adm-border);
+  text-decoration: none;
+  color: var(--adm-text-primary);
+  cursor: pointer;
+  transition: background var(--adm-transition);
+
+  &:last-child  { border-bottom: none; }
+  &:hover       { background: var(--adm-bg-elevated); }
+  &.disabled    { opacity: 0.5; pointer-events: none; }
+
+  &--add {
+    color: var(--adm-accent);
+    .material-symbols-outlined { color: var(--adm-accent); }
+  }
+
+  .material-symbols-outlined { font-size: 20px; color: var(--adm-text-label); flex-shrink: 0; }
+
+  .page-item-text { flex: 1; }
+  .page-title     { display: block; font-size: var(--adm-font-size-s); font-weight: 500; }
+  .page-type      { color: var(--adm-text-label); font-size: var(--adm-font-size-xs); }
+  .page-subtitle  { display: block; font-size: var(--adm-font-size-xs); color: var(--adm-text-secondary); }
+
+  .page-item-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--adm-space-3);
+    font-size: var(--adm-font-size-xs);
+    color: var(--adm-text-label);
+  }
+
+  .page-weight {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    .material-symbols-outlined { font-size: 14px; }
+  }
+}
+
+// ─── Deposit list map thumbnail ────────────────────────────────────────────────
+.deposit-map {
+  width: 72px;
+  height: 52px;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--adm-radius-s);
+  border: 1px solid var(--adm-border);
+  flex-shrink: 0;
+}
+
+// ─── Gray helper ─────────────────────────────────────────────────────────────
+.gray { color: var(--adm-text-label); font-weight: 400; }
+p.gray { font-size: var(--adm-font-size-s); color: var(--adm-text-secondary); margin: var(--adm-space-2) 0; }
+
+// ─── Chip menu (hub-manager) ──────────────────────────────────────────────────
+.menu .adm-chip-list { flex-wrap: wrap; }
+
+// ─── Geomap preview ──────────────────────────────────────────────────────────
+.geomap {
+  width: 100%;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--adm-radius-m);
+  border: 1px solid var(--adm-border);
+  margin-bottom: var(--adm-space-4);
+}
+
+// ─── Misc ────────────────────────────────────────────────────────────────────
+.hide-md { @media (max-width: 768px) { display: none; } }
+.small   { font-size: var(--adm-font-size-s); }
+.large   { flex: 1; }
+.align-end   { margin-left: auto; }
+.align-start { margin-right: auto; }

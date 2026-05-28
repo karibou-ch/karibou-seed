@@ -1,209 +1,150 @@
 <div class="page-saving" [hidden]="isReady">
-  <h1>Saving</h1>
+  <h1>Enregistrement…</h1>
 </div>
-<div class="container" *ngIf="currentHub">
-  <div class="block">
-    <h3>{{currentHub.name}}</h3>
-    <hr class="dashed"/>
-    <kng-config-input clazz="config" format="menu"></kng-config-input>
-  
-    <!-- HUB Lang -->
-    <kng-config-input clazz="config" format="hub"></kng-config-input>
-    <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>  
+
+<div class="adm-page" *ngIf="currentHub">
+
+  <h1 class="adm-page-title">Hub — Manager</h1>
+  <hr class="adm-page-divider">
+
+  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
+  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{saveMessage}}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{saveError}}</wa-callout>
   </div>
 
-  <!-- FERMETURE -->
-  <div class="block">
-    <h3>
-      <span class="material-symbols-outlined">directions_bike</span>
-      Interrompre les dates de livraisons suivantes
-      <button class="float-right" mdc-button outlined primary  (click)="addDate()"><span class="material-symbols-outlined">add_alarm</span></button>
-    </h3>
-    <hr class="dashed"/>
-    <div class="config-custom row-form" *ngFor="let noshipping of currentHub.noshipping;let idx=index;">
-      <mdc-text-field class="large" fullwidth   label="pour quelle raison? " type="text" [(ngModel)]="(noshipping.reason)[$i18n.locale]"></mdc-text-field>
-      <mdc-text-field fullwidth   label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.from" required></mdc-text-field>
-      <mdc-text-field fullwidth   label="jj/mm/aaaa" type="date" [(ngModel)]="noshipping.to" required></mdc-text-field>
-      <button class="small" mdc-button outlined primary (click)="currentHub.noshipping.splice(idx, 1)"><span class="material-symbols-outlined">delete</span></button>
-    </div>  
+  <!-- ── DATES SANS LIVRAISON ─────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title" style="display:flex;justify-content:space-between;align-items:center">
+      <span>Dates sans livraison</span>
+      <wa-button appearance="outlined" size="small" (click)="addDate()">
+        <span class="material-symbols-outlined" slot="prefix">add</span>
+        Ajouter
+      </wa-button>
+    </div>
+
+    <div *ngFor="let noshipping of currentHub.noshipping; let idx=index; trackBy: trackNoshipping"
+         style="display:flex;gap:var(--adm-space-2);align-items:center;margin-bottom:var(--adm-space-2)">
+      <wa-input ngDefaultControl size="small" label="Raison" style="flex:1"
+                [(ngModel)]="noshipping.reason[$i18n.locale]"
+                [ngModelOptions]="{standalone: true}"></wa-input>
+      <wa-input ngDefaultControl size="small" label="Du" type="date" style="width:140px"
+                [(ngModel)]="noshipping.from"
+                [ngModelOptions]="{standalone: true}"></wa-input>
+      <wa-input ngDefaultControl size="small" label="Au" type="date" style="width:140px"
+                [(ngModel)]="noshipping.to"
+                [ngModelOptions]="{standalone: true}"></wa-input>
+      <wa-button appearance="text" size="small" (click)="currentHub.noshipping.splice(idx, 1)">
+        <span class="material-symbols-outlined">delete</span>
+      </wa-button>
+    </div>
   </div>
 
-  <!-- 
-  //
-  // Owner of the HUB
-  manager?: string[];
-  logistic?: string[]; -->
-
-  <!-- ADMINs-->
-  <div class="block">
-    <h3><span class="material-symbols-outlined">face</span> Administrateurs</h3>
-    <hr class="dashed"/>
-    <div class="config-custom row-form">
-      <div class="menu">
-        <mdc-chip-set >
-          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-          <mdc-chip (click)="delManager(idx)" 
-                    *ngFor="let manager of currentHub.manager;let idx=index;" [value]="manager">
-            <mdc-chip-text>{{manager}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>
-      </div>  
+  <!-- ── MANAGERS ──────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">
+      <span class="material-symbols-outlined">face</span>
+      Administrateurs
     </div>
-    <div class="config-custom row-form">
-      <mdc-text-field fullwidth   label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
-      <button mdc-button outlined primary  (click)="addManager()"><span class="material-symbols-outlined">verified</span></button>
-    </div>  
+
+    <div class="adm-chip-list">
+      <span class="adm-chip" *ngFor="let manager of currentHub.manager; let idx=index; trackBy: trackManager">
+        {{manager}}
+        <span class="material-symbols-outlined remove" style="font-size:14px;cursor:pointer"
+              (click)="delManager(idx)">close</span>
+      </span>
+    </div>
+
+    <div class="adm-add-row">
+      <wa-input ngDefaultControl size="small" label="Ajouter un contact" type="email" style="flex:1"
+                [(ngModel)]="newUser" [ngModelOptions]="{standalone: true}"></wa-input>
+      <wa-button appearance="outlined" size="small" (click)="addManager()">
+        <span class="material-symbols-outlined" slot="prefix">verified</span>
+        Ajouter
+      </wa-button>
+    </div>
   </div>
 
-  <!-- LOGISTIC -->
-  <div class="block">
-    <h3><span class="material-symbols-outlined">face</span>Logistique</h3>
-    <hr class="dashed"/>
-    <div class="config-custom row-form">
-      <div class="menu">
-        <mdc-chip-set >
-          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-          <mdc-chip (click)="delLogistic(idx)" 
-                    *ngFor="let logistic of currentHub.logistic;let idx=index;" [value]="logistic">
-            <mdc-chip-text>{{logistic}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>
-      </div>  
+  <!-- ── LOGISTIQUE ────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">
+      <span class="material-symbols-outlined">face</span>
+      Logistique
     </div>
-    <div class="config-custom row-form">
-      <mdc-text-field fullwidth   label="Ajouter un contact" type="email" [(ngModel)]="newUser" required></mdc-text-field>
-      <button mdc-button outlined primary  (click)="addLogistic()"><span class="material-symbols-outlined">verified</span></button>
-    </div>  
+
+    <div class="adm-chip-list">
+      <span class="adm-chip" *ngFor="let logistic of currentHub.logistic; let idx=index; trackBy: trackLogistic">
+        {{logistic}}
+        <span class="material-symbols-outlined remove" style="font-size:14px;cursor:pointer"
+              (click)="delLogistic(idx)">close</span>
+      </span>
+    </div>
+
+    <div class="adm-add-row">
+      <wa-input ngDefaultControl size="small" label="Ajouter un contact" type="email" style="flex:1"
+                [(ngModel)]="newUser" [ngModelOptions]="{standalone: true}"></wa-input>
+      <wa-button appearance="outlined" size="small" (click)="addLogistic()">
+        <span class="material-symbols-outlined" slot="prefix">verified</span>
+        Ajouter
+      </wa-button>
+    </div>
   </div>
 
-
-  <!--   
-  // HUB dedicated configuration
-  // limit HUB orders 
-  currentLimit: number; -->
-
-  <!--   
-  //
-  // additional limit for premium users. max orders = (currentLimit + premiumLimit) 
-  premiumLimit: number; -->
-
-  <!--   
-  // HUB fees added to the product price
-  serviceFees: number; -->
-
-  <!-- 
-  // order is in timeout if payment status != 'paid' and created<15m (timeoutAndNotPaid)
-  timeoutAndNotPaid: number; -->
-
-  <!-- 
-  // for testing 50 hours is the time limit between order and delivery
-  // timelimit = monday 18:00 + timelimit = dayDest 9:00
-  timelimit: number; -->
-
-  <!-- 
-  //
-  // stripe uncaptured charges expire in 7 days
-  // https://support.stripe.com/questions/does-stripe-support-authorize-and-capture 
-  uncapturedTimeLimit: number; -->
-
-  <!-- 
-  // order date range between day1 to day2 max 11:00. Lapse time = timelimit 
-  timelimitH: number; -->
-
-  <!-- 
-  //
-  // Dimanche(0), Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi
-  weekdays: number[]; -->
-
-  <!--   
-  // FIXME use i18n for times labels
-  shippingtimes: {
-    type: any;
-    default: any;
-  }; -->
-
-
-  <!-- 
-  //
-  // constraint HuB to a list of categories and vendors
-  vendors: string[]; -->
-
-  <!-- VENDORS -->
-  <div class="block">
-    <h3><span class="material-symbols-outlined">supervisor_account</span>Vendeurs : {{currentHub.name}}</h3>
-    <hr class="dashed"/>
-    <div class="config-custom row-form">
-      <div class="menu">
-        <mdc-chip-set >
-          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-          <mdc-chip (click)="delVendor(idx)" 
-                    *ngFor="let vendor of currentHub.vendors;let idx=index;" [value]="vendor">
-            <mdc-chip-text>{{getShopName(vendor)}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>
-      </div>  
-    </div>
-    <h3>
-      <span class="material-symbols-outlined">supervisor_account</span>Ajouter un vendeur 
-    </h3>
-    <div>
-    
-    </div>
-    <div class="config-custom row-form">
-      <div class="menu">
-        <mdc-chip-set >
-          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-          <mdc-chip (click)="onAddVendor(vendor)" 
-                    *ngFor="let vendor of getAvailableVendors();let idx=index;" [value]="vendor._id">
-            <mdc-chip-text>{{vendor.name}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>
-  
-      </div>
+  <!-- ── VENDEURS ──────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">
+      <span class="material-symbols-outlined">supervisor_account</span>
+      Vendeurs associés
     </div>
 
+    <div class="adm-chip-list">
+      <span class="adm-chip" *ngFor="let vendor of currentHub.vendors; let idx=index; trackBy: trackVendor">
+        {{getShopName(vendor)}}
+        <span class="material-symbols-outlined remove" style="font-size:14px;cursor:pointer"
+              (click)="delVendor(idx)">close</span>
+      </span>
+    </div>
+
+    <div class="adm-card-title" style="margin-top:var(--adm-space-4)">Ajouter un vendeur</div>
+    <div class="adm-chip-list">
+      <span class="adm-chip" *ngFor="let vendor of getAvailableVendors(); trackBy: trackVendor"
+            style="cursor:pointer" (click)="onAddVendor(vendor)">
+        <span class="material-symbols-outlined" style="font-size:14px">add</span>
+        {{vendor.name}}
+      </span>
+    </div>
   </div>
 
-  <!-- CATEGORIES -->
-  <div class="block">
-    <h3><span class="material-symbols-outlined">supervisor_account</span>Categories </h3>
-    <hr class="dashed"/>
-    <div class="config-custom row-form">
-      <div class="menu">
-        <mdc-chip-set >
-          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-          <mdc-chip (click)="delCategory(idx)" 
-                    *ngFor="let category of currentHub.categories;let idx=index;" [value]="category">
-            <mdc-chip-text>{{getCategoryName(category)}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>
-      </div>  
-    </div>
-    <h3>
-      <span class="material-symbols-outlined">supervisor_account</span>Ajouter une categorie 
-    </h3>
-    <div>
-    
-    </div>
-    <div class="config-custom row-form">
-      <div class="menu">
-        <mdc-chip-set >
-          <!--- [routerLink]="['/store',hub.slug,'admin',adminMenu]" -->
-          <mdc-chip (click)="onAddCategory(category)" 
-                    *ngFor="let category of getAvailableCategories();let idx=index;" [value]="category._id">
-            <mdc-chip-text>{{category.name}}</mdc-chip-text>
-          </mdc-chip>
-        </mdc-chip-set>
-  
-      </div>
+  <!-- ── CATÉGORIES ────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">
+      <span class="material-symbols-outlined">supervisor_account</span>
+      Catégories du hub
     </div>
 
+    <div class="adm-chip-list">
+      <span class="adm-chip" *ngFor="let category of currentHub.categories; let idx=index; trackBy: trackCategory">
+        {{getCategoryName(category)}}
+        <span class="material-symbols-outlined remove" style="font-size:14px;cursor:pointer"
+              (click)="delCategory(idx)">close</span>
+      </span>
+    </div>
+
+    <div class="adm-card-title" style="margin-top:var(--adm-space-4)">Ajouter une catégorie</div>
+    <div class="adm-chip-list">
+      <span class="adm-chip" *ngFor="let category of getAvailableCategories(); trackBy: trackCategory"
+            style="cursor:pointer" (click)="onAddCategory(category)">
+        <span class="material-symbols-outlined" style="font-size:14px">add</span>
+        {{category.name}}
+      </span>
+    </div>
   </div>
 
-
-  <button raised mdc-button (click)="onHubSaveManager()" class="primary">
-    <span mdcButtonLabel>Sauver vos modifications</span>
-    <span class="material-symbols-outlined">save</span>
-  </button>    
+  <div class="adm-action-row" style="margin-top:0">
+    <wa-button appearance="filled" size="small" (click)="onHubSaveManager()">
+      <span class="material-symbols-outlined" slot="prefix">save</span>
+      Enregistrer
+    </wa-button>
+  </div>
 
 </div>

@@ -1,5 +1,6 @@
 @import "colors.scss";
 @import "kng-side-menu-mobile.scss";
+@import "admin-light-theme.scss";
 
 
 body{
@@ -211,7 +212,7 @@ input[type="submit"],
     // nécessitent un ancêtre scrollable direct, overflow:hidden casse ce
     // comportement en créant un nouveau contexte de scroll.
 
-    > * { display: contents; } // Composant enfant transparent
+    > *:not(kng-admin-layout) { display: contents; } // Composant transparent (sauf overlay admin fullscreen)
   }
 
   // Footer

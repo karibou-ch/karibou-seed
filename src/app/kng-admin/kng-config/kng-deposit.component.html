@@ -1,62 +1,72 @@
 <div class="page-saving" [hidden]="isReady">
-  <h1>Saving</h1>
+  <h1>Enregistrement…</h1>
 </div>
-<div class="container" *ngIf="currentHub">
-  <h3 >{{currentHub.name}}</h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
-  <!-- HUB selection -->
-  <h3 >Changer de HUB </h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="hub"></kng-config-input>
+<div class="adm-page" *ngIf="currentHub">
 
-  <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <h1 class="adm-page-title" style="display:flex;align-items:center;justify-content:space-between">
+    Points de collecte
+    <wa-button appearance="outlined" size="small" (click)="onAddressCreate()">
+      <span class="material-symbols-outlined" slot="prefix">add</span>
+      Nouveau dépôt
+    </wa-button>
+  </h1>
+  <hr class="adm-page-divider">
 
-  <!-- HUB Address -->
-  <h3 >
-    Configuration Adresse de collecte
-  </h3>
-  
-  <hr class="dashed"/>
-  <mdc-list  avatar="true"  [interactive]="false">
-    <mdc-list-item (click)="onAddressCreate()">
-        <span class="material-symbols-outlined" mdcListItemGraphic>save</span>
-        <mdc-list-item-text>Ajouter une nouvelle adresse de collecte
-          <mdc-list-item-secondary>Cliquer ici pour ajouter</mdc-list-item-secondary>
-        </mdc-list-item-text>        
-        <span class="material-symbols-outlined"  mdcListItemMeta>favorite</span>  
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
-    <mdc-list-item *ngFor="let address of currentHub.deposits; let i = index" 
-                    [class.disabled]="!address.active"
-                    (click)="onAddressSelect($event,address,i)">
-        <mdc-list-item-graphic>
-          <div class="map" [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}"></div>
-        </mdc-list-item-graphic>
-        <mdc-list-item-text>
-          <span>{{address.name}}</span><b>/</b><span>{{address.streetAdress}}</span>
-          <mdc-list-item-secondary>
-              {{address.postalCode}}/{{address.region}}<br/>
-              {{address.note}}
-          </mdc-list-item-secondary>              
-        </mdc-list-item-text>
-        <mdc-list-item-meta>
-            <mdc-form-field>
-                <mdc-checkbox [checked]="address.active" [disabled]="true" ></mdc-checkbox>
-                <span class="hide-md">Active</span>
-            </mdc-form-field>
-              
-            <mdc-chip>
-              <mdc-chip-icon leading><span class="material-symbols-outlined" >sort</span></mdc-chip-icon>
-              <mdc-chip-text>{{address.fees|currency:'CHF'}}</mdc-chip-text>
-            </mdc-chip>
-            
-        </mdc-list-item-meta>
-        <mdc-list-divider></mdc-list-divider>
-    </mdc-list-item>
-  </mdc-list>
+  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
+  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{saveMessage}}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{saveError}}</wa-callout>
+  </div>
+
+  <!-- ── LISTE DES DÉPÔTS ─────────────────────────────────────────────────── -->
+  <div class="adm-card" style="padding:0;overflow:hidden">
+    <div class="adm-list">
+
+      <!-- Item : créer -->
+      <div class="adm-list-item" style="color:var(--adm-accent);cursor:pointer" (click)="onAddressCreate()">
+        <span class="material-symbols-outlined" style="font-size:20px;color:var(--adm-accent)">add_circle</span>
+        <div style="flex:1">
+          <div style="font-size:var(--adm-font-size-s);font-weight:500">Ajouter une adresse de collecte</div>
+          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">Cliquer pour ajouter</div>
+        </div>
+      </div>
+
+      <!-- Items existants -->
+      <div *ngFor="let address of currentHub.deposits; let i=index; trackBy: trackDeposit"
+           class="adm-list-item"
+           [class.disabled]="!address.active"
+           style="gap:var(--adm-space-3);cursor:pointer"
+           (click)="onAddressSelect($event, address, i)">
+
+        <div class="deposit-map"
+             [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}"></div>
+
+        <div style="flex:1">
+          <div style="font-size:var(--adm-font-size-s);font-weight:500">{{address.name}}</div>
+          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-secondary)">
+            {{address.streetAdress}} · {{address.postalCode}} {{address.region}}
+          </div>
+          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)" *ngIf="address.note">
+            {{address.note}}
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--adm-space-1)">
+          <span class="adm-badge" [class.success]="address.active" [class.neutral]="!address.active">
+            {{address.active ? 'Actif' : 'Inactif'}}
+          </span>
+          <span style="font-size:var(--adm-font-size-xs);color:var(--adm-text-secondary)">
+            {{address.fees | currency:'CHF'}}
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
 </div>
-  
-  
+
+<!-- Dialog positionné hors du conteneur scrollable pour éviter le clipping -->
+<kng-deposit-dlg></kng-deposit-dlg>

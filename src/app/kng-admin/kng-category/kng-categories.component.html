@@ -1,50 +1,71 @@
 <div class="page-saving" [hidden]="isReady">
-  <h1>Saving</h1>
+  <h1>Enregistrement…</h1>
 </div>
-<div class="container">
-  <h3 >Catégories</h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
-  <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
-  
-  <mdc-list twoLine avatar="true" border>
-    <mdc-list-item  (click)="onCategoryCreate()">
-        <span class="material-symbols-outlined" mdcListItemGraphic>save</span>
-        <mdc-list-item-text>Ajouter une nouvelle catégorie
-          <mdc-list-item-secondary >Cliquer ici</mdc-list-item-secondary>
-        </mdc-list-item-text>
-        <span class="material-symbols-outlined" mdcListItemMeta>favorite</span>  
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
-    <mdc-list-item *ngFor="let category of categories" 
-                   [class.disabled]="!category.active"
-                   (click)="onCategorySelect($event,category)">
-        <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
-        <span class="material-symbols-outlined size-large" [hidden]="category.cover" >folder</span>
-        <mdc-list-item-text>
-          <span>{{category.type}}/{{category.name}} ({{category.usedBy?.length||0}})</span>
-          <mdc-list-item-secondary>
-              {{category.description||'«pas de desciption»'}} // 
-              <i class="{{category.image}}"></i> {{category.image}}  
-          </mdc-list-item-secondary>              
-        </mdc-list-item-text>
-        <mdc-list-item-meta>
-            <mdc-chip-set choice>
-              <mdc-chip [hidden]="category.home" class="chip-primary">
-              </mdc-chip>
-              <mdc-chip >
-                <mdc-chip-text>{{category.group}}</mdc-chip-text>
-              </mdc-chip>
-              <mdc-chip>
-                <mdc-chip-text>{{category.weight}}</mdc-chip-text>
-                <span class="material-symbols-outlined" >sort</span>
-              </mdc-chip>
-            </mdc-chip-set>                      
-            
-        </mdc-list-item-meta>
-        <mdc-list-divider></mdc-list-divider>
-    </mdc-list-item>
-  </mdc-list>
+<div class="adm-page">
+
+  <h1 class="adm-page-title" style="display:flex;align-items:center;justify-content:space-between">
+    Catégories
+    <wa-button appearance="outlined" size="small" (click)="onCategoryCreate()">
+      <span class="material-symbols-outlined" slot="prefix">add</span>
+      Nouvelle catégorie
+    </wa-button>
+  </h1>
+  <hr class="adm-page-divider">
+
+  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
+  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">
+      {{saveMessage}}
+    </wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">
+      {{saveError}}
+    </wa-callout>
+  </div>
+
+  <!-- ── TABLE DES CATÉGORIES ──────────────────────────────────────────────── -->
+  <div class="adm-card" style="padding:0;overflow:hidden">
+    <div class="adm-list">
+
+      <!-- Liste -->
+      <div *ngFor="let category of categories; trackBy: trackCategory"
+           class="adm-list-item"
+           [class.disabled]="!category.active"
+           style="gap:var(--adm-space-3);cursor:pointer"
+           (click)="onCategorySelect($event, category)">
+
+        <!-- Image / icône -->
+        <img *ngIf="category.cover" [src]="getImagePrefix(category.cover)"
+             style="width:40px;height:40px;object-fit:cover;border-radius:var(--adm-radius-s);border:1px solid var(--adm-border);flex-shrink:0">
+        <span *ngIf="!category.cover" class="material-symbols-outlined"
+              style="font-size:28px;color:var(--adm-text-label);flex-shrink:0">folder</span>
+
+        <!-- Texte -->
+        <div style="flex:1;min-width:0">
+          <div style="font-size:var(--adm-font-size-s);font-weight:500">
+            <span style="color:var(--adm-text-label)">{{category.type}}</span>
+            <span style="color:var(--adm-border)">&nbsp;/&nbsp;</span>
+            {{category.name}}
+            <span style="color:var(--adm-text-label);font-weight:400"> ({{category.usedBy?.length || 0}})</span>
+          </div>
+          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            {{category.description || '—'}}
+          </div>
+        </div>
+
+        <!-- Meta -->
+        <div style="display:flex;align-items:center;gap:var(--adm-space-2);flex-shrink:0">
+          <span class="adm-badge neutral">{{category.group}}</span>
+          <span style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">{{category.weight}}</span>
+          <span class="adm-status-dot" [class.active]="category.active" [class.inactive]="!category.active"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
 </div>
+
+<!-- Dialog positionné hors du conteneur scrollable pour éviter le clipping -->
+<kng-category-dlg></kng-category-dlg>

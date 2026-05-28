@@ -1,72 +1,105 @@
 <div class="page-saving" [hidden]="isReady">
-  <h1>Saving</h1>
+  <h1>Enregistrement…</h1>
 </div>
-<div class="container">
 
-  <h3 >Configuration du Welcome</h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
+<div class="adm-page">
 
-  <!-- SITE Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <h1 class="adm-page-title">Welcome page</h1>
+  <hr class="adm-page-divider">
 
+  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
+  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{saveMessage}}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{saveError}}</wa-callout>
+  </div>
 
-  <!-- WELCOME/MSG -->
-  <kng-config-input clazz="config" label="Message de Welcome" name="welcome" format="area" [withCheck]="true"
-                    [(ngModel)]="config?.shared.welcome.message[$i18n.locale]"
-                    [checked]="config?.shared.welcome.active"
-                    (checkChange)="config?.shared.welcome.active=$event"></kng-config-input>
+  <!-- ── MESSAGE DE BIENVENUE ─────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">Message de bienvenue</div>
 
-  <!-- SITE TAGLINE -->
-  <h3 >Tagline <span class="gray">(welcome top)</span></h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Titre tagline" name="tagline-t" format="text"
-                    [(ngModel)]="config?.shared.tagLine.t[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Message de Welcome" name="welcome" format="area" [withCheck]="true"
+                      [(ngModel)]="config?.shared.welcome.message[$i18n.locale]"
+                      [checked]="config?.shared.welcome.active"
+                      (checkChange)="config?.shared.welcome.active=$event"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Header tagline" name="tagline-h" format="text"
-                    [(ngModel)]="config?.shared.tagLine.h[$i18n.locale]"></kng-config-input>
+    <div class="adm-action-row">
+      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
+        <span class="material-symbols-outlined" slot="prefix">save</span>
+        Sauvegarder
+      </wa-button>
+    </div>
+  </div>
 
-  <kng-config-input clazz="config" label="Paragraphe tagline" name="tagline-p" format="area"
-                    [(ngModel)]="config?.shared.tagLine.p[$i18n.locale]"></kng-config-input>
+  <!-- ── TAGLINE ───────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">Tagline <span class="gray">(welcome top)</span></div>
 
-  <!-- SITE TAGLINE IMAGE -->
-  <kng-config-input clazz="config" label="Image tagline" name="tagline-p" format="image"
-                    [config]="config"
-                    (imageChange)="onDialogOpen($event)"
-                    [(ngModel)]="config?.shared.tagLine.image"></kng-config-input>
+    <kng-config-input clazz="config" label="Titre" name="tagLine-t" format="text"
+                      [(ngModel)]="config?.shared.tagLine.t[$i18n.locale]"></kng-config-input>
 
-  <!-- SITE About -->
-  <h3 >About <span class="gray">(welcome middle)</span></h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Titre about" name="about.titre" format="text" 
-                    [(ngModel)]="config?.shared.about.t[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Header" name="tagLine-h" format="text"
+                      [(ngModel)]="config?.shared.tagLine.h[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Header about" name="about.titre" format="text" 
-                    [(ngModel)]="config?.shared.about.h[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Paragraphe" name="tagLine-p" format="area"
+                      [(ngModel)]="config?.shared.tagLine.p[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Paragraphe about" name="about.p" format="area" 
-                    [(ngModel)]="config?.shared.about.p[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Image" name="tagLine-img" format="image"
+                      [config]="config"
+                      (imageChange)="onDialogOpen($event)"
+                      [(ngModel)]="config?.shared.tagLine.image"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Image about" name="about.image" format="image" 
-                    (imageChange)="onDialogOpen($event)" [config]="config"
-                    [(ngModel)]="config?.shared.about.image"></kng-config-input>
+    <div class="adm-action-row">
+      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
+        <span class="material-symbols-outlined" slot="prefix">save</span>
+        Sauvegarder
+      </wa-button>
+    </div>
+  </div>
 
+  <!-- ── À PROPOS ──────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">À propos <span class="gray">(welcome middle)</span></div>
 
-  <!-- SITE Footer -->
-  <h3 >Footer <span class="gray">(welcome bottom)</span></h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" label="Titre footer" name="footer.titre" format="text" 
-                    [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Titre" name="about.titre" format="text"
+                      [(ngModel)]="config?.shared.about.t[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Header footer" name="footer.titre" format="text" 
-                    [(ngModel)]="config?.shared.footer.h[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Header" name="about.titre" format="text"
+                      [(ngModel)]="config?.shared.about.h[$i18n.locale]"></kng-config-input>
 
-  <kng-config-input clazz="config" label="Paragraphe footer" name="footer.p" format="area" 
-                    [(ngModel)]="config?.shared.footer.p[$i18n.locale]"></kng-config-input>
+    <kng-config-input clazz="config" label="Paragraphe" name="about.p" format="area"
+                      [(ngModel)]="config?.shared.about.p[$i18n.locale]"></kng-config-input>
 
-  <button raised mdc-button (click)="onConfigSave()" class="primary">
-    <span mdcButtonLabel>Sauver vos modifications</span>
-    <span class="material-symbols-outlined">save</span>
-  </button>    
-                
+    <kng-config-input clazz="config" label="Image" name="about.image" format="image"
+                      (imageChange)="onDialogOpen($event)" [config]="config"
+                      [(ngModel)]="config?.shared.about.image"></kng-config-input>
+
+    <div class="adm-action-row">
+      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
+        <span class="material-symbols-outlined" slot="prefix">save</span>
+        Sauvegarder
+      </wa-button>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
+  <div class="adm-card">
+    <div class="adm-card-title">Footer <span class="gray">(welcome bottom)</span></div>
+
+    <kng-config-input clazz="config" label="Titre" name="footer.titre" format="text"
+                      [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
+
+    <kng-config-input clazz="config" label="Header" name="footer.titre" format="text"
+                      [(ngModel)]="config?.shared.footer.h[$i18n.locale]"></kng-config-input>
+
+    <kng-config-input clazz="config" label="Paragraphe" name="footer.p" format="area"
+                      [(ngModel)]="config?.shared.footer.p[$i18n.locale]"></kng-config-input>
+
+    <div class="adm-action-row">
+      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
+        <span class="material-symbols-outlined" slot="prefix">save</span>
+        Sauvegarder
+      </wa-button>
+    </div>
+  </div>
+
 </div>

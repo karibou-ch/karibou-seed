@@ -1,0 +1,559 @@
+// ============================================================================
+// ADMIN LIGHT THEME — Inspiration Cursor Settings (light mode)
+// Source de vérité : admin-mockups-detaillees.md & karibou-admin-v3.html
+// ============================================================================
+
+// ─── Palette de base ─────────────────────────────────────────────────────────
+:root {
+  // Fonds
+  --adm-bg-sidebar:   #f0f0f0;
+  --adm-bg-main:      #fafafa;
+  --adm-bg-surface:   #ffffff;
+  --adm-bg-elevated:  #f5f5f5;
+
+  // Bordures
+  --adm-border:       #e4e4e4;
+  --adm-border-focus: #10b981;
+
+  // Texte
+  --adm-text-primary:   #1a1a1a;
+  --adm-text-secondary: #666666;
+  --adm-text-label:     #999999;
+  --adm-text-disabled:  #bbbbbb;
+
+  // Accent
+  --adm-accent:         #10b981;
+  --adm-accent-hover:   #059669;
+  --adm-accent-subtle:  rgba(16, 185, 129, 0.08);
+
+  // Danger
+  --adm-danger:         #ef4444;
+  --adm-danger-subtle:  rgba(239, 68, 68, 0.08);
+
+  // Warning
+  --adm-warning:        #f59e0b;
+
+  // Layout
+  --adm-header-height:  56px;
+  --adm-sidebar-width:  240px; // Correction : la maquette HTML et le shell dictent 240px
+  --adm-content-max:    720px;
+
+  // Typographie (Correction : passage en rem pour s'aligner sur le HTML de la v3)
+  --adm-font:           -apple-system, Inter, system-ui, sans-serif;
+  --adm-font-size-xs:   0.846rem;  // ~11px
+  --adm-font-size-s:    0.923rem;  // ~12px
+  --adm-font-size-base: 1rem;      // 13px
+  --adm-font-size-m:    1.077rem;  // ~14px
+  --adm-font-size-l:    1.231rem;  // ~16px
+  --adm-font-size-xl:   1.538rem;  // ~20px
+  --adm-line-height:    1.5;
+
+  // Espacements (Correction : passage en rem selon les directives Web Awesome / HTML)
+  --adm-space-1:  0.25rem;  // 4px
+  --adm-space-2:  0.5rem;   // 8px
+  --adm-space-3:  0.75rem;  // 12px
+  --adm-space-4:  1rem;     // 16px
+  --adm-space-6:  1.5rem;   // 24px
+  --adm-space-8:  2rem;     // 32px
+  --adm-space-10: 2.5rem;   // 40px
+
+  // Radius
+  --adm-radius-s: 4px;
+  --adm-radius-m: 6px;
+  --adm-radius-l: 8px;
+
+  // Ombres
+  --adm-shadow-s: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08);
+  --adm-shadow-m: 0 4px 12px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
+
+  // Transitions
+  --adm-transition: 150ms ease;
+
+  // ─── Aliases (Correction : ajout crucial pour la compatibilité avec ton JSX existant) ───
+  --bg-sidebar:    var(--adm-bg-sidebar);
+  --bg-main:       var(--adm-bg-main);
+  --bg-surface:    var(--adm-bg-surface);
+  --bg-input:      var(--adm-bg-elevated);
+  --border:        var(--adm-border);
+  --border-focus:  var(--adm-border-focus);
+  --text:          var(--adm-text-primary);
+  --text-2:        var(--adm-text-secondary);
+  --text-label:    var(--adm-text-label);
+  --text-dis:      var(--adm-text-disabled);
+  --accent:        var(--adm-accent);
+  --accent-h:      var(--adm-accent-hover);
+  --accent-subtle: var(--adm-accent-subtle);
+  --danger:        var(--adm-danger);
+  --warn:          var(--adm-warning);
+  --radius:        var(--adm-radius-m);
+  --radius-l:      var(--adm-radius-l);
+  --shadow:        var(--adm-shadow-s);
+  --shadow-m:      var(--adm-shadow-m);
+  --transition:    var(--adm-transition);
+}
+
+// Correction : Ajout du style de la scrollbar défini dans le HTML
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 99px; }
+
+// ════════════════════════════════════════════════════════════════════════════
+// COMPOSANTS ADMIN — classes utilitaires (light mode)
+// ════════════════════════════════════════════════════════════════════════════
+
+// ─── Page header ─────────────────────────────────────────────────────────────
+.adm-page-title {
+  font-size: var(--adm-font-size-xl);
+  font-weight: 600;
+  color: var(--adm-text-primary);
+  margin: 0 0 var(--adm-space-1);
+  font-family: var(--adm-font);
+}
+
+.adm-page-divider {
+  border: none;
+  border-top: 1px solid var(--adm-border);
+  margin: var(--adm-space-4) 0 var(--adm-space-6);
+}
+
+// ─── Page wrapper (remplace .container générique) ────────────────────────────
+.adm-page {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// ─── Cards / sections ────────────────────────────────────────────────────────
+.adm-card {
+  background: var(--adm-bg-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-m);
+  padding: var(--adm-space-4); // Correction : la maquette HTML utilise space-4 (16px) pour le padding interne
+  margin-bottom: var(--adm-space-6);
+  box-shadow: var(--adm-shadow-s);
+}
+
+.adm-card-title {
+  font-size: var(--adm-font-size-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--adm-text-label);
+  margin: 0 0 var(--adm-space-4);
+}
+
+.adm-separator {
+  border: none;
+  border-top: 1px solid var(--adm-border);
+  margin: var(--adm-space-3) 0; // Correction : space-3 pour correspondre au composant <Sep/>
+}
+
+// ─── Rows ─────────────────────────────────────────────────────────────────────
+.adm-input-row {
+  display: grid;
+  grid-template-columns: 160px 1fr; // Correction : ton composant JSX InputRow utilise 160px
+  align-items: start; // Correction : alignement en haut pour gérer correctement les textarea
+  gap: var(--adm-space-2);
+  margin-bottom: var(--adm-space-3);
+
+  label {
+    font-size: var(--adm-font-size-s);
+    color: var(--adm-text-secondary);
+    padding-top: var(--adm-space-2); // Correction : alignement optique avec la hauteur des inputs
+    line-height: var(--adm-line-height);
+  }
+}
+
+.adm-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--adm-space-2) 0;
+}
+
+.adm-action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--adm-space-2);
+  margin-top: var(--adm-space-4);
+  padding-top: var(--adm-space-4);
+  border-top: 1px solid var(--adm-border);
+}
+
+// ─── Toggle pill ─────────────────────────────────────────────────────────────
+.adm-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: var(--adm-text-label); // Correction : utilise la variable au lieu d'un hex en dur (#d0d0d0)
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--adm-transition);
+  flex-shrink: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: var(--adm-shadow-s); // Correction : harmonisation de l'ombre
+    transition: transform var(--adm-transition);
+  }
+
+  &.active {
+    background: var(--adm-accent);
+
+    &::after {
+      transform: translateX(16px);
+    }
+  }
+}
+
+// ─── Chips ───────────────────────────────────────────────────────────────────
+.adm-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--adm-space-2); // Note : dans le code inline c'est souvent gap 6px, space-2 (8px) est le plus proche
+  margin-bottom: var(--adm-space-3); // Environ 10px
+}
+
+.adm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--adm-bg-elevated); // Correction : pour matcher le composant HTML
+  border: 1px solid var(--adm-border);
+  border-radius: 99px;
+  padding: 3px 10px;
+  font-size: var(--adm-font-size-s);
+  color: var(--adm-text-primary);
+
+  .remove {
+    opacity: .5;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+
+    &:hover {
+      opacity: 1;
+      color: var(--adm-danger);
+    }
+  }
+}
+
+// ─── Add row ─────────────────────────────────────────────────────────────────
+.adm-add-row {
+  display: flex;
+  gap: var(--adm-space-2);
+  align-items: center;
+}
+
+// ─── Day picker ──────────────────────────────────────────────────────────────
+.adm-day-picker {
+  display: flex;
+  gap: 6px; // Fixé à 6px dans la maquette
+  flex-wrap: wrap;
+  margin-bottom: var(--adm-space-3);
+}
+
+.adm-day-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--adm-bg-elevated);
+  border: 1px solid var(--adm-border);
+  border-radius: 50%;
+  font-size: 11px; // Spécifique au composant
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--adm-text-secondary);
+  transition: all var(--adm-transition);
+
+  &.active {
+    background: var(--adm-accent);
+    border-color: transparent;
+    color: white;
+  }
+
+  &:hover:not(.active) {
+    border-color: var(--adm-accent);
+    color: var(--adm-accent);
+  }
+}
+
+// ─── Tables ──────────────────────────────────────────────────────────────────
+.adm-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--adm-font-size-s);
+
+  th {
+    color: var(--adm-text-label);
+    font-size: var(--adm-font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: var(--adm-space-3) var(--adm-space-4); // Correction padding tableau
+    border-bottom: 1px solid var(--adm-border);
+    text-align: left;
+  }
+
+  td {
+    border-top: 1px solid var(--adm-border);
+    padding: 10px var(--adm-space-4); // Ajustement optique pour matcher le rendu
+    color: var(--adm-text-primary);
+  }
+
+  tr:hover td {
+    background: var(--adm-bg-elevated);
+  }
+}
+
+// ─── Status dot ──────────────────────────────────────────────────────────────
+.adm-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+
+  &.active   { background: var(--adm-accent); }
+  &.inactive { background: var(--adm-border); } // Ajusté pour matcher la bordure grise standard
+}
+
+// ─── Dialog ──────────────────────────────────────────────────────────────────
+.adm-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.28); // Légère correction d'opacité (0.28 selon le HTML)
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; // Aligné avec le rendu React
+}
+
+.adm-dialog {
+  background: var(--adm-bg-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-l);
+  padding: 24px;
+  width: 480px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--adm-shadow-m);
+}
+
+.adm-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--adm-space-4);
+  padding-bottom: var(--adm-space-4);
+  border-bottom: 1px solid var(--adm-border);
+  font-size: var(--adm-font-size-m);
+  font-weight: 600;
+  color: var(--adm-text-primary);
+}
+
+// ─── Danger zone ─────────────────────────────────────────────────────────────
+.adm-danger-zone {
+  border-top: 1px solid rgba(239, 68, 68, 0.3);
+  margin-top: var(--adm-space-4);
+  padding-top: var(--adm-space-4);
+}
+
+// ─── Two columns layout ───────────────────────────────────────────────────────
+.adm-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--adm-space-4);
+}
+
+// ─── Image preview ───────────────────────────────────────────────────────────
+.adm-image-row {
+  display: flex;
+  align-items: center;
+  gap: var(--adm-space-3);
+}
+
+.adm-image-preview {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--adm-radius-m);
+  border: 1px solid var(--adm-border);
+  background: var(--adm-bg-elevated);
+}
+
+// ─── Badge (StatusBadge component) ───────────────────────────────────────────
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--adm-space-2);
+  border-radius: 99px; // Correction : Les badges ont un border-radius 99px dans le JS
+  font-size: var(--adm-font-size-xs);
+  font-weight: 500;
+  line-height: 1.4;
+
+  &.success { background: #dcfce7; color: #16a34a; } // Ajusté depuis le map interne JS
+  &.danger  { background: #fee2e2; color: #dc2626; }
+  &.neutral { background: #f4f4f5; color: #71717a; }
+  &.warning { background: #fef9c3; color: #ca8a04; }
+  &.info    { background: #dbeafe; color: #2563eb; }
+}
+
+// ─── Expandable (nested card) ─────────────────────────────────────────────────
+.adm-expandable {
+  background: var(--adm-bg-main);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-m);
+  margin-bottom: var(--adm-space-3);
+}
+
+.adm-expandable-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: var(--adm-space-3) var(--adm-space-4);
+  font-size: var(--adm-font-size-s);
+  font-weight: 500;
+  color: var(--adm-text-primary);
+}
+
+// ─── List ─────────────────────────────────────────────────────────────────────
+.adm-list {
+  background: var(--adm-bg-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-m);
+  overflow: hidden;
+}
+
+.adm-list-item {
+  display: flex;
+  align-items: center;
+  padding: 10px var(--adm-space-4);
+  border-bottom: 1px solid var(--adm-border);
+  font-size: var(--adm-font-size-s);
+  color: var(--adm-text-primary);
+
+  &:last-child { border-bottom: none; }
+  &:hover      { background: var(--adm-bg-elevated); }
+}
+
+.adm-drag-handle {
+  cursor: grab;
+  color: var(--adm-text-disabled);
+  margin-right: var(--adm-space-2);
+
+  &:active { cursor: grabbing; }
+}
+
+// ─── Color swatch ─────────────────────────────────────────────────────────────
+.adm-color-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--adm-border);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// ─── Type button group (radio visuel) ─────────────────────────────────────────
+.adm-type-btn-group {
+  display: flex;
+  gap: 6px; // Aligné avec ton implémentation gap: 6px
+
+  button {
+    height: 30px;
+    padding: 0 14px;
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-s);
+    background: var(--adm-bg-input);
+    color: var(--adm-text-secondary);
+    font-size: var(--adm-font-size-s);
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--adm-transition);
+
+    &.active {
+      background: var(--adm-accent-subtle);
+      border-color: var(--adm-accent);
+      color: var(--adm-accent);
+    }
+
+    &:hover:not(.active) {
+      border-color: var(--adm-accent);
+      color: var(--adm-accent);
+    }
+  }
+}
+// ============================================================================
+// ADMIN LAYOUT SHELL — Correctifs de reflow (bug de l'inspecteur)
+// ============================================================================
+
+html, body {
+  // Force le navigateur à établir des dimensions de référence dès le premier rendu,
+  // ce qui aide CSS Grid à calculer les colonnes correctement avant un resize.
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.adm-shell {
+  display: grid;
+  // LE CORRECTIF CLÉ EST ICI : utiliser "minmax(0, 1fr)" au lieu de "1fr".
+  // "1fr" seul peut s'effondrer (comme sur ta capture) ou déborder selon le contenu.
+  // minmax(0, 1fr) oblige la grille à calculer la largeur correctement au chargement.
+  grid-template-columns: var(--adm-sidebar-width) minmax(0, 1fr);
+  width: 100vw;
+  height: 100vh;
+  background: var(--adm-bg-main);
+  font-family: var(--adm-font);
+  font-size: var(--adm-font-size-base);
+  color: var(--adm-text-primary);
+  // Bloque les débordements globaux non désirés
+  overflow: hidden; 
+}
+
+.adm-sidebar {
+  background: var(--adm-bg-sidebar);
+  border-right: 1px solid var(--adm-border);
+  overflow-y: auto;
+  padding: var(--adm-space-4) 0;
+  // Force la sidebar à toujours respecter la largeur définie dans les tokens
+  width: var(--adm-sidebar-width);
+
+}
+
+.adm-content {
+  overflow-y: auto;
+  padding: var(--adm-space-8) var(--adm-space-10);
+  // LE DEUXIÈME CORRECTIF : min-width: 0.
+  // Indispensable dans un Flex/Grid enfant pour éviter qu'il ne calcule sa 
+  // largeur initiale en fonction de son contenu le plus large, ce qui casse la page.
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  // Garantit que tes paddings (space-8 et space-10) ne font pas exploser le 100%
+  box-sizing: border-box; 
+}
+
+.adm-content-inner {
+  // Optionnel mais recommandé d'après ta maquette : 
+  // un wrapper autour de tes .adm-card pour limiter la largeur à 720px et centrer
+  max-width: var(--adm-content-max);
+  margin: 0 auto;
+  width: 100%;
+}

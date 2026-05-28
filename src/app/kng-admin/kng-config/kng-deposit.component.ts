@@ -1,117 +1,103 @@
-import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { UserAddress, Hub, DepositAddress } from 'kng2-core';
+import { Component, ViewChild } from '@angular/core';
+import { Hub, UserAddress, DepositAddress } from 'kng2-core';
 import { i18n, KngUtils } from 'src/app/common';
 import { KngHUBBase } from './kng-hub.component';
 
-/**
- * Dialog component for deposit editing - inline version (no MDC)
- */
+type DepositDraft = Partial<DepositAddress> & { name?: string; streetAdress?: string; postalCode?: string; region?: string; floor?: string; note?: string; fees?: number; weight?: number; active?: boolean; geo?: { lat?: number; lng?: number } };
+
 @Component({
   selector: 'kng-deposit-dlg',
   template: `
-    <wa-dialog [open]="isOpen" (wa-hide)="onClose()">
-      <div slot="label">{{isEdit ? 'Modifier' : 'Ajouter'}} un dépôt</div>
-      
-      <form [formGroup]="form" class="deposit-form">
-        <wa-input size="small" label="Nom" formControlName="name"></wa-input>
-        <wa-input size="small" label="Adresse" formControlName="streetAddress" (wa-input)="onAddressChange()"></wa-input>
-        <wa-input size="small" label="Étage" formControlName="floor"></wa-input>
-        <wa-input size="small" label="Code postal" formControlName="postalCode" (wa-input)="onAddressChange()"></wa-input>
-        <wa-input size="small" label="Région" formControlName="region"></wa-input>
-        <wa-textarea size="small" label="Note" formControlName="note" resize="auto" rows="2"></wa-textarea>
-        <wa-input size="small" label="Frais" type="number" formControlName="fees"></wa-input>
-        <wa-input size="small" label="Poids" type="number" formControlName="weight"></wa-input>
-        <wa-checkbox size="small" formControlName="active">Actif</wa-checkbox>
-        
-        <div class="geo-preview" *ngIf="address?.geo">
-          <img [src]="getStaticMap(address)">
+    <div class="adm-dialog-overlay" *ngIf="isOpen" (click)="onClose()">
+      <div class="adm-dialog" style="width:540px" (click)="$event.stopPropagation()">
+
+        <div class="adm-dialog-header">
+          <span>{{isEdit ? 'Modifier' : 'Ajouter'}} un dépôt</span>
+          <wa-button appearance="text" size="small" (click)="onClose()">
+            <span class="material-symbols-outlined">close</span>
+          </wa-button>
         </div>
-      </form>
-      
-      <div slot="footer" class="dialog-footer">
-        <wa-button size="small" appearance="text" (click)="onDelete()" *ngIf="isEdit">Supprimer</wa-button>
-        <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
-        <wa-button size="small" appearance="filled" (click)="onSave()" [disabled]="form.invalid">Enregistrer</wa-button>
+
+        <form *ngIf="address" #dlgForm="ngForm" style="display:flex;flex-direction:column;gap:var(--adm-space-3)">
+
+          <wa-input ngDefaultControl size="small" label="Nom" name="name"
+                    [(ngModel)]="address.name"></wa-input>
+
+          <div style="display:flex;gap:var(--adm-space-3)">
+            <wa-input ngDefaultControl size="small" label="Adresse" style="flex:2" name="street"
+                      [(ngModel)]="address.streetAdress" (ngModelChange)="onGeoChange()"></wa-input>
+            <wa-input ngDefaultControl size="small" label="Étage" style="flex:1" name="floor"
+                      [(ngModel)]="address.floor"></wa-input>
+          </div>
+
+          <div style="display:flex;gap:var(--adm-space-3)">
+            <wa-input ngDefaultControl size="small" label="Code postal" style="flex:1" name="postalCode"
+                      [(ngModel)]="address.postalCode" (ngModelChange)="onGeoChange()"></wa-input>
+            <wa-input ngDefaultControl size="small" label="Région" style="flex:2" name="region"
+                      [(ngModel)]="address.region" (ngModelChange)="onGeoChange()"></wa-input>
+          </div>
+
+          <wa-textarea ngDefaultControl size="small" label="Note" resize="auto" rows="2" name="note"
+                       [(ngModel)]="address.note"></wa-textarea>
+
+          <div style="display:flex;gap:var(--adm-space-3)">
+            <wa-input ngDefaultControl size="small" label="Frais (CHF)" type="number" style="flex:1" name="fees"
+                      [(ngModel)]="address.fees"></wa-input>
+            <wa-input ngDefaultControl size="small" label="Poids" type="number" style="flex:1" name="weight"
+                      [(ngModel)]="address.weight"></wa-input>
+          </div>
+
+          <div style="display:flex;gap:var(--adm-space-4)">
+            <wa-checkbox ngDefaultControl size="small" name="active"
+                         [(ngModel)]="address.active">Actif</wa-checkbox>
+          </div>
+
+          <div *ngIf="address.geo" style="border-radius:var(--adm-radius-m);overflow:hidden">
+            <img [src]="getStaticMap(address)" style="width:100%;height:120px;object-fit:cover;display:block">
+          </div>
+
+        </form>
+
+        <div class="adm-action-row" style="margin-top:var(--adm-space-4)">
+          <wa-button *ngIf="isEdit" size="small" appearance="outlined"
+                     (click)="onDelete()" style="margin-right:auto;color:var(--wa-color-danger-600)">
+            <span class="material-symbols-outlined" slot="prefix">delete</span>
+            Supprimer
+          </wa-button>
+          <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
+          <wa-button size="small" appearance="filled" (click)="onSave()">Enregistrer</wa-button>
+        </div>
+
       </div>
-    </wa-dialog>
-  `,
-  styles: [`
-    .deposit-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-width: 400px;
-    }
-    .geo-preview img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-    .dialog-footer {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-  `]
+    </div>
+  `
 })
 export class KngDepositDlgComponent {
   isOpen = false;
   isEdit = false;
-  address: any = {};
-  idx: number | null = null;
-  pubMap = '';
-  
-  private saveCallback: (value: any) => void;
-  private deleteCallback: () => void;
+  address: DepositDraft | null = null;
 
-  form = this.$fb.group({
-    'weight': [0, [Validators.required, Validators.min(0)]],
-    'active': [true],
-    'name': ['', [Validators.required]],
-    'streetAddress': ['', [Validators.required, Validators.minLength(4)]],
-    'floor': ['', [Validators.required, Validators.minLength(1)]],
-    'postalCode': ['', [Validators.required, Validators.minLength(4)]],
-    'region': ['', [Validators.required]],
-    'note': ['', [Validators.required]],
-    'fees': [0, [Validators.required, Validators.min(0)]]
-  });
+  private saveCallback: (address: DepositDraft) => void = () => {};
+  private deleteCallback: () => void = () => {};
+  private $util: KngUtils;
 
-  constructor(
-    public $fb: FormBuilder,
-    public $i18n: i18n,
-    public $util: KngUtils
-  ) {}
+  constructor(public $i18n: i18n, util: KngUtils) {
+    this.$util = util;
+  }
 
-  open(data: { edit?: { idx: number; address: any }; pubMap: string }, 
-       onSave: (value: any) => void, 
+  open(data: { edit?: { address: DepositDraft }; pubMap: string },
+       onSave: (address: DepositDraft) => void,
        onDelete: () => void): void {
     this.isOpen = true;
-    this.pubMap = data.pubMap;
     this.saveCallback = onSave;
     this.deleteCallback = onDelete;
-    
+
     if (data.edit) {
       this.isEdit = true;
-      this.idx = data.edit.idx;
       this.address = { ...data.edit.address };
-      this.form.patchValue({
-        weight: this.address.weight || 0,
-        active: this.address.active !== false,
-        name: this.address.name || '',
-        streetAddress: this.address.streetAdress || this.address.streetAddress || '',
-        floor: this.address.floor || '',
-        postalCode: this.address.postalCode || '',
-        region: this.address.region || '',
-        note: this.address.note || '',
-        fees: this.address.fees || 0
-      });
     } else {
       this.isEdit = false;
-      this.idx = null;
-      this.address = {};
-      this.form.reset({ weight: 0, active: true, fees: 0 });
+      this.address = { fees: 0, weight: 0, active: true };
     }
   }
 
@@ -120,28 +106,27 @@ export class KngDepositDlgComponent {
   }
 
   onSave(): void {
-    if (this.form.valid && this.saveCallback) {
-      this.saveCallback(this.form.value);
-      this.isOpen = false;
-    }
+    if (!this.address) { return; }
+    this.address.fees = +(this.address.fees ?? 0);
+    this.address.weight = +(this.address.weight ?? 0);
+    this.saveCallback(this.address);
+    this.isOpen = false;
   }
 
   onDelete(): void {
-    if (this.deleteCallback) {
-      this.deleteCallback();
-      this.isOpen = false;
+    this.deleteCallback();
+    this.isOpen = false;
+  }
+
+  onGeoChange(): void {
+    const a = this.address;
+    if (a?.streetAdress && a.postalCode && a.region) {
+      this.$util.updateGeoCode(a.streetAdress, a.postalCode, a.region);
     }
   }
 
-  onAddressChange(): void {
-    const value = this.form.value;
-    if (value.streetAddress && value.postalCode && value.region) {
-      this.$util.updateGeoCode(value.streetAddress, value.postalCode, value.region);
-    }
-  }
-
-  getStaticMap(address: UserAddress): string {
-    return KngUtils.getStaticMap(address);
+  getStaticMap(address: Partial<UserAddress>): string {
+    return KngUtils.getStaticMap(address as UserAddress);
   }
 }
 
@@ -152,27 +137,25 @@ export class KngDepositDlgComponent {
   styleUrls: ['./kng-config.component.scss']
 })
 export class KngDepositComponent extends KngHUBBase {
+  @ViewChild(KngDepositDlgComponent) depositDialog: KngDepositDlgComponent;
+
   pubMap = '';
-  showDialog = false;
-  
+
   edit: {
     idx: number | null;
-    address: any;
-    form: any;
+    address: DepositDraft | null;
   } = {
     idx: null,
-    address: null,
-    form: null
+    address: null
   };
 
   ngOnInit(): void {
     super.ngOnInit();
     this.pubMap = this.config?.shared?.keys?.pubMap || '';
-    
-    // Subscribe to geocode updates
+
     this.$utils.getGeoCode().subscribe(result => {
-      if (result.geo && this.edit.address) {
-        this.edit.address.geo = {
+      if (result.geo && this.depositDialog?.address) {
+        this.depositDialog.address.geo = {
           lat: result.geo.location?.lat,
           lng: result.geo.location?.lng
         };
@@ -180,74 +163,76 @@ export class KngDepositComponent extends KngHUBBase {
     });
   }
 
-  getStaticMap(address: UserAddress): string {
-    return KngUtils.getStaticMap(address);
-  }
-
-  assign(value: any): void {
-    this.edit.address.fees = value.fees;
-    this.edit.address.weight = value.weight;
-    this.edit.address.name = value.name;
-    this.edit.address.streetAdress = value.streetAddress;
-    this.edit.address.floor = value.floor;
-    this.edit.address.postalCode = value.postalCode;
-    this.edit.address.region = value.region;
-    this.edit.address.note = value.note;
-    this.edit.address.active = value.active;
+  getStaticMap(address: Partial<UserAddress>): string {
+    return KngUtils.getStaticMap(address as UserAddress);
   }
 
   onDelete(): void {
-    if (this.edit.idx == null) {
-      window.alert('Impossible de supprimer cet élément');
-      return;
-    }
+    if (this.edit.idx == null) { return; }
     this.currentHub.deposits.splice(this.edit.idx, 1);
     this.$hub.saveManager(this.currentHub).subscribe({
-      next: () => {
+      next: (hub: Hub) => {
+        this.currentHub.deposits = hub?.deposits ?? this.currentHub.deposits;
         this.edit.address = null;
-        this.showDialog = false;
         this.showSuccess(this.$i18n.label().save_ok);
       },
       error: (err) => this.showError(err.error)
     });
   }
 
-  onDecline(): void {
-    this.edit.idx = null;
-    this.edit.address = null;
-    this.showDialog = false;
-  }
-
-  onSave(value: any): void {
+  onSave(address: DepositDraft): void {
     this.isReady = false;
-    this.assign(value);
-    
+    this.currentHub.deposits = this.currentHub.deposits || [];
+
     if (this.edit.idx == null) {
-      this.currentHub.deposits = this.currentHub.deposits || [];
-      this.edit.idx = this.currentHub.deposits.push({} as DepositAddress) - 1;
+      this.currentHub.deposits = [...this.currentHub.deposits, address as DepositAddress];
+      this.edit.idx = this.currentHub.deposits.length - 1;
+    } else {
+      this.currentHub.deposits = this.currentHub.deposits.map((d, i) =>
+        i === this.edit.idx ? { ...d, ...address } as DepositAddress : d
+      );
     }
-    Object.assign(this.currentHub.deposits[this.edit.idx], this.edit.address);
 
     this.$hub.saveManager(this.currentHub).subscribe({
-      next: () => {
+      next: (hub: Hub) => {
+        if (hub?.deposits) {
+          this.currentHub.deposits = hub.deposits;
+        }
         this.edit.address = null;
+        this.edit.idx = null;
         this.isReady = true;
-        this.showDialog = false;
         this.showSuccess(this.$i18n.label().save_ok);
       },
-      error: (err) => this.showError(err.error)
+      error: (err) => {
+        this.isReady = true;
+        this.showError(err.error);
+      }
     });
   }
 
   onAddressCreate(): void {
     this.edit.idx = null;
-    this.edit.address = { fees: 0, active: true };
-    this.showDialog = true;
+    this.edit.address = null;
+    if (this.depositDialog) {
+      this.depositDialog.open(
+        { pubMap: this.pubMap },
+        (address) => this.onSave(address),
+        () => this.onDelete()
+      );
+    }
   }
 
-  onAddressSelect(event: Event, address: any, idx: number): void {
+  trackDeposit(idx: number): number { return idx; }
+
+  onAddressSelect(_event: Event, address: DepositAddress, idx: number): void {
     this.edit.idx = idx;
     this.edit.address = { ...address };
-    this.showDialog = true;
+    if (this.depositDialog) {
+      this.depositDialog.open(
+        { edit: { address: this.edit.address }, pubMap: this.pubMap },
+        (a) => this.onSave(a),
+        () => this.onDelete()
+      );
+    }
   }
 }

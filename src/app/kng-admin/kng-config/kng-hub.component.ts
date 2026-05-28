@@ -157,15 +157,20 @@ export class KngHUBBase implements OnInit, OnDestroy {
     this.isReady = false;
     this.isLoading = true;
     this.$hub.saveManager(this.currentHub).subscribe({
-      next: () => {
+      next: (hub) => {
         this.isReady = true;
         this.showSuccess(this.$i18n.label().save_ok);
+        if (hub) {
+          this.initHub(hub);
+          Object.assign(this.currentHub, hub);
+        }
       },
       error: (err) => {
         this.isLoading = false;
         this.isReady = true;
         this.showError(err.error);
-      }
+      },
+      complete: () => this.isLoading = false
     });
   }
 
@@ -271,13 +276,22 @@ export class KngHUBManagerComponent extends KngHUBBase {
     this.categories.forEach(cat => this.mapCategories[cat._id] = cat);
   }
 
+  trackNoshipping(idx: number, _item: any): number { return idx; }
+  trackManager(idx: number, _item: any): number { return idx; }
+  trackLogistic(idx: number, _item: any): number { return idx; }
+  trackVendor(_idx: number, item: any): any { return item; }
+  trackCategory(_idx: number, item: any): any { return item; }
+
   addDate(): void {
-    const day = new Date();
-    this.currentHub.noshipping.push({
+    const d = new Date();
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+    const today = d.getFullYear() + '-' + month + '-' + day;
+    (this.currentHub.noshipping as any[]) = [...(this.currentHub.noshipping || []), {
       reason: { en: '', fr: '', de: '' },
-      from: day,
-      to: day
-    });
+      from: today,
+      to: today
+    }];
   }
 
   getShopName(id: string): string {

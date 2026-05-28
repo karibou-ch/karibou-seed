@@ -19,8 +19,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class KngConfigBase implements OnInit, OnDestroy {
   currenHub: Hub;
   config: Config;
-  menus: any[];
-  groups: string[];
+  menus: any[] = [];
+  groups: string[] = [];
   isLoading = false;
   isReady = false;
   saveMessage = '';
@@ -36,7 +36,7 @@ export class KngConfigBase implements OnInit, OnDestroy {
     public $navigation: KngNavigationStateService
   ) {
     const { config } = this.$loader.getLatestCoreData();
-    this.config = config;
+    this.config = config!;
     this.currenHub = this.config?.shared?.hub || {} as Hub;
 
     // Initialize optional fields
@@ -84,7 +84,10 @@ export class KngConfigBase implements OnInit, OnDestroy {
   }
 
   findMenuItem(item: any): number {
-    return this.config.shared.menu.findIndex(m => m._id === item._id);
+    if (item._id) {
+      return this.config.shared.menu.findIndex((m: any) => m._id === item._id);
+    }
+    return this.config.shared.menu.findIndex((m: any) => m === item);
   }
 
   formatDates(): void {
@@ -95,7 +98,7 @@ export class KngConfigBase implements OnInit, OnDestroy {
       return date.getFullYear() + '-' + month + '-' + day;
     };
 
-    (this.config?.shared?.noshipping || []).forEach(noshipping => {
+    (this.config?.shared?.noshipping || []).forEach((noshipping: any) => {
       noshipping.from = format(noshipping.from as Date);
       noshipping.to = format(noshipping.to as Date);
     });
@@ -148,6 +151,10 @@ export class KngConfigBase implements OnInit, OnDestroy {
     this.saveError = message;
     this.saveMessage = '';
     setTimeout(() => this.saveError = '', 5000);
+  }
+
+  trackFAQ(_idx: number, faq: any): any {
+    return faq && (faq._id || faq);
   }
 
   sortByGroupAndWeight(m1: any, m2: any): number {
@@ -238,7 +245,7 @@ export class KngPageContentComponent {
     private router: Router
   ) {
     const { config } = this.$loader.getLatestCoreData();
-    this.config = config;
+    this.config = config!;
     this.contents = [];
     this.ngConstruct();
   }
@@ -276,36 +283,33 @@ export class KngNavigationComponent extends KngConfigBase {
     super($fb, $i18n, $config, $loader, $util, $route, $navigation);
   }
 
+  trackMenu(_idx: number, menu: any): any {
+    return menu && (menu._id || menu);
+  }
+
   onMenuCreate(): void {
-    this.dlgItem = {
-      name: { en: '', fr: '' },
-      url: '',
-      weight: 0,
-      group: '',
-      active: true,
-      type: 'link'
-    };
+    this.dlgItem = { name: { en: '', fr: '' }, url: '', weight: 0, group: '', active: true, type: 'link' };
     this.showDlg = true;
   }
 
-  onMenuSelect(event: any, item: any): void {
-    this.dlgItem = { ...item };
+  onMenuSelect(_event: any, item: any): void {
+    this.dlgItem = { ...item, name: { ...item.name } };
     this.showDlg = true;
   }
 
   onSaveMenu(): void {
-    if (!this.dlgItem) return;
-
+    if (!this.dlgItem) { return; }
+    if (!this.config.shared.menu) { this.config.shared.menu = []; }
     const idx = this.findMenuItem(this.dlgItem);
     if (idx >= 0) {
       this.config.shared.menu[idx] = this.dlgItem;
     } else {
       this.config.shared.menu.push(this.dlgItem);
     }
-
     this.buildMenu();
     this.showDlg = false;
     this.dlgItem = null;
+    this.onConfigSave();
   }
 
   onDeleteMenu(item: any): void {
@@ -313,6 +317,7 @@ export class KngNavigationComponent extends KngConfigBase {
     if (idx >= 0) {
       this.config.shared.menu.splice(idx, 1);
       this.buildMenu();
+      this.onConfigSave();
     }
   }
 
@@ -325,8 +330,6 @@ export class KngNavigationComponent extends KngConfigBase {
 
 @Component({
   selector: 'kng-navigation-dlg',
-  template: `<div>Navigation Dialog - Deprecated</div>`
+  template: `<div></div>`
 })
-export class KngNavigationDlgComponent {
-  // Kept for backwards compatibility, functionality moved to KngNavigationComponent
-}
+export class KngNavigationDlgComponent {}

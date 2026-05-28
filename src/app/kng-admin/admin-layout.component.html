@@ -1,98 +1,98 @@
-<!-- ============================================================================ -->
-<!-- ADMIN LAYOUT - Style swipe-panel standard (side/center)                   -->
-<!-- ============================================================================ -->
+<div class="adm-shell">
 
-<!-- PANEL SIDE - Menu de navigation admin -->
-<div class="swipe-panel side">
-  <div class="admin-menu">
+  <!-- ── SIDEBAR ─────────────────────────────────────────────────────────────── -->
+  <aside class="adm-sidebar" [class.open]="sidebarOpen">
 
-    <!-- SIDEBAR HEADER -->
-    <div class="admin-header">
-      <span class="material-symbols-outlined">admin_panel_settings</span>
-      <span class="title">Administration</span>
-    </div>
-
-    <!-- HUB SELECTOR -->
-    <div class="admin-section">
-      <div class="section-label">
-        <span class="material-symbols-outlined">store</span>
-        Hub
-      </div>
-      <wa-select size="small" [value]="store" (wa-change)="onHubChange($any($event.target).value)">
-        <wa-option *ngFor="let hub of hubs" [value]="hub.slug">{{hub.name}}</wa-option>
-      </wa-select>
-    </div>
-
-    <!-- LANGUAGE SWITCH -->
-    <div class="admin-section">
-      <div class="section-label">
-        <span class="material-symbols-outlined">language</span>
-        Langue
-      </div>
-      <div class="lang-switch">
-        <wa-button size="small" [appearance]="locale === 'fr' ? 'filled' : 'outlined'" (click)="onLocaleChange('fr')">FR</wa-button>
-        <wa-button size="small" [appearance]="locale === 'en' ? 'filled' : 'outlined'" (click)="onLocaleChange('en')">EN</wa-button>
+    <!-- Brand + locale switch -->
+    <div class="adm-sidebar-top">
+      <div class="adm-brand">
+        <span class="adm-brand-name">karibou admin</span>
+        <div class="adm-lang-switch">
+          <button class="adm-lang-btn" [class.active]="locale === 'fr'" (click)="onLocaleChange('fr')">FR</button>
+          <button class="adm-lang-btn" [class.active]="locale === 'en'" (click)="onLocaleChange('en')">EN</button>
+        </div>
       </div>
     </div>
 
-    <hr class="divider">
+    <!-- Nav -->
+    <nav class="adm-nav">
 
-    <!-- NAVIGATION -->
-    <ul class="admin-nav">
+      <div class="adm-nav-label">Général</div>
+      <a routerLink="./config" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Configuration
+      </a>
+      <a routerLink="./welcome" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Welcome
+      </a>
+      <a routerLink="./navigation" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Navigation
+      </a>
+      <a routerLink="./page" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Pages
+      </a>
+      <a routerLink="./category" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Catégories
+      </a>
+      <a routerLink="./shop" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Boutiques
+      </a>
 
-      <!-- GÉNÉRAL -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">settings</span>
-        Général
-      </li>
-      <li><a routerLink="./config" routerLinkActive="active" class="nav-item">Configuration</a></li>
+      <div class="adm-nav-label">Hub</div>
 
-      <!-- CONTENU -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">article</span>
-        Contenu
-      </li>
-      <li><a routerLink="./welcome" routerLinkActive="active" class="nav-item">Welcome</a></li>
-      <li><a routerLink="./navigation" routerLinkActive="active" class="nav-item">Navigation</a></li>
-      <li><a routerLink="./page" routerLinkActive="active" class="nav-item">Pages</a></li>
+      <!-- Sélecteur de hub (déplacé ici) -->
+      <div class="adm-hub-wrapper">
+        <div class="adm-hub-btn" (click)="toggleHubMenu()">
+          <span>Hub : <strong>{{store}}</strong></span>
+          <span class="adm-hub-caret" [class.open]="hubMenuOpen">▼</span>
+        </div>
+        <div class="adm-hub-dropdown" *ngIf="hubMenuOpen">
+          <div *ngFor="let hub of hubs"
+               class="adm-hub-option"
+               [class.active]="hub.slug === store"
+               (click)="onHubChange(hub.slug)">
+            {{hub.name || hub.slug}}
+          </div>
+        </div>
+      </div>
 
-      <!-- HUB -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">storefront</span>
-        Hub
-      </li>
-      <li><a routerLink="./main-hub" routerLinkActive="active" class="nav-item">Paramètres</a></li>
-      <li><a routerLink="./manager-hub" routerLinkActive="active" class="nav-item">Manager</a></li>
-      <li><a routerLink="./information" routerLinkActive="active" class="nav-item">Information</a></li>
+      <a routerLink="./main-hub" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Paramètres
+      </a>
+      <a routerLink="./manager-hub" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Manager
+      </a>
+      <a routerLink="./information" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Information
+      </a>
+      <a routerLink="./deposit" routerLinkActive="active" class="adm-nav-item">
+        <span class="adm-nav-dot"></span>Dépôts
+      </a>
 
-      <!-- PRODUITS -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">inventory_2</span>
-        Produits
-      </li>
-      <li><a routerLink="./category" routerLinkActive="active" class="nav-item">Catégories</a></li>
-      <li><a routerLink="./deposit" routerLinkActive="active" class="nav-item">Dépôts</a></li>
-      <li><a routerLink="./shop" routerLinkActive="active" class="nav-item">Boutiques</a></li>
+    </nav>
 
-    </ul>
-
-  </div>
-</div>
-
-<!-- PANEL CENTER - Contenu principal -->
-<div class="swipe-panel center">
-  <div class="admin-content">
-
-    <!-- Messages de notification -->
-    <div class="admin-messages" *ngIf="saveMessage || saveError">
-      <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">
-        {{saveMessage}}
-      </wa-callout>
-      <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">
-        {{saveError}}
-      </wa-callout>
+    <!-- User footer -->
+    <div class="adm-sidebar-footer">
+      <div class="adm-user-avatar">A</div>
+      <div class="adm-user-info">
+        <div class="adm-user-name">{{store}}</div>
+        <div class="adm-user-role">Administrateur</div>
+      </div>
     </div>
 
-    <router-outlet></router-outlet>
-  </div>
+  </aside>
+
+  <!-- ── OVERLAY mobile ────────────────────────────────────────────────────── -->
+  <div class="adm-overlay" [class.visible]="sidebarOpen" (click)="closeSidebar()"></div>
+
+  <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
+  <main class="adm-main">
+    <button class="adm-hamburger" (click)="toggleSidebar()" aria-label="Menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="adm-content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
 </div>

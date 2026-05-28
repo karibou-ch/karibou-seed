@@ -1,45 +1,95 @@
-  <div class="page-saving" [hidden]="isReady">
-    <h1>Saving</h1>
+<div class="page-saving" [hidden]="isReady">
+  <h1>Enregistrement…</h1>
+</div>
+
+<div class="adm-page">
+
+  <h1 class="adm-page-title" style="display:flex;align-items:center;justify-content:space-between">
+    Navigation
+    <wa-button appearance="outlined" size="small" (click)="onMenuCreate()">
+      <span class="material-symbols-outlined" slot="prefix">add</span>
+      Nouveau menu
+    </wa-button>
+  </h1>
+  <hr class="adm-page-divider">
+
+  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
+  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{saveMessage}}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{saveError}}</wa-callout>
   </div>
-  <div class="container">
-  <h3 >Navigation</h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
-  <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <!-- ── LISTE PAR GROUPE ─────────────────────────────────────────────────── -->
+  <div class="adm-card">
 
-  <button raised mdc-button (click)="onMenuCreate()" class="primary">
-    <span mdcButtonLabel>Ajouter un nouveau menu</span>
-    <span class="material-symbols-outlined">save</span>
-  </button>
+    <ng-container *ngFor="let group of groups">
+      <div class="adm-card-title menu-group">{{group}}</div>
 
-  <mdc-list avatar="true" border="true"  *ngFor="let group of groups" >
-    <mdc-list-divider inset></mdc-list-divider>
-    <h3 class="menu-group">{{group}}</h3>
-    <mdc-list-item *ngFor="let menu of getMenuByGroup(group)"
-                    [class.disabled]="!menu.active"
-                    (click)="onMenuSelect($event,menu)">
-        <span class="material-symbols-outlined"mdcListItemGraphic>folder</span>
-        <mdc-list-item-text>
-          <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name[$i18n.locale]"></span>
-          <mdc-list-item-secondary>
-              {{menu.url}}
-          </mdc-list-item-secondary>
-        </mdc-list-item-text>
-        <mdc-list-item-meta>
-            <mdc-form-field>
-                <mdc-checkbox [checked]="menu.active" [disabled]="true" ></mdc-checkbox>
-                <span class="hide-md">Active</span>
-            </mdc-form-field>
+      <div class="adm-list" style="margin-bottom: var(--adm-space-4)">
+        <div *ngFor="let menu of getMenuByGroup(group); let idx=index; trackBy: trackMenu"
+             class="adm-list-item nav-menu-item"
+             [class.disabled]="!menu.active"
+             (click)="onMenuSelect($event, menu)">
 
-            <mdc-chip>
-              <mdc-chip-icon leading><span class="material-symbols-outlined">sort</span></mdc-chip-icon>
-              <mdc-chip-text>{{menu.weight}}</mdc-chip-text>
-            </mdc-chip>
+          <span class="adm-status-dot" [class.active]="menu.active" [class.inactive]="!menu.active"></span>
+          <span class="nav-menu-weight">{{menu.weight}}</span>
+          <span class="nav-menu-name">{{menu.name[$i18n.locale]}}</span>
+          <span class="nav-menu-url">{{menu.url}}</span>
 
-        </mdc-list-item-meta>
-        <mdc-list-divider></mdc-list-divider>
-    </mdc-list-item>
-  </mdc-list>
+          <div class="nav-menu-actions" (click)="$event.stopPropagation()">
+            <wa-button appearance="text" size="small" (click)="onMenuSelect($event, menu)">
+              <span class="material-symbols-outlined">edit</span>
+            </wa-button>
+            <wa-button appearance="text" size="small" (click)="onDeleteMenu(menu)">
+              <span class="material-symbols-outlined">delete</span>
+            </wa-button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <!-- ── DIALOG CRÉATION / ÉDITION ────────────────────────────────────────── -->
+  <div class="adm-dialog-overlay" *ngIf="showDlg" (click)="closeDlg()">
+    <div class="adm-dialog" (click)="$event.stopPropagation()">
+
+      <div class="adm-dialog-header">
+        <span>{{dlgItem?._id ? 'Modifier' : 'Créer'}} un menu</span>
+        <wa-button appearance="text" size="small" (click)="closeDlg()">
+          <span class="material-symbols-outlined">close</span>
+        </wa-button>
+      </div>
+
+      <form *ngIf="dlgItem" style="display:flex;flex-direction:column;gap:var(--adm-space-3)" (ngSubmit)="onSaveMenu()" #dlgForm="ngForm">
+
+        <div style="display:flex;gap:var(--adm-space-3)">
+          <wa-input ngDefaultControl size="small" label="Groupe" style="flex:2"
+                    [(ngModel)]="dlgItem.group" name="dlg-group"></wa-input>
+          <wa-input ngDefaultControl size="small" label="Poids" type="number" style="flex:1"
+                    [(ngModel)]="dlgItem.weight" name="dlg-weight"></wa-input>
+        </div>
+
+        <wa-input ngDefaultControl size="small" label="Nom ({{$i18n.locale}})"
+                  [(ngModel)]="dlgItem.name[$i18n.locale]" name="dlg-name"></wa-input>
+
+        <wa-input ngDefaultControl size="small" label="URL"
+                  [(ngModel)]="dlgItem.url" name="dlg-url"></wa-input>
+
+        <div style="display:flex;gap:var(--adm-space-4);align-items:center">
+          <span style="font-size:var(--adm-font-size-s);color:var(--adm-text-secondary)">Actif</span>
+          <wa-checkbox ngDefaultControl size="small"
+                       [(ngModel)]="dlgItem.active" name="dlg-active"></wa-checkbox>
+        </div>
+
+      </form>
+
+      <div class="adm-action-row">
+        <wa-button appearance="outlined" size="small" (click)="closeDlg()">Annuler</wa-button>
+        <wa-button appearance="filled" size="small" (click)="onSaveMenu()">Enregistrer</wa-button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

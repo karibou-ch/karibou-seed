@@ -1,42 +1,46 @@
 <div [ngClass]="clazz + ' input-row-'+format" [ngSwitch]="format">
 
-  <!-- CHECKBOX -->
+  <!-- CHECKBOX : full-width, label intégré -->
   <ng-container *ngSwitchCase="'checkbox'">
-    <wa-checkbox size="small" [checked]="value" (wa-change)="value = $any($event.target).checked">
+    <wa-checkbox size="small" [checked]="value" (change)="value = $any($event.target).checked">
       {{label}}
     </wa-checkbox>
   </ng-container>
 
-  <!-- TEXT -->
+  <!-- TEXT : grid 160px | input -->
   <ng-container *ngSwitchCase="'text'">
-    <wa-input size="small" 
-              [label]="label" 
-              [value]="value" 
-              (wa-input)="value = $any($event.target).value"
-              [disabled]="disabled">
-      <span slot="prefix" class="material-symbols-outlined">folder_special</span>
-    </wa-input>
-    <wa-checkbox *ngIf="withCheck" size="small" [checked]="checked" (wa-change)="onCheck($any($event.target).checked)"></wa-checkbox>
-    <ng-content></ng-content>
+    <label class="adm-field-label">{{label}}</label>
+    <div class="adm-field-right">
+      <wa-input size="small"
+                [value]="value"
+                (input)="value = $any($event.target).value"
+                [disabled]="disabled">
+      </wa-input>
+      <wa-checkbox *ngIf="withCheck" size="small" [checked]="checked"
+                   (change)="onCheck($any($event.target).checked)"></wa-checkbox>
+    </div>
   </ng-container>
 
-  <!-- AREA -->
+  <!-- AREA : grid 160px | textarea -->
   <ng-container *ngSwitchCase="'area'">
-    <wa-textarea size="small" 
-                 [label]="label" 
-                 [value]="value" 
-                 (wa-input)="value = $any($event.target).value"
-                 resize="auto"
-                 rows="3"
-                 [disabled]="disabled">
-    </wa-textarea>
-    <wa-checkbox *ngIf="withCheck" size="small" [checked]="checked" (wa-change)="onCheck($any($event.target).checked)"></wa-checkbox>
+    <label class="adm-field-label">{{label}}</label>
+    <div class="adm-field-right">
+      <wa-textarea size="small"
+                   [value]="value"
+                   (input)="value = $any($event.target).value"
+                   resize="auto"
+                   rows="3"
+                   [disabled]="disabled">
+      </wa-textarea>
+      <wa-checkbox *ngIf="withCheck" size="small" [checked]="checked"
+                   (change)="onCheck($any($event.target).checked)"></wa-checkbox>
+    </div>
   </ng-container>
 
-  <!-- IMAGE -->
+  <!-- IMAGE : grid 160px | upload widget -->
   <ng-container *ngSwitchCase="'image'">
+    <label class="adm-field-label">{{label}}</label>
     <div class="image-field">
-      <label class="field-label">{{label}}</label>
       <div class="image-container">
         <div class="image-preview" *ngIf="value">
           <img [src]="value">
@@ -44,14 +48,24 @@
             <span class="material-symbols-outlined">delete</span>
           </wa-button>
         </div>
-        <ngx-uploadcare-widget 
+        <ngx-uploadcare-widget
           [imagesOnly]="true"
-          [value]="value"
+          [value]="$any(value)"
           [validator]="ucValidator"
           (on-upload-complete)="onUpload($event)"
           (on-dialog-open)="onDialogOpen($event)"
           [public-key]="config?.shared?.keys?.pubUpcare">
         </ngx-uploadcare-widget>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- GEO : grid 160px | carte statique -->
+  <ng-container *ngSwitchCase="'geo'">
+    <label class="adm-field-label">{{label}}</label>
+    <div class="geo-field">
+      <div class="geo-preview">
+        <img [src]="getStaticMap()">
       </div>
     </div>
   </ng-container>
@@ -67,31 +81,13 @@
     </div>
   </ng-container>
 
-  <!-- GEO -->
-  <ng-container *ngSwitchCase="'geo'">
-    <div class="geo-field">
-      <span class="material-symbols-outlined field-icon">map</span>
-      <label class="field-label">{{label}}</label>
-      <div class="geo-preview">
-        <img [src]="getStaticMap()">
-      </div>
-    </div>
-  </ng-container>
-
-  <!-- MENU (navigation admin - now in sidebar) -->
+  <!-- MENU / HUB (dépréciés) -->
   <ng-container *ngSwitchCase="'menu'">
-    <wa-callout variant="primary">
-      <span class="material-symbols-outlined" slot="icon">info</span>
-      Navigation disponible dans le menu latéral
-    </wa-callout>
+    <wa-callout variant="primary" size="small">Navigation disponible dans le menu latéral</wa-callout>
   </ng-container>
 
-  <!-- HUB (hub selector - now in sidebar) -->
   <ng-container *ngSwitchCase="'hub'">
-    <wa-callout variant="primary">
-      <span class="material-symbols-outlined" slot="icon">info</span>
-      Sélection du Hub disponible dans le menu latéral
-    </wa-callout>
+    <wa-callout variant="primary" size="small">Sélection du Hub disponible dans le menu latéral</wa-callout>
   </ng-container>
 
 </div>

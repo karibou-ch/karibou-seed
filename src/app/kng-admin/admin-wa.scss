@@ -1,148 +1,127 @@
 // ============================================================================
-// ADMIN WEB AWESOME STYLES
-// Styles spécifiques pour les composants Web Awesome dans l'admin
-// Documentation: https://webawesome.com/docs/
+// ADMIN WEB AWESOME — Surcharges pour le light theme (tokens --adm-*)
 // ============================================================================
 
-// ============================================================================
-// WA-INPUT & WA-TEXTAREA
-// ============================================================================
-
+// ─── wa-input / wa-textarea / wa-select ──────────────────────────────────────
 wa-input,
 wa-textarea,
 wa-select {
-  // Full width par défaut dans l'admin
   width: 100%;
-  
-  // Focus ring avec couleur primaire du thème
-  &:focus-within {
-    --wa-focus-ring-color: var(--mdc-theme-primary);
-  }
+
+  --wa-input-background-color:       var(--adm-bg-elevated);
+  --wa-input-border-color:           var(--adm-border);
+  --wa-input-border-color-focus:     var(--adm-border-focus);
+  --wa-input-color:                  var(--adm-text-primary);
+  --wa-input-placeholder-color:      var(--adm-text-label);
+  --wa-input-font-size:              var(--adm-font-size-base);
+
+  --wa-focus-ring-color: var(--adm-border-focus);
+
+  --wa-panel-background-color: var(--adm-bg-surface);
+  --wa-panel-border-color:     var(--adm-border);
 }
 
-// ============================================================================
-// WA-BUTTON
-// ============================================================================
-
+// ─── wa-button ───────────────────────────────────────────────────────────────
 wa-button {
-  // Bouton filled utilise la couleur primaire
-  &[appearance="filled"] {
-    --wa-color-brand-600: var(--mdc-theme-primary);
-    --wa-color-brand-700: var(--mdc-theme-secondary);
-  }
-  
-  // Bouton outlined
   &[appearance="outlined"] {
-    --wa-color-brand-600: var(--mdc-theme-primary);
+    --wa-button-border-color:           var(--adm-border);
+    --wa-button-color:                  var(--adm-text-primary);
+    --wa-button-background-color:       var(--adm-bg-surface);
+    --wa-button-background-color-hover: var(--adm-bg-elevated);
+  }
+
+  &[appearance="filled"] {
+    --wa-color-brand-600: var(--adm-accent);
+    --wa-color-brand-700: var(--adm-accent-hover);
+    --wa-button-color:    #ffffff;
+  }
+
+  &[appearance="text"] {
+    --wa-button-color:                  var(--adm-text-secondary);
+    --wa-button-background-color-hover: var(--adm-bg-elevated);
   }
 }
 
-// ============================================================================
-// WA-CHECKBOX
-// ============================================================================
-
+// ─── wa-checkbox ─────────────────────────────────────────────────────────────
 wa-checkbox {
-  // Couleur checked
-  --wa-color-brand-600: var(--mdc-theme-primary);
+  --wa-color-brand-600: var(--adm-accent);
 }
 
-// ============================================================================
-// WA-SELECT & WA-OPTION
-// ============================================================================
-
-wa-select {
-  // Dropdown styling
-  --wa-panel-background-color: var(--mdc-theme-background-container, white);
-  --wa-panel-border-color: var(--mdc-theme-text-hint-on-background);
-}
-
+// ─── wa-option ───────────────────────────────────────────────────────────────
 wa-option {
-  // Option hover
-  &:hover {
-    background-color: var(--mdc-theme-primary-light);
-  }
-  
-  // Option selected
   &[aria-selected="true"] {
-    --wa-color-brand-600: var(--mdc-theme-primary);
+    --wa-color-brand-600: var(--adm-accent);
   }
 }
 
-// ============================================================================
-// WA-CALLOUT
-// ============================================================================
-
+// ─── wa-callout ──────────────────────────────────────────────────────────────
 wa-callout {
-  margin: 0.5rem 0;
-  
-  // Variantes avec couleurs du thème
-  &[variant="primary"] {
-    --wa-color-brand-600: var(--mdc-theme-primary);
-  }
-  
+  margin: var(--adm-space-2) 0;
+
   &[variant="success"] {
-    --wa-color-success-600: #28a745;
+    --wa-callout-border-color:     var(--adm-accent);
+    --wa-callout-background-color: var(--adm-accent-subtle);
   }
-  
+
   &[variant="danger"] {
-    --wa-color-danger-600: #dc3545;
+    --wa-callout-border-color:     var(--adm-danger);
+    --wa-callout-background-color: var(--adm-danger-subtle);
+  }
+
+  &[variant="warning"] {
+    --wa-callout-border-color:     var(--adm-warning);
+    --wa-callout-background-color: rgba(245, 158, 11, 0.08);
+  }
+
+  &[variant="primary"] {
+    --wa-color-brand-600: var(--adm-accent);
   }
 }
 
-// ============================================================================
-// WA-DIVIDER
-// ============================================================================
-
+// ─── wa-divider ──────────────────────────────────────────────────────────────
 wa-divider {
-  --wa-color-neutral-200: var(--mdc-theme-text-hint-on-background);
-  margin: 1rem 0;
+  --wa-color-neutral-200: var(--adm-border);
+  margin: var(--adm-space-4) 0;
 }
 
-// ============================================================================
-// DIALOG STYLES (pour remplacer mdc-dialog)
-// ============================================================================
-
+// ─── Dialog ──────────────────────────────────────────────────────────────────
 .admin-dialog-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.32);
-  z-index: 100;
+  inset: 0;
+  background: rgba(0,0,0,0.30);
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .admin-dialog {
-  background: var(--mdc-theme-background-container, white);
-  border-radius: var(--wa-border-radius-m);
-  box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 
-              0 24px 38px 3px rgba(0,0,0,.14), 
-              0 9px 46px 8px rgba(0,0,0,.12);
+  background: var(--adm-bg-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-l);
+  box-shadow: var(--adm-shadow-m);
   max-width: 560px;
   max-height: calc(100vh - 64px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  
+
   @media (max-width: 599px) {
     max-width: calc(100vw - 32px);
-    margin: var(--wa-space-m);
   }
 }
 
 .admin-dialog-title {
-  font-size: 1.25rem;
-  font-weight: 500;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--mdc-theme-text-hint-on-background);
+  font-size: var(--adm-font-size-m);
+  font-weight: 600;
+  color: var(--adm-text-primary);
+  padding: var(--adm-space-4) var(--adm-space-6);
+  border-bottom: 1px solid var(--adm-border);
   margin: 0;
 }
 
 .admin-dialog-content {
-  padding: 16px 24px;
+  padding: var(--adm-space-4) var(--adm-space-6);
   overflow-y: auto;
   flex: 1;
 }
@@ -150,56 +129,40 @@ wa-divider {
 .admin-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--wa-space-s);
-  padding: 8px 16px;
-  border-top: 1px solid var(--mdc-theme-text-hint-on-background);
+  gap: var(--adm-space-2);
+  padding: var(--adm-space-3) var(--adm-space-4);
+  border-top: 1px solid var(--adm-border);
 }
 
-// ============================================================================
-// CHIP STYLES (pour remplacer mdc-chip)
-// ============================================================================
-
+// ─── Chips (legacy — conservés pour compatibilité) ────────────────────────────
 .admin-chip {
   display: inline-flex;
   align-items: center;
-  height: 32px;
-  padding: 0 12px;
-  border-radius: var(--wa-border-radius-l);
-  background-color: #e0e0e0;
-  font-size: var(--wa-font-size-s);
+  padding: 3px var(--adm-space-3);
+  border-radius: 99px;
+  background: #f0f0f0;
+  border: 1px solid var(--adm-border);
+  font-size: var(--adm-font-size-s);
+  color: var(--adm-text-primary);
   cursor: pointer;
   user-select: none;
-  margin: var(--wa-space-xs);
-  
+  margin: var(--adm-space-1);
+
   &:hover {
-    background-color: #d0d0d0;
+    background: var(--adm-bg-elevated);
   }
-  
+
   &.selected {
-    background-color: var(--mdc-theme-primary-light);
-    color: var(--mdc-theme-primary);
+    background: var(--adm-accent-subtle);
+    color: var(--adm-accent);
+    border-color: var(--adm-accent);
   }
-  
-  .chip-icon {
-    margin-right: 8px;
-    font-size: var(--wa-font-size-l);
-  }
-  
-  .chip-remove {
-    margin-left: 8px;
-    font-size: var(--wa-font-size-l);
-    opacity: 0.6;
-    
-    &:hover {
-      opacity: 1;
-    }
-  }
+
+  .chip-icon   { margin-right: var(--adm-space-2); font-size: var(--adm-font-size-m); }
+  .chip-remove { margin-left:  var(--adm-space-2); opacity: 0.6; &:hover { opacity: 1; } }
 }
 
-// ============================================================================
-// LIST STYLES (pour remplacer mdc-list)
-// ============================================================================
-
+// ─── List (legacy — conservés pour compatibilité) ─────────────────────────────
 .admin-list {
   list-style: none;
   padding: 0;
@@ -209,82 +172,39 @@ wa-divider {
 .admin-list-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: var(--adm-space-3) var(--adm-space-4);
   cursor: pointer;
-  border-bottom: 1px solid var(--mdc-theme-text-hint-on-background);
-  
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  &:hover {
-    background-color: var(--mdc-theme-primary-light);
-  }
-  
+  border-bottom: 1px solid var(--adm-border);
+  font-size: var(--adm-font-size-s);
+
+  &:last-child { border-bottom: none; }
+  &:hover      { background: var(--adm-bg-elevated); }
+
   &.selected {
-    background-color: var(--mdc-theme-primary-light);
-    color: var(--mdc-theme-primary);
+    background: var(--adm-accent-subtle);
+    color: var(--adm-accent);
   }
-  
-  .list-item-icon {
-    margin-right: 16px;
-    color: var(--mdc-theme-text-hint-on-background);
-  }
-  
-  .list-item-text {
-    flex: 1;
-    
-    .primary {
-      font-weight: 500;
-    }
-    
-    .secondary {
-      font-size: var(--wa-font-size-s);
-      color: var(--mdc-theme-text-hint-on-background);
-    }
-  }
-  
-  .list-item-meta {
-    color: var(--mdc-theme-text-hint-on-background);
-    font-size: var(--wa-font-size-xs);
-  }
+
+  .list-item-icon   { margin-right: var(--adm-space-4); color: var(--adm-text-label); }
+  .list-item-text   { flex: 1; .primary { font-weight: 500; } .secondary { font-size: var(--adm-font-size-xs); color: var(--adm-text-label); } }
+  .list-item-meta   { color: var(--adm-text-label); font-size: var(--adm-font-size-xs); }
 }
 
-// ============================================================================
-// FAB STYLES (pour remplacer mdc-fab)
-// ============================================================================
-
+// ─── FAB (legacy) ─────────────────────────────────────────────────────────────
 .admin-fab {
   position: fixed;
   right: 24px;
   bottom: 24px;
   z-index: 10;
-  
-  wa-button {
-    --wa-button-font-size-medium: 24px;
-    border-radius: 50%;
-    width: 56px;
-    height: 56px;
-    
-    &::part(base) {
-      border-radius: 50%;
-      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 
-                  0 6px 10px 0 rgba(0,0,0,.14), 
-                  0 1px 18px 0 rgba(0,0,0,.12);
-    }
-  }
 }
 
-// ============================================================================
-// FORM VALIDATION STYLES
-// ============================================================================
-
+// ─── Validation formulaires ───────────────────────────────────────────────────
 .ng-invalid:not(form):not(.ng-untouched) {
   wa-input,
   wa-textarea,
   wa-select {
-    --wa-input-border-color: #dc3545;
-    --wa-input-focus-ring-color: #dc3545;
+    --wa-input-border-color:       var(--adm-danger);
+    --wa-input-focus-ring-color:   var(--adm-danger);
   }
 }
 
@@ -292,7 +212,6 @@ wa-divider {
   wa-input[required],
   wa-textarea[required],
   wa-select[required] {
-    --wa-input-border-color: #28a745;
+    --wa-input-border-color: var(--adm-accent);
   }
 }
-
