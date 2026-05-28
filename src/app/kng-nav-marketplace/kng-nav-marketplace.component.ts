@@ -107,7 +107,7 @@ export class KngNavMarketplaceComponent implements OnInit,OnDestroy {
 
       // console.log('----cfg',this.config.shared.hub);
       // const hub = this.config.shared.hub;
-      // hub.tagline.image;
+      // hub.tagLine.image;
       // hub.siteName.image;
       // hub.about.image;
 

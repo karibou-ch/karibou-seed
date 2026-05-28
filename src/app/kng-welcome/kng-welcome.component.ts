@@ -103,10 +103,10 @@ export class KngWelcomeComponent implements OnInit {
   }
 
   get logo() {
-    return this.tagline.image;
+    return this.tagLine.image;
   }
 
-  get tagline() {
+  get tagLine() {
     if (!this.config || !this.config.shared.tagLine) {
       return {};
     }

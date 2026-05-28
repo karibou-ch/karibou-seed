@@ -200,7 +200,7 @@ export class UserSignComponent {
     return this.config.shared.hub.slug;
   }
 
-  get taglineLogo() {
+  get tagLineLogo() {
     const defaultImg = (this.config.shared.hub && this.config.shared.hub.logo) ?
           this.config.shared.hub.logo : this.K_BRAND;
 
