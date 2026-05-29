@@ -73,6 +73,31 @@
       font-weight: bold;
     }
 
+    &.reserved {
+      .reserved-help {
+        margin-top: 0.125rem;
+        width: 100%;
+        font-size: 0.875rem;
+      }
+
+      .reserved-help-link {
+        background: transparent;
+        border: 0;
+        color: -webkit-link;
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
+        text-align: left;
+      }
+
+      .reserved-help-copy {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.35rem;
+        margin: 0.35rem 0 0;
+      }
+    }
+
     &.grouped {
       background-color: #f6f6f6;
       padding: 0.5rem;

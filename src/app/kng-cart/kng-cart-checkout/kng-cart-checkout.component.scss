@@ -214,7 +214,6 @@
     }
   }
 
-  .checkout-reservation-info,
   .checkout-support-card {
     border: 0.125rem solid #eee;
     border-radius: 1rem;
@@ -228,34 +227,6 @@
     font-size: 1.1rem;
     font-weight: 700;
     margin: 0.75rem 0 0.25rem;
-  }
-
-  .checkout-reservation-info {
-    color: #666;
-    line-height: 1.35rem;
-
-    .reservation-title {
-      align-items: center;
-      color: #333;
-      display: flex;
-      font-weight: 700;
-      justify-content: space-between;
-      margin-bottom: 0.25rem;
-    }
-
-    .reservation-toggle {
-      align-items: center;
-      background: transparent;
-      border: 0;
-      color: var(--checkout-link-color);
-      cursor: pointer;
-      display: flex;
-      padding: 0;
-
-      .material-symbols-outlined {
-        font-size: 1.25rem;
-      }
-    }
   }
 
   .checkout-support-card {

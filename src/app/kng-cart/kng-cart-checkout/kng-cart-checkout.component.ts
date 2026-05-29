@@ -53,11 +53,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       cart_update_subscription_payment: 'Valider votre méthode de paiement',
       cart_update_subscription_payment_error:"Votre carte est ne fonctionne pas, utilisez une autre méthode de paiement",
       cart_address_save_error: 'Impossible de sauvegarder cette adresse',
-      cart_amount_1: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur ',
-      cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       checkout_back: 'Retour',
       checkout_summary_title: 'Résumé de votre commande',
-      checkout_reserved_title: 'Pourquoi un montant réservé ?',
       cart_wallet_express: 'Paiement express avec Apple Pay / Google Pay'
     },
     en: {
@@ -71,11 +68,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       cart_update_subscription_payment: 'Validate your payment method',
       cart_update_subscription_payment_error:"Your card is not working, use another payment method",
       cart_address_save_error: 'Unable to save this address',
-      cart_amount_1: 'Payment will be made on the day of delivery once the total is known. We reserve a higher amount ',
-      cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
       checkout_back: 'Back',
       checkout_summary_title: 'Order summary',
-      checkout_reserved_title: 'Why is an amount reserved?',
       cart_wallet_express: 'Express checkout with Apple Pay / Google Pay'
     }
   };
@@ -113,7 +107,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   // order stuffs
   errorMessage: string|null = null;
   isRunning = false;
-  showReservationInfo = false;
   walletReady = false;
   private walletType: 'apple'|'google'|null = null;
   private walletPaymentRequest: any;

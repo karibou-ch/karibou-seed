@@ -43,20 +43,6 @@
         (addPaymentRequested)="addPaymentFromReview()">
       </kng-checkout-review>
 
-      <div class="checkout-reservation-info" [hidden]="amountReserved <= 1">
-        <div class="reservation-title">
-          <span>{{label.checkout_reserved_title}}</span>
-          <button type="button" class="reservation-toggle" (click)="showReservationInfo = !showReservationInfo">
-            <span class="material-symbols-outlined">info</span>
-          </button>
-        </div>
-        <div class="reservation-copy" [hidden]="!showReservationInfo">
-          {{ label.cart_amount_1 }}
-          {{ label.cart_amount_2 }}
-        </div>
-      </div>
-
-
       <!-- SUBSCRIPTION OPTIONS -->
       <div class="subscription" [hidden]="!useCartSubscriptionView || hasPendingSubscription">
         <kng-subscription-option [checkout]="true" [quiet]="true" [contract]="hasUpdateContract" [hub]="hub" *ngIf="useCartSubscriptionView"></kng-subscription-option>

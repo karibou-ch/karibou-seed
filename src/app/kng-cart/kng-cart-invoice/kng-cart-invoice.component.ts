@@ -41,7 +41,9 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
       cart_info_total_subscription: 'Total de votre abonnement',
       cart_info_total_subscription_update: 'Total ajouté à votre abo',
       cart_info_reserved: 'Montant réservé',
-      cart_info_service_k_plus: `Vous profitez des prix directs des artisans ; les frais de service sont affichés en toute transparence.`
+      cart_info_reserved_help_title: 'Pourquoi un montant réservé ?',
+      cart_info_reserved_help_copy: 'Le paiement sera effectué le jour de la livraison une fois le total connu. Nous réservons un montant supérieur pour permettre des modifications de commande, notamment lorsque certains articles sont pesés au moment de l\'emballage puis facturés selon le poids exact.',
+      cart_info_service_k_plus: `Vous payez le même prix qu'en magasin ; les frais de service sont affichés en toute transparence.`
     },
     en: {
       cart_info_contract_total: 'Amount of your running subscription',
@@ -57,7 +59,9 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
       cart_info_total_subscription: 'Total for your subscription',
       cart_info_total_subscription_update: 'Total add to your subscription',
       cart_info_reserved: 'Amount reserved',
-      cart_info_service_k_plus: `You benefit from direct producer prices; service fees are displayed with full transparency.`
+      cart_info_reserved_help_title: 'Why is an amount reserved?',
+      cart_info_reserved_help_copy: 'Payment will be made on the delivery day once the total is known. We reserve a higher amount to allow order changes, especially when some items are weighed during packing and billed based on their exact weight.',
+      cart_info_service_k_plus: `You pay the same price as in store; service fees are displayed with full transparency.`
     }
   };
 
@@ -69,7 +73,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   totalDiscount: number = 0;
   currentTotalMinusBalance: number = 0;
   currentTotalUserBalance: number = 0;
-  amountReserved: number = 1.11;
   contractTotal: number = 0;
   currentTotalSubscription: number = 0;
   shippingDiscount: string = '';
@@ -78,6 +81,7 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   isCartDeposit: boolean = false;
 
   doToggleFees: boolean = false;
+  showReservedAmountInfo: boolean = false;
 
   constructor(
     private $cart: CartService,
@@ -106,6 +110,11 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
     return (this.label.cart_info_subtotal_fees || '').replace('__FEES__', feesName);
   }
 
+  get amountReserved(): number {
+    const reservedAmount = Number(this.hub?.reservedAmount);
+    return Number.isFinite(reservedAmount) && reservedAmount > 0 ? reservedAmount : 1;
+  }
+
   ngOnInit(): void {
     this.locale = this.$i18n.locale || 'fr';
     this.computeAll();
@@ -123,7 +132,6 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.amountReserved = this.config?.shared?.order?.reservedAmount || 1.11;
     this.itemsAmount = this.computeItemsAmount();
     this.currentFeesAmount = this.computeServiceFees();
     this.totalDiscount = this.computeTotalDiscount();
@@ -366,7 +374,7 @@ export class KngCartInvoiceComponent implements OnInit, OnChanges {
   }
 
   get shouldShowReservedAmount(): boolean {
-    return this.isCart && this.data?.payment?.issuer !== 'invoice';
+    return this.isCart && this.data?.payment?.issuer !== 'invoice' && this.amountReserved > 0;
   }
 }
 
