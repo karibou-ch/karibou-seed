@@ -57,7 +57,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       cart_amount_2: 'pour permettre des modifications de commande (au moment de l\'emballage, certains articles sont pesés puis facturés selon le poids exact).',
       checkout_back: 'Retour',
       checkout_summary_title: 'Résumé de votre commande',
-      checkout_reserved_title: 'Pourquoi un montant réservé ?'
+      checkout_reserved_title: 'Pourquoi un montant réservé ?',
+      cart_wallet_express: 'Paiement express avec Apple Pay / Google Pay'
     },
     en: {
       cart_deposit: 'Order to collect',
@@ -74,7 +75,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       cart_amount_2: 'to allow order changes (at the time of packaging, some items are weighed and then billed based on the exact weight).',
       checkout_back: 'Back',
       checkout_summary_title: 'Order summary',
-      checkout_reserved_title: 'Why is an amount reserved?'
+      checkout_reserved_title: 'Why is an amount reserved?',
+      cart_wallet_express: 'Express checkout with Apple Pay / Google Pay'
     }
   };
   cgAccepted = false;
@@ -103,9 +105,9 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   selectPaymentIsDone: boolean;
   paymentTWINT: UserCard;
 
-  // ✅ FIXED: Bug #9 - Remplacer hardcoded value par getter dynamique
-  get amountReserved() {
-    return this.config?.shared?.order?.reservedAmount || 1.11;
+  get amountReserved(): number {
+    const reservedAmount = Number(this.hub.reservedAmount);
+    return Number.isFinite(reservedAmount) && reservedAmount > 0 ? reservedAmount : 1;
   }
 
   // order stuffs
@@ -274,7 +276,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this._config;
   }
 
-  get hub(){
+  get hub(): Hub {
     return this._currentHub || this.config?.shared?.hub;
   }
 
@@ -728,6 +730,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     //needed from backend
     //paymentData && paymentData.oid && paymentData.intent_id
     const payment:any = Object.assign({}, paymentOverride || intent || this.currentPayment);
+    payment.reservedAmount = this.amountReserved;
     if(this.couponCredit && !payment.coupon) {
       payment.coupon = this.couponCredit.code;
     }

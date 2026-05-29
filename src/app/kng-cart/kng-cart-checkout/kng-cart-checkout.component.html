@@ -43,7 +43,7 @@
         (addPaymentRequested)="addPaymentFromReview()">
       </kng-checkout-review>
 
-      <div class="checkout-reservation-info">
+      <div class="checkout-reservation-info" [hidden]="amountReserved <= 1">
         <div class="reservation-title">
           <span>{{label.checkout_reserved_title}}</span>
           <button type="button" class="reservation-toggle" (click)="showReservationInfo = !showReservationInfo">
@@ -106,6 +106,7 @@
       </kng-checkout-coupon>
 
         <div class="checkout-wallet-payment" [hidden]="!walletReady || useCartSubscriptionView || isRunning">
+          <div class="checkout-wallet-title">{{label.cart_wallet_express}}</div>
           <div id="checkout-wallet-button"></div>
         </div>
 
