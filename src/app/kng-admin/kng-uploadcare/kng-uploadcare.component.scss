@@ -1,0 +1,148 @@
+.kng-media-launcher {
+  padding: 24px;
+
+  h3 { margin: 0 0 8px; }
+  p  { color: rgba(0, 0, 0, .6); margin: 0 0 16px; }
+}
+
+.kng-uc-dialog ::ng-deep .kng-uc-surface,
+.kng-uc-surface {
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.kng-uc-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, .08);
+
+  .kng-uc-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 18px;
+
+    small { color: rgba(0, 0, 0, .5); font-weight: 400; }
+  }
+
+  .kng-uc-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, .05);
+    border-radius: 24px;
+    padding: 6px 14px;
+    max-width: 480px;
+
+    .material-symbols-outlined { color: rgba(0, 0, 0, .5); }
+
+    input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 15px;
+    }
+  }
+
+  .kng-uc-close { margin-left: auto; }
+}
+
+.kng-uc-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.kng-uc-state {
+  text-align: center;
+  color: rgba(0, 0, 0, .5);
+  padding: 48px 16px;
+
+  &.error { color: #c0392b; }
+}
+
+.kng-uc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.kng-uc-card {
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+
+  .kng-uc-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: rgba(0, 0, 0, .04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .kng-uc-fileicon {
+      font-size: 48px;
+      color: rgba(0, 0, 0, .35);
+    }
+
+    .kng-uc-delete {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(255, 255, 255, .9);
+      color: #c0392b;
+      border-radius: 50%;
+    }
+  }
+
+  figcaption {
+    padding: 8px 10px;
+    font-size: 13px;
+
+    .kng-uc-name {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .kng-uc-meta {
+      color: rgba(0, 0, 0, .55);
+      margin: 2px 0;
+    }
+
+    .kng-uc-uuid {
+      color: rgba(0, 0, 0, .35);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .kng-uc-select {
+      width: 100%;
+      margin-top: 6px;
+      justify-content: center;
+    }
+  }
+}

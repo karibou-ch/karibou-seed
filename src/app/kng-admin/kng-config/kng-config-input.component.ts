@@ -2,6 +2,8 @@ import { Component, forwardRef, Input, EventEmitter, Output, HostBinding } from 
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { Config, Hub, UserAddress } from 'kng2-core';
 import { i18n, KngUtils, KngNavigationStateService } from 'src/app/common';
+import { MdcDialog } from '@angular-mdc/web';
+import { KngUploadcareComponent } from '../kng-uploadcare';
 
 // Create a mgModel Component
 @Component({
@@ -34,7 +36,8 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   constructor(
     private $i18n: i18n,
     private $util: KngUtils,
-    private $navigation: KngNavigationStateService
+    private $navigation: KngNavigationStateService,
+    private $dlg: MdcDialog
   ) {
   }
 
@@ -131,6 +134,22 @@ export class KngConfigInputComponent implements ControlValueAccessor {
       if (dlg.state() === 'rejected') {
         this.imageChange.emit('rejected');
       }
+    });
+  }
+
+  openUploadcareGallery() {
+    const dialogRef = this.$dlg.open(KngUploadcareComponent, {
+      escapeToClose: true,
+      clickOutsideToClose: false,
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(url => {
+      if (!url) {
+        return;
+      }
+      this.value = url;
+      this.imageChange.emit(this.value);
     });
   }
 

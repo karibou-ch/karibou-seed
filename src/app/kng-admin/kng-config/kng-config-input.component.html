@@ -79,6 +79,10 @@
         (on-dialog-open)="onDialogOpen($event)"
         [public-key]="config.shared.keys.pubUpcare">
       </ngx-uploadcare-widget>
+      <button type="button" mdc-button outlined="true" class="kng-gallery-button" (click)="openUploadcareGallery()">
+        <span class="material-symbols-outlined">photo_library</span>
+        <span>Galerie</span>
+      </button>
     </div>
   </ng-container>
 

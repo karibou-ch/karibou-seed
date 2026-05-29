@@ -1,0 +1,52 @@
+<mdc-dialog class="kng-uc-dialog" (decline)="close()">
+  <mdc-dialog-surface class="kng-uc-surface">
+
+    <header class="kng-uc-header">
+      <div class="kng-uc-title">
+        <span class="material-symbols-outlined">photo_library</span>
+        <span>Images Uploadcare</span>
+        <small *ngIf="total">({{ total }})</small>
+      </div>
+
+      <div class="kng-uc-search">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" [(ngModel)]="search" placeholder="Rechercher (nom ou uuid)" autocomplete="off" />
+      </div>
+
+      <button class="kng-uc-close" mdc-button (click)="close()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <mdc-dialog-content class="kng-uc-content">
+
+      <div class="kng-uc-state" *ngIf="loading">Chargement…</div>
+      <div class="kng-uc-state error" *ngIf="!loading && error">{{ error }}</div>
+      <div class="kng-uc-state" *ngIf="!loading && !error && filtered.length === 0">Aucune image</div>
+
+      <div class="kng-uc-grid" *ngIf="!loading && filtered.length">
+        <figure class="kng-uc-card" *ngFor="let file of filtered">
+          <div class="kng-uc-thumb">
+            <img *ngIf="file.is_image" [src]="thumb(file)" [alt]="file.original_filename" loading="lazy" />
+            <span *ngIf="!file.is_image" class="material-symbols-outlined kng-uc-fileicon">draft</span>
+            <button class="kng-uc-delete" mdc-button (click)="onDelete(file)" title="Supprimer">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+          <figcaption>
+            <div class="kng-uc-name" [title]="file.original_filename">{{ file.original_filename || '—' }}</div>
+            <div class="kng-uc-meta">
+              <span>{{ humanSize(file.size) }}</span>
+            </div>
+            <div class="kng-uc-uuid" [title]="file.uuid">{{ file.uuid }}</div>
+            <button class="kng-uc-select" mdc-button (click)="select(file)">
+              <span class="material-symbols-outlined">check</span>
+              <span>Choisir</span>
+            </button>
+          </figcaption>
+        </figure>
+      </div>
+
+    </mdc-dialog-content>
+  </mdc-dialog-surface>
+</mdc-dialog>

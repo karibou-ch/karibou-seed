@@ -20,6 +20,7 @@ import { AdminMdcModule } from './admin-mdc.module';
 import { KngHUBComponent, KngHUBManagerComponent, KngInformationCfgComponent } from './kng-config/kng-hub.component';
 import { KngConfigInputComponent } from './kng-config/kng-config-input.component';
 import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-deposit.component';
+import { KngUploadcareComponent, KngMediaComponent } from './kng-uploadcare';
 
 //
 // define routes module
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'main-hub', component: KngHUBComponent },
   { path: 'manager-hub', component: KngHUBManagerComponent },
   { path: 'shop', component: KngShopComponent },
+  { path: 'media', component: KngMediaComponent },
   { path: 'navigation', component: KngNavigationComponent , data: {menu: true}},
   { path: 'deposit', component: KngDepositComponent , data: {deposit: true}},
   { path: 'page', component: KngPageContentComponent, children: [
@@ -70,7 +72,9 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
     KngNavigationComponent,
     KngNavigationDlgComponent,
     KngDepositDlgComponent,
-    KngCategoryDlgComponent
+    KngCategoryDlgComponent,
+    KngUploadcareComponent,
+    KngMediaComponent
   ]
 })
 export class AdminModule { }
