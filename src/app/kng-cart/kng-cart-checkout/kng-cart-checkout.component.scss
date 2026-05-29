@@ -21,7 +21,6 @@
   }
 
   .checkout-header {
-    background: var(--mdc-theme-appbar-light);
     box-sizing: border-box;
     color: var(--mdc-theme-appbar-text);
     display: flex;
@@ -137,6 +136,7 @@
 
   .checkout-wallet-payment {
     margin: 0.75rem 0;
+    width: 100%;
 
     .checkout-wallet-title {
       margin-bottom: 0.5rem;

@@ -91,7 +91,7 @@
         (applyCoupon)="readCoupon()">
       </kng-checkout-coupon>
 
-        <div class="checkout-wallet-payment" [hidden]="!walletReady || useCartSubscriptionView || isRunning">
+        <div class="checkout-wallet-payment"  [hidden]="!walletReady || useCartSubscriptionView || isRunning || true">
           <div class="checkout-wallet-title">{{label.cart_wallet_express}}</div>
           <div id="checkout-wallet-button"></div>
         </div>
