@@ -333,7 +333,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     const makeService = (name:string): ConfigServiceContent => {
       const service = shared[name] || {};
-      const defaultUrl = (service.defaultUrl || '').trim();
+      // Ancien format: certains blocs (business, subscription) n'ont pas de defaultUrl.
+      // On retombe sur la route standard /store/{store}/home/{name} pour rester compatible.
+      const defaultUrl = (service.defaultUrl || '').trim() || ['/store', this.store, 'home', name].join('/');
       return Object.assign({}, service, {
         name,
         menu: service.menu || {},
@@ -343,12 +345,15 @@ export class KngHomeComponent implements OnInit, OnDestroy {
         article: service.article || {},
         image: service.image || '',
         defaultUrl,
-        actived: !!defaultUrl && this.$router.isActive(defaultUrl, false)
+        actived: this.$router.isActive(defaultUrl, false)
       });
     };
 
     this.servicesCacheKey = cacheKey;
-    this.servicesCache = serviceNames.map(makeService).filter(service => !!service.defaultUrl);
+    // Afficher un service dès que son bloc de config existe (ancien format: pas de defaultUrl requis).
+    this.servicesCache = serviceNames
+      .filter(name => !!shared[name] && Object.keys(shared[name]).length > 0)
+      .map(makeService);
     return this.servicesCache;
   }
 
@@ -358,6 +363,42 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
   get subscriptionService() {
     return this.services.find(service => service.name === 'subscription');
+  }
+
+  // FIXME: service mémoire temporaire en attendant la configuration v2 des services.
+  get marketService(): ConfigServiceContent {
+    const defaultUrl = '/store/artamis/home';
+    return {
+      name: 'market',
+      menu: {
+        fr: 'Marché',
+        en: 'Market'
+      },
+      t: {
+        fr: 'Faites vos courses',
+        en: 'Shop for groceries'
+      },
+      h: {},
+      p: {},
+      article: {},
+      image: '',
+      defaultUrl,
+      actived: this.$router.isActive(defaultUrl, false)
+    };
+  }
+
+  get marketServices(): ConfigServiceContent[] {
+    return this.services.filter(service => service.name !== 'subscription');
+  }
+
+  serviceMenu(service:ConfigServiceContent): string {
+    const m = service.menu || {};
+    return m[this.locale] || m.fr || m.en || m.de || '';
+  }
+
+  serviceText(service:ConfigServiceContent): string {
+    const t = service.t || {};
+    return t[this.locale] || t.fr || t.en || t.de || '';
   }
 
   get businessService() {

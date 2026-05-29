@@ -35,15 +35,27 @@
 
 <!-- HOME LINKS -->
 <div class="home-links" [hidden]="availableSearch">
+  <a class="home-link-card home-link-market"
+       [class.current]="marketService.actived"
+       [attr.aria-current]="marketService.actived ? 'page' : null"
+       [routerLink]="marketService.defaultUrl">
+    <div class="home-link-copy">
+      <h3>{{serviceMenu(marketService)}}</h3>
+      <div class="label">{{serviceText(marketService)}}</div>
+    </div>
+    <div class="home-link-action">
+      <span class="btn goto">{{marketService.actived ? 'ici' : 'Visiter'}}</span>
+    </div>
+  </a>
   <a class="home-link-card"
-       *ngFor="let service of services; trackBy: trackByServiceName"
+       *ngFor="let service of marketServices; trackBy: trackByServiceName"
        [ngClass]="'home-link-' + service.name"
        [class.current]="service.actived"
        [attr.aria-current]="service.actived ? 'page' : null"
        [routerLink]="service.defaultUrl">
     <div class="home-link-copy">
-      <h3>{{service.menu[locale] || service.menu.fr}}</h3>
-      <div class="label">{{service.t[locale] || service.t.fr}}</div>
+      <h3>{{serviceMenu(service)}}</h3>
+      <div class="label">{{serviceText(service)}}</div>
     </div>
     <div class="home-link-action">
       <span class="btn goto">{{service.actived ? 'ici' : 'Visiter'}}</span>
@@ -166,13 +178,13 @@
 
     <li *ngIf="businessService as service" class="subs-item inverted" [routerLink]="service.defaultUrl" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <i class="material-symbols-outlined icon">person_celebrate</i>
-      <span>{{service.menu[locale] || service.menu.fr}}</span>
+      <span>{{serviceMenu(service)}}</span>
     </li>
 
     <!-- SUBSCRIPTION b2c/b2b-->
     <li *ngIf="subscriptionService as service" class="subs-item inverted" [routerLink]="service.defaultUrl" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <i class="material-symbols-outlined icon">update</i>
-      <span>{{service.menu[locale] || service.menu.fr}}</span>
+      <span>{{serviceMenu(service)}}</span>
     </li>
 
 
@@ -196,6 +208,14 @@
         <div class="label">Facture/Livraison/Données</div>
       </div>
 
+    </li>
+
+    <!-- SUBSCRIPTION (déplacé depuis le centre) -->
+    <li *ngIf="subscriptionService as service" class="home-link-card" [routerLink]="service.defaultUrl" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <div class="home-link-copy">
+        <h3>{{serviceMenu(service)}}</h3>
+        <div class="label">{{serviceText(service)}}</div>
+      </div>
     </li>
 
     <li [hidden]="!isAuthencated || !isB2BSchool" [routerLink]="['/store',store,'home','assistant','james']" [queryParams]="{prompt:label.james_school}" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
