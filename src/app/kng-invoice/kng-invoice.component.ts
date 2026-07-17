@@ -76,64 +76,18 @@ export class KngInvoiceComponent implements OnInit {
     const invoices = this.invoice.invoices || [];
     const transfers = this.invoice.transfers || [];
     const paids = this.invoice.paids || [];
+    const totals = this.invoice.totals;
 
-    //
-    // invoices
-    invoices.forEach((order:any) => {
-      order.amount = this.getTotalPrice(order);
-    });
-    this.invoicesAmount = invoices.reduce((sum,order:any)=>{
-      const amount = order.amount;
-      return sum+amount;
-    },0);
-
-    //
-    // paids
-    paids.forEach((order:any) => {
-      order.amount = this.getTotalPrice(order);
-    });
-    this.paidsAmount = paids.reduce((sum,order:any)=>{
-      const amount = order.amount;
-      return sum+amount;
-    },0);
-
-    //
-    // transfers
-    transfers.forEach((order:any) => {
-      order.amount = this.getTotalPrice(order);
-    });
-
-    this.transfersAmount = transfers.reduce((sum,order:any)=>{
-      const amount = order.amount;
-      return sum+amount;
-    },0);
+    this.invoicesAmount = totals.invoicesAmount;
+    this.transfersAmount = totals.transfersAmount;
+    this.paidsAmount = totals.paidsAmount;
+    this.qrbillAmount = totals.qrbillAmount;
 
     const monthOrders = [...invoices, ...transfers, ...paids];
     this.subscriptionOrders = monthOrders.filter(order => this.isSubscriptionOrder(order));
     this.ponctualOrders = monthOrders.filter(order => !this.isSubscriptionOrder(order));
-    this.qrbillAmount = invoices.length ? this.invoicesAmount : this.transfersAmount;
     document.title = 'k-ch-invoices-' + this.invoice.year + '-' + this.invoice.month;
 
-  }
-
-  round1cts(value) {
-    return parseFloat((Math.round(value*100)/100).toFixed(2))
-  }
-
-
-  getTotalPrice(order){
-
-    const creditNote = Number(order.payment && order.payment.credit_note || 0);
-    const total = order.items.reduce((sum, item)=>{
-      //
-      // item should not be failure (fulfillment)
-      if(item.fulfillment.status!=='failure'){
-        return sum+=item.finalprice*(1+order.fees.charge);
-      }
-      return sum;
-    },0);
-
-    return this.round1cts(Math.max(0, total + order.fees.shipping - creditNote));
   }
 
   isSubscriptionOrder(order:any) {
@@ -148,36 +102,20 @@ export class KngInvoiceComponent implements OnInit {
   orderNotes(order:any) {
     const notes = [];
     const billNote = order.customer && order.customer.billNote;
-    const refund = this.refundInfo(order);
+    const refund = order.refund || {};
     const creditNote = order.payment && Number(order.payment.credit_note || 0);
 
     if(billNote) {
       notes.push(billNote);
     }
     if(refund.hasRefund) {
-      notes.push(refund.label);
+      notes.push(this.i18n[this.locale].refund + (refund.amount ? ': CHF ' + refund.amount.toFixed(2) : ''));
     }
     if(creditNote > 0) {
       notes.push(this.i18n[this.locale].credit_note + ': CHF ' + creditNote.toFixed(2));
     }
 
     return notes;
-  }
-
-  refundInfo(order:any) {
-    const payment = order.payment || {};
-    const itemRefund = (order.items || []).reduce((sum, item) => {
-      const refunded = item.fulfillment && Number(item.fulfillment.refunded);
-      return sum + (Number.isFinite(refunded) ? refunded : 0);
-    }, 0);
-    const amount = this.round1cts(itemRefund || Number(payment.hub_refund) || Number(payment.refunded) || 0);
-    const status = payment.status;
-    const hasRefund = ['partially_refunded', 'manually_refunded', 'refunded'].indexOf(status) > -1 || amount > 0;
-
-    return {
-      hasRefund,
-      label: hasRefund ? this.i18n[this.locale].refund + (amount ? ': CHF ' + amount.toFixed(2) : '') : ''
-    };
   }
 
   statusLabel(order:any) {
