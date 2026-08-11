@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Config, UserAddress, geoadmin, geolocation } from 'kng2-core';
 import { i18n } from 'src/app/common';
 import { HttpClient } from '@angular/common/http';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
 declare const google;
 
 @Component({
@@ -31,12 +32,14 @@ export class KngAddressComponent implements OnInit {
     }
   };
 
-  addresses = [];
+  addresses: any[] = [];
   isReady= false;
   location = {lat:0, lng:0 };
   locations: string[];
   regions: string[];
   $address: FormGroup;
+  activeAddressIndex = -1;
+  private addressSuggestionsClosed = new Subject<void>();
 
   //
   // tracking form state
@@ -64,7 +67,7 @@ export class KngAddressComponent implements OnInit {
       region: address.region,
       postalCode: address.postalCode,
       phone: address.phone || ''
-    });
+    }, { emitEvent: false });
   }
 
 
@@ -87,18 +90,31 @@ export class KngAddressComponent implements OnInit {
     this.formTouched = false;
     this.formNeedsSave = false;
 
-    // Listen to changes on the 'street' field with a debounce of 500ms
-    this.$address.get('street').valueChanges
+    // Suggestions are optional: stale requests are cancelled and failures never block free input.
+    this.$address.get('street')!.valueChanges
       .pipe(
+        tap(() => {
+          this.location = {lat:0, lng:0};
+          this.closeAddressSuggestions();
+        }),
         debounceTime(500),
-        filter(value => value && value.length >= 5), // ✅ Ne déclenche que si la valeur a au moins 5 caractères
         distinctUntilChanged((prev, curr) => {
-          // ✅ Ignore seulement si les valeurs sont identiques (case-insensitive)
           return prev?.toLowerCase() === curr?.toLowerCase();
+        }),
+        switchMap(value => {
+          if (!this.isReady || !value || value.length < 5) {
+            return of([]);
+          }
+          const context = {config:this.config,$http:this.$http};
+          return (geoadmin(value, context) as Observable<any[]>).pipe(
+            takeUntil(this.addressSuggestionsClosed),
+            catchError(() => of([]))
+          );
         })
       )
-      .subscribe(value => {
-        this.onStreetChange(value);
+      .subscribe((addresses: any[]) => {
+        this.addresses = addresses || [];
+        this.activeAddressIndex = -1;
       });
 
   }
@@ -203,77 +219,77 @@ export class KngAddressComponent implements OnInit {
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
 
-  //
-  // update address with the current text or selection
-  // - selection is the index of the dropdown list
-  onBlurOrSelect(selection?){
-    if (selection<0 || selection == undefined) {
-      let street = this.$address.value.street;
-      selection = this.addresses.findIndex(option => option.street.indexOf(street)>-1);
-    }
-
-    const idx = selection;
-    if(idx==-1){
+  onSelectAddress(index: number) {
+    const selected = this.addresses[index];
+    if (!selected) {
       return;
     }
 
-    this.address.geo = {
-      lat:this.addresses[idx].lat,
-      lng:this.addresses[idx].lng
-    }
-    this.address.postalCode = this.addresses[idx].postal;
-    this.address.region = this.addresses[idx].region;
-
-    this.$address.patchValue({ street:this.addresses[idx].street });
-    this.$address.patchValue({ postalCode: this.addresses[idx].postal });
-    this.$address.patchValue({ region: this.addresses[idx].region });
-    this.addresses = [];
-    this.isReady = false;
-
-    setTimeout(() => {
-      this.floor.nativeElement.focus();
-      this.isReady = true;
-    },500);
+    this.location = {
+      lat: selected.lat,
+      lng: selected.lng
+    };
+    this.$address.patchValue({
+      street: selected.street,
+      postalCode: selected.postal,
+      region: selected.region
+    }, { emitEvent: false });
+    this.closeAddressSuggestions();
+    this.floor.nativeElement.focus();
   }
 
-  async onStreetChange(street) {
-    if(!this.isReady){
+  onStreetKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.closeAddressSuggestions();
+      event.stopPropagation();
       return;
     }
 
-
-    this.addresses = [];
-    const context = {config:this.config,$http:this.$http};
-    this.addresses = await geoadmin(street,context).toPromise();
-    if(this.addresses.length==1) {
-      // ✅ FIX: Mettre à jour les coordonnées GPS
-      this.location = {
-        lat: this.addresses[0].lat,
-        lng: this.addresses[0].lng
-      };
-
-      this.$address.patchValue({ street:this.addresses[0].street.trim() });
-      this.$address.patchValue({ postalCode: this.addresses[0].postal });
-      this.$address.patchValue({ region: this.addresses[0].region });
-      this.addresses = [];
+    if (!this.addresses.length) {
+      return;
     }
+
+    if (event.key === 'ArrowDown') {
+      this.activeAddressIndex = (this.activeAddressIndex + 1) % this.addresses.length;
+      event.preventDefault();
+    } else if (event.key === 'ArrowUp') {
+      this.activeAddressIndex = this.activeAddressIndex <= 0
+        ? this.addresses.length - 1
+        : this.activeAddressIndex - 1;
+      event.preventDefault();
+    } else if (event.key === 'Enter' && this.activeAddressIndex >= 0) {
+      event.preventDefault();
+      this.onSelectAddress(this.activeAddressIndex);
+    }
+  }
+
+  closeAddressSuggestions() {
+    this.addressSuggestionsClosed.next();
+    this.addresses = [];
+    this.activeAddressIndex = -1;
   }
 
   async onGeoloc() {
     if (!this.$address.value.street) {
-      return;
+      return this.location;
     }
 
     const context = {config:this.config,$http:this.$http};
-    const result = await geolocation(this.address,context).toPromise();
-    return this.location = (result.geo&&result.geo.location) || this.location;
+    try {
+      const result = await geolocation(this.address,context).toPromise();
+      this.location = (result.geo&&result.geo.location) || this.location;
+    } catch (err) {
+      // Geocoding enriches a free-form address but must not prevent saving it.
+    }
+    return this.location;
   }
 
 
   async onSave() {
-    const address = this.address;
+    let address = this.address;
     if(!address.geo || !address.geo.lat) {
-      this.address.geo = await this.onGeoloc();
+      await this.onGeoloc();
+      address = this.address;
     }
 
     // ✅ Réinitialiser les flags après succès

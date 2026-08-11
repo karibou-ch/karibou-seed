@@ -23,7 +23,7 @@ form{
       margin: 0;
     }
 
-    datalist {
+    .address-list {
       display: flex;
       flex-direction: column;
       position: absolute;
@@ -34,11 +34,12 @@ form{
       overflow: hidden;
       overflow-y: auto;
 
-      option{
+      .address-option{
         padding: 9px 0;
         border-bottom: 1px solid #ddd;
         cursor: pointer;
-        &:hover{
+        &:hover,
+        &.active{
           background: #ddd;
         }
       }

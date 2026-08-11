@@ -10,10 +10,21 @@
 
 
         <div class="groupfield width-75">
-            <input autocomplete="off"  id="autocomplete"  class="form__field  " type="text" [placeholder]="label.address_street"  formControlName="street">
-            <datalist  id="address-list">
-                <option *ngFor="let option of addresses;let index=index" (click)="onBlurOrSelect(index)"  [value]="index">{{option.street}}</option>
-            </datalist>
+            <input #street autocomplete="off" id="autocomplete" class="form__field" type="text"
+                   [placeholder]="label.address_street" formControlName="street"
+                   role="combobox" aria-autocomplete="list" aria-controls="address-list"
+                   [attr.aria-expanded]="addresses.length > 0"
+                   [attr.aria-activedescendant]="activeAddressIndex >= 0 ? 'address-option-' + activeAddressIndex : null"
+                   (keydown)="onStreetKeydown($event)" (blur)="closeAddressSuggestions()">
+            <div *ngIf="addresses.length" id="address-list" class="address-list" role="listbox">
+                <div *ngFor="let option of addresses;let index=index"
+                     id="address-option-{{index}}" class="address-option" role="option"
+                     [class.active]="activeAddressIndex === index"
+                     [attr.aria-selected]="activeAddressIndex === index"
+                     (mousedown)="$event.preventDefault()" (click)="onSelectAddress(index)">
+                    {{option.street}}
+                </div>
+            </div>
             <label for="autocomplete" class="form__label" [class.error]="isInvalid('street')">
                 {{label.address_street}}
             </label>
@@ -21,7 +32,7 @@
 
 
         <div class="groupfield width-25">
-            <input #floor id="floor" class="form__field  floor" type="text" formControlName="floor" [placeholder]="label.address_floor" (blur)="onBlurOrSelect()">
+            <input #floor id="floor" class="form__field  floor" type="text" formControlName="floor" [placeholder]="label.address_floor">
             <label for="floor" class="form__label" [class.error]="isInvalid('floor')">
                 {{label.address_floor}}
             </label>
