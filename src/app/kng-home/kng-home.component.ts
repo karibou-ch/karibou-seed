@@ -92,6 +92,9 @@ export class KngHomeComponent implements OnInit, OnDestroy {
     transcription: string;
     cartUrl?: string;
   } | null = null;
+  audioContact = '';
+  audioMessageStatus = '';
+  audioSending = false;
 
 
   //
@@ -294,7 +297,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   get isAuthencated() {
-    return this.user.isAuthenticated();
+    return !!(this.user && this.user.isAuthenticated());
   }
   get isB2BSchool() {
     return this.user.plan.name == 'b2b-school';
@@ -427,7 +430,7 @@ export class KngHomeComponent implements OnInit, OnDestroy {
   }
 
   get userRouterLink() {
-    const target = this.user.isAuthenticated()? 'orders':'login';
+    const target = this.user && this.user.isAuthenticated()? 'orders':'login';
     return ['/store',this.store,'home','me',target];
   }
 
@@ -693,31 +696,53 @@ export class KngHomeComponent implements OnInit, OnDestroy {
       transcription: ctx.transcription,
       cartUrl: ctx.cartUrl
     }
+    this.audioMessageStatus = '';
+  }
+
+  get isAudioContactValid() {
+    if(this.isAuthencated) {
+      return true;
+    }
+    const contact = (this.audioContact || '').trim();
+    const isEmail = contact.indexOf('@') > 0 && contact.length >= 6;
+    const phone = contact.replace(/[^\d]/g, '');
+    return isEmail || phone.length >= 10;
   }
 
   onSendAudioNote() {
-    if (!this.audioContext) return;
+    if (!this.audioContext || !this.isAudioContactValid || this.audioSending) return;
 
-    // ✅ Utiliser AssistantService.message avec contexte audio intégré dans content
     const content = `${this.audioContext.transcription || 'Message audio sans transcription'}
 
 Audio: ${this.audioContext.audioUrl}
 ${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
 
-    this.$assistant.message(content, 'Message audio support').subscribe(
+    this.audioSending = true;
+    this.audioMessageStatus = '';
+    this.$assistant.message(content, 'Message audio support', {
+      audioUrl: this.audioContext.audioUrl,
+      transcription: this.audioContext.transcription,
+      cartUrl: this.audioContext.cartUrl,
+      contact: this.isAuthencated ? undefined : this.audioContact.trim()
+    }).subscribe(
       (response) => {
         console.log('✅ Message audio envoyé:', response);
-        // Reset context
         this.audioContext = null;
+        this.audioContact = '';
+        this.audioSending = false;
+        this.audioMessageStatus = this.label.audio_support_sent;
       },
       (error) => {
         console.error('❌ Erreur envoi message audio:', error);
+        this.audioSending = false;
+        this.audioMessageStatus = error?.error || this.label.audio_support_error;
       }
     );
   }
 
   onAudioError($event) {
     console.log('----audio error',$event);
+    this.audioMessageStatus = $event?.message || this.label.audio_support_error;
   }
 
 

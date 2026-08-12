@@ -93,12 +93,12 @@
   </div> -->
 
   <!-- NEED HELP? -->
-  <div class="kng-boxed first hide-sm">
+  <div class="kng-boxed first">
     <div class="content">
       <div class="items" [innerHtml]="hub.description[locale]">
       </div>
       <div class="bottom">
-        <a class="phone" href="tel:{{hub.address.phone}}"><i class="material-symbols-outlined icon">phone</i>&nbsp;{{label.nav_help}}</a>
+        {{label.nav_help}} <a class="phone" href="tel:{{hub.address.phone}}">{{hub.address.phone}}</a>
       </div>
     </div>
   </div>
@@ -117,14 +117,25 @@
         <div slot="header-compact">
           <p>
             {{ label.audio_support_contact }}
-             <a hidden class="show-sm"  href="tel:{{hub.address.phone}}">(téléhone)</a>
+
           </p>
 
         </div>
       </kng-audio-note-enhanced>
+      <div class="audio-contact" *ngIf="!isAuthencated">
+        <label for="audio-contact">{{label.audio_support_anonymous}}</label>
+        <input id="audio-contact" type="text" [(ngModel)]="audioContact"
+               [placeholder]="label.audio_support_contact_placeholder">
+        <small>
+          {{label.audio_support_or}}
+          <a [routerLink]="userRouterLink">{{label.audio_support_account}}</a>
+        </small>
+      </div>
+      <p class="audio-message-status" *ngIf="audioMessageStatus">{{audioMessageStatus}}</p>
     </div>
     <div class="bottom" [hidden]="!audioContext?.audioUrl">
-      <button class="width-100 default small secondary  " (click)="onSendAudioNote()">
+      <button class="width-100 default small secondary" (click)="onSendAudioNote()"
+              [disabled]="!isAudioContactValid || audioSending">
         {{ label.audio_support_send }}
       </button>
 

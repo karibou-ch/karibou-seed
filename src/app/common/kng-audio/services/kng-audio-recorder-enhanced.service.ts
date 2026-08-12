@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { RecordRTCPromisesHandler } from "recordrtc";
+import { RecordRTCPromisesHandler, StereoAudioRecorder } from "recordrtc";
 import {
   RecordedAudioOutput,
   ErrorCase,
@@ -88,6 +88,11 @@ export class KngAudioRecorderEnhancedService {
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
   private animationFrame: number | null = null;
+
+  private _lastOptions?: AudioRecordingOptions;
+  private _streamedBytes = 0;
+  private _streamedPcmBytes = 0;
+  private _silenceDetectionActive = false; // Flag pour arrêter la détection de silence
 
   // ✅ AMÉLIORATION : Configuration
   private config = {
@@ -252,9 +257,8 @@ export class KngAudioRecorderEnhancedService {
    * ```
    */
   get isSupported(): boolean {
-    return !!(navigator.mediaDevices &&
-             navigator.mediaDevices.getUserMedia &&
-             (window as any).MediaRecorder);
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    return !!(navigator.mediaDevices && AudioCtx);
   }
 
   /**
@@ -273,10 +277,10 @@ export class KngAudioRecorderEnhancedService {
    * @example
    * ```typescript
    * // Nettoyage manuel (optionnel, fait automatiquement)
-   * this.$audio.closeAudioStream();
+   * await this.$audio.closeAudioStream();
    * ```
    */
-  closeAudioStream(): void {
+  async closeAudioStream(): Promise<void> {
     try {
       // Stop animation frame
       if (this.animationFrame) {
@@ -286,23 +290,36 @@ export class KngAudioRecorderEnhancedService {
 
       // Stop recorder
       if (this.recorder) {
-        this.recorder.stopRecording();
+        try {
+          await this.recorder.stopRecording();
+        } catch (err) {
+          console.warn('⚠️ Recorder stop error (ignored):', err);
+        }
         this.recorder = null;
       }
 
-      // Close audio context
-      if (this.audioContext && this.audioContext.state !== 'closed') {
-        this.audioContext.close();
-        this.audioContext = null;
-      }
-
-      // Stop stream tracks
-      if (this.stream && this.stream.active) {
-        this.stream.getTracks().forEach(track => {
-          track.stop();
-          console.log('🎤 Audio track stopped:', track.kind);
+      // ✅ CORRECTION iOS : Arrêter TOUS les tracks du stream, même si !active
+      if (this.stream) {
+        const tracks = this.stream.getTracks();
+        tracks.forEach(track => {
+          // Forcer l'arrêt même si déjà stopped
+          if (track.readyState !== 'ended') {
+            track.stop();
+            console.log('🎤 Audio track stopped:', track.kind, track.readyState);
+          }
         });
         this.stream = null;
+      }
+
+      // ✅ CORRECTION iOS : Await close() pour garantir fermeture complète
+      if (this.audioContext && this.audioContext.state !== 'closed') {
+        try {
+          await this.audioContext.close();
+          console.log('🔊 AudioContext closed successfully');
+        } catch (err) {
+          console.warn('⚠️ AudioContext close error (ignored):', err);
+        }
+        this.audioContext = null;
       }
 
       this.analyser = null;
@@ -382,10 +399,10 @@ export class KngAudioRecorderEnhancedService {
    * ```
    */
   async detectSound(content: {blob?: Blob, url?: string}): Promise<boolean> {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      const audioCtx = new AudioCtx();
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const audioCtx = new AudioCtx();
 
+    try {
       let arrayBuffer: ArrayBuffer;
 
       if (content.url) {
@@ -400,36 +417,68 @@ export class KngAudioRecorderEnhancedService {
       const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
       const floats32 = audioBuffer.getChannelData(0);
 
-      // ✅ AMÉLIORATION : Analyse plus sophistiquée
+      // ⚠️ Audio vide → pas de son
+      if (!floats32.length) {
+        console.log('🔊 Audio analysis: empty buffer, result: false');
+        return false;
+      }
+
       let maxVolume = 0;
       let activeSegments = 0;
-      const segmentSize = Math.floor(floats32.length / 100); // 100 segments
+
+      // ✅ Toujours un segmentSize >= 1
+      const targetSegments = 100;
+      const segmentSize = Math.max(1, Math.floor(floats32.length / targetSegments));
+
+      let segmentsCount = 0;
 
       for (let i = 0; i < floats32.length; i += segmentSize) {
+        const start = i;
+        const end = Math.min(i + segmentSize, floats32.length);
+        const effectiveSize = end - start;
+
+        if (effectiveSize <= 0) {
+          continue;
+        }
+
         let segmentSum = 0;
-        for (let j = i; j < Math.min(i + segmentSize, floats32.length); j++) {
+
+        for (let j = start; j < end; j++) {
           const amplitude = Math.abs(floats32[j]);
           segmentSum += amplitude * amplitude;
           maxVolume = Math.max(maxVolume, amplitude);
         }
 
-        const segmentVolume = Math.sqrt(segmentSum / segmentSize);
+        const segmentVolume = Math.sqrt(segmentSum / effectiveSize);
+
         if (segmentVolume > this.config.volumeThreshold) {
           activeSegments++;
         }
+
+        segmentsCount++;
       }
 
-      await audioCtx.close();
+      const ratio = segmentsCount > 0 ? activeSegments / segmentsCount : 0;
+      const isActive = ratio > 0.05 && maxVolume > this.config.volumeThreshold;
 
-      // Au moins 5% des segments doivent être actifs
-      const isActive = (activeSegments / 100) > 0.05 && maxVolume > this.config.volumeThreshold;
+      console.log(
+        `🔊 Audio analysis: ${Math.round(ratio * 100)}% active segments, ` +
+        `max: ${maxVolume.toFixed(3)}, result: ${isActive}`
+      );
 
-      console.log(`🔊 Audio analysis: ${activeSegments}% active segments, max: ${maxVolume.toFixed(3)}, result: ${isActive}`);
       return isActive;
 
     } catch (error) {
       console.error('❌ Error detecting sound:', error);
       return false;
+    } finally {
+      // ✅ Toujours fermer l'AudioContext
+      try {
+        await audioCtx.close();
+        console.log('🔊 detectSound AudioContext closed');
+      } catch (err) {
+        console.warn('⚠️ detectSound AudioContext close error:', err);
+      }
     }
   }
 
@@ -744,7 +793,6 @@ export class KngAudioRecorderEnhancedService {
    * ```
    */
   async startRecording(options: AudioRecordingOptions = {}): Promise<void> {
-
     if (this._recorderState === RecorderState.RECORDING) {
       this.recorderError.emit({
         case: ErrorCase.ALREADY_RECORDING,
@@ -756,10 +804,13 @@ export class KngAudioRecorderEnhancedService {
     try {
       this._recordTime = Date.now();
       this._recorderState = RecorderState.RECORDING;
+      this._lastOptions = options;
+      this._streamedBytes = 0;
+      this._streamedPcmBytes = 0;
 
       this.stream = await this.getAudioStream();
 
-      // ✅ AMÉLIORATION : Configuration qualité
+      // Configuration qualité (actuellement peu utilisée, mais gardée pour extension)
       const qualityConfig = {
         low: { bitRate: 64000, sampleRate: 22050 },
         medium: { bitRate: 128000, sampleRate: 44100 },
@@ -768,40 +819,36 @@ export class KngAudioRecorderEnhancedService {
 
       const quality = qualityConfig[options.quality || 'medium'];
 
-      // Detect best mime type
-      const mimeTypes = [
-        'audio/webm; codecs=opus',
-        'audio/webm; codec=opus',
-        'audio/webm',
-        'audio/mp4; codec=mp3',
-        'audio/mp4'
-      ];
+      // Format cohérent avec StereoAudioRecorder (WAV)
+      const mimeType = 'audio/wav';
+      console.log('🎵 Format audio forcé:', mimeType, '(WAV PCM 16-bit)');
 
-      let mimeType = 'audio/webm';
-      for (const type of mimeTypes) {
-        if ((window as any).MediaRecorder.isTypeSupported(type)) {
-          mimeType = type;
-          break;
-        }
-      }
-
-      // ✅ AMÉLIORATION : Configuration RecordRTC optimisée
       const rtcOptions: any = {
         type: 'audio' as const,
-        mimeType: window['MIMETYPE'] || mimeType,
-        numberOfAudioChannels: this.config.channelCount,
-        desiredSampRate: quality.sampleRate,
-        bitRate: quality.bitRate,
-        timeSlice: options.timeSlice || 1000,
+        mimeType,
+        recorderType: StereoAudioRecorder,
+        numberOfAudioChannels: 1,
+        desiredSampRate: 16000, // 16kHz optimal transcription
+        bitsPerSecond: 16,      // 16-bit PCM
         debugger: false
       };
 
-      // ✅ AMÉLIORATION : Gestion chunks temps réel
+      // Ajout des options de configuration
+      if (options.timeSlice) {
+        rtcOptions.timeSlice = options.timeSlice;
+      }
+
+      // Gestion des chunks temps réel
       if (options.onChunk && options.timeSlice) {
         rtcOptions.ondataavailable = async (blob: Blob) => {
+          console.log('🎵 ondataavailable', blob.size, 'bytes');
           const typedBlob = new Blob([blob], { type: mimeType });
-          const base64 = await this.blobToBase64(blob);
-          options.onChunk!({ typedBlob, base64 });
+
+          this._streamedBytes += typedBlob.size;
+          this._streamedPcmBytes += Math.max(0, typedBlob.size - 44);
+
+          const base64 = await this.blobToBase64(typedBlob);
+          await options.onChunk!({ typedBlob, base64 });
         };
       }
 
@@ -813,7 +860,7 @@ export class KngAudioRecorderEnhancedService {
 
       this.recorderState.emit(this._recorderState);
 
-      // ✅ AMÉLIORATION : Timeout avec cleanup
+      // Timeout avec cleanup
       if (options.timeout) {
         this._recordTimeout = setTimeout(() => {
           console.log('⏰ Recording timeout reached');
@@ -821,7 +868,7 @@ export class KngAudioRecorderEnhancedService {
         }, options.timeout);
       }
 
-      // ✅ AMÉLIORATION : Détection silence optionnelle
+      // Détection silence optionnelle
       if (options.stopOnSilence) {
         this.startSilenceDetection();
       }
@@ -830,13 +877,9 @@ export class KngAudioRecorderEnhancedService {
 
     } catch (err: any) {
       console.error('❌ Recording start failed:', err);
-      this.clear();
+      await this.clear();
 
-      this.recorderError.emit({
-        case: ErrorCase.HARDWARE_ERROR,
-        message: `${this.labels.error_hardware_error}: ${err.message}`,
-        retry: true
-      });
+      this.recorderError.emit(this.getDetailedErrorInfo(err));
 
       throw err;
     }
@@ -873,7 +916,10 @@ export class KngAudioRecorderEnhancedService {
    * ```
    */
   async stopRecording(): Promise<{blob?: Blob, base64?: string, duration: number, waveformData?: number[]}> {
+    //
+    // Point 4: Annuler immédiatement les timers et détection de silence
     clearTimeout(this._recordTimeout);
+    this._silenceDetectionActive = false;
 
     const duration = this.recordTime;
     this._recordTime = 0;
@@ -891,11 +937,52 @@ export class KngAudioRecorderEnhancedService {
         throw new Error('No recorder instance');
       }
 
+      const options = this._lastOptions;
+      const isChunkMode = !!(options?.onChunk && options.timeSlice);
+
       await this.recorder.stopRecording();
       const blob = await this.recorder.getBlob();
+
+      // ✅ MODE CHUNK : En mode chunk avec timeSlice, les données sont déjà émises via ondataavailable
+      // Le blob final peut être vide ou ne pas exister car toutes les données ont été streamées
+      if (isChunkMode) {
+        console.log('📦 Stop recording in chunk mode - all chunks already emitted via ondataavailable');
+
+        try {
+          // StereoAudioRecorder: le looper s'arrête quand recording=false, donc le dernier
+          // fragment (< timeSlice) n'est PAS émis via ondataavailable.
+          // getBlob() retourne le WAV complet → extraire seulement le PCM restant.
+          if (blob && blob.size > 44) {
+            const fullPcmSize = blob.size - 44;
+            const remainingPcmSize = fullPcmSize - this._streamedPcmBytes;
+
+            if (remainingPcmSize > 1600) { // ~50ms @ 16kHz mono 16-bit
+              const fullBuffer = await blob.arrayBuffer();
+              const remainingPcm = fullBuffer.slice(44 + this._streamedPcmBytes);
+              const lastTyped = this.createWavBlob(remainingPcm, 16000, 1, 16);
+              console.log(`📦 Emitting final partial chunk: ${lastTyped.size} bytes (remaining PCM: ${remainingPcmSize})`);
+              const lastBase64 = await this.blobToBase64(lastTyped);
+              await options.onChunk!({ typedBlob: lastTyped, base64: lastBase64 });
+            } else {
+              console.log(`📦 No significant remaining audio (${remainingPcmSize} PCM bytes)`);
+            }
+          }
+        } catch (err) {
+          console.log('⚠️ No final blob available in chunk mode (expected behavior)');
+        }
+
+        return { duration };
+      }
+
+      // ✅ MODE NORMAL : Sans timeSlice, obtenir le blob complet normalement
+      if (!blob || blob.size === 0) {
+        console.warn('⚠️ Empty blob after stopRecording - this should not happen in normal mode');
+        return { duration };
+      }
+
       const base64 = await this.recorder.getDataURL();
 
-      // ✅ NOUVEAU : Génération waveform data pour visualisation
+      // Génération waveform data pour visualisation
       const waveformData = await this.generateWaveformData(blob);
 
       console.log('✅ Recording stopped successfully', {
@@ -924,16 +1011,53 @@ export class KngAudioRecorderEnhancedService {
     } finally {
       this._recorderState = RecorderState.STOPPED;
       this.recorderState.emit(this._recorderState);
-      this.clear();
+
+      // Reset des infos de streaming
+      this._lastOptions = undefined;
+      this._streamedBytes = 0;
+      this._streamedPcmBytes = 0;
+
+      await this.clear();
     }
   }
 
-  // ✅ NOUVEAU : Génération données waveform pour visualisation
-  private async generateWaveformData(blob: Blob, points: number = 100): Promise<number[]> {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      const audioCtx = new AudioCtx();
+  /**
+   * Construit un Blob WAV valide à partir de données PCM brutes.
+   * Utilisé pour emballer le fragment audio restant après stopRecording.
+   */
+  private createWavBlob(pcmData: ArrayBuffer, sampleRate: number, channels: number, bitsPerSample: number): Blob {
+    const dataLength = pcmData.byteLength;
+    const header = new ArrayBuffer(44);
+    const v = new DataView(header);
+    const byteRate = sampleRate * channels * bitsPerSample / 8;
+    const blockAlign = channels * bitsPerSample / 8;
 
+    const writeStr = (offset: number, str: string) => {
+      for (let i = 0; i < str.length; i++) v.setUint8(offset + i, str.charCodeAt(i));
+    };
+
+    writeStr(0, 'RIFF');
+    v.setUint32(4, 36 + dataLength, true);
+    writeStr(8, 'WAVE');
+    writeStr(12, 'fmt ');
+    v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true);
+    v.setUint16(22, channels, true);
+    v.setUint32(24, sampleRate, true);
+    v.setUint32(28, byteRate, true);
+    v.setUint16(32, blockAlign, true);
+    v.setUint16(34, bitsPerSample, true);
+    writeStr(36, 'data');
+    v.setUint32(40, dataLength, true);
+
+    return new Blob([header, pcmData], { type: 'audio/wav' });
+  }
+
+  private async generateWaveformData(blob: Blob, points: number = 100): Promise<number[]> {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const audioCtx = new AudioCtx();
+
+    try {
       const arrayBuffer = await blob.arrayBuffer();
       const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
       const channelData = audioBuffer.getChannelData(0);
@@ -953,12 +1077,19 @@ export class KngAudioRecorderEnhancedService {
         waveformData.push(max);
       }
 
-      await audioCtx.close();
       return waveformData;
 
     } catch (error) {
       console.error('❌ Error generating waveform data:', error);
       return [];
+    } finally {
+      // ✅ CORRECTION iOS : Garantir fermeture dans finally (même en cas d'erreur)
+      try {
+        await audioCtx.close();
+        console.log('🔊 generateWaveform AudioContext closed');
+      } catch (err) {
+        console.warn('⚠️ generateWaveform AudioContext close error:', err);
+      }
     }
   }
 
@@ -969,14 +1100,20 @@ export class KngAudioRecorderEnhancedService {
       return;
     }
 
+    //
+    // Activer le flag de détection
+    this._silenceDetectionActive = true;
+
     let silenceStart = 0;
     const silenceThreshold = this.config.silenceThreshold; // ✅ Utilise config centralisée
     const silenceTimeout = this.config.silenceTimeout;
     let logCounter = 0; // Pour éviter trop de logs
 
     const checkSilence = () => {
-      if (this.state !== RecorderState.RECORDING) {
-        console.log('🔇 Silence detection stopped - Recording state changed');
+      //
+      // Point 4: Vérifier le flag en plus de l'état pour arrêt immédiat
+      if (!this._silenceDetectionActive || this.state !== RecorderState.RECORDING) {
+        console.log('🔇 Silence detection stopped - flag:', this._silenceDetectionActive, 'state:', this.state);
         return;
       }
 
@@ -1097,8 +1234,9 @@ export class KngAudioRecorderEnhancedService {
   }
 
   // ✅ AMÉLIORATION : Cleanup complet
-  private clear(): void {
-    this.closeAudioStream();
+  private async clear(): Promise<void> {
+    this._silenceDetectionActive = false;
+    await this.closeAudioStream();
     this._recorderState = RecorderState.STOPPED;
     this._avgVolume = 0;
     this._retryCount = 0;

@@ -448,6 +448,24 @@ kng-product-swipe{
   a {
     font-size: 1rem;
   }
+  .audio-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+
+    input {
+      padding: 9px;
+      border: 0px solid var(--mdc-theme-text-hint-on-background);
+      border-radius: 6px;
+      font-size: 1rem;
+      opacity: .7;
+      margin: 1rem 0;
+    }
+  }
+  .audio-message-status {
+    margin: 10px 0 0;
+  }
 
   .label{
     h2{
