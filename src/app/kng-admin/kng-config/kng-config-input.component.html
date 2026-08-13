@@ -72,7 +72,7 @@
       <button mdc-button outlined="true" class="align-right" [hidden]="!value" (click)="value=null">
         <span class="material-symbols-outlined ">delete</span>
       </button>
-      <ngx-uploadcare-widget images-only="true"
+      <ngx-uploadcare-widget *ngIf="config?.shared?.keys?.pubUpcare" images-only="true"
         [value]="value"
         [validator]="ucValidator"
         (on-upload-complete)="onUpload($event)"

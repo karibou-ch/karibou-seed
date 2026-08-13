@@ -50,7 +50,7 @@
             </mdc-list-item>
           </mdc-list>
             
-          <ngx-uploadcare-widget
+          <ngx-uploadcare-widget *ngIf="config?.shared?.keys?.pubUpcare"
             images-only="true"
             [validator]="ucValidator"
             (on-upload-complete)="onUpload($event)"

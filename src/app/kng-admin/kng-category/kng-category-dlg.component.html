@@ -40,7 +40,7 @@
               <div class="image" >
                 <img [src]="category.cover" *ngIf="category.cover" />
                 <mdc-form-field>
-                    <ngx-uploadcare-widget
+                    <ngx-uploadcare-widget *ngIf="pubUpcare"
                       images-only="true"
                       [value]="category.cover"
                       [validator]="ucValidator"
