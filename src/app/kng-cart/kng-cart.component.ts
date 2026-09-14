@@ -11,8 +11,7 @@ import { CartService,
          Shop,
          Order,
          ConfigService,
-         CalendarService,
-         CartSubscription } from 'kng2-core';
+         CalendarService } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
@@ -267,9 +266,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       })
     );
 
-    //
-    // load cart from server to limit Cart Sync Issue
-    this.$cart.load(this._sharedCart);
+    if (this._sharedCart) {
+      this.$cart.load(this._sharedCart);
+    }
 
     //
     // on open page => force scroll to top
@@ -463,13 +462,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // const order = await this.$order.get(oid).toPromise();
   }
 
-  // ✅ OPTIMIZATION 2.3: Factoriser code setTimeout clearAfterOrder
-  private clearAfterOrderWithDelay(order?: Order, contract?: CartSubscription, store?: string) {
-    setTimeout(() => {
-      this.$cart.clearAfterOrder(store || this.store, order, contract);
-    }, 100);
-  }
-
   onCheckout($event:any) {
     //
     // case of error
@@ -482,7 +474,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     // case of final contract
     if($event.contract) {
       this.checkoutMessage = this.label.cart_contract_placed;
-      this.clearAfterOrderWithDelay(undefined, $event.contract, $event.store);
+      this.$cart.clearAfterOrder($event.store || this.store, undefined, $event.contract);
       return;
     }
 
@@ -492,10 +484,9 @@ export class KngCartComponent implements OnInit, OnDestroy {
       const day = $event.order.shipping.when.getDate();
       const month = $event.order.shipping.when.getMonth() + 1;
       this.checkoutMessage = this.label.cart_order_placed + `(${day}/${month})`;
-      this.clearAfterOrderWithDelay($event.order, undefined, $event.store);
+      this.$cart.clearAfterOrder($event.store || this.store, $event.order);
+      this.orders.unshift($event.order as Order);
     }
-
-    this.orders.unshift($event.order as Order);
   }
 
 }

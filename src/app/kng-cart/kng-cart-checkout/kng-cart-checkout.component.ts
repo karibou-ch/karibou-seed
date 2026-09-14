@@ -752,7 +752,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       this.$i18n.snackOpt
     );
     this.updated.emit({ errors });
-    this.$cart.broadcastState();
     this._subscriptions.push(this.$user.me().subscribe());
     this.open = false;
   }
@@ -909,7 +908,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
           this.$i18n.snackOpt
         );
         this.isRunning = false;
-        this.$cart.broadcastState();
         return;
       }
       // The payment must be confirmed for an order
@@ -963,14 +961,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
           this.$i18n.snackOpt
         );
         this.isRunning = false;
-        this.$cart.broadcastState();
         return;
       }
 
       // TWINT is finalized by the Stripe webhook; the return page follows the
       // backend payment stream instead of posting a second order confirmation.
       this.isRunning = false;
-      this.$cart.broadcastState();
 
     }).catch((error) => {
       // ✅ ADDED: Handle TWINT promise rejection
@@ -982,7 +978,6 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
         this.$i18n.snackOpt
       );
       this.isRunning = false;
-      this.$cart.broadcastState();
     });
   }
 

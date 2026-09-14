@@ -208,13 +208,9 @@ export class KngNavbarComponent implements OnInit, OnDestroy {
           this.$cdr.markForCheck();
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
 
-          if(this.user.isAuthenticated()) {
-            this.$cart.load();
-          }
-
           //
           // If the user is known, we open ONE TIME the login form
-          else if(!KngNavbarComponent.ASK_FOR_LOGIN && this.user.email.address) {
+          if(!this.user.isAuthenticated() && !KngNavbarComponent.ASK_FOR_LOGIN && this.user.email.address) {
 
             KngNavbarComponent.ASK_FOR_LOGIN = true;
 
