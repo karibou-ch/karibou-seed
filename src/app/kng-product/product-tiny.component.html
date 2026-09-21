@@ -11,11 +11,11 @@
     </div>
     <div class="price">
       <!-- REGULAR -->
-      <span [hidden]="product.attributes.discount" class="small green bold ">
+      <span [hidden]="product.isDiscount()" class="small green bold ">
         Fr {{product.pricing.price| number:'1.2-2'}}
       </span>
       <!-- DISCOUNT -->
-      <span [hidden]="!product.attributes.discount" >
+      <span [hidden]="!product.isDiscount()" >
         <span class="red bold strike"> {{product.pricing.price| number:'1.2-2'}}</span>
         <span class="green bold small">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
       </span>      

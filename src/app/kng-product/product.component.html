@@ -80,10 +80,10 @@
             {{product.pricing.part}}
           </div>
           <div class="price ">
-            <span [class.discount]="product.attributes.discount" class=" ">
+            <span [class.discount]="product.isDiscount()" class=" ">
               Fr {{product.pricing.price| number:'1.2-2'}}
             </span>
-            <span [hidden]="!product.attributes.discount">
+            <span [hidden]="!product.isDiscount()">
               <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
             </span>
           </div>
