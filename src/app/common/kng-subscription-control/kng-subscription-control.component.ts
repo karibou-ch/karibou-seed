@@ -28,6 +28,7 @@ export class KngSubscriptionControlComponent implements OnInit {
       subtitle_subscription_paused:'Votre abonnement reprendra le :',
       subtitle_subscription_update_method:'Votre méthode de paiement n\'est plus valable',
       subtitle_subscription_confirm_method:'Votre banque souhaite une confirmation',
+      msg_blocked_by_payment:'Confirmez le paiement de cet abonnement avant de le mettre en pause',
       subtitle_subscription_add:'Ajouter un article',
       subtitle_subscription_action:'Modifier et enregistrer votre abonnement',
       subtitle_subscription_items:'Vos articles',
@@ -57,6 +58,7 @@ export class KngSubscriptionControlComponent implements OnInit {
       subtitle_subscription_paused:'Your subscription will resume on :',
       subtitle_subscription_update_method:'Your payment method is no longer valid',
       subtitle_subscription_confirm_method:'For security reasons, confirm your pending payment',
+      msg_blocked_by_payment:'Confirm this subscription payment before pausing',
       subtitle_subscription_action:'Update and save your subscription',
       subtitle_subscription_add:'Add an item',
       subtitle_subscription_items:'Items',
@@ -153,7 +155,7 @@ export class KngSubscriptionControlComponent implements OnInit {
     if(!this.currentContract || !this.currentContract.latestPaymentIntent) {
       return false;
     }
-    return this.currentContract.latestPaymentIntent.status=='requires_action';
+    return ['requires_action', 'requires_confirmation'].indexOf(this.currentContract.latestPaymentIntent.status) > -1;
   }
 
   get contract_requires_method() {
@@ -179,7 +181,7 @@ export class KngSubscriptionControlComponent implements OnInit {
       // - requires_action : 3D Secure à confirmer
       // - requires_payment_method : Carte invalide/expirée à remplacer
       if (contract.status === 'incomplete' && contract.latestPaymentIntent) {
-        const needsAction = ['requires_action', 'requires_payment_method'].includes(
+        const needsAction = ['requires_action', 'requires_confirmation', 'requires_payment_method'].includes(
           contract.latestPaymentIntent.status
         );
         return needsAction;
@@ -391,14 +393,11 @@ export class KngSubscriptionControlComponent implements OnInit {
   async onConfirmPaymentIntent() {
     try{
       const intent = this.currentContract.latestPaymentIntent;
-      const intentOpt: any = {
-        payment_method: intent.source
-      };
 
       this.isRunning = true;
       this.error = null;
 
-      const result = await this.$stripe.confirmCardPayment(intent.client_secret, intentOpt).toPromise();
+      const result = await this.$stripe.confirmCardPayment(intent.client_secret).toPromise();
       if (result.error) {
         //
         // Show error to our customer (e.g., insufficient funds)
@@ -415,6 +414,27 @@ export class KngSubscriptionControlComponent implements OnInit {
       this.isRunning = false;
     }
 
+  }
+
+  async onConfirmSetupIntent() {
+    const setup = this.currentContract && this.currentContract.pendingSetupIntent;
+    if (!setup || !setup.client_secret) {
+      return;
+    }
+    try {
+      this.isRunning = true;
+      this.error = null;
+      const result = await this.$stripe.confirmCardSetup(setup.client_secret).toPromise();
+      if (result.error) {
+        this.error = result.error.message;
+        return;
+      }
+      this.paymentError = null;
+    } catch (err) {
+      this.error = err.error || err.message;
+    } finally {
+      this.isRunning = false;
+    }
   }
 
   async onUpdatePaymenMethod(payment:PaymentEvent) {
@@ -447,7 +467,7 @@ export class KngSubscriptionControlComponent implements OnInit {
     this.paymentErrorFromUrl = {};
 
     // ✅ NOUVEAU : Créer l'objet d'erreur moderne si paramètres présents
-    if (action && reason) {
+    if (action) {
       this.paymentError = {
         action,
         reason,
@@ -476,7 +496,7 @@ export class KngSubscriptionControlComponent implements OnInit {
       let autoReason: string | null = null;
 
       // Mapper les status PaymentIntent vers action/reason
-      if (status === 'requires_action') {
+      if (status === 'requires_action' || status === 'requires_confirmation') {
         autoAction = 'authenticate';
         autoReason = '3ds';
       } else if (status === 'requires_payment_method') {
@@ -496,6 +516,17 @@ export class KngSubscriptionControlComponent implements OnInit {
           teamContact: false
         };
       }
+    }
+    if (!this.paymentError && contract.pendingSetupIntent && contract.pendingSetupIntent.client_secret) {
+      this.paymentError = {
+        action: 'setup',
+        reason: 'setup',
+        intent: contract.pendingSetupIntent.id,
+        message: this.getPaymentErrorMessage('setup', 'setup'),
+        urgency: this.getErrorUrgency('setup', 'setup'),
+        icon: this.getErrorIcon('setup', 'setup'),
+        teamContact: false
+      };
     }
 
     document.body.classList.add('mdc-dialog-scroll-lock');
@@ -537,6 +568,10 @@ export class KngSubscriptionControlComponent implements OnInit {
 
   onPause(to:Date) {
     this.error =null;
+    if (this.currentContract && this.currentContract.status === 'incomplete') {
+      this.error = this.llabel.msg_blocked_by_payment;
+      return;
+    }
     this.$cart.subscriptionPause(this.currentContract,to).subscribe(done=> {
       this.currentContract=done
     },status => {

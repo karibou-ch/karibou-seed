@@ -90,7 +90,7 @@
 
             <!-- Pause Card (si actif et pas de problème de paiement) -->
             <div class="option-card pause-card"
-                 *ngIf="currentContract.status !== 'paused' && currentContract.status !== 'canceled' && !contract_requires_method">
+                 *ngIf="currentContract.status !== 'paused' && currentContract.status !== 'canceled' && currentContract.status !== 'incomplete' && !contract_requires_method">
               <div class="option-info">
                 <span class="option-label">{{llabel.subtitle_subscription_pause}}</span>
               </div>
@@ -191,6 +191,9 @@
             <p *ngIf="paymentError.teamMessage" class="team-message">
               <strong>ℹ️ Information :</strong> {{paymentError.teamMessage}}
             </p>
+            <button class="authenticate-btn" *ngIf="currentContract.pendingSetupIntent" (click)="onConfirmSetupIntent()">
+              Enregistrer la carte
+            </button>
             <kng-user-payment [config]="config" [user]="user" (updated)="onUpdatePaymenMethod($event)"></kng-user-payment>
           </li>
 

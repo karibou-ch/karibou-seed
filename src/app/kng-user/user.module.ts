@@ -37,6 +37,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'orders', pathMatch: 'full' },
       { path: 'subscriptions', component: UserSubscriptionComponent },
+      { path: 'payment', component: UserSubscriptionComponent },
       { path: 'orders', component: UserOrdersComponent },
       { path: 'invoices', component: UserInvoicesComponent },
       { path: 'reminder', component: KngUserReminderComponent },

@@ -10,8 +10,9 @@ Ce document décrit les règles, conventions et bonnes pratiques à suivre pour 
 
 ## Références Specs Métier
 
-Avant de modifier la sélection de date, le calendrier frontend ou les écrans de souscription, relire :
+Avant de modifier un écran de paiement, 3DS, checkout ou souscription, relire :
 
+- Workflows de paiement : `karibou-wallet/docs/payment-workflows.md`
 - Souscriptions Stripe et commandes webhook : `karibou-api.wiki/1.4-Paiement-par-souscription.md`
 - Calendrier, dates de livraison et fermetures : `karibou-api.wiki/1.6-Centralisation-du-service-de-calendrier.md`
 - Choix de date de livraison en début de commande : `karibou-api.wiki/3.0-le-choix-de-la-date-de-livraison-doit-se-faire-début-de-la-commande-[DONE].md`

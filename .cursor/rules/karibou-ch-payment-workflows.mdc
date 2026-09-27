@@ -1,0 +1,22 @@
+---
+description: Lire la spec wallet des workflows de paiement avant toute modification checkout / 3DS / abo.
+globs: "src/app/kng-cart/**,src/app/common/kng-payment/**,src/app/common/kng-subscription*/**,src/app/kng-user/**/*payment*"
+alwaysApply: false
+---
+
+# Workflows de paiement (frontend)
+
+Avant de modifier checkout, 3DS, save carte ou écrans d’abonnement :
+
+1. Lire `karibou-wallet/docs/payment-workflows.md`.
+2. S’aligner sur le chemin visé (A achat, B create, C update, D renouvellement).
+
+## Impératif
+
+- Charge facture : `confirmCardPayment(client_secret)` seulement. Ne pas renvoyer `payment_method` si le PI l’a déjà.
+- Save carte / start futur : `confirmCardSetup` (`pendingSetupIntent` ou `addMethodIntent`).
+- Checkout après create : `pendingSetupIntent` → Setup ; `latestPaymentIntent` ouvert (`requires_confirmation` ou `requires_action`) → Payment.
+- TWINT : achat direct uniquement. Interdit sur subscription.
+- `issuer=invoice` : hors Stripe, pas de 3DS.
+- Éditeur d’items / ancre : pas de modal 3DS. Recovery = mail + même écran paiement.
+- Séparer surface achat/abo (panier, date, items) et surface action paiement (un secret, un bouton).
