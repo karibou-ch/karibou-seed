@@ -1,0 +1,182 @@
+---
+description: Design system Karibou pour themes couleur, layout et responsive.
+globs: src/styles/**/*.scss,src/app/**/*.scss,src/app/**/*.html,src/app/common/navigation.service.ts
+alwaysApply: false
+---
+
+# Karibou Design System
+
+Cette regle documente le theme Karibou tel qu'il est code dans `src/styles/styles.scss`.
+Elle doit guider les changements UI sans inventer de nouvelles palettes locales.
+
+## Source De Verite
+
+- Le theme global vit dans `src/styles/styles.scss`, dans le bloc `:root`.
+- Les hubs peuvent surcharger le theme via `src/app/common/navigation.service.ts`.
+- Les champs admin exposes sont `colors.primary`, `colors.primaryText`, `colors.action`, `colors.actionText`, `colors.appbar`, `colors.appbarText`, `colors.colormix`, `colors.ink`.
+- Les composants doivent consommer des variables semantiques, pas des hex codes locaux.
+
+## Convention De Tokens
+
+Le systeme suit 3 couches.
+
+1. **Sources**: couleurs brutes ou theme de base.
+2. **Derivees**: variantes `light`, `medium`, fonds et textes calcules.
+3. **Usages**: variables consommees par les composants.
+
+Ne pas utiliser une derivee comme nouvelle source. Exemple: ne pas calculer un nouveau role depuis `--mdc-theme-primary-light`; partir de `--mdc-theme-primary`.
+
+## Couleurs Source
+
+- `--mdc-theme-colormix`: teinte de reference. Sert a calculer fonds doux, surfaces et variantes.
+- `--mdc-theme-background-container`: fond global du body. Fallback fixe, puis `color-mix(var(--mdc-theme-colormix) 50%, white)`.
+- `--mdc-theme-ink`: encre neutre principale. Sert au texte sur fond global; surchargeable par `hub.colors.ink`.
+- `--mdc-theme-primary`: action principale, etats actifs, surfaces fortes.
+- `--mdc-theme-primary-text`: texte sur `primary`.
+- `--mdc-theme-secondary`: action secondaire, FAB, boutons add/remove, accents chauds discrets.
+- `--mdc-theme-secondary-text`: texte sur `secondary`.
+- `--mdc-theme-appbar`: appbar, navigation et zones d'en-tete.
+- `--mdc-theme-appbar-text`: texte/icones sur `appbar`.
+
+Toujours utiliser les couples prevus:
+
+- `primary` avec `primary-text`
+- `secondary` avec `secondary-text`
+- `appbar` avec `appbar-text`
+- `background-container` avec `ink` ou `text-*-on-background`
+
+## Couleurs Metier Karibou
+
+Ces couleurs identifient des univers, pas des alertes generiques.
+
+- `--mdc-theme-karibou-green`: marche / quotidien
+- `--mdc-theme-karibou-yellow`: ecoles / enfants
+- `--mdc-theme-karibou-pink`: buffets / evenements
+
+Leurs variantes:
+
+- `*-light`: fonds tres doux
+- `*-medium`: hover ou selection visible
+
+Exemple d'usage actuel: les cartes `home-link-market`, `home-link-school`, `home-link-buffet`.
+
+## Couleurs Semantiques
+
+Les composants de feedback doivent utiliser `--mdc-theme-status-*`, pas directement `karibou-*`.
+
+- `--mdc-theme-status-love`: derive de `karibou-pink`
+- `--mdc-theme-status-success`: derive de `karibou-green`
+- `--mdc-theme-status-highlight`: derive de `karibou-yellow`
+- `--mdc-theme-status-love-light`
+- `--mdc-theme-status-success-light`
+- `--mdc-theme-status-highlight-light`
+
+Principe: la couleur source garde son sens, puis elle est harmonisee avec le theme courant. Pour une harmonisation pure CSS, utiliser `color-mix(in oklch, source 88-92%, theme 8-12%)`. Pour un vrai algorithme de design system, utiliser Material Color Utilities `Blend.harmonize()` en HCT.
+
+Ne pas fusionner une couleur de status a 50/50 avec le theme: cela casse le sens visuel. Un warning doit rester jaune/orange, un success doit rester vert, un love doit rester rose.
+
+## Fallbacks Et Compatibilite
+
+Toutes les variables derivees doivent avoir un fallback fixe avant `@supports`.
+
+`color-mix()` est disponible sur Chrome/Edge 111+, Firefox 113+, Safari/iOS 16.2+. La baseline est largement disponible depuis 2025-11-09.
+
+Dans `@supports`, preferer:
+
+- `in srgb` pour les variantes tres proches de l'existant ou compatibles avec les couleurs legacy.
+- `in oklch` pour harmoniser des couleurs eloignees ou semantiques sans les ternir.
+
+## Theme Gradient
+
+`.theme-gradient` doit rester doux. Il ne doit pas utiliser `primary` ou `secondary` brut sur de grandes surfaces.
+
+Regle:
+
+- base: `--mdc-theme-background-container`
+- halo principal: `--mdc-theme-appbar-light`
+- halo structurel: `--mdc-theme-primary-light`
+- eviter `--mdc-theme-secondary-light` dans les grands gradients si le secondaire est chaud/brun; cela salit vite les surfaces.
+
+Bon pattern:
+
+```scss
+.theme-gradient {
+  background-color: var(--mdc-theme-background-container);
+  background-image:
+    radial-gradient(circle at top left, var(--mdc-theme-appbar-light) 0%, transparent 54%),
+    radial-gradient(ellipse at bottom right, var(--mdc-theme-primary-light) 0%, transparent 58%);
+}
+```
+
+## Cas D'Utilisation
+
+### Theme Clair Doux
+
+Utiliser un `appbar` clair et `appbar-text` sombre si l'objectif est une interface calme, proche papier.
+
+Impact:
+- navigation plus discrete
+- sections plus legeres
+- moins de contraste structurel
+
+### Theme Appbar Vert Fonce
+
+Utiliser `appbar: #233D30` et `appbar-text: #FFFFFF` pour une identite marche plus forte.
+
+Impact:
+- navigation tres marquee
+- meilleur ancrage de marque
+- attention aux composants qui reutilisent `appbar` comme surface: preferer `appbar-light` pour les cartes.
+
+### Secondary
+
+`secondary` est un accent d'action. Il ne doit pas colorer les grands fonds ni le gradient principal.
+
+Usages acceptes:
+- boutons add/remove
+- FAB
+- CTA secondaire
+- prix ou accent ponctuel si contraste verifie
+
+Usages a eviter:
+- grands panneaux
+- backgrounds de listes completes
+- gradients de section
+
+### Status
+
+Utiliser:
+
+- `status-success` pour confirmation, disponibilite, bio/nature si le sens est positif.
+- `status-highlight` pour surlignage, selection, promo douce.
+- `status-love` pour buffet, evenement, mise en avant affective.
+
+Si un statut transmet une information critique, ajouter aussi texte, icone ou label. Ne jamais dependendre uniquement de la couleur.
+
+## Layout Et Responsive
+
+Le layout Karibou est dense et marchand: cartes produit, navigation categories, calendrier, panier lateral.
+
+Principes:
+
+- Garder des surfaces calmes: beaucoup de `background-container`, peu de couleurs fortes.
+- Utiliser les couleurs fortes sur les controles, pas sur les containers principaux.
+- Sur mobile, reduire les colonnes; ne pas reduire les tailles de texte sous le lisible.
+- Les breakpoints deja presents dans le projet sont souvent `899px`, `1199px`, `1440px`, `1600px`; respecter ces seuils avant d'en ajouter.
+- Les cartes et boutons doivent garder des zones tactiles confortables, idealement 40-48px pour les actions principales.
+
+## Do
+
+- Utiliser les tokens semantiques existants avant d'en ajouter.
+- Ajouter tout nouveau token dans `styles.scss` avec fallback + version `@supports` si derivee.
+- Documenter le lien entre source, derivee et usage.
+- Verifier les couples texte/fond avec WCAG AA: 4.5:1 texte normal, 3:1 gros texte ou UI non textuelle.
+- Laisser `hub.colors.*` surcharger uniquement les sources du theme.
+
+## Don't
+
+- Ne pas hardcoder `yellow`, `red`, `deeppink`, `#fff`, `#eee` dans de nouveaux composants.
+- Ne pas utiliser `primary` brut dans un grand gradient.
+- Ne pas utiliser `secondary-light` comme grand fond chaud sans test visuel.
+- Ne pas melanger les roles: texte sur `primary` doit utiliser `primary-text`, pas `ink`.
+- Ne pas transformer les couleurs metier Karibou en couleurs d'alerte directes; passer par `status-*`.
