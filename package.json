@@ -1,17 +1,17 @@
 {
   "name": "karibou-seed",
-  "version": "5.5.140",
+  "version": "5.5.142",
   "scripts": {
     "unused-css": "ngx-unused-css",
     "ng": "ng",
-    "start": "ng serve",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve",
     "predeploy": "npm version patch --no-git-tag-version",
     "deploy": "npm run predeploy && npm run build",
-    "build": "ng build --configuration production",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --configuration production",
     "analyse": "source-map-explorer ./dist/*es2017*.js ./dist/*es2017*.js.map --html dist/stack.html",
-    "test": "ng test",
+    "test": "NODE_OPTIONS=--openssl-legacy-provider ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "NODE_OPTIONS=--openssl-legacy-provider ng e2e"
   },
   "private": true,
   "dependencies": {
