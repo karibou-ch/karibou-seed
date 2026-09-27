@@ -1,3 +1,20 @@
+<div class="compact-rhythm" *ngIf="compact; else classicOptions">
+  <div class="compact-row">
+    <select
+      [ngModel]="selIteration?.id"
+      (ngModelChange)="onFrequencyChange($event)">
+      <option *ngFor="let iteration of iterations" [ngValue]="iteration.id">{{iteration.label[locale]}}</option>
+    </select>
+    <select
+      [ngModel]="selDayOfWeek?.id"
+      (ngModelChange)="onDayChange($event)">
+      <option *ngFor="let day of dayOfWeek" [ngValue]="day.id">{{day.label}}</option>
+    </select>
+  </div>
+  <p class="compact-start">{{startLabel}} <b>{{nextShippingDay|date:'EEEE d MMMM':'':locale}}</b></p>
+</div>
+
+<ng-template #classicOptions>
 <div class="subscription">
   <p [hidden]="quiet">
     {{i18n.title}}
@@ -52,3 +69,4 @@
 
 
 </div>
+</ng-template>

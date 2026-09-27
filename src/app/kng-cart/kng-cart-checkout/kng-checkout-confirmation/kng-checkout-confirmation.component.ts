@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from 'kng2-core';
 import { i18n } from 'src/app/common';
+import { CheckoutMode } from '../checkout-session';
 
 @Component({
   selector: 'kng-checkout-confirmation',
@@ -12,7 +13,7 @@ export class KngCheckoutConfirmationComponent {
   @Input() cgAccepted = false;
   @Input() store: string;
   @Input() user: User;
-  @Input() useCartSubscriptionView = false;
+  @Input() mode: CheckoutMode = 'order';
   @Input() isFinalizeDisabled = true;
   @Input() isRunning = false;
   @Input() errorMessage: string|null = null;
@@ -49,5 +50,9 @@ export class KngCheckoutConfirmationComponent {
 
   get label() {
     return this.i18n[this.locale] || this.i18n.fr;
+  }
+
+  get isSubscription() {
+    return this.mode === 'subscription';
   }
 }

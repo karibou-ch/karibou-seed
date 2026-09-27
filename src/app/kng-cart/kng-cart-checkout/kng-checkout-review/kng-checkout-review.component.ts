@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Config, User, UserAddress, UserCard } from 'kng2-core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { CartService, CartSubscription, Config, Hub, User, UserAddress, UserCard } from 'kng2-core';
 import { i18n } from 'src/app/common';
 import { KngPaymentComponent } from 'src/app/common/kng-payment/kng-user-payment.component';
+import { CheckoutMode } from '../checkout-session';
 
 @Component({
   selector: 'kng-checkout-review',
   templateUrl: './kng-checkout-review.component.html',
   styleUrls: ['./kng-checkout-review.component.scss']
 })
-export class KngCheckoutReviewComponent {
+export class KngCheckoutReviewComponent implements OnChanges {
   @Input() config: Config;
   @Input() user: User;
   @Input() address: UserAddress;
@@ -22,19 +23,59 @@ export class KngCheckoutReviewComponent {
   @Input() shippingNote: string;
   @Input() isLastMinuteShipping = false;
   @Input() isAddressEditing = false;
-  @Input() isAddressDeposit = false;
   @Input() isPaymentEditing = false;
   @Input() computeShippingAmount: (address: UserAddress) => number;
+  @Input() mode: CheckoutMode = 'order';
+  @Input() hasPendingSubscription = false;
+  @Input() subscriptionContract: CartSubscription | null = null;
+  @Input() hub: Hub;
 
-  @Output() editAddress = new EventEmitter<void>();
   @Output() addressSelected = new EventEmitter<UserAddress>();
   @Output() addressSaved = new EventEmitter<UserAddress|undefined>();
   @Output() addAddressRequested = new EventEmitter<void>();
   @Output() shippingNoteChange = new EventEmitter<string>();
-  @Output() editPayment = new EventEmitter<void>();
   @Output() paymentSelected = new EventEmitter<UserCard>();
   @Output() paymentSaved = new EventEmitter<any>();
   @Output() addPaymentRequested = new EventEmitter<void>();
+
+  isTimeEditing = false;
+  private addressChoices: boolean | null = null;
+  private paymentChoices: boolean | null = null;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.isAddressEditing) {
+      this.addressChoices = null;
+    }
+    if (changes.isPaymentEditing) {
+      this.paymentChoices = null;
+    }
+  }
+
+  get showAddressChoices() {
+    return this.addressChoices === null ? this.isAddressEditing : this.addressChoices;
+  }
+
+  get showPaymentChoices() {
+    return this.paymentChoices === null ? this.isPaymentEditing : this.paymentChoices;
+  }
+
+  toggleAddressChoices() {
+    this.addressChoices = !this.showAddressChoices;
+  }
+
+  togglePaymentChoices() {
+    this.paymentChoices = !this.showPaymentChoices;
+  }
+
+  chooseAddress(option: UserAddress) {
+    this.addressChoices = false;
+    this.addressSelected.emit(option);
+  }
+
+  choosePayment(option: UserCard) {
+    this.paymentChoices = false;
+    this.paymentSelected.emit(option);
+  }
 
   readonly i18n: any = {
     fr: {
@@ -45,7 +86,11 @@ export class KngCheckoutReviewComponent {
       review_last_minute: 'Aujourd\'hui',
       review_payment_note: 'Facturé le jour de livraison',
       review_delivery_note_placeholder: 'Code, étage, instruction...',
-      review_delivery_policy: 'Si vous n\'êtes pas présent lors de la livraison et sans indication contraire de votre part, les produits seront déposés devant votre porte.'
+      review_delivery_policy: 'Si vous n\'êtes pas présent lors de la livraison et sans indication contraire de votre part, les produits seront déposés devant votre porte.',
+      review_subscription_rhythm: 'Rythme',
+      review_subscription_time: 'Créneau',
+      review_subscription_time_locked: 'La livraison est programmée à',
+      review_subscription_no_twint: 'TWINT n\'est pas disponible pour les abonnements. Utilisez une carte.'
     },
     en: {
       review_title: 'Review',
@@ -55,11 +100,18 @@ export class KngCheckoutReviewComponent {
       review_last_minute: 'Today',
       review_payment_note: 'Charged on delivery day',
       review_delivery_note_placeholder: 'Code, floor, instruction...',
-      review_delivery_policy: 'If you are not present at delivery and unless instructed otherwise, the products will be left at your door.'
+      review_delivery_policy: 'If you are not present at delivery and unless instructed otherwise, the products will be left at your door.',
+      review_subscription_rhythm: 'Schedule',
+      review_subscription_time: 'Time slot',
+      review_subscription_time_locked: 'Delivery is scheduled for',
+      review_subscription_no_twint: 'TWINT is not available for subscriptions. Use a card.'
     }
   };
 
-  constructor(private $i18n: i18n) {}
+  constructor(
+    private $i18n: i18n,
+    private $cart: CartService
+  ) {}
 
   get locale() {
     return this.$i18n.locale;
@@ -97,6 +149,14 @@ export class KngCheckoutReviewComponent {
     return (address.streetAdress || address.streetAddress) === (this.address.streetAdress || this.address.streetAddress);
   }
 
+  get otherAddresses() {
+    return (this.addresses || []).filter(option => !this.isSelectedAddress(option));
+  }
+
+  get otherDepositAddresses() {
+    return (this.depositAddresses || []).filter(option => !this.isSelectedAddress(option));
+  }
+
   shippingAmount(address: UserAddress) {
     if (this.computeShippingAmount) {
       return this.computeShippingAmount(address);
@@ -122,7 +182,63 @@ export class KngCheckoutReviewComponent {
     return !!payment && !!this.payment && payment.alias === this.payment.alias;
   }
 
+  get otherPayments() {
+    return (this.payments || []).filter(option => !this.isSelectedPayment(option));
+  }
+
   isPaymentInvalid(payment: UserCard) {
     return !!payment && typeof payment.isValid === 'function' && !payment.isValid();
+  }
+
+  get isSubscription() {
+    return this.mode === 'subscription';
+  }
+
+  get showSubscriptionTimes() {
+    return this.isSubscription && !this.hasPendingSubscription;
+  }
+
+  get subscriptionTimes() {
+    const prices = this.config?.shared?.shipping?.pricetime || {};
+    const labels = this.config?.shared?.hub?.shippingtimes || {};
+    return Object.keys(prices).map(key => ({
+      key,
+      label: labels[key] || `${key}h`,
+      price: Number(prices[key]) || 0
+    }));
+  }
+
+  get selectedSubscriptionTime() {
+    return Number(this.$cart.subscriptionGetParams()?.time) || 16;
+  }
+
+  get selectedSubscriptionPrice() {
+    const prices = this.config?.shared?.shipping?.pricetime || {};
+    return Number(prices[this.selectedSubscriptionTime]) || 0;
+  }
+
+  toggleTimeEditing() {
+    this.isTimeEditing = !this.isTimeEditing;
+  }
+
+  subscriptionTimeLabel(time: number|string) {
+    const labels = this.config?.shared?.hub?.shippingtimes || {};
+    return labels[time] || `${time}h`;
+  }
+
+  isSelectedSubscriptionTime(key: string) {
+    return Number(key) === this.selectedSubscriptionTime;
+  }
+
+  selectSubscriptionTime(key: string) {
+    const currentParams = this.$cart.subscriptionGetParams();
+    if (!currentParams) {
+      return;
+    }
+    this.$cart.subscriptionSetParams({
+      ...currentParams,
+      time: Number(key)
+    });
+    this.isTimeEditing = false;
   }
 }

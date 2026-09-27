@@ -8,6 +8,39 @@
   width: 100%;
 }
 
+:host.compact {
+  background: transparent;
+  border-radius: 0;
+  min-height: 0;
+}
+
+.compact-rhythm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.compact-row {
+  display: flex;
+  gap: 0.5rem;
+
+  select {
+    background: white;
+    border: 0.0625rem solid color-mix(in srgb, var(--mdc-theme-ink) 22%, white);
+    border-radius: 0.5rem;
+    flex: 1;
+    font: inherit;
+    min-width: 0;
+    padding: 0.55rem 0.65rem;
+  }
+}
+
+.compact-start {
+  color: var(--mdc-theme-text-secondary-on-background);
+  line-height: 1.4rem;
+  margin: 0;
+}
+
 .arrow-up {
   border-left: 25px solid transparent;
   border-right: 25px solid transparent;

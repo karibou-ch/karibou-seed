@@ -10,8 +10,7 @@ import { CartService,
          OrderService,
          Shop,
          Order,
-         ConfigService,
-         CalendarService } from 'kng2-core';
+         ConfigService } from 'kng2-core';
 
 import { KngNavigationStateService, i18n } from '../common';
 import { StripeService } from 'ngx-stripe';
@@ -46,7 +45,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
   isValid = false;
   hasOrderError = false;
   noshippingMsg: string;
-  shippingTime: number;
   currentCartView:boolean = true;
 
   currentShippingDay: Date;
@@ -117,8 +115,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
     private $order: OrderService,
     private $route: ActivatedRoute,
     private $router: Router,
-    private $stripe: StripeService,
-    private $calendar: CalendarService
+    private $stripe: StripeService
   ) {
     // ✅ PARENT BROADCASTER: Récupération immédiate des données cached
     const { config, user, shops, orders } = this.$loader.getLatestCoreData();
@@ -193,8 +190,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
     this.store = this.$navigation.store;
 
     this.currentShippingDay = this.$cart.getCurrentShippingDay();
-    this.shippingTime = this.$cart.getCurrentShippingTime()|0;
-    // ✅ CORRECTION: getDefaultTimeByDay sera appelé APRÈS config chargé dans $loader
 
     //
     // save the plan for the subscription (business, customer)
@@ -221,10 +216,6 @@ export class KngCartComponent implements OnInit, OnDestroy {
           if (this.config.shared && this.config.shared.keys) {
             this.$stripe.setKey(this.config.shared.keys.pubStripe);
           }
-          // ✅ CORRECTION: Appeler getDefaultTimeByDay APRÈS config chargé
-          if (!this.shippingTime && this.currentShippingDay) {
-            this.shippingTime = this.$calendar.getDefaultTimeByDay(this.currentShippingDay, this.config.shared.hub);
-          }
         }
         // emit signal for user
         if (emit.user) {
@@ -242,10 +233,7 @@ export class KngCartComponent implements OnInit, OnDestroy {
           // display subscription or cart
           this.isValid = true;
 
-          // FIXME: remove this when we have a better way to handle time limit error
-          // this.shippingTime = this.config.getDefaultTimeByDay(this.currentShippingDay);
           this.currentShippingDay = this.$cart.getCurrentShippingDay();
-          this.shippingTime = this.$cart.getCurrentShippingTime()|0;
 
 
           this.initItems();

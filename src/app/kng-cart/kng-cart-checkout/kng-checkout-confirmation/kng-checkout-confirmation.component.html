@@ -32,14 +32,14 @@
 
   <!-- Objectif : déclencher la validation finale de commande ou d'abonnement -->
   <div class="confirmation-actions">
-    <div [hidden]="useCartSubscriptionView">
+    <div [hidden]="isSubscription">
       <button class="confirmation-submit" [disabled]="isFinalizeDisabled" (click)="orderRequested.emit()">
         <b>{{label.cart_order}}</b>
         <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>
       </button>
     </div>
 
-    <div [hidden]="!useCartSubscriptionView">
+    <div [hidden]="!isSubscription">
       <button class="confirmation-submit" [disabled]="isFinalizeDisabled" (click)="subscriptionRequested.emit()">
         {{label.cart_subscription}}
         <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>

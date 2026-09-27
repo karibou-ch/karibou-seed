@@ -21,7 +21,10 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'kng-subscription-option',
   templateUrl: './kng-subscription-option.component.html',
-  styleUrls: ['./kng-subscription-option.component.scss']
+  styleUrls: ['./kng-subscription-option.component.scss'],
+  host: {
+    '[class.compact]': 'compact'
+  }
 })
 export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
   private _subscription: Subscription;
@@ -29,17 +32,22 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
     fr:{
       title:'Fréquence et jour de livraison.',
       title_time_contract:'Quand souhaitez vous être livré ?',
-      title_time_contract_update:'La livraison est programmée à'
+      title_time_contract_update:'La livraison est programmée à',
+      start:'Démarre le',
+      next:'Prochaine livraison le'
     },
     en:{
       title:'Frequency and delivery day',
       title_time_contract:'When would you like delivery?',
-      title_time_contract_update:'Delivery is scheduled for'
+      title_time_contract_update:'Delivery is scheduled for',
+      start:'Starts',
+      next:'Next delivery'
     }
   }
 
   @Input() checkout:boolean;
   @Input() quiet:boolean;
+  @Input() compact = false;
   @Input() contract:CartSubscription;
   @Input() contractId:string;
   @Input() hub: Hub;
@@ -152,6 +160,10 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
 
   get locale() {
     return this.$i18n.locale;
+  }
+
+  get startLabel() {
+    return this.contract ? this.i18n.next : this.i18n.start;
   }
 
   get update() {
@@ -323,6 +335,24 @@ export class KngSubscriptionOptionComponent implements OnInit, OnDestroy {
 
     // ✅ SYNC: Mettre à jour l'état local aussi
     this.subscriptionParams = updatedParams;
+  }
+
+  onFrequencyChange(id: string) {
+    const iteration = this.findIteration(id);
+    if (!iteration || !this.selDayOfWeek) {
+      return;
+    }
+    this.selIteration = iteration;
+    this.onSave();
+  }
+
+  onDayChange(id: string) {
+    const day = this.dayOfWeek.find(item => item.id == Number(id));
+    if (!day || !this.selIteration) {
+      return;
+    }
+    this.selDayOfWeek = day;
+    this.onSave();
   }
 
   onSave(){

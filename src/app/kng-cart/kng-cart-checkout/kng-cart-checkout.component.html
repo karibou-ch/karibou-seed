@@ -21,7 +21,7 @@
         [user]="user"
         [address]="currentAddress"
         [addresses]="userAddresses"
-        [depositAddresses]="useCartSubscriptionView ? [] : getDepositAddress()"
+        [depositAddresses]="reviewDepositAddresses"
         [payment]="currentPayment"
         [payments]="userPayments"
         [phone]="userPhone"
@@ -30,27 +30,23 @@
         [(shippingNote)]="shippingNote"
         [isLastMinuteShipping]="reviewIsLastMinuteShipping"
         [isAddressEditing]="!selectAddressIsDone"
-        [isAddressDeposit]="isCartDeposit()"
         [isPaymentEditing]="!selectPaymentIsDone"
         [computeShippingAmount]="shippingFeeForAddress"
-        (editAddress)="editAddressFromReview()"
         (addressSelected)="setShippingAddress($event)"
         (addressSaved)="onAddressSave($event)"
         (addAddressRequested)="addAddressFromReview()"
-        (editPayment)="editPaymentFromReview()"
         (paymentSelected)="setPaymentMethod($event)"
         (paymentSaved)="onPaymentSave($event)"
-        (addPaymentRequested)="addPaymentFromReview()">
+        (addPaymentRequested)="addPaymentFromReview()"
+        [mode]="checkoutMode"
+        [hasPendingSubscription]="hasPendingSubscription"
+        [subscriptionContract]="hasUpdateContract"
+        [hub]="hub">
       </kng-checkout-review>
-
-      <!-- SUBSCRIPTION OPTIONS -->
-      <div class="subscription" [hidden]="!useCartSubscriptionView || hasPendingSubscription">
-        <kng-subscription-option [checkout]="true" [quiet]="true" [contract]="hasUpdateContract" [hub]="hub" *ngIf="useCartSubscriptionView"></kng-subscription-option>
-      </div>
 
       <div class="subscription" *ngIf="hasPendingSubscription">
           <!-- DO SUBSCRIPTION -->
-          <div [hidden]="!useCartSubscriptionView">
+          <div [hidden]="!isSubscriptionCheckout">
             <button class="button" (click)="doSubscription()" >{{label.cart_update_subscription_payment}}</button>
           </div>
 
@@ -65,7 +61,7 @@
       <!-- RESUME subscription or simple order -->
       <div class="order-resume" *ngIf="isOpen && !hasPendingSubscription">
         <kng-cart-invoice
-          [type]="useCartSubscriptionView ? 'subscription' : 'cart'"
+          [type]="isSubscriptionCheckout ? 'subscription' : 'cart'"
           [user]="user"
           [data]="{
             items: items,
@@ -82,7 +78,7 @@
 
       <!-- COUPON -->
       <kng-checkout-coupon
-        [hidden]="useCartSubscriptionView || !user.isAuthenticated()||!user.isReady()||!isOpen()"
+        [hidden]="isSubscriptionCheckout || !user.isAuthenticated()||!user.isReady()||!isOpen()"
         [(couponCode)]="couponCode"
         [couponCredit]="couponCredit"
         [couponError]="couponError"
@@ -91,7 +87,7 @@
         (applyCoupon)="readCoupon()">
       </kng-checkout-coupon>
 
-        <div class="checkout-wallet-payment"  [hidden]="!walletReady || useCartSubscriptionView || isRunning || true">
+        <div class="checkout-wallet-payment"  [hidden]="!walletReady || isSubscriptionCheckout || isRunning || true">
           <div class="checkout-wallet-title">{{label.cart_wallet_express}}</div>
           <div id="checkout-wallet-button"></div>
         </div>
@@ -102,7 +98,7 @@
           [(cgAccepted)]="cgAccepted"
           [store]="store"
           [user]="user"
-          [useCartSubscriptionView]="useCartSubscriptionView"
+          [mode]="checkoutMode"
           [isFinalizeDisabled]="isFinalizeDisabled"
           [isRunning]="isRunning"
           [errorMessage]="errorMessage"
