@@ -1253,7 +1253,7 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     this.checkPaymentMethod();
 
     const hinted = (this.orders.length && !this.orders[0].shipping.deposit)
-      ? this.orders[0].shipping
+      ? UserAddress.from(this.orders[0].shipping)
       : this.$cart.getCurrentShippingAddress();
     const account = (this._user.addresses || []).find(address => UserAddress.isEqual(address, hinted))
       || this._user.addresses[0];
