@@ -438,24 +438,19 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       }
 
       //
-      // we should sync with deleted address,
-      // ✅ FIXED: Comparaison robuste d'adresses (streetAdress + postalCode + region)
-      const missingAddress = this.currentAddress && !this.userAddresses.some(address => {
-        const normalize = (str: string) => (str || '').trim().toLowerCase();
-        return normalize(address.streetAdress || address.streetAddress) ===
-               normalize(this.currentAddress.streetAdress || this.currentAddress.streetAddress) &&
-               normalize(address.postalCode) === normalize(this.currentAddress.postalCode) &&
-               normalize(address.region) === normalize(this.currentAddress.region);
-      });
+      // Same place as the account: keep that address and use its current record.
+      const saved = this.currentAddress
+        ? this.userAddresses.find(address => UserAddress.isEqual(address, this.currentAddress))
+        : undefined;
 
-      if(this.selectAddressIsDone && this.currentAddress && missingAddress){
-        console.log('🔄 Address removed, clearing current selection:', this.currentAddress);
+      if(this.selectAddressIsDone && this.currentAddress && !saved && !this.currentAddressIsDeposit){
         this.setShippingAddress(null);
       }
-      //
-      // if user add one, we should select by default
       else if(this.userAddresses.length && !this.selectAddressIsDone){
         this.setShippingAddress(this.userAddresses[0]);
+      }
+      else if(saved){
+        this.setShippingAddress(saved);
       }
 
       //
@@ -1257,23 +1252,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     // quote calls across init, address changes, coupons and wallet setup.
     this.checkPaymentMethod();
 
-    const address = this.$cart.getCurrentShippingAddress();
-    this.setShippingAddress(address);
-
-    //
-    // check if address is already set
-    if(!this.selectAddressIsDone){
-      if(this.orders.length && !this.orders[0].shipping.deposit) {
-        // prevent deposit address as it can be from various hub locations
-        const address = UserAddress.from(this.orders[0].shipping);
-        this.setShippingAddress(address);
-      }
-
-      if(!this.selectAddressIsDone){
-        const address = UserAddress.from(this._user.addresses[0]);
-        this.setShippingAddress(address);
-      }
-    }
+    const hinted = (this.orders.length && !this.orders[0].shipping.deposit)
+      ? this.orders[0].shipping
+      : this.$cart.getCurrentShippingAddress();
+    const account = (this._user.addresses || []).find(address => UserAddress.isEqual(address, hinted))
+      || this._user.addresses[0];
+    this.setShippingAddress(account || hinted);
 
     //
     // Metric ORDER
