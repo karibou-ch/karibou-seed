@@ -8,9 +8,12 @@
     <button [routerLink]="'/store/'+store+'/home/subscription'">Découvrir</button>
   </div>
 
-  <div class="kng-boxed with-border  subscription" [class.premium]="contract.plan=='patreon'" *ngFor="let contract of openContracts">
+  <div class="kng-boxed with-border  subscription" [class.premium]="contract.plan=='patreon'" [class.payment-needed]="paymentIssue(contract)" *ngFor="let contract of openContracts">
     <div class="label">
       {{getContractDescription(contract)}}
+    </div>
+    <div class="payment-alert" *ngIf="paymentIssue(contract) as issue">
+      {{ issue === 'method' ? i18n[locale].subtitle_subscription_update_method : i18n[locale].subtitle_subscription_confirm_method }}
     </div>
     <div class="content">
       <div class="items">
@@ -38,13 +41,20 @@
         <h2 class="subscription-title">{{i18n[locale].subtitle_subscription_start}} {{currentContract.start|date:'EEEE d MMM yyyy'}}</h2>
       </header>
       <div class="options-section ">
-        <div class="option-card">
+        <div class="option-card next-cycle" *ngIf="nextDelivery(currentContract) as delivery; else invoiceOnly">
           <div class="option-info">
             <span class="option-label">{{i18n[locale].subtitle_subscription_next_delivery}}</span>
-            <span class="option-value bold">{{currentContract.nextInvoice | date:'EEEE d MMMM yyyy'}}</span>
+            <span class="option-value bold">{{i18n[locale].next_cycle_invoice}} {{currentContract.nextInvoice | date:'EEEE d MMMM yyyy':'':locale}}, {{i18n[locale].next_cycle_delivery}} {{delivery | date:'EEEE d':'':locale}}, {{getShippingTime(currentContract)}}</span>
           </div>
-          <span class="option-badge">{{getShippingTime(currentContract)}}</span>
         </div>
+        <ng-template #invoiceOnly>
+          <div class="option-card">
+            <div class="option-info">
+              <span class="option-label">{{i18n[locale].subtitle_subscription_next_delivery}}</span>
+              <span class="option-value bold">{{currentContract.nextInvoice | date:'EEEE d MMMM yyyy':'':locale}}</span>
+            </div>
+          </div>
+        </ng-template>
       </div>
 
       <ul *ngIf="currentContract.patreon.length; else shippingTemplate">

@@ -1,3 +1,13 @@
+.subscription.payment-needed {
+  border-color: #c0392b;
+}
+
+.payment-alert {
+  margin: 6px 0 0;
+  color: #c0392b;
+  font-weight: 600;
+}
+
 // ✅ NOUVEAU : Styles pour les erreurs de paiement modernes
 .error-high {
   .title_payment {
@@ -165,6 +175,15 @@
     border-radius: 16px;
     border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    &.next-cycle .option-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &.next-cycle .option-value {
+      line-height: 1.4;
+    }
 
     .option-info {
       display: flex;

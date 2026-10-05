@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CartItem, CartService, CartSubscription, Config, Order, ProductService, User, UserCard, UserService } from 'kng2-core';
+import { CalendarService, CartItem, CartService, CartSubscription, Config, Order, ProductService, User, UserCard, UserService } from 'kng2-core';
 import { StripeService } from 'ngx-stripe';
 import { i18n } from 'src/app/common';
 import { PaymentEvent } from '../kng-payment/kng-user-payment.component';
@@ -25,6 +25,8 @@ export class KngSubscriptionControlComponent implements OnInit {
       subtitle_subscription_end:'Votre abonnement est supprimé',
       subtitle_subscription_status:'Fréquence de votre abonnement :',
       subtitle_subscription_next_delivery:'Prochaine livraison',
+      next_cycle_invoice:'Facture',
+      next_cycle_delivery:'livraison le',
       subtitle_subscription_paused:'Votre abonnement reprendra le :',
       subtitle_subscription_update_method:'Votre méthode de paiement n\'est plus valable',
       subtitle_subscription_confirm_method:'Votre banque souhaite une confirmation',
@@ -55,6 +57,8 @@ export class KngSubscriptionControlComponent implements OnInit {
       subtitle_subscription_end:'Votre abonnement est supprimé',
       subtitle_subscription_status:'Subscription frequency :',
       subtitle_subscription_next_delivery:'Next delivery',
+      next_cycle_invoice:'Invoice',
+      next_cycle_delivery:'delivery on',
       subtitle_subscription_paused:'Your subscription will resume on :',
       subtitle_subscription_update_method:'Your payment method is no longer valid',
       subtitle_subscription_confirm_method:'For security reasons, confirm your pending payment',
@@ -111,6 +115,7 @@ export class KngSubscriptionControlComponent implements OnInit {
     public $router: Router,
     public $user: UserService,
     public $stripe: StripeService,
+    public $calendar: CalendarService,
     private route: ActivatedRoute
   ) {
     this._orders = [];
@@ -171,24 +176,32 @@ export class KngSubscriptionControlComponent implements OnInit {
   }
 
   get openContracts() {
-    return this.contracts.filter(contract => {
-      // ✅ Contrats actifs
+    return (this.contracts || []).filter(contract => {
       if (contract.status === 'active') {
         return true;
       }
-
-      // ✅ Contrats incomplete nécessitant une action utilisateur
-      // - requires_action : 3D Secure à confirmer
-      // - requires_payment_method : Carte invalide/expirée à remplacer
-      if (contract.status === 'incomplete' && contract.latestPaymentIntent) {
-        const needsAction = ['requires_action', 'requires_confirmation', 'requires_payment_method'].includes(
-          contract.latestPaymentIntent.status
-        );
-        return needsAction;
-      }
-
-      return false;
+      // Paiement encore ouvert (3DS, confirmation, carte invalide).
+      // incomplete_expired n'est plus corrigeable.
+      return contract.status === 'incomplete' && contract.issue !== 'incomplete_expired';
     });
+  }
+
+  paymentIssue(contract): 'confirm' | 'method' | null {
+    const intent = contract && contract.latestPaymentIntent;
+    const status = intent && intent.status;
+    if (status === 'requires_payment_method') {
+      return 'method';
+    }
+    if (status === 'requires_action' || status === 'requires_confirmation') {
+      return 'confirm';
+    }
+    if (contract && contract.pendingSetupIntent && contract.pendingSetupIntent.client_secret) {
+      return 'method';
+    }
+    if (contract && contract.status === 'incomplete' && contract.issue !== 'incomplete_expired') {
+      return 'confirm';
+    }
+    return null;
   }
 
   // ✅ NOUVEAU : Getters pour l'interface moderne d'erreurs
@@ -250,27 +263,14 @@ export class KngSubscriptionControlComponent implements OnInit {
   }
 
   getContractAction(contract){
-    //
-    // invoice
-    if (!contract.latestPaymentIntent){
-      return this.i18n[this.locale].subtitle_subscription_action;
+    const issue = this.paymentIssue(contract);
+    if (issue === 'method') {
+      return this.i18n[this.locale].subtitle_subscription_update_method;
     }
-
-    // //
-    // // pending requires_payment_method
-    // if(contract.latestPaymentIntent.status=='requires_payment_method'){
-    //   return this.i18n[this.locale].subtitle_subscription_update_method_action;
-    // }
-
-    // //
-    // // pending requires_payment_method
-    // if(contract.latestPaymentIntent.status=='requires_action'){
-    //   return this.i18n[this.locale].subtitle_subscription_confirm_method_action;
-    // }
-
-    // active
+    if (issue === 'confirm') {
+      return this.i18n[this.locale].subtitle_subscription_confirm_method;
+    }
     return this.i18n[this.locale].subtitle_subscription_action;
-
   }
 
   getContractDescription(contract){
@@ -317,6 +317,19 @@ export class KngSubscriptionControlComponent implements OnInit {
 
   getShippingTime(contract) {
     return this.config.shared.hub.shippingtimes[contract.shipping.hours];
+  }
+
+  nextDelivery(contract): Date | null {
+    const day = contract?.dayOfWeek;
+    if (day == null || !contract.nextInvoice) {
+      return null;
+    }
+    return this.$calendar.firstDeliveryDate(
+      +day,
+      new Date(contract.nextInvoice),
+      this.config?.shared?.hub,
+      { acceptAllWeekdays: true }
+    );
   }
 
   getOpenParams(contractId: string) {
