@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
-import { Subscription } from 'rxjs';
+import { interval, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { MetricsService } from './common/metrics.service';
 import { i18n } from './common';
@@ -15,6 +16,7 @@ export class AppComponent implements OnDestroy {
 
   // SENTRY_JS = 'https://browser.sentry-cdn.com/5.12.5/bundle.min.js';
   private subscription$ = new Subscription();
+  private _destroying$ = new Subject<void>();
 
   i18n: any = {
     fr: {
@@ -54,10 +56,29 @@ export class AppComponent implements OnDestroy {
       })
     );
 
+    // Vérification périodique des mises à jour (toutes les 2 heures)
+    // Note: les intervals sont throttle quand l'onglet est inactif,
+    // donc on utilise Date.now() pour calculer le delta réel
+    const checkInterval = 20 * 60 * 1000; // Vérifie toutes les 20 min
+    const updateInterval = 2 * 60 * 60 * 1000; // Mais update seulement si 2h écoulées
+    let lastCheck = Date.now();
+    interval(checkInterval).pipe(
+      takeUntil(this._destroying$)
+    ).subscribe(() => {
+      const now = Date.now();
+      if (now - lastCheck >= updateInterval) {
+        lastCheck = now;
+        if (this.$update.isEnabled) {
+          this.$update.checkForUpdate().catch(() => {});
+        }
+      }
+    });
 
   }
 
   ngOnDestroy() {
+    this._destroying$.next();
+    this._destroying$.complete();
     this.subscription$.unsubscribe();
   }
 }
