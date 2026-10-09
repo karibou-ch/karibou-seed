@@ -51,4 +51,4 @@ Run `ng generate component component-name` to generate a new component. You can 
 * [animation](https://material.angular.io/guide/getting-started#step-2-animations) Noo
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `npm test` to execute the unit tests via [Karma](https://karma-runner.github.io) and leave the runner watching. Run `npm run build:test` for one pass on Chrome headless.

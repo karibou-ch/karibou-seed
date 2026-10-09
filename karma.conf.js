@@ -1,6 +1,19 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
+const fs = require('fs');
+
+if (!process.env.CHROME_BIN) {
+  const chromeBin = [
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/snap/chromium/current/usr/lib/chromium-browser/chrome'
+  ].find(bin => fs.existsSync(bin));
+  if (chromeBin) {
+    process.env.CHROME_BIN = chromeBin;
+  }
+}
+
 module.exports = function (config) {
   config.set({
     basePath: '',

@@ -8,6 +8,7 @@
     "predeploy": "npm version patch --no-git-tag-version",
     "deploy": "npm run predeploy && npm run build",
     "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --configuration production",
+    "build:test": "NODE_OPTIONS=--openssl-legacy-provider ng test --watch=false --browsers=ChromeHeadless",
     "analyse": "source-map-explorer ./dist/*es2017*.js ./dist/*es2017*.js.map --html dist/stack.html",
     "test": "NODE_OPTIONS=--openssl-legacy-provider ng test",
     "lint": "ng lint",
