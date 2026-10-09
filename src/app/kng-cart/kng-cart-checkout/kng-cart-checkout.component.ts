@@ -725,7 +725,10 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
       payment.coupon = this.couponCredit.code;
     }
     const hub = this.store;
-    const items = this.items.map(item => item.toDEPRECATED());
+    if (!this._items?.length) {
+      this._items = this.$cart.getItems(this.createCartContext());
+    }
+    const items = (this._items || []).map(item => item.toDEPRECATED());
 
     //
     // update shipping note
@@ -754,7 +757,8 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
   }
 
   private prepareWalletPayment() {
-    if (this.walletPreparing || this.isSubscriptionCheckout || !this._user?.isAuthenticated() || !this.selectAddressIsDone) {
+    // Address sync runs while the cart page stays open. Quote only for a visible order checkout.
+    if (this.walletPreparing || this.isSubscriptionCheckout || !this.open || !this._items?.length || !this._user?.isAuthenticated() || !this.selectAddressIsDone) {
       return;
     }
 
@@ -999,6 +1003,12 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
 
   doOrder(intent?) {
     const payload = this.buildCheckoutPayload(intent);
+    if (!payload.items.length) {
+      this.isRunning = false;
+      this.errorMessage = "Vous ne pouvez pas passer une commande avec un panier vide.";
+      this.$snack.open(this.errorMessage, this.$i18n.label().thanks, this.$i18n.snackOpt);
+      return;
+    }
     this.isRunning = true;
     //
     // clear cart error
