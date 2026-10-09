@@ -201,11 +201,14 @@ export class KngCheckoutReviewComponent implements OnChanges {
   get subscriptionTimes() {
     const prices = this.config?.shared?.shipping?.pricetime || {};
     const labels = this.config?.shared?.hub?.shippingtimes || {};
-    return Object.keys(prices).map(key => ({
-      key,
-      label: labels[key] || `${key}h`,
-      price: Number(prices[key]) || 0
-    }));
+    return Object.keys(labels)
+      .filter(key => Number(key) > 0 && String(labels[key] ?? '').trim() !== '')
+      .sort((a, b) => Number(a) - Number(b))
+      .map(key => ({
+        key,
+        label: String(labels[key]).trim(),
+        price: Number(prices[key]) || 0
+      }));
   }
 
   get selectedSubscriptionTime() {
