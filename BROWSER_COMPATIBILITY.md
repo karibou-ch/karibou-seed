@@ -1,4 +1,27 @@
-# 🌐 Compatibilité Navigateurs - Service Audio Karibou
+# Compatibilité navigateurs
+
+## Build de l'application
+
+Le `ng build` de production (Angular 12) lit `.browserslistrc` :
+
+```
+> 0.5%
+last 2 versions
+not dead
+```
+
+Deux paquets JavaScript sortent tant que la liste contient un navigateur sans modules ES. Aujourd'hui ce sont KaiOS 2.5 et Opera Mini.
+
+| Paquet | Langage | Chargement |
+|---|---|---|
+| Récent | ES2017 (`tsconfig.json`) | `type="module"` |
+| Ancien | ES5 | `nomodule` |
+
+Plancher actuel de la liste : Chrome 109, Firefox 148, Edge 145, Safari 26.3, iOS Safari 18.5, Samsung Internet 28, Opera 127, Opera Mobile 80. Internet Explorer 11 n'est pas visé. Les tests Karma ne font pas ce double build.
+
+## Service audio
+
+La matrice ci-dessous décrit `getUserMedia` et `MediaRecorder`, pas le paquet JavaScript.
 
 ## 📊 **Matrice de Compatibilité Complète**
 

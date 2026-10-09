@@ -5,27 +5,17 @@
 # You can see what browsers were selected by your queries by running:
 #   npx browserslist
 
-#last 1 Chrome version
-#last 1 Firefox version
-#last 2 Edge major versions
-#last 2 Safari major versions
-#last 2 iOS major versions
-#Firefox ESR
-#not IE 11 # Angular supports IE 11 only as an opt-in. To opt-in, remove the 'not' prefix on this line.
-
-
-# based analytics results
-#> 0.5%
-#last 3 Chrome version
-#last 3 Firefox version
-#last 3 Edge major versions
-#last 3 Safari major versions
-#last 3 iOS major versions
-#Firefox ESR
-#not IE 11
+# Production build (Angular 12) emits two JS bundles while this list
+# contains a browser without ES modules. Today that is KaiOS 2.5 and Opera Mini.
+# The modern bundle is ES2017 (tsconfig target) and is loaded as type=module.
+# The legacy bundle is ES5 and is loaded with nomodule.
+# IE 11 is not included.
+#
+# Lowest versions currently selected (caniuse-lite, refresh with npx update-browserslist-db):
+# Chrome 109, Firefox 148, Edge 145, Safari 26.3, iOS Safari 18.5,
+# Samsung Internet 28, Opera 127, Opera Mobile 80, KaiOS 2.5, Opera Mini (all).
 
 > 0.5%
 last 2 versions
-#Firefox ESR
 not dead
 
