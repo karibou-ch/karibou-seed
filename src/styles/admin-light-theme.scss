@@ -36,6 +36,18 @@
   color: var(--wa-color-text-normal);
 }
 
+@media (max-width: 899px) {
+  kng-admin-layout {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    width: 100vw;
+    height: 100dvh;
+    overflow: auto;
+    background: var(--kng-color-surface-canvas);
+  }
+}
+
 .kng-admin {
   min-height: 100dvh;
   display: flex;

@@ -11,7 +11,10 @@ export class AdminShellService {
   }
 
   setSearch(value: string): void {
-    this.searchSubject.next(value || '');
+    const next = value || '';
+    if (next !== this.searchSubject.value) {
+      this.searchSubject.next(next);
+    }
   }
 
   matches(label: string): boolean {

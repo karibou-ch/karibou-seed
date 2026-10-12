@@ -56,6 +56,13 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.desktopQuery.addEventListener('change', this.readMode);
     this.subs.add(this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       this.sidebarOpen = false;
+      if (!this.sawFirstNavigation) {
+        this.sawFirstNavigation = true;
+        return;
+      }
+      if (this.mode === 'mobile') {
+        this.mobileNav = false;
+      }
     }));
   }
 
@@ -107,7 +114,24 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || 'A';
   }
 
+  private navCache: NavGroup[] = [];
+  private navCacheKey = '';
+  private sawFirstNavigation = false;
+
+  trackGroup(_index: number, group: NavGroup): string {
+    return group.id;
+  }
+
+  trackNav(_index: number, item: NavItem): string {
+    return item.link;
+  }
+
   get groups(): NavGroup[] {
+    const key = this.shell.search + '|' + this.locale;
+    if (key === this.navCacheKey && this.navCache.length) {
+      return this.navCache;
+    }
+    this.navCacheKey = key;
     const t = this.labels;
     const query = this.shell.search.trim().toLowerCase();
     const groups: NavGroup[] = [
@@ -149,15 +173,15 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         ]
       }
     ];
-    if (!query) {
-      return groups;
-    }
-    return groups
-      .map(group => ({
-        ...group,
-        items: group.items.filter(item => item.label.toLowerCase().includes(query) || group.label.toLowerCase().includes(query))
-      }))
-      .filter(group => group.items.length);
+    this.navCache = !query
+      ? groups
+      : groups
+        .map(group => ({
+          ...group,
+          items: group.items.filter(item => item.label.toLowerCase().includes(query) || group.label.toLowerCase().includes(query))
+        }))
+        .filter(group => group.items.length);
+    return this.navCache;
   }
 
   private readMode = (): void => {
@@ -203,7 +227,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   }
 
   onLocaleChange(locale: string): void {
-    if (locale === 'fr' || locale === 'en') {
+    if ((locale === 'fr' || locale === 'en') && locale !== this.$i18n.locale) {
       this.$i18n.locale = locale;
     }
   }

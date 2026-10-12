@@ -21,7 +21,7 @@ export interface KngCheckItem {
       </wa-radio-group>
     </div>
     <p class="kng-checklist__count">{{ countLabel }}</p>
-    <div class="kng-checklist__row" *ngFor="let item of visible" [class.is-on]="isSelected(item.id)">
+    <div class="kng-checklist__row" *ngFor="let item of visible; trackBy: trackId" [class.is-on]="isSelected(item.id)">
       <wa-checkbox size="small" [checked]="isSelected(item.id)"
                    (change)="toggle(item.id, $any($event.target).checked)">
         {{ item.label }}
@@ -88,6 +88,10 @@ export class KngChecklistComponent {
       .replace('__N__', String(this.selectedCount))
       .replace('__T__', String(this.uniqueItems.length))
       .replace('__NOUN__', this.noun || '');
+  }
+
+  trackId(_index: number, item: KngCheckItem): string {
+    return item.id;
   }
 
   isSelected(id: string): boolean {

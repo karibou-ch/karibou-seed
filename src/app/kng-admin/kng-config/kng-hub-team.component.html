@@ -40,8 +40,8 @@
           <div class="kng-setting-row__label">{{ labels.add_contact }}</div>
         </div>
         <div class="kng-setting-row__control kng-inline-field">
-          <wa-input size="small" type="email" [label]="labels.email" [value]="newManager"
-                    (input)="newManager = $any($event.target).value"></wa-input>
+          <wa-input ngDefaultControl size="small" type="email" [label]="labels.email" name="new-manager"
+                    [(ngModel)]="newManager"></wa-input>
           <wa-button size="small" appearance="outlined" variant="neutral" (click)="addManager()">{{ labels.add }}</wa-button>
         </div>
       </div>
@@ -80,8 +80,8 @@
           <div class="kng-setting-row__label">{{ labels.add_contact }}</div>
         </div>
         <div class="kng-setting-row__control kng-inline-field">
-          <wa-input size="small" type="email" [label]="labels.email" [value]="newLogistic"
-                    (input)="newLogistic = $any($event.target).value"></wa-input>
+          <wa-input ngDefaultControl size="small" type="email" [label]="labels.email" name="new-logistic"
+                    [(ngModel)]="newLogistic"></wa-input>
           <wa-button size="small" appearance="outlined" variant="neutral" (click)="addLogistic()">{{ labels.add }}</wa-button>
         </div>
       </div>

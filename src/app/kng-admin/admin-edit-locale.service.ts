@@ -19,7 +19,7 @@ export class AdminEditLocaleService {
   }
 
   setLocale(locale: string): void {
-    if (locale === 'fr' || locale === 'en' || locale === 'de') {
+    if ((locale === 'fr' || locale === 'en' || locale === 'de') && locale !== this.subject.value) {
       this.subject.next(locale);
     }
   }

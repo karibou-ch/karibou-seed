@@ -55,10 +55,10 @@
 
 <ng-template #navigation>
   <nav [attr.aria-label]="labels.menu">
-    <section class="kng-nav-group" *ngFor="let group of groups">
+    <section class="kng-nav-group" *ngFor="let group of groups; trackBy: trackGroup">
       <h2 class="kng-nav-group__label">{{ group.label }}</h2>
-      <a *ngFor="let item of group.items" class="kng-nav-item" [routerLink]="item.link"
-         routerLinkActive="active" ariaCurrentWhenActive="page" (click)="onNavPick()">
+      <a *ngFor="let item of group.items; trackBy: trackNav" class="kng-nav-item" [routerLink]="item.link"
+         queryParamsHandling="preserve" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="onNavPick()">
         <span class="kng-nav-item__mark" aria-hidden="true"></span>
         {{ item.label }}
       </a>
