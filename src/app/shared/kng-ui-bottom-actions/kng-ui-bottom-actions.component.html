@@ -44,21 +44,21 @@
 
   <ul class="mdc-list  " [hidden]="!products.length">
     <li class="twoline" *ngFor="let product of products">
-      <a class="avatar" [class.selected]="product.attributes.home" [routerLink]="['/store',store,'home','products',product.sku]">
-        <img [src]="product.photo.url + '/-/resize/128x/)'" />
+      <a class="avatar" [class.selected]="product.attributes?.home" [routerLink]="['/store',store,'home','products',product.sku]">
+        <img [src]="productImage(product)" />
       </a>
       <div class="list-text">
         <div class="title" [routerLink]="['/store',store,'home','products',product.sku]">{{product.title}}</div>
         <div class="list-text-secondary">
-          {{product.pricing.part}} -
-          <span [hidden]="product.attributes.discount">
-            Fr {{product.pricing.price| number:'1.2-2'}}
+          {{product.pricing?.part}} -
+          <span [hidden]="hasDiscount(product)">
+            Fr {{product.pricing?.price| number:'1.2-2'}}
           </span>
-          <span [hidden]="!product.attributes.discount">
-            <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
+          <span [hidden]="!hasDiscount(product)">
+            <span class="red">Fr {{product.pricing?.discount| number:'1.2-2'}}</span>
           </span>
     
-          <a href="javascript:;" class="gray" i18n (click)="addToCard(product)" [hidden]="product.variants.length">
+          <a href="javascript:;" class="gray" i18n (click)="addToCard(product)" [hidden]="product.variants?.length">
             <i class="material-symbols-outlined" style="transform: translateY(5px);font-size:20px">add</i>ajouter
           </a>
 
