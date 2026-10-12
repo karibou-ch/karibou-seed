@@ -1,0 +1,53 @@
+<div class="confirmation-card">
+  <!-- Objectif : permettre aux clients B2B d'ajouter une note de facturation -->
+  <div class="confirmation-note" [hidden]="user?.plan?.name !== 'b2b'">
+    <label class="confirmation-label">{{label.cart_info_bill_note}}</label>
+    <div class="confirmation-input">
+      <input
+        type="text"
+        maxlength="34"
+        placeholder="optionnel..."
+        [ngModel]="billNote"
+        (ngModelChange)="billNoteChange.emit($event)" />
+    </div>
+  </div>
+
+  <!-- Objectif : recueillir les consentements requis avant la validation -->
+  <div class="confirmation-terms">
+    <input
+      id="checkout-confirmation-cg"
+      type="checkbox"
+      [ngModel]="cgAccepted"
+      (ngModelChange)="cgAcceptedChange.emit($event)" >
+    <label class="confirmation-terms-copy" for="checkout-confirmation-cg">
+      <a href="javascript:;" class="link"
+        [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg}}</a>
+
+        <br/><span class="dotted">{{label.cart_cg_middle}}</span>
+
+      <a href="javascript:;" class="link"
+        [routerLink]="['/store',store,'content','conditions-generales-de-vente']">{{label.cart_cg_18}}</a>
+    </label>
+  </div>
+
+  <!-- Objectif : déclencher la validation finale de commande ou d'abonnement -->
+  <div class="confirmation-actions">
+    <div [hidden]="useCartSubscriptionView">
+      <button class="confirmation-submit" [disabled]="isFinalizeDisabled" (click)="orderRequested.emit()">
+        <b>{{label.cart_order}}</b>
+        <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>
+      </button>
+    </div>
+
+    <div [hidden]="!useCartSubscriptionView">
+      <button class="confirmation-submit" [disabled]="isFinalizeDisabled" (click)="subscriptionRequested.emit()">
+        {{label.cart_subscription}}
+        <span class="material-symbols-outlined icon" [hidden]="!isRunning" [class.waiting]="isRunning"> clock_loader_10</span>
+      </button>
+    </div>
+
+    <div class="confirmation-error" [hidden]="!errorMessage">
+      {{errorMessage}}
+    </div>
+  </div>
+</div>

@@ -7,7 +7,7 @@
               [innerHtml]="cart_info_one_date"
               [hidden]="isCrossMarketShippingDate && !noshippingMsg"></span>
         <span [hidden]="!showCartItems || !isCrossMarketShippingDate || noshippingMsg">
-          {{i18n[locale].cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
+          {{label.cart_nextshipping}} {{currentShippingDay|date:'EEEE,d MMMM':'':locale}}
         </span>
         <div class="subtitle" (click)="doToggleFees=!doToggleFees">
           <span [innerHtml]="cart_info_service_k" class="link "></span>
@@ -22,7 +22,7 @@
 
   <!-- FEES INFORMATION -->
   <div class="list-item auto-line" [hidden]="!doToggleFees">
-    <p class="block-info" [innerHtml]="llabel.cart_info_service_k_plus"></p>
+    <p class="block-info" [innerHtml]="label.cart_info_service_k_plus"></p>
   </div>
 
 
@@ -37,7 +37,7 @@
 
 
 
-    <button class="continue hide"   [routerLink]="routerLinkForMoreProducts"><span class="">{{label.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
+    <button class="continue hide"   [routerLink]="routerLinkForMoreProducts"><span class="">{{glabel.nav_store_continue}}</span> <span class="material-symbols-outlined icon">arrow_forward</span></button>
 
     <!-- CALENDAR-->
     <kng-calendar  [hidden]="!showCartItems"  [user]="user" [minimal]="true" [config]="config" (updated)="onSetCurrentShippingDay($event)"></kng-calendar>
@@ -49,7 +49,7 @@
   <!-- WARNING MESSAGE -->
   <!-- No more window for delivery -->
   <div class="list-item auto-line" [hidden]="isNotShippingLimit">
-    <p class="block-info" [innerHtml]="i18n[locale].cart_info_limit|safeHtml"></p>
+    <p class="block-info" [innerHtml]="label.cart_info_limit|safeHtml"></p>
   </div>
 
   <!-- Hub is not available for checkout -->
@@ -66,12 +66,12 @@
 
   <!-- WARNING DISPLAY ERRORS -->
   <div class="list-item auto-line slim-item " [hidden]="!hasOrderError || !isReady">
-    <p class="block-warning bold" [innerHtml]="i18n[locale].cart_error">
+    <p class="block-warning bold" [innerHtml]="label.cart_error">
   </div>
 
   <!-- WARNING DISPLAY HUB DATE -->
   <div class="list-item auto-line slim-item pending-date" [class.display-message]="!isReady && !isCrossMarketShippingDate">
-    <p class="shipping-grouped text-overflow block-warning" [innerHtml]="i18n[locale].cart_info_one_date_more">
+    <p class="shipping-grouped text-overflow block-warning" [innerHtml]="label.cart_info_one_date_more">
   </div>
 
   <!--                        -->
@@ -91,7 +91,7 @@
 
           <!-- DELETE -->
           <a href="javascript:;" class="action-delete" (click)="sub_removeAll(item,item.variant)">
-            <i class="material-symbols-outlined" >close</i>{{i18n[locale].cart_remove}}
+            <i class="material-symbols-outlined" >close</i>{{label.cart_remove}}
           </a>
 
           <!-- NOTE -->
@@ -123,7 +123,7 @@
 
         <!-- DELETE -->
         <a href="javascript:;" class="action-delete" (click)="sub_removeAll(item,item.variant)">
-          {{i18n[locale].cart_remove}}
+          {{label.cart_remove}}
         </a>
       </div>
 
@@ -147,7 +147,7 @@
 
         <!-- DELETE -->
         <a href="javascript:;" class="action-delete" (click)="removeAll(item,item.variant)">
-          <i class="material-symbols-outlined" >close</i>{{i18n[locale].cart_remove}}
+          <i class="material-symbols-outlined" >close</i>{{label.cart_remove}}
         </a>
 
         <!-- NOTE -->
@@ -181,7 +181,7 @@
 
       <!-- DELETE -->
       <a href="javascript:;" class="action-delete" (click)="removeAll(item,item.variant)">
-        {{i18n[locale].cart_remove}}
+        {{label.cart_remove}}
       </a>
 
     </div>

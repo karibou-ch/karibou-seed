@@ -32,10 +32,8 @@
     "linkify-it": "^5.0.0",
     "markdown-it": "^13.0.1",
     "ngx-stripe": "^15.0.0",
-    "pdfmake": "^0.2.23",
     "recordrtc": "^5.6.2",
     "rxjs": "~7.8.0",
-    "swissqrbill": "^3.2.1",
     "tslib": "^2.5.0",
     "zone.js": "~0.12.0"
   },

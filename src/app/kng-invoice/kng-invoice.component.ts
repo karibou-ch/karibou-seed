@@ -1,7 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { DatePipe } from '@angular/common'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { Order, OrderCustomerInvoices, OrderItem, OrderService } from 'kng2-core';
+import { Order, OrderCustomerInvoices, OrderService } from 'kng2-core';
 import { i18n } from 'src/app/common';
 
 
@@ -16,54 +15,42 @@ export class KngInvoiceComponent implements OnInit {
   @Input() invoice: OrderCustomerInvoices;
   @Input() order:Order;
   @Output() closed: EventEmitter<string> = new EventEmitter<string>();
-  @ViewChild('qrbill') svg: ElementRef;
-  @ViewChild('pdfHeader') pdfHeader: ElementRef;
-  @ViewChild('pdfCustomer') pdfCustomer: ElementRef;
-  @ViewChild('pdfCustomer') pdfContent: ElementRef;
-
-
-  headerImg = '/assets/img/k-puce-v.png';
-  headerImgB64 ='';
-
-  //
-  //
-  creditor = {
-    name: "Karibou.ch SA",
-    address: "5 ch. du 23-Aout",
-    zip: 1205,
-    city: "Geneve",
-    account: "CH03 0839 0039 3567 1010 0",
-    country: "CH"
-  };
-
-  //
-  // Lazy load SVG module
-  contentSVG:any={};
-  module:any;
-
-  shipping:{
-    name:string;
-    address: string;
-    postalCode: string;
-  }
-  today:Date;
 
   i18n: any = {
     fr: {
-      title_payment_done: 'Valider exclusivement après le virement bancaire!',
+      download_invoice: 'Télécharger la facture',
+      month_details: 'Détails du mois',
+      subscriptions: 'Commandes d’abonnement',
+      ponctuals: 'Commandes ponctuelles',
+      invoices: 'Factures ouvertes',
+      transfers: 'Virements en attente',
+      paids: 'Commandes payées',
+      total_invoice: 'Total à facturer',
+      refund: 'Remboursement appliqué',
+      credit_note: 'Note de crédit appliquée',
+      close: 'Fermer'
     },
     en:{
-      title_payment_done: 'Validate only after bank transfer',
+      download_invoice: 'Download invoice',
+      month_details: 'Monthly details',
+      subscriptions: 'Subscription orders',
+      ponctuals: 'One-off orders',
+      invoices: 'Open invoices',
+      transfers: 'Pending bank transfers',
+      paids: 'Paid orders',
+      total_invoice: 'Total to invoice',
+      refund: 'Refund applied',
+      credit_note: 'Credit note applied',
+      close: 'Close'
     }
   };
 
   invoicesAmount:number = 0;
   transfersAmount:number = 0;
   paidsAmount:number = 0;
-  qrbillOrders = [];
   qrbillAmount = 0;
-
-  printQr = false;
+  subscriptionOrders:any[] = [];
+  ponctualOrders:any[] = [];
 
   constructor(
     private $i18n: i18n,
@@ -76,44 +63,9 @@ export class KngInvoiceComponent implements OnInit {
     return this.$i18n.locale;
   }
 
-
-  async convertImageToBase64(imgUrl):Promise<string> {
-    const image = new Image();
-    image.crossOrigin='anonymous';
-    image.src = imgUrl;
-    return new Promise((resolve)=> {
-      image.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.height = image.naturalHeight;
-        canvas.width = image.naturalWidth;
-        ctx.drawImage(image, 0, 0);
-        resolve(canvas.toDataURL());
-      }
-    });
-  }
-
   ngOnInit(){
-    this.today = new Date();
     document.body.classList.add('mdc-dialog-scroll-lock');
-    this.convertImageToBase64(this.headerImg).then(b64=>this.headerImgB64 = b64);
     this.prepareInvoice();
-    import('swissqrbill/lib/node/esm/node/svg.js').then(module => {
-      this.module = module;
-      if(!this.qrbillAmount){
-        return
-      }
-      if(!this.svg ||
-         !this.contentSVG ||
-         !this.module ||
-         !this.module.SVG){
-          return;
-         }
-
-      this.svg.nativeElement.innerHTML = new this.module.SVG(this.contentSVG, { language: 'EN' });
-      this.printQr = true;
-    })
-
   }
 
   ngOnDestroy() {
@@ -121,12 +73,9 @@ export class KngInvoiceComponent implements OnInit {
   }
 
   prepareInvoice() {
-    const invoices = this.invoice.invoices;
-    this.shipping = {
-      name: this.order.shipping.name,
-      address: this.order.shipping.streetAdress,
-      postalCode: this.order.shipping.postalCode,
-    }
+    const invoices = this.invoice.invoices || [];
+    const transfers = this.invoice.transfers || [];
+    const paids = this.invoice.paids || [];
 
     //
     // invoices
@@ -140,57 +89,30 @@ export class KngInvoiceComponent implements OnInit {
 
     //
     // paids
-    this.invoice.paids.forEach((order:any) => {
+    paids.forEach((order:any) => {
       order.amount = this.getTotalPrice(order);
     });
-    this.paidsAmount = this.invoice.paids.reduce((sum,order:any)=>{
+    this.paidsAmount = paids.reduce((sum,order:any)=>{
       const amount = order.amount;
       return sum+amount;
     },0);
 
     //
     // transfers
-    this.invoice.transfers.forEach((order:any) => {
+    transfers.forEach((order:any) => {
       order.amount = this.getTotalPrice(order);
     });
 
-    this.transfersAmount = this.invoice.transfers.reduce((sum,order:any)=>{
+    this.transfersAmount = transfers.reduce((sum,order:any)=>{
       const amount = order.amount;
       return sum+amount;
     },0);
 
-    //
-    // create SVG QR bill for Orders in status Invoice OR Transfer
-    this.qrbillOrders = invoices.length? invoices:this.invoice.transfers;
-    if(!this.qrbillOrders.length) {
-      this.printQr = true;
-      return;
-    }
-
-    this.qrbillAmount = invoices.length?this.invoicesAmount:this.transfersAmount
-    const ordersTxt = 'K-ch: '+this.qrbillOrders.map(order => order.oid).join('-');
-
-    this.contentSVG = {
-      currency: "CHF",
-      amount: this.qrbillAmount,
-      message: ordersTxt,
-      creditor: {...this.creditor},
-      debtor: {
-        name: this.order.shipping.name,
-        address: this.order.shipping.streetAdress,
-        zip: this.order.shipping.postalCode,
-        city: this.order.shipping.region,
-        country: "CH"
-      }
-    } as any;
-
-    //
-    // setup the title
-    const when = new Date(this.qrbillOrders[0].when);
-    const format = (when.getFullYear())+' - '+(when.getMonth()+1);
-    const who = this.order.customer.email.replace(/[.@]/,'-');
-    document.title = 'k-ch-invoices'+format+' - '+who+' - '+this.qrbillOrders.map(order => order.oid).join('-');
-    //console.log('--create invoice QR',this.svg )
+    const monthOrders = [...invoices, ...transfers, ...paids];
+    this.subscriptionOrders = monthOrders.filter(order => this.isSubscriptionOrder(order));
+    this.ponctualOrders = monthOrders.filter(order => !this.isSubscriptionOrder(order));
+    this.qrbillAmount = invoices.length ? this.invoicesAmount : this.transfersAmount;
+    document.title = 'k-ch-invoices-' + this.invoice.year + '-' + this.invoice.month;
 
   }
 
@@ -201,6 +123,7 @@ export class KngInvoiceComponent implements OnInit {
 
   getTotalPrice(order){
 
+    const creditNote = Number(order.payment && order.payment.credit_note || 0);
     const total = order.items.reduce((sum, item)=>{
       //
       // item should not be failure (fulfillment)
@@ -210,124 +133,76 @@ export class KngInvoiceComponent implements OnInit {
       return sum;
     },0);
 
-    return this.round1cts(total + order.fees.shipping);
+    return this.round1cts(Math.max(0, total + order.fees.shipping - creditNote));
   }
 
-  //
-  // lazy download off pdf toolkit as it's super lourd
-  async onDownloadPDF(){
-    const $date = new DatePipe('fr-ch');
-    const modulea = await import("pdfmake/build/pdfmake");
-    const moduleb = await import("pdfmake/build/vfs_fonts");
-    const pdfMake = modulea.default;
-    const pdfFonts = moduleb.default;
-    // pdfmake v0.2.x: vfs is exported directly, not under pdfMake property
-    (pdfMake as any).vfs = pdfFonts.pdfMake?.vfs || pdfFonts;
+  isSubscriptionOrder(order:any) {
+    return !!(order.subscription || order.payment && order.payment.subscription);
+  }
 
+  orderLabel(order:any) {
+    const billNote = order.customer && order.customer.billNote;
+    return billNote ? order.oid + ' / ' + billNote : order.oid;
+  }
 
-    const pageWidth = 595.28;
-    const pageHeigth= 841.89;
-    const svgStr = this.svg.nativeElement.innerHTML.replace('<svg ','<svg viewBox="0 0 650 280" ');
-    const docDefinition = {
-      pageSize: {
-        width: pageWidth,
-        height: pageHeigth
-      },
-      content: [
+  orderNotes(order:any) {
+    const notes = [];
+    const billNote = order.customer && order.customer.billNote;
+    const refund = this.refundInfo(order);
+    const creditNote = order.payment && Number(order.payment.credit_note || 0);
 
-        //
-        // HEADER
-        {
-          text: 'Karibou.ch SA - facture du '+$date.transform(new Date(), "d MMM y"),
-          fontSize: 16,
-          alignment: 'left'
-        },
-        {
-          text: document.title+'',
-          alignment: 'left',
-          fontSize:10,
-        },
-        //
-        // Customer details
-        {
-          columns: [
-            [
-              {
-                text: '-',
-                alignment: 'left',
-                width:'*'
-              }
-            ],
-            [
-              {
-                text: this.contentSVG.debtor.name,
-                bold: true,
-                width:'30%'
-              },
-              { text: this.contentSVG.debtor.address, width:'30%' },
-              { text: this.contentSVG.debtor.zip, width:'30%' },
-              { text: this.order.customer.email, width:'30%' }
-            ],
-          ],
-          columnGap: 0,
-          margin: [0,20]
-
-        },
-        //
-        // Invoice Details
-        {
-          text: 'Details de la facture',
-          style: 'sectionHeader'
-        },
-        {
-          table: {
-            headerRows: 1,
-            widths: ['auto', '*', 'auto', 'auto'],
-            body: [
-              ['Quantité', 'Commande', 'Date', 'CHF'],
-              ...this.qrbillOrders.map(p => (['1x', p.oid, $date.transform(p.when, "d MMM y"), {text:parseFloat(p.amount.toFixed(2)),bold:true}])),
-              [{ text: 'Total', colSpan: 3 }, {}, {}, {text:parseFloat(this.qrbillAmount.toFixed(2)),bold:true}]
-            ]
-          },
-          margin: [0,20]
-        },
-        //
-        // INVOICE QR
-        { svg: svgStr, fit: [450, 400],margin:0},
-        //
-        // SINGATURE
-        {
-          text: 'Avec nos meilleures salutations,\nkaribou.ch SA',
-          margin: [0,20]
-        }
-
-      ],
-      styles: {
-        sectionHeader: {
-          bold: true,
-          decoration: 'underline',
-          fontSize: 14,
-          margin: [0, 15, 0, 15]
-        }
-      }
+    if(billNote) {
+      notes.push(billNote);
     }
-    pdfMake.createPdf(docDefinition).download(document.title);
+    if(refund.hasRefund) {
+      notes.push(refund.label);
+    }
+    if(creditNote > 0) {
+      notes.push(this.i18n[this.locale].credit_note + ': CHF ' + creditNote.toFixed(2));
+    }
+
+    return notes;
   }
 
-  onPrint(){
-    window.print();
+  refundInfo(order:any) {
+    const payment = order.payment || {};
+    const itemRefund = (order.items || []).reduce((sum, item) => {
+      const refunded = item.fulfillment && Number(item.fulfillment.refunded);
+      return sum + (Number.isFinite(refunded) ? refunded : 0);
+    }, 0);
+    const amount = this.round1cts(itemRefund || Number(payment.hub_refund) || Number(payment.refunded) || 0);
+    const status = payment.status;
+    const hasRefund = ['partially_refunded', 'manually_refunded', 'refunded'].indexOf(status) > -1 || amount > 0;
+
+    return {
+      hasRefund,
+      label: hasRefund ? this.i18n[this.locale].refund + (amount ? ': CHF ' + amount.toFixed(2) : '') : ''
+    };
   }
 
-  onUpdateInvoices(){
-    const oids = this.invoice.invoices.map(order => order.oid);
-    this.$order.updateInvoices(oids, this.invoicesAmount).subscribe((result)=>{
-      alert("Merci d'avoir effectué le paiement :-)")
+  statusLabel(order:any) {
+    if(this.invoice.invoices.indexOf(order) > -1) {
+      return this.i18n[this.locale].invoices;
+    }
+    if(this.invoice.transfers.indexOf(order) > -1) {
+      return this.i18n[this.locale].transfers;
+    }
+    return this.i18n[this.locale].paids;
+  }
+
+  onDownloadPDF(){
+    this.$order.customerInvoicePdf(this.invoice.year, this.invoice.month).subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const month = ('0' + this.invoice.month).slice(-2);
+      link.href = url;
+      link.download = 'karibou-invoice-' + this.invoice.year + '-' + month + '.pdf';
+      link.click();
+      window.URL.revokeObjectURL(url);
     },(status)=> {
       alert(status.error||status.message);
-    })
+    });
   }
-
-
   onClose() {
     this.closed.emit("close");
   }

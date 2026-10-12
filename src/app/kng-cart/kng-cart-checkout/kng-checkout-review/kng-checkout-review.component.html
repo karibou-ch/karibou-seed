@@ -1,0 +1,119 @@
+<section class="checkout-review">
+  <h3>{{label.review_title}}</h3>
+
+  <!-- résumer la livraison choisie et permettre son édition inline -->
+  <div class="review-card">
+
+    <!-- afficher le créneau de livraison sélectionné -->
+    <div class="review-primary">
+      <span class="highlight" [hidden]="isLastMinuteShipping">
+        {{ shippingDay | date: 'EEEE dd/M':'':locale }}
+      </span>
+      <span class="highlight" [hidden]="!isLastMinuteShipping">{{label.review_last_minute}}</span>
+      <span class="" [hidden]="!shippingTime">, {{shippingTime}}</span>
+    </div>
+
+    <!-- Afficher et permettre le changement d'adresse -->
+    <div class="review-card-header">
+      <div class="review-label">{{label.review_delivery}}</div>
+      <button type="button" (click)="editAddress.emit()">{{label.review_change}}</button>
+    </div>
+
+    <div class="review-line -bold">{{address?.name}}</div>
+    <div class="review-line">{{address?.streetAdress}} / {{address?.postalCode}}</div>
+    <div class="review-line" [hidden]="!address?.phone">{{address?.phone}}</div>
+
+    <div class="review-delivery-note" [hidden]="isAddressEditing">
+      <label for="checkout-review-shipping-note">{{glabel.user_address_note}}</label>
+      <input
+        id="checkout-review-shipping-note"
+        type="text"
+        [placeholder]="label.review_delivery_note_placeholder"
+        [ngModel]="shippingNote"
+        (ngModelChange)="shippingNoteChange.emit($event)" />
+    </div>
+
+
+    <!-- afficher les adresses disponibles lorsque l'utilisateur veut changer de livraison -->
+    <div class="review-address-editor" [hidden]="!isAddressEditing">
+        <div class="review-inline-form" *ngIf="!hasUserAddresses; else addressOptions">
+        <kng-address [config]="config" [phone]="phone" (updated)="addressSaved.emit($event)"></kng-address>
+      </div>
+
+      <ng-template #addressOptions>
+        <button
+          type="button"
+          class="review-option"
+          *ngFor="let option of addresses"
+          [class.selected]="isSelectedAddress(option)"
+          (click)="addressSelected.emit(option)">
+          <span class="review-option-main">
+            <span class="review-option-name">{{option.name}}</span>
+            <span class="review-option-detail">{{option.streetAdress}} / {{option.postalCode}}</span>
+            <span class="review-option-detail" [hidden]="!option.phone">{{option.phone}}</span>
+          </span>
+          <span class="review-option-amount">Fr {{shippingAmount(option)|number:'1.2-2'}}</span>
+        </button>
+
+        <button
+          type="button"
+          class="review-option"
+          *ngFor="let option of depositAddresses"
+          [class.selected]="isSelectedAddress(option)"
+          (click)="addressSelected.emit(option)">
+          <span class="review-option-main inlined">
+            <span class="review-option-name">{{option.name}}</span>
+            <span class="review-option-detail">{{option.streetAdress}}</span>
+          </span>
+          <span class="review-option-amount">Fr {{shippingAmount(option)|number:'1.2-2'}}</span>
+        </button>
+
+        <button type="button" class="review-add-action" (click)="addAddressRequested.emit()">
+          + {{glabel.user_address_add}}
+        </button>
+      </ng-template>
+    </div>
+
+    <div class="review-delivery-policy">
+      {{label.review_delivery_policy}}
+    </div>
+  </div>
+
+  <!-- résumer le paiement choisi et permettre son édition inline -->
+  <div class="review-card">
+    <div class="review-card-header">
+      <div class="review-label">{{label.review_payment}}</div>
+      <button type="button" (click)="editPayment.emit()">{{label.review_change}}</button>
+    </div>
+
+    <div class="review-primary "><span class="highlight">{{paymentName}}</span></div>
+
+    <div class="review-line" [hidden]="isPaymentEditing">{{label.review_payment_note}}</div>
+
+    <!-- afficher les moyens de paiement disponibles lorsque l'utilisateur veut changer -->
+    <div class="review-payment-editor" [hidden]="!isPaymentEditing">
+      <div class="review-inline-form" *ngIf="hasOnlyTwintPayment; else paymentOptions">
+        <kng-user-payment [config]="config" [user]="user" (updated)="paymentSaved.emit($event)"></kng-user-payment>
+      </div>
+
+      <ng-template #paymentOptions>
+        <button
+          type="button"
+          class="review-option"
+          *ngFor="let option of payments"
+          [class.selected]="isSelectedPayment(option)"
+          [class.error]="isPaymentInvalid(option)"
+          (click)="paymentSelected.emit(option)">
+          <span class="review-option-main">
+            <span class="review-option-name">{{paymentDisplayName(option)}}</span>
+            <span class="review-option-detail" [hidden]="!paymentExpiry(option)">{{paymentExpiry(option)|date:'MM/y'}}</span>
+          </span>
+        </button>
+
+        <button type="button" class="review-add-action" (click)="addPaymentRequested.emit()">
+          + {{glabel.user_payment_add}}
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</section>

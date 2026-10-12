@@ -63,7 +63,7 @@ export class KngAddressComponent implements OnInit {
       street: address.streetAdress,
       region: address.region,
       postalCode: address.postalCode,
-      phone: address.phone || this.phone || ''
+      phone: address.phone || ''
     });
   }
 
@@ -81,7 +81,7 @@ export class KngAddressComponent implements OnInit {
       'street': ['', [Validators.required, Validators.minLength(5)]],
       'region': ['', [Validators.required]],
       'postalCode': ['', [Validators.required, Validators.minLength(4)]],
-      'phone':  ['', [Validators.required, Validators.minLength(10)]]
+      'phone':  ['', [Validators.minLength(10)]]
     });
 
     this.formTouched = false;
@@ -133,7 +133,7 @@ export class KngAddressComponent implements OnInit {
       type: 'customer'
     };
     const phone = this.$address.value.phone;
-    if(phone)address.phone = phone;
+    if(phone)address.phone = UserAddress.normalizePhone(phone);
     return address;
   }
 
@@ -158,9 +158,9 @@ export class KngAddressComponent implements OnInit {
     this.isReady = true;
     // this.loadAutocomplete().then(() => {
     // });
-    if(this.phone){
-      this.$address.get('phone').setValue(this.phone);
-    }
+    // if(this.phone){
+    //   this.$address.get('phone').setValue(this.phone);
+    // }
 
     // ✅ Track changes sur tous les champs du formulaire
     this.$address.valueChanges.subscribe(() => {
@@ -187,6 +187,15 @@ export class KngAddressComponent implements OnInit {
     if (this.formTouched) {
       this.checkFormNeedsSave();
     }
+  }
+
+  onPhoneBlur() {
+    const phone = this.$address.get('phone');
+    const value = phone?.value;
+    if (value) {
+      phone.setValue(UserAddress.normalizePhone(value));
+    }
+    this.onFormBlur();
   }
 
   isInvalid(controlName: string): boolean {

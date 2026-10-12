@@ -26,7 +26,6 @@ export class KngCartItemsComponent implements OnInit {
   private _config: Config;
   private _subscription: Subscription;
   private _showCartItems: boolean;
-  @Input() i18n: any;
   @Input() set showCartItems(value: boolean){
     this._showCartItems = value;
     if(!this.hub) {
@@ -61,6 +60,41 @@ export class KngCartItemsComponent implements OnInit {
   premiumLimit: number;
   currentShippingDay: Date;
   weekdays = [];
+  readonly i18n: any = {
+    fr: {
+      cart_info_service_k: `Service <span> __FEES__%</span> inclus`,
+      cart_info_service_k_plus: `Nos prix restent inchangés grâce à notre vente directe ; les frais de service transparents assurent une qualité 5🌟.`,
+      cart_info_hub_not_active:'<b>__HUB__</b> est en maintenance les commandes seront disponibles dès que possible',
+      cart_info_one_date: 'Pas de livraison le __DAY__ pour ce marché.',
+      cart_info_one_date_more: 'Changer de date pour tout recevoir en une livraison.',
+      cart_info_limit: `Nos créneaux de livraison sont tous occupés. Toutefois, vous pouvez préparer votre panier et valider votre commande
+      lorsque de nouvelles fenêtres de livraison seront disponibles.
+       Merci beaucoup pour votre compréhension.`,
+      cart_nextshipping: 'Livraison',
+      cart_remove: 'enlever',
+      cart_error: 'Vous devez corriger votre panier!',
+      cart_checkout: 'Finaliser pour',
+      cart_create_subscription: 'Créer votre abonnement',
+      cart_update_subscription: 'Modifier votre abonnement',
+      cart_update_subscription_payment: 'Valider votre méthode de paiement'
+    },
+    en: {
+      cart_info_service_k: 'Service fee <span class="">__FEES__</span> included',
+      cart_info_service_k_plus: `Our prices remain unchanged thanks to our direct sales; transparent service fees ensure 5🌟 quality.`,
+      cart_info_hub_not_active:'The <b>__HUB__</b> market is in maintenance and he is not available for checkout',
+      cart_info_one_date: 'Shipping is not available on __DAY__ for this marker.',
+      cart_info_one_date_more: 'Change the date to receive everything in one delivery',
+      cart_info_limit: `Our delivery slots are all full. However, you can prepare your basket and confirm your order when
+       new delivery windows become available. Thank you very much for your understanding.`,
+      cart_nextshipping: 'Next delivery',
+      cart_remove: 'remove',
+      cart_error: 'Your cart has to be modified!',
+      cart_checkout: 'Checkout for',
+      cart_create_subscription: 'Create your subscription',
+      cart_update_subscription: 'Modify your subscription',
+      cart_update_subscription_payment: 'Validate your payment method'
+    }
+  };
 
   isReady: boolean;
   subscriptionParams:CartSubscriptionParams;
@@ -137,11 +171,11 @@ export class KngCartItemsComponent implements OnInit {
     return this.$i18n.locale;
   }
 
-  get llabel(){
-    return this.i18n[this.locale];
+  get label(){
+    return this.i18n[this.locale] || this.i18n.fr;
   }
 
-  get label(){
+  get glabel(){
     return this.$i18n.label();
   }
   get cart_info_one_date() {
@@ -150,7 +184,7 @@ export class KngCartItemsComponent implements OnInit {
       return '';
     }
     const day = when.getDay();
-    const label = this.i18n[this.locale].cart_info_one_date.replace('__HUB__',this.hub.name).replace('__DAY__',this.weekdays[day]);
+    const label = this.label.cart_info_one_date.replace('__HUB__',this.hub.name).replace('__DAY__',this.weekdays[day]);
     return label;
   }
 
@@ -162,23 +196,23 @@ export class KngCartItemsComponent implements OnInit {
     // adding gateway fees
     const gateway = this.$cart.getCurrentGateway();
     const fees = this.hub.serviceFees + gateway.fees;
-    const label = this.i18n[this.locale].cart_info_service_k.replace('__FEES__',(fees*100).toFixed(0));
+    const label = this.label.cart_info_service_k.replace('__FEES__',(fees*100).toFixed(0));
     return  label + ' ('+this.$cart.totalHubFees(ctx)+' fr)';
   }
 
   get cart_info_hub_not_active() {
-    return this.i18n[this.locale].cart_info_hub_not_active.replace('__HUB__',this.hub.name);
+    return this.label.cart_info_hub_not_active.replace('__HUB__',this.hub.name);
   }
 
   get cart_info_checkout_or_subscription() {
 
     if(this.hasPendingSubscription) {
-      return this.llabel.cart_update_subscription_payment;
+      return this.label.cart_update_subscription_payment;
     }
     if(this.hasUpdateContract) {
-      return this.llabel.cart_update_subscription;
+      return this.label.cart_update_subscription;
     }
-    return (this.showCartItems)?this.llabel.cart_checkout:this.llabel.cart_create_subscription
+    return (this.showCartItems)?this.label.cart_checkout:this.label.cart_create_subscription
   }
 
   get showCartItems() {
