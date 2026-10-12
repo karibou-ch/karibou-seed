@@ -1,0 +1,35 @@
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
+
+<div class="kng-admin-page" *ngIf="currentHub">
+  <header class="kng-page-head">
+    <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_hub }} · {{ currentHub.name }}</p>
+    <h1>{{ labels.categories_title }}</h1>
+    <p class="kng-page-head__desc">{{ labels.categories_desc }}</p>
+  </header>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
+  </div>
+
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__box">
+      <div class="kng-setting-row">
+        <div class="kng-setting-row__copy">
+          <div class="kng-setting-row__label">{{ labels.all_categories }}</div>
+          <p class="kng-setting-row__desc">{{ labels.all_categories_desc }}</p>
+        </div>
+        <div class="kng-setting-row__control">
+          <wa-switch size="small" [checked]="allCategories" [attr.aria-label]="labels.all_categories"
+                     (change)="onAllChange($any($event.target).checked)"></wa-switch>
+        </div>
+      </div>
+      <kng-checklist *ngIf="!allCategories" [items]="categoryItems" [selected]="currentHub.categories || []"
+                     [noun]="labels.categories_noun" [searchLabel]="labels.search_category"
+                     (selectedChange)="onCategoriesChange($event)"></kng-checklist>
+    </div>
+  </section>
+
+  <kng-save-bar [dirty]="hubDirty" [count]="hubDirtyCount" [loading]="isLoading"
+                (cancel)="revertHub()" (save)="save()"></kng-save-bar>
+</div>

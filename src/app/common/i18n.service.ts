@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Config, ConfigService } from 'kng2-core';
 import { NotifyOptions } from './notify.service';
+import { adminLabels } from './admin-labels';
 
 
 /**
@@ -305,6 +306,10 @@ export class i18n  {
 
   label() {
     return this[this.currentLocale];
+  }
+
+  adm() {
+    return this.currentLocale === 'en' ? adminLabels.en : adminLabels.fr;
   }
 
   lang(elem: any) {

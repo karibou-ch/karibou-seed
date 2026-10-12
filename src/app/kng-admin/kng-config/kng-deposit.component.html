@@ -1,72 +1,50 @@
-<div class="page-saving" [hidden]="isReady">
-  <h1>Enregistrement…</h1>
-</div>
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
 
-<div class="adm-page" *ngIf="currentHub">
-
-  <h1 class="adm-page-title" style="display:flex;align-items:center;justify-content:space-between">
-    Points de collecte
-    <wa-button appearance="outlined" size="small" (click)="onAddressCreate()">
-      <span class="material-symbols-outlined" slot="prefix">add</span>
-      Nouveau dépôt
-    </wa-button>
-  </h1>
-  <hr class="adm-page-divider">
-
-  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
-  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
-    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{saveMessage}}</wa-callout>
-    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{saveError}}</wa-callout>
-  </div>
-
-  <!-- ── LISTE DES DÉPÔTS ─────────────────────────────────────────────────── -->
-  <div class="adm-card" style="padding:0;overflow:hidden">
-    <div class="adm-list">
-
-      <!-- Item : créer -->
-      <div class="adm-list-item" style="color:var(--adm-accent);cursor:pointer" (click)="onAddressCreate()">
-        <span class="material-symbols-outlined" style="font-size:20px;color:var(--adm-accent)">add_circle</span>
-        <div style="flex:1">
-          <div style="font-size:var(--adm-font-size-s);font-weight:500">Ajouter une adresse de collecte</div>
-          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">Cliquer pour ajouter</div>
-        </div>
+<div class="kng-admin-page" *ngIf="currentHub">
+  <header class="kng-page-head">
+    <div class="kng-page-head__row">
+      <div>
+        <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_hub }} · {{ currentHub.name }}</p>
+        <h1>{{ labels.deposits_title }}</h1>
+        <p class="kng-page-head__desc">{{ labels.deposits_desc }}</p>
       </div>
-
-      <!-- Items existants -->
-      <div *ngFor="let address of currentHub.deposits; let i=index; trackBy: trackDeposit"
-           class="adm-list-item"
-           [class.disabled]="!address.active"
-           style="gap:var(--adm-space-3);cursor:pointer"
-           (click)="onAddressSelect($event, address, i)">
-
-        <div class="deposit-map"
-             [ngStyle]="{'background-image': 'url(' + getStaticMap(address) + ')'}"></div>
-
-        <div style="flex:1">
-          <div style="font-size:var(--adm-font-size-s);font-weight:500">{{address.name}}</div>
-          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-secondary)">
-            {{address.streetAdress}} · {{address.postalCode}} {{address.region}}
-          </div>
-          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)" *ngIf="address.note">
-            {{address.note}}
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--adm-space-1)">
-          <span class="adm-badge" [class.success]="address.active" [class.neutral]="!address.active">
-            {{address.active ? 'Actif' : 'Inactif'}}
-          </span>
-          <span style="font-size:var(--adm-font-size-xs);color:var(--adm-text-secondary)">
-            {{address.fees | currency:'CHF'}}
-          </span>
-        </div>
-      </div>
-
+      <wa-button appearance="outlined" variant="neutral" size="small" (click)="onAddressCreate()">
+        <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+        {{ labels.new_deposit }}
+      </wa-button>
     </div>
+  </header>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
   </div>
 
-
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__box">
+      <button type="button" class="kng-list-item" (click)="onAddressCreate()">
+        <span class="material-symbols-outlined kng-icon is-brand" aria-hidden="true">add_circle</span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ labels.add_deposit }}</span>
+          <span class="kng-list-item__sub">{{ labels.add_deposit_desc }}</span>
+        </span>
+      </button>
+      <button type="button" class="kng-list-item" *ngFor="let address of currentHub.deposits; let i = index; trackBy: trackDeposit"
+              [class.is-off]="!address.active" [attr.aria-label]="labels.open_deposit"
+              (click)="onAddressSelect($event, address, i)">
+        <span class="kng-deposit-map" [style.--map]="'url(' + getStaticMap(address) + ')'"></span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ address.name }}</span>
+          <span class="kng-list-item__sub">{{ address.streetAdress }} · {{ address.postalCode }} {{ address.region }}</span>
+          <span class="kng-list-item__sub" *ngIf="address.note">{{ address.note }}</span>
+        </span>
+        <span class="kng-list-item__meta">
+          <span class="kng-badge" [class.is-on]="address.active">{{ address.active ? labels.active : labels.inactive }}</span>
+          <span>{{ address.fees | currency:'CHF' }}</span>
+        </span>
+      </button>
+    </div>
+  </section>
 </div>
 
-<!-- Dialog positionné hors du conteneur scrollable pour éviter le clipping -->
 <kng-deposit-dlg></kng-deposit-dlg>

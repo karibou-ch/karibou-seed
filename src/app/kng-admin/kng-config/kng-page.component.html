@@ -1,59 +1,38 @@
-<div class="adm-page">
-
-  <h1 class="adm-page-title" style="display:flex;align-items:center;justify-content:space-between">
-    Pages
-    <wa-button appearance="outlined" size="small" [routerLink]="['./create']">
-      <span class="material-symbols-outlined" slot="prefix">add</span>
-      Nouvelle page
-    </wa-button>
-  </h1>
-  <hr class="adm-page-divider">
+<div class="kng-admin-page">
+  <header class="kng-page-head">
+    <div class="kng-page-head__row">
+      <div>
+        <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_content }}</p>
+        <h1>{{ labels.pages_title }}</h1>
+      </div>
+      <wa-button appearance="outlined" variant="neutral" size="small" [routerLink]="['./create']">
+        <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+        {{ labels.new_page }}
+      </wa-button>
+    </div>
+  </header>
 
   <router-outlet></router-outlet>
 
-  <!-- ── LISTE DES PAGES ────────────────────────────────────────────────────── -->
-  <div class="adm-card" style="padding:0;overflow:hidden">
-    <div class="adm-list">
-
-      <!-- Item : créer -->
-      <a class="adm-list-item" style="color:var(--adm-accent);cursor:pointer;text-decoration:none"
-         [routerLink]="['./create']">
-        <span class="material-symbols-outlined" style="font-size:20px;color:var(--adm-accent)">add_circle</span>
-        <div style="flex:1">
-          <div style="font-size:var(--adm-font-size-s);font-weight:500">Ajouter un nouveau contenu</div>
-          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">Cliquer ici pour ajouter</div>
-        </div>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__box">
+      <a class="kng-list-item" [routerLink]="['./create']">
+        <span class="material-symbols-outlined kng-icon is-brand" aria-hidden="true">add_circle</span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ labels.add_page }}</span>
+          <span class="kng-list-item__sub">{{ labels.add_page_desc }}</span>
+        </span>
       </a>
-
-      <!-- Items existants -->
-      <a class="adm-list-item"
-         *ngFor="let content of contents"
-         [routerLink]="['./list', content.slug[0]]"
-         [class.disabled]="!content.available"
-         style="gap:var(--adm-space-3);cursor:pointer;text-decoration:none">
-
-        <span class="material-symbols-outlined" style="font-size:28px;color:var(--adm-text-label);flex-shrink:0">folder</span>
-
-        <div style="flex:1;min-width:0">
-          <div style="font-size:var(--adm-font-size-s);font-weight:500">
-            <span style="color:var(--adm-text-label)">{{$any(content).type || 'page'}}</span>
-            <span style="color:var(--adm-border)">&nbsp;/&nbsp;</span>
-            {{content.slug[0]}}
-          </div>
-          <div style="font-size:var(--adm-font-size-xs);color:var(--adm-text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
-               [innerHtml]="content.title[locale]"></div>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:var(--adm-space-2);flex-shrink:0">
-          <span *ngIf="$any(content).weight"
-                style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">{{$any(content).weight}}</span>
-          <span class="adm-status-dot"
-                [class.active]="content.available"
-                [class.inactive]="!content.available"></span>
-        </div>
+      <a class="kng-list-item" *ngFor="let content of contents" [routerLink]="['./list', content.slug[0]]"
+         [class.is-off]="!content.available" [attr.aria-label]="labels.open_page">
+        <span class="material-symbols-outlined kng-icon" aria-hidden="true">folder</span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ $any(content).type || 'page' }} / {{ content.slug[0] }}</span>
+          <span class="kng-list-item__sub" [innerHtml]="content.title[locale]"></span>
+        </span>
+        <span class="kng-list-item__meta" *ngIf="$any(content).weight">{{ $any(content).weight }}</span>
+        <span class="kng-status-dot" [class.is-on]="content.available"></span>
       </a>
-
     </div>
-  </div>
-
+  </section>
 </div>

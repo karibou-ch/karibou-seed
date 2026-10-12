@@ -1,98 +1,80 @@
-<div class="adm-shell">
+<div class="kng-admin kng-register-config"
+     [class.kng-admin--nav]="mode === 'mobile' && mobileNav"
+     [class.kng-admin--content]="mode === 'mobile' && !mobileNav">
 
-  <!-- ── SIDEBAR ─────────────────────────────────────────────────────────────── -->
-  <aside class="adm-sidebar" [class.open]="sidebarOpen">
+  <header class="kng-admin__top">
+    <wa-button *ngIf="mode === 'mobile' && !mobileNav" class="kng-admin__back" appearance="plain" size="small"
+               [label]="labels.back" (click)="showMobileNav()">
+      <span class="material-symbols-outlined" slot="start" aria-hidden="true">arrow_back</span>
+    </wa-button>
+    <wa-button *ngIf="mode === 'tablet'" class="kng-admin__menu" appearance="plain" size="small"
+               [label]="labels.menu" (click)="toggleSidebar()">
+      <span class="material-symbols-outlined" slot="start" aria-hidden="true">menu</span>
+    </wa-button>
 
-    <!-- Brand + locale switch -->
-    <div class="adm-sidebar-top">
-      <div class="adm-brand">
-        <span class="adm-brand-name">karibou admin</span>
-        <div class="adm-lang-switch">
-          <button class="adm-lang-btn" [class.active]="locale === 'fr'" (click)="onLocaleChange('fr')">FR</button>
-          <button class="adm-lang-btn" [class.active]="locale === 'en'" (click)="onLocaleChange('en')">EN</button>
-        </div>
+    <h1 class="kng-admin__title">{{ labels.admin_title }} · {{ hubName }}</h1>
+
+    <wa-select *ngIf="hubs.length" class="kng-admin__hub" size="small" [label]="labels.hub" [value]="store"
+               (change)="onHubChange($any($event.target).value)">
+      <wa-option *ngFor="let hub of hubs" [value]="hub.slug">{{ hub.name || hub.slug }}</wa-option>
+    </wa-select>
+
+    <wa-input class="kng-admin__search" size="small" [label]="labels.search" [placeholder]="labels.search"
+              [value]="shell.search" (input)="onSearch($event)"></wa-input>
+
+    <wa-button appearance="plain" size="small" [label]="dark ? labels.theme_light : labels.theme_dark" (click)="toggleTheme()">
+      <span class="material-symbols-outlined" slot="start" aria-hidden="true">{{ dark ? 'light_mode' : 'dark_mode' }}</span>
+    </wa-button>
+
+    <wa-radio-group class="kng-admin__ui-lang" size="small" orientation="horizontal" [label]="labels.ui_lang"
+                    [value]="locale" (change)="onLocaleChange($any($event.target).value)">
+      <wa-radio appearance="button" value="fr">FR</wa-radio>
+      <wa-radio appearance="button" value="en">EN</wa-radio>
+    </wa-radio-group>
+  </header>
+
+  <div class="kng-admin__body">
+    <aside class="kng-admin__nav kng-admin__nav--static" *ngIf="mode === 'desktop' || (mode === 'mobile' && mobileNav)">
+      <ng-container *ngTemplateOutlet="navigation"></ng-container>
+    </aside>
+
+    <wa-drawer *ngIf="mode === 'tablet'" placement="start" [open]="sidebarOpen" [label]="labels.menu"
+               (wa-hide)="closeSidebar()" light-dismiss>
+      <div class="kng-admin__nav kng-admin__nav--drawer">
+        <ng-container *ngTemplateOutlet="navigation"></ng-container>
       </div>
-    </div>
+    </wa-drawer>
 
-    <!-- Nav -->
-    <nav class="adm-nav">
-
-      <div class="adm-nav-label">Général</div>
-      <a routerLink="./config" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Configuration
-      </a>
-      <a routerLink="./welcome" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Welcome
-      </a>
-      <a routerLink="./navigation" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Navigation
-      </a>
-      <a routerLink="./page" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Pages
-      </a>
-      <a routerLink="./category" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Catégories
-      </a>
-      <a routerLink="./shop" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Boutiques
-      </a>
-
-      <div class="adm-nav-label">Hub</div>
-
-      <!-- Sélecteur de hub (déplacé ici) -->
-      <div class="adm-hub-wrapper">
-        <div class="adm-hub-btn" (click)="toggleHubMenu()">
-          <span>Hub : <strong>{{store}}</strong></span>
-          <span class="adm-hub-caret" [class.open]="hubMenuOpen">▼</span>
-        </div>
-        <div class="adm-hub-dropdown" *ngIf="hubMenuOpen">
-          <div *ngFor="let hub of hubs"
-               class="adm-hub-option"
-               [class.active]="hub.slug === store"
-               (click)="onHubChange(hub.slug)">
-            {{hub.name || hub.slug}}
-          </div>
-        </div>
+    <main class="kng-admin__main" *ngIf="mode !== 'mobile' || !mobileNav">
+      <div class="kng-admin__content">
+        <router-outlet></router-outlet>
       </div>
-
-      <a routerLink="./main-hub" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Paramètres
-      </a>
-      <a routerLink="./manager-hub" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Manager
-      </a>
-      <a routerLink="./information" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Information
-      </a>
-      <a routerLink="./deposit" routerLinkActive="active" class="adm-nav-item">
-        <span class="adm-nav-dot"></span>Dépôts
-      </a>
-
-    </nav>
-
-    <!-- User footer -->
-    <div class="adm-sidebar-footer">
-      <div class="adm-user-avatar">A</div>
-      <div class="adm-user-info">
-        <div class="adm-user-name">{{store}}</div>
-        <div class="adm-user-role">Administrateur</div>
-      </div>
-    </div>
-
-  </aside>
-
-  <!-- ── OVERLAY mobile ────────────────────────────────────────────────────── -->
-  <div class="adm-overlay" [class.visible]="sidebarOpen" (click)="closeSidebar()"></div>
-
-  <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
-  <main class="adm-main">
-    <button class="adm-hamburger" (click)="toggleSidebar()" aria-label="Menu">
-      <span class="material-symbols-outlined">menu</span>
-    </button>
-
-    <div class="adm-content-area">
-      <router-outlet></router-outlet>
-    </div>
-  </main>
-
+    </main>
+  </div>
 </div>
+
+<ng-template #navigation>
+  <nav [attr.aria-label]="labels.menu">
+    <section class="kng-nav-group" *ngFor="let group of groups">
+      <h2 class="kng-nav-group__label">{{ group.label }}</h2>
+      <a *ngFor="let item of group.items" class="kng-nav-item" [routerLink]="item.link"
+         routerLinkActive="active" ariaCurrentWhenActive="page" (click)="onNavPick()">
+        <span class="kng-nav-item__mark" aria-hidden="true"></span>
+        {{ item.label }}
+      </a>
+    </section>
+  </nav>
+  <div class="kng-admin__account">
+    <span class="kng-avatar" aria-hidden="true">{{ initials }}</span>
+    <div>
+      <div class="kng-admin__account-name">{{ userName }}</div>
+      <div class="kng-admin__account-role">{{ hubName }} · {{ labels.role_admin }}</div>
+    </div>
+    <wa-radio-group *ngIf="mode !== 'desktop'" size="small" orientation="horizontal" [label]="labels.ui_lang"
+                    [value]="locale" (change)="onLocaleChange($any($event.target).value)">
+      <wa-radio appearance="button" value="fr">FR</wa-radio>
+      <wa-radio appearance="button" value="en">EN</wa-radio>
+    </wa-radio-group>
+    <div class="kng-admin__version">{{ labels.version.replace('__V__', version) }}</div>
+  </div>
+</ng-template>

@@ -14,92 +14,44 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'kng-category-dlg',
   template: `
-    <div class="adm-dialog-overlay" *ngIf="isOpen" (click)="onClose()">
-      <div class="adm-dialog" (click)="$event.stopPropagation()">
-
-        <div class="adm-dialog-header">
-          <span>{{isCreate ? 'Créer' : 'Modifier'}} une catégorie</span>
-          <wa-button appearance="text" size="small" (click)="onClose()">
-            <span class="material-symbols-outlined">close</span>
-          </wa-button>
+    <wa-dialog class="kng-register-config" [label]="(isCreate ? $i18n.adm().create : $i18n.adm().edit) + ' — ' + $i18n.adm().nav_categories"
+               [open]="isOpen" (wa-hide)="onClose()" light-dismiss>
+      <form *ngIf="category" class="kng-form" #dlgForm="ngForm">
+        <wa-input ngDefaultControl size="small" [label]="$i18n.adm().name" name="name" [(ngModel)]="category.name"></wa-input>
+        <wa-textarea ngDefaultControl size="small" [label]="$i18n.adm().description" resize="auto" rows="2"
+                     name="description" [(ngModel)]="category.description"></wa-textarea>
+        <div class="kng-form-row">
+          <wa-input class="is-grow" ngDefaultControl size="small" [label]="$i18n.adm().group" name="group" [(ngModel)]="category.group"></wa-input>
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().weight" type="number" name="weight" [(ngModel)]="category.weight"></wa-input>
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().primary_color" name="color" [(ngModel)]="category.color"></wa-input>
         </div>
-
-        <form *ngIf="category" #dlgForm="ngForm" style="display:flex;flex-direction:column;gap:var(--adm-space-3)">
-
-          <wa-input ngDefaultControl size="small" label="Nom" name="name"
-                    [(ngModel)]="category.name"></wa-input>
-
-          <wa-textarea ngDefaultControl size="small" label="Description" resize="auto" rows="2"
-                       name="description"
-                       [(ngModel)]="category.description"></wa-textarea>
-
-          <div style="display:flex;gap:var(--adm-space-3)">
-            <wa-input ngDefaultControl size="small" label="Groupe" style="flex:1"
-                      name="group"
-                      [(ngModel)]="category.group"></wa-input>
-
-            <wa-input ngDefaultControl size="small" label="Poids" type="number" style="flex:1"
-                      name="weight"
-                      [(ngModel)]="category.weight"></wa-input>
-
-            <wa-input ngDefaultControl size="small" label="Couleur" style="flex:1"
-                      name="color"
-                      [(ngModel)]="category.color"></wa-input>
-          </div>
-
-          <div style="display:flex;gap:var(--adm-space-4)">
-            <wa-checkbox ngDefaultControl size="small" name="active"
-                         [(ngModel)]="category.active">Actif</wa-checkbox>
-            <wa-checkbox ngDefaultControl size="small" name="home"
-                         [(ngModel)]="category.home">Page d'accueil</wa-checkbox>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:var(--adm-space-2)">
-            <span style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">Type</span>
-            <div style="display:flex;gap:var(--adm-space-2)">
-              <wa-button size="small"
-                         [appearance]="category.type === 'Category' ? 'filled' : 'outlined'"
-                         (click)="category.type = 'Category'">Catégorie</wa-button>
-              <wa-button size="small"
-                         [appearance]="category.type === 'Group' ? 'filled' : 'outlined'"
-                         (click)="category.type = 'Group'">Groupe</wa-button>
-              <wa-button size="small"
-                         [appearance]="category.type === 'Catalog' ? 'filled' : 'outlined'"
-                         (click)="category.type = 'Catalog'">Catalogue</wa-button>
-            </div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:var(--adm-space-2)">
-            <span style="font-size:var(--adm-font-size-xs);color:var(--adm-text-label)">Image</span>
-            <div style="display:flex;align-items:center;gap:var(--adm-space-3)">
-              <img *ngIf="category.cover" [src]="getImagePrefix(category.cover)"
-                   style="width:56px;height:56px;object-fit:cover;border-radius:var(--adm-radius-m);border:1px solid var(--adm-border)">
-              <ngx-uploadcare-widget
-                [imagesOnly]="true"
-                [value]="category.cover"
-                [validator]="ucValidator"
-                (on-upload-complete)="onUpload($event)"
-                (on-dialog-open)="onDialogOpenUC($event)"
-                [public-key]="pubUpcare">
-              </ngx-uploadcare-widget>
-            </div>
-            <wa-callout *ngIf="uploadError" variant="danger" style="font-size:var(--adm-font-size-xs)">{{uploadError}}</wa-callout>
-          </div>
-
-        </form>
-
-        <div class="adm-action-row" style="margin-top:var(--adm-space-4)">
-          <wa-button *ngIf="!isCreate" size="small" appearance="outlined"
-                     (click)="onDelete()" style="margin-right:auto;color:var(--wa-color-danger-600)">
-            <span class="material-symbols-outlined" slot="prefix">delete</span>
-            Supprimer
-          </wa-button>
-          <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
-          <wa-button size="small" appearance="filled" (click)="onSave()">Enregistrer</wa-button>
+        <div class="kng-form-row">
+          <wa-checkbox ngDefaultControl size="small" name="active" [(ngModel)]="category.active">{{ $i18n.adm().active }}</wa-checkbox>
+          <wa-checkbox ngDefaultControl size="small" name="home" [(ngModel)]="category.home">{{ $i18n.adm().home_flag }}</wa-checkbox>
         </div>
-
+        <wa-radio-group size="small" orientation="horizontal" [label]="$i18n.adm().type" [value]="category.type"
+                        (change)="category.type = $any($event.target).value">
+          <wa-radio appearance="button" value="Category">{{ $i18n.adm().nav_categories }}</wa-radio>
+          <wa-radio appearance="button" value="Group">{{ $i18n.adm().group }}</wa-radio>
+          <wa-radio appearance="button" value="Catalog">{{ $i18n.adm().nav_catalogue }}</wa-radio>
+        </wa-radio-group>
+        <div class="kng-inline-field">
+          <img *ngIf="category.cover" class="kng-thumb kng-thumb--lg" [src]="getImagePrefix(category.cover)" alt="">
+          <ngx-uploadcare-widget [imagesOnly]="true" [value]="category.cover" [validator]="ucValidator"
+            (on-upload-complete)="onUpload($event)" (on-dialog-open)="onDialogOpenUC($event)" [public-key]="pubUpcare">
+          </ngx-uploadcare-widget>
+        </div>
+        <wa-callout *ngIf="uploadError" variant="danger" size="small">{{ uploadError }}</wa-callout>
+      </form>
+      <div slot="footer" class="kng-dialog-footer">
+        <wa-button *ngIf="!isCreate" class="is-start" size="small" appearance="plain" variant="danger" (click)="onDelete()">
+          <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
+          {{ $i18n.adm().delete }}
+        </wa-button>
+        <wa-button size="small" appearance="plain" (click)="onClose()">{{ $i18n.adm().cancel }}</wa-button>
+        <wa-button size="small" variant="brand" (click)="onSave()">{{ $i18n.adm().save }}</wa-button>
       </div>
-    </div>
+    </wa-dialog>
   `
 })
 export class KngCategoryDlgComponent {
@@ -193,6 +145,10 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     create: boolean;
     pubUpcare: string;
   };
+
+  get labels() {
+    return this.$i18n.adm();
+  }
 
   constructor(
     private $i18n: i18n,

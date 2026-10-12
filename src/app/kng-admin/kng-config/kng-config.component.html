@@ -1,235 +1,119 @@
-<div class="page-saving" [hidden]="isReady">
-  <h1>Enregistrement…</h1>
-</div>
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
 
-<div class="adm-page">
+<div class="kng-admin-page">
+  <header class="kng-page-head">
+    <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_system }}</p>
+    <h1>{{ labels.sys_title }}</h1>
+    <p class="kng-page-head__desc">{{ labels.sys_desc }}</p>
+  </header>
 
-  <h1 class="adm-page-title">Configuration</h1>
-  <hr class="adm-page-divider">
+  <kng-lang-toggle [banner]="true" [fields]="editFields"></kng-lang-toggle>
 
-  <!-- ── MESSAGES ──────────────────────────────────────────────────────────── -->
-  <div *ngIf="saveMessage || saveError" style="margin-bottom:var(--adm-space-4)">
-    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{saveMessage}}</wa-callout>
-    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{saveError}}</wa-callout>
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
   </div>
 
-  <!-- ── CONTACT ──────────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title">Contact</div>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head">
+      <h2 class="kng-settings-group__title">{{ labels.contact }}</h2>
+      <kng-lang-toggle [fields]="[config?.shared?.name, config?.shared?.description]"></kng-lang-toggle>
+    </div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.site_title" [i18nField]="config?.shared?.name"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.site_meta" [i18nField]="config?.shared?.description"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.contact_mail" [withCheck]="true"
+                        [(ngModel)]="config?.shared.mail.address" [checked]="config?.shared.welcome.active"
+                        (checkChange)="config.shared.welcome.active = $event"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.phone" [(ngModel)]="config?.shared.mail.phone"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.mail_subject" [(ngModel)]="config?.shared.mail.subject"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.mail_signature" [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
+    </div>
+  </section>
 
-    <kng-config-input clazz="config" label="Titre du site" name="site.title" format="text"
-                      [(ngModel)]="config?.shared.name[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Description (meta)" name="site.description" format="area"
-                      [(ngModel)]="config?.shared.description[$i18n.locale]"></kng-config-input>
-
-    <hr class="adm-separator">
-
-    <kng-config-input clazz="config" label="Mail de contact" name="mail" format="text"
-                      [(ngModel)]="config?.shared.mail.address"
-                      [checked]="config?.shared.welcome.active" [withCheck]="true"
-                      (checkChange)="config?.shared.welcome.active=$event"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Téléphone" name="phone" format="text"
-                      [(ngModel)]="config?.shared.mail.phone"></kng-config-input>
-
-    <hr class="adm-separator">
-
-    <kng-config-input clazz="config" label="Sujet des mails" name="mail.subject" format="text"
-                      [(ngModel)]="config?.shared.mail.subject"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Signature des mails" name="mail.signature" format="area"
-                      [(ngModel)]="config?.shared.mail.signature"></kng-config-input>
-
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head">
+      <h2 class="kng-settings-group__title">{{ labels.faq }}</h2>
+      <wa-button appearance="plain" variant="brand" size="small" (click)="onCreateFAQ()">
+        <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+        {{ labels.add }}
       </wa-button>
     </div>
-  </div>
-
-  <!-- ── FAQ ──────────────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title" style="display:flex;justify-content:space-between;align-items:center">
-      <span>FAQ</span>
-      <wa-button appearance="outlined" size="small" (click)="onCreateFAQ()">
-        <span class="material-symbols-outlined" slot="prefix">add</span>
-        Ajouter
-      </wa-button>
-    </div>
-
-    <kng-config-input clazz="config" label="Titre FAQ" name="faq.title" format="text"
-                      [(ngModel)]="config?.shared?.faq_title[$i18n.locale]"></kng-config-input>
-
-    <div class="faq">
-      <div *ngFor="let faq of config?.shared?.faq; let idx=index; trackBy: trackFAQ" class="faq-separator">
-        <div class="faq-question">
-          <kng-config-input clazz="config" label="Question {{idx + 1}}" name="faq.question" format="text"
-                            [(ngModel)]="faq.q[$i18n.locale]"></kng-config-input>
-        </div>
-        <div class="faq-reponse">
-          <kng-config-input clazz="config" label="Réponse" name="faq.réponse" format="area"
-                            [(ngModel)]="faq.a[$i18n.locale]"></kng-config-input>
-        </div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.faq_title" [i18nField]="config?.shared?.faq_title"></kng-config-input>
+      <div class="faq-separator" *ngFor="let faq of config?.shared?.faq; let idx = index; trackBy: trackFAQ">
+        <kng-config-input format="text" [label]="labels.question + ' ' + (idx + 1)" [i18nField]="faq.q"></kng-config-input>
+        <kng-config-input format="area" [label]="labels.answer" [i18nField]="faq.a" [withCheck]="true"
+                          [checked]="faq.b2b" (checkChange)="faq.b2b = $event" [description]="labels.b2b"></kng-config-input>
         <div class="faq-actions">
-          <wa-button appearance="text" size="small" (click)="config?.shared?.faq?.splice(idx, 1)">
-            <span class="material-symbols-outlined" slot="prefix">delete</span>
-            Supprimer
+          <wa-button appearance="plain" variant="danger" size="small" [label]="labels.delete" (click)="config?.shared?.faq?.splice(idx, 1)">
+            <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
+            {{ labels.delete }}
           </wa-button>
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
-      </wa-button>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head"><h2 class="kng-settings-group__title">{{ labels.subscription }}</h2></div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.field_title" [i18nField]="config?.shared.subscription.t"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.field_subtitle" [i18nField]="config?.shared.subscription.h"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_paragraph" [i18nField]="config?.shared.subscription.p"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_article" [i18nField]="config?.shared.subscription.article"></kng-config-input>
+      <kng-config-input format="image" [label]="labels.image" [config]="config" (imageChange)="onDialogOpen($event)"
+                        [(ngModel)]="config?.shared.subscription.image"></kng-config-input>
     </div>
-  </div>
+  </section>
 
-  <!-- ── ABONNEMENT ───────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title">Abonnement <span class="gray">(customers header)</span></div>
-
-    <kng-config-input clazz="config" label="Titre" name="subscription.titre" format="text"
-                      [(ngModel)]="config?.shared.subscription.t[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Sous-titre" name="subscription.subtitre" format="text"
-                      [(ngModel)]="config?.shared.subscription.h[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Paragraphe" name="subscription.p" format="area"
-                      [(ngModel)]="config?.shared.subscription.p[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Article" name="subscription.article" format="area"
-                      [(ngModel)]="config?.shared.subscription.article[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Image" name="content-subs.image" format="image"
-                      (imageChange)="onDialogOpen($event)" [config]="config"
-                      [(ngModel)]="config?.shared.subscription.image"></kng-config-input>
-
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
-      </wa-button>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head"><h2 class="kng-settings-group__title">{{ labels.business }}</h2></div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.field_title" [i18nField]="config?.shared.business.t"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.field_subtitle" [i18nField]="config?.shared.business.h"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_paragraph" [i18nField]="config?.shared.business.p"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_article" [i18nField]="config?.shared.business.article"></kng-config-input>
+      <kng-config-input format="image" [label]="labels.image" [config]="config" (imageChange)="onDialogOpen($event)"
+                        [(ngModel)]="config?.shared.business.image"></kng-config-input>
     </div>
-  </div>
+  </section>
 
-  <!-- ── BUSINESS B2B ─────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title">Business B2B <span class="gray">(header)</span></div>
-
-    <kng-config-input clazz="config" label="Titre" name="business.titre" format="text"
-                      [(ngModel)]="config?.shared.business.t[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Sous-titre" name="business.subtitre" format="text"
-                      [(ngModel)]="config?.shared.business.h[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Paragraphe" name="business.p" format="area"
-                      [(ngModel)]="config?.shared.business.p[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Article" name="business.article" format="area"
-                      [(ngModel)]="config?.shared.business.article[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Image" name="content-business.image" format="image"
-                      (imageChange)="onDialogOpen($event)" [config]="config"
-                      [(ngModel)]="config?.shared.business.image"></kng-config-input>
-
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
-      </wa-button>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head"><h2 class="kng-settings-group__title">{{ labels.patreon }}</h2></div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.field_title" [i18nField]="config?.shared.patreon.t"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.field_subtitle" [i18nField]="config?.shared.patreon.h"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_paragraph" [i18nField]="config?.shared.patreon.p"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_article" [i18nField]="config?.shared.patreon.article"></kng-config-input>
     </div>
-  </div>
+  </section>
 
-  <!-- ── PATREON ───────────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title">Patreon</div>
-
-    <kng-config-input clazz="config" label="Titre" name="patreon.titre" format="text"
-                      [(ngModel)]="config?.shared.patreon.t[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Sous-titre" name="patreon.subtitre" format="text"
-                      [(ngModel)]="config?.shared.patreon.h[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Paragraphe" name="patreon.p" format="area"
-                      [(ngModel)]="config?.shared.patreon.p[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Article" name="patreon.article" format="area"
-                      [(ngModel)]="config?.shared.patreon.article[$i18n.locale]"></kng-config-input>
-
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
-      </wa-button>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head"><h2 class="kng-settings-group__title">{{ labels.main_footer }}</h2></div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.field_title" [i18nField]="config?.shared.footer.t"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.field_header" [i18nField]="config?.shared.footer.h"></kng-config-input>
+      <kng-config-input format="area" [label]="labels.field_paragraph" [i18nField]="config?.shared.footer.p"></kng-config-input>
     </div>
-  </div>
+  </section>
 
-  <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title">Main Footer</div>
-
-    <kng-config-input clazz="config" label="Titre" name="footer.titre" format="text"
-                      [(ngModel)]="config?.shared.footer.t[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Header" name="footer.h" format="text"
-                      [(ngModel)]="config?.shared.footer.h[$i18n.locale]"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Paragraphe" name="footer.p" format="area"
-                      [(ngModel)]="config?.shared.footer.p[$i18n.locale]"></kng-config-input>
-
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
-      </wa-button>
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head"><h2 class="kng-settings-group__title">{{ labels.keys }}</h2></div>
+    <div class="kng-settings-group__box">
+      <kng-config-input format="text" [label]="labels.stripe_connect" [(ngModel)]="config?.shared.keys.pubConnect"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.stripe_gateway" [(ngModel)]="config?.shared.keys.pubStripe"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.uploadcare" [(ngModel)]="config?.shared.keys.pubUpcare"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.translate" [(ngModel)]="config?.shared.keys.pubTranslate"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.github" [(ngModel)]="config?.shared.keys.pubGithub"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.maps" [(ngModel)]="config?.shared.keys.pubMap"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.chat" [(ngModel)]="config?.shared.keys.pubChat"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.disqus" [(ngModel)]="config?.shared.keys.pubDisqus"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.google_auth" [(ngModel)]="config?.shared.keys.pubGoogle"></kng-config-input>
+      <kng-config-input format="text" [label]="labels.facebook_auth" [(ngModel)]="config?.shared.keys.pubFacebook"></kng-config-input>
     </div>
-  </div>
+  </section>
 
-  <!-- ── CLÉS API ──────────────────────────────────────────────────────────── -->
-  <div class="adm-card">
-    <div class="adm-card-title">Clés publiques (API tiers)</div>
-
-    <kng-config-input clazz="config" label="Stripe connect" name="key.connect" format="text"
-                      [(ngModel)]="config?.shared.keys.pubConnect"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Stripe gateway" name="key.api" format="text"
-                      [(ngModel)]="config?.shared.keys.pubStripe"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Uploadcare" name="key.uc" format="text"
-                      [(ngModel)]="config?.shared.keys.pubUpcare"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Translate" name="key.translate" format="text"
-                      [(ngModel)]="config?.shared.keys.pubTranslate"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Github" name="key.github" format="text"
-                      [(ngModel)]="config?.shared.keys.pubGithub"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Google Maps" name="key.map" format="text"
-                      [(ngModel)]="config?.shared.keys.pubMap"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Chat" name="key.chat" format="text"
-                      [(ngModel)]="config?.shared.keys.pubChat"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Disqus" name="key.disqus" format="text"
-                      [(ngModel)]="config?.shared.keys.pubDisqus"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Google Auth" name="key.ggauth" format="text"
-                      [(ngModel)]="config?.shared.keys.pubGoogle"></kng-config-input>
-
-    <kng-config-input clazz="config" label="Facebook Auth" name="key.fbauth" format="text"
-                      [(ngModel)]="config?.shared.keys.pubFacebook"></kng-config-input>
-
-    <div class="adm-action-row">
-      <wa-button appearance="filled" size="small" (click)="onConfigSave()">
-        <span class="material-symbols-outlined" slot="prefix">save</span>
-        Sauvegarder
-      </wa-button>
-    </div>
-  </div>
-
+  <kng-save-bar [dirty]="configDirty" [count]="configDirtyCount" [loading]="isLoading"
+                (cancel)="revertConfig()" (save)="onConfigSave()"></kng-save-bar>
 </div>

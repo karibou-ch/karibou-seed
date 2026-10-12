@@ -8,68 +8,39 @@ type DepositDraft = Partial<DepositAddress> & { name?: string; streetAdress?: st
 @Component({
   selector: 'kng-deposit-dlg',
   template: `
-    <div class="adm-dialog-overlay" *ngIf="isOpen" (click)="onClose()">
-      <div class="adm-dialog" style="width:540px" (click)="$event.stopPropagation()">
-
-        <div class="adm-dialog-header">
-          <span>{{isEdit ? 'Modifier' : 'Ajouter'}} un dépôt</span>
-          <wa-button appearance="text" size="small" (click)="onClose()">
-            <span class="material-symbols-outlined">close</span>
-          </wa-button>
+    <wa-dialog class="kng-register-config" [label]="(isEdit ? $i18n.adm().edit : $i18n.adm().add) + ' — ' + $i18n.adm().nav_deposits"
+               [open]="isOpen" (wa-hide)="onClose()" light-dismiss>
+      <form *ngIf="address" class="kng-form" #dlgForm="ngForm">
+        <wa-input ngDefaultControl size="small" [label]="$i18n.adm().name" name="name" [(ngModel)]="address.name"></wa-input>
+        <div class="kng-form-row">
+          <wa-input class="is-grow" ngDefaultControl size="small" [label]="$i18n.adm().street" name="street"
+                    [(ngModel)]="address.streetAdress" (ngModelChange)="onGeoChange()"></wa-input>
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().floor" name="floor" [(ngModel)]="address.floor"></wa-input>
         </div>
-
-        <form *ngIf="address" #dlgForm="ngForm" style="display:flex;flex-direction:column;gap:var(--adm-space-3)">
-
-          <wa-input ngDefaultControl size="small" label="Nom" name="name"
-                    [(ngModel)]="address.name"></wa-input>
-
-          <div style="display:flex;gap:var(--adm-space-3)">
-            <wa-input ngDefaultControl size="small" label="Adresse" style="flex:2" name="street"
-                      [(ngModel)]="address.streetAdress" (ngModelChange)="onGeoChange()"></wa-input>
-            <wa-input ngDefaultControl size="small" label="Étage" style="flex:1" name="floor"
-                      [(ngModel)]="address.floor"></wa-input>
-          </div>
-
-          <div style="display:flex;gap:var(--adm-space-3)">
-            <wa-input ngDefaultControl size="small" label="Code postal" style="flex:1" name="postalCode"
-                      [(ngModel)]="address.postalCode" (ngModelChange)="onGeoChange()"></wa-input>
-            <wa-input ngDefaultControl size="small" label="Région" style="flex:2" name="region"
-                      [(ngModel)]="address.region" (ngModelChange)="onGeoChange()"></wa-input>
-          </div>
-
-          <wa-textarea ngDefaultControl size="small" label="Note" resize="auto" rows="2" name="note"
-                       [(ngModel)]="address.note"></wa-textarea>
-
-          <div style="display:flex;gap:var(--adm-space-3)">
-            <wa-input ngDefaultControl size="small" label="Frais (CHF)" type="number" style="flex:1" name="fees"
-                      [(ngModel)]="address.fees"></wa-input>
-            <wa-input ngDefaultControl size="small" label="Poids" type="number" style="flex:1" name="weight"
-                      [(ngModel)]="address.weight"></wa-input>
-          </div>
-
-          <div style="display:flex;gap:var(--adm-space-4)">
-            <wa-checkbox ngDefaultControl size="small" name="active"
-                         [(ngModel)]="address.active">Actif</wa-checkbox>
-          </div>
-
-          <div *ngIf="address.geo" style="border-radius:var(--adm-radius-m);overflow:hidden">
-            <img [src]="getStaticMap(address)" style="width:100%;height:120px;object-fit:cover;display:block">
-          </div>
-
-        </form>
-
-        <div class="adm-action-row" style="margin-top:var(--adm-space-4)">
-          <wa-button *ngIf="isEdit" size="small" appearance="outlined"
-                     (click)="onDelete()" style="margin-right:auto;color:var(--wa-color-danger-600)">
-            <span class="material-symbols-outlined" slot="prefix">delete</span>
-            Supprimer
-          </wa-button>
-          <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
-          <wa-button size="small" appearance="filled" (click)="onSave()">Enregistrer</wa-button>
+        <div class="kng-form-row">
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().postal" name="postalCode"
+                    [(ngModel)]="address.postalCode" (ngModelChange)="onGeoChange()"></wa-input>
+          <wa-input class="is-grow" ngDefaultControl size="small" [label]="$i18n.adm().region" name="region"
+                    [(ngModel)]="address.region" (ngModelChange)="onGeoChange()"></wa-input>
         </div>
-
+        <wa-textarea ngDefaultControl size="small" [label]="$i18n.adm().note" resize="auto" rows="2" name="note"
+                     [(ngModel)]="address.note"></wa-textarea>
+        <div class="kng-form-row">
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().fees" type="number" name="fees" [(ngModel)]="address.fees"></wa-input>
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().weight" type="number" name="weight" [(ngModel)]="address.weight"></wa-input>
+        </div>
+        <wa-checkbox ngDefaultControl size="small" name="active" [(ngModel)]="address.active">{{ $i18n.adm().active }}</wa-checkbox>
+        <img *ngIf="address.geo" class="kng-deposit-map" [src]="getStaticMap(address)" alt="">
+      </form>
+      <div slot="footer" class="kng-dialog-footer">
+        <wa-button *ngIf="isEdit" class="is-start" size="small" appearance="plain" variant="danger" (click)="onDelete()">
+          <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
+          {{ $i18n.adm().delete }}
+        </wa-button>
+        <wa-button size="small" appearance="plain" (click)="onClose()">{{ $i18n.adm().cancel }}</wa-button>
+        <wa-button size="small" variant="brand" (click)="onSave()">{{ $i18n.adm().save }}</wa-button>
       </div>
-    </div>
+    </wa-dialog>
   `
 })
 export class KngDepositDlgComponent {
