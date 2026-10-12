@@ -27,6 +27,7 @@ import { Subscription } from 'rxjs';
 import { AudioNoteType, i18n, KngNavigationStateService } from '../common';
 
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
+import { ensureProduct } from '../shared/kng-ui-bottom-actions/search-product.util';
 
 
 @Component({
@@ -506,10 +507,13 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
 
       this.clearCategory();
-      this.$navigation.searchAction('stats:'+products.length);
-      this.products = products.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
-      products.forEach((product: Product) => {
-        this.availableCategories[product.categories.name] = true;
+      const list = (Array.isArray(products) ? products : []).map(product => ensureProduct(product, Product));
+      this.$navigation.searchAction('stats:'+list.length);
+      this.products = list.filter(product => product.categories && product.categories.name).sort(this.sortByScore);
+      list.forEach((product: Product) => {
+        if (product.categories && product.categories.name) {
+          this.availableCategories[product.categories.name] = true;
+        }
       });
       this.isReady = true;
       this.isLoading = false;
@@ -767,7 +771,9 @@ ${this.audioContext.cartUrl ? `Panier: ${this.audioContext.cartUrl}` : ''}`;
   }
 
   sortByScore(a, b) {
-    return b.stats.score - a.stats.score;
+    const scoreA = (a && a.stats && a.stats.score) || 0;
+    const scoreB = (b && b.stats && b.stats.score) || 0;
+    return scoreB - scoreA;
   }
 
   sortByWeight(a: Category, b: Category) {

@@ -5,6 +5,7 @@ import { Category, ProductService, Product, CartService, Config, ConfigMenu, Car
 import { i18n, KngNavigationStateService } from '../../common';
 import { EnumMetrics, MetricsService } from 'src/app/common/metrics.service';
 import { User } from 'kng2-core';
+import { ensureProduct, searchProductHasDiscount, searchProductImage } from './search-product.util';
 
 @Component({
   selector: 'kng-ui-bottom-actions',
@@ -137,6 +138,14 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
     this.$cart.add(item);
   }
 
+  hasDiscount(product: Product): boolean {
+    return searchProductHasDiscount(product);
+  }
+
+  productImage(product: Product): string {
+    return searchProductImage(product);
+  }
+
   //
   // FIXME this is quick implementation of remove product from theme
   async removeToTheme(product) {
@@ -209,10 +218,11 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
         this.$metric.event(EnumMetrics.metric_custom,params);
 
 
-        this.findGetNull = !products.length;
+        const list = (Array.isArray(products) ? products : []).map(product => ensureProduct(product, Product));
+        this.findGetNull = !list.length;
         // FIXME products.sort is not a function
         // const sort = this.lastTheme ? this.sortByCatAndScore : this.sortByScore;
-        this.products = products.sort(this.sortByScore);
+        this.products = list.sort(this.sortByScore);
         this.$cdr.markForCheck();
         setTimeout(() => {
           this.results.nativeElement.scrollTop = 0;
@@ -295,7 +305,9 @@ export class KngUiBottomActionsComponent implements OnInit, OnDestroy {
   }
 
   sortByScore(a, b) {
-    return b.stats.score - a.stats.score;
+    const scoreA = (a && a.stats && a.stats.score) || 0;
+    const scoreB = (b && b.stats && b.stats.score) || 0;
+    return scoreB - scoreA;
   }
 
   sortByWeight(a: Category, b: Category) {
