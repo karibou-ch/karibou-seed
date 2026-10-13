@@ -10,15 +10,15 @@ export interface KngCheckItem {
 @Component({
   selector: 'kng-checklist',
   template: `
-    <div class="kng-checklist__toolbar">
-      <wa-input size="small" [label]="searchLabel" [placeholder]="searchLabel"
-                [value]="query" (input)="query = $any($event.target).value"></wa-input>
-      <wa-radio-group size="small" orientation="horizontal" [value]="filter" [label]="labels.filter"
-                      (change)="filter = $any($event.target).value">
+    <div class="kng-toolbar">
+      <wa-radio-group class="kng-pill-tabs" size="small" orientation="horizontal" [value]="filter" [label]="labels.filter"
+                      (change)="onFilter($any($event.target).value)">
         <wa-radio appearance="button" value="all">{{ labels.all }}</wa-radio>
         <wa-radio appearance="button" value="selected">{{ labels.selected }}</wa-radio>
         <wa-radio appearance="button" value="unselected">{{ labels.unselected }}</wa-radio>
       </wa-radio-group>
+      <wa-input size="small" type="search" [label]="searchLabel" [placeholder]="searchLabel"
+                [value]="query" (input)="onQuery($any($event.target).value)"></wa-input>
     </div>
     <p class="kng-checklist__count">{{ countLabel }}</p>
     <div class="kng-checklist__row" *ngFor="let item of visible; trackBy: trackId" [class.is-on]="isSelected(item.id)">
@@ -26,7 +26,7 @@ export interface KngCheckItem {
                    (change)="toggle(item.id, $any($event.target).checked)">
         {{ item.label }}
       </wa-checkbox>
-      <span class="kng-checklist__status" *ngIf="item.status">{{ statusLabel(item.status) }}</span>
+      <kng-status *ngIf="item.status" [state]="item.status === 'new' ? 'pending' : 'enabled'"></kng-status>
     </div>
     <p class="kng-empty" *ngIf="!visible.length">{{ labels.unselected }}</p>
   `
@@ -92,6 +92,20 @@ export class KngChecklistComponent {
 
   trackId(_index: number, item: KngCheckItem): string {
     return item.id;
+  }
+
+  onFilter(value: string): void {
+    if (value === 'all' || value === 'selected' || value === 'unselected') {
+      if (value !== this.filter) {
+        this.filter = value;
+      }
+    }
+  }
+
+  onQuery(value: string): void {
+    if (value !== this.query) {
+      this.query = value;
+    }
   }
 
   isSelected(id: string): boolean {

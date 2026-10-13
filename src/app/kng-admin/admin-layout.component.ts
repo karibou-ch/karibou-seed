@@ -139,6 +139,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         id: 'hub',
         label: t.nav_hub,
         items: [
+          { link: './overview', label: t.nav_overview },
           { link: './main-hub', label: t.nav_config },
           { link: './closures', label: t.nav_closures },
           { link: './team', label: t.nav_team },

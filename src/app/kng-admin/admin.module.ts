@@ -29,7 +29,9 @@ import {
 } from './kng-config/kng-hub.component';
 import { KngConfigInputComponent } from './kng-config/kng-config-input.component';
 import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-deposit.component';
+import { KngHubOverviewComponent } from './kng-config/kng-hub.component';
 import { KngLangToggleComponent } from './kng-lang-toggle.component';
+import { KngStatusComponent } from './kng-status.component';
 import { KngChecklistComponent } from './kng-checklist.component';
 import { KngSaveBarComponent } from './kng-save-bar.component';
 
@@ -40,7 +42,8 @@ const routes: Routes = [
     path: '',
     component: AdminLayoutComponent,
     children: [
-      { path: '', redirectTo: 'main-hub', pathMatch: 'full' },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', component: KngHubOverviewComponent },
       { path: 'cat', component: KngCategoriesComponent },
       { path: 'category', component: KngCategoriesComponent },
       { path: 'config', component: KngConfigComponent },
@@ -75,6 +78,8 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
   declarations: [
     AdminLayoutComponent,
     KngLangToggleComponent,
+    KngStatusComponent,
+    KngHubOverviewComponent,
     KngChecklistComponent,
     KngSaveBarComponent,
     KngConfigInputComponent,

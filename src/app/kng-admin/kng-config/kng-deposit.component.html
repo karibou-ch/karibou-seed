@@ -8,7 +8,7 @@
         <h1>{{ labels.deposits_title }}</h1>
         <p class="kng-page-head__desc">{{ labels.deposits_desc }}</p>
       </div>
-      <wa-button appearance="outlined" variant="neutral" size="small" (click)="onAddressCreate()">
+      <wa-button variant="brand" pill size="small" (click)="onAddressCreate()">
         <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
         {{ labels.new_deposit }}
       </wa-button>
@@ -39,7 +39,7 @@
           <span class="kng-list-item__sub" *ngIf="address.note">{{ address.note }}</span>
         </span>
         <span class="kng-list-item__meta">
-          <span class="kng-badge" [class.is-on]="address.active">{{ address.active ? labels.active : labels.inactive }}</span>
+          <kng-status [state]="address.active ? 'enabled' : 'inactive'"></kng-status>
           <span>{{ address.fees | currency:'CHF' }}</span>
         </span>
       </button>

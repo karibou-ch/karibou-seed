@@ -1,10 +1,11 @@
 <div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
 
 <div class="kng-admin-page" *ngIf="currentHub">
-  <header class="kng-page-head">
-    <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_hub }} · {{ currentHub.name }}</p>
-    <h1>{{ labels.team_title }}</h1>
-    <p class="kng-page-head__desc">{{ labels.team_desc }}</p>
+  <header class="kng-page-head kng-page-header">
+    <div>
+      <h1>{{ labels.team_title }}</h1>
+      <p class="kng-page-head__desc">{{ labels.team_desc }}</p>
+    </div>
   </header>
 
   <div class="kng-callouts" *ngIf="saveMessage || saveError">
@@ -13,80 +14,64 @@
   </div>
 
   <section class="kng-settings-group">
-    <div class="kng-settings-group__head">
-      <div>
-        <h2 class="kng-settings-group__title">{{ labels.admins }}</h2>
-        <p class="kng-settings-group__desc">{{ labels.admins_desc }}</p>
-      </div>
+    <h2 class="kng-section-label">{{ labels.team_title }}</h2>
+    <div class="kng-list-card">
+      <table class="kng-table">
+        <thead>
+          <tr>
+            <th>{{ labels.table_member }}</th>
+            <th>{{ labels.table_role }}</th>
+            <th>{{ labels.table_status }}</th>
+            <th class="kng-table__actions">{{ labels.table_actions }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of members; trackBy: trackMember">
+            <td>{{ member.email }}</td>
+            <td>{{ member.role === 'manager' ? labels.role_manager : labels.role_logistic }}</td>
+            <td><kng-status state="enabled"></kng-status></td>
+            <td class="kng-table__actions">
+              <wa-dropdown placement="bottom-end">
+                <wa-button slot="trigger" appearance="plain" size="small" [label]="labels.actions_for + ' ' + member.email">
+                  <span class="material-symbols-outlined" aria-hidden="true">more_horiz</span>
+                </wa-button>
+                <wa-dropdown-item variant="danger" (click)="askRemove(member.role, member.index)">{{ labels.remove }}</wa-dropdown-item>
+              </wa-dropdown>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="kng-empty" *ngIf="!members.length">{{ labels.team_empty }}</p>
     </div>
-    <div class="kng-settings-group__box">
-      <div class="kng-member" *ngFor="let email of currentHub.manager || []; let idx = index"
-           [class.is-confirm]="confirm?.list === 'manager' && confirm?.index === idx">
-        <span class="kng-avatar" aria-hidden="true">{{ initials(email) }}</span>
-        <span class="kng-member__email">{{ email }}</span>
-        <ng-container *ngIf="confirm?.list === 'manager' && confirm?.index === idx; else managerRemove">
-          <span>{{ labels.confirm_remove }}</span>
-          <wa-button appearance="plain" size="small" (click)="cancelRemove()">{{ labels.cancel }}</wa-button>
-          <wa-button variant="danger" size="small" (click)="confirmRemove()">{{ labels.remove }}</wa-button>
-        </ng-container>
-        <ng-template #managerRemove>
-          <wa-button appearance="plain" variant="danger" size="small" [label]="labels.remove_access" (click)="askRemove('manager', idx)">
-            <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
-          </wa-button>
-        </ng-template>
-      </div>
+  </section>
+
+  <section class="kng-settings-group">
+    <h2 class="kng-section-label">{{ labels.add_contact }}</h2>
+    <div class="kng-card">
       <div class="kng-setting-row">
         <div class="kng-setting-row__copy">
-          <div class="kng-setting-row__label">{{ labels.add_contact }}</div>
+          <div class="kng-setting-row__label">{{ labels.email }}</div>
         </div>
         <div class="kng-setting-row__control kng-inline-field">
-          <wa-input ngDefaultControl size="small" type="email" [label]="labels.email" name="new-manager"
-                    [(ngModel)]="newManager"></wa-input>
-          <wa-button size="small" appearance="outlined" variant="neutral" (click)="addManager()">{{ labels.add }}</wa-button>
+          <wa-input ngDefaultControl size="small" type="email" [label]="labels.email" name="new-member"
+                    [(ngModel)]="newMember"></wa-input>
+          <wa-select #roleSelect size="small" [label]="labels.table_role" value="manager">
+            <wa-option value="manager">{{ labels.role_manager }}</wa-option>
+            <wa-option value="logistic">{{ labels.role_logistic }}</wa-option>
+          </wa-select>
+          <wa-button size="small" appearance="outlined" variant="neutral" (click)="addMember($any(roleSelect).value)">{{ labels.add }}</wa-button>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="kng-settings-group">
-    <div class="kng-settings-group__head">
-      <div>
-        <h2 class="kng-settings-group__title">{{ labels.logistics }}</h2>
-        <p class="kng-settings-group__desc">{{ labels.logistics_desc }}</p>
-      </div>
+  <wa-dialog *ngIf="confirm" [label]="labels.confirm_remove" open (wa-hide)="cancelRemove()">
+    <p>{{ confirm?.email }}</p>
+    <div slot="footer" class="kng-dialog-footer">
+      <wa-button appearance="plain" size="small" (click)="cancelRemove()">{{ labels.cancel }}</wa-button>
+      <wa-button variant="danger" size="small" (click)="confirmRemove()">{{ labels.remove }}</wa-button>
     </div>
-    <div class="kng-settings-group__box">
-      <div class="kng-empty" *ngIf="!(currentHub.logistic || []).length">
-        <strong>{{ labels.team_empty }}</strong>
-        <div>{{ labels.team_empty_desc }}</div>
-      </div>
-      <div class="kng-member" *ngFor="let email of currentHub.logistic || []; let idx = index"
-           [class.is-confirm]="confirm?.list === 'logistic' && confirm?.index === idx">
-        <span class="kng-avatar" aria-hidden="true">{{ initials(email) }}</span>
-        <span class="kng-member__email">{{ email }}</span>
-        <ng-container *ngIf="confirm?.list === 'logistic' && confirm?.index === idx; else logisticRemove">
-          <span>{{ labels.confirm_remove }}</span>
-          <wa-button appearance="plain" size="small" (click)="cancelRemove()">{{ labels.cancel }}</wa-button>
-          <wa-button variant="danger" size="small" (click)="confirmRemove()">{{ labels.remove }}</wa-button>
-        </ng-container>
-        <ng-template #logisticRemove>
-          <wa-button appearance="plain" variant="danger" size="small" [label]="labels.remove_access" (click)="askRemove('logistic', idx)">
-            <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
-          </wa-button>
-        </ng-template>
-      </div>
-      <div class="kng-setting-row">
-        <div class="kng-setting-row__copy">
-          <div class="kng-setting-row__label">{{ labels.add_contact }}</div>
-        </div>
-        <div class="kng-setting-row__control kng-inline-field">
-          <wa-input ngDefaultControl size="small" type="email" [label]="labels.email" name="new-logistic"
-                    [(ngModel)]="newLogistic"></wa-input>
-          <wa-button size="small" appearance="outlined" variant="neutral" (click)="addLogistic()">{{ labels.add }}</wa-button>
-        </div>
-      </div>
-    </div>
-  </section>
+  </wa-dialog>
 
   <kng-save-bar [dirty]="hubDirty" [count]="hubDirtyCount" [loading]="isLoading"
                 (cancel)="revertHub()" (save)="onHubSaveManager()"></kng-save-bar>

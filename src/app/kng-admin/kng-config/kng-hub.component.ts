@@ -4,6 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import {
   LoaderService,
   Category,
+  CalendarService,
   ConfigService,
   Config,
   HubService,
@@ -11,8 +12,9 @@ import {
   ShopService,
   Shop
 } from 'kng2-core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { KngCheckItem } from '../kng-checklist.component';
+import { KngStatusState } from '../kng-status.component';
 
 function diffCount(left: any, right: any): number {
   if (JSON.stringify(left) === JSON.stringify(right)) {
@@ -268,6 +270,102 @@ export class KngHUBBase implements OnInit, OnDestroy {
 
 
 @Component({
+  selector: 'kng-hub-overview',
+  templateUrl: './kng-hub-overview.component.html',
+  styleUrls: ['./kng-config.component.scss']
+})
+export class KngHubOverviewComponent extends KngHUBBase {
+  constructor(
+    $fb: FormBuilder,
+    $i18n: i18n,
+    $config: ConfigService,
+    $hub: HubService,
+    $loader: LoaderService,
+    $shops: ShopService,
+    $route: ActivatedRoute,
+    $utils: KngUtils,
+    $navigation: KngNavigationStateService,
+    private $calendar: CalendarService,
+    private router: Router
+  ) {
+    super($fb, $i18n, $config, $hub, $loader, $shops, $route, $utils, $navigation);
+  }
+
+  goInvite(): void {
+    this.router.navigate(['../team'], { relativeTo: this.$route, queryParamsHandling: 'preserve' });
+  }
+
+  trackModule(_index: number, row: { link: string }): string {
+    return row.link;
+  }
+
+  get modules(): Array<{ link: string; icon: string; label: string; state: KngStatusState; description: string }> {
+    const labels = this.labels;
+    const hub = this.currentHub;
+    const upcoming = this.upcomingClosures();
+    const members = (hub?.manager || []).length + (hub?.logistic || []).length;
+    const deposits = (hub?.deposits || []).length;
+    const vendors = (hub?.vendors || []).length;
+    const categories = (hub?.categories || []).length;
+    const maintenance = !!hub?.maintenance?.active;
+    const active = hub?.status?.active !== false && !maintenance;
+    return [
+      {
+        link: '../main-hub',
+        icon: 'tune',
+        label: labels.nav_config,
+        state: maintenance ? 'pending' : (active ? 'enabled' : 'inactive'),
+        description: maintenance ? labels.overview_config_maintenance : (active ? labels.overview_config_on : labels.overview_config_off)
+      },
+      {
+        link: '../closures',
+        icon: 'event_busy',
+        label: labels.nav_closures,
+        state: upcoming > 0 ? 'pending' : 'enabled',
+        description: upcoming > 0 ? labels.overview_closures_some.replace('__N__', String(upcoming)) : labels.overview_closures_none
+      },
+      {
+        link: '../team',
+        icon: 'group',
+        label: labels.nav_team,
+        state: members > 0 ? 'enabled' : 'inactive',
+        description: labels.overview_team_count.replace('__N__', String(members))
+      },
+      {
+        link: '../deposit',
+        icon: 'pin_drop',
+        label: labels.nav_deposits,
+        state: deposits > 0 ? 'enabled' : 'inactive',
+        description: deposits > 0 ? labels.overview_deposits_some.replace('__N__', String(deposits)) : labels.overview_deposits_none
+      },
+      {
+        link: '../hub-vendors',
+        icon: 'storefront',
+        label: labels.nav_vendors,
+        state: vendors > 0 ? 'enabled' : 'inactive',
+        description: labels.overview_vendors_count.replace('__N__', String(vendors))
+      },
+      {
+        link: '../hub-categories',
+        icon: 'category',
+        label: labels.nav_categories,
+        state: 'enabled',
+        description: categories > 0 ? labels.overview_categories_some.replace('__N__', String(categories)) : labels.overview_categories_all
+      }
+    ];
+  }
+
+  private upcomingClosures(): number {
+    const hubDate = this.$calendar.toHubTime(new Date(), this.currentHub);
+    const month = ('0' + (hubDate.getMonth() + 1)).slice(-2);
+    const day = ('0' + hubDate.getDate()).slice(-2);
+    const today = hubDate.getFullYear() + '-' + month + '-' + day;
+    return (this.currentHub?.noshipping || []).filter((row: any) => String(row?.to || '').slice(0, 10) >= today).length;
+  }
+}
+
+
+@Component({
   selector: 'kng-hub',
   templateUrl: './kng-hub.component.html',
   styleUrls: ['./kng-config.component.scss']
@@ -434,9 +532,10 @@ export class KngHubClosuresComponent extends KngHUBBase {
   styleUrls: ['./kng-config.component.scss']
 })
 export class KngHubTeamComponent extends KngHUBBase {
-  newManager = '';
-  newLogistic = '';
-  confirm: { list: 'manager' | 'logistic'; index: number } | null = null;
+  newMember = '';
+  confirm: { list: 'manager' | 'logistic'; index: number; email: string } | null = null;
+  private membersKey = '';
+  private membersCache: Array<{ email: string; role: 'manager' | 'logistic'; index: number }> | null = null;
 
   constructor(
     $fb: FormBuilder,
@@ -471,23 +570,39 @@ export class KngHubTeamComponent extends KngHUBBase {
     }
     if (list === 'manager') {
       this.currentHub.manager = [...managers, email];
-      this.newManager = '';
     } else {
       this.currentHub.logistic = [...logistics, email];
-      this.newLogistic = '';
     }
+    this.newMember = '';
   }
 
-  addManager(): void {
-    this.addEmail('manager', this.newManager);
+  addMember(role: string): void {
+    this.addEmail(role === 'logistic' ? 'logistic' : 'manager', this.newMember);
   }
 
-  addLogistic(): void {
-    this.addEmail('logistic', this.newLogistic);
+  trackMember(_index: number, member: { email: string; role: string }): string {
+    return member.role + ':' + member.email;
+  }
+
+  get members(): Array<{ email: string; role: 'manager' | 'logistic'; index: number }> {
+    const key = JSON.stringify({
+      manager: this.currentHub?.manager || [],
+      logistic: this.currentHub?.logistic || []
+    });
+    if (key === this.membersKey && this.membersCache) {
+      return this.membersCache;
+    }
+    this.membersKey = key;
+    this.membersCache = [
+      ...(this.currentHub?.manager || []).map((email, index) => ({ email, role: 'manager' as const, index })),
+      ...(this.currentHub?.logistic || []).map((email, index) => ({ email, role: 'logistic' as const, index }))
+    ];
+    return this.membersCache;
   }
 
   askRemove(list: 'manager' | 'logistic', index: number): void {
-    this.confirm = { list, index };
+    const listItems = list === 'manager' ? this.currentHub.manager : this.currentHub.logistic;
+    this.confirm = { list, index, email: listItems?.[index] || '' };
   }
 
   cancelRemove(): void {
