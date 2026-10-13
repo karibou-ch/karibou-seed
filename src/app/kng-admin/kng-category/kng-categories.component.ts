@@ -1,162 +1,80 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import {
   CategoryService,
   Category,
+  Config,
   LoaderService,
   Hub,
 } from 'kng2-core';
 import { KngNavigationStateService, i18n } from '../../common';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 
-/**
- * Dialog component for category editing - inline version
- */
 @Component({
   selector: 'kng-category-dlg',
   template: `
-    <wa-dialog [open]="isOpen" (wa-hide)="onClose()">
-      <div slot="label">{{isCreate ? 'Créer' : 'Modifier'}} une catégorie</div>
-      
-      <form [formGroup]="form" class="category-form">
-        <wa-input size="small" label="Nom" formControlName="name"></wa-input>
-        <wa-textarea size="small" label="Description" formControlName="description" resize="auto" rows="2"></wa-textarea>
-        <wa-input size="small" label="Groupe" formControlName="group"></wa-input>
-        <wa-input size="small" label="Poids (ordre)" type="number" formControlName="weight"></wa-input>
-        <wa-input size="small" label="Couleur" formControlName="color"></wa-input>
-        
-        <div class="form-row">
-          <wa-checkbox size="small" formControlName="active">Actif</wa-checkbox>
-          <wa-checkbox size="small" formControlName="home">Afficher sur la page d'accueil</wa-checkbox>
+    <wa-dialog class="kng-register-config" [label]="(isCreate ? $i18n.adm().create : $i18n.adm().edit) + ' — ' + $i18n.adm().nav_categories"
+               [open]="isOpen" (wa-hide)="onClose()" light-dismiss>
+      <form *ngIf="category" class="kng-form" #dlgForm="ngForm">
+        <wa-input ngDefaultControl size="small" [label]="$i18n.adm().name" name="name" [(ngModel)]="category.name"></wa-input>
+        <wa-textarea ngDefaultControl size="small" [label]="$i18n.adm().description" resize="auto" rows="2"
+                     name="description" [(ngModel)]="category.description"></wa-textarea>
+        <div class="kng-form-row">
+          <wa-input class="is-grow" ngDefaultControl size="small" [label]="$i18n.adm().group" name="group" [(ngModel)]="category.group"></wa-input>
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().weight" type="number" name="weight" [(ngModel)]="category.weight"></wa-input>
+          <wa-input ngDefaultControl size="small" [label]="$i18n.adm().primary_color" name="color" [(ngModel)]="category.color"></wa-input>
         </div>
-        
-        <div class="form-group">
-          <label class="field-label">Type</label>
-          <div class="radio-group">
-            <wa-button size="small" 
-                      [appearance]="form.get('type').value === 'Category' ? 'filled' : 'outlined'"
-                      (click)="form.patchValue({type: 'Category'})">Catégorie</wa-button>
-            <wa-button size="small" 
-                      [appearance]="form.get('type').value === 'Cellar' ? 'filled' : 'outlined'"
-                      (click)="form.patchValue({type: 'Cellar'})">Cave</wa-button>
-          </div>
+        <div class="kng-form-row">
+          <wa-checkbox ngDefaultControl size="small" name="active" [(ngModel)]="category.active">{{ $i18n.adm().active }}</wa-checkbox>
+          <wa-checkbox ngDefaultControl size="small" name="home" [(ngModel)]="category.home">{{ $i18n.adm().home_flag }}</wa-checkbox>
         </div>
-        
-        <div class="form-group">
-          <label class="field-label">Image</label>
-          <div class="image-container">
-            <img *ngIf="category?.cover" [src]="category.cover" class="preview-image">
-            <ngx-uploadcare-widget 
-              [imagesOnly]="true"
-              [validator]="ucValidator"
-              (on-upload-complete)="onUpload($event)"
-              (on-dialog-open)="onDialogOpen($event)"
-              [public-key]="pubUpcare">
-            </ngx-uploadcare-widget>
-          </div>
+        <wa-radio-group size="small" orientation="horizontal" [label]="$i18n.adm().type" [value]="category.type"
+                        (change)="category.type = $any($event.target).value">
+          <wa-radio appearance="button" value="Category">{{ $i18n.adm().nav_categories }}</wa-radio>
+          <wa-radio appearance="button" value="Group">{{ $i18n.adm().group }}</wa-radio>
+          <wa-radio appearance="button" value="Catalog">{{ $i18n.adm().nav_catalogue }}</wa-radio>
+        </wa-radio-group>
+        <div class="kng-inline-field">
+          <img *ngIf="category.cover" class="kng-thumb kng-thumb--lg" [src]="getImagePrefix(category.cover)" alt="">
+          <ngx-uploadcare-widget [imagesOnly]="true" [value]="category.cover" [validator]="ucValidator"
+            (on-upload-complete)="onUpload($event)" (on-dialog-open)="onDialogOpenUC($event)" [public-key]="pubUpcare">
+          </ngx-uploadcare-widget>
         </div>
+        <wa-callout *ngIf="uploadError" variant="danger" size="small">{{ uploadError }}</wa-callout>
       </form>
-      
-      <div slot="footer" class="dialog-footer">
-        <wa-button size="small" appearance="text" variant="danger" (click)="onDelete()" *ngIf="!isCreate">Supprimer</wa-button>
-        <wa-button size="small" appearance="outlined" (click)="onClose()">Annuler</wa-button>
-        <wa-button size="small" appearance="filled" (click)="onSave()" [disabled]="form.invalid">Enregistrer</wa-button>
+      <div slot="footer" class="kng-dialog-footer">
+        <wa-button *ngIf="!isCreate" class="is-start" size="small" appearance="plain" variant="danger" (click)="onDelete()">
+          <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
+          {{ $i18n.adm().delete }}
+        </wa-button>
+        <wa-button size="small" appearance="plain" (click)="onClose()">{{ $i18n.adm().cancel }}</wa-button>
+        <wa-button size="small" variant="brand" (click)="onSave()">{{ $i18n.adm().save }}</wa-button>
       </div>
     </wa-dialog>
-  `,
-  styles: [`
-    .category-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-width: 400px;
-    }
-    .form-row {
-      display: flex;
-      gap: 16px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .field-label {
-      font-size: 12px;
-      color: #858585;
-    }
-    .radio-group {
-      display: flex;
-      gap: 8px;
-    }
-    .image-container {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .preview-image {
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: 4px;
-      border: 1px solid #3c3c3c;
-    }
-    .dialog-footer {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-  `]
+  `
 })
 export class KngCategoryDlgComponent {
   isOpen = false;
   isCreate = false;
   category: Category;
   pubUpcare = '';
-  
-  private saveCallback: (value: any) => void;
+  uploadError = '';
+
+  private saveCallback: (category: Category) => void;
   private deleteCallback: () => void;
 
-  form: FormGroup;
-
-  constructor(
-    public $fb: FormBuilder,
-    public $i18n: i18n
-  ) {
-    this.form = this.$fb.group({
-      'weight': [0, [Validators.required]],
-      'active': [false],
-      'home': [false],
-      'color': [''],
-      'image': ['', [Validators.required]],
-      'group': [''],
-      'name': ['', [Validators.required]],
-      'description': ['', [Validators.required]],
-      'type': ['Category', [Validators.required]]
-    });
-  }
+  constructor(public $i18n: i18n) {}
 
   open(data: { category: Category; pubUpcare: string; isCreate: boolean },
-       onSave: (value: any) => void,
+       onSave: (category: Category) => void,
        onDelete: () => void): void {
     this.isOpen = true;
-    this.category = data.category;
+    this.category = { ...data.category };
     this.pubUpcare = data.pubUpcare;
     this.isCreate = data.isCreate;
     this.saveCallback = onSave;
     this.deleteCallback = onDelete;
-
-    this.form.setValue({
-      'weight': this.category.weight || 0,
-      'active': this.category.active || false,
-      'home': this.category.home || false,
-      'color': this.category.color || '',
-      'image': this.category.cover || '',
-      'group': this.category.group || '',
-      'name': this.category.name || '',
-      'description': this.category.description || '',
-      'type': this.category.type || 'Category'
-    });
   }
 
   onClose(): void {
@@ -164,39 +82,44 @@ export class KngCategoryDlgComponent {
   }
 
   onSave(): void {
-    if (this.form.valid && this.saveCallback) {
-      this.saveCallback(this.form.value);
-      this.isOpen = false;
+    if (this.saveCallback) {
+      this.category.weight = +this.category.weight;
+      this.saveCallback(this.category);
     }
+    this.isOpen = false;
   }
 
   onDelete(): void {
     if (this.deleteCallback) {
       this.deleteCallback();
-      this.isOpen = false;
     }
+    this.isOpen = false;
   }
 
-  ucValidator(info: any): void {
+  getImagePrefix(image: string): string {
+    return /^((http|https):\/\/)/.test(image) ? image : 'https:' + image;
+  }
+
+  ucValidator(info: { size: number | null }): void {
     if (info.size !== null && info.size > 150 * 1024) {
       throw new Error('fileMaximumSize');
     }
   }
 
-  onDialogOpen(dialog: any): void {
-    if (dialog?.done) {
-      dialog.done(dlg => {
-        if (dlg.state() === 'rejected') {
-          console.warn(this.$i18n.label().img_max_sz);
-        }
-      });
-    }
+  onDialogOpenUC(dialog: { done: (cb: (dlg: { state: () => string }) => void) => void } | null): void {
+    if (!dialog?.done) { return; }
+    dialog.done(dlg => {
+      if (dlg.state() === 'rejected') {
+        this.uploadError = this.$i18n.label().img_max_sz as string;
+        setTimeout(() => this.uploadError = '', 4000);
+      }
+    });
   }
 
-  onUpload(info: any): void {
-    if (this.category.cover !== info.cdnUrl) {
+  onUpload(info: { cdnUrl: string }): void {
+    if (this.category && this.category.cover !== info.cdnUrl) {
       this.category.cover = info.cdnUrl;
-      this.form.patchValue({ image: info.cdnUrl });
+      this.uploadError = '';
     }
   }
 }
@@ -211,18 +134,21 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   @ViewChild(KngCategoryDlgComponent) categoryDialog: KngCategoryDlgComponent;
   
   isReady = false;
-  config: any;
+  config: Config;
   categories: Category[] = [];
   currenHub: Hub;
   saveMessage = '';
   saveError = '';
-  
+
   edit: {
-    category: Category;
-    form: any;
+    category: Category | null;
     create: boolean;
     pubUpcare: string;
   };
+
+  get labels() {
+    return this.$i18n.adm();
+  }
 
   constructor(
     private $i18n: i18n,
@@ -237,7 +163,6 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
     this.currenHub = this.config?.shared?.hub || {};
 
     this.edit = {
-      form: null,
       create: false,
       category: null,
       pubUpcare: this.config?.shared?.keys?.pubUpcare || ''
@@ -258,7 +183,7 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
   }
 
   async loadCategories(): Promise<void> {
-    const categories = await this.$category.select({ stats: true }).toPromise();
+    const categories = await firstValueFrom(this.$category.select({ stats: true }));
     this.categories = categories.sort(this.sortByGroupAndWeight.bind(this));
   }
 
@@ -275,6 +200,11 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
         if (this.edit.create) {
           category.usedBy = [];
           this.categories.push(category);
+        } else {
+          const idx = this.categories.findIndex(c => c.slug === category.slug);
+          if (idx >= 0) {
+            this.categories[idx] = category;
+          }
         }
         this.edit.category = null;
         this.edit.create = false;
@@ -341,6 +271,10 @@ export class KngCategoriesComponent implements OnInit, OnDestroy {
         () => this.onDecline()
       );
     }
+  }
+
+  trackCategory(_idx: number, cat: Category): string {
+    return cat?._id ?? cat as any;
   }
 
   sortByGroupAndWeight(c1: Category, c2: Category): number {

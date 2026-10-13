@@ -1,98 +1,80 @@
-<!-- ============================================================================ -->
-<!-- ADMIN LAYOUT - Style swipe-panel standard (side/center)                   -->
-<!-- ============================================================================ -->
+<div class="kng-admin kng-register-config"
+     [class.kng-admin--nav]="mode === 'mobile' && mobileNav"
+     [class.kng-admin--content]="mode === 'mobile' && !mobileNav">
 
-<!-- PANEL SIDE - Menu de navigation admin -->
-<div class="swipe-panel side">
-  <div class="admin-menu">
+  <header class="kng-admin__top">
+    <wa-button *ngIf="mode === 'mobile' && !mobileNav" class="kng-admin__back" appearance="plain" size="small"
+               [label]="labels.back" (click)="showMobileNav()">
+      <span class="material-symbols-outlined" slot="start" aria-hidden="true">arrow_back</span>
+    </wa-button>
+    <wa-button *ngIf="mode === 'tablet'" class="kng-admin__menu" appearance="plain" size="small"
+               [label]="labels.menu" (click)="toggleSidebar()">
+      <span class="material-symbols-outlined" slot="start" aria-hidden="true">menu</span>
+    </wa-button>
 
-    <!-- SIDEBAR HEADER -->
-    <div class="admin-header">
-      <span class="material-symbols-outlined">admin_panel_settings</span>
-      <span class="title">Administration</span>
-    </div>
+    <h1 class="kng-admin__title">{{ labels.admin_title }} · {{ hubName }}</h1>
 
-    <!-- HUB SELECTOR -->
-    <div class="admin-section">
-      <div class="section-label">
-        <span class="material-symbols-outlined">store</span>
-        Hub
+    <wa-select *ngIf="hubs.length" class="kng-admin__hub" size="small" [label]="labels.hub" [value]="store"
+               (change)="onHubChange($any($event.target).value)">
+      <wa-option *ngFor="let hub of hubs" [value]="hub.slug">{{ hub.name || hub.slug }}</wa-option>
+    </wa-select>
+
+    <wa-input class="kng-admin__search" size="small" [label]="labels.search" [placeholder]="labels.search"
+              [value]="shell.search" (input)="onSearch($event)"></wa-input>
+
+    <wa-button appearance="plain" size="small" [label]="dark ? labels.theme_light : labels.theme_dark" (click)="toggleTheme()">
+      <span class="material-symbols-outlined" slot="start" aria-hidden="true">{{ dark ? 'light_mode' : 'dark_mode' }}</span>
+    </wa-button>
+
+    <wa-radio-group class="kng-admin__ui-lang" size="small" orientation="horizontal" [label]="labels.ui_lang"
+                    [value]="locale" (change)="onLocaleChange($any($event.target).value)">
+      <wa-radio appearance="button" value="fr">FR</wa-radio>
+      <wa-radio appearance="button" value="en">EN</wa-radio>
+    </wa-radio-group>
+  </header>
+
+  <div class="kng-admin__body">
+    <aside class="kng-admin__nav kng-admin__nav--static" *ngIf="mode === 'desktop' || (mode === 'mobile' && mobileNav)">
+      <ng-container *ngTemplateOutlet="navigation"></ng-container>
+    </aside>
+
+    <wa-drawer *ngIf="mode === 'tablet'" placement="start" [open]="sidebarOpen" [label]="labels.menu"
+               (wa-hide)="closeSidebar()" light-dismiss>
+      <div class="kng-admin__nav kng-admin__nav--drawer">
+        <ng-container *ngTemplateOutlet="navigation"></ng-container>
       </div>
-      <wa-select size="small" [value]="store" (wa-change)="onHubChange($any($event.target).value)">
-        <wa-option *ngFor="let hub of hubs" [value]="hub.slug">{{hub.name}}</wa-option>
-      </wa-select>
-    </div>
+    </wa-drawer>
 
-    <!-- LANGUAGE SWITCH -->
-    <div class="admin-section">
-      <div class="section-label">
-        <span class="material-symbols-outlined">language</span>
-        Langue
+    <main class="kng-admin__main" *ngIf="mode !== 'mobile' || !mobileNav">
+      <div class="kng-admin__content">
+        <router-outlet></router-outlet>
       </div>
-      <div class="lang-switch">
-        <wa-button size="small" [appearance]="locale === 'fr' ? 'filled' : 'outlined'" (click)="onLocaleChange('fr')">FR</wa-button>
-        <wa-button size="small" [appearance]="locale === 'en' ? 'filled' : 'outlined'" (click)="onLocaleChange('en')">EN</wa-button>
-      </div>
-    </div>
-
-    <hr class="divider">
-
-    <!-- NAVIGATION -->
-    <ul class="admin-nav">
-
-      <!-- GÉNÉRAL -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">settings</span>
-        Général
-      </li>
-      <li><a routerLink="./config" routerLinkActive="active" class="nav-item">Configuration</a></li>
-
-      <!-- CONTENU -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">article</span>
-        Contenu
-      </li>
-      <li><a routerLink="./welcome" routerLinkActive="active" class="nav-item">Welcome</a></li>
-      <li><a routerLink="./navigation" routerLinkActive="active" class="nav-item">Navigation</a></li>
-      <li><a routerLink="./page" routerLinkActive="active" class="nav-item">Pages</a></li>
-
-      <!-- HUB -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">storefront</span>
-        Hub
-      </li>
-      <li><a routerLink="./main-hub" routerLinkActive="active" class="nav-item">Paramètres</a></li>
-      <li><a routerLink="./manager-hub" routerLinkActive="active" class="nav-item">Manager</a></li>
-      <li><a routerLink="./information" routerLinkActive="active" class="nav-item">Information</a></li>
-
-      <!-- PRODUITS -->
-      <li class="nav-group-header">
-        <span class="material-symbols-outlined">inventory_2</span>
-        Produits
-      </li>
-      <li><a routerLink="./category" routerLinkActive="active" class="nav-item">Catégories</a></li>
-      <li><a routerLink="./deposit" routerLinkActive="active" class="nav-item">Dépôts</a></li>
-      <li><a routerLink="./shop" routerLinkActive="active" class="nav-item">Boutiques</a></li>
-
-    </ul>
-
+    </main>
   </div>
 </div>
 
-<!-- PANEL CENTER - Contenu principal -->
-<div class="swipe-panel center">
-  <div class="admin-content">
-
-    <!-- Messages de notification -->
-    <div class="admin-messages" *ngIf="saveMessage || saveError">
-      <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">
-        {{saveMessage}}
-      </wa-callout>
-      <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">
-        {{saveError}}
-      </wa-callout>
+<ng-template #navigation>
+  <nav [attr.aria-label]="labels.menu">
+    <section class="kng-nav-group" *ngFor="let group of groups; trackBy: trackGroup">
+      <h2 class="kng-nav-group__label">{{ group.label }}</h2>
+      <a *ngFor="let item of group.items; trackBy: trackNav" class="kng-nav-item" [routerLink]="item.link"
+         queryParamsHandling="preserve" routerLinkActive="active" ariaCurrentWhenActive="page" (click)="onNavPick()">
+        <span class="kng-nav-item__mark" aria-hidden="true"></span>
+        {{ item.label }}
+      </a>
+    </section>
+  </nav>
+  <div class="kng-admin__account">
+    <span class="kng-avatar" aria-hidden="true">{{ initials }}</span>
+    <div>
+      <div class="kng-admin__account-name">{{ userName }}</div>
+      <div class="kng-admin__account-role">{{ hubName }} · {{ labels.role_admin }}</div>
     </div>
-
-    <router-outlet></router-outlet>
+    <wa-radio-group *ngIf="mode !== 'desktop'" size="small" orientation="horizontal" [label]="labels.ui_lang"
+                    [value]="locale" (change)="onLocaleChange($any($event.target).value)">
+      <wa-radio appearance="button" value="fr">FR</wa-radio>
+      <wa-radio appearance="button" value="en">EN</wa-radio>
+    </wa-radio-group>
+    <div class="kng-admin__version">{{ labels.version.replace('__V__', version) }}</div>
   </div>
-</div>
+</ng-template>

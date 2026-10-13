@@ -1,45 +1,58 @@
-  <div class="page-saving" [hidden]="isReady">
-    <h1>Saving</h1>
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
+
+<div class="kng-admin-page">
+  <header class="kng-page-head">
+    <div class="kng-page-head__row">
+      <div>
+        <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_content }}</p>
+        <h1>{{ labels.nav_title }}</h1>
+      </div>
+      <wa-button appearance="outlined" variant="neutral" size="small" (click)="onMenuCreate()">
+        <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+        {{ labels.new_menu }}
+      </wa-button>
+    </div>
+  </header>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
   </div>
-  <div class="container">
-  <h3 >Navigation</h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
 
-  <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
+  <section class="kng-settings-group" *ngFor="let group of groups">
+    <h2 class="kng-settings-group__title">{{ group }}</h2>
+    <div class="kng-settings-group__box">
+      <div class="kng-list-item nav-menu-item" *ngFor="let menu of getMenuByGroup(group); trackBy: trackMenu" [class.is-off]="!menu.active">
+        <span class="kng-status-dot" [class.is-on]="menu.active"></span>
+        <span class="nav-menu-weight">{{ menu.weight }}</span>
+        <button type="button" class="kng-list-item" [attr.aria-label]="labels.open_menu" (click)="onMenuSelect($event, menu)">
+          <span class="nav-menu-name">{{ menu.name?.[locale] || menu.name?.fr }}</span>
+          <span class="nav-menu-url">{{ menu.url }}</span>
+        </button>
+        <wa-button appearance="plain" size="small" [label]="labels.edit" (click)="onMenuSelect($event, menu)">
+          <span class="material-symbols-outlined" slot="start" aria-hidden="true">edit</span>
+        </wa-button>
+        <wa-button appearance="plain" variant="danger" size="small" [label]="labels.delete" (click)="onDeleteMenu(menu)">
+          <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
+        </wa-button>
+      </div>
+    </div>
+  </section>
 
-  <button raised mdc-button (click)="onMenuCreate()" class="primary">
-    <span mdcButtonLabel>Ajouter un nouveau menu</span>
-    <span class="material-symbols-outlined">save</span>
-  </button>
-
-  <mdc-list avatar="true" border="true"  *ngFor="let group of groups" >
-    <mdc-list-divider inset></mdc-list-divider>
-    <h3 class="menu-group">{{group}}</h3>
-    <mdc-list-item *ngFor="let menu of getMenuByGroup(group)"
-                    [class.disabled]="!menu.active"
-                    (click)="onMenuSelect($event,menu)">
-        <span class="material-symbols-outlined"mdcListItemGraphic>folder</span>
-        <mdc-list-item-text>
-          <span>{{menu.group}}</span><b>/</b><span [innerHtml]="menu.name[$i18n.locale]"></span>
-          <mdc-list-item-secondary>
-              {{menu.url}}
-          </mdc-list-item-secondary>
-        </mdc-list-item-text>
-        <mdc-list-item-meta>
-            <mdc-form-field>
-                <mdc-checkbox [checked]="menu.active" [disabled]="true" ></mdc-checkbox>
-                <span class="hide-md">Active</span>
-            </mdc-form-field>
-
-            <mdc-chip>
-              <mdc-chip-icon leading><span class="material-symbols-outlined">sort</span></mdc-chip-icon>
-              <mdc-chip-text>{{menu.weight}}</mdc-chip-text>
-            </mdc-chip>
-
-        </mdc-list-item-meta>
-        <mdc-list-divider></mdc-list-divider>
-    </mdc-list-item>
-  </mdc-list>
+  <wa-dialog class="kng-register-config" [label]="labels.nav_title" [open]="showDlg" (wa-hide)="closeDlg()" light-dismiss>
+    <form *ngIf="dlgItem" class="kng-form" (ngSubmit)="onSaveMenu()">
+      <div class="kng-form-row">
+        <wa-input class="is-grow" ngDefaultControl size="small" [label]="labels.group" name="dlg-group" [(ngModel)]="dlgItem.group"></wa-input>
+        <wa-input ngDefaultControl size="small" [label]="labels.weight" type="number" name="dlg-weight" [(ngModel)]="dlgItem.weight"></wa-input>
+      </div>
+      <kng-config-input format="text" [label]="labels.name" [i18nField]="dlgItem.name"></kng-config-input>
+      <wa-input ngDefaultControl size="small" [label]="labels.menu_url" name="dlg-url" [(ngModel)]="dlgItem.url"></wa-input>
+      <wa-switch size="small" [checked]="dlgItem.active" [attr.aria-label]="labels.active"
+                 (change)="dlgItem.active = $any($event.target).checked">{{ labels.active }}</wa-switch>
+    </form>
+    <div slot="footer" class="kng-dialog-footer">
+      <wa-button appearance="plain" size="small" (click)="closeDlg()">{{ labels.cancel }}</wa-button>
+      <wa-button variant="brand" size="small" (click)="onSaveMenu()">{{ labels.save }}</wa-button>
+    </div>
+  </wa-dialog>
 </div>

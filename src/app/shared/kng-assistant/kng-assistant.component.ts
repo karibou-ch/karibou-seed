@@ -6,8 +6,8 @@ import { i18n } from 'src/app/common';
 import { KngAssistantHistoryComponent, AssistantDisplayMessage } from './kng-assistant-history.component';
 import { KngPromptComponent } from './kng-prompt.component';
 
-// Re-export for backward compatibility
-export { AssistantState } from 'kng2-core';
+// Re-export for backward compatibility (type-only — interface has no JS runtime value)
+export type { AssistantState } from 'kng2-core';
 export { AssistantDisplayMessage } from './kng-assistant-history.component';
 
 /**

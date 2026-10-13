@@ -1,0 +1,24 @@
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
+
+<div class="kng-admin-page" *ngIf="currentHub">
+  <header class="kng-page-head">
+    <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_hub }} · {{ currentHub.name }}</p>
+    <h1>{{ labels.vendors_title }}</h1>
+    <p class="kng-page-head__desc">{{ labels.vendors_desc }}</p>
+  </header>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
+  </div>
+
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__box">
+      <kng-checklist [items]="vendorItems" [selected]="currentHub.vendors || []" [noun]="labels.vendors_noun"
+                     [searchLabel]="labels.search_vendor" (selectedChange)="onVendorsChange($event)"></kng-checklist>
+    </div>
+  </section>
+
+  <kng-save-bar [dirty]="hubDirty" [count]="hubDirtyCount" [loading]="isLoading"
+                (cancel)="revertHub()" (save)="save()"></kng-save-bar>
+</div>

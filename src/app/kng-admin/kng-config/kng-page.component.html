@@ -1,49 +1,38 @@
-
-<div class="blured"></div>
-<!-- EDIT DOCUMENT CONTENT -->
-<router-outlet></router-outlet>
-
-<div class="container">
-
-  <h3>Pages</h3>
-  <hr class="dashed"/>
-
-  <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Langue" format="lang"></kng-config-input>
-
-  <!-- Add new content -->
-  <div class="page-list">
-    <a class="page-item page-item--add" [routerLink]="['./create']">
-      <span class="material-symbols-outlined size-large">add_circle</span>
-      <div class="page-item-text">
-        <span class="page-title">Ajouter un nouveau contenu</span>
-        <span class="page-subtitle">Cliquer ici pour ajouter</span>
+<div class="kng-admin-page">
+  <header class="kng-page-head">
+    <div class="kng-page-head__row">
+      <div>
+        <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_content }}</p>
+        <h1>{{ labels.pages_title }}</h1>
       </div>
-    </a>
+      <wa-button appearance="outlined" variant="neutral" size="small" [routerLink]="['./create']">
+        <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+        {{ labels.new_page }}
+      </wa-button>
+    </div>
+  </header>
 
-    <wa-divider></wa-divider>
+  <router-outlet></router-outlet>
 
-    <!-- LIST OF PAGES -->
-    <a class="page-item" 
-       *ngFor="let content of contents" 
-       [routerLink]="['./list', content.slug[0]]"
-       [class.disabled]="!content.available">
-      <span class="material-symbols-outlined size-large">folder</span>
-      <div class="page-item-text">
-        <span class="page-title">
-          <span class="page-type">{{$any(content).type || 'page'}}</span>
-          <b>/</b>
-          {{content.slug[0]}}
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__box">
+      <a class="kng-list-item" [routerLink]="['./create']">
+        <span class="material-symbols-outlined kng-icon is-brand" aria-hidden="true">add_circle</span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ labels.add_page }}</span>
+          <span class="kng-list-item__sub">{{ labels.add_page_desc }}</span>
         </span>
-        <span class="page-subtitle" [innerHtml]="content.title[locale]"></span>
-      </div>
-      <div class="page-item-meta">
-        <wa-checkbox size="small" [checked]="content.available" disabled>Active</wa-checkbox>
-        <span class="page-weight" *ngIf="$any(content).weight">
-          <span class="material-symbols-outlined">sort</span>
-          {{$any(content).weight}}
+      </a>
+      <a class="kng-list-item" *ngFor="let content of contents" [routerLink]="['./list', content.slug[0]]"
+         [class.is-off]="!content.available" [attr.aria-label]="labels.open_page">
+        <span class="material-symbols-outlined kng-icon" aria-hidden="true">folder</span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ $any(content).type || 'page' }} / {{ content.slug[0] }}</span>
+          <span class="kng-list-item__sub" [innerHtml]="content.title[locale]"></span>
         </span>
-      </div>
-    </a>
-  </div>
+        <span class="kng-list-item__meta" *ngIf="$any(content).weight">{{ $any(content).weight }}</span>
+        <span class="kng-status-dot" [class.is-on]="content.available"></span>
+      </a>
+    </div>
+  </section>
 </div>

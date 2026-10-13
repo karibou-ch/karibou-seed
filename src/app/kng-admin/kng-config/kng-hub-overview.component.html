@@ -1,0 +1,34 @@
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
+
+<div class="kng-admin-page" *ngIf="currentHub">
+  <header class="kng-page-head kng-page-header">
+    <div>
+      <h1>{{ labels.nav_overview }}</h1>
+      <p class="kng-page-head__desc">{{ labels.overview_desc }}</p>
+    </div>
+    <wa-button variant="brand" pill size="small" (click)="goInvite()">{{ labels.invite_member }}</wa-button>
+  </header>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
+  </div>
+
+  <section class="kng-settings-group">
+    <h2 class="kng-section-label">{{ labels.overview_modules }}</h2>
+    <div class="kng-list-card">
+      <a class="kng-nav-row" *ngFor="let row of modules; trackBy: trackModule" [routerLink]="row.link" queryParamsHandling="preserve">
+        <span class="kng-icon-circle" aria-hidden="true">
+          <span class="material-symbols-outlined">{{ row.icon }}</span>
+        </span>
+        <span class="kng-nav-row__body">
+          <span class="kng-nav-row__title">
+            {{ row.label }}
+            <kng-status [state]="row.state"></kng-status>
+          </span>
+          <p class="kng-nav-row__desc">{{ row.description }}</p>
+        </span>
+        <span class="material-symbols-outlined kng-nav-row__chevron" aria-hidden="true">chevron_right</span>
+      </a>
+    </div>
+  </section>
+</div>

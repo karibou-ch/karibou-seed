@@ -1,9 +1,13 @@
-import { Component, forwardRef, Input, EventEmitter, Output, HostBinding } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { Component, EventEmitter, forwardRef, HostBinding, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Config, Hub, UserAddress } from 'kng2-core';
-import { i18n, KngUtils, KngNavigationStateService } from 'src/app/common';
+import { Subscription } from 'rxjs';
+import { i18n, KngNavigationStateService, KngUtils } from 'src/app/common';
+import { AdminEditLocaleService, EditLocale, I18nText } from '../admin-edit-locale.service';
+import { AdminShellService } from '../admin-shell.service';
 
-// Create a mgModel Component
+type ConfigValue = string | UserAddress | boolean | null;
+
 @Component({
   selector: 'kng-config-input',
   templateUrl: './kng-config-input.component.html',
@@ -14,9 +18,11 @@ import { i18n, KngUtils, KngNavigationStateService } from 'src/app/common';
     multi: true
   }]
 })
-export class KngConfigInputComponent implements ControlValueAccessor {
-  private _value: string | any;
-  @Input() address: any;
+export class KngConfigInputComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  private _value: ConfigValue = null;
+  private subs = new Subscription();
+
+  @Input() address?: Partial<UserAddress>;
   @Input() config: Config;
   @Input() withCheck: boolean;
   @Input() disabled = false;
@@ -26,151 +32,144 @@ export class KngConfigInputComponent implements ControlValueAccessor {
   @Input() format: string;
   @Input() checked: boolean;
   @Input() label: string;
-  @Input() geo: {};
+  @Input() description: string;
+  @Input() i18nField?: I18nText | null;
+  @Input() geo: Record<string, unknown>;
   @Output() checkChange = new EventEmitter<boolean>();
-  @Output() imageChange = new EventEmitter<any>();
+  @Output() imageChange = new EventEmitter<string>();
 
+  @HostBinding('class') readonly hostClass = 'config';
+  @HostBinding('class.kng-is-filtered') filtered = false;
+
+  locale: EditLocale = 'fr';
 
   constructor(
     private $i18n: i18n,
     private $util: KngUtils,
-    private $navigation: KngNavigationStateService
-  ) {
-  }
+    private $navigation: KngNavigationStateService,
+    private edit: AdminEditLocaleService,
+    private shell: AdminShellService
+  ) {}
 
-  @HostBinding('class.config') true;
-
-  // adminMenu(store: string){
-  //   const menus = location.pathname.split('/');
-  //   return '/store/' + store + '/admin/' + menus[menus.length - 1];
-  // }
-  changeHub(hub) {
-    const menus = location.pathname.split('/');
-    location.href = '/store/' + hub.slug + '/admin/' + menus[menus.length - 1];
-  }
-
-  isCurrentHub(slug){
-    return location.pathname.indexOf('store/' + slug) > -1;
-  }
-
-  get adminMenu() {
-    const menus = location.pathname.split('/');
-    return '/admin/' + menus[menus.length - 1];
-  }
-
-  get i18n(){
+  get i18n() {
     return this.$i18n;
   }
 
-  get locale() {
-    return this.$i18n.locale;
-  }
-
-  get menuElements() {
-    const admin = this.$navigation.getMenuItems('admin');
-    return admin;
+  get labels() {
+    return this.$i18n.adm();
   }
 
   get store() {
     return this.$navigation.store;
   }
 
-  get HUBs() {
-    return this.hubs || this.$navigation.HUBs;
-  }
-
   get value() {
     return this._value;
   }
 
-  set value($value) {
-    if ($value !== undefined && this._value !== $value) {
-      this._value = $value;
-      //
-      // case of address
-      // if (this.address && this.format !== 'geo') {
-      //   KngConfigInputComponent._geo$.next(this.address);
-      // }
-
-      this.onChange($value);
-      this.onTouched($value);
+  set value(next: ConfigValue) {
+    if (next !== undefined && this._value !== next) {
+      this._value = next;
+      this.onChange(next);
+      this.onTouched();
     }
   }
 
-  //
-  // verify the case of the value is an address
-  isValueAddress() {
-    return this._value && this._value.streetAdress && this._value.postalCode;
+  get displayValue(): string {
+    if (this.i18nField) {
+      return this.i18nField[this.locale] || '';
+    }
+    return typeof this._value === 'string' ? this._value : '';
   }
 
-  // Function to call when the input changes.
-  onChange = (text: string) => {};
-
-  // Function to call when the input is touched (when check is clicked).
-  onTouched = (text: string) => {};
-
-
-  onUpload($event) {
-    this.value = $event.cdnUrl;
-    this.imageChange.emit(this.value);
+  get translatable(): boolean {
+    return !!this.i18nField;
   }
 
-  onDialogOpen(dialog) {
-    dialog.done(async dlg => {
+  get missing(): boolean {
+    return this.edit.isMissing(this.i18nField, this.locale);
+  }
+
+  get swatch(): string {
+    return typeof this._value === 'string' && this._value ? this._value : 'transparent';
+  }
+
+  ngOnInit(): void {
+    this.locale = this.edit.locale;
+    this.subs.add(this.edit.locale$.subscribe(locale => this.locale = locale));
+    this.subs.add(this.shell.search$.subscribe(() => {
+      const hay = `${this.label || ''} ${this.description || ''}`;
+      this.filtered = !this.shell.matches(hay);
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  onUserInput(next: string): void {
+    if (this.i18nField) {
+      this.i18nField[this.locale] = next;
+      return;
+    }
+    this.value = next;
+  }
+
+  copyFromFr(): void {
+    this.edit.copyFromFr(this.i18nField);
+  }
+
+  isValueAddress(): boolean {
+    const v = this._value;
+    return !!(v && typeof v === 'object' && (v as UserAddress).streetAdress && (v as UserAddress).postalCode);
+  }
+
+  onChange: (value: ConfigValue) => void = () => {};
+  onTouched: () => void = () => {};
+
+  onUpload(event: { cdnUrl: string }): void {
+    this.value = event.cdnUrl;
+    this.imageChange.emit(this.value as string);
+  }
+
+  onDialogOpen(dialog: { done: (cb: (dlg: { state: () => string }) => void) => void }): void {
+    dialog.done(dlg => {
       if (dlg.state() === 'rejected') {
         this.imageChange.emit('rejected');
       }
     });
   }
 
-  onLang($event, lang) {
-    this.$i18n.locale = lang;
-  }
-
-
-  ucValidator(info) {
-      if (info.size !== null && info.size > 1024 * 1024 * 10) {
+  ucValidator(info: { size: number | null }): void {
+    if (info.size !== null && info.size > 1024 * 1024 * 10) {
       throw new Error('fileMaximumSize');
     }
   }
 
-  getStaticMap() {
-    if (!this.config || !this._value) {
+  getStaticMap(): string | undefined {
+    if (!this.config || !this._value || typeof this._value !== 'object') {
       return;
     }
-    return KngUtils.getStaticMap(this._value);
+    return KngUtils.getStaticMap(this._value as UserAddress);
   }
 
-  // onGeloc(address) {
-  //   const street = (address.streetAddress || address.street);o
-  //   if (!street) {
-  //        return;
-  //   }
-  //   this.$util.getGeoCode(street,
-  //                       address.postalCode,
-  //                       address.region).subscribe(result => {
-  //       this._value.geo = (result.geo || {}).location;
-  //       this.value = this._value;
-  //   });
-  // }
-
-
-
-  onCheck(checked: boolean) {
+  onCheck(checked: boolean): void {
     this.checkChange.emit(checked);
   }
 
-  writeValue(value: string): void {
-    this.value = value;
+  writeValue(value: ConfigValue): void {
+    this._value = value;
   }
-  registerOnChange(fn: any): void {
+
+  registerOnChange(fn: (value: ConfigValue) => void): void {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 }

@@ -14,9 +14,9 @@
 
   </div>
   <div class="welcome" [class.exited]="exited">
-    <img [src]="tagline.image" [hidden]="!tagline.image"/>
-    <h1 [innerHtml]="tagline.h[locale]"></h1>
-    <div class="content" [innerHtml]="tagline.p[locale]">
+    <img [src]="tagLine.image" [hidden]="!tagLine.image"/>
+    <h1 [innerHtml]="tagLine.h[locale]"></h1>
+    <div class="content" [innerHtml]="tagLine.p[locale]">
     </div>
     <div class="actions">
       <button class="CTA"  (click)="waiting=true" [routerLink]="homeDestination">

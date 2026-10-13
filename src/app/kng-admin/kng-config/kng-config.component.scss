@@ -1,113 +1,42 @@
-// Import styles Web Awesome admin (lazy-loaded avec le module)
-@import '../admin-wa.scss';
-
-.container{
-  min-width: 600px;
-  z-index: 1;
-  @media (max-width:599px) {
-    -min-width: 300px;
-  }
-
-  h1,h2,h3{
-    padding-left: 15px;
-    margin-top: 40px;
-  }
-
-  .menu-group{
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-    border-left: 1px solid rgba(0, 0, 0, 0.12);
-    text-transform: uppercase;
-    padding-top: 5px;
-  }
-
-  button.primary{
-    width: 100%;
-  }
-
-  .config-custom{
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  div.faq-title{
-    display: flex;
-    align-items: center;
-  }
-
-  div.faq{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    .faq-separator{
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      padding: 5px;
-      background: var(--mdc-theme-appbar);
-      border-radius: 14px;
-      margin-top: 10px;
-      .faq-question{
-        width: 100%;
-      }
-      .faq-reponse{
-        width: 80%;
-        .mdc-text-field__input{
-          background: var(--mdc-theme-appbar)!important;
-        }
-      }
-      .faq-actions{
-        width: 100%;
-        margin: 5px 20px;
-        button{
-          width: 100%;
-        }
-
-      }
-    }
-  }
-
-  div.block{
-    background: var(--wa-color-neutral-fill-quiet);
-    margin: 10px 0;
-    border-radius: var(--wa-border-radius-m);
-    overflow: hidden;
-    padding: 0 8px;
-    h3 .material-symbols-outlined{
-      transform: translateY(6px);
-    }
-  }
-
-  select{
-    align-self: flex-end;
-    margin-bottom: 8px;
-    padding: 15px;
-    border: 1px solid #aaa;
-    background: #fff;
-    border-radius: 5px;
-    font-size: 1em;
-    width: 100%;
-  }
-
+:host {
+  display: block;
+  width: 100%;
 }
 
-.page-saving{
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(25, 25, 25, 0.78);
-  width: 100vw;
-  height: 100vh;
-  z-index: 4;
-  h1{
-    color: white;
-    text-align: center;
-    padding-top: 25%;
-  }
+.faq-separator {
+  border-top: 1px solid var(--wa-color-surface-border);
+  padding-bottom: var(--wa-space-xs);
 }
 
-/**
- CODE MIRROR */
+.faq-actions,
+.kng-group-action {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 var(--wa-space-s) var(--wa-space-xs);
+}
+
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--wa-space-s);
+}
+
+.nav-menu-weight,
+.nav-menu-url {
+  color: var(--wa-color-text-quiet);
+  font-size: var(--wa-font-size-xs);
+}
+
+.nav-menu-name {
+  flex: 1;
+}
+
+.nav-menu-actions {
+  display: flex;
+  gap: var(--wa-space-2xs);
+}
+
+.hub-content {
+  border-top: 1px solid var(--wa-color-surface-border);
+  padding: var(--wa-space-xs) 0;
+}

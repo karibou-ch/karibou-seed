@@ -1,50 +1,41 @@
-<div class="page-saving" [hidden]="isReady">
-  <h1>Saving</h1>
-</div>
-<div class="container">
-  <h3 >Catégories</h3>
-  <hr class="dashed"/>
-  <kng-config-input clazz="config" format="menu"></kng-config-input>
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
 
-  <!-- HUB Lang -->
-  <kng-config-input clazz="config" label="Titre about"  format="lang"></kng-config-input>
-  
-  <mdc-list twoLine avatar="true" border>
-    <mdc-list-item  (click)="onCategoryCreate()">
-        <span class="material-symbols-outlined" mdcListItemGraphic>save</span>
-        <mdc-list-item-text>Ajouter une nouvelle catégorie
-          <mdc-list-item-secondary >Cliquer ici</mdc-list-item-secondary>
-        </mdc-list-item-text>
-        <span class="material-symbols-outlined" mdcListItemMeta>favorite</span>  
-    </mdc-list-item>
-    <mdc-list-divider></mdc-list-divider>
-    <mdc-list-item *ngFor="let category of categories" 
-                   [class.disabled]="!category.active"
-                   (click)="onCategorySelect($event,category)">
-        <img mdcListItemGraphic [hidden]="!category.cover" src="{{category.cover}}" />
-        <span class="material-symbols-outlined size-large" [hidden]="category.cover" >folder</span>
-        <mdc-list-item-text>
-          <span>{{category.type}}/{{category.name}} ({{category.usedBy?.length||0}})</span>
-          <mdc-list-item-secondary>
-              {{category.description||'«pas de desciption»'}} // 
-              <i class="{{category.image}}"></i> {{category.image}}  
-          </mdc-list-item-secondary>              
-        </mdc-list-item-text>
-        <mdc-list-item-meta>
-            <mdc-chip-set choice>
-              <mdc-chip [hidden]="category.home" class="chip-primary">
-              </mdc-chip>
-              <mdc-chip >
-                <mdc-chip-text>{{category.group}}</mdc-chip-text>
-              </mdc-chip>
-              <mdc-chip>
-                <mdc-chip-text>{{category.weight}}</mdc-chip-text>
-                <span class="material-symbols-outlined" >sort</span>
-              </mdc-chip>
-            </mdc-chip-set>                      
-            
-        </mdc-list-item-meta>
-        <mdc-list-divider></mdc-list-divider>
-    </mdc-list-item>
-  </mdc-list>
+<div class="kng-admin-page">
+  <header class="kng-page-head">
+    <div class="kng-page-head__row">
+      <div>
+        <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_catalogue }}</p>
+        <h1>{{ labels.catalog_title }}</h1>
+      </div>
+      <wa-button appearance="outlined" variant="neutral" size="small" (click)="onCategoryCreate()">
+        <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+        {{ labels.new_category }}
+      </wa-button>
+    </div>
+  </header>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
+  </div>
+
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__box">
+      <button type="button" class="kng-list-item" *ngFor="let category of categories; trackBy: trackCategory"
+              [class.is-off]="!category.active" [attr.aria-label]="labels.open_category"
+              (click)="onCategorySelect($event, category)">
+        <img *ngIf="category.cover" class="kng-thumb" [src]="getImagePrefix(category.cover)" alt="">
+        <span *ngIf="!category.cover" class="material-symbols-outlined kng-icon" aria-hidden="true">folder</span>
+        <span class="kng-list-item__body">
+          <span class="kng-list-item__title">{{ category.type }} / {{ category.name }} ({{ category.usedBy?.length || 0 }})</span>
+          <span class="kng-list-item__sub">{{ category.description || '—' }}</span>
+        </span>
+        <span class="kng-badge">{{ category.group }}</span>
+        <span class="kng-list-item__meta">{{ category.weight }}</span>
+        <span class="kng-status-dot" [class.is-on]="category.active"></span>
+      </button>
+    </div>
+  </section>
 </div>
+
+<kng-category-dlg></kng-category-dlg>

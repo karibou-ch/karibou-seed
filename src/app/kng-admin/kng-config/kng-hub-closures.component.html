@@ -1,0 +1,52 @@
+<div class="kng-page-saving" [hidden]="isReady"><p>{{ labels.saving }}</p></div>
+
+<div class="kng-admin-page" *ngIf="currentHub">
+  <header class="kng-page-head">
+    <p class="kng-page-head__crumb">{{ labels.crumb_admin }} · {{ labels.nav_hub }} · {{ currentHub.name }}</p>
+    <h1>{{ labels.closures_title }}</h1>
+    <p class="kng-page-head__desc">{{ labels.closures_desc }}</p>
+  </header>
+
+  <kng-lang-toggle [banner]="true" [fields]="closureFields"></kng-lang-toggle>
+
+  <div class="kng-callouts" *ngIf="saveMessage || saveError">
+    <wa-callout *ngIf="saveMessage" variant="success" closable (wa-hide)="saveMessage=''">{{ saveMessage }}</wa-callout>
+    <wa-callout *ngIf="saveError" variant="danger" closable (wa-hide)="saveError=''">{{ saveError }}</wa-callout>
+  </div>
+
+  <section class="kng-settings-group">
+    <div class="kng-settings-group__head">
+      <h2 class="kng-settings-group__title">{{ labels.closures_title }}</h2>
+      <kng-lang-toggle [fields]="closureFields"></kng-lang-toggle>
+    </div>
+    <div class="kng-settings-group__box">
+      <p class="kng-empty" *ngIf="!(currentHub.noshipping || []).length">{{ labels.add_closure }}</p>
+      <div *ngFor="let row of currentHub.noshipping; let idx = index">
+        <kng-config-input format="text" [label]="labels.closure_reason" [i18nField]="row.reason"></kng-config-input>
+        <div class="kng-setting-row">
+          <div class="kng-setting-row__copy">
+            <div class="kng-setting-row__label">{{ labels.closure_from }}</div>
+          </div>
+          <div class="kng-setting-row__control kng-inline-field">
+            <wa-input size="small" type="date" [label]="labels.closure_from" [value]="row.from"
+                      (input)="row.from = $any($event.target).value"></wa-input>
+            <wa-input size="small" type="date" [label]="labels.closure_to" [value]="row.to"
+                      (input)="row.to = $any($event.target).value"></wa-input>
+            <wa-button appearance="plain" variant="danger" size="small" [label]="labels.remove_closure" (click)="removeDate(idx)">
+              <span class="material-symbols-outlined" slot="start" aria-hidden="true">delete</span>
+            </wa-button>
+          </div>
+        </div>
+      </div>
+      <div class="kng-group-action">
+        <wa-button appearance="plain" variant="brand" size="small" (click)="addDate()">
+          <span class="material-symbols-outlined" slot="start" aria-hidden="true">add</span>
+          {{ labels.add_closure }}
+        </wa-button>
+      </div>
+    </div>
+  </section>
+
+  <kng-save-bar [dirty]="hubDirty" [count]="hubDirtyCount" [loading]="isLoading"
+                (cancel)="revertHub()" (save)="onHubSaveManager()"></kng-save-bar>
+</div>

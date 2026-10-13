@@ -19,9 +19,21 @@ import { KngConfigComponent,
          KngWelcomeCfgComponent,
          KngShopComponent,
          KngPageContentComponent} from './kng-config/kng-config.component';
-import { KngHUBComponent, KngHUBManagerComponent, KngInformationCfgComponent } from './kng-config/kng-hub.component';
+import {
+  KngHUBComponent,
+  KngHubCategoriesComponent,
+  KngHubClosuresComponent,
+  KngHubTeamComponent,
+  KngHubVendorsComponent,
+  KngInformationCfgComponent
+} from './kng-config/kng-hub.component';
 import { KngConfigInputComponent } from './kng-config/kng-config-input.component';
 import { KngDepositDlgComponent, KngDepositComponent } from './kng-config/kng-deposit.component';
+import { KngHubOverviewComponent } from './kng-config/kng-hub.component';
+import { KngLangToggleComponent } from './kng-lang-toggle.component';
+import { KngStatusComponent } from './kng-status.component';
+import { KngChecklistComponent } from './kng-checklist.component';
+import { KngSaveBarComponent } from './kng-save-bar.component';
 
 //
 // Routes avec layout parent
@@ -30,14 +42,19 @@ const routes: Routes = [
     path: '',
     component: AdminLayoutComponent,
     children: [
-      { path: '', redirectTo: 'config', pathMatch: 'full' },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', component: KngHubOverviewComponent },
       { path: 'cat', component: KngCategoriesComponent },
       { path: 'category', component: KngCategoriesComponent },
       { path: 'config', component: KngConfigComponent },
       { path: 'information', component: KngInformationCfgComponent },
       { path: 'welcome', component: KngWelcomeCfgComponent },
       { path: 'main-hub', component: KngHUBComponent },
-      { path: 'manager-hub', component: KngHUBManagerComponent },
+      { path: 'manager-hub', redirectTo: 'team', pathMatch: 'full' },
+      { path: 'closures', component: KngHubClosuresComponent },
+      { path: 'team', component: KngHubTeamComponent },
+      { path: 'hub-vendors', component: KngHubVendorsComponent },
+      { path: 'hub-categories', component: KngHubCategoriesComponent },
       { path: 'shop', component: KngShopComponent },
       { path: 'navigation', component: KngNavigationComponent, data: { menu: true } },
       { path: 'deposit', component: KngDepositComponent, data: { deposit: true } },
@@ -60,11 +77,19 @@ const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(routes)
   ],
   declarations: [
     AdminLayoutComponent,
+    KngLangToggleComponent,
+    KngStatusComponent,
+    KngHubOverviewComponent,
+    KngChecklistComponent,
+    KngSaveBarComponent,
     KngConfigInputComponent,
     KngCategoriesComponent,
     KngConfigComponent,
     KngHUBComponent,
-    KngHUBManagerComponent,
+    KngHubClosuresComponent,
+    KngHubTeamComponent,
+    KngHubVendorsComponent,
+    KngHubCategoriesComponent,
     KngDepositComponent,
     KngPageContentComponent,
     KngShopComponent,

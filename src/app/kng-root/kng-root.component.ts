@@ -124,7 +124,7 @@ export class KngRootComponent implements OnInit, OnDestroy {
     return this.user?.isAuthenticated() || false;
   }
 
-  get tagline() {
+  get tagLine() {
     if (!this.config || !this.config.shared.tagLine) {
       return {};
     }
