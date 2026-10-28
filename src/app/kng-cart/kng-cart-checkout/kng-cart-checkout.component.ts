@@ -637,6 +637,15 @@ export class KngCartCheckoutComponent implements OnInit, OnDestroy {
     return this._user.payments.every(payment => payment.isValid());
   }
 
+  onShippingNote(note: string) {
+    this.shippingNote = note || '';
+    const current = this.currentAddress;
+    const saved = (this.user && this.user.addresses || []).find(address => UserAddress.isEqual(address, current));
+    if (saved) {
+      saved.note = this.shippingNote;
+    }
+  }
+
   setShippingAddress(address: UserAddress) :boolean {
     if(!address || !address.streetAdress) {
       this.$cart.setShippingAddress(null);
