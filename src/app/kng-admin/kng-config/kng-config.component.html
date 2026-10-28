@@ -30,6 +30,8 @@
   <!-- SUBJECT -->
   <kng-config-input clazz="config" label="Sujet des mails" name="mail.subject" format="text"
                     [(ngModel)]="config?.shared.mail.subject"></kng-config-input>
+  <kng-config-input clazz="config" label="Seuil d'alerte quantité" name="notify.itemThreshold" format="text"
+                    [(ngModel)]="config?.shared.notify.itemThreshold"></kng-config-input>
 
   <!-- SIGNATURE -->
   <kng-config-input clazz="config" label="Signature des mails" name="mail.signature" format="area"
