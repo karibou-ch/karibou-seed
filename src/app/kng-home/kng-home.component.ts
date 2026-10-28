@@ -337,9 +337,12 @@ export class KngHomeComponent implements OnInit, OnDestroy {
 
     const makeService = (name:string): ConfigServiceContent => {
       const service = shared[name] || {};
-      // Ancien format: certains blocs (business, subscription) n'ont pas de defaultUrl.
-      // On retombe sur la route standard /store/{store}/home/{name} pour rester compatible.
-      const defaultUrl = (service.defaultUrl || '').trim() || ['/store', this.store, 'home', name].join('/');
+      // Business stays on the market the client is browsing.
+      // A stored defaultUrl (often /store/artamis/home/business) must not switch hub.
+      const currentUrl = ['/store', this.store, 'home', name].join('/');
+      const defaultUrl = name === 'business'
+        ? currentUrl
+        : ((service.defaultUrl || '').trim() || currentUrl);
       return Object.assign({}, service, {
         name,
         menu: service.menu || {},
