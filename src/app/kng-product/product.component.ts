@@ -28,6 +28,7 @@ import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
 import { Meta } from '@angular/platform-browser';
+import { isMissingProductResponse } from './product-missing';
 
 
 //  changeDetection:ChangeDetectionStrategy.OnPush
@@ -57,6 +58,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       after_order:"Limite de commande ",
       james_product_recipe:"Quelques suggestions de recettes ?",
       james_product_variant:"Quelques associations avec le produit ?",
+      missing_product:"Ce produit n'existe pas",
+      missing_product_hint:"Ce lien ne correspond à aucun produit en vente. Vous pouvez revenir en arrière.",
     },
     en:{
       before_order:"Still ",
@@ -64,6 +67,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       after_order:"Order before ",
       james_product_recipe:"Some recipe suggestions?",
       james_product_variant:"Some associations with this product?",
+      missing_product:"This product does not exist",
+      missing_product_hint:"This link does not match any product for sale. You can go back.",
     }
   }
 
@@ -71,6 +76,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   isSearching: boolean;
   isRedirect: boolean;
   isReady: boolean;
+  productMissing = false;
   isDialog = false;
   product: Product = new Product();
   products: Product[];
@@ -292,7 +298,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   get urlTitle(){
-    return this.product.title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
+    const title = this.product && this.product.title || '';
+    return title.toLocaleLowerCase().replace(/[^\wÀ-ÿ]/g,'-');
   }
 
   /**
@@ -336,10 +343,10 @@ export class ProductComponent implements OnInit, OnDestroy {
           return;
         }
         this.sku = params.sku;
-        this.$product.findBySku(params.sku).subscribe(this.loadProduct.bind(this));
+        this.loadProductBySku(params.sku);
       });
     } else {
-      this.$product.findBySku(this.sku).subscribe(this.loadProduct.bind(this));
+      this.loadProductBySku(this.sku);
     }
 
     //
@@ -438,6 +445,9 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   addToCart($event, product: Product, variant?: string, audio?: boolean) {
+    if (this.productMissing || !product || !product.sku) {
+      return;
+    }
     if($event){
       $event.stopPropagation();
     }
@@ -572,7 +582,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (now - this.lastUpdate < this.UPDATE_INTERVAL) {
       return;
     }
-    if (!this.product || !this.config) {
+    if (!this.product || !this.product.sku || !this.config || this.productMissing) {
       return;
     }
     this.lastUpdate = now;
@@ -588,7 +598,48 @@ export class ProductComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadProductBySku(sku) {
+    this.productMissing = false;
+    this.isReady = false;
+    this.$product.findBySku(sku).subscribe(
+      (product) => {
+        if (String(this.sku) !== String(sku)) {
+          return;
+        }
+        this.loadProduct(product);
+      },
+      (err) => this.onProductError(err, sku)
+    );
+  }
+
+  onProductError(err: unknown, sku?: number | string) {
+    if (isMissingProductResponse(err)) {
+      if (sku !== undefined && String(this.sku) !== String(sku)) {
+        return;
+      }
+      this.showMissingProduct();
+      return;
+    }
+    // Relance l'erreur d'origine : GlobalErrorHandler l'envoie encore à Sentry.
+    throw err;
+  }
+
+  showMissingProduct() {
+    this.product = new Product();
+    this.products = [];
+    this.productTiming = undefined;
+    this.isHighlighted = false;
+    this.bgStyle = null;
+    this.bgImage = '';
+    this.productMissing = true;
+    this.isReady = true;
+    if (this.isDialog) {
+      document.title = this.label.missing_product;
+    }
+  }
+
   loadProduct(product) {
+    this.productMissing = false;
     this.product = product;
     const shippingDay = this.$cart.getCurrentShippingDay();
 

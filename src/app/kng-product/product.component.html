@@ -6,7 +6,7 @@
       <button (click)="onClose(true)" class="close" >
         <span class="material-symbols-outlined size-large">arrow_back</span>
       </button>
-      <div class="title text-overflow">{{product.title}}</div>
+      <div class="title text-overflow">{{ productMissing ? label.missing_product : product.title }}</div>
     </div>
 
     <div class="product-wide" [class.incart]="cartItemQuantity" >
@@ -27,7 +27,7 @@
           class="photo-owner ">
 
           <div class="product-available">
-            non disponible
+            {{ productMissing ? label.missing_product : 'non disponible' }}
           </div>
           <!-- Lorsque le produit n'est pas disponible, on affiche l'heure limite de commande -->
           <div class="product-timelimit">
@@ -49,10 +49,10 @@
 
 
 
-          <button class="action-add right " (click)="addToCart($event,product)">
+          <button class="action-add right " *ngIf="!productMissing" (click)="addToCart($event,product)">
             <span class="material-symbols-outlined size-medium">add</span>
           </button>
-          <button class="action-remove " (click)="removeToCart($event,product)">
+          <button class="action-remove " *ngIf="!productMissing" (click)="removeToCart($event,product)">
             <span class="material-symbols-outlined size-medium">remove</span>
           </button>
           <div class="info-quantity">{{cartItemQuantity}}</div>
@@ -75,7 +75,8 @@
         </div>
         <div class="header">
 
-          <div class="title">{{product.title}}</div>
+          <div class="title">{{ productMissing ? label.missing_product : product.title }}</div>
+          <ng-container *ngIf="!productMissing">
           <div class="part">
             {{product.pricing.part}}
           </div>
@@ -87,19 +88,25 @@
               <span class="red">Fr {{product.pricing.discount| number:'1.2-2'}}</span>
             </span>
           </div>
+          </ng-container>
 
         </div>
       </section>
 
 
       <!-- DESCRIPTION -->
-      <div class="description">
+      <div class="description" *ngIf="productMissing">
+        <div>
+          <p>{{ label.missing_product_hint }}</p>
+        </div>
+      </div>
+      <div class="description" *ngIf="!productMissing">
         <div [kng-markdown]="product.details.description" removeRoot="true"></div>
         <div [hidden]="!product.details?.origin" class="light" [innerHtml]="product.details.origin"></div>
       </div>
 
       <!-- CERTIFIED -->
-      <div class="certified ">
+      <div class="certified " *ngIf="!productMissing">
         <ul class="info " [hidden]="!product.quantity.display && !product.shelflife.display">
           <li >{{product.quantity.comment}}</li>
           <li >{{product.shelflife.comment}}</li>
@@ -131,6 +138,7 @@
 
       <!-- NOTE -->
       <kng-audio-note-enhanced
+          *ngIf="!productMissing"
           type="item"
           class="product-note"
           [hidden]="!cartItemQuantity"
@@ -159,7 +167,7 @@
       </kng-audio-note-enhanced>
 
       <!-- RECEIPE -->
-      <div class="recipe ">
+      <div class="recipe " *ngIf="!productMissing">
         <div class="content bold">
           {{glabel.james_product_title}}
         </div>
@@ -175,7 +183,7 @@
       <div class="breaker small"></div>
 
       <!-- ADMIN OR OWNER ACTIONS -->
-      <div [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
+      <div *ngIf="!productMissing" [hidden]="!user.isOwnerOrAdmin(product.vendor.name)" class="quick-stock">
         <div>
           Éditer &nbsp;
           <a href="https://admin.karibou.ch/product/{{product.sku}}">le produit</a>&nbsp;--&nbsp;
@@ -205,7 +213,7 @@
       </div>
 
       <!-- AVAILABLE -->
-      <div class="availability">
+      <div class="availability" *ngIf="!productMissing">
         <ul class="list-inline">
           <li class="hide-sm">
             <div class="bold">Livraisons:</div>
