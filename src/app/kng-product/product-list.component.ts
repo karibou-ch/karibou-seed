@@ -24,7 +24,7 @@ import {
   CalendarService
 } from 'kng2-core';
 
-import { combineLatest, Subscription, timer } from 'rxjs';
+import { combineLatest, SubscriptionLike, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
@@ -70,7 +70,7 @@ export class ProductListComponent implements OnInit {
   filterVendor: Shop;
   filterChild: string;
   childSub$;
-  private shippingSub: Subscription;
+  private shippingSub: SubscriptionLike;
   childMap: any;
   scrollDirection: number;
   scrollToCategory: string;
