@@ -123,9 +123,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     windowtime: 200
   };
 
-  private updateTimer: any;
-  private lastUpdate: number = 0;
-  private readonly UPDATE_INTERVAL = 30000; // Update every 30s
+  private lastUpdate = 0;
+  private readonly UPDATE_INTERVAL = 30000;
 
   constructor(
     private zone: NgZone,
@@ -360,33 +359,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       setTimeout(()=> this.scrollStickedToolbar = this.dialog.nativeElement.scrollTop>40,0,1000);
 
     }
-
-    // Start timer to update productTiming
-    const updateTime = () => {
-      const now = Date.now();
-      if (now - this.lastUpdate >= this.UPDATE_INTERVAL) {
-        if (this.product && this.product.sku && this.config && !this.productMissing) {
-          const shippingDay = this.$cart.getCurrentShippingDay();
-          // ✅ MIGRATION CRITIQUE: Utiliser CalendarService avec interface ProductOrderTiming complète
-          const newTiming = this.$calendar.timeleftBeforeCollect(
-            this.config.shared.hub,
-            this.product.attributes.timelimit,
-            shippingDay,
-            { includeInterface: true }
-          ) as ProductOrderTiming;
-
-          // Only update if the value has changed significantly (more than 1 minute)
-          if (!this.productTiming || Math.abs(newTiming.hoursLeft - this.productTiming.hoursLeft) > 1/60) {
-            this.zone.run(() => {
-              this.productTiming = newTiming;
-              this.lastUpdate = now;
-            });
-          }
-        }
-      }
-      this.updateTimer = this.zone.runOutsideAngular(() => requestAnimationFrame(updateTime));
-    };
-    this.updateTimer = this.zone.runOutsideAngular(() => requestAnimationFrame(updateTime));
   }
 
   ngAfterViewInit() {
@@ -423,11 +395,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     if (this.isDialog) {
       document.body.classList.remove('mdc-dialog-scroll-lock');
-    }
-
-    // Clear the update timer
-    if (this.updateTimer) {
-      cancelAnimationFrame(this.updateTimer);
     }
 
     // ✅ CORRECTION : Nettoyer le cache de largeur
@@ -606,6 +573,29 @@ export class ProductComponent implements OnInit, OnDestroy {
       return this.products;
     }
     return this.products.filter(p => p.belong.name === this.product.belong.name);
+  }
+
+  // Appelable à chaque refresh de visibility. Un appel dans les 30s
+  // qui suivent le dernier calcul est ignoré.
+  protected refreshProductTiming() {
+    const now = Date.now();
+    if (now - this.lastUpdate < this.UPDATE_INTERVAL) {
+      return;
+    }
+    if (!this.product || !this.product.sku || !this.config || this.productMissing) {
+      return;
+    }
+    this.lastUpdate = now;
+    const shippingDay = this.$cart.getCurrentShippingDay();
+    const newTiming = this.$calendar.timeleftBeforeCollect(
+      this.config.shared.hub,
+      this.product.attributes && this.product.attributes.timelimit,
+      shippingDay,
+      { includeInterface: true }
+    ) as ProductOrderTiming;
+    this.zone.run(() => {
+      this.productTiming = newTiming;
+    });
   }
 
   loadProductBySku(sku) {
@@ -847,7 +837,8 @@ export class ProductThumbnailComponent extends ProductComponent {
   hidden = true;
   @Input() large: boolean;
   @Input('visibility') set visibility(value: boolean) {
-    this.hidden = (!value);
+    this.hidden = !value;
+    this.refreshProductTiming();
   }
 
   bgGradient = `linear-gradient(

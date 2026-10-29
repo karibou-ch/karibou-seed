@@ -14,6 +14,7 @@ import {
   User,
   Category,
   Shop,
+  CartAction,
   CartService,
   CartSubscriptionParams,
   CartItemsContext,
@@ -23,7 +24,7 @@ import {
   CalendarService
 } from 'kng2-core';
 
-import { combineLatest, timer } from 'rxjs';
+import { combineLatest, SubscriptionLike, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { i18n, KngNavigationStateService, KngUtils } from '../common';
 import { EnumMetrics, MetricsService } from '../common/metrics.service';
@@ -69,6 +70,7 @@ export class ProductListComponent implements OnInit {
   filterVendor: Shop;
   filterChild: string;
   childSub$;
+  private shippingSub: SubscriptionLike;
   childMap: any;
   scrollDirection: number;
   scrollToCategory: string;
@@ -319,6 +321,9 @@ export class ProductListComponent implements OnInit {
     if (this.childSub$) {
       this.childSub$.unsubscribe();
     }
+    if (this.shippingSub) {
+      this.shippingSub.unsubscribe();
+    }
   }
 
   async ngOnInit() {
@@ -383,6 +388,17 @@ export class ProductListComponent implements OnInit {
     // DIALOG INIT HACK
     document.body.classList.add('mdc-dialog-scroll-lock');
     this.isReady = true;
+
+    // FIXME: listen here until CART_SHIPPING moves to a kngBus shipping-day signal.
+    this.shippingSub = this.$cart.subscribe((state) => {
+      if (!state || state.action !== CartAction.CART_SHIPPING) {
+        return;
+      }
+      if (typeof this.options.when !== 'string' || !this.category.slug) {
+        return;
+      }
+      this.productsByCategory(this.category.slug);
+    });
   }
 
   //
