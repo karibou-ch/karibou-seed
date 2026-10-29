@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { User,
          UserCard,
          UserService,
@@ -7,6 +7,7 @@ import { User,
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { StripeService } from 'ngx-stripe';
 import { StripeCardElement, StripeCardElementOptions, StripeElementLocale, StripeElements, StripeElementsOptions } from '@stripe/stripe-js';
+import { Subscription } from 'rxjs';
 import { i18n } from 'src/app/common';
 
 
@@ -23,7 +24,7 @@ export interface PaymentEvent {
   templateUrl: './kng-user-payment.component.html',
   styleUrls: ['./kng-user-payment.component.scss']
 })
-export class KngPaymentComponent {
+export class KngPaymentComponent implements OnInit, AfterViewInit, OnDestroy {
 
   i18n: any = {
     fr: {
@@ -51,6 +52,12 @@ export class KngPaymentComponent {
   stripe: FormGroup;
   elements: StripeElements;
   card: StripeCardElement;
+  private subs = new Subscription();
+  private alive = true;
+  private viewReady = false;
+  private cardMounted = false;
+  private cardListening = false;
+  private mountTimer: any = null;
   paymentSecret: any;
   paymentIntent: any;
   isLoading: boolean;
@@ -105,6 +112,7 @@ export class KngPaymentComponent {
   };
 
   @Output() updated: EventEmitter<PaymentEvent> = new EventEmitter<PaymentEvent>();
+  @ViewChild('cardElement') cardElementRef: ElementRef<HTMLElement>;
 
   @Input() title: string;
   @Input() minimal: boolean;
@@ -178,14 +186,17 @@ export class KngPaymentComponent {
 
     if (this.user.isAuthenticated()) {
       // console.log('--- DB USER PAYMENTS 1',this.user.payments);
-      this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
+      this.subs.add(this.$user.checkPaymentMethod(this.user, 'stripe').subscribe(user => {
         this.user = user;
         this.paymentIntent = user.context.intent;
-      });
+      }));
     }
 
     this.elementsOptions.locale = this.locale as StripeElementLocale;
-    this.$stripe.elements(this.elementsOptions).subscribe(elements => {
+    this.subs.add(this.$stripe.elements(this.elementsOptions).subscribe(elements => {
+      if (!this.alive || this.card) {
+        return;
+      }
       this.elements = elements;
 
       const cardOptions: StripeCardElementOptions = {
@@ -207,36 +218,88 @@ export class KngPaymentComponent {
       };
 
       this.card = this.elements.create("card", cardOptions);
-
-
-      setTimeout(() => {
-        this.card.on('change', (event) => {
-          // event.brand=> "mastercard"
-          // event.complete=> true|false
-          // event.elementType=> "card"
-          // event.empty=> false
-          // event.error=> undefined
-          // event.value=> {postalCode: ""}
-          // console.log('--- DEBUG event',event);
-          this.isValid = event.complete;
-
-          // ✅ Track que l'utilisateur a commencé à éditer
-          if (!event.empty) {
-            this.formTouched = true;
-            this.checkFormNeedsSave();
-          }
-        });
-
-        this.card.mount('#card-element');
-      }, 100);
-    });
+      this.scheduleMount();
+    }));
 
     // ✅ Track changes sur le champ name
-    this.stripe.get('name')?.valueChanges.subscribe(() => {
-      this.formTouched = true;
-      this.checkFormNeedsSave();
-    });
+    const name = this.stripe.get('name');
+    if (name) {
+      this.subs.add(name.valueChanges.subscribe(() => {
+        this.formTouched = true;
+        this.checkFormNeedsSave();
+      }));
+    }
 
+  }
+
+  ngAfterViewInit() {
+    this.viewReady = true;
+    this.scheduleMount();
+  }
+
+  ngOnDestroy() {
+    this.alive = false;
+    if (this.mountTimer != null) {
+      clearTimeout(this.mountTimer);
+      this.mountTimer = null;
+    }
+    this.subs.unsubscribe();
+    if (this.card) {
+      this.card.destroy();
+      this.card = null;
+      this.cardMounted = false;
+    }
+  }
+
+  // *ngIf insère la vue après ngAfterViewInit. On monte seulement
+  // l'élément de CE composant, une fois qu'il est dans le document.
+  private scheduleMount() {
+    if (!this.alive || !this.viewReady || !this.card || this.cardMounted) {
+      return;
+    }
+    const host = this.cardElementRef && this.cardElementRef.nativeElement;
+    if (host && host.isConnected) {
+      this.mountCard(host);
+      return;
+    }
+    if (this.mountTimer != null) {
+      return;
+    }
+    this.mountTimer = setTimeout(() => {
+      this.mountTimer = null;
+      if (!this.alive) {
+        return;
+      }
+      const later = this.cardElementRef && this.cardElementRef.nativeElement;
+      if (!later || !later.isConnected) {
+        return;
+      }
+      this.mountCard(later);
+    });
+  }
+
+  private mountCard(host: HTMLElement) {
+    if (!this.cardListening) {
+      this.card.on('change', (event) => {
+        // event.brand=> "mastercard"
+        // event.complete=> true|false
+        // event.elementType=> "card"
+        // event.empty=> false
+        // event.error=> undefined
+        // event.value=> {postalCode: ""}
+        // console.log('--- DEBUG event',event);
+        this.isValid = event.complete;
+
+        // ✅ Track que l'utilisateur a commencé à éditer
+        if (!event.empty) {
+          this.formTouched = true;
+          this.checkFormNeedsSave();
+        }
+      });
+      this.cardListening = true;
+    }
+    this.card.mount(host);
+    this.cardMounted = true;
   }
 
   //
@@ -245,6 +308,9 @@ export class KngPaymentComponent {
     // ✅ Utiliser setTimeout pour déférer au prochain cycle
     // Cela évite ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
+      if (!this.alive) {
+        return;
+      }
       this.formNeedsSave = this.formTouched && this.isValid && this.stripe.valid;
       this.cdr.detectChanges();
     });
