@@ -18,7 +18,10 @@
           "/*.js",
           "/**/*.css",
           "/**/*.js",
-          "/**/*.map"
+          "/**/*.map",
+          "!/ngsw-worker.js",
+          "!/safety-worker.js",
+          "!/worker-basic.min.js"
         ]
       }
     }, {
