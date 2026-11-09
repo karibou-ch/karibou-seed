@@ -448,6 +448,35 @@ kng-product-swipe{
   a {
     font-size: 1rem;
   }
+  .support-title {
+    margin: 0 0 0.45rem;
+    font-family: var(--mdc-theme-font);
+    font-size: 1.35rem;
+    line-height: 1.2;
+    font-weight: 400;
+    color: var(--mdc-theme-text-primary-on-background);
+  }
+
+  .support-lead {
+    flex: 1;
+    min-width: 0;
+    padding-right: 0.75rem;
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.35;
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+  }
+
+  .support-detail {
+    margin: 0.55rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--mdc-theme-text-secondary-on-background);
+  }
+
   .audio-contact {
     display: flex;
     flex-direction: column;
@@ -465,6 +494,16 @@ kng-product-swipe{
   }
   .audio-message-status {
     margin: 10px 0 0;
+  }
+
+  .support-phone {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    color: var(--mdc-theme-text-primary-on-background);
+
+    a {
+      font-weight: 700;
+    }
   }
 
   .label{
