@@ -32,6 +32,7 @@ describe('KngInvoiceComponent', () => {
     customer: {},
     payment: {},
     refund: { hasRefund: true, amount: 2.5 },
+    serviceFee: 0.75,
     itemLines: [
       { quantity: 3, title: 'Pain', amount: 12.5, refundAmount: 2.5 }
     ]
@@ -61,14 +62,18 @@ describe('KngInvoiceComponent', () => {
     expect(text).toContain('3x Pain');
     expect(text).toContain('12.50');
     expect(text).toContain('Remboursement appliqué');
+    expect(text).toContain('Frais de service');
+    expect(text).toContain('0.75');
     expect(text).toContain('2.50');
     expect(text).not.toContain(': CHF 2.50');
-    expect(fixture.nativeElement.querySelector('button.download').hidden).toBe(true);
+    expect(text).toContain('Télécharger le relevé');
+    expect(fixture.nativeElement.querySelector('button.download').hidden).toBe(false);
   });
 
   it('shows the PDF button when a QR-bill amount is due', () => {
     render(invoiceFor(paidOrder, 12.5));
 
+    expect(fixture.nativeElement.textContent).toContain('Télécharger la facture');
     expect(fixture.nativeElement.querySelector('button.download').hidden).toBe(false);
   });
 });

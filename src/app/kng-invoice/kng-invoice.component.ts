@@ -19,6 +19,7 @@ export class KngInvoiceComponent implements OnInit {
   i18n: any = {
     fr: {
       download_invoice: 'Télécharger la facture',
+      download_statement: 'Télécharger le relevé',
       month_details: 'Détails du mois',
       subscriptions: 'Commandes d’abonnement',
       ponctuals: 'Commandes ponctuelles',
@@ -27,11 +28,13 @@ export class KngInvoiceComponent implements OnInit {
       paids: 'Commandes payées',
       total_invoice: 'Total à facturer',
       refund: 'Remboursement appliqué',
+      service_fee: 'Frais de service',
       credit_note: 'Note de crédit appliquée',
       close: 'Fermer'
     },
     en:{
       download_invoice: 'Download invoice',
+      download_statement: 'Download statement',
       month_details: 'Monthly details',
       subscriptions: 'Subscription orders',
       ponctuals: 'One-off orders',
@@ -40,6 +43,7 @@ export class KngInvoiceComponent implements OnInit {
       paids: 'Paid orders',
       total_invoice: 'Total to invoice',
       refund: 'Refund applied',
+      service_fee: 'Service fee',
       credit_note: 'Credit note applied',
       close: 'Close'
     }
@@ -61,6 +65,10 @@ export class KngInvoiceComponent implements OnInit {
 
   get locale() {
     return this.$i18n.locale;
+  }
+
+  get canDownload() {
+    return this.subscriptionOrders.length + this.ponctualOrders.length > 0;
   }
 
   ngOnInit(){

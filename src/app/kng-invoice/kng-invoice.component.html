@@ -2,8 +2,8 @@
 <div class="invoice-details">
   <div class="panel">
     <div class="actions top">
-      <button class="download" (click)="onDownloadPDF()" [hidden]="!qrbillAmount">
-        {{i18n[locale].download_invoice}}
+      <button class="download" (click)="onDownloadPDF()" [hidden]="!canDownload">
+        {{qrbillAmount ? i18n[locale].download_invoice : i18n[locale].download_statement}}
       </button>
       <button class="close" (click)="onClose()">{{i18n[locale].close}}</button>
     </div>
@@ -25,6 +25,7 @@
               <span>{{item.quantity}}x {{item.title}} {{item.amount|currency:'CHF'}}</span>
               <span class="refund" *ngIf="item.refundAmount">{{i18n[locale].refund}} {{item.refundAmount|currency:'CHF'}}</span>
             </div>
+            <span class="service" *ngIf="order.serviceFee">{{i18n[locale].service_fee}} {{order.serviceFee|currency:'CHF'}}</span>
           </div>
         </div>
         <div class="price">{{order.amount|currency:'CHF'}}</div>
@@ -46,6 +47,7 @@
               <span>{{item.quantity}}x {{item.title}} {{item.amount|currency:'CHF'}}</span>
               <span class="refund" *ngIf="item.refundAmount">{{i18n[locale].refund}} {{item.refundAmount|currency:'CHF'}}</span>
             </div>
+            <span class="service" *ngIf="order.serviceFee">{{i18n[locale].service_fee}} {{order.serviceFee|currency:'CHF'}}</span>
           </div>
         </div>
         <div class="price">{{order.amount|currency:'CHF'}}</div>
