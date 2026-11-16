@@ -74,6 +74,18 @@
             display: block;
           }
         }
+
+        .item-lines {
+          margin: 6px 0 0;
+          color: #555;
+          font-size: 13px;
+          font-weight: normal;
+
+          .refund {
+            display: block;
+            margin-left: 16px;
+          }
+        }
       }
     }
 

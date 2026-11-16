@@ -20,6 +20,12 @@
           <div class="line-notes" *ngIf="orderNotes(order).length">
             <span *ngFor="let note of orderNotes(order)">{{note}}</span>
           </div>
+          <div class="item-lines" *ngIf="order.itemLines?.length">
+            <div *ngFor="let item of order.itemLines">
+              <span>{{item.quantity}}x {{item.title}} {{item.amount|currency:'CHF'}}</span>
+              <span class="refund" *ngIf="item.refundAmount">{{i18n[locale].refund}} {{item.refundAmount|currency:'CHF'}}</span>
+            </div>
+          </div>
         </div>
         <div class="price">{{order.amount|currency:'CHF'}}</div>
       </li>
@@ -34,6 +40,12 @@
           <span class="status">{{statusLabel(order)}}</span>
           <div class="line-notes" *ngIf="orderNotes(order).length">
             <span *ngFor="let note of orderNotes(order)">{{note}}</span>
+          </div>
+          <div class="item-lines" *ngIf="order.itemLines?.length">
+            <div *ngFor="let item of order.itemLines">
+              <span>{{item.quantity}}x {{item.title}} {{item.amount|currency:'CHF'}}</span>
+              <span class="refund" *ngIf="item.refundAmount">{{i18n[locale].refund}} {{item.refundAmount|currency:'CHF'}}</span>
+            </div>
           </div>
         </div>
         <div class="price">{{order.amount|currency:'CHF'}}</div>

@@ -99,6 +99,10 @@ export class KngInvoiceComponent implements OnInit {
     return billNote ? order.oid + ' / ' + billNote : order.oid;
   }
 
+  hasItemRefund(order:any) {
+    return (order.itemLines || []).some(item => item.refundAmount > 0);
+  }
+
   orderNotes(order:any) {
     const notes = [];
     const billNote = order.customer && order.customer.billNote;
@@ -108,7 +112,7 @@ export class KngInvoiceComponent implements OnInit {
     if(billNote) {
       notes.push(billNote);
     }
-    if(refund.hasRefund) {
+    if(refund.hasRefund && !this.hasItemRefund(order)) {
       notes.push(this.i18n[this.locale].refund + (refund.amount ? ': CHF ' + refund.amount.toFixed(2) : ''));
     }
     if(creditNote > 0) {
