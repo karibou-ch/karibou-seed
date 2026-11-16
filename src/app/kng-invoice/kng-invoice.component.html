@@ -26,6 +26,8 @@
               <span class="refund" *ngIf="item.refundAmount">{{i18n[locale].refund}} {{item.refundAmount|currency:'CHF'}}</span>
             </div>
             <span class="service" *ngIf="order.serviceFee">{{i18n[locale].service_fee}} {{order.serviceFee|currency:'CHF'}}</span>
+            <span class="service" *ngIf="order.shippingFee">{{i18n[locale].shipping_fee}} {{order.shippingFee|currency:'CHF'}}</span>
+            <span class="service" *ngIf="order.payment?.credit_note > 0">{{i18n[locale].credit_note}} -{{order.payment.credit_note|currency:'CHF'}}</span>
           </div>
         </div>
         <div class="price">{{order.amount|currency:'CHF'}}</div>
@@ -48,6 +50,8 @@
               <span class="refund" *ngIf="item.refundAmount">{{i18n[locale].refund}} {{item.refundAmount|currency:'CHF'}}</span>
             </div>
             <span class="service" *ngIf="order.serviceFee">{{i18n[locale].service_fee}} {{order.serviceFee|currency:'CHF'}}</span>
+            <span class="service" *ngIf="order.shippingFee">{{i18n[locale].shipping_fee}} {{order.shippingFee|currency:'CHF'}}</span>
+            <span class="service" *ngIf="order.payment?.credit_note > 0">{{i18n[locale].credit_note}} -{{order.payment.credit_note|currency:'CHF'}}</span>
           </div>
         </div>
         <div class="price">{{order.amount|currency:'CHF'}}</div>

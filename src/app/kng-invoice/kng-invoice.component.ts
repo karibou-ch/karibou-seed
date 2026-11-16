@@ -29,6 +29,7 @@ export class KngInvoiceComponent implements OnInit {
       total_invoice: 'Total à facturer',
       refund: 'Remboursement appliqué',
       service_fee: 'Frais de service',
+      shipping_fee: 'Livraison',
       credit_note: 'Note de crédit appliquée',
       close: 'Fermer'
     },
@@ -44,6 +45,7 @@ export class KngInvoiceComponent implements OnInit {
       total_invoice: 'Total to invoice',
       refund: 'Refund applied',
       service_fee: 'Service fee',
+      shipping_fee: 'Delivery',
       credit_note: 'Credit note applied',
       close: 'Close'
     }
@@ -115,16 +117,11 @@ export class KngInvoiceComponent implements OnInit {
     const notes = [];
     const billNote = order.customer && order.customer.billNote;
     const refund = order.refund || {};
-    const creditNote = order.payment && Number(order.payment.credit_note || 0);
-
     if(billNote) {
       notes.push(billNote);
     }
     if(refund.hasRefund && !this.hasItemRefund(order)) {
       notes.push(this.i18n[this.locale].refund + (refund.amount ? ': CHF ' + refund.amount.toFixed(2) : ''));
-    }
-    if(creditNote > 0) {
-      notes.push(this.i18n[this.locale].credit_note + ': CHF ' + creditNote.toFixed(2));
     }
 
     return notes;
