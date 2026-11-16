@@ -35,9 +35,31 @@
 
     <!-- afficher les adresses disponibles lorsque l'utilisateur veut changer de livraison -->
     <div class="review-address-editor" [hidden]="!showAddressChoices">
-        <div class="review-inline-form" *ngIf="!hasUserAddresses; else addressOptions">
-        <kng-address [config]="config" [phone]="phone" (updated)="addressSaved.emit($event)"></kng-address>
-      </div>
+      <ng-container *ngIf="!hasUserAddresses; else addressOptions">
+        <div class="review-pickup" *ngIf="otherDepositAddresses.length">
+          <div class="review-label">{{label.review_pickup}}</div>
+          <ng-container *ngTemplateOutlet="depositOptions"></ng-container>
+        </div>
+
+        <div class="review-workplace" *ngIf="workplaceHint">
+          <p class="review-delivery-policy">{{workplaceHint}}</p>
+          <button
+            type="button"
+            class="review-option"
+            *ngFor="let time of earlyShippingTimes"
+            [class.selected]="isSelectedShippingTime(time.key)"
+            (click)="selectShippingTime(time.key)">
+            <span class="review-option-main">
+              <span class="review-option-name">{{time.label}}</span>
+            </span>
+            <span class="review-option-amount">+ Fr {{time.price|number:'1.2-2'}}</span>
+          </button>
+        </div>
+
+        <div class="review-inline-form">
+          <kng-address [config]="config" [phone]="phone" (updated)="addressSaved.emit($event)"></kng-address>
+        </div>
+      </ng-container>
 
       <ng-template #addressOptions>
         <button
@@ -53,6 +75,14 @@
           <span class="review-option-amount">Fr {{shippingAmount(option)|number:'1.2-2'}}</span>
         </button>
 
+        <ng-container *ngTemplateOutlet="depositOptions"></ng-container>
+
+        <button type="button" class="review-add-action" (click)="addAddressRequested.emit()">
+          + {{glabel.user_address_add}}
+        </button>
+      </ng-template>
+
+      <ng-template #depositOptions>
         <button
           type="button"
           class="review-option"
@@ -63,10 +93,6 @@
             <span class="review-option-detail">{{option.streetAdress}}</span>
           </span>
           <span class="review-option-amount">Fr {{shippingAmount(option)|number:'1.2-2'}}</span>
-        </button>
-
-        <button type="button" class="review-add-action" (click)="addAddressRequested.emit()">
-          + {{glabel.user_address_add}}
         </button>
       </ng-template>
     </div>

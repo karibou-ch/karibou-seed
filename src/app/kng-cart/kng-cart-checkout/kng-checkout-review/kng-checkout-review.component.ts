@@ -86,6 +86,8 @@ export class KngCheckoutReviewComponent implements OnChanges {
       review_last_minute: 'Aujourd\'hui',
       review_payment_note: 'Facturé le jour de livraison',
       review_delivery_note_placeholder: 'Code, étage, instruction...',
+      review_pickup: 'Collecte',
+      review_workplace: 'Vous travaillez dans la zone livrée ? Indiquez l\'adresse du bureau et choisissez une livraison avant __HOUR__h.',
       review_delivery_policy: 'Si vous n\'êtes pas présent lors de la livraison et sans indication contraire de votre part, les produits seront déposés devant votre porte.',
       review_subscription_rhythm: 'Rythme',
       review_subscription_time: 'Créneau',
@@ -100,6 +102,8 @@ export class KngCheckoutReviewComponent implements OnChanges {
       review_last_minute: 'Today',
       review_payment_note: 'Charged on delivery day',
       review_delivery_note_placeholder: 'Code, floor, instruction...',
+      review_pickup: 'Pickup',
+      review_workplace: 'Do you work in the delivery area? Enter your office address and choose a delivery before __HOUR__h.',
       review_delivery_policy: 'If you are not present at delivery and unless instructed otherwise, the products will be left at your door.',
       review_subscription_rhythm: 'Schedule',
       review_subscription_time: 'Time slot',
@@ -155,6 +159,50 @@ export class KngCheckoutReviewComponent implements OnChanges {
 
   get otherDepositAddresses() {
     return (this.depositAddresses || []).filter(option => !this.isSelectedAddress(option));
+  }
+
+  get earlyShippingTimes() {
+    const prices = this.config?.shared?.shipping?.pricetime || {};
+    const labels = this.config?.shared?.hub?.shippingtimes || {};
+    return Object.keys(labels)
+      .filter(key => Number(key) > 0 && Number(prices[key]) > 0 && String(labels[key] ?? '').trim() !== '')
+      .sort((a, b) => Number(a) - Number(b))
+      .map(key => ({
+        key,
+        label: String(labels[key]).trim(),
+        price: Number(prices[key]) || 0
+      }));
+  }
+
+  get workplaceBeforeHour(): number | null {
+    if (this.hasUserAddresses || this.isSubscription || this.isLastMinuteShipping || !this.earlyShippingTimes.length) {
+      return null;
+    }
+    const prices = this.config?.shared?.shipping?.pricetime || {};
+    const labels = this.config?.shared?.hub?.shippingtimes || {};
+    const free = Object.keys(labels)
+      .map(key => Number(key))
+      .filter(key => key > 0 && String(labels[key] ?? '').trim() !== '' && !(Number(prices[key]) > 0))
+      .sort((a, b) => a - b);
+    return free.length ? free[0] : null;
+  }
+
+  get workplaceHint(): string | null {
+    if (!this.workplaceBeforeHour) {
+      return null;
+    }
+    return this.label.review_workplace.replace('__HOUR__', String(this.workplaceBeforeHour));
+  }
+
+  isSelectedShippingTime(key: string) {
+    return Number(key) === Number(this.$cart.getCurrentShippingTime());
+  }
+
+  selectShippingTime(key: string) {
+    if (!this.shippingDay) {
+      return;
+    }
+    this.$cart.setShippingDay(this.shippingDay, Number(key));
   }
 
   shippingAmount(address: UserAddress) {
