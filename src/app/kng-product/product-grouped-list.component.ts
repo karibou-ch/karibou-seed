@@ -364,8 +364,11 @@ export class ProductGroupedListComponent implements OnInit {
       (this.displayVendor && !this.displaySubscription) ? this.sortProductsByVendorCategoryAndTitle : this.sortProductsByTitle
     );
     cats.forEach(cat => {
+      const total = this.group[cat].length;
       this.group[cat] = this.group[cat].sort(sortByAlphaOrScore).slice(0, maxcat);
-      if (this.group[cat].length % divider === 0 && this.showMore) {
+      // only trim a full row when products are hidden behind "Voir tout"
+      const truncated = total > this.group[cat].length;
+      if (truncated && this.showMore && this.group[cat].length % divider === 0) {
         this.group[cat].pop();
       }
     });
